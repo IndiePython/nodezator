@@ -13,6 +13,12 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
+from dialog import create_and_show_dialog
+
+from logman.main import get_new_logger
+
+from our3rdlibs.userlogger import USER_LOGGER
+
 from textman.viewer.main import view_text
 
 from surfsman.draw import (
@@ -70,6 +76,10 @@ GENERAL_TEXT_SETTINGS = {
   'foreground_color': TEXTPREVIEW_FG,
   'background_color': TEXTPREVIEW_BG,
 }
+
+### create logger for module
+logger = get_new_logger(__name__)
+
 
 ### class definition
 
@@ -237,6 +247,52 @@ class TextPreview(_BasePreview):
           IsADirectoryError,
           PermissionError,
         ):
+
+            try: subsurf = self.path_repr_subsurf
+
+            except AttributeError:
+
+                subsurf = self.path_repr_subsurf = (
+
+                  image.subsurface(rect)
+
+                )
+
+            draw_not_found_icon(subsurf, (255, 0, 0))
+
+            super().blit_path_representation()
+            return
+
+        except Exception as err:
+
+            ## log traceback in regular
+            ## log and and user log
+
+            msg = (
+              "An unexpected error ocurred"
+              " while trying to load the text from"
+              " the path."
+            )
+
+            logger.exception(msg)
+            USER_LOGGER.exception(msg)
+
+            ## notify user via dialog
+
+            create_and_show_dialog(
+
+              (
+                "An error ocurred while"
+                " trying to load the text"
+                " from the path. Check the user"
+                " log for details"
+                " (click <Ctrl+Shift+J> after"
+                " leaving this dialog)."
+              ),
+
+              level_name = 'error',
+
+            )
 
             try: subsurf = self.path_repr_subsurf
 
