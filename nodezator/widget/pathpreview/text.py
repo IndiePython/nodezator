@@ -240,7 +240,10 @@ class TextPreview(_BasePreview):
 
         path = Path(self.current_path)
 
-        try: text = path.read_text(encoding='utf-8')
+        try: text = path.read_text(
+                           encoding = 'utf-8',
+                           errors   = 'ignore',
+                         )
 
         except (
           FileNotFoundError,
