@@ -1,0 +1,304 @@
+{
+
+  'window_manager' : {
+    'status': "Status",
+  },
+
+  'file_manager': {
+
+    'caption'            : "File manager",
+    'current'            : "Current",
+    'bookmarks'          : "Bookmarks",
+    'directory_contents' : "Directory contents",
+    'selected'           : "Selected",
+    'submit'             : "Submit",
+    'cancel'             : "Cancel",
+    'pathname'           : "pathname",
+    'no_path_selected'   : "no path(s) selected",
+    'select_path'        : "Select path(s)",
+    'create_new_path'    : "Create new path",
+    'new_path'           : "New path",
+    'dummy_text'         : "dummy text",
+
+    'new_path_form' : {
+
+      'caption'          : "Get new path",
+      'type_path_name'   : "Type name for new path",
+      'create'           : "Create",
+      'return_path'      : "Return path",
+      'cancel'           : "Cancel",
+      'get_new_file'     : "Get new file",
+      'get_new_folder'   : "Get new folder",
+      'type_file_name'   : "Type name for new file",
+      'type_folder_name' : "Type name for new folder",
+
+    },
+
+  },
+
+  'menu' : {
+
+    'file'        : "File",
+    'new'         : "New",
+    'open'        : "Open",
+    'open_recent' : "Open recent",
+    'save'        : "Save",
+    'save_as'     : "Save as...",
+
+    'export_as_image'  : "Export as image",
+    'export_as_python' : "Export as python",
+
+    'quit_app' : "Quit app",
+
+    'edit'             : "Edit",
+    'user_preferences' : "User preferences",
+
+    'help'               : "Help",
+    'show_splash_screen' : "Show splash screen",
+    'license'            : "License",
+    'about'              : "About",
+
+    'graph' : "Graph",
+
+    'change_node_packs_on_file' : (
+      "Change node packs on any file"
+    ),
+
+    'rename_node_packs_on_file' : (
+      "Rename node packs on any file"
+    ),
+
+    'change_category_colors' : "Change category colors",
+    'select_node_packs'      : "Select node packs",
+    'execute_graph'          : "Execute graph",
+
+    'execute_with_custom_stdout' : "Execute with custom stdout",
+
+    'new_text_block'    : "New text block",
+
+    # e.g.: "New creation node"
+    'new_category_node' : "New {} node",
+
+  },
+
+  'splash_screen' : {
+
+    'node_editor' : "Python Node Editor",
+
+    'nodes_from_functions': "Nodes from your own Python functions",
+
+    'powered_by': "Powered by",
+
+    'actions'           : "Actions",
+    'new_file'          : "New file",
+    'open_file'         : "Open file",
+    'open_recent_files' : "Open recent files...",
+
+    'links': "Links",
+
+    'application_website'      : "Application website",
+    'application_website_name' : "nodezator.com",
+    'application_website_url'  : "https://nodezator.com",
+
+    'project_website'      : "Project website",
+    'project_website_name' : 'indiepython.com',
+    'project_website_url'  : 'https://indiepython.com',
+
+    'developer_website'      : "Developer website",
+    'developer_website_name' : "kennedyrichard.com",
+    'developer_website_url'  : "https://kennedyrichard.com",
+
+    'developer_twitter' : "Developer twitter",
+
+    'license_declaration_text' : "Nodezator is dedicated to the public domain using The Unlicense (https://unlicense.org)",
+
+  },
+
+  'graph_manager': {
+
+    'widget_picker': {
+       'caption' : "Widget Picker Form",
+       'cancel': "Cancel",
+       'submit': "Submit",
+    },
+
+  },
+
+  'editing': {
+
+    'objinsert': {
+      'new_text_block' : "New text block",
+    },
+
+    'data': {
+      'no_source_available' : "(no source or docstring available)",
+    },
+
+    'category_colors_form' : {
+
+      'caption' : "Category color picking form",
+      'finish'  : "Finish",
+      'cancel'  : "Cancel",
+
+    },
+
+    'change_node_packs_on_any_file_form' : {
+
+      'form_caption' : "Form to change node packs on {} file",
+      'file_manager_caption' : "Select {} file to change its node packs",
+
+      'choose_filepath'    : "Filepath",
+      'no_filepath_chosen' : "No filepath chosen",
+
+      'node_packs' : "Node packs",
+      'submit'     : "Submit",
+      'cancel'     : "Cancel",
+
+    },
+
+    'rename_node_packs_on_any_file_form' : {
+
+      'form_caption' : "Form to rename node packs on {} file",
+      'file_manager_caption' : "Select {} file to rename its node packs",
+
+      'choose_filepath'    : "Filepath",
+      'no_filepath_chosen' : "No filepath chosen",
+
+      'current_names' : "Current names",
+      'new_names'     : "New names",
+
+      'submit'     : "Submit",
+      'cancel'     : "Cancel",
+
+    },
+
+    'python_export_form': {
+
+      # the app will automatically add '.py' at the end of
+      # the string
+      'default_filename': 'exported_graph',
+
+      'pick_new_path': "Pick a path for new python file",
+
+      'caption'           : "Python exporting form",
+      'new_python_file'   : "New python file",
+      'change'            : "Change",
+      'additional_levels' : "Additional levels (optional)",
+
+      'submit': "Submit",
+      'cancel': "Cancel",
+
+    },
+
+    'image_export_form': {
+
+      # the app will automatically add '.html' at the end of
+      # the string, though the user can change at will to
+      # either .svg or .png as well
+      'default_filename': 'exported_graph',
+
+      'pick_new_path': "Pick a path for new image file",
+
+      'caption'                : "Image exporting form",
+      'new_image'              : "New image",
+      'change'                 : "Change",
+      'background_color'       : "Background color",
+      'restore_default'        : "Restore default (graph background)",
+      'horizontal_and_vertical': "Horizontal and vertical margin",
+      'raster_for_preview' : "Raster for visual media preview",
+
+      'submit': "Submit",
+      'cancel': "Cancel",
+
+      # it's format method will receive dimensions of image
+      # to be exported
+      'final_image_size': "The final image will be {} x {} pixels, plus the margins",
+
+    },
+
+  },
+
+  'user_preferences_form': {
+
+    'caption': "User preferences editing form",
+    'language': "Language",
+    'backup_files': "Backup files",
+    'user_logger_lines': "User logger lines",
+    'custom_stdout_lines': "Custom stdout lines",
+
+    'finish': "Finish",
+    'cancel': "Cancel",
+
+  },
+
+  'colors_picker': {
+
+    'click_to_select': "Click to select/deselect colors",
+    'ok': "Ok",
+    'cancel': "Cancel",
+    'hover_color': "Hover color for info to appear",
+
+  },
+
+  'colors_viewer': {
+
+    'caption': "Colors Viewer",
+    'mode': "Mode",
+    'go_back': "Go back",
+    'patterns': "Patterns",
+    'redraw': "Redraw",
+
+  },
+
+  'colors_editor': {
+
+    'caption': "Colors editor",
+    'current_colors': "Current colors",
+
+    'html_colors': "HTML colors",
+    'pygame_colors': "pygame colors",
+    'import': "Import",
+    'export': "Export",
+
+    'hue_lower': "hue",
+    'hue_title': "Hue",
+
+    'lightness_lower': "lightness",
+    'lightness_title': "Lightness",
+
+    'saturation_lower': "saturation",
+    'saturation_title': "Saturation",
+
+    'value_lower': "value",
+    'value_title': "Value",
+
+    'red_lower': "red",
+    'red_title': "Red",
+
+    'green_lower': "green",
+    'green_title': "Green",
+
+    'blue_lower': "blue",
+    'blue_title': "Blue",
+
+    'alpha_lower': "alpha",
+    'alpha_title': "Alpha",
+
+    'use_alpha': "Use alpha",
+
+    'hex': "Hex",
+    'html_name': "HTML name",
+    'pygame_name': "pygame name",
+
+  },
+
+  'widget_picker' : {
+
+    'caption': "Widget picker form",
+    'chosen_widget': "Chosen widget",
+    'cancel': "Cancel",
+    'submit': "Submit",
+
+  },
+
+}

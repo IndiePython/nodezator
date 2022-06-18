@@ -1,0 +1,188 @@
+<htsl>
+
+<head>
+  <title>Nodezator Manual | Appendix D: Widget presets</title>
+</head>
+
+<body>
+
+<p><a href="index.htsl">Table of contents</a> &gt; Appendix D: Widget presets</p>
+
+<h1>Appendix D: Widget presets</h1>
+
+<p>Here we present a list of strings that can be used as the type hint in parameters to define specific widgets with specific configurations without having to type all the widget definition by yourself.</p>
+
+<table class="table">
+  <thead>
+
+    <tr>
+      <th class="col-4">Preset (string)</th>
+      <th class="col-6">Resulting widget</th>
+    </tr>
+
+  </thead>
+
+  <tbody>
+
+    <tr>
+      <td><i>text</i></td>
+      <td>a text display widget</td>
+    </tr>
+
+    <tr>
+      <td><i>text_string</i></td>
+      <td>same as above</td>
+    </tr>
+
+    <tr>
+      <td><i>python_literal</i></td>
+      <td>a literal entry</td>
+    </tr>
+
+    <tr>
+      <td><i>python_multiline_literal</i></td>
+      <td>a literal display</td>
+    </tr>
+
+    <tr>
+      <td><i>python_literal_string</i></td>
+      <td>a string entry that only allows a string representing a python literal</td>
+    </tr>
+
+    <tr>
+      <td><i>python_literal_text_string</i></td>
+      <td>a text display that only allows a string representing a python literal</td>
+    </tr>
+
+    <tr>
+      <td><i>non_negative_int</i> or <i>non_negative_integer</i> or <i>natural_number</i></td>
+      <td>an intfloat entry that only allows integers &gt;= 0</td>
+    </tr>
+
+    <tr>
+      <td><i>non_negative_int_or_none</i> or <i>non_negative_integer_or_none</i> or <i>natural_number_or_none</i></td>
+      <td>same as above, but allows <i>None</i> as well</td>
+    </tr>
+
+    <tr>
+      <td><i>positive_int</i> or <i>positive_integer</i></td>
+      <td>an intfloat entry that only allows integers &gt;= 1</td>
+    </tr>
+
+    <tr>
+      <td><i>positive_int_or_none</i> or <i>positive_integer_or_none</i></td>
+      <td>same as above, but allows <i>None</i> as well</td>
+    </tr>
+
+    <tr>
+      <td><i>path</i></td>
+      <td>a path preview widget</td>
+    </tr>
+
+    <tr>
+      <td><i>file</i></td>
+      <td>same as above</td>
+    </tr>
+
+    <tr>
+      <td><i>filepath</i></td>
+      <td>same as above</td>
+    </tr>
+
+    <tr>
+      <td><i>directory</i></td>
+      <td>same as above</td>
+    </tr>
+
+    <tr>
+      <td><i>dirpath</i></td>
+      <td>same as above</td>
+    </tr>
+
+    <tr>
+      <td><i>text_path</i></td>
+      <td>a text preview widget</td>
+    </tr>
+
+    <tr>
+      <td><i>text_file_path</i></td>
+      <td>same as above</td>
+    </tr>
+
+    <tr>
+      <td><i>text_filepath</i></td>
+      <td>same as above</td>
+    </tr>
+
+    <tr>
+      <td><i>image_path</i></td>
+      <td>an image preview widget</td>
+    </tr>
+
+    <tr>
+      <td><i>image_file_path</i></td>
+      <td>same as above</td>
+    </tr>
+
+    <tr>
+      <td><i>image_filepath</i></td>
+      <td>same as above</td>
+    </tr>
+
+    <tr>
+      <td><i>font_path</i></td>
+      <td>a font preview widget</td>
+    </tr>
+
+    <tr>
+      <td><i>font_file_path</i></td>
+      <td>same as above</td>
+    </tr>
+
+    <tr>
+      <td><i>font_filepath</i></td>
+      <td>same as above</td>
+    </tr>
+
+    <tr>
+      <td><i>audio_path</i></td>
+      <td>an audio preview widget</td>
+    </tr>
+
+    <tr>
+      <td><i>audio_file_path</i></td>
+      <td>same as above</td>
+    </tr>
+
+    <tr>
+      <td><i>audio_filepath</i></td>
+      <td>same as above</td>
+    </tr>
+
+    <tr>
+      <td><i>video_path</i></td>
+      <td>a video preview widget</td>
+    </tr>
+
+    <tr>
+      <td><i>video_file_path</i></td>
+      <td>same as above</td>
+    </tr>
+
+    <tr>
+      <td><i>video_filepath</i></td>
+      <td>same as above</td>
+    </tr>
+
+  </tbody>
+
+</table>
+
+
+<p>In the future, more presets should be defined to make your life even easier.</p>
+
+<p><a href="index.htsl">Table of contents</a></p>
+
+</body>
+
+</htsl>

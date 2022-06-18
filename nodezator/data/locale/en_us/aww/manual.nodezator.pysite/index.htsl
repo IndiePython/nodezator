@@ -1,0 +1,166 @@
+<htsl>
+
+<head>
+  <title>Nodezator Manual</title>
+</head>
+
+<body>
+
+<h1>Nodezator Manual</h1>
+
+<p>Welcome to the nodezator manual. This guide is meant for Nodezator's users.</p>
+
+<p>You may also want to <a href="https://gallery.nodezator.com">download example nodes</a>, like the ones used in the <a href="https://www.youtube.com/watch?v=GlQJvuU7Z_8">video presenting Nodezator</a>.</p>
+
+
+<h2>Table of contents</h2>
+
+<ol>
+
+  <li><a href="ch01-defining-your-first-node.htsl">Defining your first node</a>
+
+    <ol>
+      <li><a href="ch01-defining-your-first-node.htsl#node-pack">A node pack and its purpose</a></li>
+      <li><a href="ch01-defining-your-first-node.htsl#category-folder">Categories within a node pack</a></li>
+      <li><a href="ch01-defining-your-first-node.htsl#script-folder">The script folder</a></li>
+      <li><a href="ch01-defining-your-first-node.htsl#defining-node">Defining the node</a></li>
+    </ol>
+
+  </li>
+
+  <li><a href="ch02-defining-viewer-nodes.htsl">Defining viewer nodes</a></li>
+
+  <li><a href="ch03-nodes-variable-parameters-custom-outputs.htsl">Nodes with variable parameters and custom outputs</a>
+
+    <ol>
+      <li><a href="ch03-nodes-variable-parameters-custom-outputs.htsl#defining-variable-parameters">Defining variable parameters</a></li>
+      <li><a href="ch03-nodes-variable-parameters-custom-outputs.htsl#naming-output">Naming an output</a></li>
+      <li><a href="ch03-nodes-variable-parameters-custom-outputs.htsl#defining-node-more-output">Defining a node with more than one output</a></li>
+    </ol>
+
+  </li>
+
+  <li><a href="ch04-more-ways-define-nodes.htsl">More ways to define nodes</a>
+
+    <ol>
+      <li><a href="ch04-more-ways-define-nodes.htsl#defining-node-existing-callable">Defining a node by importing an existing callable</a></li>
+      <li><a href="ch04-more-ways-define-nodes.htsl#incompatible-callables-custom-signatures">Incompatible callables and custom signatures</a></li>
+      <li><a href="ch04-more-ways-define-nodes.htsl#call-formatting">Call formatting for improving definitions and solving issues</a></li>
+    </ol>
+
+  </li>
+
+  <li><a href="ch05-loading-nodes.htsl">Loading your nodes</a>
+
+    <ol>
+      <li><a href="ch05-loading-nodes.htsl#creating-file-loading-nodes">Creating a file and loading your nodes</a></li>
+      <li><a href="ch05-loading-nodes.htsl#changing-loaded-nodes">Changing which node packs are loaded</a></li>
+      <li><a href="ch05-loading-nodes.htsl#opening-file-external-source">Opening a file from an external source</a></li>
+    </ol>
+
+  </li>
+
+  <li><a href="ch06-color-coding-inputs-outputs.htsl">Color-coding inputs and outputs</a>
+
+    <ol>
+      <li><a href="ch06-color-coding-inputs-outputs.htsl#examples">Examples</a></li>
+      <li><a href="ch06-color-coding-inputs-outputs.htsl#types-dedicated-colors">Types with dedicated colors</a></li>
+      <li><a href="ch06-color-coding-inputs-outputs.htsl#color-coding-named-socket">Color-coding a named output socket</a></li>
+      <li><a href="ch06-color-coding-inputs-outputs.htsl#color-coding-multiple-sockets">Color-coding multiple output sockets</a></li>
+    </ol>
+
+  </li>
+
+  <li><a href="ch07-basic-way-define-widgets.htsl">Basic way to define widgets</a>
+
+    <ol>
+      <li><a href="ch07-basic-way-define-widgets.htsl#default-holder">The default holder widget</a></li>
+      <li><a href="ch07-basic-way-define-widgets.htsl#check-button">The check button widget</a></li>
+      <li><a href="ch07-basic-way-define-widgets.htsl#string-entry">The string entry widget</a></li>
+      <li><a href="ch07-basic-way-define-widgets.htsl#int-float-entry">The intfloat entry widget</a></li>
+      <li><a href="ch07-basic-way-define-widgets.htsl#brief-comment">Brief comment on type hints</a></li>
+    </ol>
+
+  </li>
+
+  <li><a href="ch08-full-syntax-more-widgets.htsl">Full widget definition syntax and more widgets</a>
+
+    <ol>
+      <li><a href="ch08-full-syntax-more-widgets.htsl#presenting-syntax">Presenting the full syntax</a></li>
+      <li><a href="ch08-full-syntax-more-widgets.htsl#text-display">The text display widget</a></li>
+      <li><a href="ch08-full-syntax-more-widgets.htsl#color-button">the color button widget</a></li>
+      <li><a href="ch08-full-syntax-more-widgets.htsl#revisiting-string-entry">Revisiting the string entry widget</a></li>
+      <li><a href="ch08-full-syntax-more-widgets.htsl#revisiting-int-float-entry">Revisiting the intfloat entry widget</a></li>
+    </ol>
+
+  </li>
+
+  <li><a href="ch09-widget-presets-more-widgets.htsl">Widget definition presets and more widgets</a>
+
+    <ol>
+      <li><a href="ch09-widget-presets-more-widgets.htsl#presenting-presets">Presenting widget definition presets</a></li>
+      <li><a href="ch09-widget-presets-more-widgets.htsl#literal-entry">The literal entry widget</a></li>
+      <li><a href="ch09-widget-presets-more-widgets.htsl#literal-display">The literal display widget</a></li>
+      <li><a href="ch09-widget-presets-more-widgets.htsl#option-menu">The option menu widget</a></li>
+      <li><a href="ch09-widget-presets-more-widgets.htsl#option-tray">The option tray widget</a></li>
+      <li><a href="ch09-widget-presets-more-widgets.htsl#sorting-button">The sorting button widget</a></li>
+    </ol>
+
+  </li>
+
+  <li><a href="ch10-preview-widgets.htsl">Preview widgets</a>
+
+    <ol>
+      <li><a href="ch10-preview-widgets.htsl#what-are-preview-widgets">What are preview widget?</a></li>
+      <li><a href="ch10-preview-widgets.htsl#path-preview">The path preview widget</a></li>
+      <li><a href="ch10-preview-widgets.htsl#text-preview">The text preview widget</a></li>
+      <li><a href="ch10-preview-widgets.htsl#audio-preview">The audio preview widget</a></li>
+      <li><a href="ch10-preview-widgets.htsl#image-preview">The image preview widget</a></li>
+      <li><a href="ch10-preview-widgets.htsl#video-preview">The video preview widget</a></li>
+      <li><a href="ch10-preview-widgets.htsl#font-preview">The font preview widget</a></li>
+    </ol>
+
+  </li>
+
+  <li><a href="ch11-other-objects.htsl">Other objects</a>
+
+    <ol>
+      <li><a href="ch11-other-objects.htsl#text-blocks">Text blocks</a></li>
+      <li><a href="ch11-other-objects.htsl#app-defined-nodes">App-defined nodes</a></li>
+      <li><a href="ch11-other-objects.htsl#operation-nodes">Operation nodes</a></li>
+      <li><a href="ch11-other-objects.htsl#builtin-nodes">Built-in nodes</a></li>
+      <li><a href="ch11-other-objects.htsl#standard-library-nodes">Standard library nodes</a></li>
+      <li><a href="ch11-other-objects.htsl#snippet-nodes">Snippet nodes</a></li>
+      <li><a href="ch11-other-objects.htsl#data-nodes">Data nodes</a></li>
+      <li><a href="ch11-other-objects.htsl#redirect-nodes">Redirect nodes</a></li>
+      <li><a href="ch11-other-objects.htsl#relationship-data-redirect-nodes">Relationship between data nodes and redirect nodes</a></li>
+    </ol>
+
+  </li>
+
+  <li>Different ways of using Nodezator (Soon)
+
+    <ol>
+      <li>As a standalone application</li>
+      <li>Integrated with your regular Python coding</li>
+      <li>To create parametric functions</li>
+      <li>To create parametric data</li>
+      <li>As a no-code or low-code tool</li>
+    </ol>
+
+  </li>
+
+</ol>
+
+<ul>
+
+  <li><a href="appendix-a-color-coded-annotations.htsl">Appendix A: Color-coded annotations</a></li>
+  <li><a href="appendix-b-intfloat-words.htsl">Appendix B: Words available inside intfloat entries</a></li>
+  <li><a href="appendix-c-widget-configurations.htsl">Appendix C: All widget configurations</a></li>
+  <li><a href="appendix-d-widget-presets.htsl">Appendix D: Widget presets</a></li>
+
+</ul>
+
+</body>
+
+</htsl>

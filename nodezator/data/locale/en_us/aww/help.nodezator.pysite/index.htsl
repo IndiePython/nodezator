@@ -1,0 +1,22 @@
+<htsl>
+
+  <head>
+    <title>Nodezator Help</title>
+  </head>
+
+  <body>
+
+    <h1>Nodezator help</h1>
+
+    <p>Welcome to the help guide.</p>
+
+    <p>Here are some useful pages:</p>
+
+    <ul>
+      <li><a href="general-controls.htsl">General Controls</a></li>
+      <li><a href="text-editor.htsl">Text editor controls</a></li>
+    </ul>
+
+  </body>
+
+</htsl>

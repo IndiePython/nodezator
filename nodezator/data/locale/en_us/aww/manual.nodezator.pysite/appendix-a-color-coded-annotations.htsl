@@ -1,0 +1,53 @@
+<htsl>
+
+<head>
+  <title>Nodezator Manual | Appendix A: Color-coded annotations</title>
+</head>
+
+<body>
+
+<p><a href="index.htsl">Table of contents</a> &gt; Appendix A: Color-coded annotations</p>
+
+<h1>Appendix A: Color-coded annotations</h1>
+
+<p>Below we list all types that have a dedicated color for the socket.</p>
+
+<ul>
+
+  <li><i>str</i>;</li>
+  <li><i>bool</i>;</li>
+  <li><i>dict</i>;</li>
+  <li><i>list;</i></li>
+  <li><i>tuple;</i></li>
+  <li><i>collections.abc.Iterable;</i></li>
+  <li><i>collections.abc.Iterator;</i></li>
+
+  <li>all these number-related types and combinations have the same dedicated color:
+
+    <ul>
+
+      <li><i>int</i>;</li>
+      <li><i>float</i>;</li>
+      <li>(int, float) or (float, int);</li>
+      <li>(int, None) or (None, int);</li>
+      <li>(int, type(None)) or (type(None), int);</li>
+      <li>(float, None) or (None, float);</li>
+      <li>(float, type(None)) or (type(None), float);</li>
+      <li>(int, float, None) or any combination; </li>
+      <li>(int, float, type(None)) or any combination; </li>
+
+    </ul>
+
+  </li>
+  <li>sockets without a type hint also have a color associated with them (in the default theme the color is grey);</li>
+  <li>all other type hints that don't belong to one of the types/combinations mentioned above are associated with the same color (in the default theme the is color is light pink);</li>
+
+</ul>
+
+<p>Dedicated colors for other types like <i>set</i> and <i>frozenset</i> might be added in the future.</p>
+
+<p><a href="index.htsl">Table of contents</a></p>
+
+</body>
+
+</htsl>

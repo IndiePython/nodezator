@@ -1,0 +1,221 @@
+<htsl>
+
+<head>
+  <title>Nodezator Manual | Nodes with variable parameters and custom outputs</title>
+</head>
+
+<body>
+
+<p><a href="index.htsl">Table of contents</a> &gt; Nodes with variable parameters and custom outputs</p>
+
+<h1>Nodes with variable parameters and custom outputs</h1>
+
+<p>In this chapter we present ways by which you can define nodes with variable parameters and/or custom outputs. Just like we said in the previous chapters, define your nodes in your own preferred text editor or IDE and remember to organize them into categories inside a node pack.</p>
+
+
+<h2 id="defining-variable-parameters">Defining variable parameters</h2>
+
+<p>Python allows callables to receive multiple arguments in some special parameters, called variable parameters. Such parameters can be <b>positional-variable</b>, when they can receive multiple positional arguments, or <b>keyword-variable</b>, when they can receive multiple keyword arguments.</p>
+
+<p>Positional-variable parameters are defined by placing an asterisk character ('*') at the beginning of the parameter's name. Keyword-variable parameters use two asterisks instead ('**').</p>
+
+<python>
+### node with variable arguments
+
+### function definition
+
+def execute_and_return(a_callable, *args, **kwargs):
+    return a_callable(*args, **kwargs)
+
+### alias it as the main callable
+main_callable = execute_and_return
+</python>
+
+<img src="images/ch03_img00.png" alt="Node generated from the function" />
+
+<p>Instead of the usual input socket, a variable parameter has a hollow socket called <i>placeholder socket</i>. When an output from another node is linked to this socket by clicking and dragging a connection from that output socket it creates a new input socket automatically where the placeholder socket was and links that output to the new socket, moving the placeholder socket below it. That new input socket represents a new argument for the variable parameter.</p>
+
+<p>Another way to create new arguments for the variable parameters is to click the plus sign ('+') beside the placeholder socket, allowing the user to pick a widget with a value to represent a new argument.</p>
+
+<p>Even when the new argument was created from connecting an output socket to the placeholder socket, a widget can still be attached to the argument by clicking the plus sign beside the input socket.</p>
+
+<p>Input sockets representing arguments from a variable parameter automatically disappear when they have no source of data, that is, if they have no widget or no connection to an outer output socket.</p>
+
+<p>Beside the input sockets from variable parameters there are arrows that can be used to reorder them. For positional-variable parameters, this order is the same in which the arguments are passed to the callable. For keyword-variable parameters the order is not guaranteed, though, as it depends on the internals of the Python version used.</p>
+
+<p>Last but not least, keyword-variable parameters have 02 additional different from positional-variable parameters. First, each argument have an <b>icon key</b> which has no functional purpose but helps as a visual cue to separate the arguments visually and differentiate them from positional-variable arguments.</p>
+
+<p>Second, each argument from a keyword-variable parameter has also a <b>string entry widget</b> attached to it which is used to edit and hold the keyword associated with the argument.</p>
+
+
+<h2 id="naming-output">Naming an output</h2>
+
+<python>
+### this node returns distance between 02 points
+
+### function definition
+
+def distance_from_a_to_b(point_a, point_b):
+
+    ## calculate distance in both axes
+
+    x_distance, y_distance = (
+
+      value_a - value_b
+      for value_a, value_b in zip(point_a, point_b)
+
+    )
+
+    ## next, the sum of the squared distances
+    sum_of_squares = (x_distance) ** 2 + (y_distance) ** 2
+
+    ## then the Euclidian distance, which is equivalent
+    ## to the square root of the sum we just calculated;
+    ##
+    ## note that "number ** .5" equals the square root
+    ## of the number
+    distance = (sum_of_squares) ** .5
+
+    ## finally return the distance
+    return distance
+
+### alias it as the main callable
+main_callable = distance_from_a_to_b
+</python>
+
+<p>Here's the resulting node:</p>
+
+<img src="images/ch03_img01.png" alt="Node generated from the function" />
+
+<p>This is a pretty simple and straightforward node. However, it's output name is "output", which isn't very descriptive. Wouldn't it be helpful to be able to rename such ouput to express what the return value really is?</p>
+
+<p>This is possible and a single change is needed: <b>define a return annotation describing the name for the input</b>. Here's how it is done:</p>
+
+<python>
+### the output of this node has a custom name
+
+### function definition;
+###
+### here's where the only needed change is applied; note
+### that the return annotation is a list with a single
+### item: a dict describing the name of the output
+
+def distance_from_a_to_b(point_a, point_b) -&gt; [
+
+      {'name': 'euclidean_distance'},
+
+    ]:
+
+    ## calculate distance in both axes
+
+    x_distance, y_distance = (
+
+      value_a - value_b
+      for value_a, value_b in zip(point_a, point_b)
+
+    )
+
+    ## next, the sum of the squared distances
+    sum_of_squares = (x_distance) ** 2 + (y_distance) ** 2
+
+    ## then the Euclidian distance, which is equivalent
+    ## to the square root of the sum we just calculated;
+    ##
+    ## note that "number ** .5" equals the square root
+    ## of the number
+    distance = (sum_of_squares) ** .5
+
+    ## finally return the distance
+    return distance
+
+### alias it as the main callable
+main_callable = distance_from_a_to_b
+</python>
+
+<p>Now the function properly names its output, the <a href="https://en.wikipedia.org/wiki/Euclidean_distance">Euclidean distance</a>. Here's what our improved node looks like:</p>
+
+<img src="images/ch03_img02.png" alt="Node generated from the function" />
+
+<h2 id="defining-node-more-output">Defining a node with more than 01 output</h2>
+
+<p>The node presented before produces lots of relevant data besides the returned Euclidean distance. Isn't it a pity, that we have no access to the <b>x_distance</b> and <b>y_distance</b>? That is, the node only has 01 output socket which contains the returned distance.</p>
+
+<p>Fortunately for us, it is both possible and easy to define a node with more than 01 output. In fact, this is a perfect example of when it would be useful.</p>
+
+<p>Only 02 small changes are needed:</p>
+
+<ol>
+
+  <li>list the different outputs in the return annotation of the function;</li>
+  <li>instead of returning a single value, return a dictionary containing each output listed in the return annotation.</li>
+
+</ol>
+
+<p>Here's how we'd do it:</p>
+
+<python>
+### this node returns many kinds of distance between 02
+### points
+
+### function definition;
+###
+### note that the return annotation is a list containing
+### dictionaries; each dictionary defines the name of an
+### output (this is similar to what we do to rename the
+### output, but in this case we provide a dictionary for
+### each output);
+
+def distance_from_a_to_b(point_a, point_b) -&gt; [
+
+      {'name': 'distance_in_x_axis'},
+      {'name': 'distance_in_y_axis'},
+      {'name': 'euclidean_distance'},
+
+    ]:
+
+    ## calculate distance in both axes
+
+    x_distance, y_distance = (
+
+      value_a - value_b
+      for value_a, value_b in zip(point_a, point_b)
+
+    )
+
+    ## next, the sum of the squared distances
+    sum_of_squares = (x_distance) ** 2 + (y_distance) ** 2
+
+    ## then the distance, which is equivalent to the
+    ## square root of the sum we just calculated;
+    ##
+    ## note that "number ** .5" equals the square root
+    ## of the number
+    distance = (sum_of_squares) ** .5
+
+    ## finally return the distances inside a dict using
+    ## the names defined in the return annotation; the
+    ## order isn't relevant because the node uses the
+    ## order of the items in the list from the return
+    ## annotation;
+
+    return {
+
+      'distance_in_x_axis': x_distance,
+      'distance_in_y_axis': y_distance,
+      'euclidean_distance': distance,
+
+    }
+
+### alias it as the main callable
+main_callable = distance_from_a_to_b
+</python>
+
+<p>And here's the resulting node:</p>
+
+<img src="images/ch03_img03.png" alt="Node generated from the function" />
+
+<p><a href="ch02-defining-viewer-nodes.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch04-more-ways-define-nodes.htsl">Next chapter</a></p>
+
+</body>
+
+</htsl>

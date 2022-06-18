@@ -1,0 +1,317 @@
+<htsl>
+
+<head>
+  <title>General Controls</title>
+</head>
+
+<body>
+
+<h1>General Controls</h1>
+
+<p>These are the available general controls. More options to come (including ability to configure keys, undo/redo operations and more). Go to <a href="https://nodezator.com">nodezator.com</a> for more information, tutorials, roadmap and example code/files.</p>
+
+
+<h2>File-related</h2>
+
+<table>
+
+  <thead>
+
+    <tr>
+      <th class="col-3">Control</th>
+      <th class="col-5">Result</th>
+    </tr>
+
+  </thead>
+
+  <tbody>
+
+    <tr>
+      <td><b>&lt;Ctrl+o&gt;</b></td>
+      <td>Displays file manager to open file</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Ctrl+s&gt;</b></td>
+      <td>Saves file</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Ctrl+Shift+s&gt;</b></td>
+      <td>"Save as..." functionality; that is, creates a new .ndz file from the current one</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Ctrl+e&gt;</b></td>
+      <td>Brings up form to export node layout as image</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Ctrl+p&gt;</b></td>
+      <td>Brings up form to export node layout as python code</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Ctrl+w&gt;</b></td>
+      <td>Quits application</td>
+    </tr>
+
+  </tbody>
+
+</table>
+
+<h2>Navigation</h2>
+
+<table>
+
+  <thead>
+
+    <tr>
+      <th class="col-3">Control</th>
+      <th class="col-5">Result</th>
+    </tr>
+
+  </thead>
+
+  <tbody>
+
+    <tr>
+      <td><b>&lt;w&gt;</b>, <b>&lt;a&gt;</b>, <b>&lt;s&gt;</b>, <b>&lt;d&gt;</b></td>
+      <td>Moves around on canvas</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Home&gt;</b></td>
+      <td>Moves to origin</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Shift+digit&gt;</b>, where digit is any digit from 1 to 9;</td>
+      <td>Moves to corner of node layout; each digit represents a corner analogous to the corner they occupy in the keyboard's numpad: 5 on the center, 1 on the bottomleft, 2 on the midbottom and so on.</td>
+    </tr>
+
+  </tbody>
+
+</table>
+
+
+<h2>Mouse-related</h2>
+
+<table>
+
+  <thead>
+
+    <tr>
+      <th class="col-3">Control</th>
+      <th class="col-5">Result</th>
+    </tr>
+
+  </thead>
+
+  <tbody>
+
+    <tr>
+      <td><b>Click + drag</b> from socket</td>
+      <td>Allows creation of new connection.</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Ctrl&gt;</b> + <b>Click + drag</b> on canvas</td>
+      <td>Draws line used to cut connections between sockets.</td>
+    </tr>
+
+    <tr>
+      <td><b>Right-click</b> empty space on screen</td>
+      <td>Brings the popup menu "Add node".</td>
+    </tr>
+
+  </tbody>
+
+</table>
+
+
+<h2>Function buttons</h2>
+
+<table>
+
+  <thead>
+
+    <tr>
+      <th class="col-3">Control</th>
+      <th class="col-5">Result</th>
+    </tr>
+
+  </thead>
+
+  <tbody>
+
+    <tr>
+      <td><b>&lt;F1&gt;</b></td>
+      <td>In some contexts it will bring help content related to the task at hand. For instance, pressing it while on the text editor will bring a help page with information about usage of the text editor.</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;F5&gt;</b></td>
+      <td>Reloads file</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;F12&gt;</b></td>
+      <td>Executes the node layout</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Shift + F12&gt;</b></td>
+      <td>Also executes the node layout, but all content printed is displayed in the text viewer after executing.</td>
+    </tr>
+
+  </tbody>
+
+</table>
+
+
+<h2>Node-related</h2>
+
+<table>
+
+  <thead>
+
+    <tr>
+      <th class="col-3">Control</th>
+      <th class="col-5">Result</th>
+    </tr>
+
+  </thead>
+
+  <tbody>
+
+    <tr>
+      <td><b>&lt;i&gt;</b></td>
+      <td>Shows source of __main__.py file used to define the user-defined node in active selection</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Shift+i&gt;</b></td>
+      <td>Shows source of callable of the user-defined node in active selection</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Ctrl+a&gt;</b></td>
+      <td>Selects all objects</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Ctrl+Shift+a&gt;</b></td>
+      <td>Deselects all objects</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Delete&gt;</b></td>
+      <td>Deletes selected objects</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Ctrl+d&gt;</b></td>
+      <td>Duplicates selected objects and allows you to move them</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Escape&gt;</b> key or <b>Right-click</b> while moving duplicates just after duplication</td>
+      <td>Cancels the duplication, deleting the duplicates</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Shift+#&gt;</b> key</td>
+      <td>Comment/uncomment subgraph of selected node(s).</td>
+    </tr>
+
+  </tbody>
+
+</table>
+
+
+<h2>Moving objects</h2>
+
+<table>
+
+  <thead>
+
+    <tr>
+      <th class="col-3">Control</th>
+      <th class="col-5">Result</th>
+    </tr>
+
+  </thead>
+
+  <tbody>
+
+    <tr>
+      <td><b>&lt;g&gt;</b></td>
+      <td>Moves selected objects</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;x&gt;</b> while moving</td>
+      <td>Toggles constraining movement to x axis</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;y&gt;</b> while moving</td>
+      <td>Toggles constraining movement to Y axis</td>
+    </tr>
+
+    <tr>
+      <td>Holding <b>&lt;Shift&gt;</b> while moving</td>
+      <td>Moves slower (preciser movement)</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Escape&gt;</b> or <b>Right-click</b> while moving</td>
+      <td>Cancels moving</td>
+    </tr>
+
+    <tr>
+      <td><b>Click</b> while moving</td>
+      <td>Confirms and finishes moving</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;w&gt;</b>, <b>&lt;a&gt;</b>, <b>&lt;s&gt;</b>, <b>&lt;d&gt;</b> while moving</td>
+      <td>Moves around on canvas</td>
+    </tr>
+
+  </tbody>
+
+</table>
+
+<h2>Other controls</h2>
+
+<table>
+
+  <thead>
+
+    <tr>
+      <th class="col-3">Control</th>
+      <th class="col-5">Result</th>
+    </tr>
+
+  </thead>
+
+  <tbody>
+
+    <tr>
+      <td><b>&lt;Ctrl+j&gt;</b></td>
+      <td>Displays the custom standard output contents in the text viewer</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Ctrl+Shift+j&gt;</b></td>
+      <td>Displays the user log contents in the text viewer</td>
+    </tr>
+
+  </tbody>
+
+</table>
+</body>
+
+</htsl>

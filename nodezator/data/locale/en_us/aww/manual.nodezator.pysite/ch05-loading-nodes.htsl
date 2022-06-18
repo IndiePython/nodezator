@@ -1,0 +1,50 @@
+<htsl>
+
+<head>
+  <title>Nodezator Manual | Loading your nodes</title>
+</head>
+
+<body>
+
+<p><a href="index.htsl">Table of contents</a> &gt; Loading your nodes</p>
+
+<h1>Loading your nodes</h1>
+
+<p>A common task when editing node layouts in Nodezator is to <b>load your node pack(s)</b> so that you can instantiate your nodes. You only need to do this <b>once</b>, since the node packs used in the file are saved in its data. The next time you open the file the node pack(s) you loaded before will be already available.</p>
+
+<p>Here we'll present different scenarios where you'll be loading node packs into your Nodezator files. By the way, the file extension for Nodezator files is <b>.ndz</b>. For instance, <i>my_node_layout.ndz</i>.</p>
+
+
+<h2 id="creating-file-loading-nodes">Creating a file and loading your nodes</h2>
+
+<p>To create a file, just click the <b>New file</b> action in the splash screen or click the menubar command <b>File &gt; New</b>. The <b>&lt;Ctrl+N&gt;</b> keyboard shortcut also access the feature. You'll be presented with Nodezator's file manager. Just browse to the location where you want to create your file and write the name of the file in the entry at the bottom of the file manager with a <b>.ndz</b> extension. Then, finally click the <b>Submit</b> button.</p>
+
+<p>The new file will be loaded immediately on Nodezator. Right-clicking the screen will bring the popup menu into view, where you'll be able to instantiate nodes. However, only app-defined nodes will be available, that is, the ones already included in the Nodezator. This is so because you didn't load any node packs yet.</p>
+
+<p>To load node packs, just click the menubar command <b>Graph &gt; Select node packs</b>. Again, you will be dropped into Nodezator's file manager. Next, navigate to the location where you store your node packs and select the one(s) you want. Then, again, just click the file manager's <b>Submit</b> button. Now all the nodes should be loaded. You can test this by right-clicking the screen and checking whether their categories are now visible in the popup menu that appears.</p>
+
+<h2 id="changing-loaded-nodes">Changing which node packs are loaded</h2>
+
+<p>The menubar command <b>Graph &gt; Select node packs</b> can also be used to load more node packs to your file even after you already loaded other ones previously. Just make sure to keep all node packs selected, both the current and the new one(s), so that the new ones are included and the current ones are kept.</p>
+
+<p>If you do not keep the current ones selected, they will be unloaded from the file, that is, they will not appear in the popup menu anymore. This is actually how you unload node packs, which might actually be what you want.</p>
+
+<p>When unloading a node pack, however, if there are nodes from that pack currently instantiated in your node layout, the unloading will cease and won't work unless you delete those nodes and try again.</p>
+
+<h2 id="opening-file-external-source">Opening a file from an external source</h2>
+
+<p>If you picked a .ndz file from someone else, remember you'll also need the <b>node pack(s) used in the file</b> to be able to open it.</p>
+
+<p>But there's a catch: remember we told you that information about loaded node pack(s) is saved on the file data, so the next time you open a file it automatically loads the pack(s)? However, when opening that .ndz file which you picked from someone else for the first time, path(s) to the node pack(s) stored in the file probably won't work, because they'll be on a different location.</p>
+
+<p>For instance, let's say your friend Jessie sent you a .ndz file and a node pack named <i>jessie_nodes</i> containing the nodes used. When you open the file, inside its data the node pack path will point to <b>C:\Users\Jessie\node_packs\jessie_nodes</b>, even though in your computer, the node pack is actually in <b>C:\Users\Jackie\node_packs\jessie_nodes</b>.</p>
+
+<p>Fortunately, the solution is simple: just open the file in Nodezator anyway and, once the app sees that there is no <b>C:\Users\Jessie\node_packs\jessie_nodes</b>, it will notify you with a dialog explaining that the path to the node pack wasn't found (it will show you the missing path) and present you with two options.</p>
+
+<p>You'll be able to either select new node packs or cancel loading the file. Choose the option to select new node packs and the file manager will be shown to you. From there you just need to browse to the location where the needed node pack is and select it by clicking on it and then pressing the <b>Submit</b> button. Now the .ndz file should load without problems from now on.</p>
+
+<p><a href="ch04-more-ways-define-nodes.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch06-color-coding-inputs-outputs.htsl">Next chapter</a></p>
+
+</body>
+
+</htsl>

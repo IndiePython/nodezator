@@ -1,0 +1,68 @@
+{
+
+  'window_manager': {
+    'position': "Posição",
+  },
+
+  'menu' : {
+
+    'file'        : "Arquivo",
+    'new'         : "Novo",
+    'open'        : "Abrir",
+    'open_recent' : "Abrir recente",
+    'save'        : "Salvar",
+    'save_as'     : "Salvar como...",
+    'export_as_image'  : "Exportar como imagem",
+    'export_as_python' : "Exportar como python",
+    'quit_app' : "Fechar app",
+
+    'edit'             : "Editar",
+    'user_preferences' : "Preferências",
+
+    'help'               : "Ajuda",
+    'show_splash_screen' : "Mostrar tela de abertura",
+    'license'            : "Licença",
+    'about'              : "Sobre",
+
+    'graph'                  : "Grafo",
+    'change_category_colors' : "Mudar cores das categorias",
+    'execute_graph'          : "Executar grafo",
+
+    'new_text_block'    : "Novo bloco de texto",
+    'new_category_node' : "Novo nó {}",
+
+  },
+
+  'splash_screen' : {
+
+    'node_editor': "Editor de nós em Python",
+    'nodes_from_functions': "Suas funções em Python transformadas em nós",
+    'release': "Lançamento",
+
+    'powered_by': "Movido a",
+
+    'actions': "Ações",
+    'new_file': "Novo arquivo",
+    'open_file' : "Abrir arquivo",
+    'open_recent_files' : "Abrir arquivos recentes...",
+
+    'links': "Links",
+
+    'application_website' : "Sítio do app",
+    'application_website_name' : "nodezator.com",
+    'application_website_url' : "https://nodezator.com",
+
+    'project_website' : "Sítio do projeto",
+    'project_website_name' : 'br.indiepython.com',
+    'project_website_url'  : 'https://br.indiepython.com',
+
+    'developer_website' : "Sítio do desenvolvedor",
+    'developer_website_name' : "br.kennedyrichard.com",
+    'developer_website_url' : "https://br.kennedyrichard.com",
+
+    'developer_twitter': "Twitter do desenvolvedor",
+
+  },
+
+
+}

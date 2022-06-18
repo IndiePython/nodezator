@@ -1,0 +1,177 @@
+<htsl>
+
+<head>
+  <title>Nodezator Manual | Appendix B: Words available inside intfloat entries</title>
+</head>
+
+<body>
+
+<p><a href="index.htsl">Table of contents</a> &gt; Appendix B: Words available inside intfloat entries</p>
+
+<h1>Appendix B: Words available inside intfloat entries</h1>
+
+<p>This appendix presents the words you can use inside intfloat entries, that is, the values, functions and keywords that can be used.</p>
+
+<p>Even though some of these may not make sense to be included in calculations by themselves, remember that they can be combined to produce useful expressions.</p>
+
+<p><b>Built-in functions</b>:</p>
+
+<ul>
+
+  <li><a href="https://docs.python.org/3/library/functions.html#abs">abs</a>;</li>
+  <li><a href="https://docs.python.org/3/library/functions.html#all">all</a>;</li>
+  <li><a href="https://docs.python.org/3/library/functions.html#any">any</a>;</li>
+  <li><a href="https://docs.python.org/3/library/functions.html#bool">bool</a>;</li>
+  <li><a href="https://docs.python.org/3/library/functions.html#divmod">divmod</a>;</li>
+  <li><a href="https://docs.python.org/3/library/functions.html#float">float</a>;</li>
+  <li><a href="https://docs.python.org/3/library/functions.html#int">int</a>;</li>
+  <li><a href="https://docs.python.org/3/library/functions.html#map">map</a>;</li>
+  <li><a href="https://docs.python.org/3/library/functions.html#max">max</a>;</li>
+  <li><a href="https://docs.python.org/3/library/functions.html#min">min</a>;</li>
+  <li><a href="https://docs.python.org/3/library/functions.html#pow">pow</a>;</li>
+  <li><a href="https://docs.python.org/3/library/functions.html#func-range">range</a>;</li>
+  <li><a href="https://docs.python.org/3/library/functions.html#round">round</a>;</li>
+  <li><a href="https://docs.python.org/3/library/functions.html#slice">slice</a>;</li>
+  <li><a href="https://docs.python.org/3/library/functions.html#sum">sum</a>;</li>
+  <li><a href="https://docs.python.org/3/library/functions.html#zip">zip</a>.</li>
+
+</ul>
+
+<p><b>Keywords</b>:</p>
+
+<ul>
+
+  <li><i>and</i>;</li>
+  <li><i>else</i>;</li>
+  <li><i>for</i>;</li>
+  <li><i>if</i>;</li>
+  <li><i>in</i>;</li>
+  <li><i>is</i>;</li>
+  <li><i>not</i>;</li>
+  <li><i>or</i>.</li>
+
+</ul>
+
+<p><b>Values</b>:</p>
+
+<ul>
+  <li><i>False</i>;</li>
+  <li><i>True</i>;</li>
+</ul>
+
+<p><b>Functions and values</b> from the <a href="https://docs.python.org/3/library/math.html">math</a> standard library module:</p>
+
+<ul>
+
+  <li><a href="https://docs.python.org/3/library/math.html#math.acos">acos</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.acosh">acosh</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.asin">asin</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.asinh">asinh</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.atan">atan</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.atanh">atanh</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.atan2">atan2</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.cos">cos</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.ceil">ceil</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.degrees">degrees</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.hypot">hypot</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.exp">exp</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.expm1">expm1</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.e">e</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.erf">erf</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.erfc">erfc</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.fabs">fabs</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.factorial">factorial</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.floor">floor</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.fmod">fmod</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.frexp">frexp</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.fsum">fsum</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.gamma">gamma</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.gcd">gcd</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.inf">inf</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.lgamma">lgamma</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.ldexp">ldexp</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.log">log</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.log1p">log1p</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.log2">log2</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.log10">log10</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.modf">modf</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.nan">nan</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.pi">pi</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.pow">pow</a> as <i>math_pow</i> (so it doesn't override the built-in <i>pow</i>);</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.radians">radians</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.sin">sin</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.sinh">sinh</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.sqrt">sqrt</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.tan">tan</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.tanh">tanh</a>;</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.trunc">trunc</a>;</li>
+
+  <li><a href="https://docs.python.org/3/library/math.html#math.tau">tau</a> (in Python 3.6+);</li>
+
+  <li><a href="https://docs.python.org/3/library/math.html#math.remainder">remainder</a> (in Python 3.7+);</li>
+
+  <li><a href="https://docs.python.org/3/library/math.html#math.comb">comb</a> (in Python 3.8+);</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.dist">dist</a> (in Python 3.8+);</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.isqrt">isqrt</a> (in Python 3.8+);</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.perm">perm</a> (in Python 3.8+);</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.prod">prod</a> (in Python 3.8+);</li>
+
+  <li><a href="https://docs.python.org/3/library/math.html#math.lcm">lcm</a> (in Python 3.9+);</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.nextafter">nextafter</a> (in Python 3.9+);</li>
+  <li><a href="https://docs.python.org/3/library/math.html#math.ulp">ulp</a> (in Python 3.9+);</li>
+
+</ul>
+
+<p><b>Functions</b> from the <a href="https://docs.python.org/3/library/random.html">random</a> standard library module:</p>
+
+<ul>
+
+  <li><a href="https://docs.python.org/3/library/random.html#random.betavariate">betavariate</a>;</li>
+  <li><a href="https://docs.python.org/3/library/random.html#random.choice">choice</a>;</li>
+  <li><a href="https://docs.python.org/3/library/random.html#random.expovariate">expovariate</a>;</li>
+  <li><a href="https://docs.python.org/3/library/random.html#random.gammavariate">gammavariate</a>;</li>
+  <li><a href="https://docs.python.org/3/library/random.html#random.gauss">gauss</a>;</li>
+  <li><a href="https://docs.python.org/3/library/random.html#random.getrandbits">getrandbits</a>;</li>
+  <li><a href="https://docs.python.org/3/library/random.html#random.lognormvariate">lognormvariate</a>;</li>
+  <li><a href="https://docs.python.org/3/library/random.html#random.randint">randint</a>;</li>
+  <li><a href="https://docs.python.org/3/library/random.html#random.random">random</a>;</li>
+  <li><a href="https://docs.python.org/3/library/random.html#random.randrange">randrange</a>;</li>
+  <li><a href="https://docs.python.org/3/library/random.html#random.normalvariate">normalvariate</a>;</li>
+  <li><a href="https://docs.python.org/3/library/random.html#random.paretovariate">paretovariate</a>;</li>
+  <li><a href="https://docs.python.org/3/library/random.html#random.triangular">triangular</a>;</li>
+  <li><a href="https://docs.python.org/3/library/random.html#random.uniform">uniform</a>;</li>
+  <li><a href="https://docs.python.org/3/library/random.html#random.vonmisesvariate">vonmisesvariate</a>;</li>
+  <li><a href="https://docs.python.org/3/library/random.html#random.weibullvariate">weibullvariate</a>;</li>
+
+</ul>
+<p><b>Functions</b> from the <a href="https://docs.python.org/3/library/statistics.html">statistics</a> standard library module:</p>
+<ul>
+
+  <li><a href="https://docs.python.org/3/library/statistics.html#statistics.mean">mean</a>;</li>
+  <li><a href="https://docs.python.org/3/library/statistics.html#statistics.median">median</a>;</li>
+  <li><a href="https://docs.python.org/3/library/statistics.html#statistics.median_low">median_low</a>;</li>
+  <li><a href="https://docs.python.org/3/library/statistics.html#statistics.median_high">median_high</a>;</li>
+  <li><a href="https://docs.python.org/3/library/statistics.html#statistics.median_grouped">median_grouped</a>;</li>
+  <li><a href="https://docs.python.org/3/library/statistics.html#statistics.mode">mode</a>;</li>
+  <li><a href="https://docs.python.org/3/library/statistics.html#statistics.stdev">stdev</a>;</li>
+  <li><a href="https://docs.python.org/3/library/statistics.html#statistics.variance">variance</a>;</li>
+  <li><a href="https://docs.python.org/3/library/statistics.html#statistics.pstdev">pstdev</a>;</li>
+  <li><a href="https://docs.python.org/3/library/statistics.html#statistics.pvariance">pvariance</a>;</li>
+
+  <li><a href="https://docs.python.org/3/library/statistics.html#statistics.harmonic_mean">harmonic_mean</a> (in Python 3.6+);</li>
+  <li><a href="https://docs.python.org/3/library/statistics.html#statistics.fmean">fmean</a> (in Python 3.8+);</li>
+  <li><a href="https://docs.python.org/3/library/statistics.html#statistics.geometric_mean">geometric_mean</a> (in Python 3.8+);</li>
+  <li><a href="https://docs.python.org/3/library/statistics.html#statistics.multimode">multimode</a> (in Python 3.8+);</li>
+  <li><a href="https://docs.python.org/3/library/statistics.html#statistics.quantiles">quantiles</a> (in Python 3.8+);</li>
+
+  <li><a href="https://docs.python.org/3/library/statistics.html#statistics.covariance">covariance</a> (in Python 3.10+);</li>
+  <li><a href="https://docs.python.org/3/library/statistics.html#statistics.correlation">correlation</a> (in Python 3.10+);</li>
+  <li><a href="https://docs.python.org/3/library/statistics.html#statistics.linear_regression">linear_regression</a> (in Python 3.10+);</li>
+
+</ul>
+
+<p><a href="index.htsl">Table of contents</a></p>
+
+</body>
+
+</htsl>

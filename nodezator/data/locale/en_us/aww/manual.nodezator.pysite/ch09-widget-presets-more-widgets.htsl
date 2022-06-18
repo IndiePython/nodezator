@@ -1,0 +1,444 @@
+<htsl>
+
+<head>
+  <title>Nodezator Manual | Widget definition presets and more widgets</title>
+</head>
+
+<body>
+
+<p><a href="index.htsl">Table of contents</a> &gt; Widget definition presets and more widgets</p>
+
+<h1>Widget definition presets and more widgets</h1>
+
+
+<h2 id="presenting-presets">Presenting widget definition presets</h2>
+
+<p>The full syntax for defining widgets helps us request our widgets as precisely as needed. However, some combinations of options are expected to be used more often than others, since they have particular meanings.</p>
+
+<p>For instance, in order to define a widget to edit <a href="https://en.wikipedia.org/wiki/Natural_number">natural numbers</a>, you'd have to request an intfloat entry to edit integers with the minimum value set to 0 (zero). Since this is a very common usage of intfloat entries, in order to make the life of our users easier, instead of typing all the configuration, our users can simply assign the string <i>'natural_number'</i> to the parameter annotation. Here's an example:</p>
+
+<python>
+### intfloat widget to edit natural numbers
+
+### standard library import
+from random import randint
+
+
+### support function
+
+def get_random_color():
+    return tuple(randint(0, 255) for _ in range(3))
+
+### main callable
+
+def get_random_colors(quantity:'natural_number'=1):
+
+    return [
+
+      get_random_color()
+      for _ in range(quantity)
+
+    ]
+</python>
+
+<p>To make life even easier, there are also equivalent alternatives to <i>'natural_number'</i> like <i>'non_negative_int'</i> and <i>'non_negative_integer'</i>.</p>
+
+<p>The full list of available widget definition presets can be found in the <a href="appendix-d-widget-presets.htsl">appendix D</a>.</p>
+
+
+<h2 id="literal-entry">The literal entry widget</h2>
+
+<p>The literal entry widget works just like the string entry widget, but instead of handling strings exclusively it can handle any Python literal. That is, it can handle the following types:</p>
+
+<ul>
+  <li><i>str</i>;</li>
+  <li>bytestrings (the <i>bytes</i> type);</li>
+  <li><i>int</i>;</li>
+  <li><i>float</i>;</li>
+  <li><i>complex</i>;</li>
+  <li><i>NoneType</i> (the <i>None</i> value);</li>
+  <li><i>bool</i> (<i>True</i> and <i>False</i>);</li>
+  <li><i>tuple</i>;</li>
+  <li><i>list</i>;</li>
+  <li><i>dict</i>;</li>
+  <li><i>set</i>;</li>
+</ul>
+
+<p>It is useful:</p>
+
+<ul>
+  <li>when a parameter accepts values of several different types.</li>
+  <li>to specify more complex yet small data structures like small lists, tuples, sets or dictionaries.</li>
+</ul>
+
+<p>A big list or tuple would not display nicely on the entry, since it doesn't have much space. Don't worry about this, since we have another widget for handling larger Python literals.</p>
+
+<p>However, the literal entry is still useful for small lists or tuples (or any other small literal) and those lists/tuples are very useful for representing a lot of common data. For instance, tuples with 02 or 03 integers fit nicely in the literal entry and they are commonly used to represent points. Tuples with 03 or 04 integers can be used to represent colors (values from red, green, blue and alpha channels).</p>
+
+<p>Here is a simple example of a node that returns equidistant points representing a line segment and uses literal entries to help define points in some of its parameters:</p>
+
+<python>
+### node that returns equidistant points from line
+### segment
+
+### third-party import
+from pygame.math import Vector2
+
+
+def get_line_points(
+
+      start_point: {
+
+        'widget_name': 'literal_entry',
+
+        # you can use the type or combination of types
+        # you want; for this and the next parameter
+        # we think using tuple makes sense, but in no
+        # way this will limit the types you can type
+        # in the entry
+        'type': tuple, 
+
+      } = (0, 0),
+
+      end_point: {
+
+        'widget_name': 'literal_entry',
+        'type': tuple,
+
+      } = (100, 0),
+
+      quantity : {
+
+        'widget_name': 'int_float_entry',
+
+        # at least 02 points should be returned, that is
+        # the start and end points, all additional points
+        # will be the middle ones
+        'widget_kwargs': {'min_value': 2}, 
+
+        'type': int,
+
+      } = 2,
+
+    ):
+
+    if quantity &lt; 2:
+        raise ValueError("'quantity' must be =&gt; 2")
+
+    if quantity == 2:
+        return [start_point, end_point]
+
+
+    ### we only reach this point in the function when
+    ### quantity &gt; 2
+
+    increment = 1/(quantity-1)
+
+    start_v = Vector2(start_point)
+    end_v   = Vector2(end_point)
+
+    points = []
+
+    percentage = 0
+
+    for _ in range(quantity):
+
+        resulting_v = start_v.lerp(end_v, percentage)
+
+        points.append(tuple(resulting_v))
+
+        percentage += increment
+
+    return points
+</python>
+
+<img src="images/ch09_img00.png" alt="Node generated from function" />
+
+<p>If you want, instead of using the full syntax, you can just assign <i>'python_literal'</i> (a widget definition preset) to the annotation of  the <i>start_point</i> and <i>end_point</i> parameters and the widget will be defined as well. In that case, however, you won't be able to be specific about the expected type (<i>tuple</i>) as you were when specifying the type using the full widget definition syntax.</p>
+
+
+<h2 id="literal-display">The literal display widget</h2>
+
+<p>The literal display widget serves the same purpose of the literal entry widget, with the only difference being the fact that it is better suited to display and edit large python literals like collections with many items.</p>
+
+<python>
+### node with widget to process larger literals
+
+### standard library import
+from statistics import mean
+
+
+def process_age_info(
+
+      data : {
+
+        'widget_name': 'literal_display',
+
+        # the type can be whichever you want, it won't
+        # limit the widget
+        'type': (tuple, dict),
+
+      } = (
+        ('Anne', 20),
+        ('Mark', 14),
+        ('Carol', 17),
+        ('Don', 42),
+        ('Jane', 23),
+        ('Maria', 38),
+      ),
+
+    ):
+
+    data = dict(data)
+
+    processed_data = {}
+
+    processed_data['mean'] = mean(data.values())
+
+    ordered = sorted(
+                data.items(),
+                key = lambda item: item[1],
+              )
+
+    processed_data['youngest_person'] = ordered[0][0]
+    processed_data['oldest_person'] = ordered[-1][0]
+
+    return processed_data
+</python>
+
+<img src="images/ch09_img01.png" alt="Node generated from function" />
+
+<p>You can also just assign <i>'python_multiline_literal'</i> (a widget definition preset) to the annotation of the <i>data</i> parameter. The full syntax allows you to specify the expected types, though.</p>
+
+
+<h2 id="option-menu">The option menu widget</h2>
+
+<p>The option menu widget is a pretty straightforward one. It allows you to pick a value from a list of specified values. Here's how you define an option menu widget:</p>
+
+<python>
+### node with an option menu widget
+
+def greet(
+
+      name : str = 'Bruce',
+
+      # the 'greeting' parameter defines an option menu
+
+      greeting : {
+
+        'widget_name' : 'option_menu',
+
+        'widget_kwargs': {
+
+          'options': [
+
+            'Hi',
+            'Hello',
+            'Good morning',
+            'Good afternoon',
+            'Good evening',
+
+          ]
+
+        },
+
+        'type': str,
+
+      } = 'Hi',
+
+    ):
+    print(f"{greeting}, {name}!")
+</python>
+
+<img src="images/ch09_img02.png" alt="Node generated from function" />
+
+<p>Make sure the default value provided is within the available options defined in the <i>'options'</i> key.</p>
+
+<p>You can use any python literal as the available options and default value.</p>
+
+
+<h2 id="option-tray">The option tray widget</h2>
+
+<p>The option tray works just like the option menu, but instead of presenting its options in a dropdown menu when clicked, the options are always laid side by side on the node itself, so that the user can click on them directly.</p>
+
+<p>It was made to hold a small quantity of options or at least options small enough that don't take too much space. If the options you provide take too much space (surpass the width available within the node) Nodezator will raise an exception until you either fix the problem by reducing the space used by the options (perhaps by abbreviating them) or using an option menu widget instead.</p>
+
+<python>
+### node with an option tray widget
+
+def get_channel_value(
+
+      color,
+
+      channel : {
+
+        'widget_name' : 'option_tray',
+
+        'widget_kwargs': {
+
+          'options': [
+
+            'red',
+            'green',
+            'blue',
+
+          ]
+
+        },
+
+        'type': str,
+
+      } = 'red',
+
+    ):
+
+    if   channel == 'red'  : index = 0
+    elif channel == 'green': index = 1
+    elif channel == 'blue' : index = 2
+
+    else: raise ValueError(
+                  "'channel' must be either 'red',"
+                  " 'green' or 'blue'"
+                )
+
+    return color[index]
+</python>
+
+<img src="images/ch09_img03.png" alt="Node generated from function" />
+
+<h2 id="sorting-button">The sorting button widget</h2>
+
+<p>The sorting button widget allows users to pick and sort items from a set of available items.</p>
+
+<p>For instance, let's say you have a function that sorts a list of colors according to a list of specified properties like the values of red, green and blue channels.</p>
+
+<p>In this widget you specify all available items in a set and by clicking the icon on the left of the widget, a special sorting editor pops up and allows you to pick and sort items by dragging them on the screen. If you click any other part of the widget a text view appears describing the current value of the widget and the available items for picking/sorting.</p>
+
+<python>
+### sorting button widget to edit order of
+### color properties
+
+### standard library import
+from operator import itemgetter
+
+property_to_index = {
+  'red'   : 0,
+  'green' : 1,
+  'blue'  : 2,
+}
+
+def get_sorted_colors(
+
+      colors: {
+        'widget_name': 'color_button',
+        'type': tuple,
+      } = (
+        (128, 128, 128),
+        (30, 130, 70),
+        (40, 40, 90),
+      ),
+
+      properties : {
+        'widget_name': 'sorting_button',
+        'widget_kwargs': {
+          'available_items': {'red', 'green', 'blue'},
+        },
+        'type': str, # the type actually describes the
+                     # available items; the value itself
+                     # must be a sequence, either a tuple
+                     # or a list;
+
+      } = ('red', 'blue',)
+
+    ):
+
+    ### if properties were not specified, return the
+    ### colors without sorting them
+    if not properties: return colors
+
+    ### otherwise, sort the colors
+
+    ## get indices related to each specified property name
+
+    indices = [
+      property_to_index[property_name]
+      for property_name in properties
+    ]
+
+    ## get a function to return the chosen indices for
+    ## each color
+    indices_getter = itemgetter(*indices)
+
+    ## return a sorted version of the colors received,
+    ## using the getter function as the key function
+
+    return sorted(
+             colors,
+             key = indices_getter,
+           )
+</python>
+
+<img src="images/ch09_img04.png" alt="Node generated from function" />
+
+<p>If you want to be more direct, the widget can handle numeric values as well:</p>
+
+<python>
+### sorting button widget to edit order of
+### color properties
+
+### standard library import
+from operator import itemgetter
+
+def get_sorted_colors(
+
+      colors: {
+        'widget_name': 'color_button',
+        'type': tuple,
+      } = (
+        (128, 128, 128),
+        (30, 130, 70),
+        (40, 40, 90),
+      ),
+
+      property_indices : {
+        'widget_name': 'sorting_button',
+        'widget_kwargs': {
+          'available_items': {0, 1, 2},
+        },
+        'type': int, # the type actually describes the
+                     # available items; the value itself
+                     # must be a sequence, either a tuple
+                     # or a list;
+
+      } = (0, 2,)
+
+    ):
+
+    ### if property indices were not specified, return the
+    ### colors without sorting them
+    if not property_indices: return colors
+
+    ### otherwise, sort the colors
+
+    ## get a function to return the chosen indices for
+    ## each color
+    indices_getter = itemgetter(*property_indices)
+
+    ## return a sorted version of the colors received,
+    ## using the getter function as the key function
+
+    return sorted(
+             colors,
+             key = indices_getter,
+           )
+</python>
+
+<img src="images/ch09_img05.png" alt="Node generated from function" />
+
+<p>The widget can also handle float and a combination of integers and floats.</p>
+
+<p><a href="ch08-full-syntax-more-widgets.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch10-preview-widgets.htsl">Next chapter</a></p>
+
+</body>
+
+</htsl>

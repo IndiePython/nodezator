@@ -1,0 +1,66 @@
+{
+  'close_app_dialog' : {
+    'message' : "There are unsaved changes. Are you sure you want to quit?",
+    'buttons' : [
+      ["Quit without saving", 'quit'],
+      ["Save & Quit",         'save_and_quit'],
+      ["Cancel closing app",  None]
+    ],
+    'level_name': 'warning',
+  },
+  "swap_exists_dialog" : {
+    'message' : "We found data indicating the file was/is being edited, which means that either (1) the application previously crashed while editing the file or (2) another instance of the application may be editing the same file. What would you like to do?",
+    'buttons' : [
+      ["Load original file", "load_original"],
+      ["Load edited file", "load_swap"],
+      ["Cancel loading any file", 'cancel']
+    ],
+    'level_name': 'warning',
+  },
+  "create_new_while_unsaved_dialog" : {
+    'message' : "You are about to load a new file, but the current one has unsaved changes. What would you like to do?",
+    'buttons' : [
+      ["Open the new file anyway", "open_new"],
+      ["Save current one, then open new", "save_first"],
+      ["Abort creating and loading the new file", "abort"]
+    ],
+    'level_name': 'warning',
+  },
+  "replace_existing_file_dialog" : {
+    'message' : "A file already exists in the path you provided. What would you like to do?",
+    'buttons' : [
+      ["Abort creating and loading the new file", "abort"],
+      ["Replace with new file", "replace"]
+    ],
+    'level_name': 'warning',
+  },
+  "open_new_while_unsaved_dialog" : {
+    'message' : "You are about to open a new file, but the current file has unsaved changes. What would you like to do?",
+    'buttons' : [
+      ["Open the new file anyway", "open new"],
+      ["Save current one, then open new", "save first"],
+      ["Abort opening new file", "abort"]
+    ],
+    'level_name': 'warning',
+  },
+  "reload_unsaved_dialog" : {
+    'message' : "You are about to reload the current file, but it has unsaved changes. If you proceed, the changes will be lost. What would you like to do?",
+    'buttons' : [
+      ["Reload the file anyway", 'reload'],
+      ["Abort reloading file", 'abort']
+    ],
+    'level_name': 'warning',
+  },
+  "cancelled_file_loading_dialog": {
+    'message': "The file loading operation was cancelled.",
+    'level_name': 'info',
+  },
+  "node_callable_error_dialog" : {
+    'message' : "'{}'() callable from node #{} failed with the following error and message: <<{}: {}>>.",
+    'level_name': 'error',
+  },
+  "expected_single_path_dialog": {
+    'message' : "A single path was expected, but more than one was provided. The operation was cancelled.",
+    'level_name': 'warning',
+  },
+}

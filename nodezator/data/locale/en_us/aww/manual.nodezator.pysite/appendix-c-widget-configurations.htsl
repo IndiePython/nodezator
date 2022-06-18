@@ -1,0 +1,582 @@
+<htsl>
+
+<head>
+  <title>Nodezator Manual | Appendix C: All widget configurations</title>
+</head>
+
+<body>
+
+<p><a href="index.htsl">Table of contents</a> &gt; Appendix C: All widget configurations</p>
+
+<h1>Appendix C: All widget configurations</h1>
+
+<p>In this appendix we present the specific full syntax used to define each widget as well as the extra options/configuration available.</p>
+
+<h2>String entry widget</h2>
+
+<p>Basic configuration</p>
+
+<table>
+
+  <thead>
+    <tr>
+      <th class="col-3">Key (string)</th>
+      <th class="col-3">Value</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>widget_name</td>
+      <td>'string_entry'</td>
+    </tr>
+
+    <tr>
+      <td>type</td>
+      <td><i>str</i></td>
+    </tr>
+  </tbody>
+
+</table>
+
+<p>Keyword arguments (<i>'widget_kwargs'</i>):</p>
+
+<table>
+
+  <thead>
+    <tr>
+      <th class="col-3">Key (string)</th>
+      <th class="col-7">Value</th>
+    </tr>
+  </thead>
+
+  <tbody>
+
+    <tr>
+
+      <td><i>validation_command</i></td>
+
+      <td><b>None</b> (default value) for no validation; a <b>callable</b> that returns <i>True</i> when the string on the entry is valid and <i>False</i> when it is not; a <b>string</b> indicating the name of any <i>str</i> method to be used for validation, like 'isupper', 'islower', etc.; <b>'literal_eval'</b> or <b>'json'</b> can also be used, and make it so the widget only allows text representing a python literal or json, respectively.</td>
+
+    </tr>
+
+    <tr>
+
+      <td><i>formatting_command</i></td>
+
+      <td><b>None</b> (default value) for no formatting; a <b>callable</b> that receives the string on the entry and returns a new string to replace it (which may be equal, though); for instance, in an entry where you expect colors values in the '#ffffff' format, you might use this to automatically add a '#' character at the beginning if the string doesn't have it.</td>
+
+    </tr>
+
+  </tbody>
+
+</table>
+
+<h2>Text display widget</h2>
+
+<p>Basic configuration</p>
+
+<table>
+
+  <thead>
+    <tr>
+      <th class="col-3">Key (string)</th>
+      <th class="col-3">Value</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>widget_name</td>
+      <td>'text_display'</td>
+    </tr>
+
+    <tr>
+      <td>type</td>
+      <td><i>str</i></td>
+    </tr>
+  </tbody>
+
+</table>
+
+<p>Keyword arguments (<i>'widget_kwargs'</i>):</p>
+
+<table>
+
+  <thead>
+    <tr>
+      <th class="col-3">Key (string)</th>
+      <th class="col-7">Value</th>
+    </tr>
+  </thead>
+
+  <tbody>
+
+    <tr>
+
+      <td><i>no_of_visible_lines</i></td>
+
+      <td>As the name implies, defines the number of lines that can be visible in the widget; default is <b>7</b>.</td>
+
+    </tr>
+
+    <tr>
+
+      <td><i>syntax_highlighting</i></td>
+
+      <td>An <b>empty string</b> (the default value) for no syntax highlighting; use <b>'python'</b> for highlighting text representing python code.</td>
+
+    </tr>
+
+    <tr>
+
+      <td><i>show_line_number</i></td>
+
+      <td><b>False</b> (default value) makes it so no line number is shown; <b>True</b> makes it so line numbers are shown.</td>
+
+    </tr>
+
+    <tr>
+
+      <td><i>validation_command</i></td>
+
+      <td><b>None</b> (default value) for no validation; a <b>callable</b> that returns <i>True</i> when the string on the entry is valid and <i>False</i> when it is not; a <b>string</b> indicating the name of any <i>str</i> method to be used for validation, like 'isupper', 'islower', etc.; <b>'literal_eval'</b> or <b>'json'</b> can also be used, and make it so the widget only allows text representing a python literal or json, respectively.</td>
+
+    </tr>
+
+  </tbody>
+
+</table>
+
+
+<h2>Intfloat entry widget</h2>
+
+<p>Basic configuration</p>
+
+<table>
+
+  <thead>
+    <tr>
+      <th class="col-3">Key (string)</th>
+      <th class="col-5">Value</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>widget_name</td>
+      <td>'int_float_entry'</td>
+    </tr>
+
+    <tr>
+      <td>type</td>
+      <td><i>int</i> or <i>float</i> or <i>(int, float)</i> or <i>(int, None)</i> or <i>(float, None)</i> or <i>(int, float, None)</i>; the tuples can be in any order and where <i>None</i> is used you can optionally use <i>type(None)</i> as well; the types used are the ones allowed in the entry and there must be at least one numeric type;</td>
+    </tr>
+  </tbody>
+
+</table>
+
+<p>Keyword arguments (<i>'widget_kwargs'</i>):</p>
+
+<table>
+
+  <thead>
+    <tr>
+      <th class="col-3">Key (string)</th>
+      <th class="col-7">Value</th>
+    </tr>
+  </thead>
+
+  <tbody>
+
+    <tr>
+
+      <td><i>min_value</i></td>
+
+      <td>used to limit the value in the entry to the provided minimum value (if any); <b>None</b> (default value) means no minimum value; otherwise you must use a <b>number</b> from the numeric type(s) used in the type hint; if max_value is provided, it must also be lower than it (or equal to it);</td>
+
+    </tr>
+
+    <tr>
+
+      <td><i>max_value</i></td>
+
+      <td>same as min_value, but limits the value in the entry to the provided maximum value.</td>
+
+    </tr>
+
+    <tr>
+
+      <td><i>normal_drag_increment</i></td>
+
+      <td>describes the speed by which dragging the value in the entry with the mouse changes the value within the entry; if you use this option, you must provide a number of the numeric type(s) used in the type hint; the default value, <b>None</b>, sets this value to 10 or 10.0 (depending on the numeric type(s) used).</td>
+
+    </tr>
+
+    <tr>
+
+      <td><i>preciser_drag_increment</i></td>
+
+      <td>same as the normal_drag_increment, but must be lower than it; also describes a speed by which the mouse changes the value within the entry when being dragged while the <b>&lt;Shift&gt;</b> key is pressed; as the name implies, it is supposed to be a subtler, preciser change, which is why the value is lower; the default value, <b>None</b>, sets this value to 1 or 1.0 (depending on the numeric type(s) used).</td>
+
+    </tr>
+
+    <tr>
+
+      <td><i>normal_click_increment</i></td>
+
+      <td>describes the amount by which the value in the entry is incremented/decremented when clicking the outer, double arrows inside the entry; if you use this option, you must provide a number of the numeric type(s) used in the type hint; the default value, <b>None</b>, sets this value to 10 or 10.0 (depending on the numeric type(s) used).</td>
+
+    </tr>
+
+    <tr>
+
+      <td><i>preciser_click_increment</i></td>
+
+      <td>same as the normal_click_increment, but corresponds to increments/decrements triggered when clicking the inner, single arrows inside the entry; the default value, <b>None</b>, sets this value to 1 or 1.0 (depending on the numeric type(s) used).</td>
+
+    </tr>
+
+  </tbody>
+
+</table>
+
+<h2>Check button widget</h2>
+
+<p>Basic configuration</p>
+
+<table>
+
+  <thead>
+    <tr>
+      <th class="col-3">Key (string)</th>
+      <th class="col-3">Value</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>widget_name</td>
+      <td>'check_button'</td>
+    </tr>
+
+    <tr>
+      <td>type</td>
+      <td><i>bool</i></td>
+    </tr>
+  </tbody>
+
+</table>
+
+<p>The check button widget doesn't have extra options (<i>'widget_kwargs'</i>).</p>
+
+<h2>Color button widget</h2>
+
+<p>Basic configuration</p>
+
+<table>
+
+  <thead>
+    <tr>
+      <th class="col-3">Key (string)</th>
+      <th class="col-5">Value</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>widget_name</td>
+      <td>'color_button'</td>
+    </tr>
+
+    <tr>
+      <td>type</td>
+      <td><i>tuple</i> or <i>str</i>; if tuple, tuples with integers are used to represent colors (for instance: <b>(0, 0, 0)</b> for black); if string, hex strings are used to represent colors (for instance, <b>'#000000'</b> for black).</td>
+    </tr>
+  </tbody>
+
+</table>
+
+<p>Keyword arguments (<i>'widget_kwargs'</i>):</p>
+
+<table>
+
+  <thead>
+    <tr>
+      <th class="col-3">Key (string)</th>
+      <th class="col-7">Value</th>
+    </tr>
+  </thead>
+
+  <tbody>
+
+    <tr>
+
+      <td><i>alone_when_single</i></td>
+
+      <td>the color button widget always allows users to define more than one color if they want, in which case the colors are all held within a tuple; this options just affects the behaviour of the widget when only a single color is defined; when <i>True</i> (the default), the color value will be held by itself; when <i>False</i>, though, it will be kept inside a tuple.</td>
+
+    </tr>
+
+  </tbody>
+
+</table>
+
+<h2>Literal entry widget</h2>
+
+<p>Basic configuration</p>
+
+<table>
+
+  <thead>
+    <tr>
+      <th class="col-3">Key (string)</th>
+      <th class="col-5">Value</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>widget_name</td>
+      <td>'literal_entry'</td>
+    </tr>
+
+    <tr>
+      <td>type</td>
+      <td>Any python literal type or combination thereof within a tuple; remember: this is just a convenience to indicate the expected type, since you still can use any literal you want in the entry, no matter what you specify here;</td>
+    </tr>
+  </tbody>
+
+</table>
+
+<p>The literal entry widget doesn't have extra options (<i>'widget_kwargs'</i>).</p>
+
+
+<h2>Literal display widget</h2>
+
+<p>Basic configuration</p>
+
+<table>
+
+  <thead>
+    <tr>
+      <th class="col-3">Key (string)</th>
+      <th class="col-5">Value</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>widget_name</td>
+      <td>'literal_display'</td>
+    </tr>
+
+    <tr>
+      <td>type</td>
+      <td>Any python literal type or combination thereof within a tuple; remember: this is just a convenience to indicate the expected type, since you still can use any literal you want in the widget, no matter what you specify here;</td>
+    </tr>
+  </tbody>
+
+</table>
+
+<p>Keyword arguments (<i>'widget_kwargs'</i>):</p>
+
+<table>
+
+  <thead>
+    <tr>
+      <th class="col-3">Key (string)</th>
+      <th class="col-7">Value</th>
+    </tr>
+  </thead>
+
+  <tbody>
+
+    <tr>
+
+      <td><i>no_of_visible_lines</i></td>
+
+      <td>As the name implies, defines the number of lines that can be visible in the widget; default is <b>7</b>.</td>
+
+    </tr>
+
+    <tr>
+
+      <td><i>show_line_number</i></td>
+
+      <td><b>False</b> (default value) makes it so no line number is shown; <b>True</b> makes it so line numbers are shown.</td>
+
+    </tr>
+
+  </tbody>
+
+</table>
+
+
+<h2>Option menu widget</h2>
+
+<p>Basic configuration</p>
+
+<table>
+
+  <thead>
+    <tr>
+      <th class="col-3">Key (string)</th>
+      <th class="col-5">Value</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>widget_name</td>
+      <td>'option_menu'</td>
+    </tr>
+
+    <tr>
+      <td>type</td>
+      <td>Any python literal type or combination thereof within a tuple; remember: this is just a convenience to indicate the expected type, since you still can use any literal you want, no matter what you specify here;</td>
+    </tr>
+  </tbody>
+
+</table>
+
+<p>Keyword arguments (<i>'widget_kwargs'</i>):</p>
+
+<table>
+
+  <thead>
+    <tr>
+      <th class="col-3">Key (string)</th>
+      <th class="col-5">Value</th>
+    </tr>
+  </thead>
+
+  <tbody>
+
+    <tr>
+
+      <td><i>options</i></td>
+
+      <td>This option is required; collections of the options available in the dropdown menu;</td>
+
+    </tr>
+
+  </tbody>
+
+</table>
+
+<h2>Option tray widget</h2>
+
+<p>Same configuration as the option menu, but remember: all the options must fit within the node's width.</p>
+
+<h2>Sorting button widget</h2>
+
+<p>Basic configuration</p>
+
+<table>
+
+  <thead>
+    <tr>
+      <th class="col-3">Key (string)</th>
+      <th class="col-5">Value</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>widget_name</td>
+      <td>'sorting_button'</td>
+    </tr>
+
+    <tr>
+      <td>type</td>
+      <td>either <i>str</i> or <i>int</i> or <i>float</i> or a combination of int and float within a tuple;</td>
+    </tr>
+  </tbody>
+
+</table>
+
+<p>Keyword arguments (<i>'widget_kwargs'</i>):</p>
+
+<table>
+
+  <thead>
+    <tr>
+      <th class="col-3">Key (string)</th>
+      <th class="col-7">Value</th>
+    </tr>
+  </thead>
+
+  <tbody>
+
+    <tr>
+
+      <td><i>available_items</i></td>
+
+      <td>This option is required; must be a <b>set</b> of the options available for picking/sorting;</td>
+
+    </tr>
+
+  </tbody>
+
+</table>
+
+<h2>Preview widgets</h2>
+
+<p>All preview widgets have a very similar configuration, so here we present them together.</p>
+
+<p>Basic configuration</p>
+
+<table>
+
+  <thead>
+    <tr>
+      <th class="col-3">Key (string)</th>
+      <th class="col-5">Value</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>widget_name</td>
+      <td>'path_preview' or 'text_preview' or 'audio_preview' or 'image_preview' or 'video_preview' or 'font_preview'</td>
+    </tr>
+
+    <tr>
+      <td>type</td>
+      <td><i>str</i></td>
+    </tr>
+  </tbody>
+
+</table>
+
+<p>Keyword arguments (<i>'widget_kwargs'</i>):</p>
+
+<table>
+
+  <thead>
+    <tr>
+      <th class="col-3">Key (string)</th>
+      <th class="col-7">Value</th>
+    </tr>
+  </thead>
+
+  <tbody>
+
+    <tr>
+
+      <td><i>string_when_single</i></td>
+
+      <td>the preview widgets always allows users to define more than one path if they want, in which case the paths are all held within a tuple; this options just affects the behaviour of the widget when only a single path is defined; when <i>True</i> (the default), the path value will be held by itself, that is, a string; when <i>False</i>, though, it will be kept inside a tuple, that is, a string inside a tuple.</td>
+
+    </tr>
+
+  </tbody>
+
+</table>
+
+<p><a href="index.htsl">Table of contents</a></p>
+
+</body>
+
+</htsl>

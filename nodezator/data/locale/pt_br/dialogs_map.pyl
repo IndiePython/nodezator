@@ -1,0 +1,102 @@
+{
+  'close_app_dialog' : {
+    'message' : "Há mudanças não salvas. Tem certeza que quer sair?",
+    'buttons' : [
+      ["Sair sem salvar", 'quit'],
+      ["Salvar e sair",   'save_and_quit'],
+      ["Cancelar saída",  None]
+    ],
+    'level_name': 'warning',
+  },
+  "swap_exists_dialog" : {
+    'message' : "Encontramos dados indicando que o arquivo está/estava sendo editado, o que significa que ou (1) uma falha causou o fechamento do app enquanto o arquivo estava sendo editado ou (2) outra cópia do app pode estar editando o mesmo arquivo. O que gostaria de fazer?",
+    'buttons' : [
+      ["Carregar arquivo original", "load_original"],
+      ["Carregar arquivo editado", "load_swap"],
+      ["Cancelar qualquer carregamento", 'cancel']
+    ],
+    'level_name': 'warning',
+  },
+  "create_new_while_unsaved_dialog" : {
+    'message' : "Você está prestes a criar um novo arquivo, mas o atual tem mudanças não salvas. O que gostaria de fazer?",
+    'buttons' : [
+      ["Abrir o novo mesmo assim", "open_new"],
+      ["Salvar o atual e abrir o novo", "save_first"],
+      ["Abortar criação do arquivo novo", "abort"]
+    ],
+    'level_name': 'warning',
+  },
+  "replace_existing_file_dialog" : {
+    'message' : "Já existe um arquivo no caminho que você proveu. O que gostaria de fazer?",
+    'buttons' : [
+      ["Abortar criação do novo arquivo", "abort"],
+      ["Substituir com o novo arquivo", "replace"]
+    ],
+    'level_name': 'warning',
+  },
+  "open_new_while_unsaved_dialog" : {
+    'message' : "Você está prestes a abrir outro arquivo, mas o atual tem mudanças não salvas. O que gostaria de fazer?",
+    'buttons' : [
+      ["Abrir o outro assim mesmo", "open new"],
+      ["Salvar o atual, depois abrir o outro", "save first"],
+      ["Abortar abertura", "abort"]
+    ],
+    'level_name': 'warning',
+  },
+  "reload_unsaved_dialog" : {
+    'message' : "Você está prestes a recarregar o arquivo atual, mas ele tem mudanças não salvas. Se continuar, as mudanças serão perdidas. O que gostaria de fazer?",
+    'buttons' : [
+      ["Recarregar assim mesmo", 'reload'],
+      ["Abortar carregamento", 'abort']
+    ],
+    'level_name': 'warning',
+  },
+  "missing_node_packs_dialog" : {
+    'message': "O arquivo a ser aberto não provê caminhos para pacote(s) de nós. O que gostaria de fazer?",
+    'buttons': [
+      ["Selecionar pacote(s) de nós",    'select'],
+      ["Cancelar carregamento do arquivo", 'cancel']
+    ],
+    'level_name': 'warning',
+  },
+  "cancelled_file_loading_dialog": {
+    'message': "O carregamento do arquivo foi cancelado",
+    'level_name': 'info',
+  },
+  "inexistent_node_pack_dialog" : {
+    'message': "Ao menos um pacote de nós associado ao arquivo não foi encontrado. O que gostaria de fazer?",
+    'buttons': [
+      ["Selecionar outro(s) pacote(s) de nós", 'select'],
+      ["Cancelar carregamento do arquivo",       'cancel']
+    ],
+    'level_name': 'warning',
+  },
+  "is_not_dir_node_packs_dialog" : {
+    'message': "O caminho de ao menos um pacote de nós não é um diretório. O que gostaria de fazer?",
+    'buttons': [
+      ["Selecionar outro(s) pacote(s) de nós", 'select'],
+      ["Cancelar carregamento do arquivo",       'cancel']
+    ],
+    'level_name': 'warning',
+  },
+  "empty_node_packs_dialog" : {
+    'message': "Ao menos um pacote de nós não contém scripts. O que gostaria de fazer?",
+    'buttons': [
+      ["Selecionar outro(s) pacote(s) de nós", 'select'],
+      ["Cancelar carregamento do arquivo",       'cancel']
+    ],
+    'level_name': 'warning',
+  },
+  "node_callable_error_dialog" : {
+    'message' : "'{}'() invocável do nó #{} falhou com os seguintes erro e mensagem: <<{}: {}>>.",
+    'level_name': 'error',
+  },
+  "expected_single_path_dialog": {
+    'message' : "A single path was expected, but more than one was provided. The operation was cancelled.",
+    'level_name': 'warning',
+  },
+  "only_directories_dialog": {
+    'message': "Only directories must be provided.",
+    'level_name': 'warning',
+  }
+}

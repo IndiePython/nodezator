@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <title>Nodezator Manual | Different ways of using Nodezator</title>
+
+  <!-- ##### third party link/script -->
+
+
+  <!-- ### bootstrap -->
+    
+  <!-- Latest compiled and minified bootstrap 4 CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <!-- Popper JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+  <!-- Latest compiled bootstrap 4 JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+  <!-- ### highlight.js -->
+
+  <!-- minified devibeans CSS theme for highlight.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/devibeans.min.css" />
+
+  <!-- highlight.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
+
+  <!-- syntax highlighting activation -->
+  <script>hljs.highlightAll();</script>
+
+</head>
+
+<body>
+
+<h1>Different ways of using Nodezator</h1>
+
+<h2>As a standalone application</h2>
+<h2>Integrated with your regular Python coding</h2>
+<h2>To create parametric functions</h2>
+<h2>To create parametric data</h2>
+<h2>As a no-code or low-code tool</h2>
+
+</body>
+
+</html>

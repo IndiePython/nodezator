@@ -1,0 +1,126 @@
+<htsl>
+
+<head>
+  <title>Nodezator Manual | Color-coding inputs and outputs</title>
+</head>
+
+<body>
+
+<p><a href="index.htsl">Table of contents</a> &gt; Color-coding inputs and outputs</p>
+
+<h1>Color-coding inputs and outputs</h1>
+
+<p>Input and output sockets are color-coded according to the type hint (or lack thereof) associated with them. Color-coding inputs and outputs is not required, but it can make the node layout more readable, since it helps convey which kind of data is expected to leave/arrive at a socket.</p>
+
+<p>The color of an output socket is also used in the lines (connections) that come out of it, helping visualizing which kind of data is travelling inside the node layout.</p>
+
+<p>No type is ever enforced, no type cast is ever performed by Nodezator. You retain the freedom to pass any value you want. The type hints and resulting color-coding serve only to indicate the <b>expected type(s)</b>.</p>
+
+<h2 id="examples">Examples</h2>
+
+<p>Here are a few examples below:</p>
+
+<python>
+### function without type hints;
+### in the default theme the sockets created are grey;
+### the line (connection) coming out of the output socket
+### uses the socket color as well;
+
+def function_name(parameter):
+    return str(parameter)
+</python>
+
+<img src="images/ch06_img00.png" alt="Node generated from function" />
+
+<python>
+### the same function, but with type hints;
+### sockets are color-coded according to the type hints;
+### as always, the line (connection) coming out of the
+### output socket shares its color;
+
+def function_name(parameter: int) -&gt; str:
+    return str(parameter)
+</python>
+
+<img src="images/ch06_img01.png" alt="Node generated from function" />
+
+<p>Variable-parameters may also have their variable arguments color-coded if you associated them with a type hint.</p>
+
+<python>
+### color-coded input sockets on variable parameters
+
+def sum_integers(*integers: int) -&gt; int:
+    return sum(integers)
+</python>
+
+<p>You can see the the resulting node below. Note that we added 02 widgets to node in order to make it create an input socket for each widget. As you can see, the input sockets are red (in the default colors). If we hadn't assigned the type hint to the <i>integers</i> parameter the input socket would not have a special color and would be grey instead (in the default colors).</p>
+
+<img src="images/ch06_img02.png" alt="Node generated from function" />
+
+
+<h2 id="types-dedicated-colors">Types with dedicated colors</h2>
+
+<p>We won't discuss the colors per se, since they depend on customizations made by the users. However, it is useful to know which types have a dedicated color associated with them. You can find a list with all type hints that have dedicated colors in the <a href="appendix-a-color-coded-annotations">appendix A</a>.</p>
+
+
+<h2 id="color-coding-named-socket">Color coding a named output socket</h2>
+
+<p>As presented in a previous chapter, we used the return annotation in order to name the output of a function, like so:</p>
+
+<python>
+### return annotation is used to name the output;
+
+def function_name() -&gt; [
+      {'name': 'pi'},
+    ]:
+    return 3.14159
+</python>
+
+<img src="images/ch06_img03.png" alt="Node generated from function" />
+
+<p>So, since the return annotation is already defined, how do we use it to color-code the output? It is actually pretty simple, cause the same format allows the type to be provided as well. You just need to add a new 'type' key to the dictionary. The value is the type associated with the output. Here's how it is done:</p>
+
+<python>
+### return annotation is used to name and add type hint to output;
+
+def function_name() -&gt; [
+
+      {'name': 'pi', 'type': float},
+
+    ]:
+    return 3.14159
+</python>
+
+<img src="images/ch06_img04.png" alt="Node generated from function" />
+
+
+<h2 id="color-coding-multiple-sockets">Color coding multiple output sockets</h2>
+
+<p>To associate types for multiple outputs within a function we just need to do the same we did for the named output in the previous example: by adding a 'type' key to the dictionaries representing the output(s) we want to color-code.</p>
+
+<python>
+### return annotation is used to name and add type hint
+### to multiple outputs
+
+def function_name() -&gt; [
+
+      {'name': 'first_output', 'type': str},
+      {'name': 'second_output', 'type': bool},
+      {'name': 'third_output', 'type': int},
+
+    ]:
+
+    return {
+      'first_output': 'value',
+      'second_output': True,
+      'third_output': 100,
+    }
+</python>
+
+<img src="images/ch06_img05.png" alt="Node generated from function" />
+
+<p><a href="ch05-loading-nodes.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch07-basic-way-define-widgets.htsl">Next chapter</a></p>
+
+</body>
+
+</htsl>

@@ -1,0 +1,99 @@
+<htsl>
+
+<head>
+  <title>Nodezator Manual | Other objects</title>
+</head>
+
+<body>
+
+<p><a href="index.htsl">Table of contents</a> &gt; Other objects</p>
+
+<h1>Other objects</h1>
+
+<p>Besides the user-define nodes, Nodezator provides other objects to help make your node layout more versatile. Here we'll present each of them.</p>
+
+
+<h2 id="text-blocks">Text blocks</h2>
+
+<p>Text blocks represent comments within the node layout. To create one, just right-click an empty space on the canvas and click the <b>New text block</b> command on the popup menu that appears.</p>
+
+<p>To edit the text, just click the text block and press <b>&lt;Ctrl+T&gt;</b>. The text blocks automatically adjust their sizes to fit the typed text, including new lines. Also, if you type "todo" words like TODO, XXX and FIXME inside the text block they are automatically highlighted. Here are some examples of text blocks in the image below:</p>
+
+<img src="images/ch11_img00.png" alt="Text blocks" />
+
+
+<h2 id="app-defined-nodes">App-defined nodes</h2>
+
+<p>Nodezator has a number of app-defined apps, that is, apps the user doesn't need to define, which come by default with Nodezator.</p>
+
+<p>In the next few sections we'll be presenting each of these nodes.</p>
+
+
+<h2 id="operation-nodes">Operation nodes</h2>
+
+<p><i>Operation nodes</i> or <i>operator nodes</i> are nodes like any other, but these app-defined nodes represent the usage of operators within Python, like <b>+</b>, <b>*</b>, etc. Remember that Python has operator overloading, which means operators can have user-defined meanings, depending on the objects in the operation. This makes these nodes even more powerful.</p>
+
+<p>Their appearance is a bit different of other nodes, since they have no widgets nor a header, just the operation they represent written in their bodies with a large size, with the operator character(s) highlighted in red by default.</p>
+
+<p>A tiny number at the topleft corner of each node represent their unique id. Here are some examples of operation nodes:</p>
+
+<img src="images/ch11_img01.png" alt="Operation nodes" />
+
+<p>To instantiate them, just right-click an empty space on the canvas and click one of the commands inside the <b>Common operations</b> submenu within the popup menu that appears. These commands are labeled according to the operation they represent, like <b>a + b</b>, <b>a * b</b>, etc.</p>
+
+<h2 id="builtin-nodes">Built-in nodes</h2>
+
+<p>They are just app-defined nodes which represent Python built-in functions/classes, like <i>print</i>, <i>sum</i>, etc. They look just like user-defined nodes, some even have widgets and all, but their header has a distinct color to tell them apart from user-defined nodes (by default this color is black). Here are some examples of built-in nodes:</p>
+
+<img src="images/ch11_img02.png" alt="Built-in nodes" />
+
+<p>To instantiate them, just right-click an empty space on the canvas and click one of the commands inside the <b>Built-in picks</b> submenu (and further separated according to their first letter) within the popup menu that appears.</p>
+
+<h2 id="standard-library-nodes">Standard library nodes</h2>
+
+<p>They are just app-defined nodes which represent callables from the Python standard library, like <i>itertools.chain</i>, <i>pprint.format</i>, etc. Just like built-in nodes, they also look like user-defined nodes and some have widgets and all. Their header also has a distinct color to tell them apart from user-defined nodes (by default this color is black, like the built-in nodes). Here are some examples of standard library nodes:</p>
+
+<img src="images/ch11_img03.png" alt="Standard library node" />
+
+<p>To instantiate them, just right-click an empty space on the canvas and click one of the commands inside the <b>Standard lib picks</b> submenu (and further separated by the standard library module to which the callable belongs) within the popup menu that appears.</p>
+
+
+<h2 id="snippet-nodes">Snippet nodes</h2>
+
+<p>App-defined nodes which represent useful Python snippets like "with blocks" for loading or saving files. They also look like user-defined nodes, widgets and all, and their header also have a distinct color (by default this color is black, like built-in and standard library nodes). Here are some examples of snippet nodes:</p>
+
+<img src="images/ch11_img04.png" alt="Snippet node" />
+
+<p>To instantiate them, just right-click an empty space on the canvas and click one of the commands inside the <b>Useful encapsulations</b> submenu within the popup menu that appears.</p>
+
+
+<h2 id="data-nodes">Data nodes</h2>
+
+<p>App-defined nodes whose only purpose is to provide data for other node(s). Data nodes represent variables within the node layout. Here are some examples of data nodes:</p>
+
+<img src="images/ch11_img05.png" alt="Data node" />
+
+<p>To instantiate them, just right-click an empty space on the canvas and click one of the commands inside the <b>New data node</b> submenu within the popup menu that appears to pick the kind of widget/data to be held by the node, including an option that presents a more complex form to specify the widget more precisely.</p>
+
+
+<h2 id="redirect-nodes">Redirect nodes</h2>
+
+<p>App-defined nodes whose only purpose is to connect the output of a node with the input of other node(s). They are useful for helping organize the node layout. Here's a redirect node being used to connect data between two nodes.</p>
+
+<img src="images/ch11_img06.png" alt="Redirect node" />
+
+<p>To instantiate them, just right-click an empty space on the canvas and click the command <b>New redirect node</b> in the popup menu that appears.</p>
+
+<h2 id="relationship-data-redirect-nodes">Relationship between data nodes and redirect nodes</h2>
+
+<p>If you connect data to the input socket of a data node the data node loses its meaning (it doesn't represents a variable anymore) and becomes a redirect node. In such case, the node serves only to redirect the received input and it is as though the widget doesn't exist, even though it is kept there. It remains there just for the case you sever the input, making the node a data node again.</p>
+
+<p>If you are using a data node as a redirect node you can delete the widget if you want, by clicking the small "x" icon to the right of the widget.</p>
+
+<p>If you want to turn the redirect node back into a data node again just sever the connection to its input and create a widget for it by pressing the "+" (plus sign) icon on its bottomleft corner. That is, if the node doesn't have a widget already.</p>
+
+<p><a href="ch10-preview-widgets.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a></p>
+
+</body>
+
+</htsl>

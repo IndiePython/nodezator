@@ -1,0 +1,159 @@
+<htsl>
+
+<head>
+  <title>Text Editor Help</title>
+</head>
+
+<body>
+
+  <h1>Text Editor Help</h1>
+
+  <p>The text editor was created with the purpose of helping make small adjustments in text/code on the fly, not to replace a full-fledged text editor or IDE.</p>
+
+  <p>Below you'll find some of the controls currently available. You'll notice they resemble a bit how text is edited in the VIM text editor, with some changes. In the future, we intend to either provide emulation of the EMACS text editor or at least allow it indirectly by making the user able to customize keybidings and behaviour.</p>
+
+  <p>The number and complexity of text operations provided should increase as well, in order to make the text editor even more useful for the users.</p>
+
+
+  <h2>Mode-independent actions/controls</h2>
+
+  <table>
+
+    <thead>
+
+      <tr>
+        <th class="col-3">Action/control</th>
+        <th class="col-6">Result</th>
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      <tr>
+        <td><b>Cancel</b> button at the bottom right corner of text editor panel</td>
+        <td>Cancels text edition and exits editor</td>
+      </tr>
+
+      <tr>
+        <td><b>Ok</b> button at the bottom right corner of text editor panel</td>
+        <td>Confirms text edition and exits editor (unless the text inside has a validation routine set and the text doesn't validate)</td>
+      </tr>
+
+      <tr>
+        <td><b>&lt;F1&gt;</b> key</td>
+        <td>Shows this text</td>
+      </tr>
+
+      <tr>
+        <td><b>&lt;HOME&gt;</b> and <b>&lt;END&gt;</b> keys</td>
+        <td>Moves cursor to beginning or ending of line, respectively</td>
+      </tr>
+
+      <tr>
+        <td><b>&lt;PAGE UP&gt;</b> and <b>&lt;PAGE DOWN&gt;</b> keys</td>
+        <td>Jumps cursor many lines up or down</td>
+      </tr>
+
+      <tr>
+        <td><b>&lt;SHIFT + HOME&gt;</b> and <b>&lt;SHIFT + END&gt;</b> keys</td>
+        <td>Moves cursor to first line or last line of text, respectively</td>
+      </tr>
+
+      <tr>
+        <td><b>&lt;SHIFT + PAGE UP&gt;</b> and <b>&lt;SHIFT + PAGE DOWN&gt;</b> keys</td>
+        <td>Moves cursor to first line or last line of text, respectively (same as keys above)</td>
+      </tr>
+
+      <tr>
+        <td>Mouse wheel up/down</td>
+        <td>Jumps 4 lines up or down</td>
+      </tr>
+
+    </tbody>
+
+  </table>
+
+
+  <h2>Normal mode controls</h2>
+
+  <table>
+
+    <thead>
+
+      <tr>
+        <th class="col-3">Control</th>
+        <th class="col-6">Result</th>
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      <tr>
+        <td><b>&lt;i&gt;</b> and <b>&lt;a&gt;</b> keys</td>
+        <td>Starts insert mode (with <b>&lt;a&gt;</b> the cursor jumps one character to the right)</td>
+      </tr>
+
+      <tr>
+        <td><b>&lt;o&gt;</b> and <b>&lt;O&gt;</b> keys (lower and uppercase letter "o")</td>
+        <td>Starts insert mode creating line down or above, respectively</td>
+      </tr>
+
+      <tr>
+        <td><b>&lt;h&gt;</b>, <b>&lt;j&gt;</b> <b>&lt;k&gt;</b><b>&lt;l&gt;</b></td>
+        <td>Moves cursor left, down, up or right, respectively</td>
+      </tr>
+
+      <tr>
+        <td><b>&lt;0&gt;</b> and <b>&lt;$&gt;</b> keys</td>
+        <td>Moves cursor to beginning or ending of line, respectively</td>
+      </tr>
+
+      <tr>
+        <td><b>&lt;x&gt;</b> key</td>
+        <td>Deletes character where the cursor is sitting</td>
+      </tr>
+
+    </tbody>
+
+  </table>
+
+
+  <h2>Insert mode controls</h2>
+
+  <table>
+
+    <thead>
+
+      <tr>
+        <th class="col-3">Control</th>
+        <th class="col-6">Result</th>
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      <tr>
+        <td><b>&lt;TAB&gt;</b> key</td>
+        <td>Inserts 4 spaces in the text</td>
+      </tr>
+
+      <tr>
+        <td><b>&lt;BACKSPACE&gt;</b> key</td>
+        <td>Deletes character before the cursor</td>
+      </tr>
+
+      <tr>
+        <td><b>&lt;DELETE&gt;</b> key</td>
+        <td>Deletes character where the cursor is sitting</td>
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</body>
+
+</htsl>

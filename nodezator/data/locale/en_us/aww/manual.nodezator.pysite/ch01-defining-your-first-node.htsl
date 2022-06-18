@@ -1,0 +1,193 @@
+<htsl>
+
+<head>
+  <title>Nodezator Manual | Defining your first node</title>
+</head>
+
+<body>
+
+<p><a href="index.htsl">Table of contents</a> &gt; Defining your first node</p>
+
+<h1>Defining your first node</h1>
+
+<p>Nodezator already comes with a lot of nodes out of the box. We call them <i>app-defined nodes</i>, because they are defined by the app. Such nodes are created from some of the existing functions/classes already included in Python, that is, built-in functions or functions from the standard library.</p>
+
+<p>To use all the power the app has to offer, though, we encourage you to define your own nodes. Such nodes are called <i>user nodes</i> or <i>user-defined nodes</i> or even <i>custom nodes</i>. To define your node, all you need to do is provide a function.</p> 
+
+<p>For instance, the function defined below, if passed to Nodezator, will result in the node depicted in the following image.</p>
+
+<python>
+### example function
+def function_name(param1, param2):
+    return param1 + param2
+</python>
+
+<img src="images/ch01_img00.png" alt="Node generated from example function" />
+
+<p>The number at the bottom of the node represents an unique id that each user-defined node instance has. For instance, if you instantiate 10 <i>function_name</i> nodes in a file, each of them will have a different id. It is defined automatically by the app, so you don't need to worry about it.</p>
+
+<p>Actually, any callable can be turned into a node. Classes and methods, for instance, can be turned into nodes as well. Additionally, some kind of callables might need extra steps before they can be turned into a node.</p> 
+
+<p>In this section, use your favorite text editor and follow the instructions to create your first node.</p>
+
+<h2 id="node-pack">A node pack and its purpose</h2>
+
+<p>Let's define our first node. The first thing to do when defining one or more nodes is to think of the purpose for which you are creating the node(s). I'd like to create nodes to generate 2d points representing movement (for instance, for game characters).</p>
+
+<p>With that in mind, we'll create a folder wherein to store all the nodes we are going to create. Let's name it <i>points2d</i>. In Nodezator, we consider that folder to be a <i>node pack</i>. Think of a node pack like a set of cards for a specific kind of game.</p>
+
+<p>The same way a set of cards is suitable for playing specific kinds of games, node packs contain nodes used for a specific purpose. <a href="https://en.wikipedia.org/wiki/Uno_(card_game)">Uno</a> cards are designed for playing Uno, <a href="https://en.wikipedia.org/wiki/Yu-Gi-Oh!">Yugi-Oh</a> cards for playing fictional monster battles. Just like that, each node pack should be designed for a specific purpose.</p>
+
+<h2 id="category-folder">Categories within a node pack</h2>
+
+<p>Just like playing cards are organized in categories, your nodes must be too. In Uno, cards are categorized as Number cards, Draw 2 cards, Reverse cards, and so on. You can categorize your nodes as you see fit. Let's create another folder inside points2d called <i>point_creation</i> wherein we'll store nodes responsible for creating new points. This folder is what we call a <b>category folder</b></p>
+
+
+<h2 id="script-folder">The script folder</h2>
+
+<p>Within our point_creation category folder we'll finally create our node, which will be represented by a folder containing our node script, a <b>node script folder</b>. Why do we use an entire folder just to store our node script? Because this way you can guarantee that your node script has all the resources it needs in a single place.</p>
+
+<p>Even though a node is defined by a function (or other callable) it doesn't mean your node script will be comprised of just a single function in a Python file. It may need to define and import other local modules or files like images or databases, it all depends on what you want to do.</p>
+
+<p>That's why a whole folder is used to store your script. You can think of this folder as an entire package wherein you define your node even if it ends up only needing a single file containing a single function. Moreover, even if your node starts as a single file it may grow over time as you further extend it.</p>
+
+<p>You can go as simple or as complex as you'd need/like. Think of the folder containing your node script as the personal limitless playground of your node. In our case, though, the first node we'll create, due to its simplicity, will need just a single Python file inside its folder.</p>
+
+<h2 id="defining-node">Defining the node</h2>
+
+<p>The python script referencing a callable used to define a node must always be named <i>__main__.py</i>. In case you are wondering why do we use such naming convention, the answer is that it is already used in Python to indicate the <a href="https://docs.python.org/3/library/__main__.html">main file in a package</a>, the file controlling the execution of a program.</p>
+
+<p>Our first node will <b>create the points of a circle</b>. This may be useful for instance, to define circular movements for game characters. We'll name its folder <i>get_circle</i>. Below is the code defining our node in the __main__.py file within our get_circle folder. Note that the name of the function to be turned into a node also is get_circle.</p>
+
+<python>
+### function defining the get_circle node
+### points2d/point_creation/get_circle/__main__.py file
+
+from math import pi, sin, cos
+
+def get_circle(
+      quantity : int          = 30,
+      radius   : (int, float) = 100,
+    ):
+    """Return points forming a circle.
+
+    Parameters
+    ==========
+    quantity (integer)
+        quantity of points forming the circle.
+    radius (int or float)
+        radius of the circle.
+    """
+    circle_points = []
+
+    for k in range(quantity):
+
+        value = (k * 2 * pi) / quantity
+
+        x = radius * cos(value)
+        y = radius * sin(value)
+
+        circle_points.append((x, y))
+
+    return circle_points
+
+main_callable = get_circle
+</python>
+
+<img src="images/ch01_img01.png" alt="Node resulting from function definition"/>
+
+<p>As you can see, our node is actually just a regular Python function. The only additional change required was the creation of the <i>main_callable</i> variable pointing to the callable to be used as a node.</p>
+
+<p>No other change is needed. No need to import a special node class or anything like that. In other words, your code is kept untouched and as free as possible from foreign code and is thus easier to read and maintain. It is just your own code, after all. Nodezator will do all the rest for you, turning your function into a node.</p>
+
+<p>Here's the anatomy of a node pack summarized in a picture.</p>
+
+
+<surfdef width="730" height="430" style="background-color:#C0C0C0;">
+
+<!-- folders -->
+
+<path d="M155 20 l5 -5 l10 0 l5 5 l15 0 l5 5 l0 20 l-5 5 l-30 0 l-5 -5" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
+
+<path d="M80 135 l5 -5 l10 0 l5 5 l15 0 l5 5 l0 20 l-5 5 l-30 0 l-5 -5" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
+<path d="M155 135 l5 -5 l10 0 l5 5 l15 0 l5 5 l0 20 l-5 5 l-30 0 l-5 -5" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
+
+<path d="M5 250 l5 -5 l10 0 l5 5 l15 0 l5 5 l0 20 l-5 5 l-30 0 l-5 -5" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
+<path d="M80 250 l5 -5 l10 0 l5 5 l15 0 l5 5 l0 20 l-5 5 l-30 0 l-5 -5" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
+<path d="M155 250 l5 -5 l10 0 l5 5 l15 0 l5 5 l0 20 l-5 5 l-30 0 l-5 -5" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
+
+<!-- files -->
+
+<rect x="5" y="360" width="40" height="50" fill="(255, 255, 255)" stroke="(0, 0, 0)" stroke-width="2" />
+
+<rect x="80" y="360" width="40" height="50" fill="(255, 255, 255)" stroke="(0, 0, 0)" stroke-width="2" />
+
+<rect x="155" y="360" width="40" height="50" fill="(255, 255, 255)" stroke="(0, 0, 0)" stroke-width="2" />
+
+<!-- strokes -->
+
+<polyline d="M175 60 l0 30 l0 30 l0 -30 l-75 0 l0 30 l0 -30 l150 0 l0 30" stroke="(0, 0, 0)" stroke-width="2" />
+
+<polyline d="M100 175 l0 30 l0 30 l0 -30 l-75 0 l0 30" stroke="(0, 0, 0)" stroke-width="2" />
+
+<polyline d="M175 175 l0 60" stroke="(0, 0, 0)" stroke-width="2" />
+
+<polyline d="M250 175 l0 30 l0 30 l0 -30 l75 0 l0 30" stroke="(0, 0, 0)" stroke-width="2" />
+
+<polyline d="M25 290 l0 60" stroke="(0, 0, 0)" stroke-width="2" />
+
+<polyline d="M100 290 l0 60" stroke="(0, 0, 0)" stroke-width="2" />
+
+<polyline d="M175 290 l0 60" stroke="(0, 0, 0)" stroke-width="2" />
+
+<polyline d="M250 290 l0 60" stroke="(0, 0, 0)" stroke-width="2" />
+
+<polyline d="M325 290 l0 60" stroke="(0, 0, 0)" stroke-width="2" />
+
+<!-- arrows -->
+
+<path d="M360 30 l15 0 l0 -5 l10 10 l-10 10 l0 -5 l-15 0" fill="(255, 0, 0)" stroke="(0, 0, 0)" stroke-width="2" />
+
+<path d="M360 142 l15 0 l0 -5 l10 10 l-10 10 l0 -5 l-15 0" fill="(255, 0, 0)" stroke="(0, 0, 0)" stroke-width="2" />
+
+<path d="M360 257 l15 0 l0 -5 l10 10 l-10 10 l0 -5 l-15 0" fill="(255, 0, 0)" stroke="(0, 0, 0)" stroke-width="2" />
+
+<path d="M360 380 l15 0 l0 -5 l10 10 l-10 10 l0 -5 l-15 0" fill="(255, 0, 0)" stroke="(0, 0, 0)" stroke-width="2" />
+
+<!-- text -->
+
+<text x="239" y="152">[...]</text>
+
+<text x="239" y="267">[...]</text>
+<text x="314" y="267">[...]</text>
+
+<text x="239" y="387">[...]</text>
+<text x="314" y="387">[...]</text>
+
+<text x="400" y="20"><b>Node pack</b>:</text>
+
+<text x="400" y="24" max-width="300" coordinates-name="topleft">single folder at top of hierarchy; holds all nodes within categories; must have at least one category folder;</text>
+
+<text x="400" y="124"><b>Category folders</b>:</text>
+
+<text x="400" y="128" max-width="300" coordinates-name="topleft">node pack can have as many category folders as needed; must have at least one node script folder;</text>
+
+<text x="400" y="230"><b>Node script folders</b>:</text>
+
+<text x="400" y="234" max-width="330" coordinates-name="topleft">category folder can have as many node script folders as needed; each node script folder represents a node; must have at least a __main__.py script;</text>
+
+<text x="400" y="357"><b>__main__.py script</b>:</text>
+
+<text x="400" y="361" max-width="300" coordinates-name="topleft">must have a 'main_callable' variable pointing to the callable to be turned into a node.</text>
+
+</surfdef>
+
+<p>With that explained, we just have to say "Congratulations!". You successfuly created your first node!</p>
+
+<p>Before we go on to test the first node we just created, though, let's create another node in the next chapter which will allow us to view our data.</p>
+
+<p><a href="index.htsl">Table of contents</a> | <a href="ch02-defining-viewer-nodes.htsl">Next chapter</a></p>
+
+</body>
+
+</htsl>

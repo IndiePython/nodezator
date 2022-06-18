@@ -1,0 +1,305 @@
+<htsl>
+
+<head>
+  <title>Nodezator Manual | More ways to define nodes</title>
+</head>
+
+<body>
+
+<p><a href="index.htsl">Table of contents</a> &gt; More ways to define nodes</p>
+
+<h1>More ways to define nodes</h1>
+
+<h2 id="defining-node-existing-callable">Defining a node by importing an existing callable</h2>
+
+<p>Since the Python language has been around for so long, longer than Java for instance, it has a vast collection of powerful functions/callables already written, ready to be imported.</p>
+
+<p>Because of that, rather than writing your own callable, you'll often just want to turn an existing one from a module into a node.</p>
+
+<p>To do that just create your node script folder in the desired category (or create a new category folder if you want) and use one of the following templates in your __main__ script.</p>
+
+<p>If you want to use a callable from the standard library, just use the code below. Here, for instance, we turn <a href="https://docs.python.org/3/library/math.html#math.sqrt">math.sqrt()</a> into a node.</p>
+
+<python>
+### turning callable from standard library into a node
+
+### import callable
+from math import sqrt
+
+### alias it as the main callable
+main_callable = sqrt
+
+### define the standard library import statement
+stlib_import_text = 'from math import sqrt'
+</python>
+
+<p>If you want to use a callable from a third-party library, use the code below instead. Here, for instance, we turn <a href="https://numpy.org/doc/stable/reference/generated/numpy.save.html">numpy.save()</a> into a node:</p>
+
+<python>
+### turning callable from third-party library into a node
+
+### import callable
+from numpy import save
+
+### alias it as the main callable
+main_callable = save
+
+### define the third-party library import statement
+third_party_import_text = 'from numpy import save'
+</python>
+
+
+<h2 id="incompatible-callables-custom-signatures">Incompatible callables and custom signatures</h2>
+
+<p>Even though Nodezator can turn any callable into a node, some require an extra step.</p>
+
+<p>Internally, Nodezator uses the <a href="https://docs.python.org/3/library/inspect.html#inspect.signature">inspect.signature()</a> function from the standard library to gather information about the signature of the callable to be turned into a node.</p>
+
+<p>However, not all callables can have their signature inferred in that way and would instead raise an error, as explained in the inspect.signature() documentation:</p>
+
+<blockquote>
+
+  <p>...in CPython, some built-in functions defined in C provide no metadata about their arguments.</p>
+
+  <footer>inspect.signature documentation</footer>
+
+</blockquote>
+
+<p>Fortunately, solving that is trivial and require only a single extra step: that you provide the signature yourself by defining a dummy function. The function doesn't need a body or any code, just the <b>def statement</b> suffices. Here's an example of a __main__.py file where we turn <a href="https://www.pygame.org/docs/ref/image.html#pygame.image.save">pygame.image.save()</a> into a node, even though it is inherently incompatible with inspect.signature():</p>
+
+<python>
+### providing a signature for an incompatible callable
+
+### import the callable
+from pygame.image import save
+
+### define it as the main callable
+main_callable = save
+
+### third-party library import statement
+third_party_import_text = 'from pygame.image import save'
+
+### write the dummy function and alias it as the
+### signature_callable; this is the only additional step
+### to turn an incompatible callable into a node
+
+def _save(surface, filename_or_fileobj, namehint=''):
+    pass
+
+signature_callable = _save
+</python>
+
+<p>Note that the underline character ('_') in the name of the signature callable <i>_save</i> was added only to differentiate it from the original save() function. You can use whichever naming convention you want, though.</p>
+
+<p>You can also use this feature even with compatible callables in order to provide a more useful signature. For instance, to define widgets for the callable, since widgets are defined in the signature.</p>
+
+<p>For example, you know the node we defined for math.sqrt() earlier? Here's how we would make it even more useful by providing a custom signature that is equivalent to its original one but results in the definition of a widget to help the user provide integers.</p>
+
+<python>
+### providing another (equivalent) signature for math.sqrt()
+
+### import callable
+from math import sqrt
+
+### alias it as the main callable
+main_callable = sqrt
+
+### define the standard library import statement
+stlib_import_text = 'from math import sqrt'
+
+### write the dummy function and alias it as the
+### signature_callable; this new signature will be
+### used to define the node instead of the main callable
+
+def _sqrt(x:int=4, /) -&gt; float:
+    pass
+
+signature_callable = _sqrt
+</python>
+
+<p>If you want to learn how to define widgets take a look at <a href="ch07-basic-way-define-widgets.htsl">Basic ways to define widgets</a>, <a href="ch08-full-syntax-more-widgets.htsl">Full syntax and more widgets</a>, <a href="ch09-widget-presets-more-widgets.htsl">Widget presets and more widgets</a> and <a href="ch10-preview-widgets.htsl">Preview widgets</a>.</p>
+
+<p>Some callables, besides not being compatible with inspect.signature(), also <b>have more than 01 signature</b>.</p>
+
+<p>For instance, the <a href="https://www.pygame.org/docs/ref/rect.html#pygame.Rect">pygame.Rect</a> class has 03 different signatures:</p>
+
+<ul>
+  <li>Rect(top, left, width, height) -&gt; Rect</li>
+  <li>Rect(topleft, size) -&gt; Rect</li>
+  <li>Rect(object) -&gt; Rect</li>
+</ul>
+
+<p>So, how would we define a node for this class? Simple: you would need to <b>define a node for each signature</b>.</p>
+
+<p>So, suppose you had a <i>generative_art</i> node pack (a folder) and inside it you had a <i>geometry2d</i> category (also a folder), you'd create 03 different node script folders, each with its own __main__.py file representing a node with a distinct signature.</p>
+
+<p>This could be the code for the 1st signature:</p>
+
+<python>
+### 1st pygame.Rect node
+### generative_art/geometry2d/rect_from_values/__main__.py
+
+### import the callable
+from pygame import Rect
+
+### define it as the main callable
+main_callable = Rect
+
+### third-party library import statement
+third_party_import_text = 'from pygame import Rect'
+
+### write the dummy function and alias it as the
+### signature_callable;
+
+def _Rect(left, top, width, height):
+    pass
+
+signature_callable = _Rect
+</python>
+
+<p>And this for the 2nd one:</p>
+
+<python>
+### 2nd pygame.Rect node
+### generative_art/geometry2d/rect_from_pos_size/__main__.py
+
+### import the callable
+from pygame import Rect
+
+### define it as the main callable
+main_callable = Rect
+
+### third-party library import statement
+third_party_import_text = 'from pygame import Rect'
+
+### write the dummy function and alias it as the
+### signature_callable;
+
+def _Rect(topleft, size):
+    pass
+
+signature_callable = _Rect
+</python>
+
+<p>And this, finally, for the 3rd one:</p>
+
+<python>
+### 3rd pygame.Rect node
+### generative_art/geometry2d/rect_from_object/__main__.py
+
+### import the callable
+from pygame import Rect
+
+### define it as the main callable
+main_callable = Rect
+
+### third-party library import statement
+third_party_import_text = 'from pygame import Rect'
+
+### write the dummy function and alias it as the
+### signature_callable;
+
+def _Rect(object):
+    pass
+
+signature_callable = _Rect
+</python>
+
+<p>Note that the only difference between the 03 scripts is that each is in its own node script folder (rect_from_values, rect_from_pos_size and rect_from_object) and their signature callable.</p>
+
+<p>Finally, I'd just like to point out that <b>just cause a callable has multiple signatures doesn't mean it is worth to create distinct nodes for all of them</b>. The pygame.image.save() function we met earlier, for instance, actually has 02 different signatures.</p>
+
+<p>The pygame online documentation states that it can be represented by <i>save(surface, filename)</i> or <i>save(surface, fileobj, namehint='')</i>. However I decided to implement only the latter signature, the one containing the <i>namehint</i> parameter, because it already covers all existing use-cases.</p>
+
+
+<h2 id="call-formatting">Call formatting for improving node definitions and solving issues</h2>
+
+<p>There is another useful feature you need to know in other to help you improve your node definitions and even solve specific issues. It is called <b>call formating</b>.</p>
+
+<p>Some function names are too simple for their own good and make name clashes too likely to happen. For instance, both pygame.image.save() and numpy.save() functions have the same name. Instanciating and executing nodes inside Nodezator would not be problem, because they exist in different node script folders, so Nodezator has no problem telling them apart.</p>
+
+<p>Nonetheless you'd still have different nodes with the <b>same title on top</b> ("save") which would be confusing. Even worse, when exporting your node layout as python code, <b>the import statements would cause a name clash</b>, that is, both <i>from numpy import save</i> and <i>from pygame.image import save</i> would be executed and whichever executed last would <b>override</b> the other, creating a bug in the exported code.</p>
+
+<p>Solving this is simple, though: just use a new name for one (or both) of the callables and add a <i>call_format</i> variable specifying how the callable must be called. The variable must contain a string. Here's how you'd do it:</p>
+
+<python>
+### changing name of numpy.save()
+
+### import callable
+from numpy import save as save_array
+
+### alias it as the main callable
+main_callable = save_array
+
+### define the third-party library import statement
+third_party_import_text = (
+  'from numpy import save as save_array'
+)
+
+### define a call_format variable specifying how the
+### callable will be called from now on
+call_format = 'save_array'
+</python>
+
+<p>Even though you only need to do this to one of the nodes in order to eliminate the name clash, we recommend doing this to both. In fact, everytime you suspect the name of a function is too common/simple, it is a good practice to <b>pick a more expressive name</b> to help differentiate it, even if no name clash exists. Here's how the code for pygame.image.save() would be:</p>
+
+<python>
+### changing name of pygame.image.save()
+
+### import the callable
+from pygame.image import save as save_surface
+
+### define it as the main callable
+main_callable = save_surface
+
+### third-party library import statement
+third_party_import_text = (
+  'from pygame.image import save as save_surface'
+)
+
+### dummy function aliased as signature_callable
+
+def _save(surface, filename_or_fileobj, namehint=''):
+    pass
+
+signature_callable = _save
+
+### define a call_format variable specifying how the
+### callable will be called from now on
+call_format = 'save_surface'
+</python>
+
+<p>There's still another issue call_format helps solving. Some callables cannot be exported directly from a module. For instance, <a href="https://docs.python.org/3/library/itertools.html#itertools.chain.from_iterable">itertools.chain.from_iterable()</a> cannot be exported directly because it is an attribute of the <i>chain()</i> object living within the <i>itertools</i> module. That is, the import statement <i>from itertools.chain import from_iterable</i> would fail.</p>
+
+<p>Fortunately, solving this is also simple using call_format. Here's how it's done:</p>
+
+<python>
+### turning itertools.chain.from_iterable() into a node
+
+### import statement (cannot import from_iterable())
+from itertools import chain
+
+### alias from_iterable() as the main callable;
+###
+### we don't need to define a signature callable for
+### from_iterable(), cause it is compatible with
+### inspect.signature()
+main_callable = chain.from_iterable
+
+### define the standard library import statement
+stlib_import_text = 'from itertools import chain'
+
+### use call_format to define how from_iterable() must
+### be called
+call_format = 'chain.from_iterable'
+</python>
+
+<p>Nodezator already includes chain.from_iterable() as an app-defined node, so you don't need to do this yourself, though.</p>
+
+<p>As a curiosity, I actually decided to add a custom signature to chain.from_iterable() in Nodezator using a signature_callable. I did it so that I could annotate the type of the input and output. It was just a cosmetic measure, though, because <a href="ch06-color-coding-inputs-outputs.htsl">annotated inputs/outputs are color-coded</a> when displayed as sockets within nodezator.</p>
+
+<p><a href="ch03-nodes-variable-parameters-custom-outputs.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch05-loading-nodes.htsl">Next chapter</a></p>
+
+</body>
+
+</htsl>

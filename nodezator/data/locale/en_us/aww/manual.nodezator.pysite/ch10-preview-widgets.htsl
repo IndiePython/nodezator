@@ -1,0 +1,264 @@
+<htsl>
+
+<head>
+  <title>Nodezator Manual | Preview widgets</title>
+</head>
+
+<body>
+
+<p><a href="index.htsl">Table of contents</a> &gt; Preview widgets</p>
+
+<h1>Preview widgets</h1>
+
+<h2 id="what-are-preview-widgets">What are preview widgets?</h2>
+
+<p>Finally, there are a number of widgets that fall on the same category, called preview widgets. The data they hold is a <b>string representing a path</b> on your filesystem or a <b>list of strings representing multiple paths</b>. What differs among them is the kind of file (general, text, image, etc.) the paths refer to and how the contents of each path are represented in the widget.</p>
+
+<p>All preview widgets have a <b>folder button</b> on their topleft corner that opens the file manager so that you can choose the path(s) you want the widget to reference.</p>
+
+<p>Some of the preview widgets with more complex previews also have a <b>reload button</b> on their topright corner, which causes the preview to be reloaded, in case you want the preview to reflect changes made to it.</p>
+
+
+<h2 id="path-preview">The path preview widget</h2>
+
+<p>The simplest and more general of the preview widgets is the path preview widget. The only preview it provides is the name of the path(s) it refers to. Since it only shows the name of the files it is ideal to represent any kind of file.</p>
+
+<python>
+### node with a path preview widget
+
+### standard library import
+from pathlib import Path
+
+
+def does_path_exist(
+
+      path : {
+
+        'widget_name' : 'path_preview',
+        'type': str,
+
+      } = '.',
+
+    ):
+    return Path(path).exists()
+</python>
+
+<img src="images/ch10_img00.png" alt="Node generated from function" />
+
+
+<h2 id="text-preview">The text preview widget</h2>
+
+<p>If the path you want to refer to has text, use a text preview widget instead, since it provides a nice preview of the file contents and allows you to see the entire file contents by clicking the preview.</p>
+
+<python>
+### node with a text preview widget
+
+def get_text_from_file(
+
+      path : {
+
+        'widget_name' : 'text_preview',
+        'type': str,
+
+      } = '.',
+
+    ):
+    with open(path, mode='r', encoding='utf-8') as f:
+        return f.read()
+</python>
+
+<p>You can see the resulting node below. Note that, since the path is '.' and there is no text file in that path, no preview can be shown, so a red circle with a line is displayed to indicate this.</p>
+
+<img src="images/ch10_img01_0.png" alt="Node generated from function" />
+
+<p>Here's what the widget looks like when the path points to an existing text file:</p>
+
+<img src="images/ch10_img01_1.png" alt="Node generated from function" />
+
+
+<h2 id="audio-preview">The audio preview widget</h2>
+
+<p>If the path you want to refer to is an audio file, use an audio preview widget instead. It doesn't provide a visual preview of the file content, but by clicking the path on the widget you can listen to the audio (provided that the format is supported by pygame; .mp3 and .wav files are usually fine).</p>
+
+<python>
+### node with an audio preview widget
+
+### standard library import
+import wave
+
+def get_wave_sample_rate(
+
+      wave_filepath : {
+
+        'widget_name' : 'audio_preview',
+        'type': str,
+
+      } = '.',
+
+    ):
+    with wave.open(wave_filepath, mode='rb') as f:
+        return f.getframerate()
+</python>
+
+<img src="images/ch10_img02.png" alt="Node generated from function" />
+
+<h2 id="image-preview">The image preview widget</h2>
+
+<p>For .jpg/.jpeg and .png files, use the image preview widget. Besides showing a preview of the image, by clicking such preview the widget also gives you access to an image viewer that allows you to see bigger thumbs of the images and even see it in its full size by pressing the <b>&lt;F&gt;</b> key.</p>
+
+<python>
+### node with an image preview widget
+
+
+### third-party library import
+from pygame.image import load as load_image
+
+
+def surface_from_image(
+
+      image_path : {
+
+        'widget_name' : 'image_preview',
+        'type': str,
+
+      } = '.',
+
+      per_pixel_alpha: bool = False,
+
+    ):
+
+    surf = load_image(image_path)
+
+    surf = (
+
+      surf.convert_alpha()
+      if per_pixel_alpha
+
+      else surf.convert()
+
+    )
+
+    return surf
+</python>
+
+<p>You can see the resulting node below. Note that, since the path is '.' and there is no image file in that path, no preview can be shown, so, just like in text previews, a red circle with a line is displayed to indicate this.</p>
+
+<img src="images/ch10_img03_0.png" alt="Node generated from function" />
+
+<p>Here's what the widget looks like when the path points to an existing image file:</p>
+
+<img src="images/ch10_img03_1.png" alt="Node generated from function" />
+
+
+<h2 id="video-preview">The video preview widget</h2>
+
+<p>As the name implies, the video preview widget can be used for referencing path(s) for video file(s). The previews that appear when clicking the thumb are also thumb-sized and only a few seconds long to prevent high memory usage.</p>
+
+<p>The previews rely on <a href="https://ffmpeg.org/">ffmpeg</a> to work, so if the <i>ffmpeg</i> and <i>ffprobe</i> commands are not available in your system the previews won't be available as well.</p>
+
+<p>Here we use <a href="https://github.com/kkroening">Karl Kroening</a>'s <a href="https://github.com/kkroening/ffmpeg-python">ffmpeg-python</a> library to define a node that flips a video horizontally and saves it:</p>
+
+<python>
+### node with video preview widgets
+
+### third-party library import
+from ffmpeg import input as get_stream
+
+
+def flip_video_horizontally(
+
+      input_video_path : {
+
+        'widget_name' : 'video_preview',
+        'type': str,
+
+      } = 'input.mp4',
+
+      output_video_path : {
+
+        'widget_name' : 'video_preview',
+        'type': str,
+
+      } = 'output.mp4',
+
+    ):
+
+    (
+      get_stream(input_video_path)
+      .hflip()
+      .output(output_video_path)
+    )
+</python>
+
+<p>You can see the resulting node below. Note that, since the path in both video preview widgets is '.' and there is no video file in that path, no preview can be shown, so, a red circle with a line is displayed to indicate this, like in some of the other preview widgets.</p>
+
+
+<img src="images/ch10_img04_0.png" alt="Node generated from function" />
+
+<p>Here's what the widget looks like when the path in the first parameter points to an existing video file:</p>
+
+<img src="images/ch10_img04_1.png" alt="Node generated from function" />
+
+
+<h2 id="font-preview">The font preview widget</h2>
+
+<p>To preview .ttf and .otf fonts, use the font preview widget. Just like the image previewer, it displays a preview of the file in the node and also features a dedicated font viewer that opens up when you click the thumb.</p>
+
+<python>
+### node with a font preview widget (among others)
+
+### third-party library import
+from pygame.font import Font
+
+
+def get_text_surface(
+
+      text: str = '',
+
+      size : int = 0,
+
+      antialiasing : bool = True,
+
+      foreground_color : {
+
+        'widget_name': 'color_button',
+        'type': tuple,
+
+      } = (0, 0, 0),
+
+      background_color : {
+
+        'widget_name': 'color_button',
+        'type': tuple,
+
+      } = (255, 255, 255),
+
+      font_path : {
+
+        'widget_name' : 'font_preview',
+        'type': str,
+
+      } = '.',
+
+    ):
+    return Font(font_path, size).render(
+                                   text,
+                                   antialiasing,
+                                   foreground_color,
+                                   background_color,
+                                 ).convert()
+</python>
+
+<p>You can see the resulting node below. Note that, since the path in font preview widget in the last parameter is '.' and there is no font file in that path, no preview can be shown, so, a red circle with a line is displayed to indicate this. As we saw, this is the behaviour in some of the other preview widgets as well.</p>
+
+<img src="images/ch10_img05_0.png" alt="Node generated from function" />
+
+<p>Here's what the widget looks like when the path in the that parameter points to an existing font file:</p>
+
+<img src="images/ch10_img05_1.png" alt="Node generated from function" />
+
+<p><a href="ch09-widget-presets-more-widgets.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch11-other-objects.htsl">Next chapter</a></p>
+
+</body>
+
+</htsl>

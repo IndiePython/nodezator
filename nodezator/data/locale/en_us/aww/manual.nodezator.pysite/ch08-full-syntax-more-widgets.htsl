@@ -1,0 +1,293 @@
+<htsl>
+
+<head>
+  <title>Nodezator Manual | Full widget definition syntax and more widgets</title>
+</head>
+
+<body>
+
+<p><a href="index.htsl">Table of contents</a> &gt; Full widget definition syntax and more widgets</p>
+
+<h1>Full widget definition syntax and more widgets</h1>
+
+<p>The way we have been using to define widgets associates each widget with the <b>kind of data</b> it is meant to edit. Booleans are associated with the check button, strings with the string entry, integers and floats with the intfloat entry. That is, each kind of data is associated with only one widget.</p>
+
+<p>That way of defining widgets is very simple, straightforward and useful, but it has its limitations. What if we wanted a widget other than the string entry to handle our string value?</p>
+
+<p>For instance, check the function below:</p>
+
+<python>
+### node meant for receiving text (first version)
+
+def get_word_count(text:str=''):
+
+    return sum(
+             len(line.split())
+             for line in text.splitlines()
+           )
+</python>
+
+<p>Even though single-line strings are fine, considering the name of the parameter ("text") and the body of the function we can see that the function can handle multiline string as well. The string entry widget is not suited for displaying a multiline string, though.</p>
+
+<p>We can't use the syntax we learned here to request another widget though, because it would also hand string data and, as we already know, using <i>str</i> as the annotation and a string as the default value would define a simple string entry widget.</p>
+
+<p>We would clearly need another way to define widgets so that we could be more specific about:</p>
+
+<ul>
+  <li>which widget we want;</li>
+  <li>additional configurations for that widget.</li>
+</ul>
+
+<p>Fortunately, this more complete syntax is already available. In fact, the syntax we have been using so far, though very simple, straightforward and useful, is actually <a href="https://en.wikipedia.org/wiki/Syntactic_sugar">syntactic sugar</a> to speed up simple widget definitions in the full syntax to be presented.</p>
+
+
+<h2 id="presenting-syntax">Presenting the full syntax</h2>
+
+<p>The full syntax allows complete control over our widget definition and is actually simple as well. Just like with the syntactic sugar we have been using until now, you still just need an <b>annotation</b> and a proper <b>default value</b>.</p>
+
+<p>The only difference is that the <b>annotation is now a dictionary</b> containing information about the parameter. Such information consists of:</p>
+
+<table>
+
+  <!-- table head -->
+
+  <thead>
+
+    <tr>
+      <th class="col-2">Key (string)</th>
+      <th class="col-6">Value</th>
+    </tr>
+
+  </thead>
+
+  <!-- table body -->
+
+  <tbody>
+
+    <tr>
+      <td>widget_name</td>
+      <td>a string representing the widget we want</td>
+    </tr>
+
+    <tr>
+      <td>widget_kwargs</td>
+      <td>(optional in some cases) a dictionary representing additional keyword arguments to configure the widget</td>
+    </tr>
+
+    <tr>
+      <td>type</td>
+      <td>the expected type(s) of the parameter</td>
+    </tr>
+
+  </tbody>
+
+</table>
+
+
+<h2 id="text-display">The text display widget</h2>
+
+<p>Now that we know the full widget definition syntax, we can finally be precise about which widget we want and its configuration.</p>
+
+<p>For instance, below we present the same <i>get_word_count()</i> function from before, but this time we request the text display widget for the <i>text</i> parameter using the full syntax we just learned:</p>
+
+<python>
+### node meant for receiving text (second version)
+
+def get_word_count(
+
+      text: { # here we use a dict to provide metadata
+              # about the 'text' parameter; remember
+              # that the 'widget_kwargs' key is optional;
+
+        'widget_name': 'text_display',
+        'type': str,
+
+      } = '' # default value (still needed)
+
+    ):
+
+    return sum(
+             len(line.split())
+             for line in text.splitlines()
+           )
+</python>
+
+<p>The text display widget, as the name implies, is much more suited for displaying text. Here's what our node looks like now:</p>
+
+<img src="images/ch08_img00.png" alt="Node generated from function" />
+
+<p>The full list of available widgets and their configuration options can be found in the <a href="appendix-c-widget-configurations.htsl">appendix C</a>.</p>
+
+<p>As we just learned, the full widget definition syntax allows us to request any widget we want and to provide extra configuration for it. Let's see more examples in the next sections.</p>
+
+<h2 id="color-button">The color button widget</h2>
+
+<p>One of the advantages of working with node editors is how good they are to edit media, like images for instance. A recurring kind of data we deal with when working with images is <b>colors</b>.</p>
+
+<p>Here's an useful widget to store and edit colors, versatile enough to handle both <b>a single color</b> and <b>multiple colors</b> as needed. Here's how it is defined:</p>
+
+<python>
+### node with widget to hold and edit colors
+
+### third-party import
+from pygame import Surface
+
+
+def get_solid_color_surface(
+
+      width  : int = 100,
+      height : int = 100,
+
+      fill_color: { # color button widget defined here
+
+        'widget_name': 'color_button',
+        'type': tuple,
+
+      } = (255, 0, 0) # default value is the red color
+
+    ):
+
+    ### create surface
+    surf = Surface((width, height)).convert()
+
+    ### ensure fill color is a solid color by using only
+    ### the first three values (values of red, green and
+    ### blue channels)
+    fill_color = fill_color[:3]
+
+    ### finally fill the surface with the given color and
+    ### return it
+
+    surf.fill(fill_color)
+
+    return surf
+</python>
+
+<p>And here's the resulting node:</p>
+
+<img src="images/ch08_img01.png" alt="Node generated from function" />
+
+<p>The color button also has extra options. One of them is used to define whether color values should be represented by tuples (as in the example above) or strings (for instance, "#ffffff"), in case your function can process colors using such notation. Remember: all available widgets and their options can be found in the <a href="appendix-c-widget-configurations.htsl">appendix C</a>.</p>
+
+<p>To edit the color(s) in the widget, click the icon to the left of the widget. If click the colors, though, a dedicated color viewer will popup allowing to see the colors in action in different contexts like as a color list or pattern drawings.</p>
+
+<p>Besides allowing the definition of additional widgets, the full widget definition syntax also allows you to define extra options for seemingly simple widgets, like the entry widgets previously presented (the string entry and intfloat entries). We are now going to explore some of those options.</p>
+
+<h2 id="revisiting-string-entry">Revisiting the string entry widget</h2>
+
+<p>The string entry is even more powerful than it appears. Besides allowing you to edit strings, it also has an option to validate what kind of string the widget can hold. Here's what we'd do, for instance, if we wanted to ensure the value on the widget is alphanumeric:</p>
+
+<python>
+### string widget which accepts only alphanumeric strings
+
+from pygame.color import THECOLORS
+
+def pygame_color_by_name(
+
+      color_name : {
+
+        'widget_name'   : 'string_entry',
+
+        'widget_kwargs' : {
+          'validation_command': str.isalnum,
+        },
+
+        'type': str,
+
+      } = 'red'
+
+    ):
+    return THECOLORS[color_name.islower()]
+</python>
+
+<p>Look at the <i>return</i> statement of the function above. Note that we use a lowercase version of the received <i>color_name</i> argument. In addition to make that lowercase transformation, if we wanted to also ensure the value in the string entry was lowercase, we could also provide an extra option to format the values typed in the string entry:</p>
+
+<python>
+### string widget which accepts only alphanumeric strings
+### and automatically formats typed values to lowercase
+
+from pygame.color import THECOLORS
+
+def pygame_color_by_name(
+
+      color_name : {
+
+        'widget_name'   : 'string_entry',
+
+        'widget_kwargs' : {
+          'validation_command': str.isalnum,
+          'formatting_command': str.lower, # just added this
+        },
+
+        'type': str,
+
+      } = 'red'
+
+    ):
+    return THECOLORS[color_name.islower()]
+</python>
+
+<p>Adding the extra option here might be overkill though, since the function already does the lowercase conversion in the <i>return</i> statement. We just wanted to show you that you could do it if you wanted.</p>
+
+
+<h2 id="revisiting-int-float">Revisiting the intfloat entry widget</h2>
+
+<p>The intfloat entry is another widget that has a lot of extra options. Here we're going to see just two of them, the ones that allow us to define minimum and maximum values for the number typed.</p>
+
+<p>Here's a node whose intfloat widget has a minimum value defined:</p>
+
+<python>
+### intfloat widget which accepts only integers &gt; 0
+
+def get_zero_list(
+
+      quantity_of_zeros : {
+
+        'widget_name'   : 'intfloat_entry',
+
+        'widget_kwargs' : {
+          'min_value': 1,
+        },
+
+        'type': int,
+
+      } = 1
+
+    ):
+    return [0 for _ in range(quantity_of_zeros)]
+</python>
+
+<p>As we said, the maximum value can be provided as well. Here's another example where we provide it:</p>
+
+<python>
+### intfloat widget with minimum and maximum values
+
+def hue_is_near_red(
+
+      hue: {
+
+        'widget_name'   : 'intfloat_entry',
+
+        'widget_kwargs' : {
+
+          # hue values range from 0 to 360 (though
+          # 360 is the same as 0)
+
+          'min_value': 0,
+          'max_value': 360,
+
+        },
+
+        'type': int,
+
+      } = 0
+
+    ):
+    return True if hue &gt; 350 or hue &lt; 10 else False
+</python>
+
+<p><a href="ch07-basic-way-define-widgets.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch09-widget-presets-more-widgets.htsl">Next chapter</a></p>
+
+</body>
+
+</htsl>

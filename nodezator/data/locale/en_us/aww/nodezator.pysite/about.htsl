@@ -1,0 +1,23 @@
+<htsl>
+
+<head>
+  <title>About the app</title>
+</head>
+
+<body>
+
+  <h1>Nodezator - A python node editor</h1>
+
+  <h2>Introduction</h2>
+
+  <p>Nodezator is a multi-purpose visual editor to connect Python functions (and callables in general) visually in order to produce flexible parametric behaviour/data/applications/snippets.</p>
+
+  <p>For tutorials/examples/roadmap and more go to <a href="https://nodezator.com">nodezator.com</a>.</p>
+
+  <p>This software is developed by Kennedy Richard (<a href="https://kennedyrichard.com">website</a>/<a href="https://twitter.com/KennedyRichard">twitter</a>) as part of the <a href="https://indiepython.com">Indie Python</a> project.</p>
+
+  <p>Please, become our patron on <a href="https://patreon.com/kennedyrichard">patreon</a> to support development of this and other useful software.</p>
+
+</body>
+
+</htsl>
