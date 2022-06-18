@@ -1,92 +1,104 @@
-#! /usr/bin/env python3
+"""Facility for launching the application.
 
-### standard library imports
+Nodezator: A Python node editor developed by
+Kennedy Richard <kennedy@kennedyrichard.com>.
 
-from argparse import ArgumentParser
+https://kennedyrichard.com
+https://twitter.com/KennedyRichard
 
-from io import StringIO
+https://nodezator.com
+"""
+### standard library import
+from pathlib import Path
 
-from contextlib import redirect_stdout
+### local imports
+
+from logman.main import get_new_logger
+
+from appinfo import TITLE, NATIVE_FILE_EXTENSION
+
+from config import APP_REFS
 
 
-### third-party import
-
-with redirect_stdout(StringIO()):
-    import pygame as pg
+### store reference to application directory
+APP_REFS.app_dir = Path(__file__).parent.resolve()
 
 
-def main():
-    """Execute app."""
-    ### received filepath is ignored for now
-    ### (we do nothing with it)
-    _ = filepath_from_parsed_arguments()
+### create logger for module
+logger = get_new_logger(__name__)
 
-    ###
 
-    pg.init()
+def main(filepath=None):
+    """Launch application.
 
-    pg.display.set_caption("Nodezator", "NDZ")
-
-    screen = pg.display.set_mode((400, 400), 0, 32)
-
-    screen.fill((200, 200, 200))
-
-    screen_top_text = "Press <ESCAPE> to exit"
-
-    text_surf = pg.font.Font(None, 28).render(
-                                         screen_top_text,
-                                         True,
-                                         (20, 20, 20)
-                                       )
-
-    screen.blit(text_surf, (10, 10))
-
-    running = True
-
-    while running:
-        
-        ### event processing
-
-        for event in pg.event.get():
-            
-            if event.type == pg.QUIT:
-
-                running = False
-
-            elif event.type == pg.KEYUP:
-
-                if event.key == pg.K_ESCAPE:
-
-                    running = False
-
-        ### drawing
-        pg.display.update()
-
-    pg.quit()
-
-def filepath_from_parsed_arguments():
-    """Parse and return arguments."""
-
-    description = """Future python node editor
-
-    Release date: until 2021-12-01
-
-    For now only a dummy message appears when executed.
+    Parameters
+    ==========
+    filepath (string or None)
+        the path to a file to be opened. May be None, though,
+        in which case the application starts without a
+        loaded file.
     """
+    ### load function that runs the app
+    logger.info("Loading application.")
+
+    ## try loading
+    try: from mainloop import run_app
+
+    ## catch unexpected exceptions so we can log them
+    ## before reraising
+
+    except Exception as err:
+
+        logger.exception(
+          "Unexpected exception while loading application."
+          " Reraising now."
+        )
+
+        raise err
+
+    ### finally, run the application
+
+    logger.info("Starting application session.")
+
+    run_app(filepath)
+
+    logger.info("Finished application session.")
+
+
+if __name__ == "__main__":
+
+    ### parse arguments received, looking for a filepath
+    ### (or using None instead, a filepath wasn't provided)
+
+    ## import argument parser
+    from argparse import ArgumentParser
+
+    ## instantiate and configure it
 
     parser = ArgumentParser(
-               description="Future python node editor"
+               description = TITLE + " - Python Node Editor"
              )
 
     parser.add_argument(
+
              'filepath',
-             type=str,
-             nargs='?',
-             default="",
-             help="file to be opened."
+
+             type    = str,
+             nargs   = '?',
+             default = None,
+
+             help    = (
+               "path of "
+               + NATIVE_FILE_EXTENSION
+               + " file to be loaded."
+             )
            )
 
-    return parser.parse_args().filepath
+    ## parse arguments
+    args = parser.parse_args()
 
-if __name__ == '__main__':
-    main()
+
+    ### finally call the main function, passing along
+    ### the filepath argument received (which might be the
+    ### default, None)
+    main(args.filepath)
