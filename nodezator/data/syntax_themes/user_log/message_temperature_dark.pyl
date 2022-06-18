@@ -1,0 +1,15 @@
+{
+
+  "background_color": (77, 77, 90),
+
+  "text_settings": {
+
+    "normal"          : {"foreground_color": (238, 238, 238)},
+    "info_header"     : {"foreground_color": ( 40, 228,  40)},
+    "warning_header"  : {"foreground_color": (228, 228,   0)},
+    "error_header"    : {"foreground_color": (255,  90,  90)},
+    "critical_header" : {"foreground_color": (220, 120, 245)}
+
+  }
+
+}

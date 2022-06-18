@@ -1,0 +1,12 @@
+{
+
+  "background_color": (30, 130, 70),
+
+  "text_settings": {
+
+    "normal"    : {"foreground_color": ( 248,  248,  248)},
+    "todo_word" : {"foreground_color": ( 38,  38,  38), "background_color": (255,  69,   0) }
+
+  }
+
+}

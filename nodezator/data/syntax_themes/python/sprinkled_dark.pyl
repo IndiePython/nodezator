@@ -1,0 +1,25 @@
+{
+
+  "background_color": ( 35,  35,  35),
+
+  "text_settings": {
+
+    "normal"                  : {"foreground_color": (235, 235, 235)},
+    "string"                  : {"foreground_color": (215, 215,   0)},
+    "triple_quotes_string"    : {"foreground_color": (  0, 205, 205)},
+    "comment"                 : {"foreground_color": (  0, 215,   0)},
+    "todo_word"               : {"foreground_color": (  0,   0,   0), "background_color": (215, 104,   0)},
+    "number"                  : {"foreground_color": (215,   0,   0)},
+    "builtin_function"        : {"foreground_color": (  0, 150, 255)},
+    "name_after_definition"   : {"foreground_color": (  0, 180, 255)},
+    "decorator_at"            : {"foreground_color": (205, 205,   0)},
+    "name_after_decorator_at" : {"foreground_color": (  0,   0, 235)},
+    "builtin_exception"       : {"foreground_color": (185,   0,   0)},
+    "keyword"                 : {"foreground_color": (245, 144,   0)},
+    "boolean"                 : {"foreground_color": (235,   0, 235)},
+    "none_and_ellipsis"       : {"foreground_color": (235,   0, 235)},
+    "logical_and_import"      : {"foreground_color": (215, 215,   0)}
+
+  }
+
+}
