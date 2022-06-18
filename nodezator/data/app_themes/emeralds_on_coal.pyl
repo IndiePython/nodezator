@@ -1,0 +1,415 @@
+### dictionary whose nested key-value pairs represent
+### variable names and the color values they hold;
+###
+### it is important that all colors are represented with
+### tuples rather than lists, because they may or may not
+### be used as keys in dictionaries in the app
+
+{
+
+  ### All purposes
+
+  "GENERAL_COLORS" : {
+
+    "WINDOW_FG"       : (238, 238, 238),
+    "WINDOW_BG"       : ( 77,  77,  90),
+    "HIGHLIGHT_COLOR" : (230, 230, 230),
+    "SHADOW_COLOR"    : (140, 140, 140),
+
+    "BUTTON_FG"         : (238, 238, 238),
+    "BUTTON_BG"         : ( 47,  47,  60),
+    "HOVERED_BUTTON_BG" : ( 66,  66,  84),
+
+    "THUMB_BG"           : (  77,  77,  90),
+    "IMAGE_NOT_FOUND_FG" : ( 255,  70,  70),
+    "IMAGE_NOT_FOUND_BG" : (  40,  40,  40),
+
+  },
+
+  ### menu
+
+  "MENU_COLORS" : {
+    "MENU_FG"         : (238, 238, 238),
+    "MENU_BG"         : ( 77,  77,  90),
+    "MENU_HOVERED_FG" : (238, 238, 238),
+    "MENU_HOVERED_BG" : ( 30, 130,  70),
+  },
+
+  ### grid
+
+  "SMALL_GRID_COLOR" : (0, 0, 0),
+  "LARGE_GRID_COLOR" : (0, 0, 0),
+
+  ### color used to increase the contrast between the
+  ### background and foreground when presenting widgets
+  "CONTRAST_LAYER_COLOR" : ( 47,  47,  60),
+
+  ### hide switch
+
+  "HIDE_SWITCH_FG" : (245, 245, 245),
+  "HIDE_SWITCH_BG" : ( 10,  10,  10),
+
+
+  ### splash screen
+
+  "SPLASH_SCREEN_COLORS" : {
+    "SPLASH_BG"           : ( 47,  47,  60),
+    "SPLASH_FONT"         : (228, 228, 228),
+    "SPLASH_ROBOT_BG"     : ( 30, 130,  70),
+    "SPLASH_SHADOW_COLOR" : (  0,   0,   0),
+  },
+
+  ### window manager: labels
+
+  "WM_LABEL_FG" : (238, 238, 238),
+  "WM_LABEL_BG" : (  0,   0,   0),
+
+  ### graph colors: general
+  "GRAPH_BG" : (34, 34, 42),
+
+  ### graph colors: nodes
+
+  "CALLABLE_NODE_COLORS" : {
+
+    "NODE_BODY_BG" : ( 90,  90, 120),
+    "NODE_OUTLINE" : (  0,   0,   0),
+    "NODE_TITLE"   : (248, 248, 248),
+    "NODE_LABELS"  : (248, 248, 248),
+
+    "NODE_KEYWORD_KEY_OUTLINE" : (  0,   0,   0),
+    "NODE_KEYWORD_KEY_FILL"    : (255, 255,   0),
+
+    "COMMENTED_OUT_NODE_BG" : (30, 130, 70),
+
+    "SUBP_MOVE_BUTTON_FG" : ( 16,  16,  16),
+    "SUBP_MOVE_BUTTON_BG" : (200, 200, 200),
+
+    "WIDGET_ADD_BUTTON_OUTLINE" : ( 16,  16,  16),
+    "WIDGET_ADD_BUTTON_FILL"    : (102, 255, 102),
+
+    "WIDGET_REMOVE_BUTTON_OUTLINE" : ( 16,  16,  16),
+    "WIDGET_REMOVE_BUTTON_FILL"    : (204,   0,   0),
+
+    "UNPACKING_ICON_COLOR" : (255, 255, 0),
+
+  },
+
+  "PROXY_NODE_COLORS" : {
+
+
+    "PROXY_NODE_NORMAL_FG"      : (248, 248, 248),
+    "PROXY_NODE_NORMAL_BG"      : ( 90,  90, 120),
+    "PROXY_NODE_NORMAL_OUTLINE" : (  0,   0,   0),
+
+    "PROXY_NODE_COMMENTED_OUT_FG"      : (248, 248, 248),
+    "PROXY_NODE_COMMENTED_OUT_BG"      : ( 30, 130,  70),
+    "PROXY_NODE_COMMENTED_OUT_OUTLINE" : (235, 235, 235),
+
+    "PROXY_NODE_WIDGET_ADD_BUTTON_FILL" :    ( 62, 142, 255),
+    "PROXY_NODE_WIDGET_ADD_BUTTON_OUTLINE" : ( 16,  16,  16),
+    "PROXY_NODE_WIDGET_REMOVE_BUTTON_FILL" : (204,   0,   0),
+    "PROXY_NODE_WIDGET_REMOVE_BUTTON_OUTLINE" : (
+      ( 16,  16,  16)
+    ),
+
+  },
+
+  "OPERATION_NODE_COLORS" : {
+
+
+    "OPERATION_NODE_NORMAL_FG"      : (248, 248, 248),
+    "OPERATION_NODE_NORMAL_BG"      : ( 90,  90, 120),
+    "OPERATION_NODE_NORMAL_OUTLINE" : (  0,   0,   0),
+
+    "OPERATION_NODE_NORMAL_AB_CHARS" : (200, 200, 200),
+    "OPERATION_NODE_NORMAL_OP_CHARS" : (200, 20, 20),
+
+    "OPERATION_NODE_COMMENTED_OUT_FG"      : (248, 248, 248),
+    "OPERATION_NODE_COMMENTED_OUT_BG"      : ( 30, 130,  70),
+    "OPERATION_NODE_COMMENTED_OUT_OUTLINE" : (235, 235, 235),
+
+    "OPERATION_NODE_COMMENTED_OUT_AB_CHARS" : (200, 200, 200),
+    "OPERATION_NODE_COMMENTED_OUT_OP_CHARS" : (200, 20, 20),
+
+  },
+
+  ### graph colors: header colors for node categories
+
+  "NODE_CATEGORY_COLORS" : (
+
+    ( 30, 130,  70),
+    (  1,  14, 157),
+    (157,   1,  66),
+    (  1,  92, 157),
+    ( 92,   1, 157),
+    (140,  18,  18),
+    (131,   1, 157),
+    ( 11,  60,  55),
+    ( 60,  36,  11),
+    (  9,  52,  10),
+    (133, 124,   8),
+
+  ),
+
+  "BUILTIN_NODES_CATEGORY_COLOR"      : ( 20,  20,  25),
+  "STANDARD_LIB_NODES_CATEGORY_COLOR" : ( 20,  20,  25),
+  "CAPSULE_NODES_CATEGORY_COLOR"      : ( 20,  20,  25),
+
+  ### graph colors: temporary line
+  ### (when cutting segments)
+  "CUTTING_SEGMENT": (188,   0,   0),
+
+  ### graph colors: text block
+  "TEXT_BLOCK_OUTLINE": (255, 255, 255),
+
+  ### graph colors: hollow socket outline
+  "HOLLOW_SOCKET_OUTLINE": (238, 238, 238),
+
+  ### htsl browser default colors
+
+  "HTSL_BROWSER_COLORS" : {
+
+    "HTSL_ANCHOR_TEXT_FG"  : (  0,  75,   0),
+    "HTTP_ANCHOR_TEXT_FG"  : (  0,   0, 235),
+
+    "HTSL_GENERAL_TEXT_FG" : ( 38,  38,  38),
+    "HTSL_HEADING_TEXT_FG" : ( 30, 130,  70),
+
+    "HTSL_MARKED_TEXT_BG" : (255, 255, 0),
+
+    "HTSL_CANVAS_BG"  : (217, 217, 237),
+    "HTSL_BROWSER_BG" : ( 47,  47,  90),
+    "HTSL_DOCUMENT_TITLE_TEXT_FG": (205, 205, 0),
+
+  },
+
+  ### dialog icon colors (we don't have a "debug"
+  ### version in the dialog, because such kind
+  ### of messages are not meant for users)
+
+  "DIALOG_ICON_COLORS" : {
+
+    "INFO_OUTLINE":          (  0,   0,   0),
+    "INFO_ICON_OUTLINE":     (  0,   0,   0),
+    "INFO_ICON_FG":          (255, 255, 255),
+    "INFO_BG":               (  0,   0, 255),
+
+    "WARNING_OUTLINE":       (  0,   0,   0),
+    "WARNING_ICON_OUTLINE":  (  0,   0,   0),
+    "WARNING_ICON_FG":       (255, 255, 255),
+    "WARNING_BG":            (255, 255,   0),
+
+    "ERROR_OUTLINE":         (  0,   0,   0),
+    "ERROR_ICON_OUTLINE":    (  0,   0,   0),
+    "ERROR_ICON_FG":         (255, 255, 255),
+    "ERROR_BG":              (255,   0,   0),
+
+    "CRITICAL_OUTLINE":      (  0,   0,   0),
+    "CRITICAL_ICON_OUTLINE": (  0,   0,   0),
+    "CRITICAL_ICON_FG":      (255, 149,   0),
+    "CRITICAL_BG":           (255,   0,   0),
+
+  },
+
+  ### graph colors: colors to indicate expected type of
+  ### input and output sockets
+
+  "SOCKET_TYPE_COLORS" : {
+
+    "STR_TYPE_OUTLINE" : (  0,   0,   0),
+    "STR_TYPE_FILL"    : (  1, 181,  15),
+
+    "BOOL_TYPE_OUTLINE" : (  0,   0,   0),
+    "BOOL_TYPE_FILL"    : ( 40,  40, 255),
+
+    "DICT_TYPE_OUTLINE" : (  0,   0,   0),
+    "DICT_TYPE_FILL"    : (157,  95, 178),
+  
+    "NUMBER_TYPE_OUTLINE" : (  0,   0,   0),
+    "NUMBER_TYPE_FILL"    : (220,   0,   0),
+
+    "LIST_TYPE_OUTLINE" : (  0,   0,   0),
+    "LIST_TYPE_FILL"    : (243,   0, 112),
+
+    "TUPLE_TYPE_OUTLINE" : (  0,   0,   0),
+    "TUPLE_TYPE_FILL"    : (  6, 186, 253),
+
+    "ITERABLE_TYPE_OUTLINE" : (  0,   0,   0),
+    "ITERABLE_TYPE_FILL"    : (239, 219,   0),
+
+    "ITERATOR_TYPE_OUTLINE" : (  0,   0,   0),
+    "ITERATOR_TYPE_FILL"    : (246, 133,   0),
+
+    ### when the type is inspect._empty, that is, when it
+    ### isn't specified, use socket w/ these colors
+
+    "NOT_SPECIFIED_TYPE_OUTLINE" : (  0,   0,   0),
+    "NOT_SPECIFIED_TYPE_FILL"    : (200, 200, 200),
+
+    ### any other type will use socket w/ these colors
+    "OTHER_TYPE_OUTLINE" : (  0,   0,   0),
+    "OTHER_TYPE_FILL"    : (255, 149, 148),
+
+  },
+
+
+  ### widgets: string entry
+
+  "STRING_ENTRY_FG" : ( 10,  10,  10),
+  "STRING_ENTRY_BG" : (245, 245, 245),
+
+  ### widgets: literal entry
+
+  "LITERAL_ENTRY_FG" : (255, 212,  59),
+  "LITERAL_ENTRY_BG" : ( 48, 105, 152),
+
+  ### widgets: text display
+
+  "TEXT_DISPLAY_BG"      : (128, 128, 128),
+  "TEXT_DISPLAY_TEXT_FG" : (238, 238, 238),
+  "TEXT_DISPLAY_TEXT_BG" : ( 77,  77,  90),
+
+  ### widgets: literal display
+  "LITERAL_DISPLAY_BG" : ( 48, 105, 152),
+
+  ### widgets: pathbutton
+
+  "PATHBUTTON_FG": ( 10,  10,  10),
+  "PATHBUTTON_BG": (245, 245, 245),
+
+  ### widgets: path preview
+
+  "PATHPREVIEW_BUTTON_FG" : ( 16,  16,  16),
+  "PATHPREVIEW_BUTTON_BG" : (200, 200, 200),
+  "PATHPREVIEW_BG"        : (128, 128, 128),
+
+  ### widgets: text preview
+
+  "TEXTPREVIEW_FG" : (238, 238, 238),
+  "TEXTPREVIEW_BG" : ( 77,  77,  90),
+
+  ### widgets: imagedisplay
+
+  "IMAGEDISPLAY_FG"        : ( 85,  85,  85),
+  "IMAGEDISPLAY_BG"        : (128, 128, 128),
+  "IMAGEDISPLAY_BUTTON_FG" : ( 16,  16,  16),
+  "IMAGEDISPLAY_BUTTON_BG" : (200, 200, 200),
+
+  ### widgets: fontdisplay
+
+  "FONTDISPLAY_FG"        : ( 85,  85,  85),
+  "FONTDISPLAY_BG"        : (128, 128, 128),
+  "FONTDISPLAY_BUTTON_FG" : ( 16,  16,  16),
+  "FONTDISPLAY_BUTTON_BG" : (200, 200, 200),
+
+  ### widgets: audiobutton
+
+  "AUDIOBUTTON_BG"        : (128, 128, 128),
+  "AUDIOBUTTON_BUTTON_FG" : ( 16,  16,  16),
+  "AUDIOBUTTON_BUTTON_BG" : (200, 200, 200),
+
+  ### widgets: videopreview
+
+  "VIDEOPREVIEW_BG"        : (128, 128, 128),
+  "VIDEOPREVIEW_BUTTON_FG" : ( 16,  16,  16),
+  "VIDEOPREVIEW_BUTTON_BG" : (200, 200, 200),
+
+  ### widgets: int float entry (outline when focused)
+
+  "INT_FLOAT_ENTRY_FG" : (238, 238, 238),
+  "INT_FLOAT_ENTRY_BG" : ( 47,  47,  60),
+
+  "INT_FLOAT_ENTRY_RANGE_BG" : (30, 130, 70),
+
+  ### widgets: colorbutton
+  "COLORBUTTON_BG": (90, 90, 120),
+
+  ### widgets: list sorting button
+
+  "LIST_SORTING_BUTTON_FG" : ( 47,  47,  60),
+  "LIST_SORTING_BUTTON_BG" : (238, 238, 238),
+
+  ### widgets: option menu
+
+  "OPTION_MENU_FG"           : (238, 238, 238),
+  "OPTION_MENU_BG"           : ( 47,  47,  60),
+  "OPTION_MENU_HOVERED_FG"   : (238, 238, 238),
+  "OPTION_MENU_HOVERED_BG"   : ( 30, 130,  70),
+  "OPTION_MENU_UNHOVERED_FG" : (238, 238, 238),
+  "OPTION_MENU_UNHOVERED_BG" : ( 47,  47,  60),
+
+  ### widgets: option tray
+
+  "OPTION_TRAY_FG"               : (238, 238, 238),
+  "OPTION_TRAY_BG"               : ( 47,  47,  60),
+  "OPTION_TRAY_SELECTED_FG"      : (238, 238, 238),
+  "OPTION_TRAY_SELECTED_BG"      : ( 30, 130,  70),
+  "OPTION_TRAY_OPTION_SEPARATOR" : (238, 238, 238),
+
+  ### widgets: checkbutton foreground, background and
+  ### outline
+
+  "CHECKBUTTON_FG"      : ( 10,  10,  10),
+  "CHECKBUTTON_BG"      : (245, 245, 245),
+  "CHECKBUTTON_OUTLINE" : ( 10,  10,  10),
+
+  ### widgets: list sorting editor and button
+
+  "ITEM_OUTLINE"      : (188,   0,   0),
+  "SORTED_ITEMS_AREA" : ( 30, 130,  70),
+  "ITEM_POOL_AREA"    : ( 30,  70, 130),
+  "AREA_LABEL"        : (238, 238, 238),
+
+  ### widgets: list widget
+
+  "LIST_WIDGET_BUTTON_FG"        : ( 18,  18,  18),
+  "LIST_WIDGET_BUTTON_BG"        : (200, 200, 200),
+  "LIST_WIDGET_REMOVE_BUTTON_FG" : (204,   0,   0),
+
+  ### fileman: highlighted selector color and object rect
+  ### color
+
+  "NORMAL_PATH_FG"           : (238, 238, 238),
+  "NORMAL_PATH_BG"           : (100, 100, 125),
+  "SELECTED_PATH_FG"         : (238, 238, 238),
+  "SELECTED_PATH_BG"         : ( 30, 130,  70),
+  "ACTIVE_SELECTION_OUTLINE" : (255, 255, 255),
+
+  ### editing assistant: active and normal selection
+
+  "ACTIVE_SELECTION" : (255, 215,   0),
+  "NORMAL_SELECTION" : (255,  69,   0),
+
+  ### editing assistant (axis line when moving)
+  "YELLOW" : (255, 255, 0),
+
+  ### text editor (background color of its text editing
+  ### area)
+
+  "TEXT_EDITING_AREA_FG" : (238, 238, 238),
+  "TEXT_EDITING_AREA_BG" : ( 77,  77,  90),
+
+  ### text viewer
+
+  "TEXT_VIEWER_FG" : (238, 238, 238),
+  "TEXT_VIEWER_BG" : ( 77,  77,  90),
+
+  "CUSTOM_STDOUT_FG" : (235, 235, 235),
+  "CUSTOM_STDOUT_BG" : ( 19,  19,  19),
+
+  "TEXT_VIEWER_HELP_FG"     : (228, 228, 228),
+  "TEXT_VIEWER_HELP_BG"     : ( 30, 130,  70),
+  "TEXT_VIEWER_HELP_BORDER" : (228, 228, 228),
+
+  ### images viewer
+
+  "IMAGES_VIEWER_FG"     : (238, 238, 238),
+  "IMAGES_VIEWER_BG"     : (100, 100, 128),
+  "IMAGES_VIEWER_BORDER" : (  0,   0,   0),
+
+  ### colors viewer
+
+  "COLOR_VIEWER_COLOR_LIST_FG" : (50, 50, 50),
+  "COLOR_VIEWER_COLOR_LIST_BG" : (200, 200, 200),
+
+}
