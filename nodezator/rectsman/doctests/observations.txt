@@ -1,0 +1,29 @@
+Negative rects and ZeroDivisionError:
+=====================================
+
+Traceback from when I tried to unite g1.rect with the first
+fixture rect when both the fixture rect and the underlying
+rects of the RectsManager instance had negative dimensions.
+In the occasion, g1.rect was managing the rects originally
+added to the group 3 (g3).
+
+Traceback (most recent call last):
+  File "launch.py", line 261, in <module>
+    else: g1.rect.union_ip(fixture_rect)
+  File "/home/kennedy/projects/danittr/repo_fixtures/rectsman/refac/rectsman/main.py", line 392, in union_ip
+    self.size    = union.size
+  File "/home/kennedy/projects/danittr/repo_fixtures/rectsman/refac/rectsman/spatial.py", line 299, in size
+    self.inflate_ip(size_difference)
+  File "/home/kennedy/projects/danittr/repo_fixtures/rectsman/refac/rectsman/main.py", line 255, in inflate_ip
+    w_ratio = infl_w / union.w 
+ZeroDivisionError: division by zero
+
+That is, somehow the RectsManager instance had a width of 0.
+when we tried to unite it with the fixture rect.
+
+I also got this error by reducing the size of the
+RectsManager (by decrementing 40 many times) after
+moving the negative rects away from each other until
+there's no intersection between them.
+
+Such behaviour should be further researched when the time is convenient (meaning for now there are too many tasks of higher priority on our todo list).
