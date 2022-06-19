@@ -16,7 +16,7 @@ from sys import path
 
 ### XXX temporary 'brain surgery'###################
 str_app_dir = str(Path(__file__).parent.resolve())
-if str_app_dir not in path: path.append(str_app_dir)
+if str_app_dir not in path: path.insert(0, str_app_dir)
 ####################################################
 
 
