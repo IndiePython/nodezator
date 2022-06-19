@@ -86,8 +86,18 @@ class SegmentOps:
                 
                 node = child.node
                 
-                try: output_socket = node.output_socket
-                except AttributeError: continue
+                if any(
+
+                  not hasattr(node, attr_name)
+
+                  for attr_name in (
+                    'output_socket',
+                    'proxy_socket',
+                  )
+
+                ): continue
+
+                output_socket = node.output_socket
 
                 node.data['source_name'] = source_name
                 node.data['source_type_codename'] = (
@@ -98,9 +108,9 @@ class SegmentOps:
                                     type_codename
                                   )
 
-                output_socket.update_type_codename(
-                                type_codename
-                              )
+                node.output_socket.update_type_codename(
+                                     type_codename
+                                   )
 
                 ## update label surface
                 node.update_label_surface()
