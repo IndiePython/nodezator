@@ -20,7 +20,13 @@ from ourstdlibs.collections.general import FactoryDict
 
 from surfsman.render import render_rect
 
-from colorsman.colors import CONTRAST_LAYER_COLOR
+from surfsman.draw import draw_not_found_icon
+
+from colorsman.colors import (
+                        CONTRAST_LAYER_COLOR,
+                        IMAGE_NOT_FOUND_FG,
+                        IMAGE_NOT_FOUND_BG,
+                      )
 
 
 ### empty surface
@@ -65,3 +71,18 @@ UNHIGHLIGHT_SURF_MAP = FactoryDict(
 ## also make it so map already stores a surface the size of
 ## the screen
 UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size]
+
+### general map to store "draw not found surfaces" for
+### reuse
+
+## factory function for map
+
+def get_draw_not_found_surface(size_tuple):
+
+    surf = render_rect(*size_tuple, IMAGE_NOT_FOUND_BG)
+    draw_not_found_icon(surf, IMAGE_NOT_FOUND_FG)
+
+    return surf
+
+## map
+NOT_FOUND_SURF_MAP = FactoryDict(get_draw_not_found_surface)
