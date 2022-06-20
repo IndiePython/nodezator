@@ -185,8 +185,10 @@ class FontPreview(_BasePreview):
 
         draw_rect(image, PATHPREVIEW_BG, rect)
 
-        ###
-
+        ### prevent a crash on pygame-git/linux 
+        if self.current_path=='.':
+            return
+          
         preview_surf = FONT_PREVIEWS_DB[self.current_path][
                          {
 
