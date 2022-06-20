@@ -31,6 +31,8 @@ from fontsman.preview.cache import (
 
 from fontsman.viewer.main import view_fonts
 
+from surfsman.cache import NOT_FOUND_SURF_MAP
+
 from surfsman.icon import render_layered_icon
 
 from colorsman.colors import (
@@ -185,24 +187,39 @@ class FontPreview(_BasePreview):
 
         draw_rect(image, PATHPREVIEW_BG, rect)
 
-        ### prevent a crash on pygame-git/linux 
-        if self.current_path=='.':
-            return
-          
-        preview_surf = FONT_PREVIEWS_DB[self.current_path][
-                         {
+        ###
 
-                           'font_size' : 20,
-                           'chars'     : PREVIEW_CHARS,
+        if self.current_path == '.':
 
-                           'width'     : rect[2],
-                           'height'    : rect[3],
+            preview_surf = NOT_FOUND_SURF_MAP[
+                             (rect[2], rect[3])
+                           ]
 
-                           'not_found_width'  : rect[2],
-                           'not_found_height' : rect[3],
+        ###
 
-                         }
-                       ]
+        else:
+
+            preview_surf = (
+
+              FONT_PREVIEWS_DB
+              [self.current_path]
+
+              [
+                {
+
+                  'font_size' : 20,
+                  'chars'     : PREVIEW_CHARS,
+
+                  'width'     : rect[2],
+                  'height'    : rect[3],
+
+                  'not_found_width'  : rect[2],
+                  'not_found_height' : rect[3],
+
+                }
+              ]
+
+            )
 
         image.blit(preview_surf, rect)
 
