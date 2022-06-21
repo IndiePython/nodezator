@@ -30,8 +30,6 @@ def save_pyl(
       # store data and shouldn't be read by humans often;
       width  = 300,
 
-      sort_dicts = True,
-
     ):
     """Save pretty-formatted python literal in filepath."""
     with open(
@@ -46,7 +44,6 @@ def save_pyl(
 
               indent = indent,
               width  = width,
-              sort_dicts = sort_dicts,
 
             )
 
