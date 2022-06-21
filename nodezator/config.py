@@ -38,7 +38,7 @@ APP_REFS = SimpleNamespace(
 
 
 
-DATA_DIR = Path('data')
+DATA_DIR = Path(__file__).parent / 'data'
 
 FONTS_DIR = DATA_DIR / 'fonts'
 
