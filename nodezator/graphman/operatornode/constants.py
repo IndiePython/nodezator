@@ -2,24 +2,6 @@
 
 ### standard library imports
 
-from operator import (
-                add, sub, truediv, floordiv, mul,
-
-                pow, mod,
-
-                pos, neg,
-
-                getitem,
-
-                matmul,
-
-                and_, xor, invert, or_, lshift, rshift,
-
-                is_, is_not, not_,
-
-                lt, le, eq, ne, ge, gt,
-              )
-
 from string import Template
 
 from inspect import signature
@@ -45,34 +27,34 @@ from colorsman.colors import (
 
 OPERATIONS_MAP = {
 
-  'a + b'      : add,
-  'a - b'      : sub,
-  'a / b'      : truediv,
-  'a // b'     : floordiv,
-  'a * b'      : mul,
-  'a ** b'     : pow,
-  'a % b'      : mod,
-  '+a'         : pos,
-  '-a'         : neg,
-  'a[b]'       : getitem,
-  'a @ b'      : matmul,
-  'a & b'      : and_,
-  'a ^ b'      : xor,
-  '~a'         : invert,
-  'a | b'      : or_,
-  'a << b'     : lshift,
-  'a >> b'     : rshift,
-  'a is b'     : is_,
-  'a is not b' : is_not,
-  'not a'      : not_,
+  'a + b'      : lambda a, b: a + b,
+  'a - b'      : lambda a, b: a - b,
+  'a / b'      : lambda a, b: a / b,
+  'a // b'     : lambda a, b: a // b,
+  'a * b'      : lambda a, b: a * b,
+  'a ** b'     : lambda a, b: a ** b,
+  'a % b'      : lambda a, b: a % b,
+  '+a'         : lambda a: +a,
+  '-a'         : lambda a: -a,
+  'a[b]'       : lambda a, b: a[b],
+  'a @ b'      : lambda a, b: a @ b,
+  'a & b'      : lambda a, b: a & b,
+  'a ^ b'      : lambda a, b: a ^ b,
+  '~a'         : lambda a: ~a,
+  'a | b'      : lambda a, b: a | b,
+  'a << b'     : lambda a, b: a << b,
+  'a >> b'     : lambda a, b: a >> b,
+  'a is b'     : lambda a, b: a is b,
+  'a is not b' : lambda a, b: a is not b,
+  'not a'      : lambda a: not a,
   'a and b'    : lambda a, b: a and b,
   'a or b'     : lambda a, b: a or b,
-  'a < b'      : lt,
-  'a <= b'     : le,
-  'a == b'     : eq,
-  'a != b'     : ne,
-  'a >= b'     : ge,
-  'a > b'      : gt,
+  'a < b'      : lambda a, b: a < b,
+  'a <= b'     : lambda a, b: a <= b,
+  'a == b'     : lambda a, b: a == b,
+  'a != b'     : lambda a, b: a != b,
+  'a >= b'     : lambda a, b: a >= b,
+  'a > b'      : lambda a, b: a > b,
 
 }
 
