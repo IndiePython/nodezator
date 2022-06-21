@@ -330,6 +330,7 @@ class MenuSetup:
               index,
               label_text,
               icon_key,
+              key_text,
               command_callable,
             ) in (
 
@@ -337,6 +338,7 @@ class MenuSetup:
                 7,
                 t.menu.export_as_image,
                 'image',
+                'Ctrl+E',
                 APP_REFS.ea.export_as_image,
               ),
 
@@ -344,19 +346,21 @@ class MenuSetup:
                 8,
                 t.menu.export_as_python,
                 'python',
+                'Ctrl+P',
                 APP_REFS.ea.export_as_python,
               ),
 
             ):
 
                 # create the command data for the
-                # "Export as image" command
+                # "Export as ..." command
 
                 command_data = {
 
-                  'label'  : label_text,
-                  'icon'   : icon_key,
-                  'command': command_callable,
+                  'label'    : label_text,
+                  'icon'     : icon_key,
+                  'key_text' : key_text,
+                  'command'  : command_callable,
                 }
 
                 # insert command data on menu list
