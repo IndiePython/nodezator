@@ -2,8 +2,6 @@
 
 ### standard library imports
 
-from os import linesep
-
 from textwrap import indent, wrap
 
 from string import ascii_letters
@@ -216,7 +214,7 @@ def python_repr(self, additional_levels=()):
         ]
 
         ##
-        graph_function_body += linesep * 2
+        graph_function_body += '\n' * 2
 
         ##
 
@@ -264,7 +262,7 @@ def python_repr(self, additional_levels=()):
         ):
 
             ##
-            graph_function_body += (linesep * 2)
+            graph_function_body += ('\n' * 2)
 
             ##
 
@@ -282,7 +280,7 @@ def python_repr(self, additional_levels=()):
             )
 
             # add each line with a preceeding prefix
-            # and succeeding linesep (we didn't manage
+            # and succeeding '\n' (we didn't manage
             # to do this with solutions using
             # str.join/textwrap.indent, but we
             # achieved what we wanted)
@@ -293,7 +291,7 @@ def python_repr(self, additional_levels=()):
 
                   '### '
                   + line_text
-                  + linesep
+                  + '\n'
 
                 )
         
@@ -308,17 +306,17 @@ def python_repr(self, additional_levels=()):
 
     return (
 
-      linesep
+      '\n'
 
       + (
 
           (
             '### standard library imports'
-            + (linesep * 2)
-            + linesep.join(
+            + ('\n' * 2)
+            + '\n'.join(
                         stlib_imports
                       )
-            + (linesep * 3)
+            + ('\n' * 3)
           )
           if stlib_imports
 
@@ -330,11 +328,11 @@ def python_repr(self, additional_levels=()):
 
           (
             '### third-party imports'
-            + (linesep * 2)
-            + linesep.join(
+            + ('\n' * 2)
+            + '\n'.join(
                         third_party_imports
                       )
-            + (linesep * 3)
+            + ('\n' * 3)
           )
           if third_party_imports
 
@@ -345,12 +343,12 @@ def python_repr(self, additional_levels=()):
       + (
 
           '### local imports (node callables)'
-          + (linesep * 2)
-          + linesep.join(
+          + ('\n' * 2)
+          + '\n'.join(
                       format_local_imports(
                         node_callable_imports
                       )
-                    ) + (linesep * 3)
+                    ) + ('\n' * 3)
 
           if node_callable_imports
 
@@ -360,7 +358,7 @@ def python_repr(self, additional_levels=()):
 
       + def_statement
 
-      + linesep
+      + '\n'
 
       + docstring
 
@@ -790,7 +788,7 @@ def callable_node_to_text(
           + dict_name.ljust(max_char_no, ' ')
           + ' = '
           + call_text
-          + linesep
+          + '\n'
 
         )
 
@@ -808,7 +806,7 @@ def callable_node_to_text(
 
               + f'{dict_name}[{repr(socket.output_name)}]'
 
-              + linesep
+              + '\n'
 
             )
 
@@ -851,7 +849,7 @@ def callable_node_to_text(
 
             del obj.text_block_refs
 
-            comments_text += linesep
+            comments_text += '\n'
 
             for text_block in refs:
 
@@ -869,7 +867,7 @@ def callable_node_to_text(
                 )
 
                 # yield each line with a preceeding prefix
-                # and succeeding linesep (we didn't manage
+                # and succeeding '\n' (we didn't manage
                 # to do this with solutions using
                 # str.join/textwrap.indent, but we
                 # achieved what we wanted)
@@ -880,13 +878,13 @@ def callable_node_to_text(
 
                         prefix
                       + line_text
-                      + linesep
+                      + '\n'
 
                     )
 
-                comments_text += linesep
+                comments_text += '\n'
 
-            if obj is cluster: comments_text += linesep
+            if obj is cluster: comments_text += '\n'
 
     ###
     node_text = comments_text + call_text
@@ -898,11 +896,11 @@ def callable_node_to_text(
       ## if a node comment was joined, we join 02
       ## line separators, in order to isolate the
       ## call text further from the next line
-      linesep * 2
+      '\n' * 2
       if comments_text
 
-      ## otherwise a simple linesep is enough
-      else linesep
+      ## otherwise a simple '\n' is enough
+      else '\n'
 
     )
 
@@ -1006,7 +1004,7 @@ def operator_node_to_text(
 
             del obj.text_block_refs
 
-            comments_text += linesep
+            comments_text += '\n'
 
             for text_block in refs:
 
@@ -1024,7 +1022,7 @@ def operator_node_to_text(
                 )
 
                 # yield each line with a preceeding prefix
-                # and succeeding linesep (we didn't manage
+                # and succeeding '\n' (we didn't manage
                 # to do this with solutions using
                 # str.join/textwrap.indent, but we
                 # achieved what we wanted)
@@ -1035,20 +1033,20 @@ def operator_node_to_text(
 
                         prefix
                       + line_text
-                      + linesep
+                      + '\n'
 
                     )
 
-                comments_text += linesep
+                comments_text += '\n'
 
-            if obj is cluster: comments_text += linesep
+            if obj is cluster: comments_text += '\n'
 
     ###
     node_text = node.substitution_callable(substitution_map)
 
     if node.data.get('commented_out', False):
         
-        node_text = linesep.join(
+        node_text = '\n'.join(
 
                       '# ' + line
                       for line in node_text.splitlines()
@@ -1064,11 +1062,11 @@ def operator_node_to_text(
       ## if a node comment was joined, we join 02
       ## line separators, in order to isolate the
       ## call text further from the next line
-      linesep * 2
+      '\n' * 2
       if comments_text
 
-      ## otherwise a simple linesep is enough
-      else linesep
+      ## otherwise a simple '\n' is enough
+      else '\n'
 
     )
 
@@ -1335,7 +1333,7 @@ def snippet_node_to_text(
 
             del obj.text_block_refs
 
-            comments_text += linesep
+            comments_text += '\n'
 
             for text_block in refs:
 
@@ -1353,7 +1351,7 @@ def snippet_node_to_text(
                 )
 
                 # join each line with a preceeding prefix
-                # and succeeding linesep (we didn't manage
+                # and succeeding '\n' (we didn't manage
                 # to do this with solutions using
                 # str.join/textwrap.indent, but we
                 # achieved what we wanted)
@@ -1364,13 +1362,13 @@ def snippet_node_to_text(
 
                         prefix
                       + line_text
-                      + linesep
+                      + '\n'
 
                     )
 
-                comments_text += linesep
+                comments_text += '\n'
 
-            if obj is cluster: comments_text += linesep
+            if obj is cluster: comments_text += '\n'
 
     ###
 
@@ -1378,7 +1376,7 @@ def snippet_node_to_text(
 
     if node.data.get('commented_out', False):
         
-        node_text = linesep.join(
+        node_text = '\n'.join(
 
                       '# ' + line
                       for line in node_text.splitlines()
@@ -1392,11 +1390,11 @@ def snippet_node_to_text(
       ## if a node comment was yielded, we join 02
       ## line separators, in order to isolate the
       ## call text further from the next line
-      linesep * 2
+      '\n' * 2
       if comments_text
 
-      ## otherwise a simple linesep is enough
-      else linesep
+      ## otherwise a simple '\n' is enough
+      else '\n'
 
     )
 
@@ -1448,7 +1446,7 @@ def data_node_to_text(
 
             del obj.text_block_refs
 
-            comments_text += linesep
+            comments_text += '\n'
 
             for text_block in refs:
 
@@ -1466,7 +1464,7 @@ def data_node_to_text(
                 )
 
                 # yield each line with a preceeding prefix
-                # and succeeding linesep (we didn't manage
+                # and succeeding '\n' (we didn't manage
                 # to do this with solutions using
                 # str.join/textwrap.indent, but we
                 # achieved what we wanted)
@@ -1477,13 +1475,13 @@ def data_node_to_text(
 
                         prefix
                       + line_text
-                      + linesep
+                      + '\n'
 
                     )
 
-                comments_text += linesep
+                comments_text += '\n'
 
-            if obj is cluster: comments_text += linesep
+            if obj is cluster: comments_text += '\n'
 
     ###
 
@@ -1500,11 +1498,11 @@ def data_node_to_text(
       ## if a node comment was yielded, we join 02
       ## line separators, in order to isolate the
       ## definition text further from the next line
-      linesep * 2
+      '\n' * 2
       if comments_text
 
-      ## otherwise a simple linesep is enough
-      else linesep
+      ## otherwise a simple '\n' is enough
+      else '\n'
 
     )
 
