@@ -1,5 +1,9 @@
 """App constants."""
 
+### standard library import
+from pathlib import Path
+
+
 ### third-party imports
 
 from pygame         import init as init_pygame
@@ -31,7 +35,9 @@ FPS = 30
 ### set caption and icon for window
 
 set_caption(FULL_TITLE, ABBREVIATED_TITLE)
-set_icon(load_image('app_icon.png'))
+
+image_path = str(Path(__file__).parent / 'app_icon.png')
+set_icon(load_image(image_path))
 
 ### set key repeating (unit: milliseconds)
 set_repeat(500, 30) # set_repeat(delay, interval)
