@@ -11,7 +11,7 @@ from pprint import pformat
 
 from string import Template
 
-from inspect import signature
+from inspect import signature, getsource
 
 
 def read_text_file(
@@ -488,5 +488,26 @@ CAPSULE_IDS_TO_STLIB_IMPORT_MAP = {
 
   'load_json_file'    : 'from json import load',
   'save_as_json_file' : 'from json import dump',
+
+}
+
+CAPSULE_IDS_TO_SOURCE_VIEW_TEXT = {
+
+  capsule_id : (
+
+    (
+      CAPSULE_IDS_TO_STLIB_IMPORT_MAP[capsule_id]
+      + ('\n' * 2)
+      + getsource(callable_obj)
+    )
+
+    if capsule_id in CAPSULE_IDS_TO_STLIB_IMPORT_MAP
+
+    else getsource(callable_obj)
+
+  )
+
+  for capsule_id, callable_obj
+  in CAPSULE_IDS_TO_CALLABLES_MAP.items()
 
 }
