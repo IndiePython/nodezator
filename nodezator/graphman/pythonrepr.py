@@ -207,7 +207,17 @@ def python_repr(self, additional_levels=()):
           if not (
 
                 hasattr(node, 'proxy_socket')
-            and hasattr(node.proxy_socket, 'parent')
+
+                and (
+
+                  hasattr(node.proxy_socket, 'parent')
+
+                  # XXX the redirect node doesn't have
+                  # a parent nor a widget, this should
+                  # cause a warning to be logged
+                  or not hasattr(node, 'widget')
+
+                )
 
           )
 
