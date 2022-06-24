@@ -50,6 +50,10 @@ from fileman.main import select_path
 from graphman.utils import yield_subgraphs
 
 from graphman.callablenode.main import CallableNode
+from graphman.stlibnode.main    import StandardLibNode
+from graphman.builtinnode.main  import BuiltinNode
+from graphman.operatornode.main import OperatorNode
+from graphman.capsulenode.main  import CapsuleNode
 from graphman.proxynode.main    import ProxyNode
 from graphman.textblock.main    import TextBlock
 
@@ -136,21 +140,54 @@ class DataHandling:
             name indicating the kind of source to be
             shown; can be 'node_script' or 'callable_source'.
         """
-        ### if the active obj is not a node, notify situation
-        ### to user via dialog and return earlier
 
-        if not isinstance(self.active_obj, CallableNode):
+        ### if there's no active selection, notify user
+        ### and return earlier
+
+        if not self.active_obj:
 
             create_and_show_dialog(
-              "A node must be the active selection"
-              " for its code to be displayed"
+              "A node must be selected for the source"
+              " info to be displayed."
             )
 
             return
 
-        ### otherwise, retrieve the code requested as text
+        ### likewise, if an object uncompatible with the
+        ### feature is selected, notify user and return
+        ### earlier
 
-        if source_name == 'node_script':
+        elif type(self.active_obj) in (
+
+          TextBlock,
+          ProxyNode,
+
+        ):
+
+            create_and_show_dialog(
+              "The source/info viewing feature does not"
+              " apply to text blocks, data nodes or"
+              " redirect nodes"
+            )
+
+            return
+
+        ### otherwise, retrieve and present node's
+        ### source/info according to its type and
+        ### the requested source
+
+        if type(self.active_obj) in (
+
+          StandardLibNode,
+          BuiltinNode,
+          OperatorNode,
+          CapsuleNode,
+
+        ):
+
+            text = self.active_obj.get_source_info()
+
+        elif source_name == 'node_script':
 
             ## retrieve the source of the script from which
             ## the node's callable was retrieved
