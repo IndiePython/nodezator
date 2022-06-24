@@ -11,6 +11,7 @@ from graphman.stlibnode.constants import (
                      STLIB_IDS_TO_SIGNATURES_MAP,
                      STLIB_IDS_TO_SIGNATURE_CALLABLES_MAP,
                      STLIB_IDS_TO_STLIB_IMPORT_TEXTS,
+                     STLIB_IDS_TO_SOURCE_VIEW_TEXT,
                    )
 
 from colorsman.colors import (
@@ -163,3 +164,14 @@ class StandardLibNode(CallableNode):
         This is because the relevant category color
         data is already set as a class attribute.
         """
+
+    def get_source_info(self):
+        """Return information about node source."""
+
+        return (
+
+          STLIB_IDS_TO_SOURCE_VIEW_TEXT[
+            self.data['stlib_id']
+          ]
+
+        )

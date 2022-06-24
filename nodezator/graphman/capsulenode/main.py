@@ -8,6 +8,7 @@ from graphman.capsulenode.constants import (
                CAPSULE_IDS_TO_SIGNATURES_MAP,
                CAPSULE_IDS_TO_SUBSTITUTION_CALLABLE_MAP,
                CAPSULE_IDS_TO_STLIB_IMPORT_MAP,
+               CAPSULE_IDS_TO_SOURCE_VIEW_TEXT,
 
              )
 
@@ -166,3 +167,14 @@ class CapsuleNode(CallableNode):
         This is because the relevant category color
         data is already set as a class attribute.
         """
+
+    def get_source_info(self):
+        """Return information about node source."""
+
+        return (
+
+          CAPSULE_IDS_TO_SOURCE_VIEW_TEXT[
+            self.data['capsule_id']
+          ]
+
+        )

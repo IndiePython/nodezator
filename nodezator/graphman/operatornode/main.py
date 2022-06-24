@@ -24,6 +24,7 @@ from graphman.operatornode.constants import (
                  OPERATIONS_MAP,
                  OPERATIONS_SIGNATURE_MAP,
                  OPERATION_ID_TO_SUBSTITUTION_CALLABLE_MAP,
+                 OPERATION_ID_TO_SOURCE_VIEW_TEXT,
               )
 
 
@@ -112,3 +113,14 @@ class OperatorNode(
         ### initialize base classes which have an __init__
         ### method of their own
         initialize_bases(self)
+
+    def get_source_info(self):
+        """Return information about node source."""
+
+        return (
+
+          OPERATION_ID_TO_SOURCE_VIEW_TEXT[
+            self.data['operation_id']
+          ]
+
+        )

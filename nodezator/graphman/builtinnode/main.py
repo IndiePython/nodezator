@@ -10,6 +10,7 @@ from graphman.builtinnode.constants import (
                     BUILTIN_IDS_TO_CALLABLES_MAP,
                     BUILTIN_IDS_TO_SIGNATURES_MAP,
                     BUILTIN_IDS_TO_SIGNATURE_CALLABLES_MAP,
+                    BUILTIN_IDS_TO_SOURCE_VIEW_TEXT,
                   )
 
 from colorsman.colors import BUILTIN_NODES_CATEGORY_COLOR
@@ -155,3 +156,14 @@ class BuiltinNode(CallableNode):
         This is because the relevant category color
         data is already set as a class attribute.
         """
+
+    def get_source_info(self):
+        """Return information about node source."""
+
+        return (
+
+          BUILTIN_IDS_TO_SOURCE_VIEW_TEXT[
+            self.data['builtin_id']
+          ]
+
+        )

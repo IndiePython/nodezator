@@ -4,7 +4,7 @@
 
 from string import Template
 
-from inspect import signature
+from inspect import signature, getsource
 
 
 ### local imports
@@ -159,5 +159,33 @@ OPERATION_ID_TO_SUBSTITUTION_CALLABLE_MAP = {
                  ).substitute
 
   for operation_id in OPERATIONS_MAP
+
+}
+
+###
+
+def get_operator_node_source(callable_obj):
+
+    source = getsource(callable_obj).strip()
+    i = source.find('lambda')
+
+    return (
+
+      source[i:][:-1]
+      if source.endswith(',')
+
+      else source[i:]
+
+    )
+
+
+OPERATION_ID_TO_SOURCE_VIEW_TEXT = {
+
+operation_id : f'''
+### same as...
+{get_operator_node_source(callable_obj)}
+'''.strip()
+
+for operation_id, callable_obj in OPERATIONS_MAP.items()
 
 }

@@ -12,7 +12,11 @@ from itertools import takewhile
 
 from functools import reduce
 
-from inspect import signature
+from inspect import signature, getsource
+
+from contextlib import redirect_stdout
+
+from io import StringIO
 
 ## modules from where to retrieve callables to turn
 ## into nodes
@@ -132,9 +136,10 @@ def _get_iterable_return_iterator(iterable:Iterable) -> (
   'iterator'
 ): pass
 
-def _combinations(iterable:Iterable, r:int=2) -> (
-  'iterator'
-): pass
+def _combinations_with_and_without_replacement(
+      iterable:Iterable, r:int=2
+    ) -> ('iterator'):
+    pass
 
 def _compress(data:Iterable, selectors:Iterable) -> (
   'iterator'
@@ -144,7 +149,12 @@ def _count(start:(int, float)=0, step:(int, float)=1) -> (
   'iterator'
 ): pass
 
-def _dropwhile(predicate:Callable, iterable:Iterable) -> (
+def _dropwhile_and_takewhile(
+      predicate:Callable, iterable:Iterable
+   ) -> ('iterator'):
+   pass
+
+def _filterfalse(function:Callable, iterable:Iterable) -> (
   'iterator'
 ): pass
 
@@ -274,23 +284,24 @@ STLIB_IDS_TO_SIGNATURE_CALLABLES_MAP = {
   'chain.from_iterable' : (
     _get_iterable_return_iterator
   ),
-  'combinations' : _combinations,
+
+  'combinations' : (
+    _combinations_with_and_without_replacement
+  ),
 
   'combinations_with_replacement' : (
-    _combinations # same as 'combinations'
+    _combinations_with_and_without_replacement
   ),
 
   'compress' : _compress,
   'count'    : _count,
 
-  # same as 'chain.from_iterable'
   'cycle' : _get_iterable_return_iterator,
 
-  'dropwhile' : _dropwhile,
+  'dropwhile' : _dropwhile_and_takewhile,
   'dumps'     : _dumps,
 
-  # same as 'dropwhile'
-  'filterfalse' : _dropwhile,
+  'filterfalse' : _filterfalse,
 
   'groupby'       : _groupby,
   'import_module' : _import_module,
@@ -321,8 +332,7 @@ STLIB_IDS_TO_SIGNATURE_CALLABLES_MAP = {
 
   'starmap' : _starmap,
 
-  # same as 'dropwhile'
-  'takewhile' : _dropwhile,
+  'takewhile' : _dropwhile_and_takewhile,
 
   'tee'         : _tee,
   'zip_longest' : _zip_longest,
@@ -337,23 +347,26 @@ STLIB_IDS_TO_SIGNATURES_MAP = {
   'chain.from_iterable' : (
     signature(_get_iterable_return_iterator)
   ),
-  'combinations' : signature(_combinations),
+
+  'combinations' : signature(
+
+    _combinations_with_and_without_replacement
+
+  ),
 
   'combinations_with_replacement' : (
-    signature(_combinations) # same as 'combinations'
+    signature(_combinations_with_and_without_replacement)
   ),
 
   'compress' : signature(_compress),
   'count'    : signature(_count),
 
-  # same as 'chain.from_iterable'
   'cycle' : signature(_get_iterable_return_iterator),
 
-  'dropwhile' : signature(_dropwhile),
+  'dropwhile' : signature(_dropwhile_and_takewhile),
   'dumps'     : signature(_dumps),
 
-  # same as 'dropwhile'
-  'filterfalse' : signature(_dropwhile),
+  'filterfalse' : signature(_filterfalse),
 
   'groupby'       : signature(_groupby),
   'import_module' : signature(_import_module),
@@ -384,8 +397,7 @@ STLIB_IDS_TO_SIGNATURES_MAP = {
 
   'starmap' : signature(_starmap),
 
-  # same as 'dropwhile'
-  'takewhile' : signature(_dropwhile),
+  'takewhile' : signature(_dropwhile_and_takewhile),
 
   'tee'         : signature(_tee),
   'zip_longest' : signature(_zip_longest),
@@ -452,3 +464,38 @@ STLIB_IDS_TO_STLIB_IMPORT_TEXTS = {
   'zip_longest' : 'from itertools import zip_longest',
 
 }
+
+###
+
+string_stream = StringIO()
+
+def get_help_text(callable_obj):
+    content_length = len(string_stream.getvalue())
+
+    with redirect_stdout(string_stream):
+        help(callable_obj)
+
+    return (
+      string_stream.getvalue()[content_length:].strip()
+    )
+
+
+STLIB_IDS_TO_SOURCE_VIEW_TEXT = {
+
+stlib_id : f'''
+### signature used:
+
+{getsource(STLIB_IDS_TO_SIGNATURE_CALLABLES_MAP[stlib_id])}
+
+### help text:
+
+"""
+{get_help_text(STLIB_IDS_TO_CALLABLES_MAP[stlib_id])}
+"""
+'''.strip()
+
+for stlib_id in STLIB_IDS_TO_MODULE.keys()
+
+}
+
+string_stream.close()

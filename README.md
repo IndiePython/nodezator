@@ -4,9 +4,21 @@ Nodezator is a multi-purpose visual editor to connect Python functions (and call
 
 ![nodezator screenshot](https://nodezator.com/images/screenshot.png)
 
+Nodezator also allows you to export your node layouts as pure Python, so your workflow never becomes dependent on the app itself. We guarantee your freedom!
+
+Moreover, creating nodes is very straightforward: all you need to define a node is a function, since Nodezator automatically converts functions into nodes. For instance, the function below is automatically turned into the following node:
+
+```python
+def get_circle_area(radius:float=0.0):
+    return math.pi * (radius ** 2)
+```
+
+![node image](https://nodezator.com/images/get_circle_area_node.png)
+
 Visit the app's [homepage][] and check this [youtube video] presenting it.
 
 It is a Python desktop app made with [pygame][], by Kennedy Richard Silva Guerra ([me][]), 31, as part of the [Indie Python][] project.
+
 
 ## Installation
 
@@ -25,21 +37,42 @@ If everything went well, after installing, you should be able to start by simply
 
 That's all, but, if you encounter any problems, contact me with one of the methods described further below in the contact section.
 
+
 ## Usage
 
 Check the app [manual][] to know how to use it. It is also available in-app in the menu **Help > Open manual**
 
-## Nodes for download
 
-Example node packs for download are available in the [nodes gallery][].
+## Finding and sharing nodes for download
 
-Also remember that when loading nodes you might need to install extra modules if the nodes use them.
+Node packs for download are available in the [nodes gallery][]. For now it is only a humble static website, but soon it will be turned into a google for nodes, where you'll be able to search nodes by name, author and tags.
+
+Remember that when loading nodes you might need to install extra modules if the nodes use them.
+
+If you want to publish your nodes for download as well, create a new repository on your github profile and upload your node pack there, then ask for your node pack to be included on the [nodes gallery][] via [email][].
+
 
 ## Contributing
 
-Pull requests will be welcome in the future. But before doing so, due to the complexity of the app, I'd like to implement some automated GUI tests to ensure everyone's future contributions do not break each other and also publish some guides to ensure contributions follow good principles and the best practices.
+Everyone is welcome to suggest and contribute changes.
 
-This should take a couple of months. Please, consider this time as an opportunity to get acquainted with the app and its source if you desire to contribute in the future. Check the code quality section further below for more info about the source code.
+If the proposed change is small enough, you can submit your pull request for analysis right away and it will be answered ASAP.
+
+More complex pull requests will also be welcome in the future, but due to the complexity of the app, I will first need to implement some automated GUI tests to ensure everyone's future contributions do not break each other.
+
+
+## Nodezator online forum
+
+If you have:
+
+  - suggestions
+  - ideas
+  - concerns
+  - questions
+  - constructive criticism
+
+Please consider [github discussions][] for Nodezator as the official online forum for the app. Just comment an existing discussion there or create a new one.
+
 
 ## Issues
 
@@ -49,15 +82,17 @@ If possible, please, also read the Nodezator's [manual][] to ensure you are doin
 
 Nevertheless, never hesitate to ask for help.
 
+
 ## Contact
 
-Contact me any time via [Twitter][] or [email][] (kennedy@kennedyrichard.com)
+Contact me any time via [Twitter][] or [email][].
 
 You are also welcome on the Indie Python's [discord server].
 
+
 ## Patreon and donations
 
-Please support Nodezator and other useful apps of the Indie Python project by becoming our patron on [patreon][]. Also check the project's [donation page][] for other donation methods.
+Please support Nodezator and other useful apps of the Indie Python project by becoming our patron on [patreon][] or [liberapay][]. Also check the project's [donation page][] for other donation methods.
 
 ## License
 
@@ -79,9 +114,11 @@ Also, other parts of the code, despite being carefully designed, might be redesi
 [Indie Python]: https://indiepython.com
 [manual]: https://manual.nodezator.com
 [nodes gallery]: https://gallery.nodezator.com
+[github discussions]: https://github.com/KennedyRichard/nodezator/discussions
 [Twitter]: https://twitter.com/KennedyRichard
 [email]: mailto:kennedy@kennedyrichard.com
 [discord server]: https://indiepython.com/discord
 [patreon]: https://patreon.com/KennedyRichard
+[liberapay]: https://liberapay.com/KennedyRichard
 [donation page]: https://indiepython.com/donate
 [The Unlicense]: https://unlicense.org/

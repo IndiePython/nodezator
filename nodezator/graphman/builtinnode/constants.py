@@ -8,7 +8,11 @@ from collections.abc import (
                        Sequence,
                      )
 
-from inspect import signature
+from inspect import signature, getsource
+
+from contextlib import redirect_stdout
+
+from io import StringIO
 
 
 BUILTIN_IDS_TO_CALLABLES_MAP = {
@@ -116,6 +120,7 @@ BUILTIN_IDS_TO_CALLABLES_MAP = {
 
 }
 
+def _abs(x): pass
 
 def _all(iterable:Iterable) -> [
   {'name': 'boolean', 'type': bool}
@@ -503,7 +508,7 @@ def _zip(*iterables:Iterable) -> [
 
 BUILTIN_IDS_TO_SIGNATURE_CALLABLES_MAP = {
 
-  'abs'   : abs,
+  'abs'   : _abs,
   'all'   : _all,
   'any'   : _any,
   'ascii' : _ascii,
@@ -622,3 +627,39 @@ BUILTIN_IDS_TO_SIGNATURES_MAP = {
   in BUILTIN_IDS_TO_SIGNATURE_CALLABLES_MAP.items()
 
 }
+
+###
+
+
+string_stream = StringIO()
+
+def get_help_text(callable_obj):
+    content_length = len(string_stream.getvalue())
+
+    with redirect_stdout(string_stream):
+        help(callable_obj)
+
+    return (
+      string_stream.getvalue()[content_length:].strip()
+    )
+
+
+BUILTIN_IDS_TO_SOURCE_VIEW_TEXT = {
+
+builtin_id : f'''
+### signature used:
+
+{getsource(BUILTIN_IDS_TO_SIGNATURE_CALLABLES_MAP[builtin_id])}
+
+### help text:
+
+"""
+{get_help_text(BUILTIN_IDS_TO_CALLABLES_MAP[builtin_id])}
+"""
+'''.strip()
+
+for builtin_id in BUILTIN_IDS_TO_CALLABLES_MAP.keys()
+
+}
+
+string_stream.close()
