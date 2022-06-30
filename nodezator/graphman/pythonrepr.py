@@ -376,7 +376,7 @@ def python_repr(self, additional_levels=()):
       
       + '\n\n'
       
-      + 'if __name__ == "__main__":\n'
+      + "if __name__ == '__main__':\n"
       
       + f'    {func_name}()\n\n'
 
