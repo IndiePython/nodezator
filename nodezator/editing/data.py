@@ -26,6 +26,8 @@ from os import linesep
 
 from config import APP_REFS
 
+from logman.main import get_new_logger
+
 from translation import TRANSLATION_HOLDER as t
 
 from dialog import create_and_show_dialog
@@ -69,6 +71,10 @@ from graphman.nodepacksissues import (
 from graphman.exception import NODE_PACK_ERRORS
 
 from graphman.scriptloading import load_scripts
+
+
+### create logger for module
+logger = get_new_logger(__name__)
 
 
 ### map associating node "commented_out" states to
@@ -542,6 +548,8 @@ class DataHandling:
 
         ### update node packs
 
+        original_value = APP_REFS.data['node_packs']
+
         value = (
 
           str(paths[0])
@@ -553,9 +561,37 @@ class DataHandling:
 
         APP_REFS.data['node_packs'] = value
 
-        ### load scripts to use callables provided by
-        ### them as specifications for nodes
-        load_scripts(APP_REFS.data['node_packs'])
+        ### try loading scripts to use callables provided
+        ### by them as specifications for nodes
+
+        try: load_scripts(APP_REFS.data['node_packs'])
+
+        except Exception as err:
+
+            create_and_show_dialog(
+
+               (
+                 "Error while trying to load new node"
+                 " pack selections (check user log"
+                 " on Help menu for more info)"
+                f": {err}"
+               ),
+
+               level_name = 'error',
+
+            )
+
+            msg = (
+              "Unexpected error while trying"
+              " to load new node pack selections"
+            )
+
+            logger.exception(msg)
+            USER_LOGGER.exception(msg)
+
+            APP_REFS.data['node_packs'] = original_value
+
+            return
 
         # rebuild popup menu;
         APP_REFS.window_manager.create_canvas_popup_menu()
