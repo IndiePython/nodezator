@@ -15,9 +15,9 @@ from webbrowser import open as open_url
 
 from config import APP_REFS
 
-from translation import TRANSLATION_HOLDER as t
+from pygameconstants import SCREEN
 
-from pygameconstants import SCREEN_RECT
+from translation import TRANSLATION_HOLDER as t
 
 from ourstdlibs.collections.general import CallList
 
@@ -138,7 +138,7 @@ class MenuSetup:
               },
 
               {
-                'label': "Download example nodes",
+                'label': "Find, download, publish nodes",
                 'icon': 'web_icon',
                 'command': (
                   partial(
@@ -474,8 +474,13 @@ class MenuSetup:
         ### you put together
 
         self.menubar = MenuManager(
+
                          menu_list,
-                         horiz_bg_width=SCREEN_RECT.width
+
+                         horiz_bg_width=(
+                           SCREEN.get_width()
+                         ),
+
                        )
 
     def create_canvas_popup_menu(self):

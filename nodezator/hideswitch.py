@@ -6,6 +6,8 @@ from itertools import cycle
 
 ### local imports
 
+from config import APP_REFS
+
 from pygameconstants import SCREEN_RECT
 
 from ourstdlibs.behaviour import empty_function
@@ -55,10 +57,10 @@ SURFACE_MAP = {
 ## map to help with translations
 
 VALUE_MAP = {
-"left"  : ("width",  -1),
-"right" : ("width",   1),
-"up"    : ("height", -1),
-"down"  : ("height",  1)
+  "left"  : ("width",  -1),
+  "right" : ("width",   1),
+  "up"    : ("height", -1),
+  "down"  : ("height",  1)
 }
 
 ### class definition
@@ -118,8 +120,15 @@ class HideSwitch(Object2D):
         self.image = SURFACE_MAP["shown"]
         self.rect  = self.image.get_rect()
 
-        ### position object relative to widget rect
+        ### position object relative to widget rect and
+        ### also store such positioning method as
+        ### a window resize setup
+
         self.snap_switch_to_widget()
+
+        APP_REFS.window_resize_setups.append(
+          self.snap_switch_to_widget
+        )
 
         ### create control to help with translations
         self.is_hiding = cycle([True, False])

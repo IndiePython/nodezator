@@ -8,8 +8,11 @@ from functools import partialmethod
 
 ### third-party imports
 
-from pygame      import Rect
+from pygame import Rect
+
 from pygame.math import Vector2
+
+from pygame.display import get_surface
 
 
 ### local imports
@@ -42,6 +45,45 @@ class GridHandling:
 
     def __init__(self):
         """Set grid behaviour and related objects."""
+
+        ### define grid-related behaviours
+
+        ## create a grid drawing behaviour so it can be
+        ## assigned to the grid_routine attribute
+        ## whenever we want to draw the grid
+
+        self.draw_grid = CallList()
+
+        ## define and store a simple toggle for grid drawing
+        ## behaviours
+
+        # behaviours
+        behaviours = (empty_function, self.draw_grid)
+
+        # toggle
+
+        self.toggle_grid = (
+
+          get_attribute_rotator(
+            self, 'grid_drawing_behaviour', behaviours,
+          )
+
+        )
+
+        ### set a control to keep track of scrolling amount
+        self.scrolling_amount = Vector2()
+
+        ### generate grid objects and also store the
+        ### grid generation method as a window resize
+        ### setup
+
+        self.generate_grids()
+
+        APP_REFS.window_resize_setups.append(
+          self.generate_grids
+        )
+
+    def generate_grids(self):
         ### generate and store grids
 
         ## unit grid
@@ -53,45 +95,42 @@ class GridHandling:
                            line_width = 1,
                            color      = SMALL_GRID_COLOR,
                            unit_rect  = unit_rect,
-                           area_rect  = SCREEN_RECT
+                           area_rect  = SCREEN_RECT,
                          )
 
         ## screen grid
 
-        self.screen_borders = \
+        self.screen_borders = (
+
           ScrollableGrid(
             screen     = SCREEN,
             line_width = 5,
             color      = LARGE_GRID_COLOR,
             unit_rect  = SCREEN_RECT,
-            area_rect  = SCREEN_RECT
+            area_rect  = SCREEN_RECT,
           )
 
-        ### define grid-related behaviours
+        )
 
-        ## create a grid drawing behaviour so it can be
-        ## assigned to the grid_routine attribute
-        ## whenever we want to draw the grid
+        ###
 
-        draw_grid = CallList([
-          self.unit_grid.draw,
-          self.screen_borders.draw
-        ])
+        self.draw_grid.clear()
 
-        ## define and store a simple toggle for grid drawing
-        ## behaviours
+        self.draw_grid.extend(
 
-        # behaviours
-        behaviours = (empty_function, draw_grid)
+          (
+            self.unit_grid.draw,
+            self.screen_borders.draw,
+          )
 
-        # toggle
+        )
 
-        self.toggle_grid = \
-            get_attribute_rotator(
-                self, 'grid_drawing_behaviour', behaviours)
+        ###
 
-        ### set a control to keep track of scrolling amount
-        self.scrolling_amount = Vector2()
+        dx, dy = self.scrolling_amount
+
+        self.unit_grid.scroll(dx, dy)
+        self.screen_borders.scroll(dx, dy)
 
     def scroll_grids(self, dx, dy):
         """Scroll grids by supplied amounts.
@@ -203,7 +242,7 @@ class GridHandling:
             block.rect.move_ip(dx, dy)
 
 
-    scroll_up    = partialmethod(scroll,   0,  20)
-    scroll_down  = partialmethod(scroll,   0, -20)
-    scroll_left  = partialmethod(scroll,  20,   0)
-    scroll_right = partialmethod(scroll, -20,   0)
+    scroll_up    = partialmethod(scroll,   0,  25)
+    scroll_down  = partialmethod(scroll,   0, -25)
+    scroll_left  = partialmethod(scroll,  25,   0)
+    scroll_right = partialmethod(scroll, -25,   0)

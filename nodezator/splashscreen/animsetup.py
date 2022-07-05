@@ -17,13 +17,6 @@ from pygame.math import Vector2
 from pygameconstants import FPS
 
 
-### factor used to adjust quantity of animation data
-### according to FPS used, so animation maintain more
-### or less the same timing, as long as the FPS used
-### is a multiple of 30 or at least close
-FPS_FACTOR = round(FPS/30) or 1
-
-
 ### nodes animation
 
 ## define points forming a circle
@@ -33,7 +26,7 @@ OBJECTS_NO = 3
 
 # multiplicand to obtain quantity of points used
 # in the circle
-MULTIPLICAND = 14
+MULTIPLICAND = 12
 
 # quantity of points forming the circle (must be a
 # multiple of the number of objects rotated)
@@ -62,7 +55,7 @@ POINTS = sum(
            # iterable with lists of points
 
            [
-             [point] * FPS_FACTOR
+             [point]
              for point in POINTS
            ],
 
@@ -82,7 +75,7 @@ def set_node_animation(index, node, parent):
     ### create/reference objects to assist in animation
 
     d = deque(POINTS)
-    d.rotate(index * MULTIPLICAND * FPS_FACTOR)
+    d.rotate(index * MULTIPLICAND)
 
     parent_rect = parent.rect
     node_rect   = node.rect
@@ -146,7 +139,7 @@ ys = sum(
        # iterable with lists of points
 
        [
-         [y] * FPS_FACTOR
+         [y]
          for y in ys
        ],
 

@@ -253,9 +253,9 @@ class DialogManager(Object2D, LoopHolder):
 
           ## dialog clamping and anchoring
 
-          clamping_rect = SCREEN_RECT,
+          clamping_rect = None,
 
-          anchor_rect      = SCREEN_RECT,
+          anchor_rect      = None,
           dialog_pos_from  = 'center',
           dialog_pos_to    = 'center',
           dialog_offset_by = (0, 0),
@@ -292,6 +292,15 @@ class DialogManager(Object2D, LoopHolder):
         """
         ### store dismissable flag
         self.dismissable = dismissable
+
+        ### ensure screen rect is used if specific rects
+        ### are None
+
+        if clamping_rect is None:
+            clamping_rect = SCREEN_RECT
+
+        if anchor_rect is None:
+            anchor_rect   = SCREEN_RECT
 
         ### create objects and their surfaces/rects
 
@@ -347,9 +356,13 @@ class DialogManager(Object2D, LoopHolder):
 
         ## otherwise perform a custom operation to draw
         ## such surface
+
         else: blit_on_screen(
+
                 UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size],
+
                 (0, 0)
+
               )
 
         ### draw objects created
@@ -580,10 +593,9 @@ class DialogManager(Object2D, LoopHolder):
             elif (
                    self.dismissable
                and event.type == KEYUP
+               and event.key == K_ESCAPE
             ):
-                
-                if event.key == K_ESCAPE:
-                    self.exit_dialog()
+                self.exit_dialog()
 
             elif event.type == MOUSEMOTION:
                 self.on_mouse_motion(event)

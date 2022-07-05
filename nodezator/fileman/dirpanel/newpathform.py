@@ -29,6 +29,8 @@ from dialog import create_and_show_dialog
 
 from ourstdlibs.behaviour import empty_function
 
+from our3rdlibs.behaviour import watch_window_size
+
 from our3rdlibs.button  import Button
 
 from classes2d.single      import Object2D
@@ -329,6 +331,8 @@ class PathForm(Object2D):
         while self.running:
 
             maintain_fps(FPS)
+
+            watch_window_size()
 
             ### put the handle_input/update/draw method
             ### execution inside a try/except clause

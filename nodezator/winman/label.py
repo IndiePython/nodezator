@@ -26,6 +26,8 @@ from fontsman.constants import (
 
 from colorsman.colors import WM_LABEL_FG, WM_LABEL_BG
 
+from our3rdlibs.behaviour import get_current_fps
+
 from textman.label.autolabel import AutoLabel
 
 
@@ -85,8 +87,9 @@ class MonitorLabelSetup:
 
         )
 
-        self.status_label.rect.bottomleft = \
+        self.status_label.rect.bottomleft = (
                                     SCREEN_RECT.bottomleft
+                                  )
 
         ### scrolling amount
 
@@ -110,12 +113,30 @@ class MonitorLabelSetup:
           self.status_label.rect.topleft
         )
 
+        ### fps monitor label
+
+        self.fps_label = (
+
+          AutoLabel(
+            get_current_fps,
+            formatter="FPS: {}".format,
+            text="24",
+            **AUTOLABEL_KWARGS,
+          )
+
+        )
+
+        self.fps_label.rect.bottomright = (
+          SCREEN_RECT.bottomright
+        )
+
 
         ### gather draw and update behaviours from labels
 
         labels = (
           self.status_label,
           self.scrolling_label,
+          self.fps_label,
         )
 
         self.labels_update_methods = [

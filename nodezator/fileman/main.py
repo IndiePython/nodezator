@@ -6,15 +6,18 @@ and setup of the file manager class.
 
 ### third-party imports
 
+from pygame.display import get_surface
+
 from pygame.math import Vector2
+
 from pygame.draw import rect as draw_rect
 
 
 ### local imports
 
-from translation import TRANSLATION_HOLDER as t
+from config import APP_REFS
 
-from pygameconstants import SCREEN_RECT
+from translation import TRANSLATION_HOLDER as t
 
 from ourstdlibs.behaviour import (
                             empty_function,
@@ -25,6 +28,8 @@ from surfsman.draw import draw_border
 from surfsman.render import render_rect
 
 from surfsman.icon import render_layered_icon
+
+from surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
 from widget.stringentry import StringEntry
 
@@ -37,7 +42,6 @@ from textman.label.main import Label
 
 from colorsman.colors import (
                         BLACK,
-                        CONTRAST_LAYER_COLOR,
                         NORMAL_PATH_FG,
                         NORMAL_PATH_BG,
                         BUTTON_BG, BUTTON_FG,
@@ -67,7 +71,6 @@ from fileman.bookmarkpanel.main import BookmarkPanel
 ### considerably; for now, I'll leave this note here for
 ### the future;
 
-
 class FileManager(FileManagerOperations):
     """A filesystem browser for creating and selecting paths.
 
@@ -79,15 +82,15 @@ class FileManager(FileManagerOperations):
 
     def __init__(self):
         """Assign variables, perform setups."""
-        ### create image and rect attributes and position
+        ### create image and rect attributes
 
         self.image = render_rect(
-                        *FILEMAN_SIZE, WINDOW_BG)
+                       *FILEMAN_SIZE, WINDOW_BG
+                     )
 
         draw_border(self.image)
 
-        self.rect        = self.image.get_rect()
-        self.rect.center = SCREEN_RECT.center
+        self.rect = self.image.get_rect()
 
         ### set controls
 
@@ -100,15 +103,15 @@ class FileManager(FileManagerOperations):
         ### store semitransparent object the size of
         ### this widget's rect
 
-        self.rect_size_semitransp_obj = \
+        self.rect_size_semitransp_obj = (
+
           Object2D.from_surface(
-            surface=render_rect(
-                   *self.rect.size,
-                   (*CONTRAST_LAYER_COLOR, 130),
-                 ),
-            coordinates_name='topleft',
-            coordinates_value=self.rect.topleft
+
+            surface=UNHIGHLIGHT_SURF_MAP[self.rect.size]
+
           )
+
+        )
 
         ### build widget structure and assign variables
 
@@ -118,6 +121,33 @@ class FileManager(FileManagerOperations):
 
         ### assign update behaviour
         self.update = empty_function
+
+        ### reposition objects
+        self.reposition_objects()
+
+        ### draw background of panels on our own background,
+        ### so we don't need to draw them every loop
+
+        offset = -Vector2(self.rect.topleft)
+
+        for panel in self.panels:
+
+            offset_rect = panel.rect.move(offset)
+
+            draw_rect(
+              self.image, NORMAL_PATH_BG, offset_rect
+            )
+
+            draw_rect(self.image, BLACK, offset_rect, 1)
+
+        ### append repositioning method as a
+        ### window resizing setup
+
+        APP_REFS.window_resize_setups.append(
+
+            self.reposition_objects
+
+        )
 
     def blit_static_surfs_on_image(self):
         """Create and blit surfaces on self.image.
@@ -151,14 +181,16 @@ class FileManager(FileManagerOperations):
                    )
 
         title_obj = Object2D.from_surface(
-                      render_text(
-                        t.file_manager.caption + " -",
-                        font_height      = FONT_HEIGHT,
-                        foreground_color = WINDOW_FG,
-                        background_color = WINDOW_BG,
-                        padding          = 5
-                      )
-                    )
+
+          render_text(
+            f'{t.file_manager.caption} -',
+            font_height      = FONT_HEIGHT,
+            foreground_color = WINDOW_FG,
+            background_color = WINDOW_BG,
+            padding          = 5
+          )
+
+        )
 
         ## store them in a special set
         app_objs = Set2D((icon_obj, title_obj))
@@ -166,22 +198,19 @@ class FileManager(FileManagerOperations):
         ## align title midleft with icon midright
         title_obj.rect.midleft = icon_obj.rect.midright
 
+        ## store distance from origin to title obj midright
+        ## to use as an offset to position the caption
+        ## label
+        self.caption_label_offset = (
+          title_obj.rect.move(2, 5).midright
+        )
+
         ## now move the objects together, so they sit near
         ## the topleft corner of our background
         app_objs.rect.topleft = (5, 5)
 
         ## finally, draw them on our background
         app_objs.draw_on_surf(self.image)
-
-        ### also store the midright coordinates of the
-        ### whole area occupied by the app objects
-        ### defined above;
-        ### 
-        ### it will be used as the midleft position of
-        ### a label for custom captions which we'll create
-        ### further ahead
-        self.caption_label_midleft = \
-            app_objs.rect.move(self.rect.topleft).midright
 
         ### draw text objects on background
 
@@ -215,7 +244,7 @@ class FileManager(FileManagerOperations):
         fileman_offset = -Vector2(self.rect.topleft)
 
         ## create a surf for each pair of parameters
-        ## and blit it on self.image after offset it
+        ## and blit it on self.image after offsetting it
 
         for text, topleft in surf_params:
 
@@ -248,7 +277,7 @@ class FileManager(FileManagerOperations):
         x += surf_width
 
         ## finally store the new coordinates
-        self.current_path_label_topleft = x, y
+        self.current_path_label_offset = x, y
 
     def build_labels(self):
         """Build and store label objects."""
@@ -262,23 +291,24 @@ class FileManager(FileManagerOperations):
 
         max_width = (
           self.rect.right
-          - self.caption_label_midleft[0]
+          - self.caption_label_offset[0]
           - 20
         )
 
         ## instantiate and store it
 
-        self.caption_label = \
+        self.caption_label = (
+
           Label(
             t.file_manager.caption,
             font_height=FONT_HEIGHT,
-            padding=0,
+            padding=5,
             foreground_color=WINDOW_FG,
             background_color=WINDOW_BG,
-            coordinates_name='midleft',
-            coordinates_value=self.caption_label_midleft,
-            max_width=max_width
+            max_width=max_width,
           )
+
+        )
 
         self.labels.add(self.caption_label)
 
@@ -287,17 +317,16 @@ class FileManager(FileManagerOperations):
         ### according to the current mode; that is, it will
         ### be either 'Selected:' or 'New path:'
 
-        bottomleft = self.rect.move(5, -10).bottomleft
+        self.widget_label = (
 
-        self.widget_label = \
           Label(
             t.file_manager.selected + ":",
             font_height=FONT_HEIGHT,
             foreground_color=WINDOW_FG,
             background_color=WINDOW_BG,
-            coordinates_name='bottomleft',
-            coordinates_value=bottomleft
           )
+
+        )
 
         self.labels.add(self.widget_label)
         
@@ -344,11 +373,6 @@ class FileManager(FileManagerOperations):
             attribute = getattr(dir_panel, attribute_name)
             setattr(self, attribute_name, attribute)
 
-        ## reposition the current path label with the
-        ## topleft coordinate we saved for it
-        self.current_path_lb.rect.topleft = \
-                        self.current_path_label_topleft
-
         ## also store the current path label in the
         ## labels special collection
         self.labels.add(self.current_path_lb)
@@ -360,7 +384,7 @@ class FileManager(FileManagerOperations):
 
         self.bkm_panel = BookmarkPanel(
                            self.dir_panel,
-                           self.rect_size_semitransp_obj
+                           self.rect_size_semitransp_obj,
                          )
 
         ### also reference bookmark panel buttons
@@ -376,17 +400,144 @@ class FileManager(FileManagerOperations):
         self.panels = Set2D()
         self.panels.update((self.dir_panel, self.bkm_panel))
 
-        ### draw background of panels on our own background,
-        ### so we don't need to draw them every loop
+        ### create a submit button and a cancel button (we
+        ### use text objects with a simple finish to give
+        ### them depth)
 
-        offset = -Vector2(self.rect.topleft)
+        ## submit button
 
-        for panel in self.panels:
+        self.submit_button = (
 
-            offset_rect = panel.rect.move(offset)
+          Object2D.from_surface(
 
-            draw_rect(self.image, NORMAL_PATH_BG, offset_rect)
-            draw_rect(self.image, BLACK, offset_rect, 1)
+            surface=render_text(
+                      t.file_manager.submit,
+                      font_height=FONT_HEIGHT,
+                      foreground_color=BUTTON_FG,
+                      background_color=BUTTON_BG,
+                      padding=5,
+                      depth_finish_thickness=1,
+                    ),
+
+          )
+
+        )
+
+        self.submit_button.on_mouse_release = (
+          get_oblivious_callable(self.submit_selected)
+        )
+
+        ## cancel button
+
+        self.cancel_button = (
+
+          Object2D.from_surface(
+
+            surface=render_text(
+                   t.file_manager.cancel,
+                   font_height=FONT_HEIGHT,
+                   foreground_color=BUTTON_FG,
+                   background_color=BUTTON_BG,
+                   padding=5,
+                   depth_finish_thickness=1
+                 ),
+
+          )
+
+        )
+
+        self.cancel_button.on_mouse_release = (
+
+          get_oblivious_callable(self.cancel)
+
+        )
+
+
+        ### create an entry widget;
+        ###
+        ### no need to position it, since it is repositioned
+        ### every time the file manager is entered;
+
+        self.entry = StringEntry(
+                       value=t.file_manager.pathname,
+                       loop_holder=self,
+                       font_height=FONT_HEIGHT,
+                       width=550,
+                     )
+
+        ### create a label to show the current path(s)
+        ### selected when in 'select_path' mode (it appears
+        ### in the same spot as the entry when in such mode,
+        ### and the entry is not displayed)
+
+        self.selection_label = (
+
+          Label(
+            text=t.file_manager.no_path_selected,
+            font_height=FONT_HEIGHT,
+            padding=0,
+            max_width=550,
+            foreground_color=NORMAL_PATH_FG,
+            background_color=NORMAL_PATH_BG
+          )
+
+        )
+
+        ### reference all buttons together in a set
+
+        self.buttons = Set2D(
+
+          (
+            self.home_button,
+            self.reload_dir_button,
+            self.parent_button,
+            self.new_file_button,
+            self.new_folder_button,
+            self.bookmark_button,
+            self.unbookmark_button,
+            self.cancel_button,
+            self.submit_button,
+          )
+
+        )
+
+    def reposition_objects(self):
+
+        self.rect.center = get_surface().get_rect().center
+
+        self.rect_size_semitransp_obj.rect.center = (
+          self.rect.center
+        )
+
+        self.dir_panel.reposition()
+        self.bkm_panel.reposition()
+
+        self.caption_label.rect.midleft = (
+          self.rect
+          .move(self.caption_label_offset)
+          .topleft
+        )
+
+        self.widget_label.rect.bottomleft = (
+          self.rect.move(5, -10).bottomleft
+        )
+
+        for obj in (self.selection_label, self.entry):
+
+            obj.rect.midleft = (
+              self.widget_label.rect.move(5, 0).midright
+            )
+
+        ## reposition the current path label with the
+        ## offset we saved for it
+
+        self.current_path_lb.rect.topleft = (
+
+          self.rect
+          .move(self.current_path_label_offset)
+          .topleft
+
+        )
 
         ### reposition buttons relative to the right side
         ### of the file manager and the top of the
@@ -404,106 +555,27 @@ class FileManager(FileManagerOperations):
         ## coordinate of the other, with a small offset
 
         for button in (
+
           self.unbookmark_button,
           self.bookmark_button,
           self.new_folder_button,
           self.new_file_button,
           self.parent_button,
           self.reload_dir_button,
-          self.home_button
+          self.home_button,
+
         ):
             button.rect.bottomright = bottomright
             bottomright = button.rect.move(-5, 0).bottomleft
 
-        ### create a submit button and a cancel button (we
-        ### use text objects with a simple finish to give
-        ### them depth)
-
-        ## submit button
-
-        bottomright = self.rect.move(-10, -10).bottomright
-
-        self.submit_button = \
-          Object2D.from_surface(
-            surface=render_text(
-                      t.file_manager.submit,
-                      font_height=FONT_HEIGHT,
-                      foreground_color=BUTTON_FG,
-                      background_color=BUTTON_BG,
-                      padding=5,
-                      depth_finish_thickness=1,
-                    ),
-            coordinates_name='bottomright',
-            coordinates_value=bottomright
-          )
-
-        self.submit_button.on_mouse_release = (
-          get_oblivious_callable(self.submit_selected)
+        self.submit_button.rect.bottomright = (
+          self.rect.move(-10, -10).bottomright
         )
 
-        ## cancel button
+        self.cancel_button.rect.topright = (
+          self.submit_button.rect.move(-5, 0).topleft
+        )
 
-        topright = \
-            self.submit_button.rect.move(-5, 0).topleft
-
-        self.cancel_button = \
-          Object2D.from_surface(
-            surface=render_text(
-                   t.file_manager.cancel,
-                   font_height=FONT_HEIGHT,
-                   foreground_color=BUTTON_FG,
-                   background_color=BUTTON_BG,
-                   padding=5,
-                   depth_finish_thickness=1
-                 ),
-            coordinates_name='topright',
-            coordinates_value=topright
-          )
-
-        self.cancel_button.on_mouse_release = \
-                         get_oblivious_callable(self.cancel)
-
-
-        ### create an entry widget;
-        ###
-        ### no need to position it, since it is repositioned
-        ### every time the file manager is entered;
-
-        self.entry = StringEntry(
-                       value=t.file_manager.pathname,
-                       loop_holder=self,
-                       font_height=FONT_HEIGHT,
-                       width=550
-                     )
-
-        ### create a label to show the current path(s)
-        ### selected when in 'select_path' mode (it appears
-        ### in the same spot as the entry when in such mode,
-        ### and the entry is not displayed)
-
-        self.selection_label = \
-            Label(
-              text=t.file_manager.no_path_selected,
-              font_height=FONT_HEIGHT,
-              padding=0,
-              max_width=550,
-              foreground_color=NORMAL_PATH_FG,
-              background_color=NORMAL_PATH_BG
-            )
-
-        ### reference all buttons together in a set
-
-        self.buttons = Set2D((
-          self.home_button,
-          self.reload_dir_button,
-          self.parent_button,
-          self.new_file_button,
-          self.new_folder_button,
-          self.bookmark_button,
-          self.unbookmark_button,
-          self.cancel_button,
-          self.submit_button,
-        ))
 
 _ = FileManager()
 

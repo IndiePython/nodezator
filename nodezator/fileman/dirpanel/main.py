@@ -10,7 +10,6 @@ from functools import partialmethod
 
 from pygame import Rect
 
-from pygame.math import Vector2
 from pygame.draw import rect      as draw_rect
 from pygame.time import get_ticks as get_milliseconds
 
@@ -61,7 +60,6 @@ from fileman.constants import (
                          PATH_OBJ_PADDING,
                          PATH_OBJ_PARENT_TEXT,
                          DIR_PANEL_WIDTH,
-                         DIR_PANEL_TOPLEFT,
                        )
 
 ## class extensions
@@ -91,24 +89,23 @@ class DirectoryPanel(
         ### PathObject class
         PathObject.load_directory = self.change_current_dir
 
+        ### create a rect attribute
+
+        self.rect = Rect(
+
+                      (0, 0),
+
+                      ## size
+                      (DIR_PANEL_WIDTH, 0)
+
+                    )
+
         ### create a current directory attribute, using
         ### the pathlib.Path to the home directory
         self.current_dir = Path.home()
 
         ### build objects composing this instance
         self.build_widget_structure()
-
-        ### create a rect attribute
-
-        self.rect = Rect(
-
-                      ## position
-                      DIR_PANEL_TOPLEFT,
-
-                      ## size
-                      (DIR_PANEL_WIDTH, self.height)
-
-                    )
 
         ### store an initial value for the index of the
         ### last selected path in the directory panel
@@ -124,21 +121,30 @@ class DirectoryPanel(
         ## (with a bit of padding)
 
         max_width = (
-          self.fm.rect.move(-18, 0).right
-          - self.fm.current_path_label_topleft[0]
+
+          (self.fm.rect.right - 18)
+
+          - (
+            self.fm.rect.left
+            + self.fm.current_path_label_offset[0]
+          )
+
         )
 
         ## creation
 
-        self.current_path_lb = \
-               Label(
-                 str(self.current_dir),
-                 font_height=FONT_HEIGHT,
-                 foreground_color=NORMAL_PATH_FG,
-                 background_color=NORMAL_PATH_BG,
-                 max_width=max_width,
-                 ellipsis_at_end=False
-               )
+        self.current_path_lb = (
+
+          Label(
+            str(self.current_dir),
+            font_height=FONT_HEIGHT,
+            foreground_color=NORMAL_PATH_FG,
+            background_color=NORMAL_PATH_BG,
+            max_width=max_width,
+            ellipsis_at_end=False
+          )
+
+        )
 
         ### create and store buttons
 
@@ -222,46 +228,39 @@ class DirectoryPanel(
                        NORMAL_PATH_BG
                      )
 
-        draw_border(self.image)
-
-        ### save height of self.path_objs plus 2
-        self.height = self.path_objs.rect.height + 2
+        draw_border(self.image) # XXX is this needed?
 
     def create_path_objects(self):
         """Instantiate and store path objects."""
-        ### create special list to hold the path objects
-        path_objs = List2D()
-
-        ### define a topleft position and width for the
-        ### path objects
-
-        topleft = Vector2(DIR_PANEL_TOPLEFT) + (1, 1)
+        ### define width of path objects
         width = DIR_PANEL_WIDTH - 2
 
-        ### create as much path objects as the defined
-        ### quantity
+        ### create special list to hold the path objects
 
-        for _ in range(PATH_OBJ_QUANTITY):
+        self.path_objs = List2D(
 
-            ## instantiate path object
+          PathObject(
+            path=None,
+            width=width,
+            padding=PATH_OBJ_PADDING,
+          )
 
-            path_obj = PathObject(
-                         path=None,
-                         width=width,
-                         padding=PATH_OBJ_PADDING,
-                         coordinates_name='topleft',
-                         coordinates_value=topleft
-                       )
+          for _ in range(PATH_OBJ_QUANTITY)
 
-            ## store it
-            path_objs.append(path_obj)
+        )
 
-            ## update the topleft coordinates
-            topleft[1] += path_obj.rect.height
+        ### position objs relative to each other
 
-        ### reference the path objects in their own
-        ### attribute
-        self.path_objs = path_objs
+        self.path_objs.rect.snap_rects_ip(
+
+          retrieve_pos_from = 'bottomleft',
+          assign_pos_to     = 'topleft',
+
+        )
+
+        ### assign height of self.path_objs plus 2
+        ### as the panel's height
+        self.rect.height = self.path_objs.rect.height + 2
 
     @property
     def last_selected_index(self):
@@ -588,3 +587,14 @@ class DirectoryPanel(
     present_new_folder_form = (
       partialmethod(present_new_path_form, False)
     )
+
+    def reposition(self):
+        """Reposition panel relative to file manager."""
+
+        self.rect.topleft = (
+          self.fm.rect.move(305, 100).topleft
+        )
+
+        self.path_objs.rect.topleft = (
+          self.rect.move(1, 1).topleft
+        )

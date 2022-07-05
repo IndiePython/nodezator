@@ -32,6 +32,8 @@ from pygameconstants import (
                        maintain_fps,
                      )
 
+from our3rdlibs.behaviour import watch_window_size
+
 from our3rdlibs.button import Button
 
 from classes2d.single import Object2D
@@ -345,6 +347,8 @@ class WidgetPicker(
         while self.running:
 
             maintain_fps(FPS)
+
+            watch_window_size()
 
             ### put the handle_input/update/draw method
             ### execution inside a try/except clause

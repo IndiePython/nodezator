@@ -21,6 +21,8 @@ from pygameconstants import (
 
 from colorsman.colors import WINDOW_BG
 
+from our3rdlibs.behaviour import watch_window_size
+
 
 ## before going on, fill the screen with the window
 ## background color; this is an usability measure,
@@ -83,6 +85,9 @@ def run_app(filepath=None):
 
         ### keep a constant framerate
         maintain_fps(FPS)
+
+        ### keep an eye on the window size
+        watch_window_size()
 
         ### run the GUD methods (check glossary for
         ### loop holder/methods/loop)

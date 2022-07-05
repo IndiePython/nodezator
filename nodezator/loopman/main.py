@@ -13,6 +13,8 @@ from pygame.display import update
 
 from pygameconstants import FPS, maintain_fps
 
+from our3rdlibs.behaviour import watch_window_size
+
 from loopman.exception import (
                          ContinueLoopException,
                          SwitchLoopException,
@@ -42,6 +44,8 @@ class LoopHolder:
         while self.running:
             
             maintain_fps(FPS)
+
+            watch_window_size()
 
             try:
                 

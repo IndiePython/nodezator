@@ -19,21 +19,14 @@ The code was further refactored and commented by me
 (Kennedy Richard - https://kennedyrichard.com)
 """
 
-### local import
+### local imports
+
+from config import APP_REFS
+
 from pygameconstants import SCREEN_RECT
 
 
 ### clipping utilities
-
-## when drawing line segments, we want to draw as little as
-## possible, thus we only draw the portion of the segments
-## which are inside the screen, that is, we clip the
-## segments to the visible area; however, since the segments
-## have some thickness, we compensate by using a rect just
-## a bit larger than the screen for the clipping, specially
-## since the size of the clipping area doesn't slow down
-## the calculations
-CLIPPING_AREA = SCREEN_RECT.inflate(4, 4)
 
 ## the Cohen-Sutherland algorithm used to clip line segments
 ## defines 9 conceptual regions/areas which it uses to define
@@ -74,14 +67,44 @@ RIGHT  = 2 # 0010
 BOTTOM = 4 # 0100 
 TOP    = 8 # 1000 
 
-## define x_max, y_max, x_min and y_min values, which
-## represent the boundaries of the clipping area,
 
-x_max = CLIPPING_AREA.right
-y_max = CLIPPING_AREA.bottom
-x_min = CLIPPING_AREA.left
-y_min = CLIPPING_AREA.top
+def define_clipping_area_boundaries_on_module_level():
 
+    ## when drawing line segments, we want to draw as
+    ## little as possible, thus we only draw the portion
+    ## of the segments which are inside the screen,
+    ## that is, we clip the segments to the visible area;
+    ##
+    ## however, since the segments have some thickness,
+    ## we compensate by using a rect just a bit larger
+    ## than the screen for the clipping, specially since
+    ## the size of the clipping area doesn't slow down
+    ## the calculations
+    clipping_area = SCREEN_RECT.inflate(4, 4)
+
+    ## define x_max, y_max, x_min and y_min values on
+    ## module level
+    ##
+    ## they represent the boundaries of the clipping area
+    ## and are defined on module level so that other
+    ## functions can reference the values directly as
+    ## needed
+
+    globals_dict = globals()
+
+    globals_dict['x_max'] = clipping_area.right
+    globals_dict['y_max'] = clipping_area.bottom
+    globals_dict['x_min'] = clipping_area.left
+    globals_dict['y_min'] = clipping_area.top
+
+## store function above as a window resize setup and
+## execute it
+
+APP_REFS.window_resize_setups.append(
+  define_clipping_area_boundaries_on_module_level
+)
+
+define_clipping_area_boundaries_on_module_level()
 
 def get_region_code(x, y): 
     """Return region code for a point(x,y).

@@ -6,15 +6,16 @@ from pygame import Rect
 
 ### local imports
 
-from pygameconstants import SCREEN_RECT
+from pygameconstants import SCREEN
 
 from ourstdlibs.behaviour import empty_function
 
 from classes2d.collections import List2D
 
-from surfsman.render import render_rect
-
-from surfsman.cache import draw_cached_screen_state
+from surfsman.cache import (
+                      RECT_SURF_MAP,
+                      draw_cached_screen_state,
+                    )
 
 from colorsman.colors import MENU_BG
 
@@ -190,7 +191,7 @@ class MenuManager(
 
           draw_behind   = draw_cached_screen_state,
 
-          boundaries_rect = SCREEN_RECT,
+          boundaries_rect = None,
 
           coordinates_name  = 'topleft',
           coordinates_value = (0, 0),
@@ -225,9 +226,10 @@ class MenuManager(
             Defaults to a function which draws a cached
             copy of the screen over the screen.
 
-        boundaries_rect (pygame.Rect instance)
-            provides a limit which should be respected by the
-            menu.
+        boundaries_rect (None or pygame.Rect instance)
+            if None is used, a rect the size of the screen
+            is used; provides a limit which should be
+            respected by the menu.
 
         coordinates_name (string)
             represents an attribute name of a pygame.Rect
@@ -295,10 +297,18 @@ class MenuManager(
                    " submenus"
                  )
 
+        ### obtain an screen rect
+        screen_rect = SCREEN.get_rect()
+
+        ### if boundaries rect is None, use the screen rect
+
+        if boundaries_rect is None:
+            boundaries_rect = screen_rect
+
         ### check condition: boundaries must be within the
         ### screen
 
-        if not SCREEN_RECT.contains(boundaries_rect):
+        if not screen_rect.contains(boundaries_rect):
 
             raise ValueError(
                     "Boundaries must be within screen rect."
@@ -412,7 +422,10 @@ class MenuManager(
 
         ## instantiate background, storing it on the 
         ## image attribute, using the rect size
-        self.image = render_rect(*self.rect.size, MENU_BG)
+
+        self.image = RECT_SURF_MAP[
+                       (*self.rect.size, MENU_BG)
+                     ]
 
         ## if the menu manager is scrollable, copy the
         ## background into a clean_bg attribute, which

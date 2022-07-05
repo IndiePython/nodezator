@@ -3,15 +3,12 @@
 
 ### third-party imports
 
-from pygame      import Rect
+from pygame import Rect
+
 from pygame.draw import line as draw_line
 
-### local imports
 
-from pygameconstants import (
-                       SCREEN,
-                       SCREEN_RECT,
-                     )
+### local imports
 
 from our3rdlibs.grid.main import (
                             enforce_multiple,
@@ -29,7 +26,7 @@ class ScrollableGrid(object):
           line_width,
           color,
           unit_rect,
-          area_rect=SCREEN_RECT
+          area_rect,
         ):
         """Generate and store grid-like lines.
 
@@ -86,9 +83,15 @@ class ScrollableGrid(object):
 
     def draw(self):
         """Draw lines on screen."""
+
         for point_pair in self.all_lines:
-            draw_line(self.screen, self.color,
-                      *point_pair, self.line_width)
+
+            draw_line(
+              self.screen,
+              self.color,
+              *point_pair,
+              self.line_width,
+            )
 
     def scroll(self, dx, dy):
         """Scroll line vectors relative to dx and dy amounts.
@@ -98,11 +101,15 @@ class ScrollableGrid(object):
             movement in the x and y axes, respectively.
         """
         ### scroll grid vertical lines
+
         if dx: move_grid_lines_along_axis(
                  self.v_lines, 'x', dx,
-                 self.unit_rect, self.area_rect)
+                 self.unit_rect, self.area_rect
+               )
 
         ### scroll grid horizontal lines
+
         if dy: move_grid_lines_along_axis(
                  self.h_lines, 'y', dy,
-                 self.unit_rect, self.area_rect)
+                 self.unit_rect, self.area_rect
+               )

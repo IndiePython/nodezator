@@ -26,6 +26,8 @@ from ourstdlibs.behaviour import get_oblivious_callable
 
 from ourstdlibs.collections.general import CallList
 
+from our3rdlibs.behaviour import watch_window_size
+
 from surfsman.draw   import blit_aligned
 from surfsman.render import render_rect
 
@@ -359,6 +361,9 @@ class SortingEditor(SortingEditorModes):
             
             ## maintain a constant framerate
             maintain_fps(FPS)
+
+            ## watch out for when window is resized
+            watch_window_size()
 
             ## perform GUD operations (initials of the
             ## methods; see also the loop holder definition

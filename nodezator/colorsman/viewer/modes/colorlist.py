@@ -306,8 +306,12 @@ class ColorListMode:
         This way the widgets or at least part of it are
         always visible.
         """
+        ### XXX rect for boundary checking below should
+        ### probably be stored, instead of being created
+        ### every time we scroll
+
         ### define rect used for boundary checking
-        bg_rect   = self.color_list_bg.rect.inflate(0, -20)
+        bg_rect = self.color_list_bg.rect.inflate(0, -20)
 
         ### retrieve rect used to read and control the
         ### position of widgets
@@ -420,8 +424,12 @@ class ColorListMode:
         ### of their rects obtained from pygame.Rect.move
         ### with the offset as the sole argument)
 
-        for obj \
-        in self.color_list_objs.get_colliding(bg_rect):
+        for obj in (
+
+          self.color_list_objs.get_colliding(bg_rect)
+
+        ):
+
             bg_image.blit(obj.image, obj.rect.move(offset))
 
         ### draw a border around the color list background

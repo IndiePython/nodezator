@@ -3,6 +3,7 @@
 ### third-party imports
 
 from pygame import (
+
               QUIT,
 
               KEYDOWN,
@@ -14,6 +15,7 @@ from pygame import (
 
               MOUSEMOTION,
               MOUSEBUTTONUP,
+
             )
 
 from pygame.event   import get as get_events
@@ -33,7 +35,7 @@ from htsl.main import open_htsl_link
 
 
 class NoFileState:
-    """Event handling methods and related support methods."""
+    """Methods for the no-file state."""
 
     def no_file_event_handling(self):
         """Get and respond to events."""
@@ -48,6 +50,7 @@ class NoFileState:
                 self.no_file_on_mouse_motion(event)
 
             ### MOUSEBUTTONUP
+
             elif event.type == MOUSEBUTTONUP:
                 self.no_file_on_mouse_release(event)
 

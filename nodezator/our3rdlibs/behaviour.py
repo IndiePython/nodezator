@@ -12,11 +12,24 @@ from pygame.display import get_caption, set_caption
 
 from config import APP_REFS
 
-from pygameconstants import _CLOCK
+from pygameconstants import (
+                       _CLOCK,
+                       SCREEN,
+                       SCREEN_RECT,
+                       SCREEN_WIDTH, SCREEN_HEIGHT,
+                     )
 
 from loopman.exception import QuitAppException
 
 from translation import STATUS_MESSAGES_MAP
+
+
+### store current screen size
+###
+### note that we use the values used to create the screen
+### on purpose at this step, rather than obtaining them
+### from SCREEN_RECT.size
+APP_REFS.screen_size = (SCREEN_WIDTH, SCREEN_HEIGHT)
 
 
 ### utility functions
@@ -94,3 +107,16 @@ def get_current_fps():
     29.18484242 -> '29'
     """
     return str(round(_CLOCK.get_fps())).rjust(2, "0")
+
+def watch_window_size():
+    """Perform setups needed if window was resized."""
+    ### obtain current size
+    current_size = SCREEN.get_size()
+
+    ### if current screen size is different from the one
+    ### we stored, perform window resize setups
+
+    if current_size != SCREEN_RECT.size:
+
+        SCREEN_RECT.size = current_size
+        APP_REFS.window_resize_setups()

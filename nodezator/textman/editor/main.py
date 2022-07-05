@@ -26,6 +26,8 @@ from dialog import create_and_show_dialog
 
 from ourstdlibs.collections.general import CallList
 
+from our3rdlibs.behaviour import watch_window_size
+
 from surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
 from classes2d.single      import Object2D
@@ -37,12 +39,12 @@ from surfsman.render import render_rect
 from surfsman.icon import render_layered_icon
 
 from colorsman.colors import (
-                               BLACK,
-                               WHITE,
-                               WINDOW_FG, WINDOW_BG,
-                               BUTTON_FG, BUTTON_BG,
-                               CONTRAST_LAYER_COLOR,
-                             )
+                        BLACK,
+                        WHITE,
+                        WINDOW_FG, WINDOW_BG,
+                        BUTTON_FG, BUTTON_BG,
+                        CONTRAST_LAYER_COLOR,
+                      )
 
 from textman.render import render_text
 
@@ -446,6 +448,8 @@ class TextEditor(Object2D):
         while self.running:
 
             maintain_fps(FPS)
+
+            watch_window_size()
 
             ### perform the GUD operations;
             ###

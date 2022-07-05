@@ -79,6 +79,13 @@ def show_surface(
         ## keep a constant framerate
         maintain_fps(FPS)
 
+        ## do not keep track of window resizing here
+        ## with our3rdlibs.behaviour.watch_window_size(),
+        ## as you'd normally do (unless you are really
+        ## going to need), since it adds uneeded
+        ## complexity to the small inspections this
+        ## function is usually meant to perform;
+
         ## handle events
 
         for event in get_events():

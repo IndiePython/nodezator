@@ -7,6 +7,7 @@ from functools import partialmethod
 ### third-party imports
 
 from pygame import (
+
               QUIT,
 
               KEYUP, K_ESCAPE,
@@ -15,6 +16,7 @@ from pygame import (
 
               MOUSEBUTTONDOWN, MOUSEBUTTONUP,
               MOUSEMOTION,
+
             )
 
 from pygame.event import get as get_events
@@ -31,8 +33,9 @@ from pygameconstants import SCREEN
 from classes2d.single import Object2D
 
 from loopman.exception import (
-                                SwitchLoopException,
-                                QuitAppException)
+                         SwitchLoopException,
+                         QuitAppException,
+                       )
 
 from colorsman.colors import SPLASH_FONT
 
