@@ -31,6 +31,8 @@ from pygame.math import Vector2
 
 ### local imports
 
+from config import APP_REFS
+
 from pygameconstants import SCREEN_RECT
 
 from dialog import create_and_show_dialog
@@ -75,12 +77,34 @@ class FontsViewer(Object2D, LoopHolder):
         #draw_border(self.image, thickness=2)
 
         self.rect = self.image.get_rect()
+
+        ###
+        self.font_obj_map = {}
+
+        ### center font viewer and append centering method
+        ### as a window resize setup
+
+        self.center_font_viewer()
+        
+        APP_REFS.window_resize_setups.append(
+          self.center_font_viewer
+        )
+
+    def center_font_viewer(self):
+        
+        diff = (
+          Vector2(SCREEN_RECT.center) - self.rect.center
+        )
+
         self.rect.center = SCREEN_RECT.center
 
         self.offset = -Vector2(self.rect.topleft)
 
-        ###
-        self.font_obj_map = {}
+        try: self.char_objs
+        except AttributeError: pass
+        else:
+            self.char_objs.rect.move_ip(diff)
+
 
     def view_fonts(self, font_paths, index=0):
 

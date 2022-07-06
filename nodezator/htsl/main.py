@@ -40,8 +40,12 @@ from pygame.key import get_pressed as get_pressed_keys
 
 from pygame.display import update
 
+from pygame.math import Vector2
+
 
 ### local imports
+
+from config import APP_REFS
 
 from pygameconstants import SCREEN_RECT, blit_on_screen
 
@@ -95,7 +99,11 @@ AWW_ICON = render_layered_icon(
            )
 
 
-class HTSLBrowser(Object2D, Preparation, LoopHolder):
+class HTSLBrowser(
+      Object2D,
+      Preparation,
+      LoopHolder,
+    ):
     """Allows browsing web-like pages.
 
     HTSL means "HyperText as Surfaces" markup Language,
@@ -125,7 +133,6 @@ class HTSLBrowser(Object2D, Preparation, LoopHolder):
         self.image.blit(AWW_ICON, (5, 5))
 
         self.rect = self.image.get_rect()
-        self.rect.center = SCREEN_RECT.center
 
         content_area = self.rect.inflate(-20, -50)
 
@@ -176,15 +183,41 @@ class HTSLBrowser(Object2D, Preparation, LoopHolder):
 
             max_width = label_max_width,
 
-            coordinates_name = 'midleft',
-
-            coordinates_value = (
-              self.rect.move(35, 0).left,
-              self.rect.move(0, 17).top,
-            ),
           )
 
         )
+
+        ### center htsl browser and append the centering
+        ### method as a window resize setup
+
+        self.center_htsl_browser()
+
+        APP_REFS.window_resize_setups.append(
+          self.center_htsl_browser
+        )
+
+    def center_htsl_browser(self):
+
+        diff = (
+          Vector2(SCREEN_RECT.center) - self.rect.center
+        )
+
+        self.rect.center = SCREEN_RECT.center
+
+        ###
+        self.content_area_obj.rect.move_ip(diff)
+
+        ###
+
+        self.title_label.rect.midleft = (
+          self.rect.move(35, 0).left,
+          self.rect.move(0, 17).top,
+        )
+
+        ###
+
+        for obj_list in self.cache.values():
+            obj_list.rect.move_ip(diff)
 
     def open_htsl_link(self, link):
         """Create a htsl page from existing htsl file.
@@ -302,7 +335,9 @@ class HTSLBrowser(Object2D, Preparation, LoopHolder):
             
             pysite = self.pysite = path_string[:start+7]
 
-            path_string = path_string[start+8:] or 'index.htsl'
+            path_string = (
+              path_string[start+8:] or 'index.htsl'
+            )
 
         else: pysite = self.pysite
 
