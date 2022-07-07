@@ -114,9 +114,27 @@ def watch_window_size():
     current_size = SCREEN.get_size()
 
     ### if current screen size is different from the one
-    ### we stored, perform window resize setups
+    ### we stored...
 
     if current_size != SCREEN_RECT.size:
 
+        ### perform window resize setups
+
         SCREEN_RECT.size = current_size
         APP_REFS.window_resize_setups()
+
+        ### redraw the window manager
+        APP_REFS.window_manager.draw()
+
+        ### if there's a request to draw after the setups,
+        ### do so and delete the request
+
+        if hasattr(
+
+          APP_REFS,
+          'draw_after_window_resize_setups',
+
+        ):
+            
+            APP_REFS.draw_after_window_resize_setups()
+            del APP_REFS.draw_after_window_resize_setups

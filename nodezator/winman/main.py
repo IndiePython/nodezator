@@ -188,7 +188,6 @@ class WindowManager(
         self.create_background_surface()
         self.fix_menubar_size()
         self.create_separator_surface()
-        self.draw()
 
     def prepare_for_new_session(self):
         """Instantiate and set up objects.
