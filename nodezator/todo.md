@@ -1,5 +1,4 @@
 - adjust:
-  - text editor;
   - text viewer;
   - redrawing when performing window resize setups;
 

@@ -15,14 +15,9 @@ from pygameconstants import SCREEN, blit_on_screen
 from ourstdlibs.behaviour import had_to_set_new_value
 
 from textman.editor.constants import (
-                                     TEXT_EDITOR_RECT,
-                                     EDITING_AREA_RECT)
-
-
-### x coordinate from where to blit line numbers (we use
-### the left of the text editor itself plus 20 pixels of
-### padding)
-LINE_NUMBER_X = TEXT_EDITOR_RECT.left + 20
+                                TEXT_EDITOR_RECT,
+                                EDITING_AREA_RECT,
+                              )
 
 
 ### class definition
@@ -84,7 +79,7 @@ class GeneralOperations:
 
           # start from the x coordinate from where we
           # blit line numbers 
-          LINE_NUMBER_X
+          self.te.line_number_x
 
           # add the width which will be occupied by the
           # line numbers
@@ -226,6 +221,9 @@ class GeneralOperations:
         ## digit surf map
         digit_surf_map = self.DIGIT_SURF_MAP
 
+        ## x coordinate from where we position line numbers
+        line_number_x = self.te.line_number_x
+
         ### iterate over each line and its respective line
         ### number
 
@@ -242,7 +240,7 @@ class GeneralOperations:
             ## use the x coordinate from where we blit
             ## line numbers as the starting value of our
             ## x coordinate
-            lineno_x = LINE_NUMBER_X
+            lineno_x = line_number_x
 
             ## reference the y coordinate of the line
             ## locally for quicker and easier access
