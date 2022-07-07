@@ -5,8 +5,6 @@ from pygame import Rect
 
 ### local imports
 
-from pygameconstants import SCREEN_RECT
-
 from fontsman.constants import (
                           FIRA_MONO_BOLD_FONT_HEIGHT,
                           FIRA_MONO_BOLD_FONT_PATH,
@@ -46,16 +44,8 @@ TEXT_SETTINGS_PRESETS_MAP = {
 ### rect
 
 TEXT_VIEWER_RECT = Rect(0, 0, 900, 576)
-TEXT_VIEWER_RECT.center = SCREEN_RECT.center
 
-CUSTOM_STDOUT_RECT = SCREEN_RECT.copy()
-
-CUSTOM_STDOUT_RECT.height *= .4
-CUSTOM_STDOUT_RECT.inflate_ip(-20, 0)
-
-CUSTOM_STDOUT_RECT.midbottom = (
-  SCREEN_RECT.move(0, -80).midbottom
-)
+CUSTOM_STDOUT_RECT = Rect(0, 0, 1100, 340)
 
 RECT_PRESETS_MAP = {
   'default'       : TEXT_VIEWER_RECT,

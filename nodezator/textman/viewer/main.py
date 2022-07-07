@@ -1,7 +1,14 @@
 """Facility for text displaying."""
 
+### third-party import
+from pygame.math import Vector2
+
 
 ### local imports
+
+from config import APP_REFS
+
+from pygameconstants import SCREEN_RECT
 
 from ourstdlibs.collections.general import CallList
 
@@ -44,7 +51,10 @@ from textman.viewer.op   import Operations
 from textman.viewer.prep import TextPreparation
 
 ## common constants
-from textman.viewer.constants import TEXT_VIEWER_RECT
+from textman.viewer.constants import (
+                                TEXT_VIEWER_RECT,
+                                CUSTOM_STDOUT_RECT,
+                              )
 
 
 ### XXX could the design of the removed module
@@ -244,19 +254,93 @@ class TextViewer(TextPreparation, Operations):
                               **HEADER_TEXT_KWARGS,
                             )
 
+        ### center text viewer and also store the
+        ### centering method as a window resize setup
+
+        self.center_text_viewer()
+
+        APP_REFS.window_resize_setups.append(
+          self.center_text_viewer
+        )
+
+    def center_text_viewer(self):
+
+        if self.rect is TEXT_VIEWER_RECT:
+
+            diff = (
+              Vector2(SCREEN_RECT.center) - self.rect.center
+            )
+
+        elif self.rect is CUSTOM_STDOUT_RECT:
+
+            diff = (
+              Vector2(SCREEN_RECT.move(0, -80).midbottom)
+              - self.rect.midbottom
+            )
+
+        else: raise RuntimeError(
+                      "This else block should not be"
+                      " reached, please review the logic."
+                    )
+
+        TEXT_VIEWER_RECT.center = SCREEN_RECT.center
+
+        CUSTOM_STDOUT_RECT.midbottom = (
+          SCREEN_RECT.move(0, -80).midbottom
+        )
+
+        if hasattr(self, 'scroll_area'):
+            self.scroll_area.move_ip(diff)
+
+        if hasattr(self, 'lines'):
+            self.lines.rect.move_ip(diff)
+
+        if hasattr(self, 'lineno_panel'):
+            self.lineno_panel.rect.topright = (
+              self.rect.topleft
+            )
+
+        ### store the inverted self.rect.topleft to use as
+        ### an offset to draw lines on self.image
+        self.offset = -Vector2(self.rect.topleft)
+
+        ##
+        self.caption.rect.bottomleft = (
+          self.rect.move(0, -3).topleft
+        )
+
+        ##
+        self.header_label.rect.move_ip(diff)
+
+        ### position the help icon and help text objects
+        ### near the bottomright corner of the text viewer
+
+        self.help_icon.rect.bottomright = (
+          self.rect.move(-10, -10).bottomright
+        )
+
+        self.help_text_obj.rect.bottomright = (
+          self.rect.move(-10, -35).bottomright
+        )
+
     def build_message(self):
         """Build text object to inform user of controls."""
         ### create a single help text object in which
         ### to blit all the text from the text objects,
         ### storing it in its own attribute
 
-        self.help_text_obj = \
+        self.help_text_obj = (
+
           Object2D.from_surface(
+
             render_multiline_text(
               text=HELP_TEXT,
               **HELP_TEXT_KWARGS,
             )
+
           )
+
+        )
 
         ### also draw a border on the help text object
 
