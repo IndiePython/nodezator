@@ -11,11 +11,16 @@ from functools import partial, partialmethod
 
 from pygame import QUIT, MOUSEBUTTONDOWN, MOUSEBUTTONUP
 
-from pygame.event   import get as get_events
+from pygame.event import get as get_events
+
 from pygame.display import update
+
+from pygame.math import Vector2
 
 
 ### local imports
+
+from config import APP_REFS
 
 from translation import TRANSLATION_HOLDER as t
 
@@ -127,9 +132,6 @@ class NodePacksSelectionChangeForm(Object2D):
 
         self.rect  = self.image.get_rect()
 
-        ## center rect on screen
-        self.rect.center = SCREEN_RECT.center
-
         ### store a semitransparent object
 
         self.rect_size_semitransp_obj = (
@@ -153,6 +155,25 @@ class NodePacksSelectionChangeForm(Object2D):
 
         ### assign behaviour
         self.update = empty_function
+
+        ### center form and also append the centering
+        ### method as a window resize setup
+
+        self.center_pack_selection_form()
+
+        APP_REFS.window_resize_setups.append(
+          self.center_pack_selection_form
+        )
+
+    def center_pack_selection_form(self):
+
+        diff = (
+          Vector2(SCREEN_RECT.center) - self.rect.center
+        )
+
+        self.rect.center = SCREEN_RECT.center
+
+        self.widgets.rect.move_ip(diff)
 
     def build_form_widgets(self):
         """Build widgets to hold the data for edition."""

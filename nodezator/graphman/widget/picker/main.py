@@ -18,11 +18,16 @@ from pygame import (
 
             )
 
-from pygame.event   import get as get_events
+from pygame.event import get as get_events
+
 from pygame.display import update
+
+from pygame.math import Vector2
 
 
 ### local imports
+
+from config import APP_REFS
 
 from translation import TRANSLATION_HOLDER as t
 
@@ -120,21 +125,23 @@ class WidgetPicker(
         """Build widget structure for the form."""
         ### build surf and rect for background
 
-        self.rect = SCREEN_RECT.copy()
-        self.rect.width = 360
-        self.rect.center = SCREEN_RECT.center
-
-        self.image = render_rect(*self.rect.size, WINDOW_BG)
+        self.image = render_rect(360, 540, WINDOW_BG)
         draw_border(self.image)
+
+        self.rect = self.image.get_rect()
 
         ### store a semitransparent object
 
-        self.semitransp_obj = Object2D.from_surface(
-                                render_rect(
-                                  *SCREEN_RECT.size,
-                                  (*CONTRAST_LAYER_COLOR, 130)
-                                )
-                              )
+        self.semitransp_obj = (
+
+          Object2D.from_surface(
+            render_rect(
+              *SCREEN_RECT.size,
+              (*CONTRAST_LAYER_COLOR, 130)
+            )
+          )
+
+        )
 
         ### create and store caption
 
@@ -219,6 +226,32 @@ class WidgetPicker(
         ### assign subform according to current
         ### kind of widget selected
         self.update_widget_subform()
+
+        ### center widget picker form and append centering
+        ### method as a window resize setup
+
+        self.center_widget_picker_form()
+
+        APP_REFS.window_resize_setups.append(
+          self.center_widget_picker_form
+        )
+
+    def center_widget_picker_form(self):
+
+        diff = (
+          Vector2(SCREEN_RECT.center) - self.rect.center
+        )
+
+        self.rect.center = SCREEN_RECT.center
+
+        self.caption.rect.move_ip(diff)
+        self.widget_kind_options.rect.move_ip(diff)
+
+        self.cancel_button.rect.move_ip(diff)
+        self.submit_button.rect.move_ip(diff)
+
+        for subform in self.subform_map.values():
+            subform.rect.move_ip(diff)
 
     def build_option_menu(self):
         """Build option menu to pick the kind of widget."""
