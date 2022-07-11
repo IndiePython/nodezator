@@ -177,6 +177,14 @@ class IntFloatOperations(Object2D):
             type) we use it to retrieve and use the
             mouse position.
         """
+        ### store current self.rect.topleft position for
+        ### future reference if needed
+        self.last_topleft = self.rect.topleft
+
+        ### set movement watch out routine to an empty
+        ### function
+        self.movement_watch_out_routine = empty_function
+
         ## if value is None, incrementing or decrementing
         ## it makes no sense (which is what happens in the
         ## mouse edition mode), so instead, we enable the

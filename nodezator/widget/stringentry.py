@@ -13,7 +13,10 @@ from xml.etree.ElementTree import Element
 from pygame import (
 
               ## event types
+
               QUIT, KEYUP, KEYDOWN, MOUSEBUTTONUP,
+
+              VIDEORESIZE,
 
               ## keys
 
@@ -305,8 +308,9 @@ class StringEntry(Object2D):
 
         ### define behaviours
 
-        self.draw   = super().draw
-        self.update = empty_function
+        self.draw         = super().draw
+        self.update       = empty_function
+        self.handle_input = self.handle_events
 
     @property
     def validation_command(self):
@@ -540,8 +544,35 @@ class StringEntry(Object2D):
                     if not self.rect.collidepoint(event.pos):
                         self.resume_editing()
 
-    ### alias handle_events method
-    handle_input = handle_events
+            ### if window is resized, set handle_input
+            ### to a new callable that keeps handling
+            ### events and at the same time watches out
+            ### for movement of the widget
+
+            elif event.type == VIDEORESIZE:
+
+                self.handle_input = (
+                  self.watch_out_for_movement
+                )
+
+    def watch_out_for_movement(self):
+
+        if self.rect.topleft != self.last_topleft:
+
+            diff = (
+              Vector2(self.rect.topleft)
+              - self.last_topleft
+            )
+
+            self.last_topleft = self.rect.topleft
+
+            self.cursor.rect.move_ip(diff)
+            self.cursor.line.rect.move_ip(diff)
+
+            ##
+            self.handle_input = self.handle_events
+
+        self.handle_events()
 
     def update_focused(self):
         """Update widget state."""
@@ -594,14 +625,19 @@ class StringEntry(Object2D):
         """
         ### assign behaviours
 
-        self.update = self.update_focused
-        self.draw   = self.draw_focused
+        self.update       = self.update_focused
+        self.draw         = self.draw_focused
+        self.handle_input = self.handle_events
 
         ### align line topleft with self.rect.topleft and
         ### move cursor to the end of the contents
 
         self.cursor.line.rect.topleft = self.rect.topleft
         self.cursor.go_to_end()
+
+        ### store topleft left position for later
+        ### reference if needed
+        self.last_topleft = self.rect.topleft
 
         ### give focus to self by raising a manager switch
         ### exception with a reference to this widget

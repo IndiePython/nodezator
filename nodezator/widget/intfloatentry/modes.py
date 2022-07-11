@@ -17,6 +17,8 @@ from pygame import (
               MOUSEBUTTONUP,
               MOUSEMOTION,
 
+              VIDEORESIZE,
+
               ### keys
 
               K_ESCAPE, K_RETURN, K_KP_ENTER,
@@ -38,10 +40,14 @@ from pygame.mouse import (
 
 from pygame.display import update
 
+from pygame.math import Vector2
+
 
 ### local imports
 
 from pygameconstants import SCREEN_RECT
+
+from ourstdlibs.behaviour import empty_function
 
 from surfsman.render import render_rect
 
@@ -189,6 +195,17 @@ class IntFloatModes(Object2D):
                         self.check_expanded_view_reversal()
                         self.resume_editing()
 
+            ## if window is resized, set the movement watch
+            ## out routine
+
+            elif event.type == VIDEORESIZE:
+
+                self.movement_watch_out_routine = (
+                       self.watch_out_for_movement
+                     )
+
+        self.movement_watch_out_routine()
+
     def keyboard_edition_update(self):
         """Update widget state in keyboard edition mode."""
         self.update_behind()
@@ -317,6 +334,17 @@ class IntFloatModes(Object2D):
                 if event.button == 1:
                     self.enable_keyboard_edition_mode()
 
+            ## if window is resized, set the movement watch
+            ## out routine
+
+            elif event.type == VIDEORESIZE:
+
+                self.movement_watch_out_routine = (
+                       self.watch_out_for_movement
+                     )
+
+        self.movement_watch_out_routine()
+
     def standby_draw(self):
         """Draw objects in standby mode."""
         ### draw object behind the widget
@@ -375,6 +403,17 @@ class IntFloatModes(Object2D):
 
                     self.perform_mouse_edition_exit_setups()
                     self.resume_editing()
+
+            ## if window is resized, set the movement watch
+            ## out routine
+
+            elif event.type == VIDEORESIZE:
+
+                self.movement_watch_out_routine = (
+                       self.watch_out_for_movement
+                     )
+
+        self.movement_watch_out_routine()
 
     def change_value_by_mouse_motion(self, mouse_pos):
         """Change current value according to mouse motion.
@@ -504,22 +543,22 @@ class IntFloatModes(Object2D):
     def enable_standby_mode(self):
         """Assign behaviours for standby mode."""
         self.handle_input = self.standby_control
-        self.update    = self.update_behind
-        self.draw      = self.standby_draw
+        self.update       = self.update_behind
+        self.draw         = self.standby_draw
 
     def enable_keyboard_edition_mode(self):
         """Assign behaviours for keyboard edition mode."""
         self.handle_input = self.keyboard_edition_control
-        self.update    = self.keyboard_edition_update
-        self.draw      = self.keyboard_edition_draw
+        self.update       = self.keyboard_edition_update
+        self.draw         = self.keyboard_edition_draw
 
     def enable_mouse_edition_mode(self):
         """Perform setups to enable mouse edition mode."""
         ### assign specific behaviours
 
+        self.update       = self.update_behind
+        self.draw         = self.mouse_edition_draw
         self.handle_input = self.mouse_edition_control
-        self.update    = self.update_behind
-        self.draw      = self.mouse_edition_draw
 
         ### disable the mouse visibility
         set_mouse_visibility(False)
@@ -553,3 +592,22 @@ class IntFloatModes(Object2D):
         del self.initial_mouse_pos
         del self.increment
         del self.dragging_origin_x
+
+    def watch_out_for_movement(self):
+
+        if self.rect.topleft == self.last_topleft: return
+
+        diff = (
+          Vector2(self.rect.topleft)
+          - self.last_topleft
+        )
+
+        self.last_topleft = self.rect.topleft
+
+        self.cursor.rect.move_ip(diff)
+        self.cursor.line.rect.move_ip(diff)
+
+        ##
+        self.movement_watch_out_routine = (
+               empty_function
+             )

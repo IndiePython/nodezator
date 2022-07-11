@@ -352,6 +352,11 @@ class OptionMenu(OptionMenuLifetimeOperations):
         ## drawing behaviour
         self.draw = self.draw_collapsed
 
+        ## input handling
+        self.handle_input = (
+          self.handle_events_and_mouse_pos
+        )
+
     def validate_value_and_options(self, value, options):
         """Check whether value and options are valid.
 

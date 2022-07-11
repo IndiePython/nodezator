@@ -639,6 +639,9 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
         self.draw   = super().draw
         self.update = empty_function
 
+        ### special routine
+        self.movement_watch_out_routine = empty_function
+
     def get_expected_type(self):
 
         classes = self.num_classes + (
