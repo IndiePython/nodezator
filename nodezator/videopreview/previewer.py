@@ -109,6 +109,7 @@ class VideoPreviewer(Object2D):
             numeric_classes_hint = 'int',
             min_value = 0,
             command=self.update_preview_from_entry,
+            draw_on_window_resize = self.draw,
           )
 
         )

@@ -298,12 +298,17 @@ class PythonExportForm(Object2D):
           .rect.move(5, 10).bottomleft
         )
 
-        widget_factory = partial(
-                           StringEntry,
-                           loop_holder=self,
-                           width=330,
-                           name='additional_level',
-                         )
+        widget_factory = (
+
+          partial(
+            StringEntry,
+            loop_holder=self,
+            draw_on_window_resize = self.draw,
+            width=330,
+            name='additional_level',
+          )
+
+        )
 
         default_factory = '.'.__str__
 

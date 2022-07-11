@@ -168,6 +168,7 @@ class PathForm(Object2D):
               loop_holder=self,
               width=self.rect.width - 20,
               font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+              draw_on_window_resize = self.draw,
               coordinates_name='topleft',
               coordinates_value=topleft
             )

@@ -608,6 +608,10 @@ class IntFloatModes(Object2D):
         self.cursor.line.rect.move_ip(diff)
 
         ##
+        self.draw_on_window_resize()
+        self.draw()
+
+        ##
         self.movement_watch_out_routine = (
                empty_function
              )

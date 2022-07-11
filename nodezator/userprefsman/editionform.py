@@ -183,13 +183,18 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
             labels.append(label_obj)
 
 
-        lang_option_menu = OptionMenu(
-                             loop_holder=self,
-                             options=AVAILABLE_LANGUAGES,
-                             value=USER_PREFS['LANGUAGE'],
-                             name='LANGUAGE',
-                             max_width = 0,
-                           )
+        lang_option_menu = (
+
+          OptionMenu(
+            loop_holder=self,
+            options=AVAILABLE_LANGUAGES,
+            value=USER_PREFS['LANGUAGE'],
+            draw_on_window_resize = self.draw,
+            name='LANGUAGE',
+            max_width = 0,
+          )
+
+        )
         
         number_backups_intfloat_entry = (
 
@@ -201,6 +206,7 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
             min_value = 0,
             numeric_classes_hint= 'int',
             allow_none = False,
+            draw_on_window_resize = self.draw,
           )
 
         )
@@ -215,6 +221,7 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
             width = 90,
             numeric_classes_hint= 'int',
             allow_none = False,
+            draw_on_window_resize = self.draw,
           )
 
         )
@@ -229,6 +236,7 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
             width = 90,
             numeric_classes_hint= 'int',
             allow_none = False,
+            draw_on_window_resize = self.draw,
           )
 
         )

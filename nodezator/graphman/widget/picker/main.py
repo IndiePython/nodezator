@@ -283,6 +283,8 @@ class WidgetPicker(
             max_width   = 230,
             font_height = FONT_HEIGHT,
 
+            draw_on_window_resize = self.draw,
+
             coordinates_name  = coordinates_name,
             coordinates_value = coordinates_value,
 

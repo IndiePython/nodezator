@@ -142,6 +142,8 @@ class _BasePreview(Object2D):
 
             command = self.update_previewed_path_from_entry,
 
+            draw_on_window_resize = self.draw,
+
             coordinates_name ='topleft',
             coordinates_value=topleft,
 

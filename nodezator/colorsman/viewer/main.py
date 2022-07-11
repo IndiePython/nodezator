@@ -5,8 +5,11 @@ of given colors, like their values, names, how they
 look next to each other, etc.
 """
 
-### standard library import
+### standard library imports
+
 from functools import partial
+
+from operator import methodcaller
 
 
 ### third-party import
@@ -247,14 +250,27 @@ class ColorsViewer(ColorListMode, PatternsMode, LoopHolder):
         ## instantiate and store the options menu in its
         ## own attribute (also reference it locally)
 
-        mode_options = \
-        self.mode_options = \
+        mode_options = self.mode_options = (
+
           OptionMenu(
-            loop_holder       = self,
-            value             = MODE_NAMES[0],
-            max_width         = 0,
-            options           = list(MODE_NAMES),
+
+            loop_holder = self,
+            value       = MODE_NAMES[0],
+            max_width   = 0,
+            options     = list(MODE_NAMES),
+
+            draw_on_window_resize = (
+
+              partial(
+                methodcaller('draw'),
+                self,
+              )
+
+            ),
+
           )
+
+        )
 
         ## define command for the menu and assign it to
         ## its 'command' attribute

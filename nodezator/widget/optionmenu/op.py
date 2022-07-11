@@ -341,6 +341,10 @@ class OptionMenuLifetimeOperations(Object2D):
             self.on_mouse_motion(get_mouse_pos())
 
             ##
+            self.draw_on_window_resize()
+            self.draw()
+
+            ##
             self.handle_input = (
               self.handle_events_and_mouse_pos
             )

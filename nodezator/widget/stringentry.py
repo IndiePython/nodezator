@@ -137,11 +137,13 @@ class StringEntry(Object2D):
           update_behind = empty_function,
           draw_behind   = empty_function,
 
+          draw_on_window_resize = empty_function,
+
           coordinates_name  = 'topleft',
           coordinates_value = (0, 0),
 
           foreground_color = STRING_ENTRY_FG,
-          background_color = STRING_ENTRY_BG
+          background_color = STRING_ENTRY_BG,
 
         ):
         """Perform setups and assign data for reuse.
@@ -305,6 +307,8 @@ class StringEntry(Object2D):
 
         self.update_behind = update_behind
         self.draw_behind   = draw_behind
+
+        self.draw_on_window_resize = draw_on_window_resize
 
         ### define behaviours
 
@@ -571,6 +575,10 @@ class StringEntry(Object2D):
 
             ##
             self.handle_input = self.handle_events
+
+            ##
+            self.draw_on_window_resize()
+            self.draw_focused()
 
         self.handle_events()
 

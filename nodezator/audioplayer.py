@@ -203,6 +203,8 @@ class AudioPlayer(Object2D):
 
             command = self.set_audio_from_entry,
 
+            draw_on_window_resize = self.draw,
+
           )
 
         )

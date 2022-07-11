@@ -120,6 +120,8 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
           update_behind = empty_function,
           draw_behind   = empty_function,
 
+          draw_on_window_resize = empty_function,
+
           width = 155,
 
           font_height = ENC_SANS_BOLD_FONT_HEIGHT,
@@ -633,6 +635,8 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
 
         self.update_behind = update_behind
         self.draw_behind   = draw_behind
+
+        self.draw_on_window_resize = draw_on_window_resize
 
         ### define behaviours
 

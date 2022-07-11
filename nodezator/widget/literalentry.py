@@ -98,6 +98,8 @@ class LiteralEntry(Object2D):
           update_behind = empty_function,
           draw_behind   = empty_function,
 
+          draw_on_window_resize = empty_function,
+
           coordinates_name  = 'topleft',
           coordinates_value = (0, 0),
 
@@ -238,6 +240,8 @@ class LiteralEntry(Object2D):
 
         self.update_behind = update_behind
         self.draw_behind   = draw_behind
+
+        self.draw_on_window_resize = draw_on_window_resize
 
         ### define behaviours
 
@@ -416,6 +420,11 @@ class LiteralEntry(Object2D):
 
             self.cursor.rect.move_ip(diff)
             self.cursor.line.rect.move_ip(diff)
+
+            ##
+
+            self.draw_on_window_resize()
+            self.draw()
 
             ##
             self.handle_input = self.handle_events

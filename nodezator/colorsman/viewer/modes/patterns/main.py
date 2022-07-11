@@ -18,8 +18,9 @@ from pygame.display import update
 from pygameconstants import blit_on_screen
 
 from ourstdlibs.behaviour import (
-                             empty_function,
-                             get_oblivious_callable)
+                            empty_function,
+                            get_oblivious_callable,
+                          )
 
 from loopman.exception import QuitAppException
 
@@ -93,6 +94,9 @@ class PatternsMode:
             options     = pattern_names,
             clamp_area  = clamp_area,
             command     = self.redraw_pattern,
+
+            draw_on_window_resize = self.patterns_draw,
+
           )
 
         )

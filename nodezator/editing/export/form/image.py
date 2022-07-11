@@ -386,6 +386,7 @@ class ImageExportForm(Object2D):
                       name=name,
                       width=70,
                       min_value=0,
+                      draw_on_window_resize = self.draw,
                       coordinates_name='midleft',
                       coordinates_value=midleft
                     )

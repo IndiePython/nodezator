@@ -463,6 +463,7 @@ class NodePacksRenamingChangeForm(Object2D):
                 StringEntry(
                   value       = f'new_name{index}',
                   loop_holder = self,
+                  draw_on_window_resize = self.draw,
                 )
 
                 for index, _ in enumerate(node_packs_names)

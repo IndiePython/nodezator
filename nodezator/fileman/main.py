@@ -462,6 +462,7 @@ class FileManager(FileManagerOperations):
                        value=t.file_manager.pathname,
                        loop_holder=self,
                        font_height=FONT_HEIGHT,
+                       draw_on_window_resize = self.draw,
                        width=550,
                      )
 
