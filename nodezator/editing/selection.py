@@ -328,7 +328,10 @@ class SelectionHandling:
 
         ### assign a random object among the colliding ones
         ### as the active object
-        self.active_obj = sample(colliding_objs, 1).pop()
+
+        self.active_obj = (
+          sample(list(colliding_objs), 1).pop()
+        )
 
     def box_deselect_colliding(self):
         """Remove objs colliding w/box from selection."""
@@ -357,9 +360,10 @@ class SelectionHandling:
 
         self.active_obj = (
 
-          sample(self.selected_objs, 1).pop()
+          sample(list(self.selected_objs), 1).pop()
           if self.selected_objs
           else None
+
         )
 
     def clean_selection_box_attrs(self):
