@@ -24,7 +24,11 @@ from math import inf as INFINITY
 
 from pygame import Rect
 
-from pygame.surfarray import pixels_alpha
+try:
+    import numpy
+    from pygame.surfarray import pixels_alpha
+except:
+    numpy = None
 
 
 def size_from_alpha_values(alpha_values):
@@ -124,7 +128,7 @@ def full_alpha_values_from_surface(surf):
     ==========
     surf (pygame.Surface instance)
         surface used as source of alpha values.
-      
+
     How it works
     ============
 
@@ -133,7 +137,7 @@ def full_alpha_values_from_surface(surf):
     which represent columns of the source surface
     and hold the alpha value of each pixel in that
     column.
-    
+
     To be more specific, the columns are listed from
     the leftmost to the rightmost pixel column of the
     source surface and the values within each column
@@ -182,6 +186,9 @@ def full_alpha_values_from_surface(surf):
     ### method), but even when they would not (as with the
     ### mask_by_replacing() method), the differences
     ### observed in practice cannot be perceived by a human;
+    if numpy is None:
+        print(__file__,"190: pixels_alpha requires numpy")
+        return [[0]]
 
     return [
 

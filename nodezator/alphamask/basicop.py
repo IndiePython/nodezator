@@ -30,10 +30,10 @@ in the "size" attribute. The source surface itself isn't
 stored anywhere, since we are only interested in its alpha
 values and size.
 
-The masking operations carried out in this module are 
-different from the ones carried out by pygame.mask module 
-because pygame.mask only deals with bitmasks (a pixel is 
-either fully opaque or fully transparent), while the mask 
+The masking operations carried out in this module are
+different from the ones carried out by pygame.mask module
+because pygame.mask only deals with bitmasks (a pixel is
+either fully opaque or fully transparent), while the mask
 operations here doesn't rely on bitmasks and work with
 pixels in all ranges of transparency, (fully opaque, fully
 transparent and partially transparent pixels).
@@ -59,13 +59,13 @@ suitable for different situations:
    Technique 1 is best suited for usage in target surfaces
    which only have solid colors, that is, surfaces whose
    all alpha values equal 255.
-   
+
    This is usually so because source surfaces usually have
    their visible area (or at least most of it) rendered with
    solid colors (alpha is 255) and when such values are
    applied in target surfaces with semitransparent areas
    such areas would then be rendered solid.
-   
+
    In other words, if the target surface had alpha values
    different than 255, they would be reverted back to the
    full 255 alpha value, that is, the alpha of the source
@@ -96,8 +96,8 @@ suitable for different situations:
    that the resulting alpha value is assigned to the target
    surface.
 
-   When such multiplications are carried out, the pixels of 
-   the target surface whose alpha are multiplied by 0 
+   When such multiplications are carried out, the pixels of
+   the target surface whose alpha are multiplied by 0
    become completely transparent. Naturally, the pixels
    whose alpha is multiplied by a number between 0 and 1
    retain only a percentage of its original alpha value.
@@ -124,7 +124,7 @@ suitable for different situations:
 
    In other words, this technique takes into account the
    original alpha values of the target surface.
-   
+
    However, when dealing with target surfaces that only have
    solid colors, the first technique is preferable, since it
    achieves the same effect with less steps.
@@ -137,8 +137,11 @@ suitable for different situations:
 
 from pygame import Rect, Surface
 
-from pygame.surfarray import pixels_alpha
-
+try:
+    import numpy
+    from pygame.surfarray import pixels_alpha
+except:
+    numpy = None
 
 ### class definition
 
@@ -197,6 +200,9 @@ class AlphaMaskBasicOperations:
         ### the surface remains locked for the lifetime of
         ### this array (which is why we'll soon delete it
         ### once we don't need it anymore)
+        if numpy is None:
+            print(__file__,"204: pixels_alpha need numpy")
+            return
         surf_alpha_values = pixels_alpha(surf)
 
         ### iterate over the columns of full alpha values
@@ -246,6 +252,9 @@ class AlphaMaskBasicOperations:
         ### the surface remains locked for the lifetime of
         ### this array (which is why we'll soon delete it
         ### once we don't need it anymore)
+        if numpy is None:
+            print(__file__,"254: pixels_alpha need numpy")
+            return
         surf_alpha_values = pixels_alpha(surf)
 
         ### multiply the alpha of each pixel in the surface

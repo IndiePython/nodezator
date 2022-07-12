@@ -14,7 +14,7 @@ def load_pyl(filepath):
     with open(
       str(filepath), mode='r', encoding='utf-8'
     ) as f:
-
+        print(filepath)
         return literal_eval(f.read())
 
 def save_pyl(
