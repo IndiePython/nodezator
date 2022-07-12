@@ -122,6 +122,8 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
 
           draw_on_window_resize = empty_function,
 
+          position_reference_getter = None,
+
           width = 155,
 
           font_height = ENC_SANS_BOLD_FONT_HEIGHT,
@@ -638,6 +640,18 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
 
         self.draw_on_window_resize = draw_on_window_resize
 
+        ### check existence of position reference getter and
+        ### store it if it exists
+
+        self.get_reference_pos = (
+
+          position_reference_getter
+          if position_reference_getter is not None
+
+          else self.get_topleft
+
+        )
+
         ### define behaviours
 
         self.draw   = super().draw
@@ -663,6 +677,9 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
           else classes
 
         )
+
+    def get_topleft(self):
+        return self.rect.topleft
 
     def svg_repr(self):
         """Return svg group element representing widget.

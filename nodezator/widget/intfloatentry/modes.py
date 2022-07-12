@@ -595,17 +595,22 @@ class IntFloatModes(Object2D):
 
     def watch_out_for_movement(self):
 
-        if self.rect.topleft == self.last_topleft: return
+        last_reference_pos = self.get_reference_pos()
+
+        if last_reference_pos == self.reference_pos: return
 
         diff = (
-          Vector2(self.rect.topleft)
-          - self.last_topleft
+          Vector2(last_reference_pos)
+          - self.reference_pos
         )
 
-        self.last_topleft = self.rect.topleft
+        self.reference_pos = last_reference_pos
 
         self.cursor.rect.move_ip(diff)
         self.cursor.line.rect.move_ip(diff)
+
+        if self.get_reference_pos != self.get_topleft:
+            self.rect.move_ip(diff)
 
         ##
         self.draw_on_window_resize()

@@ -340,6 +340,8 @@ class NodePacksSelectionChangeForm(Object2D):
           PathPreview(
             value = '.',
             name = 'node_packs',
+            loop_holder = self,
+            draw_on_window_resize = self.draw,
             coordinates_name  = 'topleft',
             coordinates_value = topleft
           )

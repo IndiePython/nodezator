@@ -684,6 +684,8 @@ class SubformCreation:
         value_fontpreview = \
             FontPreview(
                name=widget_name,
+               loop_holder = self,
+               draw_on_window_resize = self.draw,
                coordinates_name=coordinates_name,
                coordinates_value=coordinates_value
             )
@@ -937,6 +939,8 @@ class SubformCreation:
         value_pathpreview = \
             PathPreview(
                name=widget_name,
+               loop_holder = self,
+               draw_on_window_resize = self.draw,
                coordinates_name=coordinates_name,
                coordinates_value=coordinates_value)
 
@@ -987,6 +991,8 @@ class SubformCreation:
         value_textpreview = \
             TextPreview(
                name=widget_name,
+               loop_holder = self,
+               draw_on_window_resize = self.draw,
                coordinates_name=coordinates_name,
                coordinates_value=coordinates_value)
 
@@ -1037,6 +1043,8 @@ class SubformCreation:
         value_imagepreview = \
             ImagePreview(
                name=widget_name,
+               loop_holder = self,
+               draw_on_window_resize = self.draw,
                coordinates_name=coordinates_name,
                coordinates_value=coordinates_value
             )
@@ -1088,6 +1096,8 @@ class SubformCreation:
         value_audiopreview = \
           AudioPreview(
             name=widget_name,
+            loop_holder = self,
+            draw_on_window_resize = self.draw,
             coordinates_name=coordinates_name,
             coordinates_value=coordinates_value
           )
@@ -1139,6 +1149,8 @@ class SubformCreation:
         value_videopreview_display = \
           VideoPreview(
             name=widget_name,
+            loop_holder = self,
+            draw_on_window_resize = self.draw,
             coordinates_name=coordinates_name,
             coordinates_value=coordinates_value
           )
