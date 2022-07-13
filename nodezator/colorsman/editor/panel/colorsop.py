@@ -8,35 +8,35 @@ from functools import partial, partialmethod
 
 ### local imports
 
-from classes2d.collections import List2D
+from ....classes2d.collections import List2D
 
-from ourstdlibs.color.utils import (
+from ....ourstdlibs.color.utils import (
                           get_color_sorter_by_properties,
                         )
 
-from ourstdlibs.color.creation import (
+from ....ourstdlibs.color.creation import (
                               random_color_from_existing,
                             )
 
-from dialog import create_and_show_dialog
+from ....dialog import create_and_show_dialog
 
-from colorsman.color2d import Color2D
+from ...color2d import Color2D
 
-from colorsman.viewer.main import view_colors
+from ...viewer.main import view_colors
 
-from colorsman.picker.main import (
+from ...picker.main import (
                              pick_html_colors,
                              pick_pygame_colors,
                            )
 
-from colorsman.editor.panel.constants import (
+from .constants import (
                                         COLOR_WIDGET_SIZE
                                       )
 
 
 class ColorsOperations:
     """Colors-related operations for the colors panel."""
-    
+
     def set_colors(self, colors):
         """(Re)build list of color widgets from given colors.
 
@@ -259,10 +259,10 @@ class ColorsOperations:
 
     def remove_duplicated_colors(self):
         """Remove widgets so each color appears only once."""
-        ### reference widget list locally, for quick and 
+        ### reference widget list locally, for quick and
         ### easier access
         widgets = self.widgets
-        
+
         ### create two sets to keep track of colors we have
         ### already seen and widgets to be removed
 
@@ -352,7 +352,7 @@ class ColorsOperations:
         ### reference the existing color widgets locally
         ### for quicker and easier access
         widgets = self.widgets
-        
+
         ### if the iterable with widgets to remove is empty,
         ### use a list with a reference to the current widget
         ### instead

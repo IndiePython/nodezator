@@ -29,20 +29,20 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from surfsman.draw import (
+from ...surfsman.draw import (
                      draw_border,
                      draw_border_on_area,
                    )
 
-from surfsman.cache import draw_cached_screen_state
+from ...surfsman.cache import draw_cached_screen_state
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from loopman.exception import QuitAppException
+from ...loopman.exception import QuitAppException
 
-from colorsman.colors import IMAGES_VIEWER_BORDER
+from ...colorsman.colors import IMAGES_VIEWER_BORDER
 
-from imagesman.viewer.constants import (
+from .constants import (
                                      VIEWER_BORDER_THICKNESS,
                                      LARGE_THUMB,
                                      PATH_LABEL)
@@ -58,11 +58,11 @@ class NormalModeOperations(Object2D):
     def normal_handle_input(self):
 
         for event in get_events():
-            
+
             if event.type == QUIT: raise QuitAppException()
 
             elif event.type == KEYDOWN:
-                
+
                 if event.key == K_ESCAPE:
                     self.running = False
 
@@ -208,7 +208,7 @@ class NormalModeOperations(Object2D):
         for (
           index, thumb_obj
         ) in enumerate(self.thumb_objects):
-            
+
             thumb_rect = thumb_obj.rect
 
             if thumb_rect.colliderect(rect):

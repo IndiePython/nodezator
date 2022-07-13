@@ -16,40 +16,40 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from config import FFMPEG_AVAILABLE
+from ..config import FFMPEG_AVAILABLE
 
-from pygameconstants import (
+from ..pygameconstants import (
                        SCREEN,
                        SCREEN_RECT,
                        maintain_fps,
                      )
 
-from ourstdlibs.behaviour import get_oblivious_callable
+from ..ourstdlibs.behaviour import get_oblivious_callable
 
-from loopman.exception import (
+from ..loopman.exception import (
                          QuitAppException,
                          SwitchLoopException,
                        )
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from surfsman.render import render_rect
-from surfsman.draw   import draw_border
+from ..surfsman.render import render_rect
+from ..surfsman.draw   import draw_border
 
-from textman.render import render_text
+from ..textman.render import render_text
 
-from colorsman.colors import BLACK, WHITE
+from ..colorsman.colors import BLACK, WHITE
 
-from widget.intfloatentry.main import IntFloatEntry
+from ..widget.intfloatentry.main import IntFloatEntry
 
-from videopreview.cache import (
-                            VIDEO_METADATA_MAP,
-                            CachedVideoObject,
-                          )
+from .cache import (
+                        VIDEO_METADATA_MAP,
+                        CachedVideoObject,
+                      )
 
 
 class VideoPreviewer(Object2D):
-    
+
     def __init__(self):
         """"""
 
@@ -69,7 +69,7 @@ class VideoPreviewer(Object2D):
                               {
                                 'max_width'  : 250,
                                 'max_height' : 250,
-         
+
                                 'not_found_width'  : 250,
                                 'not_found_height' : 250,
                               },
@@ -208,17 +208,17 @@ class VideoPreviewer(Object2D):
     def handle_events(self):
 
         for event in get_events():
-            
+
             if event.type == QUIT:
                 raise QuitAppException
 
             elif event.type == KEYUP:
-                
+
                 if event.key == K_ESCAPE:
                     self.running = False
 
             elif event.type == MOUSEBUTTONDOWN:
-                
+
                 if event.button == 1:
                     self.on_mouse_click(event)
 
@@ -230,8 +230,8 @@ class VideoPreviewer(Object2D):
 
         if entry.rect.collidepoint(mouse_pos):
             entry.on_mouse_click(event)
-            
-    def update(self):   
+
+    def update(self):
         self.videopreview.update()
 
     def draw(self):

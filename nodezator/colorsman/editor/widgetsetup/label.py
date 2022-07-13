@@ -2,19 +2,19 @@
 
 ### local imports
 
-from textman.render import render_text
+from ....textman.render import render_text
 
-from surfsman.draw   import blit_aligned
-from surfsman.render import render_rect
+from ....surfsman.draw   import blit_aligned
+from ....surfsman.render import render_rect
 
-from surfsman.icon import render_layered_icon
+from ....surfsman.icon import render_layered_icon
 
-from classes2d.single      import Object2D
-from classes2d.collections import Set2D
+from ....classes2d.single      import Object2D
+from ....classes2d.collections import Set2D
 
-from colorsman.colors import BLACK, WINDOW_BG, WINDOW_FG
+from ...colors import BLACK, WINDOW_BG, WINDOW_FG
 
-from colorsman.editor.widgetsetup.constants import (
+from .constants import (
                                              FONT_HEIGHT,
                                              TEXT_PADDING)
 
@@ -64,7 +64,7 @@ def setup_labels(self):
     )
 
     ### iterate over label text and position data,
-    ### building a custom set while you instantiate and 
+    ### building a custom set while you instantiate and
     ### store the labels
 
     self.labels = Set2D(

@@ -26,7 +26,7 @@ from .widgetsetup.label  import setup_labels
 
 
 ## class for composition
-from colorsman.editor.panel.main import ColorsPanel
+from .panel.main import ColorsPanel
 
 
 class ColorsEditor(

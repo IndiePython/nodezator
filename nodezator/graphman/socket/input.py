@@ -10,16 +10,16 @@ from pygame.mouse import get_pos as get_mouse_pos
 
 ### local imports
 
-from dialog import create_and_show_dialog
+from ...dialog import create_and_show_dialog
 
-from our3rdlibs.behaviour import (
+from ...our3rdlibs.behaviour import (
                             indicate_unsaved,
                             set_status_message,
                           )
 
-from graphman.socket.base import Socket
+from ..socket.base import Socket
 
-from graphman.socket.surfs import CODENAME_TO_STYLE_MAP
+from ..socket.surfs import CODENAME_TO_STYLE_MAP
 
 
 class InputSocket(Socket):
@@ -65,7 +65,7 @@ class InputSocket(Socket):
         self.parameter_name     = parameter_name
         self.subparameter_index = subparameter_index
 
-        ## store type codename and perform related setups 
+        ## store type codename and perform related setups
         self.update_type_codename(type_codename)
 
         ### obtain rect from image and position it using
@@ -97,7 +97,7 @@ class InputSocket(Socket):
     def on_right_mouse_release(self, event):
 
         if self.subparameter_index is None: return
-        
+
         options = [
           ("Mark input for unpacking",   'pack'),
           ("Unmark input for unpacking", 'unpack'),
@@ -130,7 +130,7 @@ class InputSocket(Socket):
             self.unmark_for_unpacking()
 
     def mark_for_unpacking(self):
-        
+
         if self.subparameter_index in (
 
           self

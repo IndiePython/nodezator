@@ -9,9 +9,9 @@ from collections.abc import Iterable, Iterator
 
 ### local imports
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from colorsman.colors import (
+from ...colorsman.colors import (
 
                         ## hollow socket
                         HOLLOW_SOCKET_OUTLINE,
@@ -102,7 +102,7 @@ TYPE_TO_CODENAME_MAP = {
 
   frozenset((int, float, None)) : 'number',
 
-  # list and tuple related 
+  # list and tuple related
 
   list  : 'list',
   tuple : 'tuple',
@@ -147,7 +147,7 @@ CODENAME_TO_STYLE_MAP = {
              ),
 
 
-  # list and tuple related 
+  # list and tuple related
 
   'list'  : (
               LIST_TYPE_OUTLINE,
@@ -192,7 +192,7 @@ CODENAME_TO_STYLE_MAP = {
 ### each value within the map
 
 CODENAME_TO_STYLE_MAP.update(
-    
+
   (
 
     codename,
@@ -286,7 +286,7 @@ line.other
 
 for (outline_color, fill_color, svg_class_name, *_ ) \
 in CODENAME_TO_STYLE_MAP.values():
-    
+
     SOCKET_AND_LINE_CSS += f'''
 g.node > circle.{svg_class_name}
 {{

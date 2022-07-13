@@ -2,11 +2,11 @@
 
 ### local imports
 
-from imagesman.cache import IMAGE_SURFS_DB
+from ....imagesman.cache import IMAGE_SURFS_DB
 
-from classes2d.collections import List2D
+from ....classes2d.collections import List2D
 
-from our3rdlibs.scale import Scale
+from ....our3rdlibs.scale import Scale
 
 
 
@@ -80,7 +80,7 @@ def setup_scales(self):
 
       ("Hue",          0, 360, self.update_from_hls),
       ("Lightness",   50, 100, self.update_from_hls),
-      ("Saturation", 100, 100, self.update_from_hls), 
+      ("Saturation", 100, 100, self.update_from_hls),
       ("Value",      100, 100, self.update_from_hsv),
 
       ("Red",   255, 255, self.update_from_rgb),

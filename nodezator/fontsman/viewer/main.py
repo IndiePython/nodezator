@@ -31,23 +31,23 @@ from pygame.math import Vector2
 
 ### local imports
 
-from pygameconstants import SCREEN_RECT
+from ...pygameconstants import SCREEN_RECT
 
-from dialog import create_and_show_dialog
+from ...dialog import create_and_show_dialog
 
-from logman.main import get_new_logger
+from ...logman.main import get_new_logger
 
-from our3rdlibs.userlogger import USER_LOGGER
+from ...our3rdlibs.userlogger import USER_LOGGER
 
-from loopman.main import LoopHolder
+from ...loopman.main import LoopHolder
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from classes2d.collections import List2D
+from ...classes2d.collections import List2D
 
-from surfsman.render import render_rect
+from ...surfsman.render import render_rect
 
-from fontsman.viewer.render import render_char_info
+from .render import render_char_info
 
 
 CHARS = (
@@ -144,7 +144,7 @@ class FontsViewer(Object2D, LoopHolder):
         self.loop()
 
     def prepare(self):
-        
+
         font = self.font_obj_map[self.font_path]
 
         self.char_objs = List2D(
@@ -197,13 +197,13 @@ class FontsViewer(Object2D, LoopHolder):
 
 
     def handle_events(self):
-        
+
         for event in get_events():
-            
+
             if event.type == QUIT: self.quit()
 
             elif event.type == KEYUP:
-                
+
                 if event.key == K_ESCAPE:
                     self.running = False
 

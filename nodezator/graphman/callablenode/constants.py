@@ -1,7 +1,7 @@
 """Constants for the callable node class."""
 
 ### local import
-from fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
+from ...fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
 
 
 FONT_HEIGHT = ENC_SANS_BOLD_FONT_HEIGHT

@@ -30,12 +30,12 @@ from pathlib import Path
 
 ### local imports
 
-from ourstdlibs.dictutils import (
+from ...ourstdlibs.dictutils import (
                             settings_to_hashable_repr,
                             hashable_repr_to_settings,
                           )
 
-from fontsman.preview.render import render_font_preview
+from ...fontsman.preview.render import render_font_preview
 
 
 class FontPreviewsDatabase(dict):
@@ -43,7 +43,7 @@ class FontPreviewsDatabase(dict):
 
     Extends the built-in dict.
     """
-    
+
     def __missing__(self, key):
         """Create, store and return dict for given key.
 

@@ -41,18 +41,19 @@ from pygame.display import update
 
 ### local imports
 
-from ourstdlibs.behaviour import empty_function
 
-from ourstdlibs.collections.general import CallList
 
-from surfsman.draw import draw_border
+from ...surfsman.draw import draw_border
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from loopman.exception import QuitAppException
+from ...loopman.exception import QuitAppException
 
-from colorsman.colors import ITEM_OUTLINE
+from ...colorsman.colors import ITEM_OUTLINE
 
+from ...ourstdlibs.behaviour import empty_function
+
+from ...ourstdlibs.collections.general import CallList
 
 ### constant
 SCROLL_X_SPEED = 20
@@ -109,7 +110,7 @@ class SortingEditorModes(Object2D):
     def normal_mode_handle_events(self):
         """Event handling for the normal mode."""
         for event in get_events():
-            
+
             ### raise custom exception if user tries to
             ### quit the app
             if event.type == QUIT: raise QuitAppException
@@ -122,7 +123,7 @@ class SortingEditorModes(Object2D):
             ### "sort_sequence" method)
 
             elif event.type == KEYUP:
-                
+
                 if event.key == K_ESCAPE:
 
                     self.running = False
@@ -155,7 +156,7 @@ class SortingEditorModes(Object2D):
             We use it to retrieve the mouse position when
             the mouse left button is pressed; it is also
             required in order to comply w/ the protocol used;
-          
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -177,12 +178,12 @@ class SortingEditorModes(Object2D):
 
             if item.rect.collidepoint(mouse_pos):
                 break
-                    
+
         ### if we didn't break out of the "for loop", it
         ### means we didn't collide with any items, so
         ### we can exit the method by returning
         else: return
-            
+
         ### otherwise, we have hit an item, so we enable
         ### the drag mode passing the references to both
         ### the list and the item which collided with the
@@ -238,7 +239,7 @@ class SortingEditorModes(Object2D):
         ### get vertical position of mouse
         _, y = get_mouse_pos()
 
-        ### pick list according to the area the mouse hovers 
+        ### pick list according to the area the mouse hovers
 
         a_list = (
 
@@ -290,7 +291,7 @@ class SortingEditorModes(Object2D):
     def drag_mode_handle_events(self):
         """Event handling for the drag mode."""
         for event in get_events():
-            
+
             ### raise specific error if the user attempts
             ### to quit the app
             if event.type == QUIT: raise QuitAppException
@@ -403,7 +404,7 @@ class SortingEditorModes(Object2D):
                 self.dragged_obj.rect.move_ip(0, -27)
 
         else:
-            
+
             new_obj = Object2D.from_surface(
                                  surface = obj.image,
                                  value = obj.value,
@@ -473,7 +474,7 @@ class SortingEditorModes(Object2D):
             We use it to retrieve the mouse position when
             the mouse left button is released; it is also
             required in order to comply w/ the protocol used;
-          
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -491,7 +492,7 @@ class SortingEditorModes(Object2D):
             ### of the "for loop"
 
             if button.rect.collidepoint(mouse_pos):
-                
+
                 try: method = getattr(
                                 button, 'on_mouse_release'
                               )

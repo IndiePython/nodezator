@@ -2,15 +2,15 @@
 
 ### local imports
 
-from audioplayer import play_audio
+from ...audioplayer import play_audio
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from colorsman.colors import BLACK, WHITE
+from ...colorsman.colors import BLACK, WHITE
 
-from widget.pathpreview.base import _BasePreview
+from .base import _BasePreview
 
-from widget.pathpreview.constants import (
+from .constants import (
                                     BUTTON_SURFS,
                                     BUTTON_WIDTH,
                                     BUTTON_HEIGHT,
@@ -19,7 +19,7 @@ from widget.pathpreview.constants import (
 
 
 class AudioPreview(_BasePreview):
-    
+
     ###
 
     button_surfs = list(BUTTON_SURFS)

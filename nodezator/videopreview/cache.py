@@ -39,18 +39,18 @@ from collections import deque
 
 ### local imports
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from ourstdlibs.dictutils import (
+from ..ourstdlibs.dictutils import (
                             settings_to_hashable_repr,
                             hashable_repr_to_settings,
                           )
 
-from surfsman.render import render_rect
+from ..surfsman.render import render_rect
 
-from surfsman.draw import blit_aligned
+from ..surfsman.draw import blit_aligned
 
-from videopreview.render import render_video_data
+from .render import render_video_data
 
 
 VIDEO_METADATA_MAP = {}
@@ -61,7 +61,7 @@ class VideoDatabase(dict):
 
     Extends the built-in dict.
     """
-    
+
     def __missing__(self, key):
         """Create, store and return dict for given key.
 
@@ -189,7 +189,7 @@ class CachedVideoObject(Object2D):
 
     ### XXX what to do about resizing and
     ### repositioning after using methods below?
-    
+
     def change_video_settings(self, video_settings):
         """Change video settings and replace surface.
 
@@ -252,7 +252,7 @@ class CachedVideoObject(Object2D):
         )
 
 def update_video_metadata_and_previews(video_path):
-    
+
     try: del VIDEO_METADATA_MAP[video_path]
     except KeyError: pass
 

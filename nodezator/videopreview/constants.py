@@ -9,7 +9,7 @@ from shlex import split as split_like_shell
 
 
 ### local import
-from ourstdlibs.mathutils import math_eval
+from ..ourstdlibs.mathutils import math_eval
 
 
 def get_video_metadata(video_path):

@@ -13,15 +13,15 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from config import APP_REFS, FFMPEG_AVAILABLE
+from ...config import APP_REFS, FFMPEG_AVAILABLE
 
-from dialog import create_and_show_dialog
+from ...dialog import create_and_show_dialog
 
-from ourstdlibs.path import get_new_filename
+from ...ourstdlibs.path import get_new_filename
 
-from videopreview.previewer import preview_videos
+from ...videopreview.previewer import preview_videos
 
-from videopreview.cache import (
+from ...videopreview.cache import (
 
                       VIDEO_METADATA_MAP,
                       VIDEO_DATA_DB,
@@ -29,27 +29,26 @@ from videopreview.cache import (
 
                     )
 
-from surfsman.draw import blit_aligned
+from ...surfsman.draw import blit_aligned
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from textman.render import render_multiline_text
+from ...textman.render import render_multiline_text
 
-from colorsman.colors import BLACK, PATHPREVIEW_BG
+from ...colorsman.colors import BLACK, PATHPREVIEW_BG
 
-from widget.pathpreview.base import _BasePreview
+from .base import _BasePreview
 
-from widget.pathpreview.constants import (
+from .constants import (
+                             SP_BUTTON_SURFS,
+                             SP_BUTTON_RECTS,
+                             BUTTON_WIDTH,
+                             BUTTON_HEIGHT,
+                             SP_BUTTON_SVG_REPRS,
+                             SP_BUTTON_CALLABLE_NAMES,
+                             get_missing_path_repr,
 
-                                 SP_BUTTON_SURFS,
-                                 SP_BUTTON_RECTS,
-                                 BUTTON_WIDTH,
-                                 BUTTON_HEIGHT,
-                                 SP_BUTTON_SVG_REPRS,
-                                 SP_BUTTON_CALLABLE_NAMES,
-                                 get_missing_path_repr,
-
-                               )
+                           )
 
 NO_FFMPEG_TEXT = """
 MUST INSTALL
@@ -59,7 +58,7 @@ PREVIEWS
 """.strip()
 
 class VideoPreview(_BasePreview):
-    
+
     height = BUTTON_HEIGHT + 154 + 20
 
     button_callable_names = SP_BUTTON_CALLABLE_NAMES
@@ -367,7 +366,7 @@ class VideoPreview(_BasePreview):
               ),
 
             ]:
-                
+
                 g.append(
 
                     Element(
@@ -384,7 +383,7 @@ class VideoPreview(_BasePreview):
                   )
 
         else:
-            
+
             thumb_width, thumb_height = rect.size
 
             if current_path not in preview_surf_map:
@@ -406,7 +405,7 @@ class VideoPreview(_BasePreview):
                             value == name
                         and key   != current_path
                     ):
-                        
+
                         ## change value of name variable
                         ## so the name is different
 

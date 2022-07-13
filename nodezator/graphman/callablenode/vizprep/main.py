@@ -6,25 +6,25 @@ from pygame import Rect
 
 ### local imports
 
-from config import APP_REFS
+from ....config import APP_REFS
 
-from ourstdlibs.collections.fldict.main import FlatListDict
+from ....ourstdlibs.collections.fldict.main import FlatListDict
 
-from classes2d.single import Object2D
+from ....classes2d.single import Object2D
 
-from textman.render import render_text
+from ....textman.render import render_text
 
-from rectsman.main import RectsManager
+from ....rectsman.main import RectsManager
 
-from colorsman.colors import (
+from ....colorsman.colors import (
                         NODE_CATEGORY_COLORS,
                         NODE_TITLE,
                         BLACK,
                       )
 
-from graphman.socket.surfs import type_to_codename
+from ....graphman.socket.surfs import type_to_codename
 
-from graphman.callablenode.constants import (
+from ....graphman.callablenode.constants import (
                                        FONT_HEIGHT,
                                        NODE_WIDTH,
                                      )
@@ -32,26 +32,26 @@ from graphman.callablenode.constants import (
 
 ## functions for injection
 
-from graphman.callablenode.vizprep.param import (
+from ....graphman.callablenode.vizprep.param import (
                                     create_parameter_objs
                                   )
 
-from graphman.callablenode.vizprep.varparam import (
+from ....graphman.callablenode.vizprep.varparam import (
                                   create_var_parameter_objs
                                 )
 
 ## class extension
-from graphman.callablenode.vizprep.bodysetup.main import (
+from ....graphman.callablenode.vizprep.bodysetup.main import (
                                     BodySetupOperations
                                   )
 
 ## class for composition
-from graphman.socket.output import OutputSocket
+from ....graphman.socket.output import OutputSocket
 
 
 ## other objects for composition
 
-from graphman.callablenode.surfs import (
+from ....graphman.callablenode.surfs import (
                            NODE_ROOFS_MAP,
                            TOP_CORNERS_MAP,
                            NORMAL_BOTTOM_CORNERS,
@@ -363,7 +363,7 @@ class VisualRelatedPreparations(BodySetupOperations):
 
         ### instantiate a dict to hold objects indicating
         ### that a subparameter must be unpacked when
-        ### the node is executed 
+        ### the node is executed
         self.subparam_unpacking_icon_flmap = (
           FlatListDict()
         )
@@ -484,13 +484,13 @@ class VisualRelatedPreparations(BodySetupOperations):
         ### create a new dictionary holding output socket
         ### instances mapped to the name of the output
         ### they represent (also reference it locally);
-        ### 
+        ###
         ### here we use key-value pairs from the ordered
         ### output map, which is an ordered dict where
         ### each key is the name of the output and the
         ### value is the expected type of the output to be
         ### sent;
-        ### 
+        ###
         ### the value is called "expected type" because
         ### the type isn't enforced, it only serves to
         ### indicate which type to expected, just like
@@ -572,7 +572,7 @@ class VisualRelatedPreparations(BodySetupOperations):
         bottomleft_corner.rect.topright = \
                                       self.foot.rect.topleft
 
-        # bottomright corner 
+        # bottomright corner
 
         bottomright_corner       = Object2D()
         bottomright_corner.image = NORMAL_BOTTOM_CORNERS[1]

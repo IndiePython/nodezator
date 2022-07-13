@@ -21,11 +21,11 @@ from pygame.mixer import Sound
 
 ### local imports
 
-from config import FFMPEG_AVAILABLE
+from ..config import FFMPEG_AVAILABLE
 
-from videopreview.constants import get_video_metadata
+from ..surfsman.draw import draw_not_found_icon
 
-from surfsman.draw import draw_not_found_icon
+from .constants import get_video_metadata
 
 
 ### TODO review/refactor
@@ -107,7 +107,7 @@ def get_frames(video_path, metadata, max_width, max_height):
     ###
 
     with TemporaryDirectory() as string_dir_path:
-        
+
         dirpath = Path(string_dir_path)
 
         command_text = (

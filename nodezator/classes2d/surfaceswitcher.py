@@ -5,9 +5,9 @@ from functools import partialmethod
 
 ### local imports
 
-from classes2d.single import SingleObjectBase
+from .single import SingleObjectBase
 
-from ourstdlibs.collections.general import FactoryDict
+from ..ourstdlibs.collections.general import FactoryDict
 
 
 ###

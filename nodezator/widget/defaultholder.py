@@ -6,14 +6,14 @@ from xml.etree.ElementTree import Element
 
 ### local imports
 
-from fontsman.constants import (
+from ..fontsman.constants import (
                                ENC_SANS_BOLD_FONT_HEIGHT,
                                ENC_SANS_BOLD_FONT_PATH,
                              )
 
-from textman.label.main import Label
+from ..textman.label.main import Label
 
-from textman.render import fit_text
+from ..textman.render import fit_text
 
 
 ### XXX the default holder could work as a button,
@@ -38,14 +38,14 @@ class DefaultHolder(Label):
 
     Used to hold default values that are not supposed
     to be edited in a widget.
-    
+
     When a parameter holds a default value editable by
     widget, then a custom widget is used, and the value
     can be both seen and edited in the widget. However,
     when the default value can't be edited in a widget,
     then this label serves as a displaying widget so that
     the user at least can know what is the default value.
-    
+
     This widget displays a repr() version of the value
     it holds, so it is advised that you make sure the
     value used have a meaningful __repr__ method.
@@ -159,7 +159,7 @@ class DefaultHolder(Label):
         instantiating a CallableNode in order to replace
         the default value of each widget with the last value
         set by the user.
-        
+
         Since this widget cannot be edited, but it was
         designed to just display the value it holds, the
         value attempted to be set is the same which is

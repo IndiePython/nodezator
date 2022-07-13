@@ -13,61 +13,62 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from dialog import create_and_show_dialog
+from ...dialog import create_and_show_dialog
 
-from logman.main import get_new_logger
+from ...logman.main import get_new_logger
 
-from our3rdlibs.userlogger import USER_LOGGER
+from ...our3rdlibs.userlogger import USER_LOGGER
 
-from textman.viewer.main import view_text
+from ...textman.viewer.main import view_text
 
-from surfsman.draw import (
+from ...surfsman.draw import (
                      draw_depth_finish,
                      draw_not_found_icon,
                    )
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from fontsman.constants import (
+from ...fontsman.constants import (
                           FIRA_MONO_BOLD_FONT_PATH,
                           FIRA_MONO_BOLD_FONT_HEIGHT,
                         )
 
-from textman.render import (
+from ...textman.render import (
                       fit_text,
                       get_text_size,
                       render_text,
                     )
 
-from textman.text import render_highlighted_line
+from ...textman.text import render_highlighted_line
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                         BLACK,
                         WHITE,
                         TEXTPREVIEW_FG,
                         TEXTPREVIEW_BG,
                       )
 
-from widget.pathpreview.base import _BasePreview
-
-from widget.pathpreview.constants import (
-
-                                 SP_BUTTON_SURFS,
-                                 SP_BUTTON_RECTS,
-                                 BUTTON_WIDTH,
-                                 BUTTON_HEIGHT,
-                                 SP_BUTTON_SVG_REPRS,
-                                 SP_BUTTON_CALLABLE_NAMES,
-                                 get_missing_path_repr,
-
-                               )
-
-from syntaxman.utils import (
+from ...syntaxman.utils import (
                        SYNTAX_TO_MAPPING_FUNCTION,
                        get_ready_theme,
                      )
 
-from syntaxman.exception import SyntaxMappingError
+from ...syntaxman.exception import SyntaxMappingError
+
+
+from .base import _BasePreview
+
+from .constants import (
+                             SP_BUTTON_SURFS,
+                             SP_BUTTON_RECTS,
+                             BUTTON_WIDTH,
+                             BUTTON_HEIGHT,
+                             SP_BUTTON_SVG_REPRS,
+                             SP_BUTTON_CALLABLE_NAMES,
+                             get_missing_path_repr,
+
+                        )
+
 
 
 GENERAL_TEXT_SETTINGS = {
@@ -84,7 +85,7 @@ logger = get_new_logger(__name__)
 ### class definition
 
 class TextPreview(_BasePreview):
-    
+
     height = 163 + 20
 
     button_rects = SP_BUTTON_RECTS
@@ -332,7 +333,7 @@ class TextPreview(_BasePreview):
                           syntax_highlighting,
                           GENERAL_TEXT_SETTINGS,
                         )
-            
+
             get_syntax_map = SYNTAX_TO_MAPPING_FUNCTION[
                                syntax_highlighting
                              ]
@@ -378,7 +379,7 @@ class TextPreview(_BasePreview):
         draw_rect(image, background_color, rect)
 
         if show_line_number:
-            
+
             lineno_width, _ = get_text_size(
               '01',
               font_height=font_height,
@@ -400,14 +401,14 @@ class TextPreview(_BasePreview):
 
 
         if syntax_highlighting:
-            
+
             try: highlight_data = \
                         get_syntax_map(text)
 
             except SyntaxMappingError:
 
                 highlight_data = {
-                  
+
                   ## store a dict item where the line index
                   ## is the key and another dict is the value
 
@@ -422,7 +423,7 @@ class TextPreview(_BasePreview):
                     (0, len(line_text)): 'normal'
 
                   }
-                  
+
                   ## for each line_index and respective line
                   for line_index, line_text \
                   in enumerate(lines)
@@ -481,7 +482,7 @@ class TextPreview(_BasePreview):
 
             for line_number, line_text \
             in enumerate(lines, 1):
-                
+
                 if line_number > no_of_visible_lines: break
 
                 surf = render_text(
@@ -504,7 +505,7 @@ class TextPreview(_BasePreview):
 
             for line_number, line_text \
             in enumerate(lines, 1):
-                
+
                 surf = render_text(
                          text=str(line_number).rjust(2, '0'),
                          font_height=font_height,
@@ -542,7 +543,7 @@ class TextPreview(_BasePreview):
         try: text = path.read_text(encoding='utf-8')
 
         except (FileNotFoundError, IsADirectoryError):
-            
+
             g.append(get_missing_path_repr(rect))
             g.append(super().svg_path_repr())
             return g
@@ -566,7 +567,7 @@ class TextPreview(_BasePreview):
                           syntax_highlighting,
                           GENERAL_TEXT_SETTINGS,
                         )
-            
+
             get_syntax_map = SYNTAX_TO_MAPPING_FUNCTION[
                                syntax_highlighting
                              ]
@@ -633,7 +634,7 @@ class TextPreview(_BasePreview):
           )
 
         if show_line_number:
-            
+
             max_lineno_text = str(len(text.splitlines()))
             lineno_digits = len(max_lineno_text)
 
@@ -680,14 +681,14 @@ class TextPreview(_BasePreview):
 
 
         if syntax_highlighting:
-            
+
             try: highlight_data = \
                         get_syntax_map(text)
 
             except SyntaxMappingError:
 
                 highlight_data = {
-                  
+
                   ## store a dict item where the line index
                   ## is the key and another dict is the value
 
@@ -702,7 +703,7 @@ class TextPreview(_BasePreview):
                     (0, len(line_text)): 'normal'
 
                   }
-                  
+
                   ## for each line_index and respective line
                   for line_index, line_text \
                   in enumerate(lines)
@@ -855,7 +856,7 @@ class TextPreview(_BasePreview):
             in enumerate(lines, 1):
 
                 y += font_height
-                
+
                 if line_number > no_of_visible_lines: break
 
                 line_text = fit_text(

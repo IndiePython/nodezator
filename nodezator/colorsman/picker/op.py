@@ -22,38 +22,38 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from pygameconstants import (
+from ...pygameconstants import (
                        SCREEN,
                        SCREEN_RECT,
                        blit_on_screen,
                      )
 
-from ourstdlibs.color.largemaps import (
+from ...ourstdlibs.color.largemaps import (
                                   HTML_COLOR_MAP,
                                   PYGAME_COLOR_MAP,
                                 )
 
-from ourstdlibs.color.custom import (
+from ...ourstdlibs.color.custom import (
                                custom_format_color,
                                get_custom_sorted_colors,
                              )
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from surfsman.cache import (
+from ...surfsman.cache import (
                       UNHIGHLIGHT_SURF_MAP,
                       RECT_SURF_MAP,
                       cache_screen_state,
                       draw_cached_screen_state,
                     )
 
-from loopman.main import LoopHolder
+from ...loopman.main import LoopHolder
 
-from colorsman.colors import BLACK, WHITE, WINDOW_BG
+from ..colors import BLACK, WHITE, WINDOW_BG
 
-from colorsman.color2d import Color2D
+from ..color2d import Color2D
 
-from colorsman.picker.constants import (
+from .constants import (
                                   DEFAULT_LABEL_MESSAGE,
                                 )
 
@@ -290,7 +290,7 @@ class Operations(LoopHolder):
         ## create more color objects if needed
 
         no_of_needed = (
-          no_of_colors - len(existing_color2d_objs) 
+          no_of_colors - len(existing_color2d_objs)
         )
 
         if no_of_needed > 0:
@@ -320,7 +320,7 @@ class Operations(LoopHolder):
 
         for color_widget, color \
         in zip(color_widgets, sorted_colors):
-            
+
             ## set the color and size
 
             color_widget.set_color(color)
@@ -383,7 +383,7 @@ class Operations(LoopHolder):
         ### settings
 
         for event in get_events():
-            
+
             ### quit the application
             if event.type == QUIT: self.quit()
 
@@ -392,7 +392,7 @@ class Operations(LoopHolder):
             ### the loop
 
             elif event.type == KEYUP:
-                
+
                 if event.key == K_ESCAPE:
 
                     self.cancel = True
@@ -403,7 +403,7 @@ class Operations(LoopHolder):
             ### with the event object
 
             elif event.type == MOUSEBUTTONUP:
-                
+
                 if event.button == 1:
                     self.on_mouse_release(event)
 
@@ -413,7 +413,7 @@ class Operations(LoopHolder):
 
             elif event.type == MOUSEMOTION:
                 self.on_mouse_motion(event)
-                
+
 
     ### alias the event handling operation as the
     ### "gud operation" named 'handle_input'
@@ -447,7 +447,7 @@ class Operations(LoopHolder):
         ### if there is one
 
         for color_widget in self.color_widgets:
-            
+
             ## if color widget collides, toggle the
             ## 'chosen' flag, redraw respective surfaces
             ## and the widget outline and break out of
@@ -483,7 +483,7 @@ class Operations(LoopHolder):
         ### one
 
         else:
-            
+
             ## if a button collides, execute its mouse
             ## release action if it has one (passing the
             ## event object along) and break out of the
@@ -492,7 +492,7 @@ class Operations(LoopHolder):
             for button in self.buttons:
 
                 if button.rect.collidepoint(mouse_pos):
-                    
+
                     try: method = button.on_mouse_release
                     except AttributeError: pass
                     else: method(event)
@@ -531,7 +531,7 @@ class Operations(LoopHolder):
             ## of the "for loop"
 
             if color_widget.rect.collidepoint(mouse_pos):
-                
+
                 ## set text of labels
 
                 # retrieve color info

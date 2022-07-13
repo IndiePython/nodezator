@@ -6,21 +6,21 @@ from pathlib import Path
 
 ### local imports
 
-from ourstdlibs.pyl import load_pyl, save_pyl
+from ....ourstdlibs.pyl import load_pyl, save_pyl
 
-from ourstdlibs.color.custom import custom_format_color
+from ....ourstdlibs.color.custom import custom_format_color
 
-from dialog import create_and_show_dialog
+from ....dialog import create_and_show_dialog
 
-from fileman.main import select_path
+from ....fileman.main import select_path
 
 
 class ImportExportOperations:
     """Operations to import/export colors."""
-    
+
     def import_colors(self):
         """Import colors from python literals in path(s)."""
-        
+
         ### retrieve path(s) from file browser
         paths = select_path(caption="Select path(s)")
 

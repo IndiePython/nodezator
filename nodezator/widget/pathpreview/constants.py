@@ -9,11 +9,11 @@ from pygame.transform import rotate as rotate_surface
 
 ### local imports
 
-from surfsman.render import combine_surfaces, render_rect
+from ...surfsman.render import combine_surfaces, render_rect
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                         BLACK,
                         PATHPREVIEW_BG,
                       )
@@ -257,7 +257,7 @@ SP_BUTTON_SVG_REPRS = [
 ##
 
 def get_missing_path_repr(rect):
-    
+
     g = Element('g', {'class': 'file_not_found_shapes'})
 
     g.append(
@@ -295,7 +295,7 @@ def get_missing_path_repr(rect):
           'ellipse',
 
           {
-            
+
             'cx': str(ellipse_rect.centerx),
             'cy': str(ellipse_rect.centery),
             'rx': str(ellipse_rect.width//2),
@@ -319,7 +319,7 @@ def get_missing_path_repr(rect):
           'line',
 
           {
-            
+
             **{
 
               key: value

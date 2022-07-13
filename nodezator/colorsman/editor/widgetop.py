@@ -6,12 +6,12 @@ from functools import partialmethod
 
 ### local imports
 
-from ourstdlibs.color.largemaps import (
+from ...ourstdlibs.color.largemaps import (
                                   HTML_COLOR_MAP,
                                   PYGAME_COLOR_MAP,
                                 )
 
-from ourstdlibs.color.conversion import (
+from ...ourstdlibs.color.conversion import (
                                    COLOR_CONVERSION_MAP,
                                    hex_string_to_full_rgb,
                                    full_rgb_to_html_name,
@@ -266,7 +266,7 @@ class WidgetOperations:
             ## iterate over each item of the color map
 
             for name, color in color_map.items():
-                
+
                 ## if the current color has the same value
                 ## as one of the color from the map, then
                 ## the color actually has a name, which is

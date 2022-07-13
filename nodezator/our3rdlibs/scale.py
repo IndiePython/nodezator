@@ -11,11 +11,11 @@ from pygame.transform import flip as flip_surface
 
 ### local imports
 
-from ourstdlibs.behaviour import empty_function
+from ..ourstdlibs.behaviour import empty_function
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from surfsman.icon import render_layered_icon
+from ..surfsman.icon import render_layered_icon
 
 
 ### constant definition
@@ -28,7 +28,7 @@ HANDLE_SURF = flip_surface(
                     chr(ordinal) for ordinal in (81, 82)
                   ],
 
-                  colors = [(18, 18, 18), (30, 130, 70)], 
+                  colors = [(18, 18, 18), (30, 130, 70)],
 
                   dimension_name  = 'height',
                   dimension_value = 15,

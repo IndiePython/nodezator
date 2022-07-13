@@ -1,5 +1,5 @@
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
 
 class Socket(Object2D):

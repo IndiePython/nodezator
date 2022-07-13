@@ -23,29 +23,23 @@ from pygame.mouse import (
 
 ### local imports
 
-from pygameconstants import SCREEN
+from ....pygameconstants import SCREEN
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ....classes2d.single      import Object2D
+from ....classes2d.collections import List2D
 
-from surfsman.draw   import draw_border_on_area
-from surfsman.render import render_rect
+from ....surfsman.draw   import draw_border_on_area
+from ....surfsman.render import render_rect
 
-from surfsman.icon import render_layered_icon
+from ....surfsman.icon import render_layered_icon
 
-from colorsman.colors import BLACK, WINDOW_BG
+from ....colorsman.colors import BLACK, WINDOW_BG
 
-from colorsman.editor.panel.constants import (
-                                        COLOR_WIDGET_SIZE
-                                      )
+from ....colorsman.editor.panel.constants import COLOR_WIDGET_SIZE
 
-from colorsman.editor.panel.data import (
-                                   ImportExportOperations
-                                 )
+from .data import ImportExportOperations
 
-from colorsman.editor.panel.colorsop import (
-                                        ColorsOperations
-                                      )
+from .colorsop import ColorsOperations
 
 
 ### module constants
@@ -64,7 +58,7 @@ class ColorsPanel(
 
     ):
     """A panel to hold and display multiple colors."""
-    
+
     def __init__(
           self,
           colors_editor,
@@ -182,7 +176,7 @@ class ColorsPanel(
           )
 
         ):
-            
+
             ## instantiate button
 
             obj = Object2D.from_surface(
@@ -345,7 +339,7 @@ class ColorsPanel(
         ## of the rotation amount)
 
         elif index < new_index:
-            
+
             slice_obj = slice(index, new_index+1)
             rotation_amount = -1
 
@@ -466,7 +460,7 @@ class ColorsPanel(
         ### the mouse (if there is one)
 
         for widget in self.widgets.get_colliding(scroll_area):
-            
+
             ### if you find a color widget which collides
             ### with the mouse, make it the current color
             ### widget and break out of the "for loop"
@@ -545,7 +539,7 @@ class ColorsPanel(
         ### where the widget sits
 
         if current_widget.rect.colliderect(scroll_area):
-            
+
             draw_border_on_area(
               image,
               current_widget.contrasting_color,

@@ -2,9 +2,9 @@
 
 ### local imports
 
-from textman.viewer.main import view_text
+from ...textman.viewer.main import view_text
 
-from widget.pathpreview.base import _BasePreview
+from .base import _BasePreview
 
 
 ### message when displaying value of widget

@@ -8,20 +8,20 @@ from functools import partial
 
 ### local imports
 
-from graphman.widget.utils import WIDGET_CLASS_MAP
+from ...widget.utils import WIDGET_CLASS_MAP
 
-from graphman.callablenode.utils import update_with_widget
+from ...callablenode.utils import update_with_widget
 
-from graphman.socket.surfs import type_to_codename
+from ...socket.surfs import type_to_codename
 
 
 ## classes for composition
 
-from graphman.socket.input import InputSocket
+from ...socket.input import InputSocket
 
-from widget.defaultholder import DefaultHolder
+from ....widget.defaultholder import DefaultHolder
 
-from rectsman.main import RectsManager
+from ....rectsman.main import RectsManager
 
 
 def create_parameter_objs(self, param_obj):

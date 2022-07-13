@@ -34,43 +34,43 @@ from pygame.mixer import music
 
 ### local imports
 
-from pygameconstants import (
+from .pygameconstants import (
                        SCREEN,
                        SCREEN_RECT,
                        FPS,
                        maintain_fps,
                      )
 
-from dialog import create_and_show_dialog
+from .dialog import create_and_show_dialog
 
-from logman.main import get_new_logger
+from .logman.main import get_new_logger
 
-from our3rdlibs.userlogger import USER_LOGGER
+from .our3rdlibs.userlogger import USER_LOGGER
 
-from ourstdlibs.behaviour import get_oblivious_callable
+from .ourstdlibs.behaviour import get_oblivious_callable
 
-from loopman.exception import (
+from .loopman.exception import (
                          QuitAppException,
                          SwitchLoopException,
                        )
 
-from classes2d.single import Object2D
+from .classes2d.single import Object2D
 
-from classes2d.surfaceswitcher import (
+from .classes2d.surfaceswitcher import (
                                  SURF_SWITCHER_CLASS_MAP
                                )
 
-from surfsman.draw import draw_border
+from .surfsman.draw import draw_border
 
-from surfsman.render import render_rect
+from .surfsman.render import render_rect
 
-from surfsman.icon import render_layered_icon
+from .surfsman.icon import render_layered_icon
 
-from textman.render import render_text
+from .textman.render import render_text
 
-from colorsman.colors import BLACK, WHITE
+from .colorsman.colors import BLACK, WHITE
 
-from widget.intfloatentry.main import IntFloatEntry
+from .widget.intfloatentry.main import IntFloatEntry
 
 
 PlayingPausedObject = (
@@ -135,7 +135,7 @@ logger = get_new_logger(__name__)
 
 
 class AudioPlayer(Object2D):
-    
+
     def __init__(self):
         """"""
 
@@ -310,12 +310,12 @@ class AudioPlayer(Object2D):
     def handle_events(self):
 
         for event in get_events():
-            
+
             if event.type == QUIT:
                 raise QuitAppException
 
             elif event.type == KEYUP:
-                
+
                 if event.key == K_ESCAPE:
                     self.running = False
 
@@ -325,7 +325,7 @@ class AudioPlayer(Object2D):
                     self.on_mouse_click(event)
 
             elif event.type == MOUSEBUTTONUP:
-                
+
                 if event.button == 1:
                     self.on_mouse_release(event)
 
@@ -359,7 +359,7 @@ class AudioPlayer(Object2D):
           mouse_buttons_pressed[0]
           and volume_area.collidepoint(mouse_pos)
         ):
-            
+
             self.volume = (
               (mouse_x - volume_area.x) / volume_area.width
             )
