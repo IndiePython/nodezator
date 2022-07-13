@@ -223,6 +223,12 @@ def get_project_link_objs():
         [{'use_alpha': True}]
       ),
 
+      (
+        IMAGE_SURFS_DB
+        ['github_mark.png']
+        [{'use_alpha': True}]
+      ),
+
       NODES_GALLERY_ICON,
 
       (
@@ -283,75 +289,53 @@ def get_project_link_objs():
     project_links_data = (
 
       (
-        (
-          f'{t.splash_screen.application_website}:'
-          f' {t.splash_screen.application_website_name}'
-        ),
+        t.splash_screen.application_website,
         t.splash_screen.application_website_url,
       ),
 
       (
-        (
-          "Github:"
-          " github.com/KennedyRichard/nodezator"
-        ),
+        "Source code",
         "https://github.com/KennedyRichard/nodezator",
       ),
 
       (
-        (
-          "Find, download, publish nodes:"
-          " gallery.nodezator.com"
-        ),
+        "Discussions/forum",
+        "https://github.com/KennedyRichard/nodezator/discussions",
+      ),
+
+      (
+        "Find, download, publish nodes",
         "https://gallery.nodezator.com",
       ),
 
       (
-        (
-          f'{t.splash_screen.project_website}:'
-          f' {t.splash_screen.project_website_name}'
-        ),
-        t.splash_screen.project_website_url
+        t.splash_screen.project_website,
+        t.splash_screen.project_website_url,
       ),
 
       (
-        (
-          f'{t.splash_screen.developer_website}:'
-          f' {t.splash_screen.developer_website_name}'
-        ),
+        t.splash_screen.developer_website,
         t.splash_screen.developer_website_url,
       ),
 
       (
-        (
-          f'{t.splash_screen.developer_twitter}:'
-           ' twitter.com/KennedyRichard'
-        ),
-        'https://twitter.com/KennedyRichard'
+        t.splash_screen.developer_twitter,
+        'https://twitter.com/KennedyRichard',
       ),
 
       (
-        (
-          "Join us on discord:"
-          " indiepython.com/discord"
-        ),
-        'https://indiepython.com/discord'
+        "Join us on discord",
+        'https://indiepython.com/discord',
       ),
 
       (
-        (
-          "Support us on patreon:"
-          " patreon.com/KennedyRichard"
-        ),
-        'https://patreon.com/KennedyRichard'
+        "Support us on patreon",
+        'https://patreon.com/KennedyRichard',
       ),
 
       (
-        (
-          "Other support options:"
-          " indiepython.com/donate"
-        ),
-        'https://indiepython.com/donate'
+        "Other support options",
+        'https://indiepython.com/donate',
       ),
     )
 
@@ -396,7 +380,8 @@ def get_project_link_objs():
                                 get_oblivious_callable(
                                   partial(open_url, url)
                                 )
-                              )
+                              ),
+                              href = url,
                             )
 
         ### store the link object
@@ -407,7 +392,7 @@ def get_project_link_objs():
     project_link_objs.rect.snap_rects_ip(
                              retrieve_pos_from = 'bottomleft',
                              assign_pos_to     = 'topleft',
-                             offset_pos_by     = (0, 5),
+                             offset_pos_by     = (0, 3),
                            )
 
     ### instantiate special label and position it relative
@@ -454,10 +439,7 @@ def get_powered_link_objs():
           ['python_splashscreen_icon.png']
           [{'use_alpha': True}]
         ),
-        '\n'.join((
-               'Python',
-               'python.org',
-             )),
+        'Python',
         'https://python.org'
       ),
 
@@ -467,10 +449,7 @@ def get_powered_link_objs():
           ['pygame_logo.png']
           [{'use_alpha': True}]
         ),
-        '\n'.join((
-               'pygame',
-               'pygame.org',
-             )),
+        'pygame',
         'https://pygame.org/'
       ),
 
@@ -481,10 +460,8 @@ def get_powered_link_objs():
     for icon, text, url \
     in powered_links_data:
         
-        text_surf = render_multiline_text(
+        text_surf = render_text(
                       text = text,
-                      retrieve_pos_from='bottomleft',
-                      assign_pos_to='topleft',
                       **TEXT_SETTINGS
                     )
 
@@ -510,7 +487,8 @@ def get_powered_link_objs():
                                 get_oblivious_callable(
                                   partial(open_url, url)
                                 )
-                              )
+                              ),
+                              href = url,
                             )
 
         ### store the link object
@@ -541,7 +519,7 @@ def get_powered_link_objs():
     )
 
     powered_links_caption.rect.midbottom = (
-      powered_link_objs.rect.move(0, -10).midtop
+      powered_link_objs.rect.move(0, -5).midtop
     )
 
     ### then add the label to the list of objects
@@ -594,7 +572,7 @@ def get_action_objs():
 
       (
         AWW_ICON,
-        "Open manual",
+        "Read manual",
         partial(
           open_htsl_link,
           'htap://manual.nodezator.pysite'
@@ -824,6 +802,8 @@ def get_license_declaration_obj():
 
     objs.rect.topleft = (0, 0)
 
+    url ='https://unlicense.org'
+
     return (
 
       Object2D.from_surface(
@@ -841,9 +821,11 @@ def get_license_declaration_obj():
 
                  on_mouse_release=(
                    get_oblivious_callable(
-                     partial(open_url, 'https://unlicense.org')
+                     partial(open_url, url)
                    )
-                 )
+                 ),
+
+                 href = url,
 
                )
     )

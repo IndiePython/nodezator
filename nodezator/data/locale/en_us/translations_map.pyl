@@ -110,7 +110,7 @@
 
     'developer_twitter' : "Developer twitter",
 
-    'license_declaration_text' : "Nodezator is dedicated to the public domain using The Unlicense (https://unlicense.org)",
+    'license_declaration_text' : "Nodezator is dedicated to the public domain using The Unlicense",
 
   },
 

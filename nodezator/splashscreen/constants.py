@@ -3,10 +3,16 @@
 ### local imports
 
 from fontsman.constants import (
-                               ENC_SANS_BOLD_FONT_HEIGHT,
-                               ENC_SANS_BOLD_FONT_PATH)
+                          ENC_SANS_BOLD_FONT_HEIGHT,
+                          ENC_SANS_BOLD_FONT_PATH,
+                        )
 
-from colorsman.colors import SPLASH_FONT, SPLASH_BG
+from colorsman.colors import (
+                        SPLASH_FONT,
+                        SPLASH_BG,
+                        SPLASH_URL_FG,
+                        SPLASH_URL_BG,
+                      )
 
 
 TEXT_SETTINGS = {
@@ -15,6 +21,14 @@ TEXT_SETTINGS = {
   'padding': 0,
   'foreground_color': SPLASH_FONT,
   'background_color': SPLASH_BG
+}
+
+URL_TEXT_SETTINGS = {
+  'font_height' : ENC_SANS_BOLD_FONT_HEIGHT,
+  'font_path'   : ENC_SANS_BOLD_FONT_PATH,
+  'padding': 2,
+  'foreground_color': SPLASH_URL_FG,
+  'background_color': SPLASH_URL_BG,
 }
 
 TITLE_FONT_HEIGHT = 68

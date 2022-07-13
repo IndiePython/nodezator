@@ -34,6 +34,8 @@ from imagesman.cache import CachedImageObject
 
 from textman.render import render_text
 
+from textman.label.main import Label
+
 from colorsman.colors import (
                         BLACK,
                         WHITE,
@@ -45,6 +47,7 @@ from colorsman.colors import (
 
 from splashscreen.constants import (
                               TEXT_SETTINGS,
+                              URL_TEXT_SETTINGS,
                               TITLE_FONT_HEIGHT,
                               SOFTWARE_KIND_FONT_HEIGHT,
                               SUBHEADING_FONT_HEIGHT,
@@ -230,6 +233,17 @@ class SplashScreen(SplashScreenOperations):
         ### position objects
         self.position_and_define_boundaries()
 
+        ### url label
+
+        self.url_label = (
+
+          Label(
+            text='url',
+            max_width = self.rect.width,
+            **URL_TEXT_SETTINGS,
+          )
+
+        )
         ###
         self.center_splashscreen()
 
@@ -494,11 +508,11 @@ class SplashScreen(SplashScreenOperations):
         )
 
         self.license_declaration.rect.topright = (
-          body.rect.move(-80, 35).midbottom
+          body.rect.move(-30, 30).midbottom
         )
 
         self.powered_link_objs.rect.topleft = (
-          body.rect.move(80, 25).midbottom
+          body.rect.move(30, 20).midbottom
         )
 
         ### reference all objects in the header and body
@@ -520,7 +534,7 @@ class SplashScreen(SplashScreenOperations):
         ### both horizontally and vertically
 
         self.image = render_rect(
-                       *all_objs.rect.inflate(30, 30).size,
+                       *all_objs.rect.inflate(20, 40).size,
                        SPLASH_BG
                      )
 
@@ -554,6 +568,10 @@ class SplashScreen(SplashScreenOperations):
         ### the rect of an object hovered by the mouse
         ### or hold None, when there aren't any
         self.hovered_rect = None
+
+        ### define a flag to indicate when the url label
+        ### must be drawn
+        self.draw_url_label = False
 
         ### define surfaces with solid colors to represent
         ### the shadows at the bottom and right of the
@@ -631,3 +649,8 @@ class SplashScreen(SplashScreenOperations):
         )
 
         self.right_shadow.rect.topleft = topleft_of_right
+
+        ###
+        self.url_label.rect.bottomleft = (
+          self.rect.move(1, -1).bottomleft
+        )
