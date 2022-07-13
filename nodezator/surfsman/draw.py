@@ -25,7 +25,7 @@ from pygame.draw import (
 
 ### local imports
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                              BLACK, WHITE,
                              SHADOW_COLOR, HIGHLIGHT_COLOR)
 
@@ -50,10 +50,10 @@ def draw_depth_finish(
     Such finish application consists of drawing polygons
     which work as borders of the surface to simulate
     highlights and shadows, giving depth to the surface.
-    
+
     Parameters
     ==========
-    
+
     surf (pygame.Surface instance)
         surface wherein to draw the lines.
     thickness (integer >= 1)
@@ -116,7 +116,7 @@ def draw_border(surf, color=BLACK, thickness=1):
 
     It works by drawing a sequence of rects with thickness
     1, one inside the other.
-    
+
     Parameters
     ==========
     surf (pygame.Surface instance)
@@ -184,7 +184,7 @@ def draw_border_on_area(surf, color, area_rect, thickness=1):
 
     It works by drawing a sequence of rects with thickness
     1, one inside the other.
-    
+
     Parameters
     ==========
     surf (pygame.Surface instance)
@@ -260,7 +260,7 @@ def draw_checker_pattern(
     ### the surface is covered by the checker pattern
 
     while True:
-        
+
         ## if the unit rect isn't touching the
         ## surface area, invert the x_offset,
         ## move it back using such new x_offset and
@@ -349,12 +349,12 @@ def draw_linear_gradient(
             rgb_to_hls(*[v/255 for v in color[:3]])
 
 
-    ### iterate over all vertical sections of the 
+    ### iterate over all vertical sections of the
     ### surface represented by all possible values of
     ### x within the width of the surface
 
     for x in range(width):
-        
+
         ## if x is before or at the start, the max
         ## lightness percentage is used as the percentage
         if x <= start : percent = max_lightness_percentage
@@ -391,7 +391,7 @@ def draw_linear_gradient(
           hls_to_rgb(hue, current_lightness, saturation)
 
         ]
-        
+
         ## and use it to draw a line on the vertical section
         draw_line(surf, color, (x, 0), (x, height), 1)
 
@@ -413,7 +413,7 @@ def draw_linear_gradient(
     ## needed
 
     elif direction in ('bottom_to_top', 'top_to_bottom'):
-        
+
         # define the amount of rotation needed according
         # to the specific vertical direction
         rotation_amount = \
@@ -484,7 +484,7 @@ def draw_not_found_icon(surf, color):
     ## draw diagonal based on ellipse thickness
 
     if ellipse_thickness >= 3:
-        
+
         dimension_size = round(ellipse_thickness / sqrt(2))
 
         small_rect = Rect(

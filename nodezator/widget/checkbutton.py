@@ -6,15 +6,15 @@ from xml.etree.ElementTree import Element
 
 ### local imports
 
-from ourstdlibs.behaviour import empty_function
+from ..ourstdlibs.behaviour import empty_function
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from surfsman.icon import render_layered_icon
+from ..surfsman.icon import render_layered_icon
 
-from surfsman.draw import draw_border
+from ..surfsman.draw import draw_border
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         CHECKBUTTON_FG,
                         CHECKBUTTON_BG,
                         CHECKBUTTON_OUTLINE,
@@ -159,7 +159,7 @@ class CheckButton(Object2D):
         ### checkbutton is set to True; we do so by
         ### rendering a surface which represents the heavy
         ### check mark icon, with padding and a border;
-          
+
         true_surf = render_layered_icon(
 
                       chars=[chr(124)],
@@ -256,7 +256,7 @@ class CheckButton(Object2D):
 
             although we don't use it here, it is required in
             order to comply with the mouse action protocol;
-              
+
             check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -294,7 +294,7 @@ class CheckButton(Object2D):
           )
 
         if self.value:
-            
+
             r = self.rect.inflate(-12, -12)
 
             points = (

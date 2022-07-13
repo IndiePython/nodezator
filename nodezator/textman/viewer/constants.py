@@ -5,14 +5,14 @@ from pygame import Rect
 
 ### local imports
 
-from pygameconstants import SCREEN_RECT
+from ...pygameconstants import SCREEN_RECT
 
-from fontsman.constants import (
+from ...fontsman.constants import (
                           FIRA_MONO_BOLD_FONT_HEIGHT,
                           FIRA_MONO_BOLD_FONT_PATH,
                         )
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                         TEXT_VIEWER_FG,
                         TEXT_VIEWER_BG,
                         CUSTOM_STDOUT_FG,

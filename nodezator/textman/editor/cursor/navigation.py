@@ -8,7 +8,7 @@ from functools import partialmethod
 
 
 ### local import
-from textman.editor.constants import NUMBER_OF_VISIBLE_LINES
+from ..constants import NUMBER_OF_VISIBLE_LINES
 
 
 ### XXX
@@ -23,7 +23,7 @@ from textman.editor.constants import NUMBER_OF_VISIBLE_LINES
 ###    injecting in the cursor class, but without losing
 ###    the benefit of setting extra partial methods with
 ###    functools.partialmethod?
-### 
+###
 ###    I mean, this must be done in a way that isn't
 ###    cumbersome and everything could be set up here
 ###    and just be injected once, in a single line in the
@@ -61,7 +61,7 @@ class Navigation:
         """Jump number of rows and columns provided.
 
         Use in normal mode.
-        
+
         Parameters
         ==========
         rows, cols (integers)
@@ -180,7 +180,7 @@ class Navigation:
         ## if we otherwise succeed in retrieving the char
         ## in the current column, we move the cursor to the
         ## position of that character object;
-        ## 
+        ##
         ## we also update the cursor size to that of the
         ## character obj
 
@@ -215,7 +215,7 @@ class Navigation:
         """Jump number of rows and columns provided.
 
         Use in insert mode.
-        
+
         Parameters
         ==========
         rows, cols (integers)
@@ -367,7 +367,7 @@ class Navigation:
         ## if we otherwise succeed in retrieving the char
         ## in the current column, we move the cursor to the
         ## position of that character object;
-        ## 
+        ##
         ## we also update the cursor size to that of the
         ## character obj
 

@@ -17,19 +17,19 @@ from pygame.draw import line as draw_line
 
 ### local imports
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from classes2d.collections import List2D
+from ..classes2d.collections import List2D
 
-from textman.render import render_text
+from ..textman.render import render_text
 
-from textman.cache import CachedTextObject
+from ..textman.cache import CachedTextObject
 
-from rectsman.main import RectsManager
+from ..rectsman.main import RectsManager
 
-from surfsman.render import render_rect, unite_surfaces
+from ..surfsman.render import render_rect, unite_surfaces
 
-from colorsman.colors import (
+from ..colorsman.colors import (
 
                         HTSL_CANVAS_BG,
                         HTSL_MARKED_TEXT_BG,
@@ -39,7 +39,7 @@ from colorsman.colors import (
 
                       )
 
-from htsl.constants import (
+from .constants import (
 
                       ANCHOR_TEXT_SETTINGS_MINUS_FG,
 
@@ -56,7 +56,7 @@ from htsl.constants import (
 ### class definitions
 
 class Anchor(Object2D):
-    
+
     def __init__(self, surface, href):
 
         self.image = surface
@@ -66,7 +66,7 @@ class Anchor(Object2D):
 
     @classmethod
     def from_text(cls, text, href):
-        
+
         return cls(
 
                  render_text(
@@ -149,7 +149,7 @@ def get_heading(heading, max_width):
 
     if heading.getAttribute('id'):
         heading_obj.id = heading.getAttribute('id')
-    
+
     ###
 
     return heading_obj
@@ -161,14 +161,14 @@ class TextBlock(List2D):
     def __init__(self, text_block, max_width):
 
         super().__init__()
-        
+
         ELEMENT_NODE = text_block.ELEMENT_NODE
         TEXT_NODE = text_block.TEXT_NODE
 
         substrings_data = []
 
         for child in text_block.childNodes:
-            
+
             node_type = child.nodeType
 
             if node_type == TEXT_NODE:
@@ -206,7 +206,7 @@ class TextBlock(List2D):
             tag_name = data.get('tag_name')
 
             if href:
-                
+
                 anchor_group = []
 
                 append_to_anchor_group = (
@@ -341,9 +341,9 @@ class TextBlock(List2D):
               else HTSL_ANCHOR_TEXT_FG
 
             )
-            
+
             for anchor in group:
-                
+
                 left = anchor.rect.left
 
                 if left > last_left:
@@ -391,9 +391,9 @@ class TextBlock(List2D):
 
             last_left = -1
             same_line_marked.clear()
-            
+
             for marked in group:
-                
+
                 left = marked.rect.left
 
                 if left > last_left:
@@ -424,9 +424,9 @@ class TextBlock(List2D):
 
                 last_left = -1
                 same_line_linecut.clear()
-                
+
                 for linecut in group:
-                    
+
                     left = linecut.rect.left
 
                     if left > last_left:
@@ -862,7 +862,7 @@ def strikethrough(surface):
     )
 
 
-class BlockQuote(List2D): 
+class BlockQuote(List2D):
 
     def __init__(self, blockquote, max_width):
 
@@ -982,7 +982,7 @@ class Table(List2D):
     """
 
     def __init__(self, table, max_width):
-        
+
         unit_width = (max_width // 12)
 
         super().__init__()
@@ -1033,7 +1033,7 @@ class Table(List2D):
         text_blocks = []
 
         for row in rows:
-            
+
             cells = row.getElementsByTagName('th')
 
             if cells:
@@ -1045,7 +1045,7 @@ class Table(List2D):
                 cells = row.getElementsByTagName('td')
                 row_is_heading = False
 
-            
+
             for column_rect, cell in (
 
               zip(column_rects, cells)
@@ -1083,7 +1083,7 @@ class Table(List2D):
               zip(column_rects, text_blocks)
 
             ):
-                
+
                 text_block.rect.midleft = (
                   column_rect.x,
                   row_rect.centery,

@@ -2,17 +2,17 @@
 
 ### local imports
 
-from config import APP_COLORS_FILE
+from ..config import APP_COLORS_FILE
 
-from ourstdlibs.pyl import load_pyl
+from ..ourstdlibs.pyl import load_pyl
 
 
 ### utility function
 
 def populate_locals_dict(locals_dict, obj):
-    
+
     for key, value in obj.items():
-        
+
         locals_dict[key] = value
 
         if isinstance(value, dict):

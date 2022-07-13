@@ -6,20 +6,20 @@ in custom ways, according to our own design.
 
 ### local imports
 
-from ourstdlibs.color.property import get_saturation
+from ...ourstdlibs.color.property import get_saturation
 
-from ourstdlibs.color.utils import (
+from ...ourstdlibs.color.utils import (
                               map_colors_by_hue,
                               sort_colors_by_luma,
                               validate_hex_color_string,
                             )
 
-from ourstdlibs.color.conversion import (
+from ...ourstdlibs.color.conversion import (
                                 hex_string_to_full_rgb,
                                 full_rgb_to_hex_string,
                               )
 
-from ourstdlibs.iterutils import separate_by_condition
+from ...ourstdlibs.iterutils import separate_by_condition
 
 
 ### formatting related functions
@@ -79,7 +79,7 @@ def get_custom_color_format_info(color_value):
     ### a tuple
 
     if isinstance(color_value, tuple):
-        
+
         ## if all items are integers within a valid range
         ## and the length is either 3 or 4, we have a valid
         ## color representation, so we return its info
@@ -186,7 +186,7 @@ def custom_format_color(
     ### to rgb(a) colors
 
     if color_format == 'rgb_tuple' and 'hex' in format_name:
-        
+
         color_value = tuple(
            hex_string_to_full_rgb(item)
            for item in color_value
@@ -240,7 +240,7 @@ def validate_custom_color_format(
 
     if color_format == 'rgb_tuple' \
     and 'rgb' not in format_name:
-        
+
         raise TypeError(
                 "since the 'color_format' argument"
                 " was set to 'rgb_tuple', individual"
@@ -348,7 +348,7 @@ def get_custom_sorted_colors(colors):
     function to use as the key of list.sort or the
     "sorted" built-in function, instead of returning
     a new list as we in this function.
-    
+
     However I think presenting the steps as done in this
     function makes it easier to understand and maintain
     this function.
@@ -490,7 +490,7 @@ def get_custom_sorted_colors(colors):
 #        ### which is the lightness
 #
 #        else:
-#            
+#
 #            ### create an enumeration which we'll use as
 #            ### provide of pairs comprised by an arbitrary
 #            ### hue index greater than 1 and the range of
@@ -498,7 +498,7 @@ def get_custom_sorted_colors(colors):
 #            enumeration = enumerate(
 #                            HUE_SETS_MAP.values(), start=1
 #                          )
-#            
+#
 #            ### if the color's hue is within the given range,
 #            ### break out of the "for loop" so that the
 #            ### hue_index variable keep representing the

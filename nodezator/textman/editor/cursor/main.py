@@ -10,28 +10,29 @@ from pygame import Rect
 
 ### local imports
 
-from surfsman.cache import EMPTY_SURF
+from ....surfsman.cache import EMPTY_SURF
 
-from classes2d.collections import List2D
+from ....classes2d.collections import List2D
 
-from fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
+from ....fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
 
-from textman.render import render_text
+from ...render import render_text
 
-from textman.editor.constants import NUMBER_OF_VISIBLE_LINES
+from ..constants import NUMBER_OF_VISIBLE_LINES
 
-from textman.editor.line import Line
+from ..line import Line
 
-from textman.editor.cursor.op import GeneralOperations
-
-from textman.editor.cursor.navigation import Navigation
-from textman.editor.cursor.syntaxhigh import \
+from .navigation import Navigation
+from .syntaxhigh import \
                                         SyntaxHighlighting
 
-from textman.editor.cursor.modes.normal import NormalMode
-from textman.editor.cursor.modes.insert import InsertMode
+from .modes.normal import NormalMode
+from .modes.insert import InsertMode
 
-from textman.editor.constants import EDITING_AREA_RECT
+from ..constants import EDITING_AREA_RECT
+
+
+from .op import GeneralOperations
 
 
 ### XXX the next time you make a general refactoring of

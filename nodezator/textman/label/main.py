@@ -6,15 +6,15 @@ from pygame import Rect
 
 ### local imports
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from surfsman.render import render_rect
+from ...surfsman.render import render_rect
 
-from fontsman.constants import ENC_SANS_BOLD_FONT_PATH
+from ...fontsman.constants import ENC_SANS_BOLD_FONT_PATH
 
-from textman.cache import TEXT_SURFS_DB
+from ...textman.cache import TEXT_SURFS_DB
 
-from colorsman.colors import BLACK
+from ...colorsman.colors import BLACK
 
 
 # XXX it's not clear why the Label constructor parameters
@@ -229,7 +229,7 @@ class Label(Object2D):
         else:
             setattr(
             self.rect, coordinates_name, coordinates_value)
-                
+
     def update_image(self):
         """Update image surface attribute."""
         ### reference the width map locally
@@ -360,7 +360,7 @@ class Label(Object2D):
             chars = chars + ellipsis
 
         else:
-            
+
             for char in self.contents[::-1]:
 
                 # calculate the resulting width from

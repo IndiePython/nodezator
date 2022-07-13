@@ -17,15 +17,15 @@ from pygame.mouse import get_pos as get_mouse_pos
 
 ### local imports
 
-from pygameconstants import SCREEN, blit_on_screen
+from ...pygameconstants import SCREEN, blit_on_screen
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from loopman.exception import (
+from ...loopman.exception import (
                                 QuitAppException,
                                 SwitchLoopException)
 
-from colorsman.colors import BLACK
+from ...colorsman.colors import BLACK
 
 
 class OptionMenuLifetimeOperations(Object2D):
@@ -150,7 +150,7 @@ class OptionMenuLifetimeOperations(Object2D):
 
         try: self.validate_value_and_options(value, options)
         except (ValueError, TypeError) as err:
-            
+
             print(err)
             return
 
@@ -187,7 +187,7 @@ class OptionMenuLifetimeOperations(Object2D):
             required in order to comply with mouse action
             protocol; we use its "pos" attribute to retrieve
             the mouse position;
-              
+
             check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -316,7 +316,7 @@ class OptionMenuLifetimeOperations(Object2D):
           left < mouse_x < right
           and not (top < mouse_y < bottom)
         ):
-            
+
             self.scroll_vertically(
 
                    -10
@@ -361,7 +361,7 @@ class OptionMenuLifetimeOperations(Object2D):
             mouse action protocol; it is also necessary in
             this method, since its "pos" attribute is used
             to retrieve the mouse position;
-              
+
             check pygame.event module documentation on
             pygame website for more info about this event
             object.

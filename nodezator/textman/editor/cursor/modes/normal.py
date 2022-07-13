@@ -21,13 +21,13 @@ from pygame.event import get as get_events
 
 ### local imports
 
-from loopman.exception import QuitAppException
+from .....loopman.exception import QuitAppException
 
-from htsl.main import open_htsl_link
+from .....htsl.main import open_htsl_link
 
-from textman.editor.constants import NUMBER_OF_VISIBLE_LINES
+from ...constants import NUMBER_OF_VISIBLE_LINES
 
-from textman.editor.line import Line
+from ...line import Line
 
 
 class NormalMode:

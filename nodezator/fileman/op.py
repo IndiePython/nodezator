@@ -21,29 +21,29 @@ from pygame.display import update
 
 ### local imports
 
-from translation import TRANSLATION_HOLDER as t
+from ..translation import TRANSLATION_HOLDER as t
 
-from pygameconstants import (
+from ..pygameconstants import (
                        SCREEN_RECT,
                        FPS,
                        maintain_fps,
                        blit_on_screen,
                      )
 
-from dialog import create_and_show_dialog
+from ..dialog import create_and_show_dialog
 
-from ourstdlibs.behaviour import (
+from ..ourstdlibs.behaviour import (
                             empty_function,
                             get_oblivious_callable,
                           )
 
-from loopman.exception import (
+from ..loopman.exception import (
                                 SwitchLoopException,
                                 QuitAppException)
 
-from surfsman.cache import UNHIGHLIGHT_SURF_MAP
+from ..surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
 
 class FileManagerOperations(Object2D):
@@ -61,7 +61,7 @@ class FileManagerOperations(Object2D):
         This method shows the user the file manager
         interface, allowing the user to browse the
         filesystem visually while either:
-        
+
         1) in the 'select' mode: selecting paths to be
            returned;
 
@@ -180,7 +180,7 @@ class FileManagerOperations(Object2D):
           else t.file_manager.new_path
 
         ) + ":"
-        
+
         self.widget_label.set(widget_label_text)
 
         ### perform setups to guarantee the appropriate
@@ -188,7 +188,7 @@ class FileManagerOperations(Object2D):
         ### to the choosen mode
 
         if mode == 'select':
-            
+
             chosen_widget = self.selection_label
 
             self.labels.add(self.selection_label)

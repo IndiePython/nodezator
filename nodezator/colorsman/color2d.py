@@ -6,19 +6,19 @@ from pygame import Surface
 
 ### local imports
 
-from ourstdlibs.collections.general import FactoryDict
+from ..ourstdlibs.collections.general import FactoryDict
 
-from ourstdlibs.color.creation import get_contrasting_bw
+from ..ourstdlibs.color.creation import get_contrasting_bw
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from surfsman.draw   import draw_checker_pattern
-from surfsman.render import render_rect
+from ..surfsman.draw   import draw_checker_pattern
+from ..surfsman.render import render_rect
 # TODO render_rect usage throughout the module should
 # probably be replaced by usage of the RECT_SURF_MAP
 # from surfsman/cache.py, which caches the surface;
 
-from colorsman.colors import TRANSP_COLOR_A, TRANSP_COLOR_B
+from .colors import TRANSP_COLOR_A, TRANSP_COLOR_B
 
 
 ### constant: contrasting color map
@@ -69,7 +69,7 @@ class Color2D(Object2D):
     checkered pattern visible through the color's
     transparency to make the transparency apparent.
     """
-    
+
     ### class attribute containing a dictionary used to
     ### map a given size to a surface of that size with a
     ### checkered pattern

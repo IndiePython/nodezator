@@ -18,17 +18,17 @@ from pygame.transform import scale as scale_surf
 
 ### local imports
 
-from surfsman.draw import (
+from ..surfsman.draw import (
                      blit_aligned,
                      draw_checker_pattern,
                      draw_not_found_icon,
                    )
 
-from surfsman.render import render_rect
+from ..surfsman.render import render_rect
 
-from our3rdlibs.userlogger import USER_LOGGER
+from ..our3rdlibs.userlogger import USER_LOGGER
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         IMAGE_NOT_FOUND_FG,
                         IMAGE_NOT_FOUND_BG,
                         TRANSP_IMAGE_A,
@@ -98,7 +98,7 @@ def render_image_from_original(
         ## image has alpha or not
 
         try:
-        
+
             surf = original_image_surfs_map[image_path] = (
 
               load_image(image_path).convert_alpha()
@@ -209,7 +209,7 @@ def render_image_from_original(
     ### must be kept or not)
 
     if background_width and background_height:
-        
+
         bg_surf = render_rect(
                     background_width,
                     background_height,
@@ -251,7 +251,7 @@ def get_final_size(
     height = max(min_height, min(max_height, height))
 
     if (width, height) != (actual_width, actual_height):
-        
+
         ## adjust width and height if the size ratio must
         ## be kept
 
@@ -265,5 +265,5 @@ def get_final_size(
                             ).fit(
                                 0, 0, width, height
                               ).size
-    
+
     return (width, height)

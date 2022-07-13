@@ -15,7 +15,7 @@ The ones you want to import are:
      converted to a hashable representation),
      automatically creates another dict containing
      a surface map and a width map.
-   
+
      Both the surface map and width map are dicts which
      associate text to surfaces and the width of such
      surfaces, respectively. They are stored in the
@@ -68,11 +68,11 @@ The ones you want to import are:
 
 ### local imports
 
-from ourstdlibs.dictutils import settings_to_hashable_repr
+from ..ourstdlibs.dictutils import settings_to_hashable_repr
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from textman.render import render_text
+from .render import render_text
 
 
 ### constant: pairs containing special characters and
@@ -148,7 +148,7 @@ class TextSurfacesDatabase(dict):
 
 class TextSurfaceMap(dict):
     """Map to store text surfaces; has extra behaviour."""
-    
+
     def __init__(self, text_settings):
         """Store given text settings, perform extra setups."""
         ### store text settings
@@ -225,7 +225,7 @@ class TextSurfaceMap(dict):
 
 class TextWidthMap(dict):
     """Map to store text surfs width; has extra behaviour."""
-    
+
     def __init__(self, surf_map):
         """Store the given surface map."""
         self.surf_map = surf_map
@@ -294,19 +294,19 @@ class CachedTextObject(Object2D):
         settings. We did so by decorating this method with
         appcommon.debug.measure_average_speed function. We
         used 4, 100, 1000, and 10000 repetitions.
-        
+
         It turned out, unexpectedly so, that the solution
         with the "if block" made the method quicker when
         the number of repetitions where 4, 100, 1000. The
         speed was about 10% faster.
-        
+
         We expected all experiments to yield results
         favorable to the solution without the "if block",
         since we know every time the "if check" was
         performed, it came out negative and ended up
         executing the rest of the method anyway, so it
         was just an unnecessary step.
-        
+
         Only when the repetitions were 10000 the solution
         without the "if block" performed better, but it
         isn't that relevant, cause this method is intended

@@ -5,7 +5,7 @@ from string import punctuation, whitespace
 
 
 ### local import
-from ourstdlibs.mathutils import get_remaining_intervals
+from ...ourstdlibs.mathutils import get_remaining_intervals
 
 
 ### constants
@@ -145,7 +145,7 @@ def get_line_syntax_intervals(comment_text):
     ### (if there are such words)
 
     for word in TODO_WORDS:
-        
+
         ## store the length of the word
         length = len(word)
 
@@ -155,10 +155,10 @@ def get_line_syntax_intervals(comment_text):
 
         ## now we repeat the block below as many times as
         ## there are substrings of the todo word in the
-        ## comment_text string 
+        ## comment_text string
 
         for _ in range(comment_text.count(word)):
-            
+
             ## define the boundaries of the interval
             ## containing the todo word in the string
 
@@ -269,7 +269,7 @@ def is_char_allowed(line_string, index):
     Used to check whether a "todo" substring (a string
     from the TODO_WORDS constant) from line_string is
     a proper todo word.
-    
+
     Such check is made indirectly, by checking the
     characters which reside in the adjacent indices
     of the substring. The following rules apply:
@@ -291,7 +291,7 @@ def is_char_allowed(line_string, index):
     ### it doesn't exist, which is a valid condition, so
     ### we return True
     if index < 0: return True
-    
+
     ### check whether the index points to a character in
     ### the line string
     try: char = line_string[index]

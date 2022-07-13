@@ -17,45 +17,35 @@ from pygame.time import get_ticks as get_milliseconds
 
 ### local imports
 
-from pygameconstants import SCREEN
+from ...pygameconstants import SCREEN
 
-from dialog import create_and_show_dialog
+from ...dialog import create_and_show_dialog
 
-from ourstdlibs.behaviour import get_oblivious_callable
+from ...ourstdlibs.behaviour import get_oblivious_callable
 
-from surfsman.draw import (
+from ...surfsman.draw import (
                      blit_aligned,
                      draw_border,
                      draw_depth_finish,
                    )
 
-from surfsman.render import render_rect
+from ...surfsman.render import render_rect
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ...classes2d.single      import Object2D
+from ...classes2d.collections import List2D
 
-from textman.label.main import Label
+from ...textman.label.main import Label
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                         BUTTON_BG,
                         NORMAL_PATH_FG,
                         NORMAL_PATH_BG,
                         ACTIVE_SELECTION_OUTLINE,
                       )
 
-from fileman.pathobj import PathObject
+from ..pathobj import PathObject
 
-from fileman.dirpanel.newpathform import get_path
-
-from fileman.dirpanel.surfs import (
-                              HOME_BUTTON_SURF,
-                              RELOAD_DIR_BUTTON_SURF,
-                              PARENT_BUTTON_SURF,
-                              NEW_FILE_BUTTON_SURF,
-                              NEW_FOLDER_BUTTON_SURF,
-                            )
-
-from fileman.constants import (
+from ..constants import (
                          FONT_HEIGHT,
                          PATH_OBJ_QUANTITY,
                          PATH_OBJ_PADDING,
@@ -64,11 +54,21 @@ from fileman.constants import (
                          DIR_PANEL_TOPLEFT,
                        )
 
+from .newpathform import get_path
+
+from .surfs import (
+                              HOME_BUTTON_SURF,
+                              RELOAD_DIR_BUTTON_SURF,
+                              PARENT_BUTTON_SURF,
+                              NEW_FILE_BUTTON_SURF,
+                              NEW_FOLDER_BUTTON_SURF,
+                            )
+
 ## class extensions
 
-from fileman.dirpanel.loadop  import LoadingOperations
-from fileman.dirpanel.mouseop import MouseOperations
-from fileman.dirpanel.extraop import ExtraOperations
+from .loadop  import LoadingOperations
+from .mouseop import MouseOperations
+from .extraop import ExtraOperations
 
 
 class DirectoryPanel(
@@ -80,7 +80,7 @@ class DirectoryPanel(
 
     def __init__(self, file_manager):
         """Assign variables, perform setups.
-        
+
         Parameters
         ==========
         file_manager (fileman.main.FileManager instance)
@@ -302,7 +302,7 @@ class DirectoryPanel(
         ### if a TypeError is raised, then it is None,
         ### in which case we set the outline rect to None
         except TypeError: self.outline_rect = None
-        
+
         ### otherwise we check whether any of the path
         ### object holds that path
 
@@ -337,7 +337,7 @@ class DirectoryPanel(
         ### the paths deque (or None, if not available)
 
         for index, path_obj in enumerate(self.path_objs):
-            
+
             try: path = self.paths_deque[index]
 
             except IndexError: path = None
@@ -347,7 +347,7 @@ class DirectoryPanel(
     def update_path_objs_appearance(self):
         """Update path objects to reflect selection state."""
         for path_obj in self.path_objs:
-            
+
             ### try retrieving the index of the path
             try: index = self.selectable_paths.index(
                                             path_obj.path)
@@ -461,7 +461,7 @@ class DirectoryPanel(
                self.selection_states
              )
 
-          ## if said selection state is True 
+          ## if said selection state is True
           if selection_state
 
         ]
@@ -508,7 +508,7 @@ class DirectoryPanel(
 
         ### otherwise we proceed according to the requested
         ### action
-        
+
         ## reference the action name and the new path
 
         action_name = form_data['action_name']
@@ -525,7 +525,7 @@ class DirectoryPanel(
             self.fm.submit_selected()
 
         elif action_name == 'create_path':
-            
+
             ## pick path creation operation according to
             ## kind of path chosen
 

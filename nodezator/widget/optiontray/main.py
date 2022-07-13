@@ -11,18 +11,18 @@ from xml.etree.ElementTree import Element
 
 ### local imports
 
-from ourstdlibs.behaviour import empty_function
-from ourstdlibs.dictutils import settings_to_hashable_repr
+from ...ourstdlibs.behaviour import empty_function
+from ...ourstdlibs.dictutils import settings_to_hashable_repr
 
 
-from textman.render import get_text_size
+from ...textman.render import get_text_size
 
-from fontsman.constants import (
+from ...fontsman.constants import (
                           ENC_SANS_BOLD_FONT_HEIGHT,
                           ENC_SANS_BOLD_FONT_PATH,
                         )
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                         OPTION_TRAY_FG,
                         OPTION_TRAY_BG,
                         OPTION_TRAY_SELECTED_FG,
@@ -30,11 +30,11 @@ from colorsman.colors import (
                       )
 
 ## class extension
-from widget.optiontray.op import (
+from .op import (
                             OptionTrayLifetimeOperations,
                           )
 
-from widget.optiontray.creation import (
+from .creation import (
                          OptionTrayCreationOperations,
                        )
 
@@ -345,7 +345,7 @@ class OptionTray(
             ## compare it with the maximum width allowed
 
             if total_width > self.max_width:
-                
+
                 raise ValueError(
                         "sum of option width's must not"
                         " surpass given 'max_width' when"
@@ -504,7 +504,7 @@ class OptionTray(
         text_args = [
 
           (
-            str(option), 
+            str(option),
 
             get_text_size(
               str(option),

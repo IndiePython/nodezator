@@ -28,19 +28,19 @@ from pygame.key import (
 
 ### local imports
 
-from pygameconstants import (
+from ...pygameconstants import (
                        SCREEN_RECT,
                        FPS,
                        blit_on_screen,
                        maintain_fps,
                      )
 
-from surfsman.draw import draw_border
-from surfsman.cache import UNHIGHLIGHT_SURF_MAP
+from ...surfsman.draw import draw_border
+from ...surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from loopman.exception import QuitAppException
+from ...loopman.exception import QuitAppException
 
 
 ### constants
@@ -107,7 +107,7 @@ class Operations(Object2D):
         ## over lineno panel if line numbers were shown
 
         if self.draw_lines == self.draw_lines_and_lineno:
-            
+
             panel_rect = self.lineno_panel.rect
 
             blit_on_screen(
@@ -397,7 +397,7 @@ class Operations(Object2D):
         First, we must check whether there is more text
         beyond the scrolling area in the direction we
         want to peek (the opposite we want to scroll).
-        
+
         This is important because if there isn't, we
         shouldn't scroll at all, so we set the delta to
         0.
@@ -458,7 +458,7 @@ class Operations(Object2D):
                 dy = 0
 
             elif (
-                text_rect.bottom + dy 
+                text_rect.bottom + dy
               < self.scroll_area.bottom
             ):
 

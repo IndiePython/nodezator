@@ -1,7 +1,7 @@
 """Option tray class extension with lifetime operations."""
 
 ### local import
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
 
 class OptionTrayLifetimeOperations(Object2D):
@@ -104,7 +104,7 @@ class OptionTrayLifetimeOperations(Object2D):
 
         try: self.validate_value_and_options(value, options)
         except (ValueError, TypeError) as err:
-            
+
             print(err)
             return
 
@@ -152,7 +152,7 @@ class OptionTrayLifetimeOperations(Object2D):
 
             we retrieve the position of the mouse from it,
             to find which value was pressed;
-              
+
             check pygame.event module documentation on
             pygame website for more info about this event
             object.

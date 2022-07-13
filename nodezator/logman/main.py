@@ -28,7 +28,7 @@ from contextlib import redirect_stdout
 
 
 ### local imports
-from appinfo import TITLE, APP_VERSION
+from ..appinfo import TITLE, APP_VERSION
 
 
 ### constants
@@ -52,25 +52,25 @@ LOG_LEVEL = DEBUG
 BACKUP_COUNT = 30
 
 ## maximum size in bytes of the log files;
-## 
+##
 ## whenever a log file gets close to this size, a new log
 ## file replaces it and it becomes a rotated file (called
 ## a backup log) and its contents are rotated (transfered)
 ## through a log file backup hierarchy;
-## 
+##
 ## bear in mind, however, that we mean to keep each log
 ## file containing only records for a single run of the
 ## software whenever possible and this size limit was
 ## provided just for safety, to prevent the log to grow
 ## indefinitely large in case something goes wrong;
-## 
+##
 ## that's why we use a value purposefully higher than what
 ## we expect a common session to produce in size, though we
 ## don't have data enough to determine such number
 ## accurately; thus, this value will be adjusted in the
 ## future when we have enough data to decide on a value
 ## closer to reality;
-## 
+##
 ## however, even if a log file reaches its limit and
 ## rotates, thereby no longer representing a full session
 ## (since new records for the current session will still

@@ -11,16 +11,16 @@ from functools import partial
 
 ### local imports
 
-from ourstdlibs.iterutils import get_type_yielder
+from ...ourstdlibs.iterutils import get_type_yielder
 
-from ourstdlibs.color.largemaps import (
+from ...ourstdlibs.color.largemaps import (
                                   HTML_COLOR_MAP,
                                   PYGAME_COLOR_MAP,
                                 )
 
-from ourstdlibs.color.constants import HUE_SETS_MAP
+from ...ourstdlibs.color.constants import HUE_SETS_MAP
 
-from ourstdlibs.color.property import (
+from ...ourstdlibs.color.property import (
                                  PROPERTY_GETTER_MAP,
                                  get_hue,
                                )
@@ -54,7 +54,7 @@ def validate_hex_color_string(hex_string):
 
     ### before continuing, make string all lowercase
     hex_string = hex_string.lower()
-    
+
     ### characters must all be characters used in
     ### hexadecimal representations
 
@@ -132,7 +132,7 @@ def get_int_sequence_repr(values):
 
       + ', '.join(
           str(value).rjust(3, ' ') for value in values
-        ) 
+        )
 
       ### closing square bracket
       + ']'

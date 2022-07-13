@@ -1,7 +1,7 @@
 """Facility for exception related utilities."""
 
 ### local imports
-from ourstdlibs.behaviour import (
+from ..ourstdlibs.behaviour import (
                              return_untouched,
                              get_decorator_from_wrapper)
 
@@ -24,7 +24,7 @@ def bool_func_from_raiser(
     Used when you have a function which raises exceptions
     under certain conditions and want to replace it with a
     boolean function.
-    
+
     The replacement function works in such manner that if
     an expected exception is thrown, it is caught and the
     execution proceeds normally until None is returned and,
@@ -126,7 +126,7 @@ def bool_func_from_raiser(
             ## preformated or not
 
             else:
-                
+
                 ## grab exception message
 
                 raw_msg = (
@@ -155,7 +155,7 @@ def bool_func_from_raiser(
         ### if no exception is raised, though, we just
         ### return True
         else: return True
-    
+
     ### return defined function
     return didnt_raise_expected
 
@@ -292,7 +292,7 @@ def new_raiser_from_existing(
             ## preformated or not
 
             else:
-                
+
                 ## grab exception message
 
                 raw_msg = (
@@ -336,7 +336,7 @@ def new_raiser_from_existing(
 
         ### otherwise we just return the output
         else: return output
-    
+
     ### return defined function
     return raise_another_exception
 

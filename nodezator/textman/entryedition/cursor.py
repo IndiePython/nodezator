@@ -17,9 +17,11 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from textman.entryedition.line import EntryLine
+from ...colorsman.colors import BLACK
 
-from colorsman.colors import BLACK
+from .line import EntryLine
+
+
 
 
 class EntryCursor:
@@ -179,7 +181,7 @@ class EntryCursor:
 
     def navigate(self, cols):
         """Jump number of columns provided.
-        
+
         Parameters
         ==========
         cols (integer)
@@ -247,7 +249,7 @@ class EntryCursor:
         ## if we otherwise succeed in retrieving the char
         ## in the current column, we move the cursor to the
         ## position of that character object;
-        ## 
+        ##
         ## we also update the cursor size to that of the
         ## character obj
 

@@ -19,38 +19,38 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from ourstdlibs.behaviour import empty_function
+from ..ourstdlibs.behaviour import empty_function
 
-from surfsman.draw   import blit_aligned, draw_depth_finish
-from surfsman.render import render_rect, combine_surfaces
-from surfsman.icon   import render_layered_icon
+from ..surfsman.draw   import blit_aligned, draw_depth_finish
+from ..surfsman.render import render_rect, combine_surfaces
+from ..surfsman.icon   import render_layered_icon
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from textman.text   import render_highlighted_line
-from textman.render import (
+from ..textman.text   import render_highlighted_line
+from ..textman.render import (
                       fit_text,
                       get_text_size,
                       render_text,
                     )
 
-from textman.viewer.main import view_text
-from textman.editor.main import edit_text
+from ..textman.viewer.main import view_text
+from ..textman.editor.main import edit_text
 
-from fontsman.constants import (
+from ..fontsman.constants import (
                           FIRA_MONO_BOLD_FONT_HEIGHT,
                           FIRA_MONO_BOLD_FONT_PATH,
                         )
 
-from syntaxman.utils import (
+from ..syntaxman.utils import (
                        AVAILABLE_SYNTAXES,
                        SYNTAX_TO_MAPPING_FUNCTION,
                        get_ready_theme,
                      )
 
-from syntaxman.exception import SyntaxMappingError
+from ..syntaxman.exception import SyntaxMappingError
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         BLACK,
                         WHITE,
                         LITERAL_DISPLAY_BG,
@@ -248,7 +248,7 @@ class LiteralDisplay(Object2D):
             it is required in order to comply with the
             mouse action protocol used; we retrieve the
             mouse position from its "pos" attribute;
-                  
+
             check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -337,7 +337,7 @@ class LiteralDisplay(Object2D):
         syntax_highlighting = 'python',
 
         if show_line_number:
-            
+
             lineno_width, _ = get_text_size(
               '01',
               font_height=font_height,
@@ -366,7 +366,7 @@ class LiteralDisplay(Object2D):
         except SyntaxMappingError:
 
             highlight_data = {
-              
+
               ## store a dict item where the line index
               ## is the key and another dict is the value
 
@@ -381,7 +381,7 @@ class LiteralDisplay(Object2D):
                 (0, len(line_text)): 'normal'
 
               }
-              
+
               ## for each line_index and respective line
               for line_index, line_text \
               in enumerate(lines)
@@ -440,7 +440,7 @@ class LiteralDisplay(Object2D):
 
             for line_number, line_text \
             in enumerate(lines, 1):
-                
+
                 surf = render_text(
                          text=str(line_number).rjust(2, '0'),
                          font_height=font_height,
@@ -577,7 +577,7 @@ class LiteralDisplay(Object2D):
               },
             )
           )
-        
+
         ###
 
         x, y = rect.topleft
@@ -764,7 +764,7 @@ class LiteralDisplay(Object2D):
         text = pformat(self.value, width=20)
 
         if show_line_number:
-            
+
             max_lineno_text = str(len(text.splitlines()))
             lineno_digits = len(max_lineno_text)
 
@@ -818,7 +818,7 @@ class LiteralDisplay(Object2D):
         except SyntaxMappingError:
 
             highlight_data = {
-              
+
               ## store a dict item where the line index
               ## is the key and another dict is the value
 
@@ -833,7 +833,7 @@ class LiteralDisplay(Object2D):
                 (0, len(line_text)): 'normal'
 
               }
-              
+
               ## for each line_index and respective line
               for line_index, line_text \
               in enumerate(lines)
@@ -987,7 +987,7 @@ class LiteralDisplay(Object2D):
 
             for line_number, line_text \
             in enumerate(lines, 1):
-                
+
                 y += font_height
 
                 text_element = Element(

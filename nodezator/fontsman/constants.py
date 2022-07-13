@@ -1,7 +1,7 @@
 """Constants for fonts in the app."""
 
 ### local import
-from config import FONTS_DIR
+from ..config import FONTS_DIR
 
 
 ### enc sans bold text

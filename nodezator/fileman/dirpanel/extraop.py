@@ -15,7 +15,7 @@ from pygame.key import get_mods as get_key_mods
 
 
 ### local import
-from fileman.constants import PATH_OBJ_QUANTITY
+from ..constants import PATH_OBJ_QUANTITY
 
 
 class ExtraOperations:
@@ -63,7 +63,7 @@ class ExtraOperations:
         ## scroll up
 
         if up:
-            
+
             ## if the first path is on the first path obj,
             ## then there's no further item above, so we
             ## return earlier to avoid scrolling
@@ -77,7 +77,7 @@ class ExtraOperations:
         ## scroll down
 
         else:
-            
+
             ## reference the path in the last path obj
             last_path = self.path_objs[-1].path
 

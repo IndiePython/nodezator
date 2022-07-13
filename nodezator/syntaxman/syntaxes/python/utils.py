@@ -5,7 +5,7 @@ from itertools import count
 
 
 ### local import
-from syntaxman.syntaxes.comment import get_comment_syntax_map
+from ..comment import get_comment_syntax_map
 
 
 MULTI_LINE_STR_QUOTES = '"""', "'''"
@@ -142,14 +142,14 @@ def represents_applied_decorator(line_index, source_lines):
     ### isn't 1, we assume it isn't a decorator being
     ### applied, so we return an empty tuple
     if line_text.count('@') != 1: return ()
-    
+
     ### XXX note that, in the 'if block' above, even though
     ### we assume that a line which doesn't have only one
     ### '@' character is't a decorator, there is still a
     ### possibility, however rare, in which we could still
     ### have a decorator being applied with more than one
     ### '@' character in the same line:
-    ### 
+    ###
     ### the other(s) character(s) could be inside strings
     ### in arguments of a call, in case the decorator is
     ### returned by a callable;
@@ -229,7 +229,7 @@ def represents_applied_decorator(line_index, source_lines):
     ## iterate over each subsequent line
 
     for index in count(start=next_line_index):
-        
+
         ## grab the text of the line
         line_text = source_lines[index]
 
@@ -303,7 +303,7 @@ def represents_applied_decorator(line_index, source_lines):
 
 def get_comment_offset_intervals(line_text, comment_start):
     """Return intervals for comment syntax with offset.
-    
+
     Such syntax separates normal comment text from special
     "todo" words (TODO, XXX and FIXME). The offset is
     need because the comment doesn't always start from

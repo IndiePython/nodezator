@@ -42,15 +42,14 @@ from pygame.transform import (
 
 ### local imports
 
-from fontsman.constants import ICON_FONT_PATH
+from ..fontsman.constants import ICON_FONT_PATH
 
-from surfsman.draw import (
+from ..colorsman.colors import BLACK
+
+from .draw import (
                      draw_border,
                      draw_depth_finish,
                    )
-
-from colorsman.colors import BLACK
-
 
 
 def render_layered_icon(
@@ -268,7 +267,7 @@ def get_objs_for_icon_rendering(
     ### utility function
 
     def get_size_results(font_size):
-        
+
         ### create font and produce a surface with the
         ### given char, using its "render" method; the
         ### render method must not receive a background

@@ -9,29 +9,29 @@ from itertools import chain, count
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from dialog import create_and_show_dialog
+from ..dialog import create_and_show_dialog
 
-from appinfo import NODES_KEY
+from ..appinfo import NODES_KEY
 
-from translation import TRANSLATION_HOLDER as t
+from ..translation import TRANSLATION_HOLDER as t
 
-from logman.main import get_new_logger
+from ..logman.main import get_new_logger
 
-from our3rdlibs.userlogger import USER_LOGGER
+from ..our3rdlibs.userlogger import USER_LOGGER
 
-from our3rdlibs.behaviour import indicate_unsaved
+from ..our3rdlibs.behaviour import indicate_unsaved
 
-from graphman.callablenode.main import CallableNode
-from graphman.operatornode.main import OperatorNode
-from graphman.builtinnode.main  import BuiltinNode
-from graphman.stlibnode.main    import StandardLibNode
-from graphman.capsulenode.main  import CapsuleNode
-from graphman.proxynode.main    import ProxyNode
-from graphman.textblock.main    import TextBlock
+from ..graphman.callablenode.main import CallableNode
+from ..graphman.operatornode.main import OperatorNode
+from ..graphman.builtinnode.main  import BuiltinNode
+from ..graphman.stlibnode.main    import StandardLibNode
+from ..graphman.capsulenode.main  import CapsuleNode
+from ..graphman.proxynode.main    import ProxyNode
+from ..graphman.textblock.main    import TextBlock
 
-from graphman.widget.picker.main import pick_widget
+from ..graphman.widget.picker.main import pick_widget
 
 
 ### create logger for module
@@ -122,7 +122,7 @@ class ObjectInsertionRemoval:
         """
         ### assess which kind of argument was received in
         ### the node_hint parameter
-            
+
         ## if we have a node instance, we just insert it
 
         if isinstance(
@@ -187,7 +187,7 @@ class ObjectInsertionRemoval:
                   (CapsuleNode,     'capsule_id'),
 
                 ):
-                    
+
                     if node_hint in cls.available_ids:
 
                         node_data[key] = node_hint
@@ -204,7 +204,7 @@ class ObjectInsertionRemoval:
             ## if we have a dict...
 
             elif isinstance(node_hint, dict):
-                
+
                 if 'signature_callable' in node_hint:
 
                     ## gather data in a dict which will be
@@ -268,7 +268,7 @@ class ObjectInsertionRemoval:
                         return
 
                 else:
-                
+
                     widget_data = deepcopy(node_hint)
 
                     ## gather data in a dict which will be
@@ -382,7 +382,7 @@ class ObjectInsertionRemoval:
                  text_block_data=text_block_data,
                  text_block_absolute_midtop=absolute_midtop
                )
-            
+
         ### otherwise, we know it is a text block instance,
         ### so we instead just insert it
         else: APP_REFS.gm.insert_text_block(
@@ -417,7 +417,7 @@ class ObjectInsertionRemoval:
         ## there's a new object on top of the original one
 
         for obj in self.selected_objs:
-            
+
             if type(obj) is CallableNode:
 
                 self.insert_node(
@@ -469,7 +469,7 @@ class ObjectInsertionRemoval:
                   (CapsuleNode,     'capsule_id'),
 
                 ):
-                    
+
                     if type(obj) is cls:
 
                         self.insert_node(
@@ -538,7 +538,7 @@ class ObjectInsertionRemoval:
         ### to its class
 
         for obj in self.selected_objs:
-            
+
             if isinstance(obj, TextBlock):
                 self.remove_text_block(obj)
 

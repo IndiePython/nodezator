@@ -2,27 +2,27 @@
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
 ## class extensions
 
-from graphman.callablenode.preproc import Preprocessing
+from .preproc import Preprocessing
 
-from graphman.callablenode.vizprep.main import (
+from .vizprep.main import (
                                   VisualRelatedPreparations
                                 )
 
-from graphman.callablenode.vizop.main import (
+from .vizop.main import (
                                    VisualRelatedOperations
                                  )
 
-from graphman.callablenode.subparam.main import (
+from .subparam.main import (
                                       SubparameterHandling
                                     )
 
-from graphman.callablenode.execution import Execution
+from .execution import Execution
 
-from graphman.callablenode.export import Exporting
+from .export import Exporting
 
 
 class CallableNode(
@@ -147,7 +147,7 @@ class CallableNode(
 
         ## the inspection is performed only once for each
         ## different signature callable. Thus, if another
-        ## node instance is created with the same 
+        ## node instance is created with the same
         ## signature callable, it will use the already
         ## created data, shared through class attributes
 
@@ -181,7 +181,7 @@ class CallableNode(
         self.midtop = (
 
           midtop
-          if midtop is not None 
+          if midtop is not None
 
           else self.data['midtop']
 

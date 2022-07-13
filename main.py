@@ -1,9 +1,8 @@
 import sys
-from nodezator import __main__
+import asyncio
+
 
 NATIVE_FILE_EXTENSION = '.ndz'
-
-print( __main__.main )
 
 if __name__ == "__main__":
 
@@ -41,4 +40,5 @@ if __name__ == "__main__":
     ### finally call the main function, passing along
     ### the filepath argument received (which might be the
     ### default, None)
-    __main__.main(args.filepath)
+    from nodezator.mainloop import run_app
+    asyncio.run(run_app(args.filepath))

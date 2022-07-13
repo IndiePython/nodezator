@@ -15,7 +15,7 @@ interval, enabling us to quickly use any of the techniques
 described earlier.
 
 
-Alpha Masking 
+Alpha Masking
 =============
 
 Alpha masking here refers to the operation of using the
@@ -55,10 +55,10 @@ surfaces with alpha channels converted with
 pygame.Surface.convert_alpha(), but blitting has nothing
 to do with alpha masking.
 
-Additionally, even if images without alpha channels were 
-loaded faster, which we haven't tested, such advantage 
-wouldn't be relevant to the masking out operations, which 
-are carried out several times during the lifetime of the 
+Additionally, even if images without alpha channels were
+loaded faster, which we haven't tested, such advantage
+wouldn't be relevant to the masking out operations, which
+are carried out several times during the lifetime of the
 mask, whereas loading is only performed once.
 
 Furthermore, even if loading speed became an issue,
@@ -71,9 +71,9 @@ working directly with transparency in .png files.
 
 ### local import
 
-from imagesman.cache import IMAGE_SURFS_DB
+from ..imagesman.cache import IMAGE_SURFS_DB
 
-from alphamask.utils import (
+from .utils import (
                        size_from_alpha_values,
                        unit_from_full_alpha_values,
                        full_from_unit_alpha_values,
@@ -82,8 +82,8 @@ from alphamask.utils import (
 
 ## class extensions
 
-from alphamask.basicop import AlphaMaskBasicOperations
-from alphamask.masksop import (
+from .basicop import AlphaMaskBasicOperations
+from .masksop import (
                          AlphaMaskOperationsBetweenMasks
                        )
 

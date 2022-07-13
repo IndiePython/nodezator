@@ -15,12 +15,12 @@ from functools import partial
 
 ### local imports
 
-from ourstdlibs.color.largemaps import (
+from ...ourstdlibs.color.largemaps import (
                                   HTML_COLOR_MAP,
                                   PYGAME_COLOR_MAP,
                                 )
 
-from ourstdlibs.color.constants import (
+from ...ourstdlibs.color.constants import (
                                   RGBA_FACTOR,
                                   HLS_FACTORS,
                                   HSV_FACTORS,
@@ -290,7 +290,7 @@ def full_rgb_to_color_name(color_map, full_rgba):
     ### color, returning the corresponding name in such case
 
     for name, value in color_map.items():
-        
+
         if color == value: return name
 
     ### if no name is found instead, we return the 'unamed'

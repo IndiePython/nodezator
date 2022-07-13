@@ -18,31 +18,31 @@ from pygame.key import get_pressed as get_pressed_keys
 
 ### local imports
 
-from pygameconstants import blit_on_screen
+from ....pygameconstants import blit_on_screen
 
-from ourstdlibs.color.conversion import (
+from ....ourstdlibs.color.conversion import (
                                    full_rgb_to_html_name,
                                    full_rgb_to_hex_string,
                                  )
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ....classes2d.single      import Object2D
+from ....classes2d.collections import List2D
 
-from loopman.exception import QuitAppException
+from ....loopman.exception import QuitAppException
 
-from surfsman.draw   import draw_border
-from surfsman.render import render_rect
+from ....surfsman.draw   import draw_border
+from ....surfsman.render import render_rect
 
-from textman.render import render_text
+from ....textman.render import render_text
 
-from fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
+from ....fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
 
-from colorsman.colors import (
+from ....colorsman.colors import (
                                COLOR_VIEWER_COLOR_LIST_FG,
                                COLOR_VIEWER_COLOR_LIST_BG,
                             )
 
-from colorsman.color2d import Color2D
+from ....colorsman.color2d import Color2D
 
 
 ### size in pixels of the surfaces representing each color
@@ -139,7 +139,7 @@ class ColorListMode:
               full_rgb_to_html_name(color)
 
             ):
-                
+
                 # create and append the text object
 
                 text_obj = \
@@ -224,14 +224,14 @@ class ColorListMode:
             coordinates_name='topleft',
             coordinates_value=display_area.topleft
           )
-        
+
         self.color_list_clean = \
                             self.color_list_bg.image.copy()
 
     def color_list_event_handling(self):
         """Event handling for the color list mode."""
         for event in get_events():
-            
+
             ### raise specific exception if user tries to
             ### quit the application
 
@@ -243,21 +243,21 @@ class ColorListMode:
             ### key is released
 
             elif event.type == KEYUP:
-                
+
                 if event.key == K_ESCAPE:
                     self.running = False
 
             ### if a mouse button is released...
 
             elif event.type == MOUSEBUTTONUP:
-                
+
                 ## if it is the left button, execute
                 ## specific mouse action method
 
                 if event.button == 1:
                     self.color_list_on_mouse_release(event)
 
-    
+
                 ## if it is the mouse wheel being
                 ## scrolled, scroll the list up or down
 
@@ -370,13 +370,13 @@ class ColorListMode:
         ### the mouse
 
         for button in self.buttons:
-            
+
             ## if a button collides, execute its mouse
             ## release action if it has one, then break out
             ## of the "for loop"
 
             if button.rect.collidepoint(mouse_pos):
-                
+
                 try: method = getattr(
                                 button, 'on_mouse_release')
 

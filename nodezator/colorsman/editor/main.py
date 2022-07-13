@@ -2,27 +2,27 @@
 
 ### local imports
 
-from pygameconstants import SCREEN_RECT
+from ...pygameconstants import SCREEN_RECT
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from surfsman.draw   import draw_border, draw_depth_finish
-from surfsman.render import render_rect
+from ...surfsman.draw   import draw_border, draw_depth_finish
+from ...surfsman.render import render_rect
 
-from colorsman.colors import WINDOW_BG
+from ...colorsman.colors import WINDOW_BG
 
 
 ## class extensions
 
-from colorsman.editor.loopop   import LoopOperations
-from colorsman.editor.widgetop import WidgetOperations
+from .loopop   import LoopOperations
+from .widgetop import WidgetOperations
 
 ## functions for injection
 
-from colorsman.editor.widgetsetup.scale  import setup_scales
-from colorsman.editor.widgetsetup.button import setup_buttons
-from colorsman.editor.widgetsetup.entry  import setup_entries
-from colorsman.editor.widgetsetup.label  import setup_labels
+from .widgetsetup.scale  import setup_scales
+from .widgetsetup.button import setup_buttons
+from .widgetsetup.entry  import setup_entries
+from .widgetsetup.label  import setup_labels
 
 
 ## class for composition
@@ -34,7 +34,7 @@ class ColorsEditor(
       WidgetOperations,
     ):
     """loop holder to pick/edit color(s).
-    
+
     This class is instantiated only once and its
     edit_colors() method is aliased to be used wherever
     needed in the entire package (look at the last lines

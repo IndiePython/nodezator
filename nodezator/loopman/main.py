@@ -11,9 +11,9 @@ from pygame.display import update
 
 ### local imports
 
-from pygameconstants import FPS, maintain_fps
+from ..pygameconstants import FPS, maintain_fps
 
-from loopman.exception import (
+from .exception import (
                          ContinueLoopException,
                          SwitchLoopException,
                          QuitAppException,
@@ -23,7 +23,7 @@ from loopman.exception import (
 class LoopHolder:
 
     def loop(self):
-        
+
         ### if loop hold doesn't have a 'draw' method,
         ### assign pygame.display.update to the
         ### attribute
@@ -40,11 +40,11 @@ class LoopHolder:
         self.running = True
 
         while self.running:
-            
+
             maintain_fps(FPS)
 
             try:
-                
+
                 loop_holder.handle_input()
                 loop_holder.update()
                 loop_holder.draw()

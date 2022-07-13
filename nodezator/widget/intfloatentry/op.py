@@ -16,16 +16,16 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from loopman.exception import SwitchLoopException
+from ...loopman.exception import SwitchLoopException
 
-from ourstdlibs.behaviour import (
+from ...ourstdlibs.behaviour import (
                             empty_function,
                             return_untouched,
                           )
 
-from widget.intfloatentry.numeval import numeric_evaluation
+from .numeval import numeric_evaluation
 
 
 INFS_AND_NANS = (
@@ -397,7 +397,7 @@ class IntFloatOperations(Object2D):
                string or a string representing a numerical
                value with wrong syntax or numerical
                expression with wrong syntax);
-               
+
                the error raised won't be caught, since this
                method is used in safe contexts (either with
                try/except clauses or with strings known to
@@ -552,7 +552,7 @@ class IntFloatOperations(Object2D):
                     msg = (
 
                       "value must be None or "
-                      if self.allow_none 
+                      if self.allow_none
 
                       else "value must be "
 

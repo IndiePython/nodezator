@@ -6,17 +6,17 @@ to help freeing memory and/or keeping its usage low.
 
 ### local imports
 
-from config import APP_REFS
+from .config import APP_REFS
 
-from ourstdlibs.treeutils import yield_tree_attrs
+from .ourstdlibs.treeutils import yield_tree_attrs
 
-from our3rdlibs.userlogger import USER_LOGGER
+from .our3rdlibs.userlogger import USER_LOGGER
 
-from widget.optionmenu.main import OptionMenu
+from .widget.optionmenu.main import OptionMenu
 
-from widget.optiontray.main import OptionTray
+from .widget.optiontray.main import OptionTray
 
-from textman.cache import TEXT_SURFS_DB
+from .textman.cache import TEXT_SURFS_DB
 
 
 def free_up_memory():
@@ -63,7 +63,7 @@ def free_up_memory():
     ### the lists holding them)
 
     for menu in menus:
-        
+
         ## obtain an iterator which yields lists of children
         ## held by the menu
 
@@ -103,7 +103,7 @@ def free_up_memory():
       'category_index_map',
       'custom_stdout_lines',
     ):
-        
+
         obj = getattr(APP_REFS, attr_name)
         obj.clear()
 

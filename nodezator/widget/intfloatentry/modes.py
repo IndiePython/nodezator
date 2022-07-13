@@ -41,13 +41,13 @@ from pygame.display import update
 
 ### local imports
 
-from pygameconstants import SCREEN_RECT
+from ...pygameconstants import SCREEN_RECT
 
-from surfsman.render import render_rect
+from ...surfsman.render import render_rect
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from loopman.exception import QuitAppException
+from ...loopman.exception import QuitAppException
 
 
 ### constants
@@ -117,7 +117,7 @@ class IntFloatModes(Object2D):
         keyboard.
         """
         for event in get_events():
-            
+
             if event.type == QUIT: raise QuitAppException
 
             elif event.type == KEYUP:
@@ -238,7 +238,7 @@ class IntFloatModes(Object2D):
             ### (except we decrease the width a bit to
             ### provide a nice margin from the boundaries
             ### of the screen)
-            
+
             new_rect = SCREEN_RECT.inflate(-40, 0)
             new_rect.height = self.rect.height
 
@@ -281,7 +281,7 @@ class IntFloatModes(Object2D):
         ### 'backups' attribute and update the image
 
         else:
-            
+
             (
               self.background,
               self.image,
@@ -335,7 +335,7 @@ class IntFloatModes(Object2D):
         the mouse.
         """
         for event in get_events():
-            
+
             if event.type == QUIT: raise QuitAppException
 
             ### if a shift key is pressed or released,
@@ -347,7 +347,7 @@ class IntFloatModes(Object2D):
             ## shift key pressed
 
             elif event.type == KEYDOWN:
-                
+
                 if event.key in (K_LSHIFT, K_RSHIFT):
                     self.change_shift_influence(True)
 
@@ -437,16 +437,16 @@ class IntFloatModes(Object2D):
         ## position of the mouse dragging origin with the
         ## horizontal distance between the center of the
         ## screen and the mouse position at the beginning
-        ## of this method 
+        ## of this method
 
         if clamped_value == value:
-            self.dragging_origin_x += SCREEN_CENTERX - x_pos 
+            self.dragging_origin_x += SCREEN_CENTERX - x_pos
 
         ## otherwise, set the clamped value as the new
         ## base value and reset the mouse dragging origin
         ## to the center of the screen
 
-        else: 
+        else:
 
             self.base_value        = clamped_value
             self.dragging_origin_x = SCREEN_CENTERX

@@ -16,9 +16,9 @@ from pygame.math import Vector2
 
 ### local imports
 
-from surfsman.draw import draw_linear_gradient
+from .....surfsman.draw import draw_linear_gradient
 
-from surfsman.icon import render_layered_icon
+from .....surfsman.icon import render_layered_icon
 
 
 ### constant: standard distance between two points in
@@ -190,7 +190,7 @@ def draw_particles(icon_ordinal, heights, canvas_surf, colors):
       for height in heights
 
     }
-        
+
     ### calculate all spots (points) in a rect larger than
     ### the canvas which are distant from each other by the
     ### POINT_DISTANCE and offset by a random distance
@@ -328,7 +328,7 @@ def draw_particles(icon_ordinal, heights, canvas_surf, colors):
     ## the last ones
 
     if other_colors:
-        
+
         ## obtain a list representing a population of
         ## colors with colors repeating themselves in
         ## different proportions;
@@ -367,7 +367,7 @@ def draw_particles(icon_ordinal, heights, canvas_surf, colors):
       heights,
       (all_spots, less_spots, even_less_spots)
     ):
-        
+
         ## reference the dict with particle surfaces for
         ## each color locally, all surfaces being of the
         ## specified height
@@ -383,9 +383,9 @@ def draw_particles(icon_ordinal, heights, canvas_surf, colors):
         ## canvas
 
         for spot in spot_samples:
-            
+
             particle_surf = color_to_surfs[next_color()]
-            
+
             canvas_surf.blit(particle_surf, spot)
 
 

@@ -23,7 +23,7 @@ from pygame.font import Font
 
 
 ### local import
-from fontsman.exception import UnattainableFontHeight
+from .exception import UnattainableFontHeight
 
 
 
@@ -32,7 +32,7 @@ class FontsDatabase(dict):
 
     Extends the built-in dict.
     """
-    
+
     def __missing__(self, key):
         """Create, store and return dict for given key.
 
@@ -97,7 +97,7 @@ def get_font(font_path, desired_height):
     Since instantiating pygame.font.Font and using its
     'size' method is very quick, this is fast enough as
     to not be noticeable.
-    
+
     Furthermore, this is done only once per font and
     desired height, since the resulting font object
     is stored for future reference (as can be seen in
@@ -114,7 +114,7 @@ def get_font(font_path, desired_height):
     instantiated with size 31 renders surfaces of
     height 35 and when instantiated with size 32
     renders surfaces with height 37.
-    
+
     In such case, we'll use the closest one which doesn't
     surpass the desired height, that is, the font with
     surfaces of height 35.
@@ -157,7 +157,7 @@ def get_font(font_path, desired_height):
     ###    "break" statement)
 
     while size not in attempted_sizes:
-        
+
         ### create font and calculate the height of the
         ### surface of an arbitrary character (space) when
         ### rendered

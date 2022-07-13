@@ -30,15 +30,15 @@ from pygame.draw import (
 
 ### local imports
 
-from classes2d.single import Object2D
+from .classes2d.single import Object2D
 
-from classes2d.collections import List2D
+from .classes2d.collections import List2D
 
-from surfsman.draw import draw_border
+from .surfsman.draw import draw_border
 
-from surfsman.render import render_rect
+from .surfsman.render import render_rect
 
-from htsl.creation import TextBlock
+from .htsl.creation import TextBlock
 
 
 def surfdef_obj_from_element(
@@ -60,9 +60,9 @@ def surfdef_obj_from_element(
     ELEMENT_NODE = surfdef_element.ELEMENT_NODE
 
     for child in surfdef_element.childNodes:
-        
+
         if child.nodeType != ELEMENT_NODE: continue
-        
+
         child_name = child.tagName.lower()
 
         if child_name in ('rect', 'ellipse'):
@@ -246,7 +246,7 @@ def surfdef_obj_from_element(
               stroke_width,
             )
 
-        elif child_name == 'polyline': 
+        elif child_name == 'polyline':
 
             if child.getAttribute('points'):
 
@@ -392,7 +392,7 @@ def points_from_directives(directives_text):
     temp_points = []
 
     while chars:
-        
+
         point_text = ''
 
         while True:

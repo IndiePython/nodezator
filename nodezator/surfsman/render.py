@@ -11,19 +11,21 @@ from pygame.transform import rotate as rotate_surface
 
 ### local imports
 
-from colorsman.colors import (
+
+from ..colorsman.colors import (
                         BLACK,
                         WINDOW_BG,
                         SHADOW_COLOR,
                         HIGHLIGHT_COLOR,
                       )
 
-from surfsman.draw import (
+from ..rectsman.main import RectsManager
+
+
+from .draw import (
                      draw_border,
                      draw_depth_finish,
                    )
-
-from rectsman.main import RectsManager
 
 
 def render_rect(width, height, color=BLACK):
@@ -136,7 +138,7 @@ def unite_surfaces(
     rects = []
 
     for surf, rect in surface_rect_pairs:
-        
+
         surfaces.append(surf)
         rects.append(rect)
 

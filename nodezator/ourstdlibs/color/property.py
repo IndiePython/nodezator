@@ -2,7 +2,7 @@
 
 ### local imports
 
-from ourstdlibs.color.conversion import (
+from ...ourstdlibs.color.conversion import (
                                           full_rgb_to_hls,
                                           full_rgb_to_hsv,
                                           full_to_unit_rgba,

@@ -13,47 +13,47 @@ from pygame import Surface
 
 ### local imports
 
-from ourstdlibs.behaviour import empty_function
+from ..ourstdlibs.behaviour import empty_function
 
-from surfsman.draw import (
+from ..surfsman.draw import (
                             draw_checker_pattern,
                             blit_aligned,
                           )
 
-from surfsman.render import render_rect, combine_surfaces
+from ..surfsman.render import render_rect, combine_surfaces
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from imagesman.cache import IMAGE_SURFS_DB
+from ..imagesman.cache import IMAGE_SURFS_DB
 
-from surfsman.icon import render_layered_icon
+from ..surfsman.icon import render_layered_icon
 
-from alphamask.main import AlphaMask
+from ..alphamask.main import AlphaMask
 
-from fontsman.constants import (
+from ..fontsman.constants import (
                           ICON_FONT_PATH,
                           ENC_SANS_BOLD_FONT_PATH,
                         )
 
-from textman.render import render_text
+from ..textman.render import render_text
 
-from colorsman.viewer.main import view_colors
+from ..colorsman.viewer.main import view_colors
 
-from colorsman.editor.main import edit_colors
+from ..colorsman.editor.main import edit_colors
 
-from ourstdlibs.color.custom import (
+from ..ourstdlibs.color.custom import (
                           custom_format_color,
                           validate_custom_color_format,
                         )
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         BLACK, WHITE,
                         COLORBUTTON_BG,
                         TRANSP_COLOR_A,
                         TRANSP_COLOR_B,
                       )
 
-from pointsman2d.create import get_circle_points
+from ..pointsman2d.create import get_circle_points
 
 
 ### constants
@@ -585,7 +585,7 @@ class ColorButton(Object2D):
         ## suitable position
 
         for index, surf in enumerate(color_surfs):
-            
+
             x_offset = start + (index * step)
 
             blit_aligned(
@@ -604,7 +604,7 @@ class ColorButton(Object2D):
             It is required in order to comply with
             protocol used. We retrieve the mouse position
             from its "pos" attribute.
-              
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -698,7 +698,7 @@ class ColorButton(Object2D):
           ]
 
         ):
-            
+
             g.append(
                 Element(
                   'polygon',
@@ -752,7 +752,7 @@ class ColorButton(Object2D):
         no_of_colors = len(colors)
 
         for i, color in enumerate(colors, 1):
-            
+
             ###
             if i == self.no_of_slots \
             and no_of_colors > self.no_of_slots:

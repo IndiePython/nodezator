@@ -9,9 +9,9 @@ from itertools import cycle
 
 ### local imports
 
-from alphamask.main import AlphaMask
+from .....alphamask.main import AlphaMask
 
-from surfsman.draw import draw_linear_gradient
+from .....surfsman.draw import draw_linear_gradient
 
 
 ### mask obtained from an image representing a wave
@@ -78,7 +78,7 @@ def draw_waves(canvas_surf, colors):
     ## instance of the first color
 
     if other_colors:
-        
+
         color_population = []
 
         for color in other_colors:

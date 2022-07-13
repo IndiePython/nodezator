@@ -12,25 +12,25 @@ from xml.etree.ElementTree import Element
 
 ### local imports
 
-from pygameconstants import SCREEN_RECT
+from ...pygameconstants import SCREEN_RECT
 
-from ourstdlibs.behaviour import (
+from ...ourstdlibs.behaviour import (
                             empty_function,
                             empty_oblivious_function,
                           )
 
-from ourstdlibs.dictutils import settings_to_hashable_repr
+from ...ourstdlibs.dictutils import settings_to_hashable_repr
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ...classes2d.single      import Object2D
+from ...classes2d.collections import List2D
 
-from fontsman.constants import (
+from ...fontsman.constants import (
                           ENC_SANS_BOLD_FONT_HEIGHT,
                           ENC_SANS_BOLD_FONT_PATH,
                         )
 
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                         OPTION_MENU_FG,
                         OPTION_MENU_BG,
                         OPTION_MENU_HOVERED_FG,
@@ -41,7 +41,7 @@ from colorsman.colors import (
 
 ## creation operations and objects
 
-from widget.optionmenu.creation import (
+from .creation import (
                                   STYLE_TO_ARROW_SURFS,
                                   get_arrow_surf,
                                   get_scroll_arrow_surfs,
@@ -50,7 +50,7 @@ from widget.optionmenu.creation import (
                                 )
 
 ## class extension
-from widget.optionmenu.op import (
+from .op import (
                             OptionMenuLifetimeOperations
                           )
 
@@ -106,7 +106,7 @@ def isliteral(value):
 ##          'option3' : option3_surf
 ##
 ##      },
-##     
+##
 ##      (
 ##
 ##        'True',            # antialiased
@@ -713,7 +713,7 @@ def build_option_widget(option, role_to_maps, set_method):
 
             although not used, it is required in order to
             comply with protocol used;
-          
+
             check pygame.event module documentation on
             pygame website for more info about this event
             object.

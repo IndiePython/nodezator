@@ -8,53 +8,53 @@ from pygame.display import update, set_caption
 
 ## general widgets and other tools
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from userprefsman.main import USER_PREFS
+from ..userprefsman.main import USER_PREFS
 
-from dialog import (
+from ..dialog import (
               create_and_show_dialog,
               show_dialog_from_key,
             )
 
-from pygameconstants import SCREEN_RECT, blit_on_screen
+from ..pygameconstants import SCREEN_RECT, blit_on_screen
 
-from appinfo import FULL_TITLE, ABBREVIATED_TITLE
+from ..appinfo import FULL_TITLE, ABBREVIATED_TITLE
 
-from ourstdlibs.path      import get_custom_path_repr
-from ourstdlibs.behaviour import empty_function
+from ..ourstdlibs.path      import get_custom_path_repr
+from ..ourstdlibs.behaviour import empty_function
 
-from ourstdlibs.collections.general import CallList
+from ..ourstdlibs.collections.general import CallList
 
-from ourstdlibs.pyl import save_pyl
+from ..ourstdlibs.pyl import save_pyl
 
-from ourstdlibs.path import save_timestamped_backup
+from ..ourstdlibs.path import save_timestamped_backup
 
-from our3rdlibs.userlogger import USER_LOGGER
+from ..our3rdlibs.userlogger import USER_LOGGER
 
-from our3rdlibs.behaviour import set_status_message
+from ..our3rdlibs.behaviour import set_status_message
 
-from logman.main import get_new_logger
+from ..logman.main import get_new_logger
 
-from fileman.main import select_path
+from ..fileman.main import select_path
 
-from recentfile import store_recent_file
+from ..recentfile import store_recent_file
 
-from surfsman.cache import UNHIGHLIGHT_SURF_MAP
+from ..surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
-from surfsman.render import render_rect, render_separator
+from ..surfsman.render import render_rect, render_separator
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from colorsman.colors import GRAPH_BG, WINDOW_BG
+from ..colorsman.colors import GRAPH_BG, WINDOW_BG
 
-from memoryman import free_up_memory
+from ..memoryman import free_up_memory
 
 ## widgets/tools for composition
 
 # related to node editing
 
-from editing.main import EditingAssistant
+from ..editing.main import EditingAssistant
 from graphman.main import GraphManager
 
 from graphman.nodepacksissues import (
@@ -220,7 +220,7 @@ class WindowManager(
                       ("Select new node packs", 'select'),
                       ("Cancel loading file",   'cancel'),
                     )
-                    
+
                     answer = create_and_show_dialog(
                                message,
                                options,
@@ -251,7 +251,7 @@ class WindowManager(
                 ### as if we changed the file, so we save
                 ### its current contents before assigning
                 ### the new node packs
-                
+
                 if (
                      set(current_node_packs)
                   != set(original_node_packs)
@@ -259,7 +259,7 @@ class WindowManager(
 
                     APP_REFS.data['node_packs'] = [
 
-                      str(path) 
+                      str(path)
                       for path in current_node_packs
 
                     ]
@@ -290,7 +290,7 @@ class WindowManager(
                       encoding='utf-8'
                     )
 
-            
+
                 ### try preparing graph manager for
                 ### edition
                 try: APP_REFS.gm.prepare_for_new_session()
@@ -424,7 +424,7 @@ class WindowManager(
         ### assign behaviours to corresponding attributes
 
         for behaviour_name in BEHAVIOUR_NAMES:
-            
+
             behaviour = behaviour_map[behaviour_name]
             setattr(self, behaviour_name, behaviour)
 

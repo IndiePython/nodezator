@@ -6,31 +6,31 @@ from functools import partialmethod
 
 ### local imports
 
-from translation import TRANSLATION_HOLDER as t
+from ..translation import TRANSLATION_HOLDER as t
 
-from pygameconstants import blit_on_screen
+from ..pygameconstants import blit_on_screen
 
-from appinfo import NATIVE_FILE_EXTENSION
+from ..appinfo import NATIVE_FILE_EXTENSION
 
-from ourstdlibs.behaviour import empty_function
+from ..ourstdlibs.behaviour import empty_function
 
-from surfsman.render import render_rect
+from ..surfsman.render import render_rect
 
-from textman.label.main import Label
+from ..textman.label.main import Label
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         NORMAL_PATH_FG, SELECTED_PATH_FG,
                         NORMAL_PATH_BG, SELECTED_PATH_BG,
                       )
 
-from fileman.surfs import (
+from .surfs import (
                      FILE_ICON, FOLDER_ICON, TEXT_ICON,
                      PYTHON_ICON, IMAGE_ICON, FONT_ICON,
                      AUDIO_ICON, VIDEO_ICON, PDF_ICON,
                      NATIVE_FILE_ICON,
                    )
 
-from fileman.constants import (
+from .constants import (
                          FONT_HEIGHT,
                          PATH_OBJ_PARENT_TEXT,
                        )
@@ -243,7 +243,7 @@ class PathObject:
                               max_width = label_max_width,
                               **NORMAL_KWARGS
                             )
-        
+
         self.selected_label = Label(
                                 text      = self.text,
                                 max_width = label_max_width,
@@ -299,11 +299,11 @@ class PathObject:
         ### if path is None, set the drawing behaviour to
         ### an empty function
         if path is None: drawing_behaviour = empty_function
-            
+
         ### otherwise, if path isn't None...
 
         else:
-            
+
             ## update text attribute and text in labels
 
             if (

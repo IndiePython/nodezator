@@ -15,30 +15,30 @@ from pygame.display import update
 
 ### local imports
 
-from pygameconstants import blit_on_screen
+from .....pygameconstants import blit_on_screen
 
-from ourstdlibs.behaviour import (
+from .....ourstdlibs.behaviour import (
                              empty_function,
                              get_oblivious_callable)
 
-from loopman.exception import QuitAppException
+from .....loopman.exception import QuitAppException
 
-from widget.optionmenu.main import OptionMenu
+from .....widget.optionmenu.main import OptionMenu
 
-from classes2d.single import Object2D
+from .....classes2d.single import Object2D
 
-from textman.render    import render_text
-from fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
+from .....textman.render    import render_text
+from .....fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
 
-from colorsman.colors import (
+from .....colorsman.colors import (
                             BUTTON_FG, BUTTON_BG,
                             WINDOW_FG, WINDOW_BG)
 
 
 ## pattern drawing functions
 
-from colorsman.viewer.modes.patterns.waves import draw_waves
-from colorsman.viewer.modes.patterns.particles import(
+from .waves import draw_waves
+from .particles import(
                                                 draw_circles)
 
 
@@ -55,7 +55,7 @@ PATTERN_DRAWING_MAP = {
 
 class PatternsMode:
     """Has operations to draw patterns from given colors."""
-    
+
     def __init__(self):
         """Create support objects for the patterns mode."""
         ### create a "Pattern:" label to indicate the
@@ -195,7 +195,7 @@ class PatternsMode:
         ## and 'close' methods, respectively
 
         if isinstance(result, GeneratorType):
-            
+
             self.update = result.__next__
 
             self.close_generator = result.close
@@ -249,7 +249,7 @@ class PatternsMode:
         Grab and process events from pygame.event.get.
         """
         for event in get_events():
-            
+
             ### raise a specific exception if the user
             ### tries to quit the app
             if event.type == QUIT: raise QuitAppException
@@ -259,7 +259,7 @@ class PatternsMode:
             ### setting the 'running' flag to False
 
             elif event.type == KEYUP:
-                
+
                 if event.key == K_ESCAPE:
                     self.running = False
 
@@ -268,10 +268,10 @@ class PatternsMode:
             ### method
 
             elif event.type == MOUSEBUTTONUP:
-                
+
                 if event.button == 1:
                     self.color_list_on_mouse_release(event)
-    
+
     def patterns_on_mouse_release(self, event):
         """Trigger exiting colors viewer or invoke button.
 
@@ -306,9 +306,9 @@ class PatternsMode:
             ## if a button collides, execute its mouse
             ## release action if it has one, then break out
             ## of the "for loop"
-            
+
             if button.rect.collidepoint(mouse_pos):
-                
+
                 try: method = getattr(
                                 button, 'on_mouse_release')
 

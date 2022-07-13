@@ -20,27 +20,27 @@ from pygame.display import update
 
 ### local imports
 
-from translation import DIALOGS_MAP
+from .translation import DIALOGS_MAP
 
-from pygameconstants import SCREEN_RECT, blit_on_screen
+from .pygameconstants import SCREEN_RECT, blit_on_screen
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from .classes2d.single      import Object2D
+from .classes2d.collections import List2D
 
-from loopman.main import LoopHolder
+from .loopman.main import LoopHolder
 
-from surfsman.draw   import blit_aligned, draw_border
-from surfsman.render import render_rect
-from surfsman.icon   import render_layered_icon
+from .surfsman.draw   import blit_aligned, draw_border
+from .surfsman.render import render_rect
+from .surfsman.icon   import render_layered_icon
 
-from textman.cache  import CachedTextObject
-from textman.render import render_text
+from .textman.cache  import CachedTextObject
+from .textman.render import render_text
 
-from fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
+from .fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
 
-from surfsman.cache import UNHIGHLIGHT_SURF_MAP
+from .surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
-from colorsman.colors import (
+from .colorsman.colors import (
 
   CONTRAST_LAYER_COLOR,
 
@@ -110,7 +110,7 @@ ICON_HEIGHT = 27
 
 ICON_MAP = {
 
-  level_name : 
+  level_name :
 
   render_layered_icon(
 
@@ -193,7 +193,7 @@ ICON_OBJECT = Object2D.from_surface(
 
 class DialogManager(Object2D, LoopHolder):
     """Prints a message box like in tkinter.
-    
+
     This class is instantiated only once in the end of the
     module and its main method is aliased to be used
     wherever needed in the entire package.
@@ -340,7 +340,7 @@ class DialogManager(Object2D, LoopHolder):
         ### to increase constrast between the dialog
         ### and whatever is behind it (making what's behind
         ### appear unhighlighted)
-        
+
         ## if an object was received, draw it
         if unhighlighter_obj is not None:
             unhighlighter_obj.draw()
@@ -425,7 +425,7 @@ class DialogManager(Object2D, LoopHolder):
           button_offset_by,
         ):
         """Create buttons for the dialog.
-        
+
         Parameters
         ==========
 
@@ -581,7 +581,7 @@ class DialogManager(Object2D, LoopHolder):
                    self.dismissable
                and event.type == KEYUP
             ):
-                
+
                 if event.key == K_ESCAPE:
                     self.exit_dialog()
 
@@ -668,7 +668,7 @@ class DialogManager(Object2D, LoopHolder):
                 break
 
         else:
-            
+
             if (
 
                   self.dismissable

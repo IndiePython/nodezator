@@ -17,34 +17,34 @@ from pygame.math import Vector2
 
 ### local imports
 
-from surfsman.render import render_rect
+from ...surfsman.render import render_rect
 
-from fontsman.constants import (
+from ...fontsman.constants import (
                           ENC_SANS_BOLD_FONT_HEIGHT,
                           ENC_SANS_BOLD_FONT_PATH,
                         )
 
-from ourstdlibs.behaviour import (
+from ...ourstdlibs.behaviour import (
                             empty_function,
                             return_untouched,
                           )
 
-from ourstdlibs.color.creation import get_contrasting_bw
+from ...ourstdlibs.color.creation import get_contrasting_bw
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                         INT_FLOAT_ENTRY_FG,
                         INT_FLOAT_ENTRY_BG,
                       )
 
-from textman.cache import TEXT_SURFS_DB
+from ...textman.cache import TEXT_SURFS_DB
 
 ## class for composition
-from textman.entryedition.cursor import EntryCursor
+from ...textman.entryedition.cursor import EntryCursor
 
 ## class extensions
 
-from widget.intfloatentry.op    import IntFloatOperations
-from widget.intfloatentry.modes import IntFloatModes
+from .op    import IntFloatOperations
+from .modes import IntFloatModes
 
 
 ### utility function
@@ -312,7 +312,7 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
                       self.num_classes
                     )
                   )
-        
+
         ## to guarantee the proper functioning of the
         ## feature, the arguments must always be positive
 
@@ -401,7 +401,7 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
                       self.num_classes
                     )
                   )
-        
+
         ## to guarantee the proper functioning of the
         ## feature, the arguments must always be positive
 

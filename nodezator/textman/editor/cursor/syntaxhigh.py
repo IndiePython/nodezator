@@ -6,21 +6,21 @@ from pygame.time import get_ticks as get_pygame_msecs
 
 ### local imports
 
-from ourstdlibs.behaviour import empty_function
+from ....ourstdlibs.behaviour import empty_function
 
-from ourstdlibs.color.creation import get_contrasting_bw
+from ....ourstdlibs.color.creation import get_contrasting_bw
 
-from syntaxman.exception import SyntaxMappingError
+from ....syntaxman.exception import SyntaxMappingError
 
-from syntaxman.utils import (
+from ....syntaxman.utils import (
                        AVAILABLE_SYNTAXES,
                        SYNTAX_TO_MAPPING_FUNCTION,
                        get_ready_theme,
                      )
 
-from fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
+from ....fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
 
-from textman.editor.constants import (
+from ..constants import (
                                 SANS_FONT_SETTINGS,
                                 MONO_FONT_SETTINGS,
                               )
@@ -36,7 +36,7 @@ MSECS_TO_UPDATE_SYNTAX = 500
 
 class SyntaxHighlighting:
     """Operations/setups for syntax highlighting support."""
-    
+
     def set_syntax_highlighting(
           self, font_path, syntax_highlighting
         ):
@@ -88,7 +88,7 @@ class SyntaxHighlighting:
         ### if a valid syntax is requested...
 
         if syntax_highlighting in AVAILABLE_SYNTAXES:
-            
+
             ## define the default settings depending on the
             ## font style
 
@@ -208,7 +208,7 @@ class SyntaxHighlighting:
         ### with the current background color used
         self.cursor_color = \
             get_contrasting_bw(self.background_color)
-            
+
     def check_syntax_highlighting(self):
         """Trigger syntax highlighting update, if suitable."""
         ### if the last time when an edition was performed
@@ -217,7 +217,7 @@ class SyntaxHighlighting:
         ### point in updating the syntax highlighting data;
         ### therefore, we cancel the operation by returning
         if not self.last_edition_msecs: return
-            
+
         ### otherwise, there were changes, so we check
         ### wether the pre-defined delay between the last
         ### change and the present time has elapsed;
@@ -264,7 +264,7 @@ class SyntaxHighlighting:
         except SyntaxMappingError:
 
             self.highlight_data = {
-              
+
               ## store a dict item where the line index is
               ## the key and another dict is the value
 
@@ -279,7 +279,7 @@ class SyntaxHighlighting:
                 (0, len(line)): 'normal'
 
               }
-              
+
               ## for each line_index and respective line
               for line_index, line in enumerate(self.lines)
 
@@ -341,7 +341,7 @@ class SyntaxHighlighting:
               (including_start, excluding_end),
               category_name
             ) in interval_data.items():
-                
+
                 # retrieve the text settings for the
                 # category
                 category_text_settings = \

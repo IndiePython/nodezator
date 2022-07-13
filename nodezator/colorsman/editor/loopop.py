@@ -20,15 +20,15 @@ from pygame.display import update
 
 ### local imports
 
-from pygameconstants import SCREEN_RECT, blit_on_screen
+from ...pygameconstants import SCREEN_RECT, blit_on_screen
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from loopman.main import LoopHolder
+from ...loopman.main import LoopHolder
 
-from surfsman.cache import UNHIGHLIGHT_SURF_MAP
+from ...surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
-from ourstdlibs.color.custom import custom_format_color
+from ...ourstdlibs.color.custom import custom_format_color
 
 
 class LoopOperations(Object2D, LoopHolder):
@@ -52,7 +52,7 @@ class LoopOperations(Object2D, LoopHolder):
         provided by the user.
 
         The values provided by the user for those parameters
-        are relevant, though. Such actual values received 
+        are relevant, though. Such actual values received
         are used when returning the value back at the end
         of the editing session, if the user doesn't cancel
         the editing session.
@@ -232,7 +232,7 @@ class LoopOperations(Object2D, LoopHolder):
             ### pressed
 
             elif event.type == KEYDOWN:
-                
+
                 if event.key in (K_LEFT, K_a):
                     self.colors_panel.go_left()
 
@@ -269,7 +269,7 @@ class LoopOperations(Object2D, LoopHolder):
 
             required in order to comply with mouse
             action protocol;
-              
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object;
@@ -302,7 +302,7 @@ class LoopOperations(Object2D, LoopHolder):
                 else: method(event)
 
                 ## regardless of whether or not the object
-                ## had an operation retrieved and executed 
+                ## had an operation retrieved and executed
                 ## in the last clauses, break out of the
                 ## "for loop"
                 break

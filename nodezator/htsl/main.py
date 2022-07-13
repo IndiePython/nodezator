@@ -43,27 +43,27 @@ from pygame.display import update
 
 ### local imports
 
-from pygameconstants import SCREEN_RECT, blit_on_screen
+from ..pygameconstants import SCREEN_RECT, blit_on_screen
 
-from translation import APP_WIDE_WEB_DIR
+from ..translation import APP_WIDE_WEB_DIR
 
-from ourstdlibs.meta import initialize_bases
+from ..ourstdlibs.meta import initialize_bases
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from fontsman.constants import ENC_SANS_BOLD_FONT_PATH
+from ..fontsman.constants import ENC_SANS_BOLD_FONT_PATH
 
-from textman.label.main import Label
+from ..textman.label.main import Label
 
-from surfsman.icon import render_layered_icon
+from ..surfsman.icon import render_layered_icon
 
-from loopman.main import LoopHolder
+from ..loopman.main import LoopHolder
 
-from surfsman.render import render_rect
+from ..surfsman.render import render_rect
 
-from surfsman.cache import UNHIGHLIGHT_SURF_MAP
+from ..surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         HTSL_BROWSER_BG,
                         HTSL_CANVAS_BG,
                         HTSL_DOCUMENT_TITLE_TEXT_FG,
@@ -71,7 +71,7 @@ from colorsman.colors import (
                       )
 
 ## extension class
-from htsl.prep import Preparation
+from .prep import Preparation
 
 
 ### constants
@@ -101,7 +101,7 @@ class HTSLBrowser(Object2D, Preparation, LoopHolder):
     HTSL means "HyperText as Surfaces" markup Language,
     which is just a xml file used to describe web-like
     pages to be rendered as pygame surfaces.
-    
+
     This class is instantiated only once in the end of the
     module and its main method is aliased to be used
     wherever needed in the entire package.
@@ -226,7 +226,7 @@ class HTSLBrowser(Object2D, Preparation, LoopHolder):
         self.show_htsl_page()
 
     def show_htsl_page(self, optional_id=''):
-        
+
         ### define whether horizontal and vertical
         ### scrolling are enabled
 
@@ -259,7 +259,7 @@ class HTSLBrowser(Object2D, Preparation, LoopHolder):
         if optional_id:
 
             for obj in self.objs:
-                
+
                 obj_id = getattr(obj, 'id', '')
 
                 if optional_id == obj_id:
@@ -299,7 +299,7 @@ class HTSLBrowser(Object2D, Preparation, LoopHolder):
         start = path_string.find('.pysite')
 
         if start != -1:
-            
+
             pysite = self.pysite = path_string[:start+7]
 
             path_string = path_string[start+8:] or 'index.htsl'
@@ -337,7 +337,7 @@ class HTSLBrowser(Object2D, Preparation, LoopHolder):
             if event.type == QUIT: self.quit()
 
             elif event.type == KEYUP:
-                
+
                 if event.key == K_ESCAPE:
                     self.exit_loop()
 
@@ -397,9 +397,9 @@ class HTSLBrowser(Object2D, Preparation, LoopHolder):
         ### iterate over objects
 
         for obj in self.objs:
-            
+
             if obj.rect.collidepoint(mouse_pos):
-                
+
                 try: href = self.href
 
                 except AttributeError: pass
@@ -408,15 +408,15 @@ class HTSLBrowser(Object2D, Preparation, LoopHolder):
 
                     self.open_link(href)
                     break
-            
+
                 try: anchors = obj.anchor_list
 
                 except AttributeError: pass
 
                 else:
-                    
+
                     for anchor in anchors:
-                        
+
                         if anchor.rect.collidepoint(mouse_pos):
 
                             self.open_link(anchor.href)
@@ -454,14 +454,14 @@ class HTSLBrowser(Object2D, Preparation, LoopHolder):
             self.draw_once()
 
     def move_objs(self, x, y):
-        
+
         objs_rect = self.objs.rect.copy()
         content_area = self.content_area_obj.rect
 
         if x and self.horizontal_scrolling_enabled:
-            
+
             if x > 0:
-                
+
                 max_left = content_area.left
                 resulting_left = objs_rect.move(x, 0).left
 
@@ -482,7 +482,7 @@ class HTSLBrowser(Object2D, Preparation, LoopHolder):
         if y and self.vertical_scrolling_enabled:
 
             if y > 0:
-                
+
                 max_top = content_area.top
                 resulting_top = objs_rect.move(0, y).top
 
@@ -530,7 +530,7 @@ class HTSLBrowser(Object2D, Preparation, LoopHolder):
         for obj in self.objs:
 
             if obj.rect.colliderect(content_area):
-                
+
                 obj.draw_relative(content_area_obj)
 
         ###

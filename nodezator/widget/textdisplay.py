@@ -13,41 +13,41 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from ourstdlibs.behaviour import empty_function
+from ..ourstdlibs.behaviour import empty_function
 
-from ourstdlibs.stringutils import VALIDATION_COMMAND_MAP
+from ..ourstdlibs.stringutils import VALIDATION_COMMAND_MAP
 
-from surfsman.draw   import blit_aligned, draw_depth_finish
-from surfsman.render import render_rect, combine_surfaces
-from surfsman.icon   import render_layered_icon
+from ..surfsman.draw   import blit_aligned, draw_depth_finish
+from ..surfsman.render import render_rect, combine_surfaces
+from ..surfsman.icon   import render_layered_icon
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from textman.text   import render_highlighted_line
-from textman.render import (
+from ..textman.text   import render_highlighted_line
+from ..textman.render import (
                       fit_text,
                       get_text_size,
                       render_text,
                     )
 
-from textman.viewer.main import view_text
-from textman.editor.main import edit_text
+from ..textman.viewer.main import view_text
+from ..textman.editor.main import edit_text
 
-from fontsman.constants import (
+from ..fontsman.constants import (
                           ENC_SANS_BOLD_FONT_HEIGHT,
                           ENC_SANS_BOLD_FONT_PATH,
                           FIRA_MONO_BOLD_FONT_PATH,
                         )
 
-from syntaxman.utils import (
+from ..syntaxman.utils import (
                        AVAILABLE_SYNTAXES,
                        SYNTAX_TO_MAPPING_FUNCTION,
                        get_ready_theme,
                      )
 
-from syntaxman.exception import SyntaxMappingError
+from ..syntaxman.exception import SyntaxMappingError
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         BLACK,
                         WHITE,
                         TEXT_DISPLAY_BG,
@@ -185,10 +185,10 @@ class TextDisplay(Object2D):
         validation_command (None, string or callable)
             if it is None, the instance is set up so that
             no validation is done.
-            
+
             If it is a string, it must be a key in a
             preset map used to grab a valid command.
-            
+
             If it is a callable, it must accept a single
             argument and its return value is used to
             determine whether validation passed (when the
@@ -384,7 +384,7 @@ class TextDisplay(Object2D):
             it is required in order to comply with the
             mouse action protocol used; we retrieve the
             mouse position from its "pos" attribute;
-                  
+
             check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -488,7 +488,7 @@ class TextDisplay(Object2D):
         syntax_highlighting = self.syntax_highlighting
 
         if show_line_number:
-            
+
             lineno_width, _ = get_text_size(
               '01',
               font_height=font_height,
@@ -510,14 +510,14 @@ class TextDisplay(Object2D):
 
 
         if syntax_highlighting:
-            
+
             try: highlight_data = \
                         self.get_syntax_map(self.value)
 
             except SyntaxMappingError:
 
                 highlight_data = {
-                  
+
                   ## store a dict item where the line index
                   ## is the key and another dict is the value
 
@@ -532,7 +532,7 @@ class TextDisplay(Object2D):
                     (0, len(line_text)): 'normal'
 
                   }
-                  
+
                   ## for each line_index and respective line
                   for line_index, line_text \
                   in enumerate(lines)
@@ -595,7 +595,7 @@ class TextDisplay(Object2D):
 
             for line_number, line_text \
             in enumerate(lines, 1):
-                
+
                 if line_number > no_of_visible_lines: break
 
                 surf = render_text(
@@ -621,7 +621,7 @@ class TextDisplay(Object2D):
 
             for line_number, line_text \
             in enumerate(lines, 1):
-                
+
                 surf = render_text(
                          text=str(line_number).rjust(2, '0'),
                          font_height=font_height,
@@ -781,7 +781,7 @@ class TextDisplay(Object2D):
               },
             )
           )
-        
+
         ###
 
         x, y = rect.topleft
@@ -967,7 +967,7 @@ class TextDisplay(Object2D):
         syntax_highlighting = self.syntax_highlighting
 
         if show_line_number:
-            
+
             max_lineno_text = \
                 str(len(self.value.splitlines))
             lineno_digits = len(max_lineno_text)
@@ -1018,14 +1018,14 @@ class TextDisplay(Object2D):
         lines = self.value.splitlines()[:no_of_visible_lines]
 
         if syntax_highlighting:
-            
+
             try: highlight_data = \
                         self.get_syntax_map(self.value)
 
             except SyntaxMappingError:
 
                 highlight_data = {
-                  
+
                   ## store a dict item where the line index
                   ## is the key and another dict is the value
 
@@ -1040,7 +1040,7 @@ class TextDisplay(Object2D):
                     (0, len(line_text)): 'normal'
 
                   }
-                  
+
                   ## for each line_index and respective line
                   for line_index, line_text \
                   in enumerate(lines)
@@ -1199,7 +1199,7 @@ class TextDisplay(Object2D):
             in enumerate(lines, 1):
 
                 y += font_height
-                
+
                 if line_number > no_of_visible_lines: break
 
                 line_text = fit_text(
@@ -1242,7 +1242,7 @@ class TextDisplay(Object2D):
 
             for line_number, line_text \
             in enumerate(lines, 1):
-                
+
                 y += font_height
 
                 text_element = Element(

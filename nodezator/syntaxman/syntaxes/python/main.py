@@ -21,17 +21,17 @@ from tokenize import (
 
 ### local imports
 
-from ourstdlibs.mathutils import get_remaining_intervals
+from ....ourstdlibs.mathutils import get_remaining_intervals
 
-from ourstdlibs.exceptionutils import \
+from ....ourstdlibs.exceptionutils import \
                               new_raiser_from_existing_deco
 
-from syntaxman.exception import SyntaxMappingError
+from ...exception import SyntaxMappingError
 
-from syntaxman.syntaxes.python.namemap import \
+from ..python.namemap import \
                                          HIGHLIGHT_NAME_MAP
 
-from syntaxman.syntaxes.python.utils import (
+from ..python.utils import (
                                is_triple_quotes_string,
                                has_def_or_class_statement,
                                interval_of_next_def_word,
@@ -93,7 +93,7 @@ def get_python_syntax_map(source_text):
     >>> # "python -m doctest" can't find this function
     >>> # anymore, so this test isn't performed; think
     >>> # about solutions for this
-    
+
     >>> text = "condition = True"
     >>> expected_output = {
     ...   0: {
@@ -130,7 +130,7 @@ def get_python_syntax_map(source_text):
                      source_text.encode('utf-8')
                    ).readline
                  )
-    
+
     ### also list all lines in the source
     source_lines = source_text.splitlines()
 
@@ -216,7 +216,7 @@ def get_python_syntax_map(source_text):
                 interval_category_pairs = \
                     get_comment_offset_intervals(
                                token_line, interval[0])
-                
+
                 ## map the intervals to their respective
                 ## category names
 
@@ -232,7 +232,7 @@ def get_python_syntax_map(source_text):
             ## according to several rules...
 
             elif token_type == NAME:
-                
+
                 ## if the name is present in a special map,
                 ## grab the respective value as the
                 ## category of that name and map the interval
@@ -282,7 +282,7 @@ def get_python_syntax_map(source_text):
             ## "for loop" we ignored all other operators)
 
             elif token_type == OP:
-                
+
                 ## if the '@' represents the usage of
                 ## a decorator over a class, method or
                 ## function definition (regardless of
@@ -310,7 +310,7 @@ def get_python_syntax_map(source_text):
                 # category names
 
                 if decorator_name_interval:
-                    
+
                     (
                       line_index_to_data
                       [line_index][interval]
@@ -361,7 +361,7 @@ def get_python_syntax_map(source_text):
                 for line_index in range(
                   first_line_index, last_line_index + 1
                 ):
-                    
+
                     ## grab the line text
                     line_text = source_lines[line_index]
 
@@ -410,7 +410,7 @@ def get_python_syntax_map(source_text):
     ### of text contain normal text
 
     for line_index, line_text in enumerate(source_lines):
-        
+
         ## ignore line if it is empty
         if not line_text: continue
 

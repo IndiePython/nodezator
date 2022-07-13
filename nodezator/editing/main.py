@@ -2,22 +2,22 @@
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from ourstdlibs.meta import initialize_bases
+from ..ourstdlibs.meta import initialize_bases
 
 ## class extensions
 
-from editing.gridlogic   import GridHandling
-from editing.objinsert   import ObjectInsertionRemoval
-from editing.selection   import SelectionHandling
-from editing.reposition  import Repositioning
-from editing.export.main import Exporting
-from editing.data        import DataHandling
+from .gridlogic   import GridHandling
+from .objinsert   import ObjectInsertionRemoval
+from .selection   import SelectionHandling
+from .reposition  import Repositioning
+from .export.main import Exporting
+from .data        import DataHandling
 
 ## more operations
 
-from editing.categorycolors import (
+from .categorycolors import (
                               rebuild_category_color_form,
                               change_category_colors,
                             )

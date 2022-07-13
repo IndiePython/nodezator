@@ -3,6 +3,8 @@
 
 from random import choice
 
+
+
 from colorsys import (
                      rgb_to_hls,
                      hls_to_rgb,
@@ -12,8 +14,9 @@ from colorsys import (
                      yiq_to_rgb,
                      )
 
+### local
 
-from ourstdlibs.color.constants import (
+from ..color.constants import (
                                    HLS_FACTORS,
                                    HSV_FACTORS,
                                    HLS_NAMES,
@@ -166,7 +169,7 @@ def random_color_from_existing(color, property_to_randomize):
     ### randomize is 'luma' (the 'Y' of the YIQ model)
 
     elif property_to_randomize == 'luma':
-        
+
         ## convert from unit rgb to yiq values
         y, i, q = rgb_to_yiq(*unit_rgb)
 

@@ -10,7 +10,7 @@ from traceback import format_exc
 
 
 ### local import
-from ourstdlibs.timeutils import get_friendly_time
+from ..ourstdlibs.timeutils import get_friendly_time
 
 
 ### constants

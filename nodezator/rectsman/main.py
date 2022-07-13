@@ -24,12 +24,12 @@ from pygame import Rect
 
 ### local imports (class extensions)
 
-from rectsman.special   import SpecialMethods
-from rectsman.spatial   import SpatialProperties
-from rectsman.sizepos   import SizePositionMethods
-from rectsman.singlepos import PositionSingleRectsMethods
+from .special   import SpecialMethods
+from .spatial   import SpatialProperties
+from .sizepos   import SizePositionMethods
+from .singlepos import PositionSingleRectsMethods
 
-from rectsman.cluster import get_clusters
+from .cluster import get_clusters
 
 
 ### "rect" property definition (getter and setter)
@@ -85,12 +85,12 @@ class RectsManager(
     Check the "doctests" directory to find extensive
     documentation and doctests regarding the usage of
     this class.
-    
+
     Such documentation also has a discussion regarding a
     future/possible redesign, which keeps the pygame.Rect
     API compatibility but has even more flexible behaviour
     and also new ones beyond the pygame.Rect API.
-    
+
     For now, there is only two methods provided which are
     beyond the pygame.Rect API, which is the '__iter__'
     method from the 'special.py' module (even though the
@@ -181,7 +181,7 @@ class RectsManager(
         }
 
         ### suspend execution by yielding;
-        ### 
+        ###
         ### exceptions occurring in this step are
         ### purposefully not caught;
         yield
@@ -317,14 +317,14 @@ class RectsManager(
         the elements to be tested for collision. The second
         argument is optional and must be a boolean or integer
         indicating True or False.
-        
+
         Passing False or omitting the argument altogether,
         makes it so the keys in the dict are used for
         collision testing (they'll probably be tuples, since
         keys in dictionaries must be hashable, which lists
         and pygame.Rect instances are not, they can only be
         used as values).
-        
+
         If you pass True instead, the opposite happens, that
         is, the values of the dict are used for collision
         testing.
@@ -344,14 +344,14 @@ class RectsManager(
         the elements to be tested for collision. The second
         argument is optional and must be a boolean or integer
         indicating True or False.
-        
+
         Passing False or omitting the argument altogether,
         makes it so the keys in the dict are used for
         collision testing (they'll probably be tuples, since
         keys in dictionaries must be hashable, which lists
         and pygame.Rect instances are not, they can only be
         used as values).
-        
+
         If you pass True instead, the opposite happens, that
         is, the values of the dict are used for collision
         testing.

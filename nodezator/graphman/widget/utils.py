@@ -11,39 +11,39 @@ from ast import literal_eval
 
 ## widgets
 
-from widget.stringentry import StringEntry
+from ...widget.stringentry import StringEntry
 
-from widget.literalentry import LiteralEntry
+from ...widget.literalentry import LiteralEntry
 
-from widget.intfloatentry.main import (
+from ...widget.intfloatentry.main import (
                                  ALLOWED_NUM_CLASSES,
                                  IntFloatEntry,
                                )
 
-from widget.textdisplay    import TextDisplay
-from widget.literaldisplay import LiteralDisplay
+from ...widget.textdisplay    import TextDisplay
+from ...widget.literaldisplay import LiteralDisplay
 
-from widget.checkbutton   import CheckButton
-from widget.colorbutton   import ColorButton
-from widget.sortingbutton import SortingButton
-from widget.defaultholder import DefaultHolder
+from ...widget.checkbutton   import CheckButton
+from ...widget.colorbutton   import ColorButton
+from ...widget.sortingbutton import SortingButton
+from ...widget.defaultholder import DefaultHolder
 
-from widget.optionmenu.main import OptionMenu
-from widget.optiontray.main import OptionTray
+from ...widget.optionmenu.main import OptionMenu
+from ...widget.optiontray.main import OptionTray
 
-from widget.pathpreview.path  import PathPreview
-from widget.pathpreview.text  import TextPreview
-from widget.pathpreview.image import ImagePreview
-from widget.pathpreview.audio import AudioPreview
-from widget.pathpreview.video import VideoPreview
-from widget.pathpreview.font  import FontPreview
+from ...widget.pathpreview.path  import PathPreview
+from ...widget.pathpreview.text  import TextPreview
+from ...widget.pathpreview.image import ImagePreview
+from ...widget.pathpreview.audio import AudioPreview
+from ...widget.pathpreview.video import VideoPreview
+from ...widget.pathpreview.font  import FontPreview
 
 
 
 ### XXX implement remaining widgets
-### 
+###
 ### from our3rdlibs.range import Range
-### 
+###
 ### from our3rdlibs.calenderclock import CalendarClock
 ### (CalendarClock has the functionality of all the
 ### date/time related widgets listed below (which weren't
@@ -51,7 +51,7 @@ from widget.pathpreview.font  import FontPreview
 ### CalendarClock should be used isntead, once created) in
 ### this comment, including deltas; there is a design sketch
 ### on paper on 2020-02-14)
-### 
+###
 ### from our3rdlibs.date      import IsoDate
 ### from our3rdlibs.time      import IsoTime
 ### from our3rdlibs.datetime  import IsoDateTime
@@ -137,7 +137,7 @@ def get_widget_metadata(annotation, default):
 
     if isinstance(annotation, dict) \
     and annotation.get('widget_name'):
-        
+
         ## alias the annotation as metadata
         metadata = annotation
 
@@ -181,7 +181,7 @@ def get_widget_metadata(annotation, default):
     ### doing so
 
     if widget_name:
-        
+
         ## handle int float entry specific requirements
         ## if widget name matches;
         ##

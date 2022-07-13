@@ -6,18 +6,18 @@ from pygame import Rect
 
 ### local imports
 
-from classes2d.collections import List2D
+from ...classes2d.collections import List2D
 
-from syntaxman.utils import (
+from ...syntaxman.utils import (
                        AVAILABLE_SYNTAXES,
                        get_ready_theme,
                      )
 
-from fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
+from ...fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
 
-from textman.cache import CachedTextObject
+from ..cache import CachedTextObject
 
-from textman.editor.constants import (
+from ..editor.constants import (
                                 SANS_FONT_SETTINGS,
                                 MONO_FONT_SETTINGS,
                               )
@@ -63,7 +63,7 @@ class Line(List2D):
 
     def get_all_rects(self):
         """Return rects from this line.
-        
+
         This includes the line rect plus the rects of each
         item of this list.
 
@@ -181,7 +181,7 @@ class Line(List2D):
             the instantiated objects.
         text (string)
             characters to be inserted in the line.
-        
+
         Rearrange positions at the end.
         """
         for next_index, char in enumerate(text, start=index):

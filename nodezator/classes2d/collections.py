@@ -10,12 +10,12 @@ from pygame.math import Vector2
 
 ### local imports
 
-from pygameconstants import (
+from ..pygameconstants import (
                        blit_on_screen,
                        SCREEN_RECT,
                      )
 
-from rectsman.main import (
+from ..rectsman.main import (
                      rect_property,
                      RectsManager,
                    )
@@ -52,7 +52,7 @@ class Collection2D:
 
     def get_colliding(self, rect):
         """Return iterator of objects colliding w/ rect.
-        
+
         rect (instance of pygame.Rect)
         """
         return (
@@ -98,7 +98,7 @@ class Collection2D:
         ### the rects in the cluster
 
         for cluster in self.rect.get_clusters(*inflation):
-            
+
             yield [
                     rect_id_to_obj[id(rect)]
                     for rect in cluster
@@ -132,7 +132,7 @@ class Collection2D:
             mouse interaction protocol used; here we
             use it to retrieve the position of the
             mouse when the first button was released.
-              
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.

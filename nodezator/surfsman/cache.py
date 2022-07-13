@@ -10,24 +10,24 @@ from pygame import Surface
 
 ### local imports
 
-from pygameconstants import (
+from ..pygameconstants import (
                        SCREEN,
                        SCREEN_RECT,
                        blit_on_screen,
                      )
 
-from ourstdlibs.collections.general import FactoryDict
+from ..ourstdlibs.collections.general import FactoryDict
 
-from surfsman.render import render_rect
 
-from surfsman.draw import draw_not_found_icon
-
-from colorsman.colors import (
+from ..colorsman.colors import (
                         CONTRAST_LAYER_COLOR,
                         IMAGE_NOT_FOUND_FG,
                         IMAGE_NOT_FOUND_BG,
                       )
 
+from .render import render_rect
+
+from .draw import draw_not_found_icon
 
 ### empty surface
 EMPTY_SURF = Surface((0, 0)).convert()

@@ -6,9 +6,9 @@ from pygame import Rect
 
 ### local imports
 
-from classes2d.collections import List2D
+from ...classes2d.collections import List2D
 
-from textman.cache import CachedTextObject
+from ..cache import CachedTextObject
 
 
 class EntryLine(List2D):
@@ -48,7 +48,7 @@ class EntryLine(List2D):
 
     def get_all_rects(self):
         """Return rects composing this line.
-        
+
         This includes the line rect plus the rects of each
         text object in this list.
 

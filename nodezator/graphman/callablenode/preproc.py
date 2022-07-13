@@ -11,16 +11,16 @@ from inspect import Parameter
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from graphman.presets import (
+from ...graphman.presets import (
                         PARAM_ANNOTATION_PRESET_MAP,
                         OUTPUT_ANNOTATION_PRESET_MAP,
                       )
 
-from graphman.widget.utils import get_widget_metadata
+from ...graphman.widget.utils import get_widget_metadata
 
-from graphman.validation.main import (
+from ...graphman.validation.main import (
                         check_return_annotation_mini_lang,
                       )
 
@@ -266,7 +266,7 @@ class Preprocessing:
             ### list's items is a dictionary with
             ### metadata for an output;
             outputs_metadata = return_annotation
-            
+
             ### populate the ordered output with the
             ### names (as keys) and types (as values)
             ### in the provided order

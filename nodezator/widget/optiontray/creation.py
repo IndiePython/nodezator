@@ -13,15 +13,15 @@ from pygame.draw import line as draw_line
 
 ### local imports
 
-from surfsman.draw   import blit_aligned, draw_border
-from surfsman.render import render_rect
+from ...surfsman.draw   import blit_aligned, draw_border
+from ...surfsman.render import render_rect
 
-from classes2d.single      import Object2D
-from classes2d.collections import Iterable2D
+from ...classes2d.single      import Object2D
+from ...classes2d.collections import Iterable2D
 
-from textman.render import render_text
+from ...textman.render import render_text
 
-from colorsman.colors import OPTION_TRAY_OPTION_SEPARATOR
+from ...colorsman.colors import OPTION_TRAY_OPTION_SEPARATOR
 
 
 ### class definition
@@ -113,7 +113,7 @@ class OptionTrayCreationOperations:
         ## one being iterated as the selected one
 
         for selected_option in self.options:
-            
+
             ## create copy of base surface
             base_copy = base_surf.copy()
 
@@ -122,7 +122,7 @@ class OptionTrayCreationOperations:
             ## state
 
             for option in self.options:
-                
+
                 ## obtain a text object with a
                 ## surface for that option;
                 ##

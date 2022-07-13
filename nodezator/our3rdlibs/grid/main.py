@@ -8,8 +8,8 @@ from pygame.math import Vector2
 
 ### local imports
 
-from pygameconstants import SCREEN_RECT
-from ourstdlibs.mathutils import get_reaching_multiple
+from ...pygameconstants import SCREEN_RECT
+from ...ourstdlibs.mathutils import get_reaching_multiple
 
 
 def enforce_multiple(unit_rect, area_rect):
@@ -137,7 +137,7 @@ def generate_grid_lines(
     if separate_orientation: return horiz_lines, vert_lines
 
     ### otherwise, return a concatenated single list
-    else: return horiz_lines + vert_lines 
+    else: return horiz_lines + vert_lines
 
 def move_grid_lines_along_axis(
     lines, axis_name, delta, unit_rect, area_rect):
@@ -163,7 +163,7 @@ def move_grid_lines_along_axis(
     moved by the exact amount, but rather by the remainder
     of such amount in relation to the respective unit rect
     dimension (width for x axis and height for y axis).
-    
+
     This is because lines which go out of the grid area
     are 'warped' to the opposite side of the grid area as to
     appear that the grid is moving indefinitely, thus
@@ -183,7 +183,7 @@ def move_grid_lines_along_axis(
     5, 50 or 500 units (try using the rotate method of
     the deque), the integer 1 always end up in the
     same position.
-    
+
     Also try rotating it by 1 unit and then by 6 units.
     It always end up only "walking" one position, right?
     Thus, in the end, if you use the remainder of the

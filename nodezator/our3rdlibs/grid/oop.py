@@ -8,12 +8,12 @@ from pygame.draw import line as draw_line
 
 ### local imports
 
-from pygameconstants import (
+from ...pygameconstants import (
                        SCREEN,
                        SCREEN_RECT,
                      )
 
-from our3rdlibs.grid.main import (
+from ...our3rdlibs.grid.main import (
                             enforce_multiple,
                             generate_grid_lines,
                             move_grid_lines_along_axis,
@@ -53,7 +53,7 @@ class ScrollableGrid(object):
             Width of grid lines in pixels.
         color
             3-tuple of integers representing red, green and
-            blue values respectively, from 0 to 255. List or 
+            blue values respectively, from 0 to 255. List or
             pygame.Color instance are also allowed.
         unit_rect
             pygame.Rect instance representing an unit in the

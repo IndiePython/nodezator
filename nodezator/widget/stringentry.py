@@ -37,37 +37,37 @@ from pygame.math import Vector2
 
 ### local imports
 
-from ourstdlibs.behaviour import (
+from ..ourstdlibs.behaviour import (
                             empty_function,
                             return_untouched,
                           )
 
-from ourstdlibs.stringutils import VALIDATION_COMMAND_MAP
+from ..ourstdlibs.stringutils import VALIDATION_COMMAND_MAP
 
-from ourstdlibs.color.creation import get_contrasting_bw
+from ..ourstdlibs.color.creation import get_contrasting_bw
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from surfsman.render import render_rect
+from ..surfsman.render import render_rect
 
-from fontsman.constants import (
+from ..fontsman.constants import (
                           ENC_SANS_BOLD_FONT_HEIGHT,
                           ENC_SANS_BOLD_FONT_PATH,
                         )
 
-from textman.editor.main import edit_text
+from ..textman.editor.main import edit_text
 
-from loopman.exception import (
+from ..loopman.exception import (
                          QuitAppException,
                          SwitchLoopException,
                        )
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         STRING_ENTRY_FG,
                         STRING_ENTRY_BG,
                       )
 
-from textman.entryedition.cursor import EntryCursor
+from ..textman.entryedition.cursor import EntryCursor
 
 
 class StringEntry(Object2D):
@@ -83,7 +83,7 @@ class StringEntry(Object2D):
     multi-line editing by pressing Ctrl-T.
 
     For instance, check this function call:
-        
+
         function(**{key: value})
 
     Where 'key' must always be a string, but can be any
@@ -168,12 +168,12 @@ class StringEntry(Object2D):
         validation_command (None, string or callable)
             if it is None, the instance is set up so that
             no validation is done.
-            
+
             If it is a string, it must be a key in a
             preset map used to grab a valid command, for
             instance, the name of a built-in "str" method
             to use as the validation command.
-            
+
             If it is a callable, it must accept a single
             argument and its return value is used to
             determine whether validation passed (when the
@@ -385,7 +385,7 @@ class StringEntry(Object2D):
 
         ### finally, let's store the validation command
         self._validation_command = command
-            
+
     def get(self):
         """Return text content of widget."""
         return self.value
@@ -459,7 +459,7 @@ class StringEntry(Object2D):
     def handle_events(self):
         """Iterate over event queue processing events."""
         for event in get_events():
-            
+
             if event.type == QUIT: raise QuitAppException
 
             elif event.type == KEYUP:
@@ -473,7 +473,7 @@ class StringEntry(Object2D):
                     self.resume_editing()
 
             elif event.type == KEYDOWN:
-                
+
                 ### ignore keys below
 
                 if event.key in (
@@ -587,7 +587,7 @@ class StringEntry(Object2D):
             required in order to comply with protocol
             used; when needed it can be used to retrieve
             the position of the mouse click, for instance.
-              
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.

@@ -12,30 +12,30 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from translation import TRANSLATION_HOLDER as t
+from ..translation import TRANSLATION_HOLDER as t
 
-from pygameconstants import SCREEN_RECT
+from ..pygameconstants import SCREEN_RECT
 
-from ourstdlibs.behaviour import (
+from ..ourstdlibs.behaviour import (
                             empty_function,
                             get_oblivious_callable,
                           )
 
-from surfsman.draw import draw_border
-from surfsman.render import render_rect
+from ..surfsman.draw import draw_border
+from ..surfsman.render import render_rect
 
-from surfsman.icon import render_layered_icon
+from ..surfsman.icon import render_layered_icon
 
-from widget.stringentry import StringEntry
+from ..widget.stringentry import StringEntry
 
-from classes2d.single      import Object2D
-from classes2d.collections import Set2D
+from ..classes2d.single      import Object2D
+from ..classes2d.collections import Set2D
 
-from textman.render import render_text
+from ..textman.render import render_text
 
-from textman.label.main import Label
+from ..textman.label.main import Label
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         BLACK,
                         CONTRAST_LAYER_COLOR,
                         NORMAL_PATH_FG,
@@ -44,15 +44,15 @@ from colorsman.colors import (
                         WINDOW_BG, WINDOW_FG,
                       )
 
-from fileman.constants import FILEMAN_SIZE, FONT_HEIGHT
+from .constants import FILEMAN_SIZE, FONT_HEIGHT
 
 ## class extension
-from fileman.op import FileManagerOperations
+from .op import FileManagerOperations
 
 ## classes for composition
 
-from fileman.dirpanel.main      import DirectoryPanel
-from fileman.bookmarkpanel.main import BookmarkPanel
+from .dirpanel.main      import DirectoryPanel
+from .bookmarkpanel.main import BookmarkPanel
 
 
 ### XXX for extra flexibility, the order in which some
@@ -93,7 +93,7 @@ class FileManager(FileManagerOperations):
 
         ## control for storing current mode
         self.current_mode = None
-        
+
         ## control for storing the path selection
         self.path_selection = []
 
@@ -176,7 +176,7 @@ class FileManager(FileManagerOperations):
         ### also store the midright coordinates of the
         ### whole area occupied by the app objects
         ### defined above;
-        ### 
+        ###
         ### it will be used as the midleft position of
         ### a label for custom captions which we'll create
         ### further ahead
@@ -300,7 +300,7 @@ class FileManager(FileManagerOperations):
           )
 
         self.labels.add(self.widget_label)
-        
+
     def instantiate_and_store_widgets(self):
         """Instantiate and store panels and other objects."""
         ### instantiate directory panel

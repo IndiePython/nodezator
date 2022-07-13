@@ -40,16 +40,16 @@ from pathlib import Path
 
 ### local imports
 
-from config import IMAGES_DIR
+from ..config import IMAGES_DIR
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from ourstdlibs.dictutils import (
+from ..ourstdlibs.dictutils import (
                             settings_to_hashable_repr,
                             hashable_repr_to_settings,
                           )
 
-from imagesman.render import render_image_from_original
+from .render import render_image_from_original
 
 
 ORIGINAL_IMAGE_SURFS_MAP = {}
@@ -60,7 +60,7 @@ class ImageSurfacesDatabase(dict):
 
     Extends the built-in dict.
     """
-    
+
     def __missing__(self, key):
         """Create, store and return dict for given key.
 
@@ -176,7 +176,7 @@ class CachedImageObject(Object2D):
 
     ### XXX what to do about resizing and
     ### repositioning after using methods below?
-    
+
     def change_image_settings(self, image_settings):
         """Change image settings and replace surface.
 
@@ -206,7 +206,7 @@ class CachedImageObject(Object2D):
         self.image_path = image_path
 
 
-### 
+###
 
 def update_cache_for_image(image_path):
 

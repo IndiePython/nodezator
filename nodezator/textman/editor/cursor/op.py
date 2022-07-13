@@ -10,11 +10,11 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from pygameconstants import SCREEN, blit_on_screen
+from ....pygameconstants import SCREEN, blit_on_screen
 
-from ourstdlibs.behaviour import had_to_set_new_value
+from ....ourstdlibs.behaviour import had_to_set_new_value
 
-from textman.editor.constants import (
+from ..constants import (
                                      TEXT_EDITOR_RECT,
                                      EDITING_AREA_RECT)
 
@@ -83,7 +83,7 @@ class GeneralOperations:
         new_left = (
 
           # start from the x coordinate from where we
-          # blit line numbers 
+          # blit line numbers
           LINE_NUMBER_X
 
           # add the width which will be occupied by the
@@ -174,12 +174,12 @@ class GeneralOperations:
         There might be, though, rare cases where a character
         has a height different than that of the vast majority
         of other character.
-        
+
         We didn't address this possibility yet, because on
         top of being rare, the slight difference in height
         might not be enough to justify adjusting the position
         of objects vertically.
-        
+
         That is, the character might still be visible enough
         to be comfortably identified by the user editing the
         text.

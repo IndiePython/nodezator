@@ -11,35 +11,35 @@ from functools import partial
 
 ### local imports
 
-from pygameconstants import SCREEN_RECT
+from ...pygameconstants import SCREEN_RECT
 
-from ourstdlibs.meta import initialize_bases
+from ...ourstdlibs.meta import initialize_bases
 
-from ourstdlibs.collections.general import CallList
+from ...ourstdlibs.collections.general import CallList
 
-from ourstdlibs.behaviour import (
+from ...ourstdlibs.behaviour import (
                             empty_function,
                             get_oblivious_callable,
                           )
 
-from ourstdlibs.color.custom import custom_format_color
+from ...ourstdlibs.color.custom import custom_format_color
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ...classes2d.single      import Object2D
+from ...classes2d.collections import List2D
 
-from loopman.main import LoopHolder
+from ...loopman.main import LoopHolder
 
-from surfsman.draw   import draw_border
-from surfsman.render import render_rect
+from ...surfsman.draw   import draw_border
+from ...surfsman.render import render_rect
 
-from textman.render    import render_text
-from fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
+from ...textman.render    import render_text
+from ...fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from widget.optionmenu.main import OptionMenu
+from ...widget.optionmenu.main import OptionMenu
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                         BLACK, WHITE,
                         BUTTON_FG, BUTTON_BG,
                         WINDOW_FG, WINDOW_BG,
@@ -47,8 +47,8 @@ from colorsman.colors import (
 
 ## class extensions
 
-from colorsman.viewer.modes.colorlist import ColorListMode
-from colorsman.viewer.modes.patterns.main import PatternsMode
+from .modes.colorlist import ColorListMode
+from .modes.patterns.main import PatternsMode
 
 
 ### constants
@@ -226,7 +226,7 @@ class ColorsViewer(ColorListMode, PatternsMode, LoopHolder):
         self.buttons = List2D()
         self.buttons.extend((mode_options, go_back_button))
 
-        
+
         ### create a label for the colors viewer
 
         ## create and store a collection to store labels

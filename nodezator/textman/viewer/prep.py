@@ -10,38 +10,38 @@ from pygame.math import Vector2
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from dialog import create_and_show_dialog
+from ...dialog import create_and_show_dialog
 
-from syntaxman.exception import SyntaxMappingError
+from ...syntaxman.exception import SyntaxMappingError
 
-from syntaxman.utils import get_ready_theme
+from ...syntaxman.utils import get_ready_theme
 
-from fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
+from ...fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
 
-from ourstdlibs.timeutils import get_friendly_time
-from ourstdlibs.behaviour import empty_function
+from ...ourstdlibs.timeutils import get_friendly_time
+from ...ourstdlibs.behaviour import empty_function
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from surfsman.draw   import draw_border
-from surfsman.render import render_rect
+from ...surfsman.draw   import draw_border
+from ...surfsman.render import render_rect
 
-from surfsman.cache import RECT_SURF_MAP
+from ...surfsman.cache import RECT_SURF_MAP
 
-from textman.render import (
+from ...textman.render import (
                       get_text_size,
                       render_text,
                     )
 
-from textman.text import (
+from ...textman.text import (
                     get_normal_lines,
                     get_highlighted_lines,
                   )
 
 ## common constants
-from textman.viewer.constants import (
+from ...textman.viewer.constants import (
                             DEFAULT_TEXT_SETTINGS,
                             TEXT_SETTINGS_PRESETS_MAP,
                             TEXT_VIEWER_RECT,
@@ -91,7 +91,7 @@ class TextPreparation:
         syntax_highlighting (string)
             represents the name of a syntax used to
             highlight the text (for instance 'python');
-            if an empty string, which is the default value, 
+            if an empty string, which is the default value,
             or the name of an unsupported syntax is given,
             syntax highlighting isn't applied;
             if, otherwise, it indicates an available syntax,
@@ -300,7 +300,7 @@ class TextPreparation:
         ### the line numbers was required or not
 
         if show_line_number:
-            
+
             ## set line drawing behaviour to draw both
             ## lines and their respective line numbers
             self.draw_lines = self.draw_lines_and_lineno
@@ -311,7 +311,7 @@ class TextPreparation:
 
 
             if syntax_highlighting:
-                
+
                 text_settings = theme_map['text_settings']
 
                 try: lineno_settings = (
@@ -437,7 +437,7 @@ class TextPreparation:
             self.header_label.set(f":: {header_text} ::")
 
             if show_caption:
-                
+
                 self.header_label.rect.midleft = (
                   self.caption.rect.move(5, 0).midright
                 )

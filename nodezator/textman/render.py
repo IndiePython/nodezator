@@ -12,18 +12,18 @@ from pygame import Surface
 
 ### local imports
 
-from fontsman.cache import FONTS_DB
+from ..fontsman.cache import FONTS_DB
 
-from fontsman.constants import (
+from ..fontsman.constants import (
                           ENC_SANS_BOLD_FONT_PATH,
                           ENC_SANS_BOLD_FONT_HEIGHT,
                         )
 
-from surfsman.draw import draw_border, draw_depth_finish
+from ..surfsman.draw import draw_border, draw_depth_finish
 
-from rectsman.main import RectsManager
+from ..rectsman.main import RectsManager
 
-from colorsman.colors import BLACK
+from ..colorsman.colors import BLACK
 
 
 def get_text_size(
@@ -33,7 +33,7 @@ def get_text_size(
       padding=0,
     ):
     """Return surf size of text as if it were rendered.
-    
+
     text
         Any string.
     font_height
@@ -159,7 +159,7 @@ def render_text(
 
     ):
     """Return surface or object representing rendered text.
-    
+
     Parameters
     ==========
 
@@ -409,7 +409,7 @@ def render_multiline_text(
         ### if padding was requested
 
         if padding:
-            
+
             ### pick surface converting method according to
             ### presence of transparence
 
@@ -447,7 +447,7 @@ def render_multiline_text(
 
                 surf.fill(background_color)
 
-                ## blit text surf on new surf taking the 
+                ## blit text surf on new surf taking the
                 ## text padding into account
                 surf.blit(text_surface, (padding, padding))
 
@@ -522,7 +522,7 @@ def render_multiline_text(
     surf.fill(background_color)
 
     for text_surf, rect in zip(text_surfaces, rects):
-        
+
         surf.blit(text_surf, rect)
 
     ### add other effects as requested

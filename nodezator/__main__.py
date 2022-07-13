@@ -10,6 +10,8 @@ https://nodezator.com
 """
 ### standard library imports
 
+import asyncio
+
 from pathlib import Path
 
 from sys import path
@@ -37,7 +39,7 @@ APP_REFS.app_dir = Path(__file__).parent.resolve()
 logger = get_new_logger(__name__)
 
 
-def main(filepath=None):
+async def main(filepath=None):
     """Launch application.
 
     Parameters
@@ -69,7 +71,7 @@ def main(filepath=None):
 
     logger.info("Starting application session.")
 
-    run_app(filepath)
+    await run_app(filepath)
 
     logger.info("Finished application session.")
 
@@ -110,4 +112,4 @@ if __name__ == "__main__":
     ### finally call the main function, passing along
     ### the filepath argument received (which might be the
     ### default, None)
-    main(args.filepath)
+    asyncio.run( main(args.filepath) )

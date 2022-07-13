@@ -17,43 +17,43 @@ from pygame.display import update
 
 ### local imports
 
-from translation import TRANSLATION_HOLDER as t
+from ...translation import TRANSLATION_HOLDER as t
 
-from pygameconstants import (
+from ...pygameconstants import (
                        SCREEN_RECT,
                        FPS,
                        maintain_fps,
                      )
 
-from dialog import create_and_show_dialog
+from ...dialog import create_and_show_dialog
 
-from ourstdlibs.behaviour import empty_function
+from ...ourstdlibs.behaviour import empty_function
 
-from our3rdlibs.button  import Button
+from ...our3rdlibs.button  import Button
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ...classes2d.single      import Object2D
+from ...classes2d.collections import List2D
 
-from fontsman.constants  import ENC_SANS_BOLD_FONT_HEIGHT
-from textman.label.main import Label
+from ...fontsman.constants  import ENC_SANS_BOLD_FONT_HEIGHT
+from ...textman.label.main import Label
 
-from surfsman.draw   import draw_border, draw_depth_finish
-from surfsman.render import render_rect
+from ...surfsman.draw   import draw_border, draw_depth_finish
+from ...surfsman.render import render_rect
 
-from loopman.exception import (
+from ...loopman.exception import (
                          QuitAppException,
                          SwitchLoopException,
                        )
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                             BUTTON_FG, BUTTON_BG,
                             WINDOW_FG, WINDOW_BG)
 
-from fileman.surfs import FILE_ICON, FOLDER_ICON
+from .surfs import FILE_ICON, FOLDER_ICON
 
 
 ## widget
-from widget.stringentry import StringEntry
+from ...widget.stringentry import StringEntry
 
 
 ### XXX
@@ -212,7 +212,7 @@ class PathForm(Object2D):
             ## improve surface style by giving a finish
             ## to convey depth
             draw_depth_finish(button.image)
-            
+
             ## store in dedicated attribute
             setattr(self, attr_name, button)
 
@@ -387,7 +387,7 @@ class PathForm(Object2D):
             mouse interaction protocol used; here we
             use it to retrieve the position of the
             mouse when the first button was released.
-              
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.

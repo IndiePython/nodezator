@@ -17,30 +17,30 @@ from pygame.time import get_ticks as get_milliseconds
 
 ### local imports
 
-from userprefsman.main import BOOKMARKS_FILE
+from ...userprefsman.main import BOOKMARKS_FILE
 
-from dialog import create_and_show_dialog
+from ...dialog import create_and_show_dialog
 
-from ourstdlibs.pyl import load_pyl, save_pyl
+from ...ourstdlibs.pyl import load_pyl, save_pyl
 
-from ourstdlibs.behaviour import get_oblivious_callable
+from ...ourstdlibs.behaviour import get_oblivious_callable
 
-from surfsman.draw import (
+from ...surfsman.draw import (
                      blit_aligned,
                      draw_border,
                      draw_depth_finish,
                    )
 
-from surfsman.render import render_rect
+from ...surfsman.render import render_rect
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ...classes2d.single      import Object2D
+from ...classes2d.collections import List2D
 
-from colorsman.colors import BUTTON_BG
+from ...colorsman.colors import BUTTON_BG
 
-from fileman.pathobj import PathObject
+from ..pathobj import PathObject
 
-from fileman.constants import (
+from ..constants import (
                          PATH_OBJ_QUANTITY,
                          PATH_OBJ_PADDING,
                          BKM_PANEL_WIDTH,
@@ -48,7 +48,7 @@ from fileman.constants import (
                          MAX_MSECS_TO_2ND_MOUSE_EVENT,
                        )
 
-from fileman.bookmarkpanel.surfs import (
+from .surfs import (
                                    BOOKMARK_BUTTON_SURF,
                                    UNBOOKMARK_BUTTON_SURF,
                                  )
@@ -58,7 +58,7 @@ class BookmarkPanel:
 
     def __init__(self, directory_panel, semitransp_obj):
         """Store argument and perform setups.
-        
+
         Parameters
         ==========
         directory_panel (fileman.dirpanel.DirectoryPanel
@@ -83,7 +83,7 @@ class BookmarkPanel:
         ### create a rect attribute
 
         self.rect = Rect(
-                      
+
                       ## position
                       BKM_PANEL_TOPLEFT,
 
@@ -170,7 +170,7 @@ class BookmarkPanel:
         ### below the other
 
         for _ in range(PATH_OBJ_QUANTITY):
-            
+
             ## instantiate (position is also set)
 
             path_obj = PathObject(
@@ -267,7 +267,7 @@ class BookmarkPanel:
         ### a bookmark
 
         for index, path_obj in enumerate(self.bookmark_objs):
-            
+
             try: path = self.bookmark_paths_deque[index]
 
             except IndexError:
@@ -315,7 +315,7 @@ class BookmarkPanel:
             ## but also has the side-effect of updating the
             ## json file too
             self.update_bookmarks()
-    
+
     def draw(self):
         """Draw widgets."""
         ### draw bookmark objects
@@ -402,7 +402,7 @@ class BookmarkPanel:
         ### pre-condition
 
         if up:
-            
+
             ## if the first bookmark path is present in the
             ## first bookmark object, there's no point in
             ## scrolling up, so we just return
@@ -418,7 +418,7 @@ class BookmarkPanel:
             rotation_amount = 1
 
         else:
-            
+
             ## if the path in the last bookmark object is
             ## also the last bookmark path or None, there's
             ## no point in scrolling down, so we just return

@@ -2,25 +2,25 @@
 
 ### local imports
 
-from config import SYNTAX_THEMES_DIR
+from ..config import SYNTAX_THEMES_DIR
 
-from ourstdlibs.pyl import load_pyl
+from ..ourstdlibs.pyl import load_pyl
 
-from ourstdlibs.dictutils import settings_to_hashable_repr
+from ..ourstdlibs.dictutils import settings_to_hashable_repr
 
 
 ## syntax mapping functions
 
-from syntaxman.syntaxes.python.main import (
+from .syntaxes.python.main import (
                                       get_python_syntax_map
                                     )
 
-from syntaxman.syntaxes.comment import (
+from .syntaxes.comment import (
                                   get_comment_syntax_map
                                 )
 
-from syntaxman.syntaxes.userlog import (
-                                  get_user_log_syntax_map 
+from .syntaxes.userlog import (
+                                  get_user_log_syntax_map
                                 )
 
 
@@ -35,7 +35,7 @@ from syntaxman.syntaxes.userlog import (
 RAW_THEMES_MAP = {
 
   # key is the syntax name
-  syntax_name : 
+  syntax_name :
 
   # value is the json contents (a dict) loaded from the
   # path resulting of joining the themes dir with the
@@ -144,7 +144,7 @@ def create_ready_theme(syntax_name, default_text_settings):
     settings for the syntax to be used (such highlight
     settings are several text settings for different
     kinds of words/text in a specific syntax).
-    
+
     For instance, in the Python syntax, the highlight
     settings include settings for several kinds of text
     like keywords, built-in functions, etc. Each of these
@@ -158,13 +158,13 @@ def create_ready_theme(syntax_name, default_text_settings):
 
     Before using the specific settings, we also assign the
     background color from the theme to the general settings.
-    
+
     Why not just use the specific settings, then? Because
     the general settings as well as the background color
     represent default values for specific settings that may
     not be present in the specific settings, thus serving as
     a base.
-    
+
     This is specially important for settings not defined
     on the theme, like font height, which is something
     that usually depends on where the text will be used
@@ -195,7 +195,7 @@ def create_ready_theme(syntax_name, default_text_settings):
     ### them as they are merged into the dict
 
     merged_settings_map =  {
-        
+
       ## this new dict map each kind of highlighted
       ## text to a dict
       kind_of_text : dict(
