@@ -113,21 +113,6 @@ class PathObject:
             final width of the path object, defined by
             the 'width' argument described above.
         """
-        ### assign a text for the widget based on the paths
-        ### received
-#
-#        if path is None: text = t.file_manager.dummy_text
-#
-#        elif (
-#
-#             grandparent_path is None
-#          or path != grandparent_path
-#
-#        ): text = path.name
-#
-#        else: text = PATH_OBJ_PARENT_TEXT
-
-
         ### store arguments
 
         self.path    = path
@@ -238,7 +223,7 @@ class PathObject:
 
             ): text = path.name
 
-            else: text = '..'
+            else: text = PATH_OBJ_PARENT_TEXT
 
             self.text = text
 
@@ -290,6 +275,18 @@ class PathObject:
 
         self.path = path
         self.draw = drawing_behaviour
+
+    def reposition_icon_and_text(self):
+        """Reposition icon and text rects, if it has."""
+        if self.draw == empty_function: return
+
+        self.icon_rect.midleft = (
+          self.rect.move(self.padding, 0).midleft
+        )
+
+        self.text_rect.midleft = (
+          self.icon_rect.move(self.padding, 0).midright
+        )
 
     def change_selection_appearance(self, on):
         """Make object appear as selected/deselected.

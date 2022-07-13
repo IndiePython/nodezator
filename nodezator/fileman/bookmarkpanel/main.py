@@ -529,3 +529,6 @@ class BookmarkPanel:
         self.bookmark_objs.rect.topleft = (
           self.rect.move(1, 1).topleft
         )
+
+        for path_obj in self.bookmark_objs:
+            path_obj.reposition_icon_and_text()

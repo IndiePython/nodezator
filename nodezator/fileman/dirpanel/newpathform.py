@@ -14,8 +14,12 @@ from pygame import (
 from pygame.event   import get as get_events
 from pygame.display import update
 
+from pygame.math import Vector2
+
 
 ### local imports
+
+from config import APP_REFS
 
 from translation import TRANSLATION_HOLDER as t
 
@@ -28,6 +32,8 @@ from pygameconstants import (
 from dialog import create_and_show_dialog
 
 from ourstdlibs.behaviour import empty_function
+
+from ourstdlibs.collections.general import CallList
 
 from our3rdlibs.behaviour import watch_window_size
 
@@ -48,8 +54,9 @@ from loopman.exception import (
                        )
 
 from colorsman.colors import (
-                            BUTTON_FG, BUTTON_BG,
-                            WINDOW_FG, WINDOW_BG)
+                        BUTTON_FG, BUTTON_BG,
+                        WINDOW_FG, WINDOW_BG,
+                      )
 
 from fileman.surfs import FILE_ICON, FOLDER_ICON
 
@@ -82,14 +89,29 @@ class PathForm(Object2D):
 
         self.rect  = self.image.get_rect()
 
-        ## center rect on screen
-        self.rect.center = SCREEN_RECT.center
-
         ### build widgets
         self.build_form_widgets()
 
         ### assign update behaviour
         self.update = empty_function
+
+        ### center form and append centerin method
+        ### as a window resize setup
+
+        self.center_new_path_form()
+
+        APP_REFS.window_resize_setups.append(
+          self.center_new_path_form
+        )
+
+    def center_new_path_form(self):
+
+        diff = (
+          Vector2(SCREEN_RECT.center) - self.rect.center
+        )
+
+        self.rect.center = SCREEN_RECT.center
+        self.widgets.rect.move_ip(diff)
 
     def build_form_widgets(self):
         """Build widgets which compose the form."""
@@ -162,16 +184,30 @@ class PathForm(Object2D):
 
         ### instantiate path name entry
 
-        self.path_name_entry = \
-            StringEntry(
-              value='',
-              loop_holder=self,
-              width=self.rect.width - 20,
-              font_height=ENC_SANS_BOLD_FONT_HEIGHT,
-              draw_on_window_resize = self.draw,
-              coordinates_name='topleft',
-              coordinates_value=topleft
-            )
+        self.path_name_entry = (
+
+          StringEntry(
+
+            value='',
+            loop_holder=self,
+            width=self.rect.width - 20,
+            font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+
+            draw_on_window_resize = (
+
+                CallList([
+                  lambda: APP_REFS.fm.draw(),
+                  self.draw,
+                ])
+
+            ),
+
+            coordinates_name='topleft',
+            coordinates_value=topleft
+
+          )
+
+        )
 
         self.widgets.append(self.path_name_entry)
 

@@ -6,8 +6,6 @@ and setup of the file manager class.
 
 ### third-party imports
 
-from pygame.display import get_surface
-
 from pygame.math import Vector2
 
 from pygame.draw import rect as draw_rect
@@ -16,6 +14,8 @@ from pygame.draw import rect as draw_rect
 ### local imports
 
 from config import APP_REFS
+
+from pygameconstants import SCREEN_RECT
 
 from translation import TRANSLATION_HOLDER as t
 
@@ -82,6 +82,9 @@ class FileManager(FileManagerOperations):
 
     def __init__(self):
         """Assign variables, perform setups."""
+        ### reference itself in APP_REFS
+        APP_REFS.fm = self
+
         ### create image and rect attributes
 
         self.image = render_rect(
@@ -504,7 +507,7 @@ class FileManager(FileManagerOperations):
 
     def reposition_objects(self):
 
-        self.rect.center = get_surface().get_rect().center
+        self.rect.center = SCREEN_RECT.center
 
         self.rect_size_semitransp_obj.rect.center = (
           self.rect.center
