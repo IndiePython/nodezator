@@ -127,7 +127,7 @@ class MenuSetup:
               },
 
               {
-                'label': "Open Manual",
+                'label': "Read manual",
                 'icon': 'aww_icon',
                 'command': (
                   partial(
