@@ -219,6 +219,15 @@ class HTSLBrowser(
         for obj_list in self.cache.values():
             obj_list.rect.move_ip(diff)
 
+        ### if htsl browser loop is running, request it
+        ### to be drawn
+
+        if hasattr(self, 'running') and self.running:
+
+            APP_REFS.draw_after_window_resize_setups = (
+              self.draw_once
+            )
+
     def open_htsl_link(self, link):
         """Create a htsl page from existing htsl file.
 
