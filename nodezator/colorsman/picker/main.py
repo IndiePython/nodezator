@@ -6,6 +6,8 @@ from functools import partial
 
 ### local imports
 
+from config import APP_REFS
+
 from pygameconstants import SCREEN_RECT
 
 from ourstdlibs.color.utils import get_int_sequence_repr
@@ -86,6 +88,51 @@ class ColorsPicker(Operations):
         ## custom list instance to hold color2d instances
         ## used for color picking
         self.color_widgets = List2D()
+
+        ### append color picker centering method as a
+        ### window resize setup
+
+        APP_REFS.window_resize_setups.append(
+          self.center_color_picker
+        )
+
+    def center_color_picker(self):
+        """Position color picker objects.
+
+        They are positioned relative to each other and
+        to the screen as well.
+        """
+        if not self.color_widgets: return
+
+        ### center color widgets on the screen
+        self.color_widgets.rect.center = SCREEN_RECT.center
+
+        ### move caption right to their topleft and
+        ### buttons right to their bottomright with
+        ### a slight offset
+
+        self.caption.rect.bottomleft = (
+          self.color_widgets.rect.move(0, -15).topleft
+        )
+
+        self.buttons.rect.topright = (
+          self.color_widgets.rect.move(0, 15).bottomright
+        )
+
+        ### reposition labels near the screen bottomleft
+
+        self.labels.rect.bottomleft = (
+          SCREEN_RECT.move(5, -8).bottomleft
+        )
+
+        ### if color picker loop is running, request it
+        ### to be drawn
+
+        if hasattr(self, 'running') and self.running:
+
+            APP_REFS.draw_after_window_resize_setups = (
+              self.draw_once
+            )
 
     def build_widgets(self):
 

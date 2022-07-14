@@ -18,11 +18,16 @@ from pygame import (
 
             )
 
-from pygame.event   import get as get_events
+from pygame.event import get as get_events
+
 from pygame.display import update
+
+from pygame.math import Vector2
 
 
 ### local imports
+
+from config import APP_REFS
 
 from translation import TRANSLATION_HOLDER as t
 
@@ -38,10 +43,13 @@ from dialog import create_and_show_dialog
 
 from fileman.main import create_path
 
-from our3rdlibs.button    import Button
 from ourstdlibs.behaviour import empty_function
 
 from ourstdlibs.collections.general import CallList
+
+from our3rdlibs.behaviour import watch_window_size
+
+from our3rdlibs.button import Button
 
 from classes2d.single import Object2D
 from classes2d.collections import List2D
@@ -117,9 +125,6 @@ class PythonExportForm(Object2D):
 
         self.rect  = self.image.get_rect()
 
-        ## center rect on screen
-        self.rect.center = SCREEN_RECT.center
-
         ### store a semitransparent object
 
         self.rect_size_semitransp_obj = \
@@ -137,6 +142,27 @@ class PythonExportForm(Object2D):
 
         ### assign behaviour
         self.update = empty_function
+
+        ### center form and also append centering method
+        ### as a window resize setup
+
+        self.center_python_export_form()
+
+        APP_REFS.window_resize_setups.append(
+          self.center_python_export_form
+        )
+
+    def center_python_export_form(self):
+
+        diff = (
+          Vector2(SCREEN_RECT.center) - self.rect.center
+        )
+
+        ## center rect on screen
+        self.rect.center = SCREEN_RECT.center
+
+        ##
+        self.widgets.rect.move_ip(diff)
 
     def build_form_widgets(self):
         """Build widgets to hold settings for edition."""
@@ -272,12 +298,17 @@ class PythonExportForm(Object2D):
           .rect.move(5, 10).bottomleft
         )
 
-        widget_factory = partial(
-                           StringEntry,
-                           loop_holder=self,
-                           width=330,
-                           name='additional_level',
-                         )
+        widget_factory = (
+
+          partial(
+            StringEntry,
+            loop_holder=self,
+            draw_on_window_resize = self.draw,
+            width=330,
+            name='additional_level',
+          )
+
+        )
 
         default_factory = '.'.__str__
 
@@ -419,6 +450,8 @@ class PythonExportForm(Object2D):
         while self.running:
 
             maintain_fps(FPS)
+
+            watch_window_size()
 
             ### put the handle_input/update/draw method
             ### execution inside a try/except clause

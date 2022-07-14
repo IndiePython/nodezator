@@ -16,6 +16,8 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
+from config import APP_REFS
+
 from pygameconstants import (
                        SCREEN_RECT,
                        FPS,
@@ -25,6 +27,8 @@ from pygameconstants import (
 from ourstdlibs.behaviour import get_oblivious_callable
 
 from ourstdlibs.collections.general import CallList
+
+from our3rdlibs.behaviour import watch_window_size
 
 from surfsman.draw   import blit_aligned
 from surfsman.render import render_rect
@@ -124,15 +128,8 @@ class SortingEditor(SortingEditorModes):
 
             )
 
-        ### define a rect for the widget and center it on
-        ### the screen
-
+        ### define a rect for the widget
         rect = self.rect = image.get_rect()
-        rect.center = SCREEN_RECT.center
-
-        ### also define and store an offset equivalent to
-        ### the inverted topleft position
-        self.offset = -Vector2(rect.topleft)
 
         ### define and store rects for 02 different areas
         ### in the widget, blitting filled areas into the
@@ -150,12 +147,12 @@ class SortingEditor(SortingEditorModes):
         )
 
         draw_rect(
-            image, SORTED_ITEMS_AREA,
-            self.items_area.move(self.offset))
+          image, SORTED_ITEMS_AREA, self.items_area
+        )
 
         draw_rect(
-            image, ITEM_POOL_AREA,
-            self.available_items_area.move(self.offset))
+          image, ITEM_POOL_AREA, self.available_items_area
+        )
 
         ### blitting text surfaces into the image marking
         ### the meaning of each area
@@ -186,10 +183,7 @@ class SortingEditor(SortingEditorModes):
 
             )
 
-            image.blit(
-                    label.image,
-                    label.rect.move(self.offset)
-                  )
+            image.blit(label.image, label.rect)
 
 
         ### store the image on its own attribute and
@@ -203,8 +197,58 @@ class SortingEditor(SortingEditorModes):
         ### create the buttons used by this widget
         self.create_buttons()
 
+        ### center sorting editor and append centering
+        ### method as a window resize setup
+
+        self.center_sorting_editor()
+
+        APP_REFS.window_resize_setups.append(
+          self.center_sorting_editor
+        )
+
         ### finally enable normal behaviour
         self.enable_normal_mode()
+
+    def center_sorting_editor(self):
+        rect = self.rect
+        
+        diff = (
+          Vector2(SCREEN_RECT.center) - rect.center
+        )
+
+        ###
+
+        rect.center = SCREEN_RECT.center
+
+        ### also define and store an offset equivalent to
+        ### the inverted topleft position
+        self.offset = -Vector2(rect.topleft)
+
+        ###
+        self.items_area.move_ip(diff)
+        self.available_items_area.move_ip(diff)
+
+        ###
+
+        self.sorting_buttons.rect.topleft = (
+          rect.move(5, 50).topleft
+        )
+
+        self.session_buttons.rect.bottomright = (
+          rect.move(-5, -5).bottomright
+        )
+
+        ###
+
+        try: self.items
+        except AttributeError: pass
+
+        else:
+            
+            if self.items:
+                self.items.rect.move_ip(diff)
+
+            self.available_items.rect.move_ip(diff)
 
     def create_buttons(self):
         """Create button objects."""
@@ -262,34 +306,27 @@ class SortingEditor(SortingEditorModes):
         )
 
         ### now divide the buttons in two different
-        ### temporary groups in order to easily align the
-        ### and reposition the buttons
+        ### temporary groups in order to easily align then
 
         ## first group
 
-        sorting_buttons = List2D(buttons[:3])
-        sorting_buttons.rect.snap_rects_ip(
+        self.sorting_buttons = List2D(buttons[:3])
+        self.sorting_buttons.rect.snap_rects_ip(
                                retrieve_pos_from='topright',
                                assign_pos_to='topleft',
                                offset_pos_by=(5, 0)
                              )
-
-        sorting_buttons.rect.topleft = \
-                                self.rect.move(5, 50).topleft
 
 
         ## second group
 
-        session_buttons = List2D(buttons[3:])
+        self.session_buttons = List2D(buttons[3:])
 
-        session_buttons.rect.snap_rects_ip(
+        self.session_buttons.rect.snap_rects_ip(
                                retrieve_pos_from='topright',
                                assign_pos_to='topleft',
                                offset_pos_by=(5, 0)
                              )
-
-        session_buttons.rect.bottomright = \
-                           self.rect.move(-5, -5).bottomright
 
     def sort_items(self, sorting_callable):
         """Sort items w/ callable and reposition them.
@@ -359,6 +396,9 @@ class SortingEditor(SortingEditorModes):
             
             ## maintain a constant framerate
             maintain_fps(FPS)
+
+            ## watch out for when window is resized
+            watch_window_size()
 
             ## perform GUD operations (initials of the
             ## methods; see also the loop holder definition
@@ -444,10 +484,9 @@ class SortingEditor(SortingEditorModes):
             )
 
             ## align its items and position the instance
-            ## if not empty (the RuntimeError is raised
-            ## when the List2D instance is empty)
+            ## if not empty
 
-            try:
+            if items:
 
                 items.rect.snap_rects_ip(
                              retrieve_pos_from='topright',
@@ -456,8 +495,6 @@ class SortingEditor(SortingEditorModes):
                            )
 
                 items.rect.midleft = area.move(30, 7).midleft
-
-            except RuntimeError: pass
 
             ## store the instance in an attribute
             setattr(self, attr_name, items)

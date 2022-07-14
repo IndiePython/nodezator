@@ -18,8 +18,9 @@ from pygame.display import update
 from pygameconstants import blit_on_screen
 
 from ourstdlibs.behaviour import (
-                             empty_function,
-                             get_oblivious_callable)
+                            empty_function,
+                            get_oblivious_callable,
+                          )
 
 from loopman.exception import QuitAppException
 
@@ -61,82 +62,75 @@ class PatternsMode:
         ### create a "Pattern:" label to indicate the
         ### option menu for choosing patterns
 
-        bottomleft = self.rect.move(5, -7).bottomleft
+        self.pattern_label = (
 
-        self.pattern_label = \
           Object2D.from_surface(
-            surface=render_text(
-                   text              = 'Pattern:',
-                   font_height       = ENC_SANS_BOLD_FONT_HEIGHT,
-                   padding           = 5,
-                   foreground_color  = WINDOW_FG,
-                   background_color  = WINDOW_BG,
-                 ),
-            coordinates_name  = 'bottomleft',
-            coordinates_value = bottomleft
+
+            surface= (
+              render_text(
+                text        = 'Pattern:',
+                font_height = ENC_SANS_BOLD_FONT_HEIGHT,
+                padding           = 5,
+                foreground_color  = WINDOW_FG,
+                background_color  = WINDOW_BG,
+              )
+            ),
+
           )
+
+        )
 
         ### create option menu from which to choose patterns
 
         pattern_names = sorted(PATTERN_DRAWING_MAP.keys())
 
-        midleft = \
-            self.pattern_label.rect.move(5, 0).midright
-
         clamp_area = self.rect
 
-        self.pattern_options = \
+        self.pattern_options = (
+
           OptionMenu(
-            loop_holder       = self,
-            value             = pattern_names[0],
-            options           = pattern_names,
-            clamp_area        = clamp_area,
-            command           = self.redraw_pattern,
-            coordinates_name  = 'midleft',
-            coordinates_value = midleft,
+            loop_holder = self,
+            value       = pattern_names[0],
+            options     = pattern_names,
+            clamp_area  = clamp_area,
+            command     = self.redraw_pattern,
+
+            draw_on_window_resize = self.patterns_draw,
+
           )
 
-        ### create buttons to redraw/change the pattern
+        )
 
-        ## define a position for the buttons
-        midleft = \
-            self.pattern_options.rect.move(5, 0).midright
+        ### create a button to redraw/change the pattern
 
-        for text, attr_name, command in (
+        self.redraw_pattern_button = (
 
-          (
-            'Redraw',
-            'redraw_pattern_button',
-            get_oblivious_callable(self.redraw_pattern),
-          ),
+          Object2D.from_surface(
 
-        ):
+            surface = (
 
-            button = \
-              Object2D.from_surface(
-                surface=render_text(
+              render_text(
 
-                       text        = text,
-                       font_height = ENC_SANS_BOLD_FONT_HEIGHT,
-                       padding     = 5,
+                text        = "Redraw",
+                font_height = ENC_SANS_BOLD_FONT_HEIGHT,
+                padding     = 5,
 
-                       foreground_color = BUTTON_FG,
-                       background_color = BUTTON_BG,
+                foreground_color = BUTTON_FG,
+                background_color = BUTTON_BG,
 
-                       depth_finish_thickness = 1,
-
-                     ),
-
-                coordinates_name  = 'midleft',
-                coordinates_value = midleft,
-
-                on_mouse_release = command,
+                depth_finish_thickness = 1,
 
               )
 
-            setattr(self, attr_name, button)
+            ),
 
-            midleft = button.rect.move(5, 0).midright
+            on_mouse_release = (
+              get_oblivious_callable(self.redraw_pattern)
+            ),
+
+          )
+
+        )
 
         ### placeholder attribute for a generator closing
         ### method

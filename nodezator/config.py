@@ -9,6 +9,10 @@ from pathlib import Path
 from subprocess import run as run_subprocess
 
 
+### local import
+from ourstdlibs.collections.general import CallList
+
+
 ### an object to hold references/data used throughout the
 ### entire app
 
@@ -33,6 +37,9 @@ APP_REFS = SimpleNamespace(
 
              ## custom stdout lines
              custom_stdout_lines = [],
+
+             ## window resize setup commands
+             window_resize_setups = CallList(),
 
            )
 

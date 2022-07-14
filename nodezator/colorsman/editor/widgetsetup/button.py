@@ -284,12 +284,19 @@ def setup_buttons(self):
     ]
 
     color_add_option_menu = \
-    self.color_add_option_menu = \
+    self.color_add_option_menu = (
+
       OptionMenu(
+
         loop_holder = self,
         value       = options[0],
         options     = options,
+
+        draw_on_window_resize = self.draw,
+
       )
+
+    )
 
     buttons.append(color_add_option_menu)
 

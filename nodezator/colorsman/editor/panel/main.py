@@ -69,8 +69,6 @@ class ColorsPanel(
           self,
           colors_editor,
           no_of_visible_colors,
-          coordinates_name='topleft',
-          coordinates_value=(0, 0)
         ):
         """Store editor and set image, rect and buttons.
 
@@ -121,21 +119,31 @@ class ColorsPanel(
         ### you'll store so you can use to clean the
         ### original when needed
 
-        self.image = \
-            render_rect(width, height, WINDOW_BG)
+        self.image = (
+          render_rect(width, height, WINDOW_BG)
+        )
 
         self.clean_bg = self.image.copy()
 
         ### obtain a rect from the surface in self.image
-        ### and position it according to the given
-        ### coordinates
+        ### and position it relative to the editor
 
         self.rect = self.image.get_rect()
 
-        setattr(
-            self.rect, coordinates_name, coordinates_value)
+        self.rect.midtop = (
+          self.colors_editor.rect.move(0, 45).midtop
+        )
 
-        ### store a offset whose value is the inverse of
+        ### finally create the scroll buttons
+        self.create_scroll_buttons()
+
+    def reposition_and_define_objects_and_values(self):
+
+        self.rect.midtop = (
+          self.colors_editor.rect.move(0, 45).midtop
+        )
+
+        ### store an offset whose value is the inverse of
         ### the topleft
         ###
         ### this will be used to blit other
@@ -143,15 +151,38 @@ class ColorsPanel(
         ### self.rect position
         self.offset = -Vector2(self.rect.topleft)
 
-        ### create and store a scroll area equivalent
-        ### to self.rect but deflated enough pixels
-        ### horizontally so the scroll buttons are
-        ### excluded from that area
-        x_deflation = (SCROLL_BUTTON_WIDTH * 2) * -1
-        self.scroll_area = self.rect.inflate(x_deflation, 0)
+        ### create a scroll area equivalent to self.rect
+        ### but deflate enough pixels horizontally so the
+        ### scroll buttons are excluded from that area
+        ###
+        ### also store it after performing some admin
+        ### tasks
 
-        ### finally create the scroll buttons
-        self.create_scroll_buttons()
+        x_deflation = (SCROLL_BUTTON_WIDTH * 2) * -1
+        scroll_area = self.rect.inflate(x_deflation, 0)
+
+        if hasattr(self, 'widgets'):
+            
+            delta = (
+              Vector2(scroll_area.topleft)
+              - self.scroll_area.topleft
+            )
+
+            self.widgets.rect.move_ip(delta)
+
+        self.scroll_area = scroll_area
+
+        attr_names = ('topleft', 'topright')
+
+        for attr_name, button in (
+          zip(attr_names, self.buttons)
+        ):
+
+            ## align the given coordinates of self.rect and
+            ## the button's rect
+
+            value = getattr(self.rect, attr_name)
+            setattr(button.rect, attr_name, value)
 
     def create_scroll_buttons(self):
         """Create buttons to scroll the color widgets."""
@@ -164,70 +195,56 @@ class ColorsPanel(
         ### iterate over the buttons creation data
         ### instantiating and setting up the buttons
 
-        for coordinates_name, flip_x, command, attr_name \
-        in (
+        self.buttons = List2D(
 
-          (
-            'topleft',
-            False,
-            self.scroll_left,
-            'left_scroll_button',
-          ),
+          Object2D.from_surface(
 
-          (
-            'topright',
-            True,
-            self.scroll_right,
-            'right_scroll_button',
+            render_layered_icon(
+
+              chars = [chr(82)],
+
+              dimension_name  = 'height',
+              dimension_value = button_height - 8,
+
+              colors = [BLACK],
+
+              background_width  = button_width,
+              background_height = button_height,
+              background_color = WINDOW_BG,
+
+              rotation_degrees = 90,
+              flip_x = flip_x,
+              depth_finish_thickness = 1,
+
+            ),
+
+            command = command,
+
           )
 
-        ):
+          for flip_x, command in (
+
+            (False, self.scroll_left),
+            ( True, self.scroll_right)
+
+          )
+
+        )
             
-            ## instantiate button
 
-            obj = Object2D.from_surface(
+        ## store buttons on their own attribute
 
-                    render_layered_icon(
+        attr_names = (
+          'left_scroll_button',
+          'right_scroll_button',
+        )
 
-                      chars = [chr(82)],
+        for attr_name, button in (
 
-                      dimension_name  = 'height',
-                      dimension_value = button_height - 8,
+          zip(attr_names, self.buttons)
 
-                      colors = [BLACK],
-
-                      background_width  = button_width,
-                      background_height = button_height,
-                      background_color = WINDOW_BG,
-
-                      rotation_degrees = 90,
-                      flip_x = flip_x,
-                      depth_finish_thickness = 1,
-                    ),
-
-                    command = command
-
-                  )
-
-            ## align the given coordinates of self.rect and
-            ## the button's rect
-
-            obj.rect = obj.image.get_rect()
-
-            value = getattr(self.rect, coordinates_name)
-
-            setattr(obj.rect, coordinates_name, value)
-
-            ## store the button in its own attribute
-            setattr(self, attr_name, obj)
-
-        ### finally, reference store both buttons in a
-        ### custom list, referenced in its own attribute
-
-        self.buttons = List2D([
-                         self.left_scroll_button,
-                         self.right_scroll_button,
-                       ])
+        ):
+            setattr(self, attr_name, button)
 
     def scroll(self, amount):
         """Scroll color widgets according to given amount.

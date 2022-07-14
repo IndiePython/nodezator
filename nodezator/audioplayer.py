@@ -34,6 +34,8 @@ from pygame.mixer import music
 
 ### local imports
 
+from config import APP_REFS
+
 from pygameconstants import (
                        SCREEN,
                        SCREEN_RECT,
@@ -45,9 +47,11 @@ from dialog import create_and_show_dialog
 
 from logman.main import get_new_logger
 
+from ourstdlibs.behaviour import get_oblivious_callable
+
 from our3rdlibs.userlogger import USER_LOGGER
 
-from ourstdlibs.behaviour import get_oblivious_callable
+from our3rdlibs.behaviour import watch_window_size
 
 from loopman.exception import (
                          QuitAppException,
@@ -143,7 +147,6 @@ class AudioPlayer(Object2D):
         draw_border(self.image, thickness=2)
 
         self.rect = self.image.get_rect()
-        self.rect.center = SCREEN_RECT.center
 
         ###
 
@@ -160,18 +163,12 @@ class AudioPlayer(Object2D):
               foreground_color=BLACK
             ),
 
-            coordinates_name  = 'topleft',
-            coordinates_value = (
-              self.rect.move(10, 10).topleft
-            ),
-
           )
 
         )
 
         ###
 
-        midleft = self.caption.rect.move(5, 0).midright
 
         self.toggle_play_button = (
 
@@ -181,9 +178,6 @@ class AudioPlayer(Object2D):
               'playing': PLAYING_ICON,
               'paused' : PAUSED_ICON,
             },
-
-            coordinates_name  = 'midleft',
-            coordinates_value = midleft,
 
             on_mouse_release = (
               get_oblivious_callable(self.toggle_play)
@@ -197,9 +191,6 @@ class AudioPlayer(Object2D):
 
         ###
 
-        midleft = (
-          self.toggle_play_button.rect.move(5, 0).midright
-        )
 
         self.audio_index_entry = (
 
@@ -210,10 +201,9 @@ class AudioPlayer(Object2D):
             numeric_classes_hint = 'int',
             min_value = 0,
 
-            coordinates_name  = 'midleft',
-            coordinates_value = midleft,
-
             command = self.set_audio_from_entry,
+
+            draw_on_window_resize = self.draw,
 
           )
 
@@ -233,15 +223,41 @@ class AudioPlayer(Object2D):
 
         )
 
-        volume_area.midleft = (
+        ###
+
+        self.center_and_redefine_objects()
+
+        APP_REFS.window_resize_setups.append(
+          self.center_and_redefine_objects
+        )
+
+    def center_and_redefine_objects(self):
+
+        self.rect.center = SCREEN_RECT.center
+
+        self.caption.rect.topleft = (
+          self.rect.move(10, 10).topleft
+        )
+
+        self.toggle_play_button.rect.midleft = (
+          self.caption.rect.move(5, 0).midright
+        )
+
+        self.audio_index_entry.rect.midleft = (
+          self.toggle_play_button.rect.move(5, 0).midright
+        )
+
+        self.volume_area.midleft = (
           self.audio_index_entry.rect.move(10, 0).midright
         )
 
         self.full_volume_points = (
-               volume_area.bottomleft,
-               volume_area.topright,
-               volume_area.bottomright
+               self.volume_area.bottomleft,
+               self.volume_area.topright,
+               self.volume_area.bottomright
              )
+
+        self.set_current_volume_points()
 
     def set_current_volume_points(self):
 
@@ -291,6 +307,8 @@ class AudioPlayer(Object2D):
         while self.running:
 
             maintain_fps(FPS)
+
+            watch_window_size()
 
             try:
 
@@ -393,7 +411,11 @@ class AudioPlayer(Object2D):
 
             music.unload()
             music.stop()
-            self.toggle_play_button.switch_to_paused_surface()
+
+            (
+              self.toggle_play_button
+              .switch_to_paused_surface()
+            )
 
         else:
 

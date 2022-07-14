@@ -35,6 +35,8 @@ from pygameconstants import (
                        maintain_fps,
                      )
 
+from our3rdlibs.behaviour import watch_window_size
+
 from surfsman.draw import draw_border
 from surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
@@ -90,6 +92,8 @@ class Operations(Object2D):
         while self.running:
 
             maintain_fps(FPS)
+
+            watch_window_size()
 
             self.handle_input()
 

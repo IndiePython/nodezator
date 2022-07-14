@@ -6,6 +6,10 @@ from pathlib import Path
 
 from xml.etree.ElementTree import Element
 
+from functools import partial
+
+from operator import attrgetter
+
 
 ### third-party import
 from pygame.draw import rect as draw_rect
@@ -44,6 +48,8 @@ from widget.pathpreview.constants import (
                                   )
 
 
+GET_TOPLEFT = attrgetter('rect.topleft')
+
 class _BasePreview(Object2D):
     """Base class for path preview w/ common operations."""
 
@@ -59,11 +65,16 @@ class _BasePreview(Object2D):
           self,
 
           value = '.',
+
+          loop_holder = None,
+
           string_when_single = True,
 
           name = 'path_preview',
 
           width = 155,
+
+          draw_on_window_resize = empty_function,
 
           command = empty_function,
 
@@ -140,7 +151,15 @@ class _BasePreview(Object2D):
 
             width = 68,
 
+            loop_holder = loop_holder,
+
             command = self.update_previewed_path_from_entry,
+
+            draw_on_window_resize = draw_on_window_resize,
+
+            position_reference_getter = (
+              partial(GET_TOPLEFT, self)
+            ),
 
             coordinates_name ='topleft',
             coordinates_value=topleft,

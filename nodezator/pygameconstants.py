@@ -6,7 +6,11 @@ from pathlib import Path
 
 ### third-party imports
 
-from pygame         import init as init_pygame
+from pygame import (
+              RESIZABLE,
+              init as init_pygame,
+            )
+
 from pygame.key     import set_repeat
 from pygame.time    import Clock
 from pygame.image   import load as load_image
@@ -30,7 +34,7 @@ init_pygame()
 _CLOCK       = Clock()
 maintain_fps = _CLOCK.tick
 
-FPS = 30
+FPS = 24
 
 ### set caption and icon for window
 
@@ -46,13 +50,7 @@ set_repeat(500, 30) # set_repeat(delay, interval)
 ### screen setup/constants
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 1280, 720
-FLAG, DEPTH = 0, 32
-
-### uncomment for no-frame mode
-#
-#from pygame import NOFRAME
-#FLAG = NOFRAME
-###############################
+FLAG, DEPTH = RESIZABLE, 32
 
 SCREEN = set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), FLAG, DEPTH)
 

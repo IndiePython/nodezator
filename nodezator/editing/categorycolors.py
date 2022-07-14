@@ -145,6 +145,27 @@ class CategoryColorsPicking(Object2D, LoopHolder):
         ### create/restart tracking variable
         self.hovered_rect = None
 
+        ### center form and append centering method as
+        ### a window resize setup, if not appended already
+
+        self.center_category_colors_form()
+
+        if self.center_category_colors_form not in (
+
+          APP_REFS.window_resize_setups
+
+        ):
+
+            APP_REFS.window_resize_setups.append(
+              self.center_category_colors_form
+            )
+
+    def center_category_colors_form(self):
+
+        self.widgets.rect.center = self.rect.center = (
+          SCREEN_RECT.center
+        )
+
     def build_form_widgets(self):
         """Build widgets to hold settings for edition."""
         ### create list to hold widgets

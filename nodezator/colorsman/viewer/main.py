@@ -5,11 +5,20 @@ of given colors, like their values, names, how they
 look next to each other, etc.
 """
 
-### standard library import
+### standard library imports
+
 from functools import partial
+
+from operator import methodcaller
+
+
+### third-party import
+from pygame.math import Vector2
 
 
 ### local imports
+
+from config import APP_REFS
 
 from pygameconstants import SCREEN_RECT
 
@@ -48,7 +57,10 @@ from colorsman.colors import (
 ## class extensions
 
 from colorsman.viewer.modes.colorlist import ColorListMode
-from colorsman.viewer.modes.patterns.main import PatternsMode
+
+from colorsman.viewer.modes.patterns.main import (
+                                            PatternsMode
+                                          )
 
 
 ### constants
@@ -146,10 +158,8 @@ class ColorsViewer(ColorListMode, PatternsMode, LoopHolder):
         )
 
         ### create rect for this widget from the surface
-        ### we created and center it on the screen
-
+        ### we created
         self.rect = surf.get_rect()
-        self.rect.center = SCREEN_RECT.center
 
         ### build map to store behaviours for each mode
         ### and perform additional setups
@@ -165,6 +175,73 @@ class ColorsViewer(ColorListMode, PatternsMode, LoopHolder):
         ### assign default behaviour to exit_mode attribute
         self.exit_mode = empty_function
 
+        ### center viewer and append the centering method as
+        ### window resize setup
+
+        self.center_colors_viewer()
+
+        APP_REFS.window_resize_setups.append(
+
+          self.center_colors_viewer
+
+        )
+
+    def center_colors_viewer(self):
+        
+        ## store difference between screen center and
+        ## viewer center for centering the viewer on
+        ## screen
+
+        diff = (
+          Vector2(SCREEN_RECT.center) - self.rect.center
+        )
+
+        ##
+
+        self.rect.center = SCREEN_RECT.center
+
+        self.canvas.rect.center = self.rect.center
+
+        self.mode_options.rect.topright = (
+          self.rect.move(-8, 13).topright
+        )
+
+        self.go_back_button.rect.bottomright = (
+
+          self.rect.move(-10, -7).bottomright
+
+        )
+
+        self.modes_label.rect.midright = (
+          self.mode_options.rect.move(-5, -1).midleft
+        )
+
+        self.pattern_label.rect.bottomleft = (
+
+          self.rect.move(5, -7).bottomleft
+
+        )
+
+        ###
+
+        try: self.color_list_objs
+        except AttributeError: pass
+
+        else:
+
+            self.color_list_objs.rect.move_ip(diff)
+            self.color_list_bg.rect.move_ip(diff)
+
+        ###
+
+        self.pattern_options.rect.midleft = (
+          self.pattern_label.rect.move(5, 0).midright
+        )
+
+        self.redraw_pattern_button.rect.midleft = (
+          self.pattern_options.rect.move(5, 0).midright
+        )
+
     def build_widgets(self):
         """Build widgets to support the colors viewer."""
 
@@ -173,18 +250,27 @@ class ColorsViewer(ColorListMode, PatternsMode, LoopHolder):
         ## instantiate and store the options menu in its
         ## own attribute (also reference it locally)
 
-        topright = self.rect.move(-8, 13).topright
+        mode_options = self.mode_options = (
 
-        mode_options = \
-        self.mode_options = \
           OptionMenu(
-            loop_holder       = self,
-            value             = MODE_NAMES[0],
-            max_width         = 0,
-            options           = list(MODE_NAMES),
-            coordinates_name  = 'topright',
-            coordinates_value = topright
+
+            loop_holder = self,
+            value       = MODE_NAMES[0],
+            max_width   = 0,
+            options     = list(MODE_NAMES),
+
+            draw_on_window_resize = (
+
+              partial(
+                methodcaller('draw'),
+                self,
+              )
+
+            ),
+
           )
+
+        )
 
         ## define command for the menu and assign it to
         ## its 'command' attribute
@@ -198,21 +284,30 @@ class ColorsViewer(ColorListMode, PatternsMode, LoopHolder):
 
         ### create and setup a "go back button"
 
-        bottomright = self.rect.move(-10, -7).bottomright
+        go_back_button = self.go_back_button = (
 
-        go_back_button = \
           Object2D.from_surface(
-            surface=render_text(
-                   text                   = "Go back",
-                   font_height            = ENC_SANS_BOLD_FONT_HEIGHT,
-                   padding                = 5,
-                   foreground_color       = BUTTON_FG,
-                   background_color       = BUTTON_BG,
-                   depth_finish_thickness = 1
-                 ),
-            coordinates_name       = 'bottomright',
-            coordinates_value      = bottomright
+
+            surface = (
+
+              render_text(
+
+                text        = "Go back",
+                font_height = ENC_SANS_BOLD_FONT_HEIGHT,
+                padding     = 5,
+
+                foreground_color = BUTTON_FG,
+                background_color = BUTTON_BG,
+
+                depth_finish_thickness = 1
+              )
+
+            ),
+
           )
+
+        )
+
 
         go_back_button.on_mouse_release = \
                   get_oblivious_callable(
@@ -236,21 +331,31 @@ class ColorsViewer(ColorListMode, PatternsMode, LoopHolder):
         ## to it (other labels will be appended to this
         ## collection, but by other objects, not here)
 
-        midright = mode_options.rect.move(-5, -1).midleft
 
-        self.labels.append(
+        modes_label = self.modes_label = (
+
           Object2D.from_surface(
-            surface=render_text(
-                   text              = "Mode:",
-                   font_height       = ENC_SANS_BOLD_FONT_HEIGHT,
-                   padding           = 5,
-                   foreground_color  = WINDOW_FG,
-                   background_color  = WINDOW_BG,
-                 ),
-            coordinates_name  = 'midright',
-            coordinates_value = midright
+
+            surface = (
+
+              render_text(
+
+                text        = "Mode:",
+                font_height = ENC_SANS_BOLD_FONT_HEIGHT,
+                padding     = 5,
+
+                foreground_color  = WINDOW_FG,
+                background_color  = WINDOW_BG,
+
+              )
+
+            ),
+
           )
+
         )
+
+        self.labels.append(modes_label)
 
         ### create a pygame.Surface objects to use as a
         ### canvas that can be freely used in different
@@ -258,11 +363,18 @@ class ColorsViewer(ColorListMode, PatternsMode, LoopHolder):
 
         canvas_area = self.rect.inflate(-80, -80)
 
-        self.canvas = Object2D.from_surface(
-                        surface=render_rect(*canvas_area.size),
-                        coordinates_name='topleft',
-                        coordinates_value=canvas_area.topleft
-                      )
+        self.canvas = (
+
+          Object2D.from_surface(
+
+            surface=render_rect(*canvas_area.size),
+
+            coordinates_name='topleft',
+            coordinates_value=canvas_area.topleft
+
+          )
+
+        )
 
     def build_mode_behaviour_map(self):
         """Build map with behaviours for each mode.

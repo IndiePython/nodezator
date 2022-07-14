@@ -57,6 +57,8 @@ def setup_entries(self):
         loop_holder = self,
         font_height = FONT_HEIGHT,
 
+        draw_on_window_resize = self.draw,
+
         width = 170,
 
         numeric_classes_hint = 'int',
@@ -96,18 +98,24 @@ def setup_entries(self):
     hex_topleft = \
         self.scales[-1].rect.move(-69, 35).bottomleft
 
-    self.hex_entry = \
+    self.hex_entry = (
+
       StringEntry(
-        value              = '#ff0000',
-        loop_holder        = self,
-        font_height        = FONT_HEIGHT,
-        width              = 85,
+        value       = '#ff0000',
+        loop_holder = self,
+        font_height = FONT_HEIGHT,
+        width       = 85,
+
+        draw_on_window_resize = self.draw,
+
         command            = self.update_from_hex_entry,
         validation_command = validate_hex_color_string,
         formatting_command = str.lower,
         coordinates_name   = 'topleft',
         coordinates_value  = hex_topleft,
       )
+
+    )
 
     ## html name entry
 
@@ -121,6 +129,8 @@ def setup_entries(self):
         loop_holder = self,
         font_height = FONT_HEIGHT,
         width       = 170,
+
+        draw_on_window_resize = self.draw,
 
         command = self.update_from_html_name_entry,
 
@@ -145,6 +155,8 @@ def setup_entries(self):
         width       = 170,
 
         command = self.update_from_pygame_name_entry,
+
+        draw_on_window_resize = self.draw,
 
         validation_command = validate_pygame_color_name,
         formatting_command = format_color_name,

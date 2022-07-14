@@ -4,14 +4,23 @@
 from functools import partialmethod
 
 
+### third-party import
+from pygame.math import Vector2
+
+
 ### local imports
 
+from config import APP_REFS
+
 from pygameconstants import (
+                       SCREEN_RECT,
                        FPS,
                        maintain_fps,
                      )
 
 from ourstdlibs.behaviour import empty_function
+
+from our3rdlibs.behaviour import watch_window_size
 
 from classes2d.single      import Object2D
 from classes2d.collections import List2D
@@ -35,10 +44,12 @@ from imagesman.viewer.constants import (
                                   VIEWER_RECT,
                                   VIEWER_ICON,
                                   VIEWER_CAPTION,
+                                  VIEWER_OBJS,
                                   SMALL_THUMB,
                                   SMALL_THUMB_SETTINGS,
                                   VIEWER_BORDER_THICKNESS,
-                                  VIEWER_PADDING)
+                                  VIEWER_PADDING,
+                                )
 
 from imagesman.viewer.normalop import NormalModeOperations
 from imagesman.viewer.fullop   import FullModeOperations
@@ -79,6 +90,35 @@ class ImagesViewer(
 
         self.should_move_with_mouse = False
 
+        ### store the centering method as a
+        ### window resize setup
+
+        APP_REFS.window_resize_setups.append(
+          self.center_images_viewer
+        )
+
+    def center_images_viewer(self):
+        
+        diff = (
+          Vector2(SCREEN_RECT.center) - self.rect.center
+        )
+
+        ##
+
+        VIEWER_OBJS.rect.center = self.rect.center = (
+
+          SCREEN_RECT.center
+
+        )
+
+        ##
+
+        try: self.thumb_objects
+        except AttributeError: pass
+
+        else: self.thumb_objects.rect.move_ip(diff)
+        ##
+
     def view_images(self, image_paths):
         """Display images from the given paths."""
 
@@ -114,6 +154,8 @@ class ImagesViewer(
         while self.running:
             
             maintain_fps(FPS)
+
+            watch_window_size()
 
             self.handle_input()
             self.draw()

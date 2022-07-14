@@ -16,7 +16,7 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from config import FFMPEG_AVAILABLE
+from config import APP_REFS, FFMPEG_AVAILABLE
 
 from pygameconstants import (
                        SCREEN,
@@ -25,6 +25,8 @@ from pygameconstants import (
                      )
 
 from ourstdlibs.behaviour import get_oblivious_callable
+
+from our3rdlibs.behaviour import watch_window_size
 
 from loopman.exception import (
                          QuitAppException,
@@ -60,7 +62,6 @@ class VideoPreviewer(Object2D):
         draw_border(self.image, thickness = 2)
 
         self.rect = self.image.get_rect()
-        self.rect.center = SCREEN_RECT.center
 
         self.videopreview = CachedVideoObject(
 
@@ -79,20 +80,6 @@ class VideoPreviewer(Object2D):
 
                             )
 
-        self.videopreview.rect.center = self.rect.center
-
-        outline = self.videopreview.rect.inflate(2, 2)
-
-        outline.topleft = tuple(
-
-          a - b
-
-          for a, b in
-          zip(outline.topleft, self.rect.topleft)
-
-        )
-
-        draw_rect(self.image, (0, 0, 0), outline, 1)
 
         ###
 
@@ -109,11 +96,6 @@ class VideoPreviewer(Object2D):
               foreground_color=BLACK
             ),
 
-            coordinates_name  = 'topleft',
-            coordinates_value = (
-              self.rect.move(10, 10).topleft
-            )
-
           )
 
         )
@@ -127,36 +109,79 @@ class VideoPreviewer(Object2D):
             numeric_classes_hint = 'int',
             min_value = 0,
             command=self.update_preview_from_entry,
+            draw_on_window_resize = self.draw,
           )
 
+        )
+
+        ###
+        
+        self.not_available_message_obj = (
+
+          Object2D.from_surface(
+
+            render_text(
+              text='ffmpeg is not available',
+              font_height=17,
+              foreground_color=BLACK,
+              background_color=WHITE
+            ),
+
+          )
+
+        )
+
+        ###
+
+        self.draw_video_representation = (
+
+          self.draw_next_video_frame
+          if FFMPEG_AVAILABLE
+
+          else self.not_available_message_obj.draw
+
+        )
+
+        ###
+        self.center_video_previewer()
+
+        APP_REFS.window_resize_setups.append(
+          self.center_video_previewer
+        )
+
+        ###
+        outline = self.videopreview.rect.inflate(2, 2)
+
+        outline.topleft = tuple(
+
+          a - b
+
+          for a, b in
+          zip(outline.topleft, self.rect.topleft)
+
+        )
+
+        draw_rect(self.image, (0, 0, 0), outline, 1)
+
+    def center_video_previewer(self):
+
+        self.rect.center = SCREEN_RECT.center
+
+        self.videopreview.rect.center = self.rect.center
+
+        self.caption.rect.topleft = (
+          self.rect.move(10, 10).topleft
         )
 
         self.video_index_entry.rect.midtop = (
           self.videopreview.rect.move(0, 5).midbottom
         )
 
-        ###
-        self.draw_video_representation = (
+        if not FFMPEG_AVAILABLE:
 
-          self.draw_next_video_frame
-          if FFMPEG_AVAILABLE
-
-          else Object2D.from_surface(
-
-                          render_text(
-                            text='ffmpeg is not available',
-                            font_height=17,
-                            foreground_color=BLACK,
-                            background_color=WHITE
-                          ),
-
-                          coordinates_name='center',
-                          coordinates_value=(
-                            SCREEN_RECT.center
-                          ),
-
-                        ).draw
-        )
+            self.not_available_message_obj.rect.center = (
+              SCREEN_RECT.center
+            )
 
     def preview_videos(self, video_paths, index=0):
 
@@ -190,6 +215,8 @@ class VideoPreviewer(Object2D):
         while self.running:
 
             maintain_fps(self.fps)
+
+            watch_window_size()
 
             try:
 

@@ -168,6 +168,8 @@ class OptionMenu(OptionMenuLifetimeOperations):
             OPTION_MENU_UNHOVERED_BG
           ),
 
+          draw_on_window_resize = empty_function,
+
           name='option_menu',
           coordinates_name='topleft',
           coordinates_value=(0, 0),
@@ -262,6 +264,8 @@ class OptionMenu(OptionMenuLifetimeOperations):
         self.loop_holder = loop_holder
         self.name        = name
 
+        self.draw_on_window_resize = draw_on_window_resize
+
         ### define a max width taking the given width and
         ### arrow's width into account
 
@@ -351,6 +355,11 @@ class OptionMenu(OptionMenuLifetimeOperations):
 
         ## drawing behaviour
         self.draw = self.draw_collapsed
+
+        ## input handling
+        self.handle_input = (
+          self.handle_events_and_mouse_pos
+        )
 
     def validate_value_and_options(self, value, options):
         """Check whether value and options are valid.

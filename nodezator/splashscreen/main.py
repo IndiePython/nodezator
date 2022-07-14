@@ -1,10 +1,13 @@
 """Facility w/ loop holder representing a splash screen."""
 
+
 ### local imports
+
+from config import APP_REFS
 
 from translation import TRANSLATION_HOLDER as t
 
-from pygameconstants import SCREEN_RECT
+from pygameconstants import SCREEN
 
 from appinfo import (
                APP_VERSION,
@@ -31,6 +34,8 @@ from imagesman.cache import CachedImageObject
 
 from textman.render import render_text
 
+from textman.label.main import Label
+
 from colorsman.colors import (
                         BLACK,
                         WHITE,
@@ -42,6 +47,7 @@ from colorsman.colors import (
 
 from splashscreen.constants import (
                               TEXT_SETTINGS,
+                              URL_TEXT_SETTINGS,
                               TITLE_FONT_HEIGHT,
                               SOFTWARE_KIND_FONT_HEIGHT,
                               SUBHEADING_FONT_HEIGHT,
@@ -105,7 +111,8 @@ class SplashScreen(SplashScreenOperations):
         ### represents text describing the kind of software
         ### this application represents
 
-        self.kind_label = \
+        self.kind_label = (
+
           Object2D.from_surface(
             surface=render_text(
 
@@ -123,10 +130,13 @@ class SplashScreen(SplashScreenOperations):
                 )
           )
 
+        )
+
         ### obtain and store an object whose surface
         ### represents the text of the application title
 
-        self.title_label = \
+        self.title_label = (
+
           Object2D.from_surface(
             surface=render_text(
 
@@ -142,11 +152,14 @@ class SplashScreen(SplashScreenOperations):
                 )
           )
 
+        )
+
         ### obtain and store an object whose surface
         ### represents the text of a subheading for
         ### the application
 
-        self.subheading_label = \
+        self.subheading_label = (
+
           Object2D.from_surface(
             surface=render_text(
 
@@ -163,6 +176,8 @@ class SplashScreen(SplashScreenOperations):
                    }
                  )
           )
+
+        )
 
         ### obtain and store an object whose surface
         ### represents the text of the application
@@ -217,6 +232,27 @@ class SplashScreen(SplashScreenOperations):
 
         ### position objects
         self.position_and_define_boundaries()
+
+        ### url label
+
+        self.url_label = (
+
+          Label(
+            text='url',
+            max_width = self.rect.width,
+            **URL_TEXT_SETTINGS,
+          )
+
+        )
+        ###
+        self.center_splashscreen()
+
+        ###
+        APP_REFS.window_resize_setups.append(
+
+          self.center_splashscreen
+
+        )
 
         ### set update operation
         self.update = self.update_animation
@@ -471,12 +507,12 @@ class SplashScreen(SplashScreenOperations):
           body.rect.move(0, -20).midtop
         )
 
-        self.license_declaration.rect.topleft = (
-          body.rect.move(5, 25).bottomleft
+        self.license_declaration.rect.topright = (
+          body.rect.move(-30, 30).midbottom
         )
 
-        self.powered_link_objs.rect.topright = (
-          body.rect.move(-5, 15).bottomright
+        self.powered_link_objs.rect.topleft = (
+          body.rect.move(30, 20).midbottom
         )
 
         ### reference all objects in the header and body
@@ -493,26 +529,21 @@ class SplashScreen(SplashScreenOperations):
           )
         )
 
-        ### center objects on the screen
-        all_objs.rect.center = SCREEN_RECT.center
-
         ### create and store a surface representing the
         ### splash screen, which is 30 pixels larger
         ### both horizontally and vertically
 
         self.image = render_rect(
-                       *all_objs.rect.inflate(30, 30).size,
+                       *all_objs.rect.inflate(20, 40).size,
                        SPLASH_BG
                      )
 
         ### draw a depth finish around the image
         draw_depth_finish(self.image)
 
-        ### obtain a rect for the surface and center it
-        ### on the screen
+        ### obtain a rect for the surface
 
         self.rect = self.image.get_rect()
-        self.rect.center = SCREEN_RECT.center
 
         ### create and store a custom list wherein to
         ### store buttons; the list must be store both
@@ -538,53 +569,88 @@ class SplashScreen(SplashScreenOperations):
         ### or hold None, when there aren't any
         self.hovered_rect = None
 
+        ### define a flag to indicate when the url label
+        ### must be drawn
+        self.draw_url_label = False
+
         ### define surfaces with solid colors to represent
         ### the shadows at the bottom and right of the
         ### splash screen
 
         ## define the width and height of the shadows
 
-        lower_shadow_width, right_shadow_height = \
+        lower_shadow_width, right_shadow_height = (
                                             self.rect.size
+                                          )
 
-        right_shadow_width = lower_shadow_height = \
+        right_shadow_width = lower_shadow_height = (
                                           SHADOW_THICKNESS
+                                        )
 
-        ## also define values to offset the lower shadow
-        ## horizontally and the right shadow vertically
-        lower_shadow_x_offset = right_shadow_y_offset = \
-                                           SHADOW_THICKNESS
+        ## create the lower shadow
 
-        ## create the lower shadow, positioning it relative
-        ## to the splash screen's bottomleft
+        self.lower_shadow = (
 
-        topleft_of_lower = \
-          self.rect.move(lower_shadow_x_offset, 0).bottomleft
+          Object2D.from_surface(
 
-        self.lower_shadow = \
-               Object2D.from_surface(
-                 surface=render_rect(
-                        lower_shadow_width,
-                        lower_shadow_height,
-                        color=SPLASH_SHADOW_COLOR,
-                      ),
-                 coordinates_name='topleft',
-                 coordinates_value=topleft_of_lower
-               )
+            surface=render_rect(
+                      lower_shadow_width,
+                      lower_shadow_height,
+                      color=SPLASH_SHADOW_COLOR,
+                    ),
 
-        ## create the right shadow, positioning it relative
-        ## to the splash screen's topright
+          )
 
-        topleft_of_right = \
-          self.rect.move(0, right_shadow_y_offset).topright
+        )
 
-        self.right_shadow = \
-               Object2D.from_surface(
-                 surface=render_rect(
+        ## create the right shadow
+
+        self.right_shadow = (
+
+          Object2D.from_surface(
+
+            surface=render_rect(
                         right_shadow_width,
                         right_shadow_height,
                         color=SPLASH_SHADOW_COLOR,
                       ),
-                 coordinates_name='topleft',
-                 coordinates_value=topleft_of_right
-               )
+
+          )
+
+        )
+
+    def center_splashscreen(self):
+
+        center = SCREEN.get_rect().center
+        
+        self.rect.center = center
+
+        self.all_objs.rect.center = center
+
+        ## define values to offset the lower shadow
+        ## horizontally and the right shadow vertically
+
+        lower_shadow_x_offset = right_shadow_y_offset = (
+                                           SHADOW_THICKNESS
+                                         )
+
+        topleft_of_lower = (
+          self.rect
+          .move(lower_shadow_x_offset, 0)
+          .bottomleft
+        )
+
+        self.lower_shadow.rect.topleft = topleft_of_lower
+
+        topleft_of_right = (
+          self.rect
+          .move(0, right_shadow_y_offset)
+          .topright
+        )
+
+        self.right_shadow.rect.topleft = topleft_of_right
+
+        ###
+        self.url_label.rect.bottomleft = (
+          self.rect.move(1, -1).bottomleft
+        )

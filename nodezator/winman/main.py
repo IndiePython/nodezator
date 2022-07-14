@@ -1,6 +1,9 @@
 """Facility for window manager class."""
 
 ### third-party imports
+
+from pygame import Rect
+
 from pygame.display import update, set_caption
 
 
@@ -46,7 +49,7 @@ from surfsman.render import render_rect, render_separator
 
 from classes2d.single import Object2D
 
-from colorsman.colors import GRAPH_BG, WINDOW_BG
+from colorsman.colors import GRAPH_BG, WINDOW_BG, MENU_BG
 
 from memoryman import free_up_memory
 
@@ -158,8 +161,33 @@ class WindowManager(
         ### organize state behaviours
         self.build_state_behaviour_map()
 
-        ### set flag indicating whether the mouse is clicked
+        ### set flag indicating whether the mouse is
+        ### clicked
         self.clicked_mouse = False
+
+        ### create background obj
+
+        self.background = Object2D(
+                            rect=Rect(0, 0, 0, 0)
+                          )
+
+        ### create separator obj
+
+        self.separator = Object2D(
+                           rect=Rect(0, 0, 0, 0)
+                         )
+
+        ### append window resize setup method
+
+        APP_REFS.window_resize_setups.append( 
+          self.resize_setups
+        )
+
+    def resize_setups(self):
+
+        self.create_background_surface()
+        self.fix_menubar_size()
+        self.create_separator_surface()
 
     def prepare_for_new_session(self):
         """Instantiate and set up objects.
@@ -440,16 +468,7 @@ class WindowManager(
     def build_support_widgets(self):
         """Build widgets which support operations."""
         ### background surface
-
-        try: APP_REFS.source_path
-        except AttributeError: bg_color = WINDOW_BG
-        else: bg_color = GRAPH_BG
-
-        self.background = Object2D.from_surface(
-                            render_rect(
-                              *SCREEN_RECT.size, bg_color
-                            )
-                          )
+        self.create_background_surface()
 
         ### create the menubar
         self.create_menubar()
@@ -460,19 +479,58 @@ class WindowManager(
         except AttributeError: pass
         else: self.setup_switches()
 
-        ### create separator for aesthetics (placed below
+        ### separator for aesthetics (placed below
         ### menubar)
+        self.create_separator_surface()
 
-        separator_topleft = self.menubar.rect.bottomleft
+    def create_background_surface(self):
 
-        self.separator = (
+        ### background surface
 
-          Object2D.from_surface(
-            surface=render_separator(SCREEN_RECT.width),
-            coordinates_name='topleft',
-            coordinates_value=separator_topleft
-          )
+        try: APP_REFS.source_path
+        except AttributeError: bg_color = WINDOW_BG
+        else: bg_color = GRAPH_BG
 
+        self.background.image = (
+          render_rect(*SCREEN_RECT.size, bg_color)
+        )
+
+        self.background.rect.size = (
+
+          self.background.image.get_size()
+
+        )
+
+    def fix_menubar_size(self):
+
+        _, height = self.menubar.image.get_size()
+
+        width = SCREEN_RECT.width
+
+        self.menubar.image = render_rect(
+                               width, height, MENU_BG
+                             )
+
+        self.menubar.rect.width = width
+
+        ##
+
+    def create_separator_surface(self):
+
+        separator = self.separator
+
+        separator.image = render_separator(
+                            SCREEN_RECT.width
+                          )
+
+        separator.rect.size = (
+
+          self.separator.image.get_size()
+
+        )
+
+        separator.rect.topleft = (
+          self.menubar.rect.bottomleft
         )
 
     def build_app_widgets(self):

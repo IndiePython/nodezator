@@ -45,6 +45,7 @@ from colorsman.colors import (
                         BLACK,
                         WHITE,
                         SPLASH_BG,
+                        NODE_BODY_BG,
                       )
 
 from splashscreen.constants import TEXT_SETTINGS
@@ -115,12 +116,12 @@ WEB_ICON = render_layered_icon(
              chars=[chr(ordinal) for ordinal in (90, 91)],
 
              dimension_name  = 'height',
-             dimension_value = 28,
+             dimension_value = 24,
 
              colors = [BLACK, (0, 100, 255)],
 
-             background_width  = 28,
-             background_height = 28,
+             background_width  = 24,
+             background_height = 24,
            )
 
 AWW_ICON = render_layered_icon(
@@ -147,6 +148,43 @@ FOLDER_ICON = render_layered_icon(
                 background_height = 24,
               )
 
+node_icons = [
+
+  render_layered_icon(
+
+    chars=[
+      chr(ordinal) for ordinal in (177, 178, 179)
+    ],
+
+    dimension_name  = 'height',
+    dimension_value = 18,
+
+    colors = [
+      BLACK,
+      color,
+      NODE_BODY_BG,
+    ],
+
+    background_width  = 18,
+    background_height = 18,
+
+  )
+
+  for color in (
+    (185, 0, 100),
+    (0, 155, 185),
+    (0, 185, 100),
+  )
+
+]
+
+NODES_GALLERY_ICON = combine_surfaces(
+                       node_icons,
+                       retrieve_pos_from = 'topleft',
+                       assign_pos_to     = 'topleft',
+                       offset_pos_by     = (5, 5)
+                     )
+
 
 ### main functions
 
@@ -170,18 +208,32 @@ def get_project_link_objs():
           ],
 
           dimension_name  = 'width',
-          dimension_value = 34,
+          dimension_value = 28,
 
           colors = [BLACK, WHITE, (77, 77, 105)],
 
-          background_width  = 36,
-          background_height = 36,
+          background_width  = 30,
+          background_height = 30,
         )
       ),
 
       (
         IMAGE_SURFS_DB
-        ['indiepython_logo.png']
+        ['github_mark.png']
+        [{'use_alpha': True}]
+      ),
+
+      (
+        IMAGE_SURFS_DB
+        ['github_mark.png']
+        [{'use_alpha': True}]
+      ),
+
+      NODES_GALLERY_ICON,
+
+      (
+        IMAGE_SURFS_DB
+        ['indie_python_logo.png']
         [{'use_alpha': True}]
       ),
 
@@ -199,13 +251,13 @@ def get_project_link_objs():
 
       (
         IMAGE_SURFS_DB
-        ['patreon_logo.png']
+        ['discord_logo.png']
         [{'use_alpha': True}]
       ),
 
       (
         IMAGE_SURFS_DB
-        ['discord_logo.png']
+        ['patreon_logo.png']
         [{'use_alpha': True}]
       ),
 
@@ -237,53 +289,53 @@ def get_project_link_objs():
     project_links_data = (
 
       (
-        '\n'.join((
-               t.splash_screen.application_website,
-               t.splash_screen.application_website_name,
-             )),
+        t.splash_screen.application_website,
         t.splash_screen.application_website_url,
       ),
+
       (
-        '\n'.join((
-               t.splash_screen.project_website,
-               t.splash_screen.project_website_name,
-             )),
-        t.splash_screen.project_website_url
+        "Source code",
+        "https://github.com/KennedyRichard/nodezator",
       ),
+
       (
-        '\n'.join((
-               t.splash_screen.developer_website,
-               t.splash_screen.developer_website_name,
-             )),
+        "Discussions/forum",
+        "https://github.com/KennedyRichard/nodezator/discussions",
+      ),
+
+      (
+        "Find, download, publish nodes",
+        "https://gallery.nodezator.com",
+      ),
+
+      (
+        t.splash_screen.project_website,
+        t.splash_screen.project_website_url,
+      ),
+
+      (
+        t.splash_screen.developer_website,
         t.splash_screen.developer_website_url,
       ),
+
       (
-        '\n'.join((
-               t.splash_screen.developer_twitter,
-               'twitter.com/KennedyRichard',
-             )),
-        'https://twitter.com/KennedyRichard'
+        t.splash_screen.developer_twitter,
+        'https://twitter.com/KennedyRichard',
       ),
+
       (
-        '\n'.join((
-               "Support project on patreon",
-               'patreon.com/KennedyRichard',
-             )),
-        'https://patreon.com/KennedyRichard'
+        "Join us on discord",
+        'https://indiepython.com/discord',
       ),
+
       (
-        '\n'.join((
-               "Join us on discord",
-               'indiepython.com/discord',
-             )),
-        'https://indiepython.com/discord'
+        "Support us on patreon",
+        'https://patreon.com/KennedyRichard',
       ),
+
       (
-        '\n'.join((
-               "Other support options",
-               'indiepython.com/donate',
-             )),
-        'https://indiepython.com/donate'
+        "Other support options",
+        'https://indiepython.com/donate',
       ),
     )
 
@@ -296,10 +348,8 @@ def get_project_link_objs():
         
         ### create text surface
 
-        text_surf = render_multiline_text(
+        text_surf = render_text(
                       text = text,
-                      retrieve_pos_from='bottomleft',
-                      assign_pos_to='topleft',
                       **TEXT_SETTINGS
                     )
 
@@ -330,7 +380,8 @@ def get_project_link_objs():
                                 get_oblivious_callable(
                                   partial(open_url, url)
                                 )
-                              )
+                              ),
+                              href = url,
                             )
 
         ### store the link object
@@ -341,7 +392,7 @@ def get_project_link_objs():
     project_link_objs.rect.snap_rects_ip(
                              retrieve_pos_from = 'bottomleft',
                              assign_pos_to     = 'topleft',
-                             offset_pos_by     = (0, 5),
+                             offset_pos_by     = (0, 3),
                            )
 
     ### instantiate special label and position it relative
@@ -388,10 +439,7 @@ def get_powered_link_objs():
           ['python_splashscreen_icon.png']
           [{'use_alpha': True}]
         ),
-        '\n'.join((
-               'Python',
-               'python.org',
-             )),
+        'Python',
         'https://python.org'
       ),
 
@@ -401,10 +449,7 @@ def get_powered_link_objs():
           ['pygame_logo.png']
           [{'use_alpha': True}]
         ),
-        '\n'.join((
-               'pygame',
-               'pygame.org',
-             )),
+        'pygame',
         'https://pygame.org/'
       ),
 
@@ -415,10 +460,8 @@ def get_powered_link_objs():
     for icon, text, url \
     in powered_links_data:
         
-        text_surf = render_multiline_text(
+        text_surf = render_text(
                       text = text,
-                      retrieve_pos_from='bottomleft',
-                      assign_pos_to='topleft',
                       **TEXT_SETTINGS
                     )
 
@@ -444,7 +487,8 @@ def get_powered_link_objs():
                                 get_oblivious_callable(
                                   partial(open_url, url)
                                 )
-                              )
+                              ),
+                              href = url,
                             )
 
         ### store the link object
@@ -475,7 +519,7 @@ def get_powered_link_objs():
     )
 
     powered_links_caption.rect.midbottom = (
-      powered_link_objs.rect.move(0, -10).midtop
+      powered_link_objs.rect.move(0, -5).midtop
     )
 
     ### then add the label to the list of objects
@@ -528,7 +572,7 @@ def get_action_objs():
 
       (
         AWW_ICON,
-        "Open manual",
+        "Read manual",
         partial(
           open_htsl_link,
           'htap://manual.nodezator.pysite'
@@ -611,13 +655,18 @@ def get_recent_file_objs(recent_files):
     ## instantiate and store a label with
     ## 'Open recent files..' as its text
 
-    recent_files_label = \
+    recent_files_label = (
+
       Object2D.from_surface(
+
         render_text(
           text = t.splash_screen.open_recent_files,
           **TEXT_SETTINGS
         )
+
       )
+
+    )
 
     objs.append(recent_files_label)
 
@@ -627,7 +676,7 @@ def get_recent_file_objs(recent_files):
     ## reference the 'open()' method of the window manager
     window_manager_open = APP_REFS.window_manager.open
 
-    ## iterate over the 07 most recent files among the ones
+    ## iterate over the 08 most recent files among the ones
     ## listed, creating the "recent file" objects;
     ##
     ## the quantity of files was chosen arbitrarily, based
@@ -753,6 +802,8 @@ def get_license_declaration_obj():
 
     objs.rect.topleft = (0, 0)
 
+    url ='https://unlicense.org'
+
     return (
 
       Object2D.from_surface(
@@ -770,9 +821,11 @@ def get_license_declaration_obj():
 
                  on_mouse_release=(
                    get_oblivious_callable(
-                     partial(open_url, 'https://unlicense.org')
+                     partial(open_url, url)
                    )
-                 )
+                 ),
+
+                 href = url,
 
                )
     )

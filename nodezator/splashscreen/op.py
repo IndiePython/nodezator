@@ -7,6 +7,7 @@ from functools import partialmethod
 ### third-party imports
 
 from pygame import (
+
               QUIT,
 
               KEYUP, K_ESCAPE,
@@ -15,6 +16,7 @@ from pygame import (
 
               MOUSEBUTTONDOWN, MOUSEBUTTONUP,
               MOUSEMOTION,
+
             )
 
 from pygame.event import get as get_events
@@ -31,8 +33,9 @@ from pygameconstants import SCREEN
 from classes2d.single import Object2D
 
 from loopman.exception import (
-                                SwitchLoopException,
-                                QuitAppException)
+                         SwitchLoopException,
+                         QuitAppException,
+                       )
 
 from colorsman.colors import SPLASH_FONT
 
@@ -186,23 +189,45 @@ class SplashScreenOperations(Object2D):
 
         ### iterate over the buttons, checking whether
         ### any among them is hovered by the mouse
-        ### (that is, the mouse collides with the button),
-        ### in which case it must be marked as the hovered
-        ### object by storing a reference to its rect in
-        ### the 'hovered_rect' attribute, breaking out of
-        ### the "for loop" immediately
+        ### (that is, the mouse collides with the button);
+        ###
+        ### if a hovered one is found, store a reference
+        ### to its rect in the 'hovered_rect' attribute,
+        ### breaking out of the "for loop" immediately;
+        ###
+        ### if it has an href attribute (it is a link),
+        ### set it on the url label; 
 
         for button in self.buttons:
             
             if button.rect.collidepoint(mouse_pos):
 
                 self.hovered_rect = button.rect
+
+                url_label = self.url_label
+
+                if hasattr(button, 'href'):
+
+                    url_label = self.url_label
+                    url_label.set(f'Go to {button.href}')
+
+                    url_label.rect.bottomleft = (
+                      self.rect.move(1, -1).bottomleft
+                    )
+
+                else: url_label.set('')
+
                 break
 
         ### if we don't break out of the "for loop" above,
         ### that is, if we don't find a hovered button,
         ### we assign None to the 'hovered_rect' attribute
-        else: self.hovered_rect = None
+        ### and set the url label to an empty string
+
+        else:
+
+            self.hovered_rect = None
+            self.url_label.set('')
 
     def dont_update_animation(self):
         """Keep animation paused."""
@@ -228,7 +253,7 @@ class SplashScreenOperations(Object2D):
         self.all_objs.draw()
 
         ### if there is a hovered rect, draw it
-        ### in the splash screen's surface
+        ### in the screen
 
         if self.hovered_rect:
 
@@ -238,6 +263,12 @@ class SplashScreenOperations(Object2D):
               self.hovered_rect,
               1
             )
+
+        ### if there is text set on the url label, draw it
+        ### in the screen
+
+        if self.url_label.get():
+            self.url_label.draw()
 
         ### draw the shadows of the splash screen
 

@@ -137,8 +137,8 @@ class Operations(LoopHolder):
                position_method_kwargs,
              )
 
-        ### position color picker objects
-        self.position_objects()
+        ### center color picker
+        self.center_color_picker()
 
         ### turn the 'reset' flag off
         self.cancel = False
@@ -354,27 +354,6 @@ class Operations(LoopHolder):
                  )
 
         method(**position_method_kwargs)
-
-    def position_objects(self):
-        """Position color picker objects.
-
-        They are positioned relative to each other and
-        to the screen as well.
-        """
-        ### center color widgets on the screen
-        self.color_widgets.rect.center = SCREEN_RECT.center
-
-        ### move caption right to their topleft and
-        ### buttons right to their bottomright with
-        ### a slight offset
-
-        self.caption.rect.bottomleft = (
-          self.color_widgets.rect.move(0, -15).topleft
-        )
-
-        self.buttons.rect.topright = (
-          self.color_widgets.rect.move(0, 15).bottomright
-        )
 
     def event_handling(self):
         """Handle events from the event queue."""
@@ -646,4 +625,5 @@ class Operations(LoopHolder):
           ],
           self.labels.rect
         )
+
         self.labels.draw()

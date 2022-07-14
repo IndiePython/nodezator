@@ -53,10 +53,15 @@
   ### splash screen
 
   "SPLASH_SCREEN_COLORS" : {
+
     "SPLASH_BG"           : ( 47,  47,  60),
     "SPLASH_FONT"         : (228, 228, 228),
     "SPLASH_ROBOT_BG"     : ( 30, 130,  70),
     "SPLASH_SHADOW_COLOR" : (  0,   0,   0),
+
+    "SPLASH_URL_FG" : (228, 228, 228),
+    "SPLASH_URL_BG" : ( 10,  20, 235),
+
   },
 
   ### window manager: labels

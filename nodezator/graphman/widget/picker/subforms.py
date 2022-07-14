@@ -178,6 +178,7 @@ class SubformCreation:
         value_entry = StringEntry(
                         loop_holder=self,
                         name=widget_name,
+                        draw_on_window_resize = self.draw,
                         coordinates_name=coordinates_name,
                         coordinates_value=coordinates_value,
                       )
@@ -226,6 +227,7 @@ class SubformCreation:
               loop_holder=self,
               value=options[0],
               options=options,
+              draw_on_window_resize = self.draw,
               coordinates_name=coordinates_name,
               coordinates_value=coordinates_value,
             )
@@ -302,6 +304,7 @@ class SubformCreation:
         value_entry = LiteralEntry(
                         loop_holder=self,
                         name=widget_name,
+                        draw_on_window_resize = self.draw,
                         coordinates_name=coordinates_name,
                         coordinates_value=coordinates_value,
                       )
@@ -360,6 +363,7 @@ class SubformCreation:
               value=options[0],
               loop_holder=self,
               options=options,
+              draw_on_window_resize = self.draw,
               coordinates_name=coordinates_name,
               coordinates_value=coordinates_value,
             )
@@ -415,6 +419,7 @@ class SubformCreation:
               loop_holder=self,
               value=options[0],
               options=options,
+              draw_on_window_resize = self.draw,
               coordinates_name=coordinates_name,
               coordinates_value=coordinates_value,
             )
@@ -679,6 +684,8 @@ class SubformCreation:
         value_fontpreview = \
             FontPreview(
                name=widget_name,
+               loop_holder = self,
+               draw_on_window_resize = self.draw,
                coordinates_name=coordinates_name,
                coordinates_value=coordinates_value
             )
@@ -727,15 +734,20 @@ class SubformCreation:
 
         # instantiate and store
 
-        value_int_float_entry = \
-            IntFloatEntry(
-               loop_holder=self,
-               value=0,
-               numeric_classes_hint="int_float",
-               allow_none=True,
-               name=widget_name,
-               coordinates_name=coordinates_name,
-               coordinates_value=coordinates_value)
+        value_int_float_entry = (
+
+          IntFloatEntry(
+            loop_holder=self,
+            value=0,
+            numeric_classes_hint="int_float",
+            allow_none=True,
+            draw_on_window_resize = self.draw,
+            name=widget_name,
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+          )
+
+        )
 
         int_float_entry_subform.append(
                                     value_int_float_entry)
@@ -832,6 +844,7 @@ class SubformCreation:
                    value=None,
                    numeric_classes_hint="int_float",
                    allow_none=True,
+                   draw_on_window_resize = self.draw,
                    coordinates_name="topleft",
                    coordinates_value=coordinates_value)
 
@@ -926,6 +939,8 @@ class SubformCreation:
         value_pathpreview = \
             PathPreview(
                name=widget_name,
+               loop_holder = self,
+               draw_on_window_resize = self.draw,
                coordinates_name=coordinates_name,
                coordinates_value=coordinates_value)
 
@@ -976,6 +991,8 @@ class SubformCreation:
         value_textpreview = \
             TextPreview(
                name=widget_name,
+               loop_holder = self,
+               draw_on_window_resize = self.draw,
                coordinates_name=coordinates_name,
                coordinates_value=coordinates_value)
 
@@ -1026,6 +1043,8 @@ class SubformCreation:
         value_imagepreview = \
             ImagePreview(
                name=widget_name,
+               loop_holder = self,
+               draw_on_window_resize = self.draw,
                coordinates_name=coordinates_name,
                coordinates_value=coordinates_value
             )
@@ -1077,6 +1096,8 @@ class SubformCreation:
         value_audiopreview = \
           AudioPreview(
             name=widget_name,
+            loop_holder = self,
+            draw_on_window_resize = self.draw,
             coordinates_name=coordinates_name,
             coordinates_value=coordinates_value
           )
@@ -1128,6 +1149,8 @@ class SubformCreation:
         value_videopreview_display = \
           VideoPreview(
             name=widget_name,
+            loop_holder = self,
+            draw_on_window_resize = self.draw,
             coordinates_name=coordinates_name,
             coordinates_value=coordinates_value
           )
@@ -1227,6 +1250,7 @@ class SubformCreation:
               loop_holder=self,
               value=options[0],
               options=options,
+              draw_on_window_resize = self.draw,
               coordinates_name=coordinates_name,
               coordinates_value=coordinates_value,
             )
@@ -1373,6 +1397,7 @@ class SubformCreation:
               loop_holder=self,
               value=available_options[0],
               options=available_options,
+              draw_on_window_resize = self.draw,
               coordinates_name=coordinates_name,
               coordinates_value=coordinates_value,
             )
@@ -1413,19 +1438,31 @@ class SubformCreation:
 
         if kind_of_content == "strings":
 
-            widget_factory = \
-                partial(StringEntry,
-                        loop_holder=self,
-                        name="option_item")
+            widget_factory = (
+
+              partial(
+                StringEntry,
+                loop_holder=self,
+                draw_on_window_resize = self.draw,
+                name="option_item"
+              )
+
+            )
 
 
         elif kind_of_content == "intfloats":
 
-            widget_factory = \
-                partial(IntFloatEntry,
-                        loop_holder=self,
-                        name="option_item",
-                        allow_none=True)
+            widget_factory = (
+
+              partial(
+                IntFloatEntry,
+                loop_holder=self,
+                draw_on_window_resize = self.draw,
+                name="option_item",
+                allow_none=True,
+              )
+
+            )
 
         # instantiate and store widget list
 
@@ -1608,19 +1645,31 @@ class SubformCreation:
 
         if kind_of_content == "strings":
 
-            widget_factory = \
-                partial(StringEntry,
-                        loop_holder=self,
-                        name="option_item")
+            widget_factory = (
+
+              partial(
+                StringEntry,
+                loop_holder=self,
+                draw_on_window_resize = self.draw,
+                name="option_item"
+              )
+
+            )
 
 
         elif kind_of_content == "intfloats":
 
-            widget_factory = \
-                partial(IntFloatEntry,
-                        loop_holder=self,
-                        name="option_item",
-                        allow_none=True)
+            widget_factory = (
+
+              partial(
+                IntFloatEntry,
+                loop_holder=self,
+                draw_on_window_resize = self.draw,
+                name="option_item",
+                allow_none=True,
+              )
+
+            )
 
         # instantiate and store widget list
 
@@ -1807,24 +1856,32 @@ class SubformCreation:
 
         if kind_of_content == 'strings':
 
-            widget_factory = \
+            widget_factory = (
+
               partial(
                 StringEntry,
                 loop_holder=self,
+                draw_on_window_resize = self.draw,
                 name='available_item',
               )
+
+            )
 
 
         elif kind_of_content == 'intfloats':
 
-            widget_factory = \
+            widget_factory = (
+
               partial(
                 IntFloatEntry,
                 value=0,
                 loop_holder=self,
+                draw_on_window_resize = self.draw,
                 name='available_item',
                 allow_none=False,
               )
+
+            )
 
         # instantiate and store widget list
 

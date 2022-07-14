@@ -20,7 +20,7 @@ from pygame.display import update
 
 ### local imports
 
-from pygameconstants import SCREEN_RECT, blit_on_screen
+from pygameconstants import blit_on_screen
 
 from classes2d.single import Object2D
 

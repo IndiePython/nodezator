@@ -47,7 +47,7 @@ class Preparation:
              )
 
         ###
-        self.cache[resource_path] = list(self.objs)
+        self.cache[resource_path] = List2D(self.objs)
 
         ### remember to process title as well
 

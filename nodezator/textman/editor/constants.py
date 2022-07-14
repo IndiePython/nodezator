@@ -6,15 +6,15 @@ from pygame import Rect
 
 ### local imports
 
-from pygameconstants import SCREEN_RECT
-
 from fontsman.constants import (
-                               ENC_SANS_BOLD_FONT_PATH,
-                               FIRA_MONO_BOLD_FONT_PATH)
+                          ENC_SANS_BOLD_FONT_PATH,
+                          FIRA_MONO_BOLD_FONT_PATH,
+                        )
 
 from colorsman.colors import (
-                             TEXT_EDITING_AREA_FG,
-                             TEXT_EDITING_AREA_BG)
+                        TEXT_EDITING_AREA_FG,
+                        TEXT_EDITING_AREA_BG,
+                      )
 
 
 ### general constants
@@ -42,8 +42,6 @@ TEXT_EDITOR_HEIGHT = EDITING_AREA_HEIGHT + 100
 TEXT_EDITOR_RECT = \
     Rect(0, 0, TEXT_EDITOR_WIDTH, TEXT_EDITOR_HEIGHT)
 
-TEXT_EDITOR_RECT.center = SCREEN_RECT.center
-
 ## rect representing the editing area
 ##
 ## defining the width isn't important here, because it is
@@ -53,7 +51,7 @@ TEXT_EDITOR_RECT.center = SCREEN_RECT.center
 ## to display the highest line number increases/decreases)
 
 EDITING_AREA_RECT = Rect(0, 0, 0, EDITING_AREA_HEIGHT)
-EDITING_AREA_RECT.center = SCREEN_RECT.center
+EDITING_AREA_RECT.center = TEXT_EDITOR_RECT.center
 
 
 ### default font settings for text;

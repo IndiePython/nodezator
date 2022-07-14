@@ -44,7 +44,6 @@ from fileman.constants import (
                          PATH_OBJ_QUANTITY,
                          PATH_OBJ_PADDING,
                          BKM_PANEL_WIDTH,
-                         BKM_PANEL_TOPLEFT,
                          MAX_MSECS_TO_2ND_MOUSE_EVENT,
                        )
 
@@ -77,20 +76,20 @@ class BookmarkPanel:
         self.dir_panel = directory_panel
         self.semitransp_obj = semitransp_obj
 
-        ### Build widget structure
-        self.build_widget_structure()
-
         ### create a rect attribute
 
         self.rect = Rect(
                       
                       ## position
-                      BKM_PANEL_TOPLEFT,
+                      (0, 0),
 
                       ## size
-                      (BKM_PANEL_WIDTH, self.height)
+                      (BKM_PANEL_WIDTH, 0)
 
                     )
+
+        ### Build widget structure
+        self.build_widget_structure()
 
     def build_widget_structure(self):
         """Build widget structure."""
@@ -157,42 +156,39 @@ class BookmarkPanel:
 
     def create_bookmark_objects(self):
         """Instantiate and store objects for bookmarks."""
+        width = BKM_PANEL_WIDTH - 2
+
         ### create a special list to hold the objects
-        self.bookmark_objs = List2D()
 
-        ### define data to use when instantiating the
-        ### objects
+        self.bookmark_objs = List2D(
 
-        topleft = Vector2(BKM_PANEL_TOPLEFT) + (1, 1)
-        width   = BKM_PANEL_WIDTH - 2
+          PathObject(
+            path=None,
+            width=width,
+            padding=PATH_OBJ_PADDING,
+          )
 
-        ### instantiate and position path objects one
-        ### below the other
+          for _ in range(PATH_OBJ_QUANTITY)
 
-        for _ in range(PATH_OBJ_QUANTITY):
-            
-            ## instantiate (position is also set)
+        )
 
-            path_obj = PathObject(
-                         path=None,
-                         width=width,
-                         padding=PATH_OBJ_PADDING,
-                         coordinates_name='topleft',
-                         coordinates_value=topleft
-                       )
+        ### position objs relative to each other
 
-            ## store
-            self.bookmark_objs.append(path_obj)
+        self.bookmark_objs.rect.snap_rects_ip(
 
-            ## update the topleft coordinate so next
-            ## object is position below the current one
-            topleft[1] += path_obj.rect.height
+          retrieve_pos_from = 'bottomleft',
+          assign_pos_to     = 'topleft',
 
-        ### finally store the total height of all the
-        ### objects in the list plus 2; this will be
-        ### used to define the height of the bookmark
-        ### panel itself
-        self.height = self.bookmark_objs.rect.height + 2
+        )
+
+        ### assign height of self.path_objs plus 2
+        ### as the panel's height
+
+        self.rect.height = (
+
+          self.bookmark_objs.rect.height + 2
+
+        )
 
     def update_bookmarks(self):
         """(Re)load bookmarks from file.
@@ -523,3 +519,16 @@ class BookmarkPanel:
 
     add_bookmark    = partialmethod(change_bookmarks,  True)
     remove_bookmark = partialmethod(change_bookmarks, False)
+
+    def reposition(self):
+        """Reposition panel relative to file manager."""
+        self.rect.topright = (
+          self.dir_panel.rect.move(-15, 0).topleft
+        )
+
+        self.bookmark_objs.rect.topleft = (
+          self.rect.move(1, 1).topleft
+        )
+
+        for path_obj in self.bookmark_objs:
+            path_obj.reposition_icon_and_text()

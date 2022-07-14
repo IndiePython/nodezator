@@ -37,9 +37,12 @@ from ourstdlibs.behaviour import (
                             get_oblivious_callable,
                           )
 
+from our3rdlibs.behaviour import watch_window_size
+
 from loopman.exception import (
-                                SwitchLoopException,
-                                QuitAppException)
+                         SwitchLoopException,
+                         QuitAppException,
+                       )
 
 from surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
@@ -130,6 +133,9 @@ class FileManagerOperations(Object2D):
             ### keep a constant framerate
             maintain_fps(FPS)
 
+            ### watch for changes on window size
+            watch_window_size()
+
             ### run the GUD methods (check the glossary
             ### for loop holder/loop/methods)
 
@@ -203,8 +209,9 @@ class FileManagerOperations(Object2D):
 
         ## reposition the chosen widget beside the widget
         ## label
-        chosen_widget.rect.midleft = \
-              self.widget_label.rect.move(5, 0).midright
+        chosen_widget.rect.midleft = (
+          self.widget_label.rect.move(5, 0).midright
+        )
 
         ## set 'update_path_selection_on_load' behaviour;
         ##

@@ -6,9 +6,7 @@ from pygame      import Rect
 from pygame.math import Vector2
 
 
-### local imports
-
-from pygameconstants import SCREEN_RECT
+### local import
 from ourstdlibs.mathutils import get_reaching_multiple
 
 
@@ -61,8 +59,11 @@ def enforce_multiple(unit_rect, area_rect):
 
 
 def generate_grid_lines(
-    unit_rect, area_rect=SCREEN_RECT,
-    use_vectors=False, separate_orientation=False):
+      unit_rect,
+      area_rect,
+      use_vectors=False,
+      separate_orientation=False,
+    ):
     """Generate and return a list of grid-like lines.
 
     The list items are tuples containing two points each,
@@ -140,7 +141,8 @@ def generate_grid_lines(
     else: return horiz_lines + vert_lines 
 
 def move_grid_lines_along_axis(
-    lines, axis_name, delta, unit_rect, area_rect):
+      lines, axis_name, delta, unit_rect, area_rect
+    ):
     """Move vectors so they are always inside grid area.
 
     lines

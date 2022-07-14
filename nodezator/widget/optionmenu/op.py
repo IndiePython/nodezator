@@ -3,16 +3,23 @@
 ### third-party imports
 
 from pygame import (
-                   QUIT, KEYUP, K_ESCAPE,
-                   MOUSEBUTTONUP, MOUSEMOTION,
 
-                   Rect)
+              QUIT, KEYUP, K_ESCAPE,
+              MOUSEBUTTONUP, MOUSEMOTION,
+
+              VIDEORESIZE,
+
+              Rect,
+
+            )
 
 from pygame.display import update
 
 from pygame.event import get     as get_events
 from pygame.draw  import rect    as draw_rect
 from pygame.mouse import get_pos as get_mouse_pos
+
+from pygame.math import Vector2
 
 
 ### local imports
@@ -22,8 +29,9 @@ from pygameconstants import SCREEN, blit_on_screen
 from classes2d.single import Object2D
 
 from loopman.exception import (
-                                QuitAppException,
-                                SwitchLoopException)
+                         QuitAppException,
+                         SwitchLoopException,
+                       )
 
 from colorsman.colors import BLACK
 
@@ -197,8 +205,16 @@ class OptionMenuLifetimeOperations(Object2D):
         self.draw = self.draw_expanded
         self.on_mouse_release = self.choose_option
 
+        self.handle_input = (
+          self.handle_events_and_mouse_pos
+        )
+
         ### position options
         self.align_subobjects()
+
+        ### store topleft left position for later
+        ### reference if needed
+        self.last_topleft = self.rect.topleft
 
         ### react as if mouse moved
         self.on_mouse_motion(event.pos)
@@ -298,6 +314,43 @@ class OptionMenuLifetimeOperations(Object2D):
             elif event.type == MOUSEMOTION:
                 self.on_mouse_motion(event.pos)
 
+            ### if window is resized, set handle_input
+            ### to a new callable that keeps handling
+            ### events and mouse pos and at the same time
+            ### watches out for movement of the widget
+
+            elif event.type == VIDEORESIZE:
+
+                self.handle_input = (
+                  self.watch_out_for_movement
+                )
+
+    def watch_out_for_movement(self):
+
+        if self.rect.topleft != self.last_topleft:
+
+            diff = (
+              Vector2(self.rect.topleft)
+              - self.last_topleft
+            )
+
+            self.last_topleft = self.rect.topleft
+
+            self.align_subobjects()
+
+            self.on_mouse_motion(get_mouse_pos())
+
+            ##
+            self.draw_on_window_resize()
+            self.draw()
+
+            ##
+            self.handle_input = (
+              self.handle_events_and_mouse_pos
+            )
+
+        self.handle_events_and_mouse_pos()
+
     def scroll_when_hovering_scroll_arrow(self):
         """"""
         mouse_pos = mouse_x, mouse_y = get_mouse_pos()
@@ -326,7 +379,7 @@ class OptionMenuLifetimeOperations(Object2D):
 
                  )
 
-    def handle_input(self):
+    def handle_events_and_mouse_pos(self):
 
         self.handle_events()
         self.handle_mouse_pos()

@@ -14,9 +14,9 @@ from appinfo import NATIVE_FILE_EXTENSION
 
 from ourstdlibs.behaviour import empty_function
 
-from surfsman.render import render_rect
+from surfsman.cache import RECT_SURF_MAP
 
-from textman.label.main import Label
+from textman.cache import TEXT_SURFS_DB
 
 from colorsman.colors import (
                         NORMAL_PATH_FG, SELECTED_PATH_FG,
@@ -90,8 +90,6 @@ class PathObject:
           grandparent_path=None,
           width=200,
           padding=3,
-          coordinates_name='topleft',
-          coordinates_value=(0, 0)
         ):
         """Store arguments and perform setups.
 
@@ -114,141 +112,54 @@ class PathObject:
             this object. The padding doesn't affect the
             final width of the path object, defined by
             the 'width' argument described above.
-        coordinates_name (string)
-            represents attribute name of rect wherein
-            to store the position information from the
-            'coordinates value' argument.
-        coordinates_value (iterable with 2 integers)
-            position information to be assigned to the
-            rect of this path object; such position will
-            be assigned to the rect's attribute whose name
-            is given as the 'coordinates_name' argument.
         """
-        ### assign a text for the widget based on the paths
-        ### received
-
-        if path is None: text = t.file_manager.dummy_text
-
-        elif (
-
-             grandparent_path is None
-          or path != grandparent_path
-
-        ): text = path.name
-
-        else: text = PATH_OBJ_PARENT_TEXT
-
-        self.text = text
-
         ### store arguments
 
         self.path    = path
         self.width   = width
         self.padding = padding
 
-        ### create objects for display
-        self.create_visuals()
+        ### prepare objects and values for display
+        self.prepare_visuals()
 
         ### we use the rect of one of the background
         ### surfaces created as the rect for the whole
         ### path object
         self.rect = self.normal_bg.get_rect()
 
-        ### assign drawing behaviour based on path
+        ##
+        self.update_path(path, grandparent_path)
 
-        self.draw = (
+    def prepare_visuals(self):
+        """Prepare objects and values for display."""
 
-          empty_function
-          if path is None
+        ### define max width for text surfaces, by
+        ###  subtracting the width of the icon and the
+        ### padding in both sides of the icon from the
+        ### self.width argument defined upon
+        ### initialization; note we also remove some
+        ### extra pixels from the width, using an amount
+        ### defined empirically, just for better aesthetics
 
-          else self.draw_objects
-
-        )
-
-        ### assign icon if path is not None
-
-        if path is not None:
-
-            self.icon = (
-
-              ## folder icon if a folder
-
-              FOLDER_ICON
-              if path.is_dir()
-
-              ## otherwise custom icon, depending on suffix
-
-              else ICON_MAP.get(
-                              path.suffix.lower(),
-                              FILE_ICON
-                            )
-            )
-
-        ### position objects relative to each other
-
-        ## whole object
-
-        setattr(
-          self.rect, coordinates_name, coordinates_value
-        )
-
-        ## obtain a topleft position for the icon which
-        ## is the result of aligning its center vertically
-        ## with the whole object, also adding an horizontal
-        ## padding from the right of self.rect (the whole
-        ## object)
-
-        icon_rect = FILE_ICON.get_rect()
-
-        icon_rect.midleft = (
-          self.rect.move(padding, 0).midleft
-        )
-
-        self.icon_pos = icon_rect.topleft
-
-        ## assign a midleft position for the label so they
-        ## end up with their centers vertically aligned
-        ## with the icon (and thus with the vertical
-        ## center of the whole object), also adding an
-        ## horizontal padding from the icon
-
-        label_midleft = icon_rect.move(padding, 0).midright
-
-        self.normal_label.rect.midleft   = label_midleft
-        self.selected_label.rect.midleft = label_midleft
-
-    def create_visuals(self):
-        """Create and store objects for display."""
-        ### create labels
-
-        ## define max width for labels, by subtracting
-        ## the width of the icon and the padding in both
-        ## sides of the icon from the self.width argument
-        ## defined upon initialization; note we also remove
-        ## some extra pixels from the width, using an
-        ## amount defined empirically, just for better
-        ## aesthetics
-
-        label_max_width = (
+        max_text_width = (
           self.width
           - FILE_ICON.get_width() # TODO use constant instead
           - (self.padding * 2)
           - 7 # arbitrary value defined empirically
         )
 
-        ## instantiate and store labels
+        ### create new text settings that include the max
+        ### text width
 
-        self.normal_label = Label(
-                              text      = self.text,
-                              max_width = label_max_width,
-                              **NORMAL_KWARGS
-                            )
-        
-        self.selected_label = Label(
-                                text      = self.text,
-                                max_width = label_max_width,
-                                **SELECTED_KWARGS
-                              )
+        self.normal_text_settings = {
+          **NORMAL_KWARGS,
+          'max_width': max_text_width,
+        }
+
+        self.selected_text_settings = {
+          **SELECTED_KWARGS,
+          'max_width': max_text_width,
+        }
 
         ### define size for background
 
@@ -257,7 +168,7 @@ class PathObject:
 
         max_height = max(
                        FILE_ICON.get_height(),
-                       self.normal_label.rect.height
+                       NORMAL_KWARGS['font_height'],
                      )
 
         height = max_height + (self.padding * 2)
@@ -268,17 +179,16 @@ class PathObject:
 
         ### create and store backgrounds
 
-        self.normal_bg = render_rect(
+        self.normal_bg = RECT_SURF_MAP[(
                            *bg_size, NORMAL_PATH_BG
-                         )
-        self.selected_bg = render_rect(
+                         )]
+
+        self.selected_bg = RECT_SURF_MAP[(
                              *bg_size, SELECTED_PATH_BG
-                           )
+                           )]
 
-        ### assign current bg and label
-
-        self.bg    = self.normal_bg
-        self.label = self.normal_label
+        ### assign current bg
+        self.bg = self.normal_bg
 
     def update_path(self, path, grandparent_path=None):
         """Update label and icon according to given paths.
@@ -313,12 +223,21 @@ class PathObject:
 
             ): text = path.name
 
-            else: text = '..'
+            else: text = PATH_OBJ_PARENT_TEXT
 
             self.text = text
 
-            self.normal_label.set(text)
-            self.selected_label.set(text)
+            self.normal_text_surf = (
+             TEXT_SURFS_DB
+             [self.normal_text_settings]
+             ['surf_map'][text]
+            )
+
+            self.selected_text_surf = (
+             TEXT_SURFS_DB
+             [self.selected_text_settings]
+             ['surf_map'][text]
+            )
 
             ### update icon
 
@@ -335,6 +254,20 @@ class PathObject:
                             )
             )
 
+            self.icon_rect = self.icon.get_rect()
+
+            self.icon_rect.midleft = (
+              self.rect.move(self.padding, 0).midleft
+            )
+
+            self.text_rect = (
+              self.normal_text_surf.get_rect()
+            )
+
+            self.text_rect.midleft = (
+              self.icon_rect.move(self.padding, 0).midright
+            )
+
             ## set drawing behaviour to draw all objects
             drawing_behaviour = self.draw_objects
 
@@ -342,6 +275,18 @@ class PathObject:
 
         self.path = path
         self.draw = drawing_behaviour
+
+    def reposition_icon_and_text(self):
+        """Reposition icon and text rects, if it has."""
+        if self.draw == empty_function: return
+
+        self.icon_rect.midleft = (
+          self.rect.move(self.padding, 0).midleft
+        )
+
+        self.text_rect.midleft = (
+          self.icon_rect.move(self.padding, 0).midright
+        )
 
     def change_selection_appearance(self, on):
         """Make object appear as selected/deselected.
@@ -360,17 +305,22 @@ class PathObject:
         ### 'on' argument
         prefix = 'selected' if on else 'normal'
 
-        ### put together attribute names for the label
-        ### and background using the prefix
+        ### put together attribute names for the text
+        ### surface and background using the prefix
 
-        label_attr_name = prefix + '_label'
-        bg_attr_name    = prefix + '_bg'
+        text_attr_name = f'{prefix}_text_surf'
+        bg_attr_name   = f'{prefix}_bg'
 
         ### use the attribute names to grab the objects
-        ### to be used as 'label' and 'bg'
+        ### to be used as text surface and bg
 
-        self.label = getattr(self, label_attr_name)
-        self.bg    = getattr(self, bg_attr_name)
+        if self.path is not None:
+
+            self.text_surface = getattr(
+                                  self, text_attr_name
+                                )
+
+        self.bg = getattr(self, bg_attr_name)
 
     select = partialmethod(
                change_selection_appearance,  True
@@ -394,11 +344,9 @@ class PathObject:
 
     def draw_objects(self):
         """Draw objects representing by this path object."""
-        ### draw background
-        blit_on_screen(self.bg, self.rect)
-
-        ### draw icon
-        blit_on_screen(self.icon, self.icon_pos)
-
-        ### draw label
-        self.label.draw()
+        for surf, rect in (
+          (self.bg, (self.rect)),
+          (self.icon, (self.icon_rect)),
+          (self.text_surface, (self.text_rect)),
+        ):
+            blit_on_screen(surf, rect)

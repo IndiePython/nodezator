@@ -12,8 +12,12 @@ from pygame.display import update
 
 from pygame.draw import rect as draw_rect
 
+from pygame.math import Vector2
+
 
 ### local imports
+
+from config import APP_REFS
 
 from pygameconstants import (
                        SCREEN_RECT,
@@ -26,6 +30,8 @@ from dialog import create_and_show_dialog
 
 from ourstdlibs.collections.general import CallList
 
+from our3rdlibs.behaviour import watch_window_size
+
 from surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
 from classes2d.single      import Object2D
@@ -37,29 +43,30 @@ from surfsman.render import render_rect
 from surfsman.icon import render_layered_icon
 
 from colorsman.colors import (
-                               BLACK,
-                               WHITE,
-                               WINDOW_FG, WINDOW_BG,
-                               BUTTON_FG, BUTTON_BG,
-                               CONTRAST_LAYER_COLOR,
-                             )
+                        BLACK,
+                        WHITE,
+                        WINDOW_FG, WINDOW_BG,
+                        BUTTON_FG, BUTTON_BG,
+                        CONTRAST_LAYER_COLOR,
+                      )
 
 from textman.render import render_text
 
 from fontsman.constants import (
-                                 ENC_SANS_BOLD_FONT_HEIGHT,
-                                 ENC_SANS_BOLD_FONT_PATH,
-                                 FIRA_MONO_BOLD_FONT_HEIGHT,
-                                 FIRA_MONO_BOLD_FONT_PATH,
-                               )
+                          ENC_SANS_BOLD_FONT_HEIGHT,
+                          ENC_SANS_BOLD_FONT_PATH,
+                          FIRA_MONO_BOLD_FONT_HEIGHT,
+                          FIRA_MONO_BOLD_FONT_PATH,
+                        )
 
 from textman.label.main import Label
 
 from textman.editor.cursor.main import Cursor
 
 from textman.editor.constants import (
-                                     TEXT_EDITOR_RECT,
-                                     EDITING_AREA_RECT)
+                                TEXT_EDITOR_RECT,
+                                EDITING_AREA_RECT,
+                              )
 
 
 ### XXX
@@ -93,6 +100,52 @@ class TextEditor(Object2D):
         ### create widgets which compose the text editor
         self.create_widgets()
 
+        ### center text editor and append centering method
+        ### as window resize setup
+
+        self.center_text_editor()
+
+        APP_REFS.window_resize_setups.append(
+          self.center_text_editor
+        )
+
+    def center_text_editor(self):
+
+        diff = (
+          Vector2(SCREEN_RECT.center) - self.rect.center
+        )
+
+        self.rect.center = SCREEN_RECT.center
+
+        EDITING_AREA_RECT.move_ip(diff)
+
+        self.line_number_x = self.rect.left + 20
+
+        ## reference each button so we can position them
+        ok_button, cancel_button = self.buttons
+
+        ok_button.rect.bottomright = (
+          self.rect.move(-10, -10).bottomright
+        )
+
+        cancel_button.rect.bottomright = (
+          ok_button.rect.move(-10, 0).bottomleft
+        )
+
+        ##
+        self.statusbar.rect.bottomleft = (
+          self.rect.move(10, -10).bottomleft
+        )
+
+        ##
+
+        if hasattr(self, 'cursor'):
+
+            self.cursor.rect.move_ip(diff)
+
+            if self.cursor.visible_lines:
+                self.cursor.visible_lines.rect.move_ip(diff)
+
     def create_widgets(self):
         """Create widgets used in operations."""
         ### store semitransparent object the size of
@@ -125,37 +178,36 @@ class TextEditor(Object2D):
 
             # instantiate
 
-            button = Object2D.from_surface(
-                       render_text(
-                         text,
+            button = (
 
-                         ## text settings
+              Object2D.from_surface(
 
-                         font_height=ENC_SANS_BOLD_FONT_HEIGHT,
-                         padding=5,
-                         foreground_color=BUTTON_FG,
-                         background_color=BUTTON_BG,
-                         depth_finish_thickness=1
-                       )
-                     )
+                render_text(
+                  text,
+
+                  ## text settings
+
+                  font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+                  padding=5,
+                  foreground_color=BUTTON_FG,
+                  background_color=BUTTON_BG,
+                  depth_finish_thickness=1
+                )
+              )
+
+            )
 
             # store
             self.buttons.append(button)
 
-        ## reference each button so we can configure them
+        ## reference each button so we can set their
+        ## behaviour
         ok_button, cancel_button = self.buttons
 
-        ## set ok_button position and behaviour
-
-        ok_button.rect.bottomright = \
-                       self.rect.move(-10, -10).bottomright
-
+        ## set ok_button behaviour
         ok_button.invoke = self.confirm
 
-        ## set cancel_button position and behaviour
-
-        cancel_button.rect.bottomright = \
-                      ok_button.rect.move(-10, 0).bottomleft
+        ## set cancel_button behaviour
 
         cancel_button.invoke = \
           CallList([
@@ -203,30 +255,34 @@ class TextEditor(Object2D):
 
         midleft = (40, 22)
 
-        title_obj = Object2D.from_surface(
-                      surface=render_text(
-                             "Text editor",
+        title_obj = (
 
-                             ## text settings
+          Object2D.from_surface(
 
-                             font_height=ENC_SANS_BOLD_FONT_HEIGHT,
-                             foreground_color=WINDOW_FG,
-                             padding=5
-                           ),
+            surface=(
+              render_text(
+                "Text editor",
 
-                      ## position info
+                ## text settings
 
-                      coordinates_name='midleft',
-                      coordinates_value=midleft
+                font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+                foreground_color=WINDOW_FG,
+                padding=5
+              )
+            ),
 
-                    )
+            ## position info
+
+            coordinates_name='midleft',
+            coordinates_value=midleft
+
+          )
+        )
 
         title_obj.draw_on_surf(self.image)
 
         ### create a label object to use as a statusbar,
         ### displaying extra info about user' actions
-
-        bottomleft = self.rect.move(10, -10).bottomleft
 
         self.statusbar = \
           Label(
@@ -238,11 +294,6 @@ class TextEditor(Object2D):
             font_path=FIRA_MONO_BOLD_FONT_PATH,
             foreground_color=WINDOW_FG,
             background_color=WINDOW_BG,
-
-            ## positioning settings
-
-            coordinates_name='bottomleft',
-            coordinates_value=bottomleft
           )
 
     def clean_editing_area(self):
@@ -380,10 +431,11 @@ class TextEditor(Object2D):
             text to be edited.
         font_path (string)
             indicates the font style to be used when
-            editing the contents; defaults to ENC_SANS_BOLD_FONT_PATH,
-            which uses the normal font of the app. You can
-            use FIRA_MONO_BOLD_FONT_PATH, to edit text representing code
-            using a monospace font.
+            editing the contents; defaults to
+            ENC_SANS_BOLD_FONT_PATH, which uses the normal
+            font of the app. You can use
+            FIRA_MONO_BOLD_FONT_PATH, to edit text
+            representing code using a monospace font.
         validation_command (None or callable)
             if it is None, the instance is set up so that
             no validation is done;
@@ -446,6 +498,8 @@ class TextEditor(Object2D):
         while self.running:
 
             maintain_fps(FPS)
+
+            watch_window_size()
 
             ### perform the GUD operations;
             ###

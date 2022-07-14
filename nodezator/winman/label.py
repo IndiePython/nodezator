@@ -85,8 +85,9 @@ class MonitorLabelSetup:
 
         )
 
-        self.status_label.rect.bottomleft = \
+        self.status_label.rect.bottomleft = (
                                     SCREEN_RECT.bottomleft
+                                  )
 
         ### scrolling amount
 

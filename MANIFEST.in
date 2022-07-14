@@ -13,7 +13,8 @@ include nodezator/data/fonts/noto_sans_regular.ttf
 include nodezator/data/images/README.txt
 include nodezator/data/images/colors_editor_scale_images.png
 include nodezator/data/images/discord_logo.png
-include nodezator/data/images/indiepython_logo.png
+include nodezator/data/images/indie_python_logo.png
+include nodezator/data/images/github_mark.png
 include nodezator/data/images/kennedy_logo.png
 include nodezator/data/images/mask_wave.png
 include nodezator/data/images/patreon_logo.png

@@ -18,6 +18,8 @@ from pygame.display import update
 
 ### local imports
 
+from config import APP_REFS
+
 from translation import TRANSLATION_HOLDER as t
 
 from userprefsman.main import USER_PREFS, CONFIG_FILEPATH
@@ -107,8 +109,6 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
 
         ### assign rect and surf for background
 
-        self.widgets.rect.center = SCREEN_RECT.center
-
         self.rect = self.widgets.rect.inflate(20, 20)
         self.image = render_rect(*self.rect.size, WINDOW_BG)
 
@@ -128,6 +128,23 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
 
         ### assign behaviour
         self.update = empty_function
+
+        ### center edition form and append centering
+        ### method as a window resize setup
+
+        self.center_preferences_form()
+
+        APP_REFS.window_resize_setups.append(
+          self.center_preferences_form
+        )
+
+    def center_preferences_form(self):
+
+        self.rect.center = self.widgets.rect.center = (
+
+          SCREEN_RECT.center
+
+        )
 
     def build_form_widgets(self):
         """Build widgets to hold settings for edition."""
@@ -183,13 +200,18 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
             labels.append(label_obj)
 
 
-        lang_option_menu = OptionMenu(
-                             loop_holder=self,
-                             options=AVAILABLE_LANGUAGES,
-                             value=USER_PREFS['LANGUAGE'],
-                             name='LANGUAGE',
-                             max_width = 0,
-                           )
+        lang_option_menu = (
+
+          OptionMenu(
+            loop_holder=self,
+            options=AVAILABLE_LANGUAGES,
+            value=USER_PREFS['LANGUAGE'],
+            draw_on_window_resize = self.draw,
+            name='LANGUAGE',
+            max_width = 0,
+          )
+
+        )
         
         number_backups_intfloat_entry = (
 
@@ -201,6 +223,7 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
             min_value = 0,
             numeric_classes_hint= 'int',
             allow_none = False,
+            draw_on_window_resize = self.draw,
           )
 
         )
@@ -215,6 +238,7 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
             width = 90,
             numeric_classes_hint= 'int',
             allow_none = False,
+            draw_on_window_resize = self.draw,
           )
 
         )
@@ -229,6 +253,7 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
             width = 90,
             numeric_classes_hint= 'int',
             allow_none = False,
+            draw_on_window_resize = self.draw,
           )
 
         )

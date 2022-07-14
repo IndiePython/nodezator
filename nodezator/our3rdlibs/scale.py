@@ -3,8 +3,9 @@
 ### third-party imports
 
 from pygame.mouse import (
-                         get_pos     as get_mouse_pos,
-                         get_pressed as get_mouse_pressed)
+                    get_pos     as get_mouse_pos,
+                    get_pressed as get_mouse_pressed,
+                  )
 
 from pygame.transform import flip as flip_surface
 
@@ -94,6 +95,7 @@ class Scale(Object2D):
         self.name      = name
         self.command   = command
         self.max_value = max_value
+        self.padding_x = padding_x
 
         ### set image and rect for widget
 
@@ -102,10 +104,6 @@ class Scale(Object2D):
         setattr(
             self.rect, coordinates_name, coordinates_value)
 
-        ### set a selection area excluding the padding
-        self.selection_area = \
-                           self.rect.inflate(-padding_x, 0)
-
         ### set handle object
 
         self.handle = Object2D(
@@ -113,8 +111,16 @@ class Scale(Object2D):
                         rect  = HANDLE_SURF.get_rect()
                       )
 
+        ### define a selection area excluding the padding
+        self.define_selection_area()
+
         ### position handle according to value
         self.place_handle()
+
+    def define_selection_area(self):
+        self.selection_area = (
+          self.rect.inflate(-self.padding_x, 0)
+        )
 
     def place_handle(self):
         """Place handle according to current value."""
