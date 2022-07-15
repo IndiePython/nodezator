@@ -85,10 +85,6 @@ class MonitorLabelSetup:
 
         )
 
-        self.status_label.rect.bottomleft = (
-                                    SCREEN_RECT.bottomleft
-                                  )
-
         ### scrolling amount
 
         self.scrolling_label = (
@@ -107,10 +103,8 @@ class MonitorLabelSetup:
 
         )
 
-        self.scrolling_label.rect.bottomleft = (
-          self.status_label.rect.topleft
-        )
-
+        ### position labels
+        self.reposition_labels()
 
         ### gather draw and update behaviours from labels
 
@@ -126,3 +120,14 @@ class MonitorLabelSetup:
         self.labels_drawing_methods = [
           label.draw for label in labels
         ]
+
+    def reposition_labels(self):
+
+        self.status_label.rect.bottomleft = (
+          SCREEN_RECT.bottomleft
+        )
+
+        self.scrolling_label.rect.bottomleft = (
+          self.status_label.rect.topleft
+        )
+
