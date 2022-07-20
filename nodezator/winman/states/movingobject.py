@@ -20,9 +20,9 @@ from pygame.key import (
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from loopman.exception import QuitAppException
+from ...loopman.exception import QuitAppException
 
 
 class MovingObjectState:
@@ -54,7 +54,7 @@ class MovingObjectState:
             ### KEYDOWN
 
             elif event.type == KEYDOWN:
-                
+
                 ## set translation factor to 10
 
                 if event.key in (K_RSHIFT, K_LSHIFT):

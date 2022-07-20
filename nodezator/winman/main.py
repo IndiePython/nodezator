@@ -55,33 +55,33 @@ from ..memoryman import free_up_memory
 # related to node editing
 
 from ..editing.main import EditingAssistant
-from graphman.main import GraphManager
+from ..graphman.main import GraphManager
 
-from graphman.nodepacksissues import (
+from ..graphman.nodepacksissues import (
                          get_formatted_current_node_packs,
                          check_node_packs,
                        )
 
-from graphman.exception import NODE_PACK_ERRORS
+from ..graphman.exception import NODE_PACK_ERRORS
 
 # splash screen
-from splashscreen.main import SplashScreen
+from ..splashscreen.main import SplashScreen
 
 
 ## window manager class/function extensions
 
-from winman.states.nofile       import NoFileState
-from winman.states.loadedfile   import LoadedFileState
-from winman.states.segmentdef   import SegmentDefinitionState
-from winman.states.segmentsev   import SegmentSeveranceState
-from winman.states.movingobject import MovingObjectState
-from winman.states.boxselection import BoxSelectionState
+from .states.nofile       import NoFileState
+from .states.loadedfile   import LoadedFileState
+from .states.segmentdef   import SegmentDefinitionState
+from .states.segmentsev   import SegmentSeveranceState
+from .states.movingobject import MovingObjectState
+from .states.boxselection import BoxSelectionState
 
-from winman.menu   import MenuSetup
-from winman.label  import MonitorLabelSetup
-from winman.switch import setup_switches
+from .menu   import MenuSetup
+from .label  import MonitorLabelSetup
+from .switch import setup_switches
 
-from winman.fileop import FileOperations
+from .fileop import FileOperations
 
 
 ### create logger for module

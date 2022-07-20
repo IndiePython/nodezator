@@ -6,11 +6,11 @@ from pathlib import Path
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from appinfo import NODE_SCRIPT_NAME
+from ..appinfo import NODE_SCRIPT_NAME
 
-from graphman.exception import (
+from .exception import (
                         NodePackNotFoundError,
                         NodePackNotADirectoryError,
                         NodePackLackingCategoryError,
@@ -45,7 +45,7 @@ def check_node_packs(node_packs):
     for path in node_packs:
 
         if not path.exists():
-            
+
             raise NodePackNotFoundError(
                     f"the '{path}' node pack path"
                      " wasn't found"
@@ -54,7 +54,7 @@ def check_node_packs(node_packs):
     ### check whether node packs are directories
 
     for path in node_packs:
-        
+
         if not path.is_dir():
 
             raise NodePackNotADirectoryError(
@@ -86,7 +86,7 @@ def check_node_packs(node_packs):
                   )
 
         for category_folder in category_folders:
-            
+
             script_dirs = [
 
               path
@@ -110,7 +110,7 @@ def check_node_packs(node_packs):
                       )
 
             for script_dir in script_dirs:
-                
+
                 script_file = (
                   script_dir / NODE_SCRIPT_NAME
                 )

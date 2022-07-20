@@ -2,36 +2,36 @@
 
 ### local imports
 
-from translation import TRANSLATION_HOLDER as t
+from ..translation import TRANSLATION_HOLDER as t
 
-from pygameconstants import SCREEN_RECT
+from ..pygameconstants import SCREEN_RECT
 
-from appinfo import (
+from ..appinfo import (
                APP_VERSION,
                NO_RELEASE_LEVEL_FULL_TITLE,
              )
 
-from recentfile import get_recent_files
+from ..recentfile import get_recent_files
 
-from logman.main import get_new_logger
+from ..logman.main import get_new_logger
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ..classes2d.single      import Object2D
+from ..classes2d.collections import List2D
 
-from surfsman.draw import (
+from ..surfsman.draw import (
                      draw_depth_finish,
                      draw_linear_gradient,
                    )
 
-from surfsman.render import render_rect
+from ..surfsman.render import render_rect
 
-from surfsman.icon import render_layered_icon
+from ..surfsman.icon import render_layered_icon
 
-from imagesman.cache import CachedImageObject
+from ..imagesman.cache import CachedImageObject
 
-from textman.render import render_text
+from ..textman.render import render_text
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         BLACK,
                         WHITE,
                         SPLASH_BG,
@@ -40,7 +40,7 @@ from colorsman.colors import (
                         NODE_BODY_BG,
                       )
 
-from splashscreen.constants import (
+from .constants import (
                               TEXT_SETTINGS,
                               TITLE_FONT_HEIGHT,
                               SOFTWARE_KIND_FONT_HEIGHT,
@@ -49,7 +49,7 @@ from splashscreen.constants import (
                               SHADOW_THICKNESS,
                             )
 
-from splashscreen.factoryfuncs import (
+from .factoryfuncs import (
                                  get_project_link_objs,
                                  get_powered_link_objs,
                                  get_action_objs,
@@ -57,13 +57,13 @@ from splashscreen.factoryfuncs import (
                                  get_license_declaration_obj,
                                )
 
-from splashscreen.animsetup import (
+from .animsetup import (
                               set_node_animation,
                               set_robot_animation,
                             )
 
 ## class extension
-from splashscreen.op import SplashScreenOperations
+from .op import SplashScreenOperations
 
 
 ### create logger for module
@@ -442,7 +442,7 @@ class SplashScreen(SplashScreenOperations):
                             )
 
         if self.recent_file_objs:
-            
+
             self.recent_file_objs.rect.topleft = (
               self.action_objs
               .rect.move(0, 10).bottomleft
@@ -489,7 +489,7 @@ class SplashScreen(SplashScreenOperations):
             header
             + body
             + [self.license_declaration]
-            + self.powered_link_objs 
+            + self.powered_link_objs
           )
         )
 
@@ -525,7 +525,7 @@ class SplashScreen(SplashScreenOperations):
         ### attributes
 
         for obj in all_objs:
-            
+
             if any(
               hasattr(obj, attr)
               for attr

@@ -19,15 +19,15 @@ from pygame.draw  import rect     as draw_rect
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from pygameconstants import SCREEN
+from ..pygameconstants import SCREEN
 
-from ourstdlibs.mathutils import get_rect_from_points
+from ..ourstdlibs.mathutils import get_rect_from_points
 
-from loopman.exception import ContinueLoopException
+from ..loopman.exception import ContinueLoopException
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         ACTIVE_SELECTION,
                         NORMAL_SELECTION,
                       )
@@ -55,7 +55,7 @@ class SelectionHandling:
 
               ACTIVE_SELECTION
               if obj is self.active_obj
-              
+
               else NORMAL_SELECTION
 
             )
@@ -82,7 +82,7 @@ class SelectionHandling:
                 ### mentioned mouse action
                 obj.mouse_release_target = False
 
-                ### if shift is pressed... 
+                ### if shift is pressed...
 
                 if KMOD_SHIFT & get_mods_bitmask():
 
@@ -290,7 +290,7 @@ class SelectionHandling:
         ### return set with each colliding object
 
         return {
-            
+
           ## store an object...
           obj
 

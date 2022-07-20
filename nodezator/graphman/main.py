@@ -6,62 +6,62 @@ from pygame import Rect
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from appinfo import (
+from ..appinfo import (
                NODES_KEY,
                PARENT_SOCKETS_KEY,
                TEXT_BLOCKS_KEY,
              )
 
-from logman.main import get_new_logger
+from ..logman.main import get_new_logger
 
-from ourstdlibs.meta import initialize_bases
+from ..ourstdlibs.meta import initialize_bases
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from classes2d.collections import (
+from ..classes2d.collections import (
                              Iterable2D,
                              List2D,
                            )
 
-from graphman.exception import (
+from .exception import (
                           NodeScriptsError,
                           MissingNodeScriptsError,
                         )
 
 ## function
-from graphman.scriptloading import load_scripts
+from .scriptloading import load_scripts
 
 ## classes for composition
 
-from graphman.callablenode.main import CallableNode
-from graphman.builtinnode.main  import BuiltinNode
-from graphman.stlibnode.main    import StandardLibNode
-from graphman.capsulenode.main  import CapsuleNode
+from .callablenode.main import CallableNode
+from .builtinnode.main  import BuiltinNode
+from .stlibnode.main    import StandardLibNode
+from .capsulenode.main  import CapsuleNode
 
-from graphman.operatornode.main import OperatorNode
-from graphman.proxynode.main    import ProxyNode
+from .operatornode.main import OperatorNode
+from .proxynode.main    import ProxyNode
 
-from graphman.textblock.main import TextBlock
+from .textblock.main import TextBlock
 
-from graphman.widget.creationpopupmenu import (
+from .widget.creationpopupmenu import (
                                 WidgetCreationPopupMenu,
                               )
 
 ## class extensions
 
-from graphman.editlogic import DataEdition
+from .editlogic import DataEdition
 
-from graphman.socketparenthood.main import SocketParenthood
+from .socketparenthood.main import SocketParenthood
 
-from graphman.execution import Execution
+from .execution import Execution
 
 ## function for memory freeing
-from graphman.callablenode.surfs import free_up_memory
+from .callablenode.surfs import free_up_memory
 
 ## function for representing graph as python code
-from graphman.pythonrepr import python_repr
+from .pythonrepr import python_repr
 
 
 ### create logger for module
@@ -140,7 +140,7 @@ class GraphManager(
         parent_sockets_data = data.setdefault(
                                 PARENT_SOCKETS_KEY, []
                               )
-        
+
         self.setup_parent_sockets_data(parent_sockets_data)
 
         ### retrieve the value in the TEXT_BLOCKS_KEY key
@@ -174,7 +174,7 @@ class GraphManager(
         for node_data in self.nodes_data.values():
 
             if 'script_id' in node_data:
-                
+
                 script_id = node_data['script_id']
 
                 ## try retrieving the node defining object

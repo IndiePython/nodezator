@@ -35,17 +35,17 @@ from pygame.display import update
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from our3rdlibs.keyconst import KEYPAD_TO_COORDINATE_MAP
+from ...our3rdlibs.keyconst import KEYPAD_TO_COORDINATE_MAP
 
-from loopman.exception import (
+from ...loopman.exception import (
                          QuitAppException,
                          ContinueLoopException,
                          SwitchLoopException,
                        )
 
-from htsl.main import open_htsl_link
+from ...htsl.main import open_htsl_link
 
 
 class LoadedFileState:
@@ -84,7 +84,7 @@ class LoadedFileState:
                     self.loaded_file_on_mouse_release(event)
 
                 elif event.button == 3:
-                    
+
                     (
                       self
                       .loaded_file_on_right_mouse_release
@@ -94,7 +94,7 @@ class LoadedFileState:
             ### KEYDOWN
 
             elif event.type == KEYDOWN:
-                
+
                 ## Application related operations
 
                 # quit
@@ -147,7 +147,7 @@ class LoadedFileState:
 
                 elif event.key == K_s \
                 and  event.mod &  KMOD_CTRL:
-                    
+
                     if event.mod & KMOD_SHIFT:
                         self.save_as()
 
@@ -341,7 +341,7 @@ class LoadedFileState:
 
     def loaded_file_on_mouse_motion(self, event):
         """Act based on mouse motion event.
-        
+
         Parameters
         ==========
         event
@@ -400,7 +400,7 @@ class LoadedFileState:
           APP_REFS.gm.text_blocks.get_on_screen(),
           APP_REFS.gm.nodes.get_on_screen()
         ):
-            
+
             if obj.rect.collidepoint(mouse_pos):
 
                 ## if a hovered object was the target of a
@@ -495,7 +495,7 @@ class LoadedFileState:
           APP_REFS.gm.text_blocks.get_on_screen(),
           APP_REFS.gm.nodes.get_on_screen()
         ):
-            
+
             if obj.rect.collidepoint(mouse_pos):
 
                 obj.on_mouse_release(event)

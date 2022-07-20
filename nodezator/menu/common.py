@@ -35,16 +35,16 @@ and the user's preference/need.
 
 ### local imports
 
-from ourstdlibs.mathutils import get_straight_distance
+from ..ourstdlibs.mathutils import get_straight_distance
 
-from fontsman.constants import (
+from ..fontsman.constants import (
                           ENC_SANS_BOLD_FONT_HEIGHT,
                           ENC_SANS_BOLD_FONT_PATH,
                         )
 
-from surfsman.icon import render_layered_icon
+from ..surfsman.icon import render_layered_icon
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         MENU_FG,
                         MENU_BG,
                         MENU_HOVERED_FG,

@@ -12,25 +12,25 @@ from pygame.display import update
 
 ### local imports
 
-from pygameconstants import SCREEN
+from ..pygameconstants import SCREEN
 
-from ourstdlibs.mathutils import invert_point
-from ourstdlibs.treeutils import yield_tree_attrs
+from ..ourstdlibs.mathutils import invert_point
+from ..ourstdlibs.treeutils import yield_tree_attrs
 
-from ourstdlibs.collections.general import CallList
+from ..ourstdlibs.collections.general import CallList
 
-from classes2d.single  import Object2D
+from ..classes2d.single  import Object2D
 
-from surfsman.cache import cache_screen_state
+from ..surfsman.cache import cache_screen_state
 
-from loopman.exception import (
+from ..loopman.exception import (
                          QuitAppException,
                          SwitchLoopException,
                        )
 
-from menu.common import get_nearest_attr_name
+from .common import get_nearest_attr_name
 
-from colorsman.colors import BLACK
+from ..colorsman.colors import BLACK
 
 
 class BehaviourDefinitions(Object2D):
@@ -621,7 +621,7 @@ class BehaviourDefinitions(Object2D):
         ## the next child
 
         for child in self.children:
-            
+
             ## assign topleft
             child.rect.topleft = topleft
 

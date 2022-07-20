@@ -7,21 +7,21 @@ from pygame import Rect
 
 ### local imports
 
-from surfsman.draw   import blit_aligned, draw_depth_finish
-from surfsman.render import render_rect
+from ...surfsman.draw   import blit_aligned, draw_depth_finish
+from ...surfsman.render import render_rect
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from colorsman.colors import MENU_BG
+from ...colorsman.colors import MENU_BG
 
 ## common constants/tools
 
-from menu.common import (
+from ..common import (
                         UP_ARROW_SURF, DOWN_ARROW_SURF,
                         SCROLL_SPEED)
 
 ## utilities
-from menu.submenu.utils import get_boundaries
+from .utils import get_boundaries
 
 
 class MenuScrolling:
@@ -295,7 +295,7 @@ class MenuScrolling:
             normally, that is, when autoscrolling by hovering
             the scroll arrows, so the expanded child
             collapses.
-            
+
             If we don't collapse the body of the moving
             expanded child when autoscrolling the arrows we
             would have to add extra complexity to the code
@@ -309,7 +309,7 @@ class MenuScrolling:
             scroll. Thus, getting rid of the excess of what
             is visible (the body of the expanded child)
             shouldn't cause any problem.
-            
+
             There is, though, a scenario wherein we don't
             collapse the body of the expanded child (that
             is the parameter is set to False: only when
@@ -461,7 +461,7 @@ class MenuScrolling:
 
     def fix_scrolling(self):
         """Eliminate excessive scrolling.
-        
+
         Closes gap between first child/first arrow or
         last child/last_arrow if it exists. Such gap is
         sometimes formed when scrolling the first or last

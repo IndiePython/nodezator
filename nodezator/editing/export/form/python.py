@@ -24,9 +24,9 @@ from pygame.display import update
 
 ### local imports
 
-from translation import TRANSLATION_HOLDER as t
+from ....translation import TRANSLATION_HOLDER as t
 
-from pygameconstants import (
+from ....pygameconstants import (
                        SCREEN_RECT,
                        FPS,
                        maintain_fps,
@@ -34,41 +34,41 @@ from pygameconstants import (
                      )
 
 
-from dialog import create_and_show_dialog
+from ....dialog import create_and_show_dialog
 
-from fileman.main import create_path
+from ....fileman.main import create_path
 
-from our3rdlibs.button    import Button
-from ourstdlibs.behaviour import empty_function
+from ....our3rdlibs.button    import Button
+from ....ourstdlibs.behaviour import empty_function
 
-from ourstdlibs.collections.general import CallList
+from ....ourstdlibs.collections.general import CallList
 
-from classes2d.single import Object2D
-from classes2d.collections import List2D
+from ....classes2d.single import Object2D
+from ....classes2d.collections import List2D
 
-from fontsman.constants import (
+from ....fontsman.constants import (
                           ENC_SANS_BOLD_FONT_HEIGHT,
                           ENC_SANS_BOLD_FONT_PATH,
                         )
 
-from textman.render     import render_text
-from textman.label.main import Label
+from ....textman.render     import render_text
+from ....textman.label.main import Label
 
-from surfsman.cache import UNHIGHLIGHT_SURF_MAP
+from ....surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
-from surfsman.draw import draw_border, draw_depth_finish
-from surfsman.render import render_rect
+from ....surfsman.draw import draw_border, draw_depth_finish
+from ....surfsman.render import render_rect
 
-from loopman.exception import (
+from ....loopman.exception import (
                          QuitAppException,
                          SwitchLoopException,
                        )
 
-from our3rdlibs.iterablewidget.list import ListWidget
+from ....our3rdlibs.iterablewidget.list import ListWidget
 
-from widget.stringentry import StringEntry
+from ....widget.stringentry import StringEntry
 
-from colorsman.colors import (
+from ....colorsman.colors import (
                         CONTRAST_LAYER_COLOR,
                         BUTTON_FG, BUTTON_BG,
                         WINDOW_FG, WINDOW_BG,
@@ -499,7 +499,7 @@ class PythonExportForm(Object2D):
             mouse interaction protocol used; here we
             use it to retrieve the position of the
             mouse when the first button was released.
-              
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.

@@ -9,7 +9,7 @@ from pygame.math import Vector2
 
 
 ### local import
-from rectsman.constants import ENDPOINTS_ATTR_NAMES
+from .constants import ENDPOINTS_ATTR_NAMES
 
 
 def get_minimum_distance_function(rect):

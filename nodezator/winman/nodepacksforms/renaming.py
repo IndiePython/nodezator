@@ -19,53 +19,53 @@ from pygame.display import update
 
 ### local imports
 
-from translation import TRANSLATION_HOLDER as t
+from ...translation import TRANSLATION_HOLDER as t
 
-from pygameconstants import (
+from ...pygameconstants import (
                        SCREEN_RECT,
                        FPS,
                        maintain_fps,
                        blit_on_screen,
                      )
 
-from appinfo import NATIVE_FILE_EXTENSION
+from ...appinfo import NATIVE_FILE_EXTENSION
 
-from dialog import create_and_show_dialog
+from ...dialog import create_and_show_dialog
 
-from fileman.main import select_path
+from ...fileman.main import select_path
 
-from ourstdlibs.collections.general import CallList
+from ...ourstdlibs.collections.general import CallList
 
-from ourstdlibs.behaviour import empty_function
+from ...ourstdlibs.behaviour import empty_function
 
-from ourstdlibs.pyl import load_pyl, save_pyl
+from ...ourstdlibs.pyl import load_pyl, save_pyl
 
-from our3rdlibs.button import Button
+from ...our3rdlibs.button import Button
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ...classes2d.single      import Object2D
+from ...classes2d.collections import List2D
 
-from fontsman.constants import (
+from ...fontsman.constants import (
                           ENC_SANS_BOLD_FONT_HEIGHT,
                           ENC_SANS_BOLD_FONT_PATH,
                         )
 
-from textman.render     import render_text
-from textman.label.main import Label
+from ...textman.render     import render_text
+from ...textman.label.main import Label
 
-from surfsman.cache import UNHIGHLIGHT_SURF_MAP
+from ...surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
-from surfsman.draw   import draw_border, draw_depth_finish
-from surfsman.render import render_rect
+from ...surfsman.draw   import draw_border, draw_depth_finish
+from ...surfsman.render import render_rect
 
-from loopman.exception import (
+from ...loopman.exception import (
                          QuitAppException,
                          SwitchLoopException,
                        )
 
-from graphman.exception import NODE_PACK_ERRORS
+from ...graphman.exception import NODE_PACK_ERRORS
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                         CONTRAST_LAYER_COLOR,
                         WINDOW_FG, WINDOW_BG,
                         BUTTON_FG, BUTTON_BG,
@@ -73,7 +73,7 @@ from colorsman.colors import (
 
 
 ## widget
-from widget.stringentry import StringEntry
+from ...widget.stringentry import StringEntry
 
 
 ### constants
@@ -337,7 +337,7 @@ class NodePacksRenamingChangeForm(Object2D):
                type)
           although not used, it is required in order to
           comply with protocol used;
-              
+
           Check pygame.event module documentation on
           pygame website for more info about this event
           object.
@@ -449,7 +449,7 @@ class NodePacksRenamingChangeForm(Object2D):
             )
 
             self.current_name_labels.rect.snap_rects_ip(
-              
+
               retrieve_pos_from = 'bottomright',
               assign_pos_to     = 'topright',
               offset_pos_by     = (0, 5),
@@ -462,7 +462,7 @@ class NodePacksRenamingChangeForm(Object2D):
                 self.new_name_entries
               )
             ):
-                
+
                 entry.rect.midleft = (
                   label.rect.move(5, 0).midright
                 )
@@ -494,7 +494,7 @@ class NodePacksRenamingChangeForm(Object2D):
             for node_id, node_data in (
               data.get('nodes', {}).items()
             ):
-                
+
                 if 'script_id' not in node_data: continue
 
                 node_pack_name = node_data['script_id'][0]
@@ -586,7 +586,7 @@ class NodePacksRenamingChangeForm(Object2D):
             mouse interaction protocol used; here we
             use it to retrieve the position of the
             mouse when the first button was released.
-              
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -636,7 +636,7 @@ class NodePacksRenamingChangeForm(Object2D):
             self.new_name_entries
           )
         ):
-            
+
             new_name = entry.get()
 
             if not new_name: return
@@ -670,7 +670,7 @@ class NodePacksRenamingChangeForm(Object2D):
             ids = self.node_pack_name_to_ids[old_name]
 
             for node_id in ids:
-                
+
                 node_data = nodes_data[node_id]
 
                 _, categ_name, script_name = (

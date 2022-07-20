@@ -18,59 +18,59 @@ from pygame.display import update
 
 ### local imports
 
-from translation import TRANSLATION_HOLDER as t
+from ..translation import TRANSLATION_HOLDER as t
 
-from userprefsman.main import USER_PREFS, CONFIG_FILEPATH
+from .main import USER_PREFS, CONFIG_FILEPATH
 
-from userprefsman.validation import (
+from .validation import (
                                AVAILABLE_LANGUAGES,
                                validate_prefs_dict,
                              )
 
-from dialog import create_and_show_dialog
+from ..dialog import create_and_show_dialog
 
-from pygameconstants import (
+from ..pygameconstants import (
                        SCREEN_RECT,
                        blit_on_screen,
                      )
 
-from ourstdlibs.pyl import save_pyl
+from ..ourstdlibs.pyl import save_pyl
 
-from ourstdlibs.collections.general import CallList
+from ..ourstdlibs.collections.general import CallList
 
-from ourstdlibs.behaviour import (
+from ..ourstdlibs.behaviour import (
                             empty_function,
                             get_oblivious_callable,
                           )
 
-from our3rdlibs.button import Button
+from ..our3rdlibs.button import Button
 
-from our3rdlibs.behaviour import set_status_message
+from ..our3rdlibs.behaviour import set_status_message
 
 
-from classes2d.single import Object2D
-from classes2d.collections import List2D
+from ..classes2d.single import Object2D
+from ..classes2d.collections import List2D
 
-from fontsman.constants import (
+from ..fontsman.constants import (
                           ENC_SANS_BOLD_FONT_HEIGHT,
                           ENC_SANS_BOLD_FONT_PATH,
                         )
 
-from textman.render import render_text
+from ..textman.render import render_text
 
-from surfsman.cache import UNHIGHLIGHT_SURF_MAP
+from ..surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
-from surfsman.draw import draw_border, draw_depth_finish
+from ..surfsman.draw import draw_border, draw_depth_finish
 
-from surfsman.render import render_rect
+from ..surfsman.render import render_rect
 
-from loopman.main import LoopHolder
+from ..loopman.main import LoopHolder
 
-from widget.intfloatentry.main import IntFloatEntry
+from ..widget.intfloatentry.main import IntFloatEntry
 
-from widget.optionmenu.main import OptionMenu
+from ..widget.optionmenu.main import OptionMenu
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         CONTRAST_LAYER_COLOR,
                         BUTTON_FG, BUTTON_BG,
                         WINDOW_FG, WINDOW_BG,
@@ -172,7 +172,7 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
           t.user_preferences_form.user_logger_lines,
           t.user_preferences_form.custom_stdout_lines,
         ):
-            
+
             label_obj = Object2D.from_surface(
                                    render_text(
                                      text=f'{label_text}:',
@@ -190,7 +190,7 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
                              name='LANGUAGE',
                              max_width = 0,
                            )
-        
+
         number_backups_intfloat_entry = (
 
           IntFloatEntry(
@@ -204,7 +204,7 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
           )
 
         )
-        
+
         user_logger_lines_intfloat_entry = (
 
           IntFloatEntry(
@@ -401,7 +401,7 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
             mouse interaction protocol used; here we
             use it to retrieve the position of the
             mouse when the first button was released.
-              
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -451,15 +451,15 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
         try: validate_prefs_dict(edited_prefs)
 
         except Exception:
-            
+
             return
 
         else:
-            
+
             try: save_pyl(edited_prefs, CONFIG_FILEPATH)
 
             except Exception:
-                
+
                 return
 
             else:
@@ -470,7 +470,7 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
                 # also take care of max lines for
                 # the custom stdout)
                 USER_PREFS.update(edited_prefs)
-            
+
         ### notify user via dialog and status message
 
         message = (

@@ -26,21 +26,21 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from pygameconstants import SCREEN
+from ..pygameconstants import SCREEN
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from loopman.exception import (
+from ..loopman.exception import (
                                 SwitchLoopException,
                                 QuitAppException)
 
-from colorsman.colors import SPLASH_FONT
+from ..colorsman.colors import SPLASH_FONT
 
-from recentfile import get_recent_files
+from ..recentfile import get_recent_files
 
-from splashscreen.factoryfuncs import get_recent_file_objs
+from .factoryfuncs import get_recent_file_objs
 
-from splashscreen.animsetup import (
+from .animsetup import (
                                    keep_animation_playing,
                                    keep_animation_paused)
 
@@ -88,7 +88,7 @@ class SplashScreenOperations(Object2D):
         ### iterate over events from the event queue
 
         for event in get_events():
-            
+
             ### if the user attempts to close the window,
             ### raise a custom exception to trigger the
             ### proper behaviour to quit the application
@@ -158,7 +158,7 @@ class SplashScreenOperations(Object2D):
             ## iterate over buttons
 
             for button in self.buttons:
-                
+
                 ## if a button collides check existence of
                 ## method with given name and execute it
                 ## if it is the case, then break out of
@@ -193,7 +193,7 @@ class SplashScreenOperations(Object2D):
         ### the "for loop" immediately
 
         for button in self.buttons:
-            
+
             if button.rect.collidepoint(mouse_pos):
 
                 self.hovered_rect = button.rect

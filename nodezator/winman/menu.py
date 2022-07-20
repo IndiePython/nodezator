@@ -13,49 +13,49 @@ from webbrowser import open as open_url
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from translation import TRANSLATION_HOLDER as t
+from ..translation import TRANSLATION_HOLDER as t
 
-from pygameconstants import SCREEN_RECT
+from ..pygameconstants import SCREEN_RECT
 
-from ourstdlibs.collections.general import CallList
+from ..ourstdlibs.collections.general import CallList
 
-from our3rdlibs.behaviour import quit_app
+from ..our3rdlibs.behaviour import quit_app
 
-from htsl.main import open_htsl_link
+from ..htsl.main import open_htsl_link
 
-from menu.main import MenuManager
+from ..menu.main import MenuManager
 
-from recentfile import get_recent_files
+from ..recentfile import get_recent_files
 
-from userprefsman.editionform import edit_user_preferences
+from ..userprefsman.editionform import edit_user_preferences
 
-from winman.nodepacksforms.selection import (
+from .nodepacksforms.selection import (
                            present_change_node_packs_form,
                          )
 
-from winman.nodepacksforms.renaming import (
+from .nodepacksforms.renaming import (
                            present_rename_node_packs_form,
                          )
 
-from graphman.presets import (
+from ..graphman.presets import (
                         WIDGET_DATA_PRESET_MAP,
                         WIDGET_PRESET_MENU_LABEL_MAP,
                       )
 
-from graphman.operatornode.constants import OPERATIONS_MAP
+from ..graphman.operatornode.constants import OPERATIONS_MAP
 
-from graphman.builtinnode.constants import (
+from ..graphman.builtinnode.constants import (
                             BUILTIN_IDS_TO_CALLABLES_MAP,
                           )
 
-from graphman.stlibnode.constants import (
+from ..graphman.stlibnode.constants import (
                           STLIB_IDS_TO_CALLABLES_MAP,
                           STLIB_IDS_TO_MODULE,
                         )
 
-from graphman.capsulenode.constants import (
+from ..graphman.capsulenode.constants import (
                           CAPSULE_IDS_TO_CALLABLES_MAP,
                         )
 
@@ -579,7 +579,7 @@ class MenuSetup:
         children = common_operations_menu['children']
 
         for operation_id in OPERATIONS_MAP:
-            
+
             children.append(
 
                        {
@@ -632,11 +632,11 @@ class MenuSetup:
           first_letter_and_group_pairs
 
         ):
-            
+
             group_to_add.extend(group)
 
             if len(group_to_add) > 10:
-            
+
                 first_letter = group_to_add[ 0][0]
                 last_letter  = group_to_add[-1][0]
 
@@ -686,7 +686,7 @@ class MenuSetup:
                 group_to_add.clear()
 
         if group_to_add:
-        
+
             first_letter = group_to_add[ 0][0]
             last_letter  = group_to_add[-1][0]
 
@@ -775,7 +775,7 @@ class MenuSetup:
           module_name_and_group_pairs
 
         ):
-            
+
             stlib_ids = [
               item[1]
               for item in group
@@ -870,7 +870,7 @@ class MenuSetup:
           key = lambda i: i[0],
 
         ):
-            
+
             ### define the label text
 
             label_text = t.menu.new_category_node.format(

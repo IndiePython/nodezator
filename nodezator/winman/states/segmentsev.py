@@ -11,9 +11,9 @@ from pygame.display import update
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from loopman.exception import QuitAppException
+from ...loopman.exception import QuitAppException
 
 
 class SegmentSeveranceState:
@@ -42,7 +42,7 @@ class SegmentSeveranceState:
             ### KEYUP
 
             elif event.type == KEYUP:
-                
+
                 if event.key == K_ESCAPE:
                     APP_REFS.gm.cancel_severing_segments()
 

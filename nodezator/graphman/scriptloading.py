@@ -24,24 +24,24 @@ from inspect import signature
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from appinfo import (
+from ..appinfo import (
                NODE_SCRIPT_NAME,
                NODE_DEF_VAR_NAMES,
                NODE_CATEGORY_METADATA_FILENAME,
              )
 
-from ourstdlibs.pyl import load_pyl
+from ..ourstdlibs.pyl import load_pyl
 
-from ourstdlibs.importutils import (
+from ..ourstdlibs.importutils import (
                               remove_import_visibility,
                               grant_import_visibility,
                             )
 
-from graphman.exception import NodeScriptsError
+from .exception import NodeScriptsError
 
-from colorsman.colors import NODE_CATEGORY_COLORS
+from ..colorsman.colors import NODE_CATEGORY_COLORS
 
 
 ### XXX idea: make it possible to reload individual node
@@ -69,7 +69,7 @@ from colorsman.colors import NODE_CATEGORY_COLORS
 ### the native file (or even a 'nodes_directory' which
 ### points to a folder with no node scripts) can all be
 ### solved from a common "design point":
-### 
+###
 ### the node editor could have a "data view" mode,
 ### where crucial parts of the native file data could be
 ### exposed so that such kind of problems
@@ -80,7 +80,7 @@ from colorsman.colors import NODE_CATEGORY_COLORS
 ### etc.); the ability to reload a node script is
 ### also appreciated, as discussed in the
 ### graphman/scriptloading.py module already mentioned;
-### 
+###
 ### edit1: as of now, some poka-yoke checks were implemented
 ### to guide the user through eventual issues they may
 ### have with the nodes directory, until a more elegant
@@ -174,7 +174,7 @@ def load_scripts(node_packs_paths):
         node_pack_name = node_pack_path.name
 
         if not node_pack_name.isidentifier():
-            
+
             raise ValueError(
                      "Node pack name must be a valid"
                      " Python identifier; the node pack"
@@ -207,7 +207,7 @@ def load_scripts(node_packs_paths):
             category_folder_name = category_folder.name
 
             if not category_folder_name.isidentifier():
-                
+
                 raise ValueError(
                          "Category folder name must be a"
                          " valid Python identifier; the"
@@ -255,7 +255,7 @@ def load_scripts(node_packs_paths):
             ## fails, in which case we pass
 
             else:
-                
+
                 try: color_index = (
                         int(
                           category_metadata[
@@ -289,7 +289,7 @@ def load_scripts(node_packs_paths):
                 script_dir_name = script_dir.name
 
                 if not script_dir_name.isidentifier():
-                    
+
                     raise ValueError(
                              "Script folder name must be a"
                              " valid Python identifier;"
@@ -397,7 +397,7 @@ def load_scripts(node_packs_paths):
                   main_callable,
                   signature_callable,
                 ):
-                    
+
                     if not callable(callable_obj):
 
                         not_actually_callables.append(
@@ -424,7 +424,7 @@ def load_scripts(node_packs_paths):
                 # "continue" statement
 
                 except Exception as err:
-                    
+
                     callables_not_inspectable.append(
 
                       (
@@ -476,7 +476,7 @@ def load_scripts(node_packs_paths):
            callables_not_inspectable,
          )
     ):
-        
+
         raise NodeScriptsError(
                 scripts_not_loaded,
                 scripts_missing_node_definition,

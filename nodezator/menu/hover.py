@@ -2,9 +2,9 @@
 
 ### local imports
 
-from loopman.exception import SwitchLoopException
+from ..loopman.exception import SwitchLoopException
 
-from logman.main import get_new_logger
+from ..logman.main import get_new_logger
 
 
 ### create logger for module
@@ -313,7 +313,7 @@ class HoveringOperations:
             ## if the hovered widget exists, check if the
             ## hovered widget is a top menu, in which case
             ## make it the active menu and perform other
-            ## extra tasks 
+            ## extra tasks
 
             if self.hovered_widget:
 
@@ -389,7 +389,7 @@ class HoveringOperations:
         ### it, performing extra administrative tasks
 
         else:
-            
+
             ### first of all, log the call we are about
             ### to attemp
 

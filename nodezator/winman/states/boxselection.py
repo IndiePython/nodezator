@@ -17,9 +17,9 @@ from pygame.display import update
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from loopman.exception import QuitAppException
+from ...loopman.exception import QuitAppException
 
 
 class BoxSelectionState:
@@ -50,7 +50,7 @@ class BoxSelectionState:
             ### KEYUP
 
             elif event.type == KEYUP:
-                
+
                 ## cancel box selection
 
                 if event.key == K_ESCAPE:

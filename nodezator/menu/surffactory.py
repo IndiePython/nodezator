@@ -2,31 +2,31 @@
 
 ### local imports
 
-from surfsman.draw import (
+from ..surfsman.draw import (
                      draw_depth_finish,
                      blit_aligned,
                    )
 
-from surfsman.icon import render_layered_icon
+from ..surfsman.icon import render_layered_icon
 
-from surfsman.render import (
+from ..surfsman.render import (
                        render_rect,
                        render_separator,
                      )
 
-from textman.render import (
+from ..textman.render import (
                       render_text,
                       get_text_size,
                     )
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         MENU_BG,
                         MENU_HOVERED_BG,
                         BLACK,
                         WHITE,
                       )
 
-from menu.common import (
+from .common import (
 
                    ## kwargs
 
@@ -41,7 +41,7 @@ from menu.common import (
 
                  )
 
-from menu.iconfactory import ICON_MAP
+from .iconfactory import ICON_MAP
 
 
 ICON_WIDTH = (
@@ -65,7 +65,7 @@ INCREMENT_MAP = {
   MARKED_RADIOBUTTON,
 
 ) = (
-  
+
   render_layered_icon(
 
     chars = [chr(ordinal) for ordinal in ordinals],
@@ -98,7 +98,7 @@ def create_top_surfaces(menu_list):
     ###
 
     for item in menu_list:
-        
+
         label = item['label']
 
         ##
@@ -245,7 +245,7 @@ def create_equal_surfaces(menu_list):
         except KeyError: pass
 
         else:
-            
+
             normal_key_surf = render_text(
                                 text=key_text,
                                 **NORMAL_LABEL_KWARGS
@@ -273,7 +273,7 @@ def create_equal_surfaces(menu_list):
 
         ##
         if 'children' in item_data:
-            
+
             for label_surf, arrow_surf in (
 
               (normal_surf, RIGHT_ARROW_SURF),
@@ -296,7 +296,7 @@ def create_equal_surfaces(menu_list):
         has_widget = 'widget' in item_data
 
         if 'icon' in item_data:
-            
+
             x_icon_offset = ICON_WIDTH if has_widget else 0
             icon = ICON_MAP[item_data['icon']]
 

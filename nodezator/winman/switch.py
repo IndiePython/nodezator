@@ -6,9 +6,9 @@ from functools import partial
 
 ### local imports
 
-from pygameconstants import SCREEN_RECT
+from ..pygameconstants import SCREEN_RECT
 
-from hideswitch import HideSwitch
+from ..hideswitch import HideSwitch
 
 
 ### utility function
@@ -36,11 +36,11 @@ def move_close_to_menubar(obj):
 
 def setup_switches(self):
     """Instantiate and set hide/show switches.
-    
+
     Only applies to specific widgets with a translate
     method. Those were chosen based on how useful it
     would be to be able to hide/show them at will.
-    """ 
+    """
     self.switches = []
 
     extra_behaviour_for_menu = partial(

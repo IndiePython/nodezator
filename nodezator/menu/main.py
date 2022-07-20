@@ -6,32 +6,32 @@ from pygame import Rect
 
 ### local imports
 
-from pygameconstants import SCREEN_RECT
+from ..pygameconstants import SCREEN_RECT
 
-from ourstdlibs.behaviour import empty_function
+from ..ourstdlibs.behaviour import empty_function
 
-from classes2d.collections import List2D
+from ..classes2d.collections import List2D
 
-from surfsman.render import render_rect
+from ..surfsman.render import render_rect
 
-from surfsman.cache import draw_cached_screen_state
+from ..surfsman.cache import draw_cached_screen_state
 
-from colorsman.colors import MENU_BG
+from ..colorsman.colors import MENU_BG
 
 ## class extensions
 
-from menu.behaviour import BehaviourDefinitions
-from menu.hover     import HoveringOperations
-from menu.scroll    import Scrollability
+from .behaviour import BehaviourDefinitions
+from .hover     import HoveringOperations
+from .scroll    import Scrollability
 
 ## classes for composition
 
-from menu.command      import Command
-from menu.submenu.main import Menu
+from .command      import Command
+from .submenu.main import Menu
 
 ## surface factory utility
 
-from menu.surffactory import (
+from .surffactory import (
                         create_top_surfaces,
                         create_equal_surfaces,
                       )
@@ -47,7 +47,7 @@ from menu.surffactory import (
 ### A submenu of the popup menu will appear in the previous
 ### spot it was (that is, it seems its as if its position
 ### isn't updated);
-### 
+###
 ### in other words, it seems I must not only update the
 ### position of the menu when summoning it, but also of the
 ### submenus as well; at least that's what it seems to be
@@ -76,7 +76,7 @@ class MenuManager(
     (Menu and Command) were design to work together to
     reproduce a behaviour similar to the one observed in
     tkinter.Menu widgets.
-    
+
     The menu manager works as a container for other
     menu-like items and/or their subitems. Such items and
     subitems consist of (sub)menus and commands.
@@ -88,21 +88,21 @@ class MenuManager(
          Menu - Menu - Command
         /
     MenuManager - Menu - [...] - Command
-        \ 
+        \
          Command
 
     For instance:
 
-         File (menu) 
+         File (menu)
          /    > Open (command)
         /     > Open recent... (menu)
        /      > Close (command)  |
       /                          |
     MenuManager                   > Open file 01 (command)
        \   \                      > Open file 02 (command)
-        \   \ 
+        \   \
          \   Edit (menu) > Preferences (command)
-          \ 
+          \
            Undo (command)
 
     As you can see, the MenuManager object can have both
@@ -132,7 +132,7 @@ class MenuManager(
     widgets are considered its children, and are stored in
     the 'children' attribute. This is true for both the
     MenuManager and the Menu classes.
-    
+
     Each widget also has a 'parent' attribute wherein they
     store a reference to its parent widget, except for the
     menu.main.MenuManager instance, since it works like a
@@ -155,7 +155,7 @@ class MenuManager(
     The branch or hierarchy of the top menu and all its
     items and subitems until the last expanded menu is
     called the active branch.
-    
+
     Only the children, grandchildren, etc. of a single top
     menu can be visible at a time, that is, only one top menu
     is expanded at a time, while all the others are collapsed.
@@ -205,7 +205,7 @@ class MenuManager(
 
         ):
         """Assign variables and perform setups.
-        
+
         Parameters
         ==========
 
@@ -410,7 +410,7 @@ class MenuManager(
         ### attribute and used as background and also
         ### perform related setups
 
-        ## instantiate background, storing it on the 
+        ## instantiate background, storing it on the
         ## image attribute, using the rect size
         self.image = render_rect(*self.rect.size, MENU_BG)
 

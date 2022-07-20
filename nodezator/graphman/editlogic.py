@@ -6,15 +6,15 @@ from functools import partialmethod
 
 ### local imports
 
-from ourstdlibs.behaviour import remove_by_identity
+from ..ourstdlibs.behaviour import remove_by_identity
 
 
 ## classes for composition
 
-from graphman.callablenode.main import CallableNode
-from graphman.proxynode.main    import ProxyNode
+from .callablenode.main import CallableNode
+from .proxynode.main    import ProxyNode
 
-from graphman.textblock.main import TextBlock
+from .textblock.main import TextBlock
 
 
 

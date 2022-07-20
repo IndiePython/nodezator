@@ -6,39 +6,39 @@ from pathlib import Path
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from userprefsman.main import USER_PREFS
+from ..userprefsman.main import USER_PREFS
 
-from appinfo import NATIVE_FILE_EXTENSION
+from ..appinfo import NATIVE_FILE_EXTENSION
 
-from dialog import (
+from ..dialog import (
               create_and_show_dialog,
               show_dialog_from_key,
             )
 
-from fileman.main import (
+from ..fileman.main import (
                     select_path,
                     create_path,
                   )
 
-from ourstdlibs.path import (
+from ..ourstdlibs.path import (
                        get_swap_path,
                        get_custom_path_repr,
                        save_timestamped_backup,
                      )
 
-from ourstdlibs.pyl import load_pyl, save_pyl
+from ..ourstdlibs.pyl import load_pyl, save_pyl
 
-from loopman.exception import SwitchLoopException
+from ..loopman.exception import SwitchLoopException
 
-from our3rdlibs.behaviour import (
+from ..our3rdlibs.behaviour import (
                             are_changes_saved,
                             indicate_saved,
                             set_status_message,
                           )
 
-from recentfile import store_recent_file
+from ..recentfile import store_recent_file
 
 
 ### constants
@@ -92,7 +92,7 @@ class FileOperations:
         ### cancel the operation (in which case we return)
 
         if filepath.suffix != NATIVE_FILE_EXTENSION:
-            
+
             message = (
                "Path provided must have a "
               f"{NATIVE_FILE_EXTENSION} extension."
@@ -504,7 +504,7 @@ class FileOperations:
         provided by the user via the file manager
         session we start and using that new location from
         then on.
-        
+
         Other admin taks are also performed like deleting
         the swap file for the original file.
         """
@@ -530,7 +530,7 @@ class FileOperations:
         ### cancel the operation (in which case we return)
 
         if filepath.suffix != NATIVE_FILE_EXTENSION:
-            
+
             ## build custom message
 
             message = (
@@ -609,10 +609,10 @@ class FileOperations:
         ### by returning
 
         except Exception as err:
-            
+
             ## restore source
             APP_REFS.source_path = original_source
-            
+
             ## build and display error message
 
             error_message = (

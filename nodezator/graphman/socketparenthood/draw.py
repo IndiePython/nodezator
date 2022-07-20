@@ -8,11 +8,11 @@ from pygame.draw  import line    as draw_line
 
 ### local imports
 
-from pygameconstants import SCREEN
+from ...pygameconstants import SCREEN
 
-from graphman.socketparenthood.utils import clip_segment
+from .utils import clip_segment
 
-from colorsman.colors import CUTTING_SEGMENT
+from ...colorsman.colors import CUTTING_SEGMENT
 
 
 class DrawingOperations:

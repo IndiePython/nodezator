@@ -10,17 +10,17 @@ from pygame import Rect
 
 ### local imports
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from surfsman.draw   import blit_aligned
-from surfsman.render import render_rect
+from ..surfsman.draw   import blit_aligned
+from ..surfsman.render import render_rect
 
-from menu.common import (
+from .common import (
                         LEFT_ARROW_SURF, RIGHT_ARROW_SURF,
                         UP_ARROW_SURF, DOWN_ARROW_SURF,
                         SCROLL_SPEED)
 
-from colorsman.colors import MENU_BG
+from ..colorsman.colors import MENU_BG
 
 
 class Scrollability:
@@ -386,7 +386,7 @@ class Scrollability:
             normally, that is, when autoscrolling by hovering
             the scroll arrows, so the expanded child
             collapses (that is, the active menu).
-            
+
             If we don't collapse the body of the moving
             expanded child when autoscrolling the arrows we
             would have to add extra complexity to the code
@@ -400,7 +400,7 @@ class Scrollability:
             scroll. Thus, getting rid of the excess of what
             is visible (the body of the expanded child)
             shouldn't cause any problem.
-            
+
             There is, though, a scenario wherein we don't
             collapse the body of the expanded child (that
             is the parameter is set to False: only when
@@ -516,7 +516,7 @@ class Scrollability:
 
     def fix_scrolling(self):
         """Eliminate excessive scrolling.
-        
+
         Closes gap between first child/first arrow or
         last child/last_arrow if it exists. Such gap is
         sometimes formed when scrolling the first or last
@@ -555,7 +555,7 @@ class Scrollability:
         ### the menu scrollable in the first place)
 
         if self.is_menubar:
-            
+
             ## if the first_rect is inside the scroll area
             ## and its left isn't aligned with the left
             ## arrow right it means there's a gap, so align
@@ -701,7 +701,7 @@ class Scrollability:
 
             # call the scroll method on the chosen arrow
             # with collapse_expanded_child argument set to
-            # False (for more information check the 
+            # False (for more information check the
             # 'scroll' method docstring in either the
             # menu/scroll.py or menu/submenu/scroll.py
             # module, where the collapse_expanded_child

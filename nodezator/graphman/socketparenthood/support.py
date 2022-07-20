@@ -2,15 +2,15 @@
 
 ### local imports
 
-from graphman.socket.output import OutputSocket
+from ..socket.output import OutputSocket
 
-from graphman.socketparenthood.utils import (
+from .utils import (
                                        do_segments_cross
                                      )
 
-from graphman.utils import yield_subgraph_nodes
+from ..utils import yield_subgraph_nodes
 
-from our3rdlibs.behaviour import indicate_unsaved
+from ...our3rdlibs.behaviour import indicate_unsaved
 
 
 class SupportOperations:
@@ -37,7 +37,7 @@ class SupportOperations:
 
                             if type(socket) is OutputSocket
 
-                          ) 
+                          )
 
         if output_socket_n == 0:
 
@@ -98,7 +98,7 @@ class SupportOperations:
         connections is forbidden, as it creates a cycle
         in the data flow, preventing the data from
         advancing in the graph.
-        
+
         So, if such kind of connection is detected,
         we raise a ValueError to prevent the connection
         from existing and thereby causing a cycle.
@@ -181,7 +181,7 @@ class SupportOperations:
         ### parent still has children left or not
 
         if parent.children:
-            
+
             ## update the parent's tree data to take into
             ## accound the removal of the child socket
 
@@ -273,7 +273,7 @@ class SupportOperations:
         ## setups in case the socket_a already has children
 
         else:
-            
+
             ## reference the 'children' field of the
             ## tree data for the socket_a
 
@@ -325,7 +325,7 @@ class SupportOperations:
           socket.node.data.get('commented_out', False)
           for socket in (socket_a, socket_b)
         ):
-            
+
             ## create a generator expression which yields
             ## uncommented nodes
 
@@ -476,7 +476,7 @@ class SupportOperations:
         ### sever connections from output sockets
 
         for socket in node.output_sockets:
-            
+
             try: children = socket.children
 
             except AttributeError: pass

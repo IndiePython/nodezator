@@ -9,17 +9,17 @@ from string import ascii_letters
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from appinfo import NODE_SCRIPT_NAME
+from ..appinfo import NODE_SCRIPT_NAME
 
-from classes2d.collections import List2D
+from ..classes2d.collections import List2D
 
-from rectsman.utils import get_minimum_distance_function
+from ..rectsman.utils import get_minimum_distance_function
 
-from graphman.utils import yield_subgraphs
+from .utils import yield_subgraphs
 
-from widget.defaultholder import DefaultHolder
+from ..widget.defaultholder import DefaultHolder
 
 
 ### constants
@@ -133,7 +133,7 @@ def python_repr(self, additional_levels=()):
     docstring = DEFAULT_DOCSTRING
 
     if text_blocks:
-        
+
         result = self.origin_rect.collidelist(block_rects)
 
         if result != -1:
@@ -147,12 +147,12 @@ def python_repr(self, additional_levels=()):
                                      )
 
                                    ]
-        
+
             text = colliding_text_block.data['text']
 
             docstring = '"""' + text + (
 
-                '\n"""' 
+                '\n"""'
                 if len(text.splitlines()) > 1
 
                 else '"""'
@@ -196,7 +196,7 @@ def python_repr(self, additional_levels=()):
     ## a callable object with proper indentation
 
     for subgraph in yield_subgraphs(self.nodes):
-        
+
         ## filter out redirect nodes
 
         subgraph = [
@@ -236,7 +236,7 @@ def python_repr(self, additional_levels=()):
         while nodes_to_visit:
 
             for node in nodes_to_visit:
-                
+
                 try: node_text = node_to_text(
                                    node,
                                    nodes_to_visit,
@@ -261,7 +261,7 @@ def python_repr(self, additional_levels=()):
     ###
 
     if not self.nodes:
-        
+
         for text_block in (
 
           sorted(
@@ -304,7 +304,7 @@ def python_repr(self, additional_levels=()):
                   + '\n'
 
                 )
-        
+
         ##
 
         graph_function_body = indent(
@@ -373,11 +373,11 @@ def python_repr(self, additional_levels=()):
       + docstring
 
       + graph_function_body
-      
+
       + '\n\n'
-      
+
       + "if __name__ == '__main__':\n"
-      
+
       + f'    {func_name}()\n\n'
 
     )
@@ -411,7 +411,7 @@ def set_text_block_refs(
     ]
 
     for text_block in text_blocks:
-        
+
         get_lowest_dist = get_minimum_distance_function(
                             text_block.rect
                           )
@@ -469,7 +469,7 @@ def node_to_text(
       visited_nodes,
       node_clusters,
     ):
-    
+
     for cluster in node_clusters:
 
         if node in cluster: break
@@ -478,7 +478,7 @@ def node_to_text(
                   "this else statement should never be"
                   " reached"
                 )
-    
+
     ###
 
     if (
@@ -519,7 +519,7 @@ def callable_node_to_text(
     ):
 
     call_text = node.title_text + '('
-    
+
     insocket_flmap = node.input_socket_live_flmap
     widget_flmap   = node.widget_live_flmap
     keyword_lmap   = node.subparam_keyword_entry_live_map
@@ -527,7 +527,7 @@ def callable_node_to_text(
     for param_name in (
       node.signature_obj.parameters.keys()
     ):
-        
+
         ### start by assigning a default value to the
         ### argument, which is the name of the parameter
         ### itself
@@ -561,7 +561,7 @@ def callable_node_to_text(
                 parent_node = parent.node
 
                 while True:
-                    
+
                     if (
                       hasattr(parent_node, 'proxy_socket')
                       and hasattr(
@@ -569,7 +569,7 @@ def callable_node_to_text(
                             'parent'
                           )
                     ):
-                        
+
                         parent = (
                           parent_node
                           .proxy_socket
@@ -647,7 +647,7 @@ def callable_node_to_text(
         ### if it is of variable kind...
 
         else:
-            
+
             subparam_socket_map = insocket_flmap[param_name]
 
             unpacked_subparams = (
@@ -666,18 +666,18 @@ def callable_node_to_text(
                 insocket = subparam_socket_map[
                              subparam_index
                            ]
-                    
+
                 ### we check whether the subparameter
                 ### depends on other sources of data
 
                 ## another output socket
                 if hasattr(insocket, 'parent'):
-                    
+
                     parent = insocket.parent
                     parent_node = parent.node
 
                     while True:
-                        
+
                         if (
 
                           hasattr(
@@ -690,7 +690,7 @@ def callable_node_to_text(
                               )
 
                         ):
-                            
+
                             parent = (
                               parent_node
                               .proxy_socket
@@ -720,7 +720,7 @@ def callable_node_to_text(
                 ## a widget
 
                 else:
-                    
+
                     widget = (
                       widget_flmap
                       [param_name]
@@ -809,7 +809,7 @@ def callable_node_to_text(
         )
 
         for socket in output_sockets:
-            
+
             call_text += (
 
               comment_prefix
@@ -988,7 +988,7 @@ def operator_node_to_text(
     output_socket = node.output_sockets[0]
 
     output_text = (
-    
+
       '_'
 
       + '_'.join(
@@ -1061,7 +1061,7 @@ def operator_node_to_text(
     node_text = node.substitution_callable(substitution_map)
 
     if node.data.get('commented_out', False):
-        
+
         node_text = '\n'.join(
 
                       '# ' + line
@@ -1107,7 +1107,7 @@ def snippet_node_to_text(
     for param_name in (
       node.signature_obj.parameters.keys()
     ):
-        
+
         argument = param_name
 
         ### check whether parameter name is of variable
@@ -1188,7 +1188,7 @@ def snippet_node_to_text(
         ### if it is of variable kind...
 
         else:
-            
+
             subparam_socket_map = insocket_flmap[param_name]
 
             argument = '*(' if kind == 'var_pos' else '**{'
@@ -1200,14 +1200,14 @@ def snippet_node_to_text(
                 insocket = subparam_socket_map[
                              subparam_index
                            ]
-                    
+
                 ### we check whether the subparameter
                 ### depends on other sources of data
 
                 ## another output socket
 
                 if hasattr(insocket, 'parent'):
-                    
+
                     parent = insocket.parent
                     parent_node = parent.node
 
@@ -1257,7 +1257,7 @@ def snippet_node_to_text(
                 ## a widget
 
                 else:
-                    
+
                     widget = (
                       widget_flmap
                       [param_name]
@@ -1285,7 +1285,7 @@ def snippet_node_to_text(
                           )
 
                 else:
-                    
+
                     if subparam_index in (
                       self
                       .data
@@ -1315,9 +1315,9 @@ def snippet_node_to_text(
     output_sockets = node.output_sockets
 
     for socket in output_sockets:
-        
+
         output_text = (
-        
+
           '_'
 
           + '_'.join(
@@ -1391,7 +1391,7 @@ def snippet_node_to_text(
     node_text = node.substitution_callable(substitution_map)
 
     if node.data.get('commented_out', False):
-        
+
         node_text = '\n'.join(
 
                       '# ' + line
@@ -1554,18 +1554,18 @@ def format_local_imports(local_imports):
     ###
 
     for i in range(n):
-        
+
         for item in words_per_item:
-            
+
             char_no = len(item[i])
             max_chars[i] = max(max_chars[i], char_no)
 
     ###
 
     for i in range(n):
-        
+
         for item in words_per_item:
-            
+
             max_value = max_chars[i]
             item[i] = item[i].ljust(max_value, ' ')
 

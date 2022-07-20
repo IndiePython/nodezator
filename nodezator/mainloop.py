@@ -1,5 +1,7 @@
 """Facility for application loop management."""
 
+import asyncio
+
 ### third-party imports
 
 # note: pygame is initialized in the pygameconstants.py
@@ -56,7 +58,7 @@ from .winman.main import perform_startup_preparations
 logger = get_new_logger(__name__)
 
 
-def run_app(filepath=None):
+async def run_app(filepath=None):
     """Run application by starting the loop.
 
     Parameters
@@ -201,6 +203,7 @@ def run_app(filepath=None):
             quit_pygame()
 
             raise err
+        await asyncio.sleep(0)
 
     logger.info("Closing app under expected circumstances.")
 

@@ -14,7 +14,7 @@ from pygame.math import Vector2
 
 
 ### local import
-from pygameconstants import FPS
+from ..pygameconstants import FPS
 
 
 ### factor used to adjust quantity of animation data

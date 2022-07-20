@@ -2,27 +2,27 @@
 
 ### local imports
 
-from ourstdlibs.behaviour import empty_function
+from ...ourstdlibs.behaviour import empty_function
 
-from surfsman.draw   import draw_depth_finish
-from surfsman.render import render_rect
+from ...surfsman.draw   import draw_depth_finish
+from ...surfsman.render import render_rect
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ...classes2d.single      import Object2D
+from ...classes2d.collections import List2D
 
-from colorsman.colors import MENU_BG, MENU_HOVERED_BG
+from ...colorsman.colors import MENU_BG, MENU_HOVERED_BG
 
 ## class for composition
-from menu.command import Command
+from ..command import Command
 
 ## class extension
-from menu.submenu.scroll import MenuScrolling
+from .scroll import MenuScrolling
 
 ## utility for surface creation
-from menu.surffactory import create_equal_surfaces
+from ..surffactory import create_equal_surfaces
 
 ## utilities
-from menu.submenu.utils import is_top_menu, get_boundaries
+from .utils import is_top_menu, get_boundaries
 
 
 ### XXX instead of creating the labels twice (once upon
@@ -51,7 +51,7 @@ from menu.submenu.utils import is_top_menu, get_boundaries
 
 class Menu(Object2D, MenuScrolling):
     """Menu object for the menu.main.MenuManager class.
-    
+
     It can have other menus (instances of its own class and/
     or commands as children. A menu always has a 'parent'
     attribute, which is either other menu or the
@@ -66,7 +66,7 @@ class Menu(Object2D, MenuScrolling):
           surface_map,
         ):
         """Store variables and perform setups.
-        
+
         parent (instance of menu.main.MenuManager class or
                 this Menu class)
             object regarded as the parent of this Menu
@@ -397,7 +397,7 @@ class Menu(Object2D, MenuScrolling):
 
         To be able to fit the body below the self.rect, two
         conditions must be met:
-        
+
         1) the body must fit in the space between the bottom
            of the pygame.Rect in the 'rect' attribute and the
            bottom of the boundaries rect; that is, if the

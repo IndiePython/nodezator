@@ -2,11 +2,11 @@
 
 ### local imports
 
-from fontsman.constants import (
+from ..fontsman.constants import (
                                ENC_SANS_BOLD_FONT_HEIGHT,
                                ENC_SANS_BOLD_FONT_PATH)
 
-from colorsman.colors import SPLASH_FONT, SPLASH_BG
+from ..colorsman.colors import SPLASH_FONT, SPLASH_BG
 
 
 TEXT_SETTINGS = {

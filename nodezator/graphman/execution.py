@@ -15,26 +15,26 @@ from os import linesep
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from userprefsman.main import USER_PREFS
+from ..userprefsman.main import USER_PREFS
 
-from logman.main import get_new_logger
+from ..logman.main import get_new_logger
 
-from dialog import (
+from ..dialog import (
               create_and_show_dialog,
               show_formatted_dialog,
             )
 
-from ourstdlibs.timeutils import friendly_delta_from_secs
+from ..ourstdlibs.timeutils import friendly_delta_from_secs
 
-from our3rdlibs.userlogger import USER_LOGGER
+from ..our3rdlibs.userlogger import USER_LOGGER
 
-from our3rdlibs.behaviour import set_status_message
+from ..our3rdlibs.behaviour import set_status_message
 
-from textman.viewer.main import view_text
+from ..textman.viewer.main import view_text
 
-from graphman.exception import (
+from .exception import (
 
                      MissingInputError,
                      WaitingInputException,
@@ -46,7 +46,7 @@ from graphman.exception import (
 
                    )
 
-from graphman.utils import lay_arguments_and_execute
+from .utils import lay_arguments_and_execute
 
 
 ### create logger for module
@@ -75,7 +75,7 @@ class Execution:
 
         Works by executing node by node until all of them
         are finished.
-        
+
         Once a node is finished, it's outputs are sent to
         the inputs of other linked nodes, if any.
         """
@@ -218,7 +218,7 @@ class Execution:
                     ## if node execution succeeds...
 
                     else:
-                        
+
                         ### now try executing the node's
                         ### callable by passing the needed
                         ### arguments to a function that
@@ -279,7 +279,7 @@ class Execution:
             ### class
 
             except Exception as err:
-                
+
                 ## regardless of the kind of error...
 
                 # remove executed_nodes from the
@@ -333,7 +333,7 @@ class Execution:
                     ## display a custom error message
 
                     if isinstance(err, NodeCallableError):
-                        
+
                         # grab the node wherein the
                         # error bubbled up
                         error_node = err.node
@@ -415,7 +415,7 @@ class Execution:
         lacking_data = set()
 
         for node in nodes_to_direct_data:
-            
+
             if 'source_name' not in node.data:
 
                 (
@@ -473,7 +473,7 @@ class Execution:
             ## specific value to be sent to them
 
             for socket in output_sockets:
-                
+
                 try: children = socket.children
 
                 except AttributeError: pass
@@ -531,7 +531,7 @@ class Execution:
         else:
 
             for socket in output_sockets:
-                
+
                 try: children = socket.children
 
                 except AttributeError: pass
@@ -542,13 +542,13 @@ class Execution:
                         child.receive_input(output)
 
     def execute_with_custom_stdout(self):
-        
+
         with StringIO() as custom_stdout:
 
             ###
 
             with redirect_stdout(custom_stdout):
-                
+
                 print(
                    "Graph execution triggered at UTC:"
                   f" {datetime.utcnow()}"

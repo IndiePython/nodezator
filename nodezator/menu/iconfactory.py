@@ -2,13 +2,13 @@
 
 ### local imports
 
-from surfsman.icon import render_layered_icon
+from ..surfsman.icon import render_layered_icon
 
-from surfsman.render import combine_surfaces
+from ..surfsman.render import combine_surfaces
 
-from imagesman.cache import IMAGE_SURFS_DB
+from ..imagesman.cache import IMAGE_SURFS_DB
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         BLACK,
                         WHITE,
                         NODE_BODY_BG,
@@ -16,7 +16,7 @@ from colorsman.colors import (
                         TEXT_BLOCK_OUTLINE,
                       )
 
-from graphman.textblock.surf import COMMENT_THEME_MAP
+from ..graphman.textblock.surf import COMMENT_THEME_MAP
 
 TEXT_BLOCK_BG = COMMENT_THEME_MAP['background_color']
 
@@ -448,7 +448,7 @@ ICON_MAP = {
 for (
   index, node_category_color
 ) in enumerate(NODE_CATEGORY_COLORS):
-    
+
     surf = render_layered_icon(
 
              chars=[

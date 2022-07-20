@@ -24,53 +24,53 @@ from os import linesep
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from logman.main import get_new_logger
+from ..logman.main import get_new_logger
 
-from translation import TRANSLATION_HOLDER as t
+from ..translation import TRANSLATION_HOLDER as t
 
-from dialog import create_and_show_dialog
+from ..dialog import create_and_show_dialog
 
-from our3rdlibs.userlogger import USER_LOGGER
+from ..our3rdlibs.userlogger import USER_LOGGER
 
-from ourstdlibs.exceptionutils import bool_func_from_raiser
+from ..ourstdlibs.exceptionutils import bool_func_from_raiser
 
-from our3rdlibs.behaviour import (
+from ..our3rdlibs.behaviour import (
                             indicate_unsaved,
                             set_status_message,
                           )
 
-from fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
+from ..fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
 
-from textman.viewer.main import view_text
+from ..textman.viewer.main import view_text
 
-from textman.editor.main import edit_text
+from ..textman.editor.main import edit_text
 
-from fileman.main import select_path
+from ..fileman.main import select_path
 
-from graphman.utils import yield_subgraphs
+from ..graphman.utils import yield_subgraphs
 
-from graphman.callablenode.main import CallableNode
-from graphman.stlibnode.main    import StandardLibNode
-from graphman.builtinnode.main  import BuiltinNode
-from graphman.operatornode.main import OperatorNode
-from graphman.capsulenode.main  import CapsuleNode
-from graphman.proxynode.main    import ProxyNode
-from graphman.textblock.main    import TextBlock
+from ..graphman.callablenode.main import CallableNode
+from ..graphman.stlibnode.main    import StandardLibNode
+from ..graphman.builtinnode.main  import BuiltinNode
+from ..graphman.operatornode.main import OperatorNode
+from ..graphman.capsulenode.main  import CapsuleNode
+from ..graphman.proxynode.main    import ProxyNode
+from ..graphman.textblock.main    import TextBlock
 
-from graphman.textblock.check import (
+from ..graphman.textblock.check import (
                                 check_text_block_text,
                               )
 
-from graphman.nodepacksissues import (
+from ..graphman.nodepacksissues import (
                          get_formatted_current_node_packs,
                          check_node_packs,
                        )
 
-from graphman.exception import NODE_PACK_ERRORS
+from ..graphman.exception import NODE_PACK_ERRORS
 
-from graphman.scriptloading import load_scripts
+from ..graphman.scriptloading import load_scripts
 
 
 ### create logger for module
@@ -99,7 +99,7 @@ def retrieve_callable_info(callable_obj):
     ### try retrieving the source code for the callable
     ### as the text containing info about the callable
     try: text = getsource(callable_obj)
-      
+
     ### if it is not possible (for instance, the built-in
     ### function 'pow' can't have its source retrieved,
     ### even though it works with inspect.signature),
@@ -107,9 +107,9 @@ def retrieve_callable_info(callable_obj):
     ### if the docstring is None
 
     except (OSError, TypeError):
-        
+
         text = getdoc(callable_obj)
-          
+
         if text is None:
             text = t.editing.data.no_source_available
 
@@ -421,7 +421,7 @@ class DataHandling:
         toggled_states = set()
 
         for subgraph in yield_subgraphs(selected_nodes):
-            
+
             ### sample the state of the nodes from one of
             ### them; it can be any node, we use the first
             ### one
@@ -515,14 +515,14 @@ class DataHandling:
         ### there are instantiated nodes from them
 
         if removed:
-            
+
             removed_names = {path.name for path in removed}
 
             orphaned_nodes_ids = []
             not_removable_packs = set()
 
             for node in APP_REFS.gm.nodes:
-                
+
                 if 'script_id' not in node.data:
                     continue
 
@@ -638,7 +638,7 @@ class DataHandling:
         not_removable_packs = set()
 
         for node in APP_REFS.gm.nodes:
-            
+
             if 'script_id' not in node.data:
                 continue
 

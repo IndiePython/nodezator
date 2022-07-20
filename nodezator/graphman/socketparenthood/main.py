@@ -6,10 +6,10 @@ defines methods related to management of socket trees.
 
 ### local imports (class extensions)
 
-from graphman.socketparenthood.draw    import DrawingOperations
-from graphman.socketparenthood.action  import UserActions
-from graphman.socketparenthood.support import SupportOperations
-from graphman.socketparenthood.export  import ExportOperations
+from .draw    import DrawingOperations
+from .action  import UserActions
+from .support import SupportOperations
+from .export  import ExportOperations
 
 
 class SocketParenthood(

@@ -12,19 +12,19 @@ from pygame.mouse import get_pos as get_mouse_pos
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from pygameconstants import (
+from ..pygameconstants import (
                        SCREEN,
                        SCREEN_RECT,
                      )
 
-from ourstdlibs.mathutils import offset_point
+from ..ourstdlibs.mathutils import offset_point
 
-from our3rdlibs.behaviour import indicate_unsaved
-from loopman.exception import ContinueLoopException
+from ..our3rdlibs.behaviour import indicate_unsaved
+from ..loopman.exception import ContinueLoopException
 
-from colorsman.colors import YELLOW
+from ..colorsman.colors import YELLOW
 
 
 class Repositioning:
@@ -216,7 +216,7 @@ class Repositioning:
         ### 'midtop' field of their data
 
         for obj in self.selected_objs:
-            
+
             absolute_midtop = (
               obj.rectsman.midtop
               if hasattr(obj, 'rectsman')
@@ -278,7 +278,7 @@ class Repositioning:
         ):
         """Move objs.
 
-        obj_pos_pairs (iterable) 
+        obj_pos_pairs (iterable)
             Contains pairs referencing an obj and the new
             position value to be assigned respectively.
         update_pos_on_screen (boolean)

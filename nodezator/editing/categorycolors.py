@@ -25,55 +25,55 @@ from pygame.draw    import rect as draw_rect
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from appinfo import NODE_CATEGORY_METADATA_FILENAME
+from ..appinfo import NODE_CATEGORY_METADATA_FILENAME
 
-from translation import TRANSLATION_HOLDER as t
+from ..translation import TRANSLATION_HOLDER as t
 
-from dialog import create_and_show_dialog
+from ..dialog import create_and_show_dialog
 
-from pygameconstants import (
+from ..pygameconstants import (
                        SCREEN,
                        SCREEN_RECT,
                        blit_on_screen,
                      )
 
-from ourstdlibs.pyl import load_pyl, save_pyl
+from ..ourstdlibs.pyl import load_pyl, save_pyl
 
-from ourstdlibs.collections.general import CallList
+from ..ourstdlibs.collections.general import CallList
 
-from ourstdlibs.behaviour import (
+from ..ourstdlibs.behaviour import (
                             empty_function,
                             get_oblivious_callable,
                           )
 
-from our3rdlibs.button import Button
+from ..our3rdlibs.button import Button
 
-from our3rdlibs.behaviour import set_status_message
+from ..our3rdlibs.behaviour import set_status_message
 
 
-from classes2d.single import Object2D
-from classes2d.collections import List2D
+from ..classes2d.single import Object2D
+from ..classes2d.collections import List2D
 
-from fontsman.constants import (
+from ..fontsman.constants import (
                           ENC_SANS_BOLD_FONT_HEIGHT,
                           ENC_SANS_BOLD_FONT_PATH,
                         )
 
-from textman.render import render_text
+from ..textman.render import render_text
 
-from surfsman.cache import UNHIGHLIGHT_SURF_MAP
+from ..surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
-from surfsman.draw import draw_border, draw_depth_finish
+from ..surfsman.draw import draw_border, draw_depth_finish
 
-from surfsman.render import render_rect
+from ..surfsman.render import render_rect
 
-from pointsman2d.create import get_circle_points
+from ..pointsman2d.create import get_circle_points
 
-from loopman.main import LoopHolder
+from ..loopman.main import LoopHolder
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         CONTRAST_LAYER_COLOR,
                         GRAPH_BG,
                         BUTTON_FG, BUTTON_BG,
@@ -81,9 +81,9 @@ from colorsman.colors import (
                         NODE_CATEGORY_COLORS,
                       )
 
-from colorsman.color2d import Color2D
+from ..colorsman.color2d import Color2D
 
-from colorsman.picker.main import pick_colors
+from ..colorsman.picker.main import pick_colors
 
 
 
@@ -212,7 +212,7 @@ class CategoryColorsPicking(Object2D, LoopHolder):
             color_widget.on_mouse_release = (
               color_setting_command
             )
-            
+
             ###
             category_label = (
 
@@ -307,7 +307,7 @@ class CategoryColorsPicking(Object2D, LoopHolder):
                 )
 
     def change_category_colors(self):
-        
+
         ###
         try: node_packs = APP_REFS.data['node_packs']
 
@@ -398,7 +398,7 @@ class CategoryColorsPicking(Object2D, LoopHolder):
             mouse interaction protocol used; here we
             use it to retrieve the position of the
             mouse when the first button was released.
-              
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -445,14 +445,14 @@ class CategoryColorsPicking(Object2D, LoopHolder):
         for widget in self.widgets:
 
             if not isinstance(widget, List2D): continue
-            
+
 
             if widget.rect.collidepoint(mouse_pos):
                 self.hovered_rect = widget.rect
                 break
 
         else: self.hovered_rect = None
-        
+
 
     def finish_form(self):
         """Assign new category indices and exit loop."""

@@ -2,11 +2,11 @@
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from ourstdlibs.behaviour import empty_function
+from ..ourstdlibs.behaviour import empty_function
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
 
 class Command(Object2D):
@@ -19,7 +19,7 @@ class Command(Object2D):
     children. It is like a 'leaf' on the menu manager
     tree-like structure.
     """
-    
+
     def __init__(
           self,
           parent,
@@ -27,7 +27,7 @@ class Command(Object2D):
           surface_map,
         ):
         """Store variables and perform setups.
-        
+
         Parameters
         ==========
 
@@ -53,7 +53,7 @@ class Command(Object2D):
             self.surface_map = surface_map
 
         elif 'widget' in data:
-            
+
             self.attribute_name = data['attribute_name']
 
             self.top_surface_map = surface_map
@@ -127,7 +127,7 @@ class Command(Object2D):
 
             texts.append(obj.label_text)
             obj = obj.parent
-            
+
         return ' > '.join(reversed(texts))
 
     def update_surface_map(self):
@@ -168,7 +168,7 @@ class Command(Object2D):
         setattr(
 
           APP_REFS,
-          self.attribute_name, 
+          self.attribute_name,
           not getattr(APP_REFS, self.attribute_name)
 
         )
@@ -183,7 +183,7 @@ class Command(Object2D):
         We could add its string representation or docstring
         to the command string representation, but it would
         fill the terminal with too much information.
-        
+
         Hence, we use the simplest representation: just
         returning the command label.
 

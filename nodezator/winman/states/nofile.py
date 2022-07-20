@@ -22,14 +22,14 @@ from pygame.display import update
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from loopman.exception import (
+from ...loopman.exception import (
                          QuitAppException,
                          SwitchLoopException,
                        )
 
-from htsl.main import open_htsl_link
+from ...htsl.main import open_htsl_link
 
 
 class NoFileState:
@@ -54,7 +54,7 @@ class NoFileState:
             ### KEYUP
 
             elif event.type == KEYUP:
-                
+
                 if event.key == K_F1:
 
                     open_htsl_link(
@@ -96,7 +96,7 @@ class NoFileState:
 
     def no_file_on_mouse_motion(self, event):
         """Act based on mouse motion event.
-        
+
         event
             pygame.event.Event object of type
             pygame.MOUSEMOTION.
