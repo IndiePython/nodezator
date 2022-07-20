@@ -5,23 +5,23 @@ from functools import partial
 
 ### local imports
 
-from ourstdlibs.collections.general import FactoryDict
+from ...ourstdlibs.collections.general import FactoryDict
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ...classes2d.single      import Object2D
+from ...classes2d.collections import List2D
 
-from fontsman.constants import ENC_SANS_BOLD_FONT_PATH
+from ...fontsman.constants import ENC_SANS_BOLD_FONT_PATH
 
-from textman.render import render_text
+from ...textman.render import render_text
 
-from surfsman.draw   import draw_border
-from surfsman.render import render_rect, unite_surfaces
+from ...surfsman.draw   import draw_border
+from ...surfsman.render import render_rect, unite_surfaces
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from graphman.socket.surfs import SOCKET_DIAMETER
+from ..socket.surfs import SOCKET_DIAMETER
 
-from graphman.operatornode.constants import (
+from .constants import (
                      FONT_HEIGHT,
                      MAX_WIDTH,
                      OPERATIONS_MAP,
@@ -35,7 +35,7 @@ from graphman.operatornode.constants import (
                      NODE_OUTLINE_THICKNESS,
                    )
 
-from colorsman.colors import (
+from ...colorsman.colors import (
 
               OPERATION_NODE_NORMAL_BG,
               OPERATION_NODE_NORMAL_FG,
@@ -78,9 +78,9 @@ def get_node_surface(
       outline_color,
       param_text_settings,
     ):
-    
+
     char_objs = List2D(
-    
+
       Object2D.from_surface(
 
         render_text(
@@ -175,7 +175,7 @@ def get_node_surface(
 
     params = [
 
-      char 
+      char
 
       for char, flag
       in zip(string, CHAR_FILTERING_MAP[string])

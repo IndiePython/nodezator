@@ -10,10 +10,10 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from pygameconstants import SCREEN
+from ....pygameconstants import SCREEN
 
 ## function for injection
-from graphman.proxynode.vizop.reposition import (
+from .reposition import (
                                      reposition_elements,
                                    )
 
@@ -41,7 +41,7 @@ class VisualRelatedOperations:
             position of the mouse click in order to
             know over which object the mouse button was
             clicked/released.
-              
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -118,7 +118,7 @@ class VisualRelatedOperations:
             position of the mouse click in order to
             know over which object the mouse button was
             clicked/released.
-              
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -126,9 +126,9 @@ class VisualRelatedOperations:
         mouse_pos = event.pos
 
         for obj in self.mouse_aware_objects:
-            
+
             if obj.rect.collidepoint(mouse_pos):
-                
+
                 try: method = obj.on_right_mouse_release
                 except AttributeError: pass
                 else: method(event)
@@ -145,7 +145,7 @@ class VisualRelatedOperations:
 
     def check_sockets_for_segment_definition(self, event):
         """Check whether any socket collides w/ event.pos.
-        
+
         event.pos is the position of a mouse left button
         release event. If the output socket collides with
         it the socket must be sent for line segment

@@ -2,9 +2,9 @@
 
 ### local imports
 
-from ourstdlibs.stringutils import check_contains_non_whitespace
+from ...ourstdlibs.stringutils import check_contains_non_whitespace
 
-from ourstdlibs.exceptionutils import new_raiser_from_existing
+from ...ourstdlibs.exceptionutils import new_raiser_from_existing
 
 
 ### utility function to validate text for text block

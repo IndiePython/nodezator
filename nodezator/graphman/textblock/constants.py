@@ -1,7 +1,7 @@
 """Constants for the TextBlock class."""
 
 ### local import
-from fontsman.constants import (
+from ...fontsman.constants import (
                                FIRA_MONO_BOLD_FONT_HEIGHT,
                                FIRA_MONO_BOLD_FONT_PATH)
 

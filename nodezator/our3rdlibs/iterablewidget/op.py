@@ -6,12 +6,12 @@ from functools import partial, partialmethod
 
 ### local imports
 
-from ourstdlibs.behaviour import get_oblivious_callable
+from ...ourstdlibs.behaviour import get_oblivious_callable
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ...classes2d.single      import Object2D
+from ...classes2d.collections import List2D
 
-from our3rdlibs.iterablewidget.surfs import (
+from .surfs import (
                                        MOVE_UP_BUTTON_SURF,
                                        MOVE_DOWN_BUTTON_SURF,
                                        REMOVE_BUTTON_SURF,
@@ -253,7 +253,7 @@ class ListWidgetLifetimeOperations:
               It is required in order to comply with
               protocol used. We retrieve the mouse position
               from its "pos" attribute.
-              
+
               Check pygame.event module documentation on
               pygame website for more info about this event
               object.
@@ -462,7 +462,7 @@ class ListWidgetLifetimeOperations:
         ### also, if the length of the specified value
         ### isn't allowed, we also cancel the operation
         ### by returning earlier
-        
+
         length = len(value)
 
         if not length >= self.min_len \

@@ -9,12 +9,12 @@ from inspect import signature, getsource
 
 ### local imports
 
-from fontsman.constants import (
+from ...fontsman.constants import (
                           ENC_SANS_BOLD_FONT_PATH,
                           ENC_SANS_BOLD_FONT_HEIGHT,
                         )
 
-from colorsman.colors import (
+from ...colorsman.colors import (
 
                         OPERATION_NODE_NORMAL_BG,
                         OPERATION_NODE_NORMAL_FG,

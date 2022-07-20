@@ -13,26 +13,26 @@ from pygame.draw import line as draw_line
 
 ### local imports
 
-from surfsman.draw   import blit_aligned
-from surfsman.render import render_rect
+from .....surfsman.draw   import blit_aligned
+from .....surfsman.render import render_rect
 
-from classes2d.single import Object2D
+from .....classes2d.single import Object2D
 
-from textman.render import render_text
+from .....textman.render import render_text
 
-from graphman.callablenode.surfs import (
+from ...surfs import (
                            BODY_HEAD_SURFS_MAP,
                            KEYWORD_KEY_SURF,
                          )
 
-from graphman.callablenode.constants import (
+from ...constants import (
                                NODE_WIDTH,
                                FONT_HEIGHT,
                                NODE_OUTLINE_THICKNESS,
                              )
 
-from colorsman.colors import (
-                        NODE_OUTLINE, 
+from .....colorsman.colors import (
+                        NODE_OUTLINE,
                         NODE_BODY_BG,
                         COMMENTED_OUT_NODE_BG,
                         NODE_LABELS,
@@ -130,7 +130,7 @@ def create_body_surface(self):
         ### of variable kind)
 
         ## try retrieving the variable kind of the parameter
-        try: var_kind = self.var_kind_map[param_name] 
+        try: var_kind = self.var_kind_map[param_name]
 
         ## if a KeyError is raised, then we have a regular
         ## parameter here, and the position of the text rect
@@ -146,7 +146,7 @@ def create_body_surface(self):
             text_rect.left = top_rectsman.left + 10
 
             ## position the text rect vertically
-            
+
             # retrieve the list of rects controlled by
             # the rects manager of the parameter
             rect_list = \
@@ -161,7 +161,7 @@ def create_body_surface(self):
             if len(
               param_rectsman._get_all_rects.__self__
             ) > 1:
-                
+
                 text_rect.bottom = param_rectsman.top
                 text_rect.top += -2
 
@@ -205,7 +205,7 @@ def create_body_surface(self):
 
             asterisks = (
               '*' if var_kind == "var_pos"
-              else '**' 
+              else '**'
             )
 
             text = asterisks + param_name
@@ -274,7 +274,7 @@ def create_body_surface(self):
     ## on the body surface
 
     for output_socket_name in ordered_socket_names:
-        
+
         ## grab the output socket
         output_socket = osl_map[output_socket_name]
 
@@ -398,7 +398,7 @@ def create_body_surface(self):
     ### be using
 
     if 'var_key' in self.var_kind_map.values():
-        
+
         param_name = next(
           key
           for key, value in self.var_kind_map.items()

@@ -1,25 +1,25 @@
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from ourstdlibs.meta import initialize_bases
+from ...ourstdlibs.meta import initialize_bases
 
 
 ### class extensions
 
-from graphman.operatornode.vizprep import (
+from .vizprep import (
                                 VisualRelatedPreparations,
                               )
 
-from graphman.operatornode.vizop import (
+from .vizop import (
                                  VisualRelatedOperations,
                                )
 
-from graphman.operatornode.execution import Execution
+from .execution import Execution
 
-from graphman.operatornode.export import Exporting
+from .export import Exporting
 
-from graphman.operatornode.constants import (
+from .constants import (
 
                  OPERATIONS_MAP,
                  OPERATIONS_SIGNATURE_MAP,
@@ -62,7 +62,7 @@ class OperatorNode(
 
         self.signature_callable = \
         self.main_callable = (
-               OPERATIONS_MAP[data['operation_id']] 
+               OPERATIONS_MAP[data['operation_id']]
              )
 
         ### retrieve and store the signature object
@@ -95,7 +95,7 @@ class OperatorNode(
         self.midtop = (
 
           midtop
-          if midtop is not None 
+          if midtop is not None
 
           else data['midtop']
 

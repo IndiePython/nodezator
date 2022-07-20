@@ -6,27 +6,27 @@ from inspect import _empty
 
 ### local imports
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from rectsman.main import RectsManager
+from ...rectsman.main import RectsManager
 
-from graphman.operatornode.surfs import (
+from .surfs import (
                                     NORMAL_SURFS,
                                     COMMENTED_OUT_SURFS,
                                     LABEL_SURF_MAP,
                                   )
 
-from graphman.operatornode.constants import (
+from .constants import (
                               LABEL_AREA_HEIGHT,
                               CHAR_FILTERING_MAP,
                             )
 
-from graphman.socket.surfs import type_to_codename
+from ..socket.surfs import type_to_codename
 
 ## classes for composition
 
-from graphman.socket.input  import InputSocket
-from graphman.socket.output import OutputSocket
+from ..socket.input  import InputSocket
+from ..socket.output import OutputSocket
 
 
 TYPE_CODENAME = type_to_codename(_empty)

@@ -6,15 +6,15 @@ from pygame import Surface
 
 ### local imports
 
-from surfsman.draw import draw_border
+from ...surfsman.draw import draw_border
 
-from syntaxman.utils import get_ready_theme
+from ...syntaxman.utils import get_ready_theme
 
-from textman.text import get_highlighted_lines
+from ...textman.text import get_highlighted_lines
 
-from colorsman.colors import TEXT_BLOCK_OUTLINE
+from ...colorsman.colors import TEXT_BLOCK_OUTLINE
 
-from graphman.textblock.constants import (
+from .constants import (
                                     FONT_HEIGHT,
                                     FONT_PATH,
                                     PADDING,
@@ -58,7 +58,7 @@ def get_text_block_surf(text):
     text like the one in this function is guarded by
     try/exception clauses to prevent from errors when
     mapping the syntax.
-    
+
     We don't do so here, because comments don't have wrong
     syntax. They either have special syntax ("todo" words)
     or no syntax at all. Thus, the probability of syntax
@@ -114,7 +114,7 @@ def get_text_block_surf(text):
       ## and produce a copy which is inflated in both
       ## dimensions by the value of extra_space
       .inflate(extra_space, extra_space)
-      
+
       ## and finally get its size
       .size
     )

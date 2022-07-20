@@ -6,14 +6,14 @@ from xml.etree.ElementTree import Element
 
 ### local imports
 
-from graphman.socket.base import Socket
+from .base import Socket
 
-from graphman.socket.surfs import (
+from .surfs import (
                              HOLLOW_SOCKET_CIRCLE_SURF,
                              CODENAME_TO_STYLE_MAP,
                            )
 
-from colorsman.colors import HOLLOW_SOCKET_OUTLINE
+from ...colorsman.colors import HOLLOW_SOCKET_OUTLINE
 
 
 class OutputSocket(Socket):
@@ -61,7 +61,7 @@ class OutputSocket(Socket):
         ## store output name argument
         self.output_name = output_name
 
-        ## store type codename and perform related setups 
+        ## store type codename and perform related setups
         self.update_type_codename(type_codename)
 
         ### obtain rect from image and position it using

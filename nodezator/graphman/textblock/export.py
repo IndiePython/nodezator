@@ -6,24 +6,24 @@ from xml.etree.ElementTree import Element
 
 ### local imports
 
-from textman.render import get_text_size
+from ...textman.render import get_text_size
 
-from syntaxman.utils import (
+from ...syntaxman.utils import (
                        SYNTAX_TO_MAPPING_FUNCTION,
                        get_ready_theme,
                      )
 
-from graphman.textblock.constants import (
+from .constants import (
                                      OUTLINE_THICKNESS,
                                      FONT_HEIGHT,
                                    )
 
-from graphman.textblock.constants import (
+from .constants import (
                                          FONT_HEIGHT,
                                          FONT_PATH,
                                        )
 
-from colorsman.colors import TEXT_BLOCK_OUTLINE
+from ...colorsman.colors import TEXT_BLOCK_OUTLINE
 
 
 GENERAL_TEXT_KWARGS = {

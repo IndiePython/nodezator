@@ -6,21 +6,19 @@ from functools import partialmethod
 
 ### local imports
 
-from dialog import create_and_show_dialog
+from ....dialog import create_and_show_dialog
 
-from our3rdlibs.behaviour import indicate_unsaved
+from ....our3rdlibs.behaviour import indicate_unsaved
 
-from graphman.socket.input import InputSocket
+from ...socket.input import InputSocket
 
-from graphman.socket.surfs import type_to_codename
+from ...socket.surfs import type_to_codename
 
 ## class extensions
 
-from graphman.callablenode.subparam.widget  import WidgetOps
-from graphman.callablenode.subparam.segment import SegmentOps
-from graphman.callablenode.subparam.unpacking import (
-                                                UnpackingOps
-                                              )
+from .widget  import WidgetOps
+from .segment import SegmentOps
+from .unpacking import UnpackingOps
 
 
 class SubparameterHandling(
@@ -200,13 +198,13 @@ class SubparameterHandling(
         ### (the "if" and "elif" blocks below represent
         ### actual forbidden situations which cause
         ### SyntaxError when they happen in a function call).
-        ### 
+        ###
         ### I'd prefer to handle the SyntaxError during the
         ### actual function call, but we are forced to do
         ### it here because during execution of the node
         ### the inputs for each subparameter are stored in
         ### a map using the keyword names as keys.
-        ### 
+        ###
         ### This would make the duplicate keyword override
         ### the original one, causing the value of the
         ### original keyword to be lost and making the
@@ -279,7 +277,7 @@ class SubparameterHandling(
         Works by ensuring subparameter indices go from 0 to n
         in increments of 1 (n = length - 1), that is, that
         there's no gap between the numbers.
-        
+
         While looking for gaps in the subparameter indices,
         this function puts together a list with the data
         needed to fix the problem and delegates the actual
@@ -315,7 +313,7 @@ class SubparameterHandling(
             ## tuple with both names in the 'changes'
             ## list
 
-            if current_index != right_index: 
+            if current_index != right_index:
 
                 needed_changes.append(
                   (current_index, right_index)

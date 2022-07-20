@@ -24,44 +24,44 @@ from pygame.display import update
 
 ### local imports
 
-from translation import TRANSLATION_HOLDER as t
+from ....translation import TRANSLATION_HOLDER as t
 
-from pygameconstants import (
+from ....pygameconstants import (
                        SCREEN_RECT,
                        FPS,
                        maintain_fps,
                      )
 
-from our3rdlibs.button import Button
+from ....our3rdlibs.button import Button
 
-from classes2d.single import Object2D
+from ....classes2d.single import Object2D
 
-from textman.render import render_text
+from ....textman.render import render_text
 
-from surfsman.draw import draw_border
-from surfsman.render import render_rect
+from ....surfsman.draw import draw_border
+from ....surfsman.render import render_rect
 
-from widget.optionmenu.main import OptionMenu
+from ....widget.optionmenu.main import OptionMenu
 
-from loopman.exception import (
+from ....loopman.exception import (
                          QuitAppException,
                          SwitchLoopException,
                        )
 
-from fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
+from ....fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
 
-from graphman.widget.utils import WIDGET_CLASS_MAP
+from ..utils import WIDGET_CLASS_MAP
 
-from colorsman.colors import (
+from ....colorsman.colors import (
                         BUTTON_FG, BUTTON_BG,
                         WINDOW_FG, WINDOW_BG,
                         CONTRAST_LAYER_COLOR,
                       )
 
-from dialog import create_and_show_dialog
+from ....dialog import create_and_show_dialog
 
 ## class extension
-from graphman.widget.picker.subforms import SubformCreation
+from .subforms import SubformCreation
 
 
 ### constants
@@ -103,7 +103,7 @@ AVAILABLE_WIDGETS.sort()
 ### class definition
 
 
-### XXX 
+### XXX
 ### you must decide what to do about the list widget
 ### increasing its height; should the widget picker
 ### contents be scrollable? ponder
@@ -321,7 +321,7 @@ class WidgetPicker(
                             self.widget_subform.rect.bottom
         self.cancel_button.rect.y += 10
 
-        ### then align the submit button topleft with the 
+        ### then align the submit button topleft with the
         ### cancel button topright just a little bit more
         ### to the right
         self.submit_button.rect.topleft = \
@@ -407,7 +407,7 @@ class WidgetPicker(
             mouse interaction protocol used; here we
             use it to retrieve the position of the
             mouse when the first button was released.
-              
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -564,7 +564,7 @@ class WidgetPicker(
         loop holder (that is, it must have handle_input,
         update, and draw methods).
         """
-    
+
     def draw(self):
         """Draw itself and widgets.
 

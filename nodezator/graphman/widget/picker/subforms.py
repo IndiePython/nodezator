@@ -11,46 +11,46 @@ from random import choice
 
 ### local imports
 
-from ourstdlibs.stringutils import VALIDATION_COMMAND_MAP
+from ....ourstdlibs.stringutils import VALIDATION_COMMAND_MAP
 
-from textman.render import render_text
+from ....textman.render import render_text
 
-from fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
+from ....fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ....classes2d.single      import Object2D
+from ....classes2d.collections import List2D
 
-from colorsman.colors import WINDOW_FG, WINDOW_BG
+from ....colorsman.colors import WINDOW_FG, WINDOW_BG
 
-from dialog import create_and_show_dialog
+from ....dialog import create_and_show_dialog
 
 
 ## widgets
 
-from widget.stringentry        import StringEntry
-from widget.literalentry       import LiteralEntry
-from widget.intfloatentry.main import IntFloatEntry
+from ....widget.stringentry        import StringEntry
+from ....widget.literalentry       import LiteralEntry
+from ....widget.intfloatentry.main import IntFloatEntry
 
-from widget.checkbutton   import CheckButton
-from widget.colorbutton   import ColorButton
-from widget.sortingbutton import SortingButton
+from ....widget.checkbutton   import CheckButton
+from ....widget.colorbutton   import ColorButton
+from ....widget.sortingbutton import SortingButton
 
-from widget.textdisplay    import TextDisplay
-from widget.literaldisplay import LiteralDisplay
+from ....widget.textdisplay    import TextDisplay
+from ....widget.literaldisplay import LiteralDisplay
 
-from widget.optionmenu.main import OptionMenu
-from widget.optiontray.main import OptionTray
+from ....widget.optionmenu.main import OptionMenu
+from ....widget.optiontray.main import OptionTray
 
-from widget.pathpreview.path  import PathPreview
-from widget.pathpreview.text  import TextPreview
-from widget.pathpreview.image import ImagePreview 
-from widget.pathpreview.audio import AudioPreview 
-from widget.pathpreview.video import VideoPreview
-from widget.pathpreview.font  import FontPreview
+from ....widget.pathpreview.path  import PathPreview
+from ....widget.pathpreview.text  import TextPreview
+from ....widget.pathpreview.image import ImagePreview
+from ....widget.pathpreview.audio import AudioPreview
+from ....widget.pathpreview.video import VideoPreview
+from ....widget.pathpreview.font  import FontPreview
 
 
-from our3rdlibs.iterablewidget.list import ListWidget
-from our3rdlibs.iterablewidget.set import SetWidget
+from ....our3rdlibs.iterablewidget.list import ListWidget
+from ....our3rdlibs.iterablewidget.set import SetWidget
 
 
 FONT_HEIGHT = ENC_SANS_BOLD_FONT_HEIGHT
@@ -1483,7 +1483,7 @@ class SubformCreation:
                                   )
 
         options_list_widget.command = command
-            
+
 
         ### format the subform key according to the kind
         ### of content used
@@ -1683,7 +1683,7 @@ class SubformCreation:
                                   )
 
         options_list_widget.command = command
-            
+
 
         ### format the subform key according to the kind
         ### of content used

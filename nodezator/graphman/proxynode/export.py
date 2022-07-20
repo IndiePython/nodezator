@@ -9,15 +9,15 @@ from itertools import chain
 
 ### local imports
 
-from pointsman2d.shape     import cross_from_rect
-from pointsman2d.transform import rotate_points
+from ...pointsman2d.shape     import cross_from_rect
+from ...pointsman2d.transform import rotate_points
 
-from graphman.proxynode.constants import (
+from .constants import (
                                   NODE_OUTLINE_THICKNESS,
                                   FONT_HEIGHT,
                                 )
 
-from colorsman.colors import (
+from ...colorsman.colors import (
 
                    BLACK,
 
@@ -182,7 +182,7 @@ class Exporting:
         ### output socket
         node_g.append(self.output_socket.svg_repr())
 
-        ### 
+        ###
 
         try: self.widget
 
@@ -225,7 +225,7 @@ class Exporting:
             button_rect = (
               self.remove_button.rect.inflate(-2, -2)
             )
-            
+
             path_directives = 'M'
 
             for x, y in rotate_points(

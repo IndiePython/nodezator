@@ -10,15 +10,15 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from pygameconstants import SCREEN
+from ...pygameconstants import SCREEN
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from graphman.textblock.surf  import get_text_block_surf
-from graphman.textblock.check import check_text_block_text
+from .surf  import get_text_block_surf
+from .check import check_text_block_text
 
 ### function for injection
-from graphman.textblock.export import svg_repr
+from .export import svg_repr
 
 
 class TextBlock(Object2D):
@@ -55,7 +55,7 @@ class TextBlock(Object2D):
         ### store the midtop position
 
         self.midtop = (
-          midtop if midtop is not None 
+          midtop if midtop is not None
           else self.data['midtop']
         )
 
@@ -79,7 +79,7 @@ class TextBlock(Object2D):
         Works by marking the text block as a target of the
         mouse release or mouse click action by change the
         values of the respective flags in specific ways.
-        
+
         The flags are used to support the object selection
         and "move by dragging" features.
 
@@ -91,7 +91,7 @@ class TextBlock(Object2D):
 
             though we don't use it in this method, it is
             required in order to comply with protocol used;
-          
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.

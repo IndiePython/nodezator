@@ -6,21 +6,21 @@ from functools import partial
 
 ### local imports
 
-from ourstdlibs.behaviour import remove_by_identity
+from ....ourstdlibs.behaviour import remove_by_identity
 
-from our3rdlibs.button import Button
+from ....our3rdlibs.button import Button
 
-from widget.stringentry import StringEntry
+from ....widget.stringentry import StringEntry
 
-from rectsman.main import RectsManager
+from ....rectsman.main import RectsManager
 
-from graphman.callablenode.surfs import (
+from ..surfs import (
                                 ADD_BUTTON_SURF,
                                 SUBP_UP_BUTTON_SURF,
                                 SUBP_DOWN_BUTTON_SURF,
                               )
 
-from graphman.callablenode.constants import FONT_HEIGHT
+from ..constants import FONT_HEIGHT
 
 
 class SegmentOps:
@@ -439,7 +439,7 @@ class SegmentOps:
             ## also update the rectsman hierarchy in order
             ## to take the removal of the subparameter into
             ## account
-            
+
             # remove the subparameter rectsman from the
             # subparameter rectsman map
 
@@ -461,7 +461,7 @@ class SegmentOps:
             )
 
             remove_by_identity(subrectsman, rect_list)
-            
+
             ## fix names of remaining subparameters
             self.fix_subparameter_indices(param_name)
 

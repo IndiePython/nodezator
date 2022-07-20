@@ -1,7 +1,7 @@
 
 ### local imports
 
-from graphman.exception import (
+from ..exception import (
 
                       MissingInputError,
                       WaitingInputException,

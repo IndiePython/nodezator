@@ -8,34 +8,34 @@ from functools import partial
 
 ### local imports
 
-from classes2d.single import Object2D
+from ....classes2d.single import Object2D
 
-from graphman.widget.utils import WIDGET_CLASS_MAP
+from ...widget.utils import WIDGET_CLASS_MAP
 
-from graphman.socket.surfs import type_to_codename
+from ...socket.surfs import type_to_codename
 
-from graphman.callablenode.utils import update_with_widget
+from ...callablenode.utils import update_with_widget
 
 ## classes for composition
 
-from our3rdlibs.button import Button
+from ....our3rdlibs.button import Button
 
-from graphman.socket.input       import InputSocket
-from graphman.socket.placeholder import PlaceholderSocket
+from ...socket.input       import InputSocket
+from ...socket.placeholder import PlaceholderSocket
 
-from widget.stringentry import StringEntry
+from ....widget.stringentry import StringEntry
 
-from rectsman.main import RectsManager
+from ....rectsman.main import RectsManager
 
-from graphman.callablenode.surfs import (
+from ...callablenode.surfs import (
                                    ADD_BUTTON_SURF,
                                    REMOVE_BUTTON_SURF,
                                    SUBP_UP_BUTTON_SURF,
-                                   SUBP_DOWN_BUTTON_SURF, 
+                                   SUBP_DOWN_BUTTON_SURF,
                                    UNPACKING_ICON_SURFS_MAP,
                                  )
 
-from graphman.callablenode.constants import FONT_HEIGHT
+from ...callablenode.constants import FONT_HEIGHT
 
 
 def create_var_parameter_objs(self, param_obj):

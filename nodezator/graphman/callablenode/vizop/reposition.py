@@ -6,9 +6,9 @@ from pygame import Rect
 
 ### local imports
 
-from rectsman.main import RectsManager
+from ....rectsman.main import RectsManager
 
-from graphman.callablenode.constants import (
+from ..constants import (
 
                                 FONT_HEIGHT,
                                 BODY_CONTENT_OFFSET,
@@ -232,7 +232,7 @@ def reposition_elements(self):
             rectsman = RectsManager(
                         (socket_rect, button_rect).__iter__
                        )
-                
+
             # assign the defined top and add 4 pixels, to
             # push them just a bit down for extra padding
             rectsman.top = top + 4

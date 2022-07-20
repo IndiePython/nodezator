@@ -9,22 +9,22 @@ from itertools import chain
 
 ### local imports
 
-from rectsman.main import RectsManager
+from ...rectsman.main import RectsManager
 
-from graphman.callablenode.constants import (
+from .constants import (
                                NODE_OUTLINE_THICKNESS,
                                FONT_HEIGHT,
                              )
 
-from graphman.callablenode.surfs import (
+from .surfs import (
                                 TOP_CORNERS_MAP,
                                 UNPACKING_ICON_SURFS_MAP,
                               )
 
-from pointsman2d.shape     import cross_from_rect
-from pointsman2d.transform import rotate_points
+from ...pointsman2d.shape     import cross_from_rect
+from ...pointsman2d.transform import rotate_points
 
-from colorsman.colors import (
+from ...colorsman.colors import (
 
                         BLACK,
                         NODE_BODY_BG,
@@ -74,7 +74,7 @@ UNPACKING_RECTS_MANAGER = RectsManager(
                           )
 
 def get_unpacking_icon_group():
-    
+
     rect, small_rect = UNPACKING_RECTS
 
     lines = [
@@ -99,12 +99,12 @@ def get_unpacking_icon_group():
     g = Element('g', {'class': 'unpacking_icon'})
 
     for line in lines:
-        
+
         p1, p2 = line
 
         x1, y1 = map(str, p1)
         x2, y2 = map(str, p2)
-        
+
         g.append(
 
             Element(
@@ -486,7 +486,7 @@ class Exporting:
           self.placeholder_add_buttons,
           self.widget_add_buttons,
         ):
-            
+
             button_rect = button.rect.inflate(-2, -2)
 
             path_directives = 'M'
@@ -515,7 +515,7 @@ class Exporting:
         for button in self.widget_remove_buttons:
 
             button_rect = button.rect.inflate(-2, -2)
-            
+
             path_directives = 'M'
 
             for x, y in rotate_points(
@@ -543,7 +543,7 @@ class Exporting:
                    )
 
         for button in self.subparam_up_buttons:
-            
+
             button_bg_rect = button.rect.inflate(-2, -2)
 
             node_g.append(
@@ -641,9 +641,9 @@ class Exporting:
         for param_name, value in (
           self.input_socket_live_flmap.items()
         ):
-            
+
             if isinstance(value, dict):
-                
+
                 socket = (
 
                   value[0]
@@ -668,7 +668,7 @@ class Exporting:
                       var_kind_map[param_name] == 'var_key'
                   and value
                 ):
-                    
+
                     if 0 in (
                       self.
                       subparam_keyword_entry_live_map
@@ -760,7 +760,7 @@ class Exporting:
         for param_name, kind in var_kind_map.items():
 
             if kind == 'var_pos':
-                
+
                 for obj in (
 
                   self
@@ -938,7 +938,7 @@ class Exporting:
         ### widgets, buttons and sockets
 
         for obj in chain(
-          
+
           self.background_and_text_elements,
 
           self.live_widgets,

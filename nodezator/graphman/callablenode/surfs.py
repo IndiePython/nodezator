@@ -6,18 +6,18 @@ from pygame.draw import line as draw_line
 
 ### local imports
 
-from ourstdlibs.collections.general import FactoryDict
+from ...ourstdlibs.collections.general import FactoryDict
 
-from surfsman.render import (
+from ...surfsman.render import (
                        render_rect,
                        combine_surfaces,
                      )
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
+from ...fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
 
-from colorsman.colors import (
+from ...colorsman.colors import (
 
                         NODE_BODY_BG,
                         COMMENTED_OUT_NODE_BG,
@@ -42,7 +42,7 @@ from colorsman.colors import (
 
                       )
 
-from graphman.callablenode.constants import (
+from ..callablenode.constants import (
                                NODE_WIDTH,
                                NODE_BODY_HEAD_HEIGHT,
                                NODE_OUTLINE_THICKNESS,
@@ -85,7 +85,7 @@ TOP_CORNERS_MAP = FactoryDict(get_top_corners)
 ##
 
 bottom_corner_surfs = tuple(
-  
+
   render_layered_icon(
 
     chars = [chr(ordinal) for ordinal in (161, 162)],
@@ -105,7 +105,7 @@ bottom_corner_surfs = tuple(
 
 
   for fill_color, flip_x, flip_y
-  
+
   in (
 
     ## normal bottom corners
@@ -178,7 +178,7 @@ foot_height = corner_height
 
 foot_surfs = (
 
-  NORMAL_NODE_FOOT, COMMENTED_OUT_NODE_FOOT 
+  NORMAL_NODE_FOOT, COMMENTED_OUT_NODE_FOOT
 
 ) = tuple(
 

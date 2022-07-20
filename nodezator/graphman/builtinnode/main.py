@@ -6,17 +6,17 @@ from itertools import takewhile
 
 ### local imports
 
-from graphman.builtinnode.constants import (
+from .constants import (
                     BUILTIN_IDS_TO_CALLABLES_MAP,
                     BUILTIN_IDS_TO_SIGNATURES_MAP,
                     BUILTIN_IDS_TO_SIGNATURE_CALLABLES_MAP,
                     BUILTIN_IDS_TO_SOURCE_VIEW_TEXT,
                   )
 
-from colorsman.colors import BUILTIN_NODES_CATEGORY_COLOR
+from ...colorsman.colors import BUILTIN_NODES_CATEGORY_COLOR
 
 ## superclass
-from graphman.callablenode.main import CallableNode
+from ..callablenode.main import CallableNode
 
 
 class BuiltinNode(CallableNode):
@@ -42,7 +42,7 @@ class BuiltinNode(CallableNode):
         ### retrieve and store the main callable obj in its
         ### own attribute
         self.main_callable = (
-          BUILTIN_IDS_TO_CALLABLES_MAP[data['builtin_id']] 
+          BUILTIN_IDS_TO_CALLABLES_MAP[data['builtin_id']]
         )
 
         ### also retrieve and store the callable used to
@@ -106,7 +106,7 @@ class BuiltinNode(CallableNode):
         self.midtop = (
 
           midtop
-          if midtop is not None 
+          if midtop is not None
 
           else self.data['midtop']
 

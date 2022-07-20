@@ -1,5 +1,5 @@
 
-from graphman.proxynode.constants import (
+from ..constants import (
                                NODE_OUTLINE_THICKNESS,
                                LABEL_X_PADDING,
                              )

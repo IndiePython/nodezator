@@ -1,19 +1,19 @@
 
 ### class extensions
 
-from graphman.proxynode.vizprep import (
+from .vizprep import (
                                 VisualRelatedPreparations,
                               )
 
-from graphman.proxynode.vizop.main import (
+from .vizop.main import (
                                  VisualRelatedOperations,
                                )
 
-from graphman.proxynode.widget import WidgetOps
+from .widget import WidgetOps
 
-from graphman.proxynode.segment import SegmentOps
+from .segment import SegmentOps
 
-from graphman.proxynode.export import Exporting
+from .export import Exporting
 
 
 class ProxyNode(

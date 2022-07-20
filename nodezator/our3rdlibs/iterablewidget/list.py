@@ -6,20 +6,20 @@ from math import inf as INFINITY
 
 ### local imports
 
-from ourstdlibs.behaviour import (
+from ...ourstdlibs.behaviour import (
                                    empty_function,
                                    get_oblivious_callable,
                                  )
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ...classes2d.single      import Object2D
+from ...classes2d.collections import List2D
 
-from rectsman.main import RectsManager, rect_property
+from ...rectsman.main import RectsManager, rect_property
 
-from our3rdlibs.iterablewidget.surfs import ADD_BUTTON_SURF
+from .surfs import ADD_BUTTON_SURF
 
 ## class extension
-from our3rdlibs.iterablewidget.op import (
+from .op import (
                              ListWidgetLifetimeOperations,
                            )
 
@@ -157,16 +157,16 @@ class ListWidget(ListWidgetLifetimeOperations):
         ### rectsman protocol (check rectsman subpackage
         ### for more info on that);
         ###
-        ### also, though I can control all items plus the 
-        ### add button with the rects manager of the 
-        ### List2D instance in the "all_objects" 
-        ### attribute, having a dedicated rects manager 
-        ### instance may be useful in case I decide to add 
-        ### other aesthetic elements, like a custom 
-        ### background (in which case I'd need a create an 
-        ### additional "rect" and would not want to add it 
-        ### to the "all_objects" list, I'd just keep it 
-        ### elsewhere as yield it in the "get_all_rects" 
+        ### also, though I can control all items plus the
+        ### add button with the rects manager of the
+        ### List2D instance in the "all_objects"
+        ### attribute, having a dedicated rects manager
+        ### instance may be useful in case I decide to add
+        ### other aesthetic elements, like a custom
+        ### background (in which case I'd need a create an
+        ### additional "rect" and would not want to add it
+        ### to the "all_objects" list, I'd just keep it
+        ### elsewhere as yield it in the "get_all_rects"
         ### method)
         self._rects_man = RectsManager(self.get_all_rects)
 

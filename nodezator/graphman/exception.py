@@ -4,7 +4,7 @@
 from os import linesep
 
 ### local import
-from appinfo import MAIN_CALLABLE_VAR_NAME
+from ..appinfo import MAIN_CALLABLE_VAR_NAME
 
 
 ### raised when loading/processing a native file
@@ -27,7 +27,7 @@ class NodeScriptsError(Exception):
     """
 
     def __init__(
-          self, 
+          self,
           scripts_not_loaded,
           scripts_missing_node_definition,
           not_actually_callables,
@@ -319,7 +319,7 @@ class CategoryLackingScriptDirectoryError(Exception):
 
 class ScriptDirectoryLackingScriptError(Exception):
     """Raised when script directory lacks script."""
-    
+
     def __init__(
           self,
           node_pack_path,

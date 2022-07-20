@@ -2,7 +2,7 @@
 
 ### local imports
 
-from graphman.callablenode.surfs import (
+from ...surfs import (
                            NORMAL_NODE_FOOT,
                            COMMENTED_OUT_NODE_FOOT,
                            NORMAL_BOTTOM_CORNERS,
@@ -12,7 +12,7 @@ from graphman.callablenode.surfs import (
                          )
 
 ## function for injection
-from graphman.callablenode.vizprep.bodysetup.creation import (
+from ..bodysetup.creation import (
                                       create_body_surface
                                     )
 
@@ -219,14 +219,14 @@ class BodySetupOperations:
         for param_name, param_kind in (
           self.var_kind_map.items()
         ):
-            
+
             for button in (
               self
               .subparam_unpacking_icon_flmap
               [param_name]
               .values()
             ):
-                
+
                 button.image = UNPACKING_ICON_SURFS_MAP[
                                  (param_kind, is_commented_out)
                                ]

@@ -6,21 +6,21 @@ from functools import partial
 
 ### local imports
 
-from ourstdlibs.behaviour import remove_by_identity
+from ....ourstdlibs.behaviour import remove_by_identity
 
-from our3rdlibs.button import Button
+from ....our3rdlibs.button import Button
 
-from our3rdlibs.behaviour import indicate_unsaved
+from ....our3rdlibs.behaviour import indicate_unsaved
 
-from widget.stringentry import StringEntry
+from ....widget.stringentry import StringEntry
 
-from rectsman.main import RectsManager
+from ....rectsman.main import RectsManager
 
-from graphman.widget.utils import WIDGET_CLASS_MAP
+from ...widget.utils import WIDGET_CLASS_MAP
 
-from graphman.callablenode.utils import update_with_widget
+from ..utils import update_with_widget
 
-from graphman.callablenode.surfs import (
+from ..surfs import (
 
                               ADD_BUTTON_SURF,
                               REMOVE_BUTTON_SURF,
@@ -29,7 +29,7 @@ from graphman.callablenode.surfs import (
 
                             )
 
-from graphman.callablenode.constants import FONT_HEIGHT
+from ..constants import FONT_HEIGHT
 
 
 class WidgetOps:
@@ -688,7 +688,7 @@ class WidgetOps:
                  self.var_kind_map[param_name] == 'var_key'
               or subparam_index in subparams_for_unpacking
             ):
-                
+
                 obj_to_reposition = (
 
                   (
@@ -848,7 +848,7 @@ class WidgetOps:
             ## also update the rectsman hierarchy in order
             ## to take the removal of the subparameter into
             ## account
-            
+
             # remove the subparameter rectsman from the
             # subparameter rectsman map (we don't need
             # to catch the reference returned, because
@@ -873,7 +873,7 @@ class WidgetOps:
             )
 
             remove_by_identity(subrectsman, rect_list)
-            
+
             ## fix names of remaining subparameters
             self.fix_subparameter_indices(param_name)
 
