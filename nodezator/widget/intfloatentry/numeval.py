@@ -2,7 +2,11 @@
 
 ### standard library imports
 
-import builtins, math, random, statistics
+import builtins, math, random
+try:
+    import _pydecimal
+except:
+    statistics = type(builtins)("statistics")
 
 from keyword import kwlist as python_reserved_keywords
 

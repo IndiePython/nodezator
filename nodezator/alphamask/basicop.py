@@ -137,7 +137,11 @@ suitable for different situations:
 
 from pygame import Rect, Surface
 
-from pygame.surfarray import pixels_alpha
+try:
+    import numpy
+    from pygame.surfarray import pixels_alpha
+except:
+    numpy = None
 
 
 ### class definition
@@ -197,7 +201,9 @@ class AlphaMaskBasicOperations:
         ### the surface remains locked for the lifetime of
         ### this array (which is why we'll soon delete it
         ### once we don't need it anymore)
-        surf_alpha_values = pixels_alpha(surf)
+        if numpy is None:
+            print(__file__,"204: pixels_alpha need numpy")
+            return
 
         ### iterate over the columns of full alpha values
         ### from both the surface and this alpha mask,
@@ -246,8 +252,9 @@ class AlphaMaskBasicOperations:
         ### the surface remains locked for the lifetime of
         ### this array (which is why we'll soon delete it
         ### once we don't need it anymore)
-        surf_alpha_values = pixels_alpha(surf)
-
+        if numpy is None:
+            print(__file__,"254: pixels_alpha need numpy")
+            return        
         ### multiply the alpha of each pixel in the surface
         ### by the respective unit value in the mask,
         ### rounding the result so that it remains an

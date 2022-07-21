@@ -23,7 +23,7 @@ AppVersion = namedtuple(
                'major minor micro release_level'
              )
 
-APP_VERSION = AppVersion(1, 1, 1, 'release_candidate')
+APP_VERSION = AppVersion(1, 1, 0, 'release_candidate')
 
 
 ### titles for the application
