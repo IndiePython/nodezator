@@ -114,9 +114,9 @@ def get_word_count(
 
 <p>The text display widget, as the name implies, is much more suited for displaying text. Here's what our node looks like now:</p>
 
-<img src="images/ch08_img00.png" alt="Node generated from function" />
+<img src="images/ch-full-syntax_img00.png" alt="Node generated from function" />
 
-<p>The full list of available widgets and their configuration options can be found in the <a href="appendix-c-widget-configurations.htsl">appendix C</a>.</p>
+<p>The full list of available widgets and their configuration options can be found in the <a href="appendix-widget-configurations.htsl">Widget configurations appendix</a>.</p>
 
 <p>As we just learned, the full widget definition syntax allows us to request any widget we want and to provide extra configuration for it. Let's see more examples in the next sections.</p>
 
@@ -165,9 +165,9 @@ def get_solid_color_surface(
 
 <p>And here's the resulting node:</p>
 
-<img src="images/ch08_img01.png" alt="Node generated from function" />
+<img src="images/ch-full-syntax_img01.png" alt="Node generated from function" />
 
-<p>The color button also has extra options. One of them is used to define whether color values should be represented by tuples (as in the example above) or strings (for instance, "#ffffff"), in case your function can process colors using such notation. Remember: all available widgets and their options can be found in the <a href="appendix-c-widget-configurations.htsl">appendix C</a>.</p>
+<p>The color button also has extra options. One of them is used to define whether color values should be represented by tuples (as in the example above) or strings (for instance, "#ffffff"), in case your function can process colors using such notation. Remember: all available widgets and their options can be found in the <a href="appendix-widget-configurations.htsl">Widget configurations appendix</a>.</p>
 
 <p>To edit the color(s) in the widget, click the icon to the left of the widget. If click the colors, though, a dedicated color viewer will popup allowing to see the colors in action in different contexts like as a color list or pattern drawings.</p>
 
@@ -286,7 +286,7 @@ def hue_is_near_red(
     return True if hue &gt; 350 or hue &lt; 10 else False
 </python>
 
-<p><a href="ch07-basic-way-define-widgets.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch09-widget-presets-more-widgets.htsl">Next chapter</a></p>
+<p><a href="ch-basic-way-define-widgets.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch-widget-presets-more-widgets.htsl">Next chapter</a></p>
 
 </body>
 

@@ -31,7 +31,7 @@ def execute_and_return(a_callable, *args, **kwargs):
 main_callable = execute_and_return
 </python>
 
-<img src="images/ch03_img00.png" alt="Node generated from the function" />
+<img src="images/ch-nodes-variable-parameters_img00.png" alt="Node generated from the function" />
 
 <p>Instead of the usual input socket, a variable parameter has a hollow socket called <i>placeholder socket</i>. When an output from another node is linked to this socket by clicking and dragging a connection from that output socket it creates a new input socket automatically where the placeholder socket was and links that output to the new socket, moving the placeholder socket below it. That new input socket represents a new argument for the variable parameter.</p>
 
@@ -85,7 +85,7 @@ main_callable = distance_from_a_to_b
 
 <p>Here's the resulting node:</p>
 
-<img src="images/ch03_img01.png" alt="Node generated from the function" />
+<img src="images/ch-nodes-variable-parameters_img01.png" alt="Node generated from the function" />
 
 <p>This is a pretty simple and straightforward node. However, it's output name is "output", which isn't very descriptive. Wouldn't it be helpful to be able to rename such ouput to express what the return value really is?</p>
 
@@ -134,7 +134,7 @@ main_callable = distance_from_a_to_b
 
 <p>Now the function properly names its output, the <a href="https://en.wikipedia.org/wiki/Euclidean_distance">Euclidean distance</a>. Here's what our improved node looks like:</p>
 
-<img src="images/ch03_img02.png" alt="Node generated from the function" />
+<img src="images/ch-nodes-variable-parameters_img02.png" alt="Node generated from the function" />
 
 <h2 id="defining-node-more-output">Defining a node with more than 01 output</h2>
 
@@ -212,9 +212,9 @@ main_callable = distance_from_a_to_b
 
 <p>And here's the resulting node:</p>
 
-<img src="images/ch03_img03.png" alt="Node generated from the function" />
+<img src="images/ch-nodes-variable-parameters_img03.png" alt="Node generated from the function" />
 
-<p><a href="ch02-defining-viewer-nodes.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch04-more-ways-define-nodes.htsl">Next chapter</a></p>
+<p><a href="ch-defining-viewer-nodes.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch-more-ways-define-nodes.htsl">Next chapter</a></p>
 
 </body>
 

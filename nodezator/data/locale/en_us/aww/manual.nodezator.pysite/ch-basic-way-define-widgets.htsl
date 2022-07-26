@@ -33,13 +33,13 @@ def get_double(number:int=1):
 
 <p>The resulting node:</p>
 
-<img src="images/ch07_img00.png" alt="Node generated from the function" />
+<img src="images/ch-basic-way-define-widgets_img00.png" alt="Node generated from the function" />
 
 <p>It is also important to note that widgets do not limit the freedom of your nodes, they do not prevent the parameter to receive other kinds of values if so desired. The value in the widget will only be used if there's no incomming data from another node to the parameter.</p>
 
 <p>For instance, in the image below, the widget to the left will have its value used, since the socket doesn't receive a value from a connection, but the widget to the right will be ignored and the value received will be the one from the connection instead. It will be as if the widget didn't exist.</p>
 
-<img src="images/ch07_img01.png" alt="Two nodes with widgets; the second one has a connection in the input socket as well." />
+<img src="images/ch-basic-way-define-widgets_img01.png" alt="Two nodes with widgets; the second one has a connection in the input socket as well." />
 
 <p>From now on we'll be briefly presenting each widget available in Nodezator and its purpose, as well as different ways available to define widgets.</p>
 
@@ -58,7 +58,7 @@ def get_double(number=2):
 
 <p>Resulting node:</p>
 
-<img src="images/ch07_img02.png" alt="Node generated from the function" />
+<img src="images/ch-basic-way-define-widgets_img02.png" alt="Node generated from the function" />
 
 <p>It's purpose is <b>to communicate that the parameter has a default value</b>. For instance, since Nodezator can turn any callable into a node, you might want to turn an existing callable from a module into a node and, if any argument has a default value, it will be shown as a default holder in the node.</p>
 
@@ -87,7 +87,7 @@ def get_favorite_color(include_alpha:bool=False):
         return (0, 0, 255)
 </python>
 
-<img src="images/ch07_img03.png" alt="Node generated from the function" />
+<img src="images/ch-basic-way-define-widgets_img03.png" alt="Node generated from the function" />
 
 <p>In other words, you told Nodezator that you expected that parameter to receive a boolean and that its default value was False (a boolean), so it automatically picked the check button widget for you.</p>
 
@@ -104,7 +104,7 @@ def get_hello_message(name:str='Martha'):
     return f"Hello, {name}"
 </python>
 
-<img src="images/ch07_img04.png" alt="Node generated from the function" />
+<img src="images/ch-basic-way-define-widgets_img04.png" alt="Node generated from the function" />
 
 <p>Now you can easily edit the string value passed to the node. Just click the widget and edit the text like you would edit a text input in any other app.</p>
 
@@ -121,13 +121,13 @@ def get_multiple_spaces(quantity:int=0):
     return ' ' * quantity
 </python>
 
-<img src="images/ch07_img05.png" alt="Node generated from the function" />
+<img src="images/ch-basic-way-define-widgets_img05.png" alt="Node generated from the function" />
 
 <p>The intfloat entry has extra features for editing numbers that you wouldn't find in a common entry widget.</p>
 
 <p>In the get_multiple_spaces() function above, for instance, say you want to type the triple of 777. You can just type 777 * 3 and hit enter and the value will be set in the widget.</p>
 
-<p>You can perform multiple operations and even include some well-known Python functions, like this: sqrt(25) * 20 / 2. The exact functions that can be used can be found in the <a href="appendix-b-intfloat-words.htsl">appendix B</a>.</p>
+<p>You can perform multiple operations and even include some well-known Python functions, like this: sqrt(25) * 20 / 2. The exact functions that can be used can be found in the <a href="appendix-intfloat-words.htsl">Int float words appendix</a>.</p>
 
 <p>You can also click &amp; drag to the sides to decrement and increment the value. While doing that, you can make the decrements/increments more subtle by keeping the <b>&lt;Shift&gt;</b> key pressed.</p>
 
@@ -144,7 +144,7 @@ def get_half(value:float=0.0):
     return value / 2
 </python>
 
-<img src="images/ch07_img06_and_07.png" alt="Node generated from the function" />
+<img src="images/ch-basic-way-define-widgets_img06_and_07.png" alt="Node generated from the function" />
 
 <p>If you want the intfloat entry to accept both integers and floats, just use a tuple with both types as the type hint. The default value also must be either integer or float. Within the tuple the order doesn't matter, so you can use both (int, float) or (float, int):</p>
 
@@ -158,7 +158,7 @@ def get_half(value:(int, float)=0.0):
 
 <p>As you can see, the resulting node below is identical to the previous one (we even used the same image). The only difference is that we now can type both integers and floats.</p>
 
-<img src="images/ch07_img06_and_07.png" alt="Node generated from the function" />
+<img src="images/ch-basic-way-define-widgets_img06_and_07.png" alt="Node generated from the function" />
 
 <p>It is also common for parameters that accept numbers to also accept <i>None</i>. For instance, the third parameter of <a href="https://docs.python.org/3/library/functions.html#pow">pow()</a> accepts None by default, despite also accepting numbers.</p>
 
@@ -194,7 +194,7 @@ def function_name(
     return
 </python>
 
-<img src="images/ch07_img08.png" alt="Node generated from the function" />
+<img src="images/ch-basic-way-define-widgets_img08.png" alt="Node generated from the function" />
 
 <h2 id="brief-comment">Brief comment on type hints</h2>
 
@@ -206,7 +206,7 @@ def function_name(
 
 <p>When deciding about the many ways by which widgets can be requested, we just pick what feels the best/simplest, often with multiple alternatives so anyone can pick what feels best for them.</p>
 
-<p><a href="ch06-color-coding-inputs-outputs.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch08-full-syntax-more-widgets.htsl">Next chapter</a></p>
+<p><a href="ch-color-coding-inputs-outputs.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch-full-syntax-more-widgets.htsl">Next chapter</a></p>
 
 </body>
 

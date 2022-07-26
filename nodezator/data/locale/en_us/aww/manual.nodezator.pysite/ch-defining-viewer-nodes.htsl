@@ -28,9 +28,9 @@ def view_points(points):
 main_callable = view_points
 </python>
 
-<p>As you can see, our viewer node is just a regular node like any other. It has a single parameter where will receive the given points to display them on the screen. It is also aliased as <i>main_callable</i> like any other node, so that Nodezator can fetch it and turn it into a node.</p>
+<p>As you can see, our viewer node is just a regular node like any other. It has a single parameter where we'll receive the given points to display them on the screen. It is also aliased as <i>main_callable</i> like any other node, so that Nodezator can fetch it and turn it into a node.</p>
 
-<p>The difference from other nodes, however, is that instead of just processing the input and returning the output our viewer node will <b>define and run its own loop</b> until the user decides to exit the visualization.</p>
+<p>The difference from other nodes, however, is that instead of just processing the input and returning the output, our viewer node will <b>define and run its own loop</b> until the user decides to exit the visualization.</p>
 
 <p>Before we delve into the full code still, I'd like to make yet a small addition, a single line at the end that will make our node even more useful. That is, setting our callable's <i>dismiss_exec_time_tracking</i> to True. Here's how we'd do:</p>
 
@@ -223,11 +223,12 @@ view_points.dismiss_exec_time_tracking = True
 main_callable = view_points
 </python>
 
-<img src="images/ch02_img00.png" alt="Node generated from the function" />
+<img src="images/ch-defining-viewer-nodes_img00.png" alt="Node generated from the function" />
 
 <p>That's it! At this point, you should be able to test the node pack you created with your get_circle and view_points nodes. Also, don't forget to check the next two chapters, where I present other important ways of defining nodes, like defining nodes with more than one output.</p>
 
-<p><a href="ch01-defining-your-first-node.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch03-nodes-variable-parameters-custom-outputs.htsl">Next chapter</a></p>
+
+<p><a href="ch-defining-your-first-node.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch-defining-complex-viewer-nodes.htsl">Next chapter</a></p>
 
 </body>
 

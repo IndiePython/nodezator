@@ -30,7 +30,7 @@ def function_name(parameter):
     return str(parameter)
 </python>
 
-<img src="images/ch06_img00.png" alt="Node generated from function" />
+<img src="images/ch-color-coding_img00.png" alt="Node generated from function" />
 
 <python>
 ### the same function, but with type hints;
@@ -42,7 +42,7 @@ def function_name(parameter: int) -&gt; str:
     return str(parameter)
 </python>
 
-<img src="images/ch06_img01.png" alt="Node generated from function" />
+<img src="images/ch-color-coding_img01.png" alt="Node generated from function" />
 
 <p>Variable-parameters may also have their variable arguments color-coded if you associated them with a type hint.</p>
 
@@ -55,12 +55,12 @@ def sum_integers(*integers: int) -&gt; int:
 
 <p>You can see the the resulting node below. Note that we added 02 widgets to node in order to make it create an input socket for each widget. As you can see, the input sockets are red (in the default colors). If we hadn't assigned the type hint to the <i>integers</i> parameter the input socket would not have a special color and would be grey instead (in the default colors).</p>
 
-<img src="images/ch06_img02.png" alt="Node generated from function" />
+<img src="images/ch-color-coding_img02.png" alt="Node generated from function" />
 
 
 <h2 id="types-dedicated-colors">Types with dedicated colors</h2>
 
-<p>We won't discuss the colors per se, since they depend on customizations made by the users. However, it is useful to know which types have a dedicated color associated with them. You can find a list with all type hints that have dedicated colors in the <a href="appendix-a-color-coded-annotations">appendix A</a>.</p>
+<p>We won't discuss the colors per se, since they depend on customizations made by the users. However, it is useful to know which types have a dedicated color associated with them. You can find a list with all type hints that have dedicated colors in the <a href="appendix-color-coded-annotations">Color coded annotations appendix</a>.</p>
 
 
 <h2 id="color-coding-named-socket">Color coding a named output socket</h2>
@@ -76,7 +76,7 @@ def function_name() -&gt; [
     return 3.14159
 </python>
 
-<img src="images/ch06_img03.png" alt="Node generated from function" />
+<img src="images/ch-color-coding_img03.png" alt="Node generated from function" />
 
 <p>So, since the return annotation is already defined, how do we use it to color-code the output? It is actually pretty simple, cause the same format allows the type to be provided as well. You just need to add a new 'type' key to the dictionary. The value is the type associated with the output. Here's how it is done:</p>
 
@@ -91,7 +91,7 @@ def function_name() -&gt; [
     return 3.14159
 </python>
 
-<img src="images/ch06_img04.png" alt="Node generated from function" />
+<img src="images/ch-color-coding_img04.png" alt="Node generated from function" />
 
 
 <h2 id="color-coding-multiple-sockets">Color coding multiple output sockets</h2>
@@ -117,9 +117,9 @@ def function_name() -&gt; [
     }
 </python>
 
-<img src="images/ch06_img05.png" alt="Node generated from function" />
+<img src="images/ch-color-coding_img05.png" alt="Node generated from function" />
 
-<p><a href="ch05-loading-nodes.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch07-basic-way-define-widgets.htsl">Next chapter</a></p>
+<p><a href="ch-loading-nodes.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch-basic-way-define-widgets.htsl">Next chapter</a></p>
 
 </body>
 

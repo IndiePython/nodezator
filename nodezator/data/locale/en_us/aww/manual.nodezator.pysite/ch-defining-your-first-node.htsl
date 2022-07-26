@@ -22,7 +22,7 @@ def function_name(param1, param2):
     return param1 + param2
 </python>
 
-<img src="images/ch01_img00.png" alt="Node generated from example function" />
+<img src="images/ch-defining-your-first_img00.png" alt="Node generated from example function" />
 
 <p>The number at the bottom of the node represents an unique id that each user-defined node instance has. For instance, if you instantiate 10 <i>function_name</i> nodes in a file, each of them will have a different id. It is defined automatically by the app, so you don't need to worry about it.</p>
 
@@ -94,7 +94,7 @@ def get_circle(
 main_callable = get_circle
 </python>
 
-<img src="images/ch01_img01.png" alt="Node resulting from function definition"/>
+<img src="images/ch-defining-your-first_img01.png" alt="Node resulting from function definition"/>
 
 <p>As you can see, our node is actually just a regular Python function. The only additional change required was the creation of the <i>main_callable</i> variable pointing to the callable to be used as a node.</p>
 
@@ -186,7 +186,7 @@ main_callable = get_circle
 
 <p>Before we go on to test the first node we just created, though, let's create another node in the next chapter which will allow us to view our data.</p>
 
-<p><a href="index.htsl">Table of contents</a> | <a href="ch02-defining-viewer-nodes.htsl">Next chapter</a></p>
+<p><a href="index.htsl">Table of contents</a> | <a href="ch-defining-viewer-nodes.htsl">Next chapter</a></p>
 
 </body>
 

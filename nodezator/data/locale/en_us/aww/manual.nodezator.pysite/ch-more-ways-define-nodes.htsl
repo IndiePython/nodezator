@@ -117,7 +117,7 @@ def _sqrt(x:int=4, /) -&gt; float:
 signature_callable = _sqrt
 </python>
 
-<p>If you want to learn how to define widgets take a look at <a href="ch07-basic-way-define-widgets.htsl">Basic ways to define widgets</a>, <a href="ch08-full-syntax-more-widgets.htsl">Full syntax and more widgets</a>, <a href="ch09-widget-presets-more-widgets.htsl">Widget presets and more widgets</a> and <a href="ch10-preview-widgets.htsl">Preview widgets</a>.</p>
+<p>If you want to learn how to define widgets take a look at <a href="ch-basic-way-define-widgets.htsl">Basic ways to define widgets</a>, <a href="ch-full-syntax-more-widgets.htsl">Full syntax and more widgets</a>, <a href="ch-widget-presets-more-widgets.htsl">Widget presets and more widgets</a> and <a href="ch-preview-widgets.htsl">Preview widgets</a>.</p>
 
 <p>Some callables, besides not being compatible with inspect.signature(), also <b>have more than 01 signature</b>.</p>
 
@@ -296,9 +296,9 @@ call_format = 'chain.from_iterable'
 
 <p>Nodezator already includes chain.from_iterable() as an app-defined node, so you don't need to do this yourself, though.</p>
 
-<p>As a curiosity, I actually decided to add a custom signature to chain.from_iterable() in Nodezator using a signature_callable. I did it so that I could annotate the type of the input and output. It was just a cosmetic measure, though, because <a href="ch06-color-coding-inputs-outputs.htsl">annotated inputs/outputs are color-coded</a> when displayed as sockets within nodezator.</p>
+<p>As a curiosity, I actually decided to add a custom signature to chain.from_iterable() in Nodezator using a signature_callable. I did it so that I could annotate the type of the input and output. It was just a cosmetic measure, though, because <a href="ch-color-coding-inputs-outputs.htsl">annotated inputs/outputs are color-coded</a> when displayed as sockets within nodezator.</p>
 
-<p><a href="ch03-nodes-variable-parameters-custom-outputs.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch05-loading-nodes.htsl">Next chapter</a></p>
+<p><a href="ch-nodes-variable-parameters-custom-outputs.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch-loading-nodes.htsl">Next chapter</a></p>
 
 </body>
 

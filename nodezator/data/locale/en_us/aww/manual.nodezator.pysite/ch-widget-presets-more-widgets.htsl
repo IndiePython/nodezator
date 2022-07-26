@@ -43,7 +43,7 @@ def get_random_colors(quantity:'natural_number'=1):
 
 <p>To make life even easier, there are also equivalent alternatives to <i>'natural_number'</i> like <i>'non_negative_int'</i> and <i>'non_negative_integer'</i>.</p>
 
-<p>The full list of available widget definition presets can be found in the <a href="appendix-d-widget-presets.htsl">appendix D</a>.</p>
+<p>The full list of available widget definition presets can be found in the <a href="appendix-widget-presets.htsl">Widget presets appendix</a>.</p>
 
 
 <h2 id="literal-entry">The literal entry widget</h2>
@@ -152,7 +152,7 @@ def get_line_points(
     return points
 </python>
 
-<img src="images/ch09_img00.png" alt="Node generated from function" />
+<img src="images/ch-widget-presets_img00.png" alt="Node generated from function" />
 
 <p>If you want, instead of using the full syntax, you can just assign <i>'python_literal'</i> (a widget definition preset) to the annotation of  the <i>start_point</i> and <i>end_point</i> parameters and the widget will be defined as well. In that case, however, you won't be able to be specific about the expected type (<i>tuple</i>) as you were when specifying the type using the full widget definition syntax.</p>
 
@@ -206,7 +206,7 @@ def process_age_info(
     return processed_data
 </python>
 
-<img src="images/ch09_img01.png" alt="Node generated from function" />
+<img src="images/ch-widget-presets_img01.png" alt="Node generated from function" />
 
 <p>You can also just assign <i>'python_multiline_literal'</i> (a widget definition preset) to the annotation of the <i>data</i> parameter. The full syntax allows you to specify the expected types, though.</p>
 
@@ -250,7 +250,7 @@ def greet(
     print(f"{greeting}, {name}!")
 </python>
 
-<img src="images/ch09_img02.png" alt="Node generated from function" />
+<img src="images/ch-widget-presets_img02.png" alt="Node generated from function" />
 
 <p>Make sure the default value provided is within the available options defined in the <i>'options'</i> key.</p>
 
@@ -304,7 +304,7 @@ def get_channel_value(
     return color[index]
 </python>
 
-<img src="images/ch09_img03.png" alt="Node generated from function" />
+<img src="images/ch-widget-presets_img03.png" alt="Node generated from function" />
 
 <h2 id="sorting-button">The sorting button widget</h2>
 
@@ -378,7 +378,7 @@ def get_sorted_colors(
            )
 </python>
 
-<img src="images/ch09_img04.png" alt="Node generated from function" />
+<img src="images/ch-widget-presets_img04.png" alt="Node generated from function" />
 
 <p>If you want to be more direct, the widget can handle numeric values as well:</p>
 
@@ -433,11 +433,11 @@ def get_sorted_colors(
            )
 </python>
 
-<img src="images/ch09_img05.png" alt="Node generated from function" />
+<img src="images/ch-widget-presets_img05.png" alt="Node generated from function" />
 
 <p>The widget can also handle float and a combination of integers and floats.</p>
 
-<p><a href="ch08-full-syntax-more-widgets.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch10-preview-widgets.htsl">Next chapter</a></p>
+<p><a href="ch-full-syntax-more-widgets.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch-preview-widgets.htsl">Next chapter</a></p>
 
 </body>
 

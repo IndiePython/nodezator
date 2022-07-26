@@ -43,7 +43,7 @@ def does_path_exist(
     return Path(path).exists()
 </python>
 
-<img src="images/ch10_img00.png" alt="Node generated from function" />
+<img src="images/ch-preview-widgets_img00.png" alt="Node generated from function" />
 
 
 <h2 id="text-preview">The text preview widget</h2>
@@ -69,11 +69,11 @@ def get_text_from_file(
 
 <p>You can see the resulting node below. Note that, since the path is '.' and there is no text file in that path, no preview can be shown, so a red circle with a line is displayed to indicate this.</p>
 
-<img src="images/ch10_img01_0.png" alt="Node generated from function" />
+<img src="images/ch-preview-widgets_img01_0.png" alt="Node generated from function" />
 
 <p>Here's what the widget looks like when the path points to an existing text file:</p>
 
-<img src="images/ch10_img01_1.png" alt="Node generated from function" />
+<img src="images/ch-preview-widgets_img01_1.png" alt="Node generated from function" />
 
 
 <h2 id="audio-preview">The audio preview widget</h2>
@@ -100,7 +100,7 @@ def get_wave_sample_rate(
         return f.getframerate()
 </python>
 
-<img src="images/ch10_img02.png" alt="Node generated from function" />
+<img src="images/ch-preview-widgets_img02.png" alt="Node generated from function" />
 
 <h2 id="image-preview">The image preview widget</h2>
 
@@ -143,11 +143,11 @@ def surface_from_image(
 
 <p>You can see the resulting node below. Note that, since the path is '.' and there is no image file in that path, no preview can be shown, so, just like in text previews, a red circle with a line is displayed to indicate this.</p>
 
-<img src="images/ch10_img03_0.png" alt="Node generated from function" />
+<img src="images/ch-preview-widgets_img03_0.png" alt="Node generated from function" />
 
 <p>Here's what the widget looks like when the path points to an existing image file:</p>
 
-<img src="images/ch10_img03_1.png" alt="Node generated from function" />
+<img src="images/ch-preview-widgets_img03_1.png" alt="Node generated from function" />
 
 
 <h2 id="video-preview">The video preview widget</h2>
@@ -193,11 +193,11 @@ def flip_video_horizontally(
 <p>You can see the resulting node below. Note that, since the path in both video preview widgets is '.' and there is no video file in that path, no preview can be shown, so, a red circle with a line is displayed to indicate this, like in some of the other preview widgets.</p>
 
 
-<img src="images/ch10_img04_0.png" alt="Node generated from function" />
+<img src="images/ch-preview-widgets_img04_0.png" alt="Node generated from function" />
 
 <p>Here's what the widget looks like when the path in the first parameter points to an existing video file:</p>
 
-<img src="images/ch10_img04_1.png" alt="Node generated from function" />
+<img src="images/ch-preview-widgets_img04_1.png" alt="Node generated from function" />
 
 
 <h2 id="font-preview">The font preview widget</h2>
@@ -251,13 +251,13 @@ def get_text_surface(
 
 <p>You can see the resulting node below. Note that, since the path in font preview widget in the last parameter is '.' and there is no font file in that path, no preview can be shown, so, a red circle with a line is displayed to indicate this. As we saw, this is the behaviour in some of the other preview widgets as well.</p>
 
-<img src="images/ch10_img05_0.png" alt="Node generated from function" />
+<img src="images/ch-preview-widgets_img05_0.png" alt="Node generated from function" />
 
 <p>Here's what the widget looks like when the path in the that parameter points to an existing font file:</p>
 
-<img src="images/ch10_img05_1.png" alt="Node generated from function" />
+<img src="images/ch-preview-widgets_img05_1.png" alt="Node generated from function" />
 
-<p><a href="ch09-widget-presets-more-widgets.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch11-other-objects.htsl">Next chapter</a></p>
+<p><a href="ch-widget-presets-more-widgets.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch-other-objects.htsl">Next chapter</a></p>
 
 </body>
 

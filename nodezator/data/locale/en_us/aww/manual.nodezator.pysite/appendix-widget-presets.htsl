@@ -1,14 +1,14 @@
 <htsl>
 
 <head>
-  <title>Nodezator Manual | Appendix D: Widget presets</title>
+  <title>Nodezator Manual | Appendix: Widget presets</title>
 </head>
 
 <body>
 
-<p><a href="index.htsl">Table of contents</a> &gt; Appendix D: Widget presets</p>
+<p><a href="index.htsl">Table of contents</a> &gt; Appendix: Widget presets</p>
 
-<h1>Appendix D: Widget presets</h1>
+<h1>Appendix: Widget presets</h1>
 
 <p>Here we present a list of strings that can be used as the type hint in parameters to define specific widgets with specific configurations without having to type all the widget definition by yourself.</p>
 

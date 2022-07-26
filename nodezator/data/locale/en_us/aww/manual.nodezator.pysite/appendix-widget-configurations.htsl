@@ -1,14 +1,14 @@
 <htsl>
 
 <head>
-  <title>Nodezator Manual | Appendix C: All widget configurations</title>
+  <title>Nodezator Manual | Appendix: All widget configurations</title>
 </head>
 
 <body>
 
-<p><a href="index.htsl">Table of contents</a> &gt; Appendix C: All widget configurations</p>
+<p><a href="index.htsl">Table of contents</a> &gt; Appendix: All widget configurations</p>
 
-<h1>Appendix C: All widget configurations</h1>
+<h1>Appendix: All widget configurations</h1>
 
 <p>In this appendix we present the specific full syntax used to define each widget as well as the extra options/configuration available.</p>
 
