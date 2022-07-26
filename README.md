@@ -114,7 +114,7 @@ Also, other parts of the code, despite being carefully designed, might be redesi
 [Indie Python]: https://indiepython.com
 [manual]: https://manual.nodezator.com
 [nodes gallery]: https://gallery.nodezator.com
-[github discussions]: https://github.com/KennedyRichard/nodezator/discussions
+[github discussions]: https://github.com/IndiePython/nodezator/discussions
 [Twitter]: https://twitter.com/KennedyRichard
 [email]: mailto:kennedy@kennedyrichard.com
 [discord server]: https://indiepython.com/discord

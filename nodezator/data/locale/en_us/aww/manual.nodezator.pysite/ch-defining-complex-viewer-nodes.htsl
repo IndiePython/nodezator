@@ -181,7 +181,7 @@ main_callable = view_image
 
 <p>Before you delve into the code, however, I'd like to point out that <b>there is no perfect or correct way of defining loops in pygame</b>. You can use functions or classes, but even when using classes there are different ways to do it. I could even have split the node script into different modules to make the separation between the different parts even more clear.</p>
 
-<p>Do not stress over the details. The code to be presented is just what I thought was the best solution for what was needed. As long as you understand the purpose of the individual pieces you'll be able to come up with your own solutions. You are also always welcome to ask on <a href="https://indiepython.com/discord">discord</a> or <a href="https://github.com/KennedyRichard/nodezator/discussions">github discussions</a> every time you have questions.</p>
+<p>Do not stress over the details. The code to be presented is just what I thought was the best solution for what was needed. As long as you understand the purpose of the individual pieces you'll be able to come up with your own solutions. You are also always welcome to ask on <a href="https://indiepython.com/discord">discord</a> or <a href="https://github.com/IndiePython/nodezator/discussions">github discussions</a> every time you have questions.</p>
 
 <p>First of all, we have the imports and the definition of constants:</p>
 

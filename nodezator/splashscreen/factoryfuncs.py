@@ -295,12 +295,12 @@ def get_project_link_objs():
 
       (
         "Source code",
-        "https://github.com/KennedyRichard/nodezator",
+        "https://github.com/IndiePython/nodezator",
       ),
 
       (
         "Discussions/forum",
-        "https://github.com/KennedyRichard/nodezator/discussions",
+        "https://github.com/IndiePython/nodezator/discussions",
       ),
 
       (
