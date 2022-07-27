@@ -764,7 +764,7 @@ main_callable = ImageViewer().view_image
 <p>I hope this example gave you a tiny glimpse of pygame's power to create real-time visualization tools that are easy to develop and maintain, combined with Nodezator to integrate all of this in a node editing interface.</p>
 
 
-<p><a href="defining-viewer-nodes.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="nodes-variable-parameters-custom-outputs.htsl">Next chapter</a></p>
+<p><a href="ch-defining-viewer-nodes.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch-nodes-variable-parameters-custom-outputs.htsl">Next chapter</a></p>
 
 </body>
 
