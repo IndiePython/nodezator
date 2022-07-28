@@ -19,7 +19,7 @@ from graphman.presets import (
                         WIDGET_PRESET_MENU_LABEL_MAP,
                       )
 
-from graphman.widget.picker.main import pick_widget
+from editing.widgetpicker.main import pick_widget
 
 
 class WidgetCreationPopupMenu(MenuManager):

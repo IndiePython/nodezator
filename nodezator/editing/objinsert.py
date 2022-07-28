@@ -31,7 +31,7 @@ from graphman.capsulenode.main  import CapsuleNode
 from graphman.proxynode.main    import ProxyNode
 from graphman.textblock.main    import TextBlock
 
-from graphman.widget.picker.main import pick_widget
+from editing.widgetpicker.main import pick_widget
 
 
 ### create logger for module
