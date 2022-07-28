@@ -40,7 +40,10 @@ FPS = 24
 
 set_caption(FULL_TITLE, ABBREVIATED_TITLE)
 
-image_path = str(Path(__file__).parent / 'app_icon.png')
+image_path = (
+  str(Path(__file__).parent / 'data' / 'app_icon.png')
+)
+
 set_icon(load_image(image_path))
 
 ### set key repeating (unit: milliseconds)
