@@ -46,9 +46,7 @@ class CallableNode(
     called "data", also received upon instantiation.
     """
 
-    ### placeholders for class attributes
-
-    graph_manager              = None
+    ### placeholder for class attribute
     widget_creation_popup_menu = None
 
 

@@ -88,16 +88,6 @@ class GraphManager(
         ### reference itself on APP_REFS
         APP_REFS.gm = self
 
-        ### reference this object in node classes
-        ### (the subclasses of CallableNode, naturally,
-        ### inherit such reference from the superclass)
-
-        for cls in (
-          CallableNode,
-          OperatorNode,
-          ProxyNode,
-        ): cls.graph_manager = self
-
         ### also instantiate and store a new popup menu
         ### for usage of the CallableNode class, its
         ### subclasses and the proxy node class

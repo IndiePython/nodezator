@@ -36,9 +36,6 @@ class OperatorNode(
     ):
     """A node representing a variable within a script."""
 
-    ### placeholder for class attribute
-    graph_manager = None
-
     ###
     available_ids = OPERATIONS_MAP.keys()
 

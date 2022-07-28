@@ -10,6 +10,8 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
+from config import APP_REFS
+
 from pygameconstants import SCREEN
 
 ## function for injection
@@ -164,6 +166,6 @@ class VisualRelatedOperations:
             if socket.rect.collidepoint(mouse_pos):
                 break
 
-        else: self.graph_manager.cancel_defining_segment()
+        else: APP_REFS.gm.cancel_defining_segment()
 
-        self.graph_manager.resume_defining_segment(socket)
+        APP_REFS.gm.resume_defining_segment(socket)

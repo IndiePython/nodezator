@@ -31,9 +31,7 @@ class ProxyNode(
     from other node.
     """
 
-    ### placeholders for class attributes
-
-    graph_manager              = None
+    ### placeholder for class attribute
     widget_creation_popup_menu = None
 
     def __init__(self, data, midtop=None):
