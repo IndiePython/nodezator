@@ -195,7 +195,7 @@ class ObjectInsertionRemoval:
                         ## create the node, adding its
                         ## data to the file
 
-                        APP_REFS.gm.insert_node(
+                        APP_REFS.gm.create_node(
                                   cls,
                                   data   = node_data,
                                   midtop = absolute_midtop,

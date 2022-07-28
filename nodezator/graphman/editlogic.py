@@ -21,7 +21,7 @@ from graphman.textblock.main import TextBlock
 class DataEdition:
     """Contains methods for node layout edition."""
 
-    def insert_node(self, node_class, *args, **kwargs):
+    def create_node(self, node_class, *args, **kwargs):
         """Instantiate and insert node."""
         ### instantiate
         node = node_class(*args, **kwargs)
@@ -34,12 +34,17 @@ class DataEdition:
         self.nodes_data[node.id] = node.data
 
     create_callable_node = partialmethod(
-                             insert_node, CallableNode
+                             create_node, CallableNode
                            )
 
     create_proxy_node = partialmethod(
-                             insert_node, ProxyNode
-                           )
+                             create_node, ProxyNode
+                        )
+
+    def insert_node(self, node):
+        """Insert node into node map and node's data."""
+        ### XXX to be implemented along with the undo/redo
+        ### feature
 
     def remove_node(self, node):
         """Remove node instance from node layout.
