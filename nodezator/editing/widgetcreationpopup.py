@@ -67,7 +67,7 @@ class WidgetCreationPopupMenu(MenuManager):
 
           is_menubar  = False,
           use_outline = True,
-          keep_focus_when_out=True,
+          keep_focus_when_unhovered=True,
 
         )
 

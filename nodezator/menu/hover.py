@@ -102,8 +102,8 @@ class HoveringOperations:
 
         ### admin tasks in case there's no hovered widget
 
-        ## if there isn't a hovered_arrow, there's
-        ## no active branch and the keep_focus_when_out
+        ## if there isn't a hovered_arrow, there's no
+        ## active branch and the keep_focus_when_unhovered
         ## attribute is set to False, then the menu manager
         ## must loose its focus to the loop holder (in
         ## other words, the user isn't hovering any visible
@@ -114,15 +114,15 @@ class HoveringOperations:
         ## mouse cursor when there's an active branch
         ## without causing the menu manager to loose focus
         ## (it is an usability choice);
-        ## the value of the keep_focus_when_out is also an
-        ## usability choice made upon instantiation (for
-        ## more information check the parameter description
-        ## in the __init__ method docstring)
+        ## the value of the keep_focus_when_unhovered is
+        ## also an usability choice made upon instantiation
+        ## (for more information check the parameter
+        ## description in the __init__ method docstring)
 
         elif (
               not self.is_drawing_active_branch()
           and not self.hovered_arrow
-          and not self.keep_focus_when_out
+          and not self.keep_focus_when_unhovered
         ):
             self.focus_loop_holder()
 
