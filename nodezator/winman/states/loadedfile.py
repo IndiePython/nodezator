@@ -538,12 +538,14 @@ class LoadedFileState:
         ### check nodes for collision, executing its
         ### respective method if so and returning
 
-        for node in (
-        APP_REFS.gm.nodes.get_on_screen()):
+        for obj in chain(
+          APP_REFS.gm.nodes.get_on_screen(),
+          APP_REFS.gm.text_blocks.get_on_screen(),
+        ):
 
-            if node.rect.collidepoint(mouse_pos):
+            if obj.rect.collidepoint(mouse_pos):
 
-                node.on_right_mouse_release(event)
+                obj.on_right_mouse_release(event)
                 break
 
         ### otherwise, it means the user right-clicked an
@@ -565,7 +567,12 @@ class LoadedFileState:
             APP_REFS.ea.popup_spawn_pos = event.pos
 
             ### then give focus to the popup menu
-            self.canvas_popup_menu.check_focus(event.pos)
+
+            (
+              self
+              .canvas_popup_menu
+              .focus_if_within_boundaries(event.pos)
+            )
 
     ### update
 

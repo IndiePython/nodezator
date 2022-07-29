@@ -79,7 +79,7 @@ class WidgetCreationPopupMenu(MenuManager):
           node, *other_references
         )
 
-        self.check_focus(get_mouse_pos())
+        self.focus_if_within_boundaries(get_mouse_pos())
 
     def trigger_subparameter_widget_instantiation(
           self, widget_data=None,
