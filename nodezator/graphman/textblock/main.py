@@ -10,6 +10,8 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
+from config import APP_REFS
+
 from pygameconstants import SCREEN
 
 from classes2d.single import Object2D
@@ -74,14 +76,19 @@ class TextBlock(Object2D):
         self.mouse_click_target   = False
 
     def on_mouse_action(self, method_name, event):
-        """Set flags according to given method name.
+        """Behave according to given method name.
 
-        Works by marking the text block as a target of the
-        mouse release or mouse click action by change the
-        values of the respective flags in specific ways.
+        When the method name is 'on_mouse_click' or
+        'on_mouse_release', works by marking the text block
+        as a target of the mouse release or mouse click
+        action by changing the values of the respective
+        flags in specific ways.
         
         The flags are used to support the object selection
         and "move by dragging" features.
+
+        When the method name is 'on_right_mouse_release',
+        presents the popup menu for text blocks.
 
         Parameters
         ==========
@@ -104,11 +111,28 @@ class TextBlock(Object2D):
             self.mouse_release_target = True
             self.mouse_click_target   = False
 
+        elif method_name == 'on_right_mouse_release':
+
+            (
+              APP_REFS
+              .ea
+              .text_block_popup_menu
+              .show(self, event.pos)
+            )
+
     on_mouse_click = partialmethod(
-                         on_mouse_action, 'on_mouse_click')
+                       on_mouse_action, 'on_mouse_click'
+                     )
 
     on_mouse_release = partialmethod(
-                         on_mouse_action, 'on_mouse_release')
+                         on_mouse_action,
+                         'on_mouse_release'
+                       )
+
+    on_right_mouse_release = partialmethod(
+                               on_mouse_action,
+                               'on_right_mouse_release'
+                             )
 
     def draw_selection_outline(self, color):
         """Draw outline around to indicate it is selected."""
