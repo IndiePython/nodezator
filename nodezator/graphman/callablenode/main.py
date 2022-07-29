@@ -46,10 +46,6 @@ class CallableNode(
     called "data", also received upon instantiation.
     """
 
-    ### placeholder for class attribute
-    widget_creation_popup_menu = None
-
-
     ### XXX ponder: instead of making a method like this
     ### one which goes out of its way to meet requirements
     ### of two different use cases, it would most likely

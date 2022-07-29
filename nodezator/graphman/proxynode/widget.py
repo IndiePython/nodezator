@@ -181,7 +181,8 @@ class WidgetOps:
           partial(
 
             (
-              self
+              APP_REFS
+              .ea
               .widget_creation_popup_menu
               .trigger_simple_widget_picking
             ),

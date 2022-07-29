@@ -10,6 +10,8 @@ from pygame import Rect
 
 ### local imports
 
+from config import APP_REFS
+
 from ourstdlibs.collections.general import CallList
 
 from our3rdlibs.button import Button
@@ -91,7 +93,8 @@ class VisualRelatedPreparations:
               partial(
 
                 (
-                  self
+                  APP_REFS
+                  .ea
                   .widget_creation_popup_menu
                   .trigger_simple_widget_picking
                 ),

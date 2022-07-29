@@ -31,9 +31,6 @@ class ProxyNode(
     from other node.
     """
 
-    ### placeholder for class attribute
-    widget_creation_popup_menu = None
-
     def __init__(self, data, midtop=None):
         """Setup attributes for storage and control.
 

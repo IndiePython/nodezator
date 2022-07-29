@@ -45,10 +45,6 @@ from graphman.proxynode.main    import ProxyNode
 
 from graphman.textblock.main import TextBlock
 
-from graphman.widget.creationpopupmenu import (
-                                WidgetCreationPopupMenu,
-                              )
-
 ## class extensions
 
 from graphman.editlogic import DataEdition
@@ -82,22 +78,10 @@ class GraphManager(
 
     python_repr = python_repr
 
-
     def __init__(self):
         """Reference itself in the node class."""
         ### reference itself on APP_REFS
         APP_REFS.gm = self
-
-        ### also instantiate and store a new popup menu
-        ### for usage of the CallableNode class, its
-        ### subclasses and the proxy node class
-
-        CallableNode.widget_creation_popup_menu = \
-        ProxyNode.widget_creation_popup_menu    = (
-
-          WidgetCreationPopupMenu()
-
-        )
 
         ### create rect to mark origin of 2d space
         self.origin_rect = Rect(0, 0, 100, 100)

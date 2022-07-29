@@ -22,6 +22,12 @@ from editing.categorycolors import (
                               change_category_colors,
                             )
 
+## class for composition
+
+from editing.widgetcreationpopup import (
+                                WidgetCreationPopupMenu,
+                              )
+
 
 class EditingAssistant(
 
@@ -58,6 +64,12 @@ class EditingAssistant(
 
         self.rebuild_category_color_form = (
           rebuild_category_color_form
+        )
+
+        ### create and store widget creation popup menu
+
+        self.widget_creation_popup_menu = (
+          WidgetCreationPopupMenu()
         )
 
     def prepare_for_new_session(self):
