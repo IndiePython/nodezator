@@ -12,6 +12,8 @@ from functools import partial, reduce, wraps
 from collections     import deque
 from collections.abc import Mapping
 
+from contextlib import suppress
+
 
 def empty_function():
     """Do nothing. An empty function.
@@ -560,3 +562,23 @@ def get_oblivious_callable(func):
 
     return execute
 
+
+def get_suppressing_callable(func, *exceptions):
+    """Return callable which suppresses given exceptions.
+
+    Parameters
+    ==========
+    func (callable object)
+        callable to be wrapped in the function which
+        ignores arguments when called.
+    exceptions (instance(s) of Exception to be suppressed)
+        exceptions to be suppressed.
+    """
+
+    @wraps(func)
+    def execute(*args, **kwargs):
+        """Execute func supressing exceptions."""
+        with suppress(*exceptions):
+            return func(*args, **kwargs)
+
+    return execute
