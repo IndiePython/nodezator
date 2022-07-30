@@ -145,12 +145,6 @@ class CapsuleNode(CallableNode):
           [self.data['capsule_id']]
         )
 
-    def store_script_id(self):
-        """Do nothing.
-
-        Overrides super().store_script_id().
-        """
-
     def get_color_identifier(self):
         """Return specific color identifier.
 

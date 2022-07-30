@@ -207,18 +207,10 @@ class DataHandling:
               # objects pointing to node scripts
               .script_path_map
 
-              # use the id of the node's defining object
-              # to retrieve the pathlib.Path instance
-              # which points to the node's script
-
-              [
-
-                APP_REFS.id_map[
-                           self
-                           .active_obj
-                           .signature_callable
-                         ]
-              ]
+              # use the script id of the node to retrieve
+              # the pathlib.Path instance which points to
+              # the node's script
+              [self.active_obj.data['script_id']]
 
               # and grab its contents
               .read_text()
@@ -228,10 +220,10 @@ class DataHandling:
         elif source_name == 'callable_source':
 
             ## retrieve information about the node's
-            ## callable
+            ## main callable
 
             text = retrieve_callable_info(
-                     self.active_obj.signature_callable
+                     self.active_obj.main_callable
                    )
 
         ### then display the text

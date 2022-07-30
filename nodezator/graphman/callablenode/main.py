@@ -172,6 +172,12 @@ class CallableNode(
         self.data = data
         self.set_data_defaults()
 
+        ### store script id on node's data
+
+        data['script_id'] = (
+          node_defining_object['script_id']
+        )
+
         ### store the id in its own attribute for easy
         ### access
         self.id = self.data['id']

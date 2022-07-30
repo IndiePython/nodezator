@@ -22,7 +22,6 @@ APP_REFS = SimpleNamespace(
 
              node_def_map       = {},
              signature_map      = {},
-             id_map             = {},
              script_path_map    = {},
              category_path_map  = {},
              category_index_map = {},
