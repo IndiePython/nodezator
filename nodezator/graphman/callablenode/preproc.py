@@ -403,8 +403,6 @@ class Preprocessing:
         for field_name, default in field_default_pairs:
             self.data.setdefault(field_name, default)
 
-        ### also store the callable id
-        self.store_script_id()
 
     ### though part of the methods above, the methods
     ### below are isolated so they can be overridden
@@ -415,18 +413,3 @@ class Preprocessing:
         return APP_REFS.signature_map[
                           self.signature_callable
                         ]
-
-    def store_script_id(self):
-        """Store special callable id."""
-        ## an id for the signature callable the node
-        ## represents
-
-        self.data.setdefault(
-
-                    'script_id',
-
-                    APP_REFS.id_map[
-                               self.signature_callable
-                             ]
-
-                  )
