@@ -103,7 +103,7 @@ def retrieve_callable_info(callable_obj):
     ### if it is not possible (for instance, the built-in
     ### function 'pow' can't have its source retrieved,
     ### even though it works with inspect.signature),
-    ### just used the docstring or a placeholder text,
+    ### just use the docstring or a placeholder text,
     ### if the docstring is None
 
     except (OSError, TypeError):
