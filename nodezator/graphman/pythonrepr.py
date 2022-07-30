@@ -1,10 +1,7 @@
 """Function for extending the graph manager."""
 
 ### standard library imports
-
 from textwrap import indent, wrap
-
-from string import ascii_letters
 
 
 ### local imports
@@ -354,11 +351,8 @@ def python_repr(self, additional_levels=()):
 
           '### local imports (node callables)'
           + ('\n' * 2)
-          + '\n'.join(
-                      format_local_imports(
-                        node_callable_imports
-                      )
-                    ) + ('\n' * 3)
+          + '\n'.join(node_callable_imports)
+          + ('\n' * 3)
 
           if node_callable_imports
 
@@ -1523,62 +1517,3 @@ def data_node_to_text(
     )
 
     return node_text
-
-
-def format_local_imports(local_imports):
-    """"""
-    ###
-
-    words_per_item = [
-
-      statement[
-
-        # start after 'from '
-        5
-
-        # end before ' import '
-        : statement.rindex(' import ')
-
-      ].split('.')
-
-      for statement in local_imports
-
-    ]
-
-    ###
-
-    n = len(words_per_item[0])
-
-    max_chars = [0 for _ in range(n)]
-
-    ###
-
-    for i in range(n):
-        
-        for item in words_per_item:
-            
-            char_no = len(item[i])
-            max_chars[i] = max(max_chars[i], char_no)
-
-    ###
-
-    for i in range(n):
-        
-        for item in words_per_item:
-            
-            max_value = max_chars[i]
-            item[i] = item[i].ljust(max_value, ' ')
-
-    ###
-
-    return [
-
-      (
-        f'from {" . ".join(word_list)} import '
-        + statement.split()[-1]
-      )
-
-      for word_list, statement
-      in zip(words_per_item, local_imports)
-
-    ]
