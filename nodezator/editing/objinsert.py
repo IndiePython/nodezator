@@ -278,7 +278,6 @@ class ObjectInsertionRemoval:
                       'id'            : new_id,
                       'midtop'        : relative_midtop,
                       'commented_out' : commented_out_state,
-                      'label_text'    : 'data_source',
                       'widget_data'   : widget_data,
                     }
 
@@ -301,7 +300,6 @@ class ObjectInsertionRemoval:
                   'id'            : new_id,
                   'midtop'        : relative_midtop,
                   'commented_out' : commented_out_state,
-                  'label_text'    : 'data_source',
                 }
 
                 ## create the node, adding its data to the

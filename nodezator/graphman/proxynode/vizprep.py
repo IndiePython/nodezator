@@ -237,6 +237,8 @@ class VisualRelatedPreparations:
 
             ),
 
+            output_name = self.label_text,
+
           )
 
         )

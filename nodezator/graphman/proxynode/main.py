@@ -49,6 +49,12 @@ class ProxyNode(
         ### attribute
         self.data = data
 
+        ### set a 'label_text' key on the data if not
+        ### present yet
+
+        if 'label_text' not in self.data:
+            self.data['label_text'] = 'data_source'
+
         ### store some values from the node data in their
         ### own attributes for easy access
 

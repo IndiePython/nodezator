@@ -24,11 +24,13 @@ from editing.categorycolors import (
 
 ## classes for composition
 
-from editing.widgetcreationpopup import (
+from editing.popups.widgetcreation import (
                                 WidgetCreationPopupMenu,
                               )
 
-from editing.textblockpopup import TextBlockPopupMenu
+from editing.popups.proxynode import ProxyNodePopupMenu
+
+from editing.popups.textblock import TextBlockPopupMenu
 
 
 class EditingAssistant(
@@ -72,6 +74,10 @@ class EditingAssistant(
 
         self.widget_creation_popup_menu = (
           WidgetCreationPopupMenu()
+        )
+
+        self.proxy_node_popup_menu = (
+          ProxyNodePopupMenu()
         )
 
         self.text_block_popup_menu = (
