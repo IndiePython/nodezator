@@ -237,7 +237,7 @@ class VisualRelatedPreparations:
 
             ),
 
-            output_name = self.label_text,
+            output_name = self.title,
 
           )
 
@@ -389,5 +389,5 @@ class VisualRelatedPreparations:
     def get_label_text(self):
 
         return (
-          self.data.get('source_name', self.label_text)
+          self.data.get('source_name', self.title)
         )

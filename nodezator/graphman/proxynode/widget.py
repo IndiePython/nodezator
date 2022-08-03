@@ -140,7 +140,7 @@ class WidgetOps:
                           )
 
             self.propagate_output(
-                   self.label_text,
+                   self.title,
                    type_codename,
                  )
 
@@ -235,7 +235,7 @@ class WidgetOps:
                           )
 
             self.propagate_output(
-                   self.label_text,
+                   self.title,
                    type_codename,
                  )
 

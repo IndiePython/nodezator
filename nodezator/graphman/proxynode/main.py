@@ -49,16 +49,16 @@ class ProxyNode(
         ### attribute
         self.data = data
 
-        ### set a 'label_text' key on the data if not
-        ### present yet
+        ### set a 'title' key on the data if not present
+        ### yet
 
-        if 'label_text' not in self.data:
-            self.data['label_text'] = 'data_source'
+        if 'title' not in self.data:
+            self.data['title'] = 'output'
 
         ### store some values from the node data in their
         ### own attributes for easy access
 
-        for attr_name in ('id', 'label_text'):
+        for attr_name in ('id', 'title'):
             setattr(self, attr_name, self.data[attr_name])
 
         ### store the midtop position
