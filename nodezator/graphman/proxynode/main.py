@@ -1,5 +1,7 @@
 
-### class extensions
+### local imports
+
+## class extensions
 
 from graphman.proxynode.vizprep import (
                                 VisualRelatedPreparations,
@@ -14,6 +16,9 @@ from graphman.proxynode.widget import WidgetOps
 from graphman.proxynode.segment import SegmentOps
 
 from graphman.proxynode.export import Exporting
+
+## function for injection
+from graphman.proxynode.titleupdate import update_title
 
 
 class ProxyNode(
@@ -30,6 +35,8 @@ class ProxyNode(
     Such data source can be a variable or the output
     from other node.
     """
+
+    update_title = update_title
 
     def __init__(self, data, midtop=None):
         """Setup attributes for storage and control.
@@ -50,7 +57,13 @@ class ProxyNode(
         self.data = data
 
         ### set a 'title' key on the data if not present
-        ### yet
+        ### yet;
+        ###
+        ### it is important that the default value here
+        ### is 'output', because it is the default
+        ### output name of OutputSockets used before
+        ### the titles of data nodes became editable,
+        ### so it is needed in order not to break things;
 
         if 'title' not in self.data:
             self.data['title'] = 'output'

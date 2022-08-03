@@ -79,7 +79,7 @@ class ProxySocket(Socket):
 
         return (
           self.node.id,
-          self.node.label_text,
+          self.node.title,
         )
 
 

@@ -294,7 +294,7 @@ class ProxyNodesLackingDataError(Exception):
         report_message += (
 
           ', '.join(
-                 f"id #{node.id} (label={node.label_text})"
+                 f"id #{node.id} (title={node.title})"
                  for node in nodes
                )
         )

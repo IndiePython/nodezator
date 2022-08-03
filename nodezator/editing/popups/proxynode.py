@@ -3,9 +3,12 @@
 
 from config import APP_REFS
 
+from widget.stringentry import StringEntry
+
 from menu.main import MenuManager
 
 from editing.popups.constants import GeneralPopupCommands
+
 
 
 class ProxyNodePopupMenu(GeneralPopupCommands):
@@ -13,6 +16,16 @@ class ProxyNodePopupMenu(GeneralPopupCommands):
     def __init__(self):
 
         super().__init__()
+
+        self.entry = (
+
+          StringEntry(
+            value = 'output',
+            command = self.update_data_node_title,
+            validation_command = 'isidentifier',
+          )
+
+        )
 
         redirect_node_menu_list = [
 
@@ -157,4 +170,20 @@ class ProxyNodePopupMenu(GeneralPopupCommands):
                 )
 
     def edit_node_title(self):
-        pass
+
+        self.entry.set(
+          self.obj_under_mouse.title, False
+        )
+
+        self.entry.rect.midtop = (
+          self.obj_under_mouse.rect.move(0, 5).midtop
+        )
+
+        APP_REFS.window_manager.draw()
+
+        self.entry.get_focus()
+
+    def update_data_node_title(self):
+
+        new_title = self.entry.get()
+        self.obj_under_mouse.update_title(new_title)
