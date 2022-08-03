@@ -389,5 +389,9 @@ class VisualRelatedPreparations:
     def get_label_text(self):
 
         return (
-          self.data.get('source_name', self.title)
+
+          self.data.get(
+                       'source_name',
+                      f'{self.id} : {self.title}',
+                    )
         )
