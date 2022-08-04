@@ -26,14 +26,13 @@ class OperatorNodePopupMenu(GeneralPopupCommands):
 
         super().__init__()
 
+        menu_list = self.GENERAL_SINGLE_COMMANDS.copy()
+
         node_replacing_submenu = []
 
-        menu_list = [
+        menu_list.insert(
 
-          {
-             'label': "Move this node",
-             'command': self.move_obj,
-          },
+          1,
 
           {
              'label': "Replace operation",
@@ -41,17 +40,7 @@ class OperatorNodePopupMenu(GeneralPopupCommands):
              'children': node_replacing_submenu,
           },
 
-          {
-             'label': "Duplicate this node",
-             'command': self.duplicate_obj,
-          },
-
-          {
-             'label'   : "Delete this node",
-             'command' : self.delete_obj,
-          },
-
-        ]
+        )
 
         for operation_id in OPERATIONS_MAP:
             

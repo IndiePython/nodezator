@@ -18,12 +18,31 @@ class GeneralPopupCommands:
 
         if not hasattr(cls, 'GENERAL_COLLECTIVE_COMMANDS'):
 
+            cls.GENERAL_SINGLE_COMMANDS = [
+
+              {
+                 'label': "Move",
+                 'command': self.move_obj,
+              },
+
+              {
+                 'label': "Duplicate",
+                 'command': self.duplicate_obj,
+              },
+
+              {
+                 'label'   : "Delete",
+                 'command' : self.delete_obj,
+              },
+
+            ]
+
             cls.GENERAL_COLLECTIVE_COMMANDS = [
 
               {'label' : "---"},
 
               {
-                'label'   : "Move selected objects",
+                'label'   : "Move selected",
                 'command' : get_suppressing_callable(
                               APP_REFS.ea.start_moving,
                               ContinueLoopException,
@@ -31,7 +50,7 @@ class GeneralPopupCommands:
               },
 
               {
-                'label'   : "Duplicate selected objects",
+                'label'   : "Duplicate selected",
                 'command' : get_suppressing_callable(
                               APP_REFS.ea.duplicate_selected,
                               ContinueLoopException,
@@ -39,7 +58,7 @@ class GeneralPopupCommands:
               },
 
               {
-                'label'   : "Delete selected objects",
+                'label'   : "Delete selected",
                 'command' : APP_REFS.ea.remove_selected,
               },
 

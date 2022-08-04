@@ -29,30 +29,13 @@ class ProxyNodePopupMenu(GeneralPopupCommands):
 
         )
 
-        redirect_node_menu_list = [
-
-          {
-             'label': "Move this node",
-             'command': self.move_obj,
-          },
-
-          {
-             'label': "Duplicate this node",
-             'command': self.duplicate_obj,
-          },
-
-          {
-             'label'   : "Delete this node",
-             'command' : self.delete_obj,
-          },
-
-        ]
+        ###
 
         self.redirect_node_only_popup = (
 
           MenuManager(
 
-            redirect_node_menu_list,
+            self.GENERAL_SINGLE_COMMANDS,
 
             is_menubar  = False,
             use_outline = True,
@@ -64,7 +47,9 @@ class ProxyNodePopupMenu(GeneralPopupCommands):
 
         ###
 
-        data_node_menu_list = redirect_node_menu_list.copy()
+        data_node_menu_list = (
+          self.GENERAL_SINGLE_COMMANDS.copy()
+        )
 
         data_node_menu_list.insert(
 
@@ -93,15 +78,15 @@ class ProxyNodePopupMenu(GeneralPopupCommands):
 
         ###
 
-        redirect_node_menu_list.extend(
-          self.GENERAL_COLLECTIVE_COMMANDS
-        )
 
         self.redirect_node_and_selected_popup = (
 
           MenuManager(
 
-            redirect_node_menu_list,
+            (
+                 self.GENERAL_COLLECTIVE_COMMANDS
+               + self.GENERAL_SINGLE_COMMANDS
+            ),
 
             is_menubar  = False,
             use_outline = True,
