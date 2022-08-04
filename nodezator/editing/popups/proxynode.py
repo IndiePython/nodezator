@@ -3,6 +3,8 @@
 
 from config import APP_REFS
 
+from pygameconstants import SCREEN_RECT
+
 from widget.stringentry import StringEntry
 
 from menu.main import MenuManager
@@ -171,13 +173,17 @@ class ProxyNodePopupMenu(GeneralPopupCommands):
 
     def edit_node_title(self):
 
-        self.entry.set(
+        entry = self.entry
+
+        entry.set(
           self.obj_under_mouse.title, False
         )
 
-        self.entry.rect.midtop = (
+        entry.rect.midtop = (
           self.obj_under_mouse.rect.move(0, 5).midtop
         )
+
+        entry.rect.clamp_ip(SCREEN_RECT)
 
         APP_REFS.window_manager.draw()
 
