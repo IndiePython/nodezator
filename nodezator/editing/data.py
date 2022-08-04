@@ -52,10 +52,6 @@ from fileman.main import select_path
 from graphman.utils import yield_subgraphs
 
 from graphman.callablenode.main import CallableNode
-from graphman.stlibnode.main    import StandardLibNode
-from graphman.builtinnode.main  import BuiltinNode
-from graphman.operatornode.main import OperatorNode
-from graphman.capsulenode.main  import CapsuleNode
 from graphman.proxynode.main    import ProxyNode
 from graphman.textblock.main    import TextBlock
 
@@ -89,7 +85,13 @@ ACTION_DESCRIPTION_MAP = {
 ### utility functions
 
 def retrieve_callable_info(callable_obj):
-    """Return callable source or its docstring.
+    """Return 2-tuple.
+
+    The first value is the callable source or its
+    docstring.
+
+    The second value is a boolean which is True if
+    the source was retrieve and false otherwise.
 
     Parameters
     ==========
@@ -108,13 +110,19 @@ def retrieve_callable_info(callable_obj):
 
     except (OSError, TypeError):
         
+        managed_to_get_source = False
+
         text = getdoc(callable_obj)
           
         if text is None:
             text = t.editing.data.no_source_available
 
-    ### finally return the text retrieved/used
-    return text
+    ### if it is, set flag to True
+    else: managed_to_get_source = True
+
+    ### finally return the text retrieved/used and
+    ### the flag
+    return text, managed_to_get_source
 
 
 ## boolean function to check whether text of text block
@@ -137,14 +145,14 @@ is_text_block_text_valid = (
 class DataHandling:
     """Data handling operations."""
 
-    def view_code(self, source_name):
-        """Display source of active node's script.
+    def info_from_active_selection(self, source_name):
+        """Display info about active selection node.
 
         Parameters
         ==========
         source_name (string)
             name indicating the kind of source to be
-            shown; can be 'node_script' or 'callable_source'.
+            shown; can be 'node_script' or 'callable_info'.
         """
 
         ### if there's no active selection, notify user
@@ -178,69 +186,75 @@ class DataHandling:
 
             return
 
-        ### otherwise, retrieve and present node's
-        ### source/info according to its type and
-        ### the requested source
+        self.view_info(self.active_obj, source_name)
 
-        if type(self.active_obj) in (
+    view_node_script = partialmethod(
+                         info_from_active_selection,
+                         'node_script'
+                       )
 
-          StandardLibNode,
-          BuiltinNode,
-          OperatorNode,
-          CapsuleNode,
+    view_callable_info = partialmethod(
+                           info_from_active_selection,
+                           'callable_info'
+                         )
 
-        ):
+    def view_info(self, obj, source_name='node_script'):
+        """Retrieve and present obj's source/info."""
 
-            text = self.active_obj.get_source_info()
+        if type(obj) == CallableNode:
 
-        elif source_name == 'node_script':
+            if source_name == 'node_script':
 
-            ## retrieve the source of the script from which
-            ## the node's callable was retrieved
+                ## retrieve the source of the script from
+                ## which the node's callable was retrieved
 
-            text = (
+                text = (
 
-              # from the APP_REFS obj...
-              APP_REFS
+                  # from the APP_REFS obj...
+                  APP_REFS
 
-              # retrieve a map containing pathlib.Path
-              # objects pointing to node scripts
-              .script_path_map
+                  # retrieve a map containing pathlib.Path
+                  # objects pointing to node scripts
+                  .script_path_map
 
-              # use the script id of the node to retrieve
-              # the pathlib.Path instance which points to
-              # the node's script
-              [self.active_obj.data['script_id']]
+                  # use the script id of the node to
+                  # retrieve the pathlib.Path instance
+                  # which points to the node's script
+                  [obj.data['script_id']]
 
-              # and grab its contents
-              .read_text()
+                  # and grab its contents
+                  .read_text()
 
-            )
+                )
 
-        elif source_name == 'callable_source':
+                show_line_number = True
 
-            ## retrieve information about the node's
-            ## main callable
+            elif source_name == 'callable_info':
 
-            text = retrieve_callable_info(
-                     self.active_obj.main_callable
-                   )
+                ## retrieve information about the node's
+                ## main callable
+
+                text, managed_to_get_source = (
+
+                  retrieve_callable_info(obj.main_callable)
+
+                )
+
+                show_line_number = managed_to_get_source
+
+        else:
+
+            show_line_number = False
+            text = obj.get_source_info()
+
 
         ### then display the text
 
         view_text(
           text,
           syntax_highlighting='python',
-          show_line_number=True,
+          show_line_number=show_line_number,
         )
-
-    view_node_script = partialmethod(
-                         view_code, 'node_script'
-                       )
-
-    view_callable_source = partialmethod(
-                             view_code, 'callable_source'
-                           )
 
     def edit_text_of_selected(self):
 

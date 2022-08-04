@@ -199,7 +199,7 @@ class LoadedFileState:
                 elif event.key == K_i:
 
                     if event.mod & KMOD_SHIFT:
-                        APP_REFS.ea.view_callable_source()
+                        APP_REFS.ea.view_callable_info()
 
                     else:
                         APP_REFS.ea.view_node_script()
