@@ -7,8 +7,6 @@ from functools import partial
 
 from config import APP_REFS
 
-from pygameconstants import SCREEN_RECT
-
 from menu.main import MenuManager
 
 from ourstdlibs.behaviour import get_suppressing_callable
