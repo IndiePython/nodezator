@@ -21,7 +21,11 @@ from pygameconstants import (
 
 from ourstdlibs.mathutils import offset_point
 
-from our3rdlibs.behaviour import indicate_unsaved
+from our3rdlibs.behaviour import (
+                            indicate_unsaved,
+                            saved_or_unsaved_state_kept
+                          )
+
 from loopman.exception import ContinueLoopException
 
 from colorsman.colors import YELLOW
@@ -203,7 +207,13 @@ class Repositioning:
 
         if self.moving_from_duplication:
 
-            self.remove_selected()
+            ## remove selected objects without changing
+            ## the saved/unsaved state
+
+            with saved_or_unsaved_state_kept():
+                self.remove_selected()
+
+            ## set flag off
             self.moving_from_duplication = False
 
         ### restart the loop

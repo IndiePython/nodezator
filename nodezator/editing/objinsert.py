@@ -21,7 +21,10 @@ from logman.main import get_new_logger
 
 from our3rdlibs.userlogger import USER_LOGGER
 
-from our3rdlibs.behaviour import indicate_unsaved
+from our3rdlibs.behaviour import (
+                            indicate_unsaved,
+                            saved_or_unsaved_state_kept,
+                          )
 
 from graphman.callablenode.main import CallableNode
 from graphman.operatornode.main import OperatorNode
@@ -411,81 +414,92 @@ class ObjectInsertionRemoval:
 
         ## for each selected obj, create another of the
         ## same kind instantiated at almost the same spot,
-        ## with just a bit of offset to make it more evident
-        ## there's a new object on top of the original one
+        ## with just a bit of offset to make it more
+        ## evident there's a new object on top of the
+        ## original one
 
-        for obj in self.selected_objs:
-            
-            if type(obj) is CallableNode:
+        with saved_or_unsaved_state_kept():
 
-                self.insert_node(
-                  node_hint=obj.node_defining_object,
-                  absolute_midtop=(
-                    obj.rectsman.move(20, -20).midtop
-                  ),
-                  commented_out_state=(
-                    obj.data.get('commented_out', False)
-                  )
-                )
+            for obj in self.selected_objs:
 
-            elif isinstance(obj, ProxyNode):
+                if type(obj) is CallableNode:
 
-                self.insert_node(
+                    self.insert_node(
+                      node_hint=obj.node_defining_object,
+                      absolute_midtop=(
+                        obj.rectsman.move(20, -20).midtop
+                      ),
+                      commented_out_state=(
+                        obj.data.get('commented_out', False)
+                      )
+                    )
 
-                       node_hint=(
-                         obj.data.get(
-                           'widget_data', None
+                elif isinstance(obj, ProxyNode):
+
+                    self.insert_node(
+
+                           node_hint=(
+                             obj.data.get(
+                               'widget_data', None
+                             )
+                           ),
+                           absolute_midtop=(
+                             obj
+                             .rectsman
+                             .move(20, -20).midtop
+                           ),
+                           commented_out_state=(
+                             obj.data.get(
+                               'commented_out', False
+                             )
+                           ),
+
                          )
-                       ),
-                       absolute_midtop=(
-                         obj.rectsman.move(20, -20).midtop
-                       ),
-                       commented_out_state=(
-                         obj.data.get(
-                           'commented_out', False
-                         )
-                       ),
 
-                     )
+                elif isinstance(obj, TextBlock):
 
-            elif isinstance(obj, TextBlock):
+                    self.insert_text_block(
+                      text_block_hint=obj.data['text'],
+                      absolute_midtop=(
+                        obj.rect.move(20, -20).midtop
+                      )
+                    )
 
-                self.insert_text_block(
-                  text_block_hint=obj.data['text'],
-                  absolute_midtop=(
-                    obj.rect.move(20, -20).midtop
-                  )
-                )
+                else:
 
-            else:
+                    for cls, key in (
 
-                for cls, key in (
+                      (OperatorNode,    'operation_id'),
+                      (BuiltinNode,     'builtin_id'),
+                      (StandardLibNode, 'stlib_id'),
+                      (CapsuleNode,     'capsule_id'),
 
-                  (OperatorNode,    'operation_id'),
-                  (BuiltinNode,     'builtin_id'),
-                  (StandardLibNode, 'stlib_id'),
-                  (CapsuleNode,     'capsule_id'),
+                    ):
 
-                ):
-                    
-                    if type(obj) is cls:
+                        if type(obj) is cls:
 
-                        self.insert_node(
-                          node_hint=obj.data[key],
-                          absolute_midtop=(
-                            obj
-                            .rectsman
-                            .move(20, -20)
-                            .midtop
-                          ),
-                          commented_out_state=(
-                            obj
-                            .data
-                            .get('commented_out', False)
-                          )
-                        )
+                            self.insert_node(
 
-                        break
+                              node_hint=obj.data[key],
+
+                              absolute_midtop=(
+                                obj
+                                .rectsman
+                                .move(20, -20)
+                                .midtop
+                              ),
+
+                              commented_out_state=(
+                                obj
+                                .data
+                                .get(
+                                   'commented_out', False
+                                 )
+                              ),
+
+                            )
+
+                            break
 
         ### gather references for all newly created objects
 
