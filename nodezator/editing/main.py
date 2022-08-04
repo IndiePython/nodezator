@@ -30,6 +30,10 @@ from editing.popups.widgetcreation import (
 
 from editing.popups.proxynode import ProxyNodePopupMenu
 
+from editing.popups.operatornode import (
+                                   OperatorNodePopupMenu
+                                 )
+
 from editing.popups.textblock import TextBlockPopupMenu
 
 
@@ -78,6 +82,10 @@ class EditingAssistant(
 
         self.proxy_node_popup_menu = (
           ProxyNodePopupMenu()
+        )
+
+        self.operator_node_popup_menu = (
+          OperatorNodePopupMenu()
         )
 
         self.text_block_popup_menu = (
