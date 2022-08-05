@@ -17,26 +17,11 @@ class TextBlockPopupMenu(GeneralPopupCommands):
         menu_list = [
 
           {
-             'label': "Edit this block's text",
+             'label'  : "Edit text",
              'command': self.edit_block_text,
           },
 
-          {
-             'label': "Move this block",
-             'command': self.move_obj,
-          },
-
-          {
-             'label': "Duplicate this block",
-             'command': self.duplicate_obj,
-          },
-
-          {
-             'label'   : "Delete this block",
-             'command' : self.delete_obj,
-          },
-
-        ]
+        ] + self.GENERAL_SINGLE_COMMANDS
 
         self.text_block_only_popup = (
 
