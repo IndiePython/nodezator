@@ -207,13 +207,18 @@ class PathObject:
             directory of the 'path' argument.
         """
         ### if path is None, set the drawing behaviour to
-        ### an empty function
-        if path is None: drawing_behaviour = empty_function
+        ### an empty function and the text attribute to
+        ### an empty string
+
+        if path is None:
+
+            drawing_behaviour = empty_function
+            self.text = ''
             
         ### otherwise, if path isn't None...
 
         else:
-            
+
             ## update text attribute and text in labels
 
             if (
