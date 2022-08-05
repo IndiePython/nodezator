@@ -111,6 +111,50 @@ EXECUTE_ICON = render_layered_icon(
 
                )
 
+_TEXT_ICON = render_layered_icon(
+
+               chars=[
+                 chr(ordinal) for ordinal in (37, 36)
+               ],
+
+               dimension_name  = 'height',
+               dimension_value = 20,
+ 
+               colors = [BLACK, WHITE],
+
+               background_width  = 27,
+               background_height = 27,
+
+             )
+
+_SMALL_PENCIL_ICON = render_layered_icon(
+
+                       chars = [
+                         chr(ordinal)
+                         for ordinal in range(115, 119)
+                       ],
+
+                       dimension_name  = 'height',
+                       dimension_value = 14,
+
+                       colors = [
+                         BLACK,
+                         (255, 225, 140),
+                         (255, 255, 0),
+                         (255, 170, 170)
+                       ]
+
+                     )
+
+TEXT_EDITING_ICON = (
+  combine_surfaces(
+    [_TEXT_ICON, _SMALL_PENCIL_ICON],
+    retrieve_pos_from = 'bottomright',
+    assign_pos_to     = 'bottomright',
+    offset_pos_by     = (-2, -2),
+  )
+)
+
 _SMALL_TEXT_ICON = render_layered_icon(
 
                      chars=[
@@ -157,7 +201,8 @@ INFO_ICON = render_layered_icon(
 
 QUESTION_MARK = render_layered_icon(
                   chars=[
-                    chr(ordinal) for ordinal in (167, 92, 93, 168)
+                    chr(ordinal)
+                    for ordinal in (167, 92, 93, 168)
                   ],
 
                   dimension_name  = 'height',
@@ -442,8 +487,12 @@ ICON_MAP = {
   'question'          : QUESTION_MARK,
   'web_icon'          : WEB_ICON,
   'aww_icon'          : AWW_ICON,
+  'text_editing'      : TEXT_EDITING_ICON,
 }
 
+
+## more icons defined below and inserted
+## into the map
 
 for (
   index, node_category_color
@@ -482,3 +531,18 @@ for (
                )
 
     ICON_MAP[new_key] = new_surf
+
+
+_node0 = ICON_MAP['color_index_0_node']
+_node1 = ICON_MAP['color_index_1_node']
+
+DUPLICATION_ICON = (
+  combine_surfaces(
+    [_node0, _node1],
+    retrieve_pos_from = 'center',
+    assign_pos_to     = 'center',
+    offset_pos_by     = (4, 4),
+  )
+)
+
+ICON_MAP['duplication'] = DUPLICATION_ICON
