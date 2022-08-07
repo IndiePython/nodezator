@@ -13,7 +13,10 @@ from ourstdlibs.behaviour import get_suppressing_callable
 
 from our3rdlibs.behaviour import set_status_message
 
-from editing.popups.constants import GeneralPopupCommands
+from editing.popups.constants import (
+                                GeneralPopupCommands,
+                                get_node_info,
+                              )
 
 from loopman.exception import ContinueLoopException
 
@@ -21,6 +24,8 @@ from graphman.operatornode.constants import OPERATIONS_MAP
 
 
 class OperatorNodePopupMenu(GeneralPopupCommands):
+
+    get_node_info = get_node_info
 
     def __init__(self):
 
@@ -30,17 +35,24 @@ class OperatorNodePopupMenu(GeneralPopupCommands):
 
         node_replacing_submenu = []
 
-        menu_list.insert(
-
-          1,
+        for command in (
 
           {
-             'label': "Replace operation",
-             'icon': 'operations',
+             'label'    : "Replace operation",
+             'icon'    : 'operations',
              'children': node_replacing_submenu,
           },
 
-        )
+          {
+             'label'  : "Get source info",
+             'icon'   : 'python_viewing',
+             'command': self.get_node_info,
+          },
+
+        ):
+
+            menu_list.insert(1, command)
+
 
         for operation_id in OPERATIONS_MAP:
             

@@ -26,7 +26,7 @@ TEXT_BLOCK_FG = (
 )
 
 
-### below we create icon surface and at the bottom we
+### below we create icon surfaces and at the bottom we
 ### store them within an icon map
 
 FOLDER_ICON = render_layered_icon(
@@ -155,6 +155,24 @@ TEXT_EDITING_ICON = (
   )
 )
 
+_SMALL_EYE_ICON = render_layered_icon(
+
+                    chars = [
+                      chr(ordinal)
+                      for ordinal in (87, 88, 89)
+                    ],
+
+                    dimension_name  = 'height',
+                    dimension_value = 14,
+
+                    colors = [
+                      BLACK,
+                      WHITE,
+                      (115, 40, 30)
+                    ],
+
+                 )
+
 _SMALL_TEXT_ICON = render_layered_icon(
 
                      chars=[
@@ -181,6 +199,14 @@ PYTHON_ICON = (
   IMAGE_SURFS_DB
   ['python_menu_icon.png']
   [{'use_alpha': True}]
+)
+
+PYTHON_VIEWING_ICON = (
+  combine_surfaces(
+    [PYTHON_ICON, _SMALL_EYE_ICON],
+    retrieve_pos_from = 'bottomright',
+    assign_pos_to     = 'bottomright',
+  )
 )
 
 INFO_ICON = render_layered_icon(
@@ -462,6 +488,106 @@ AWW_ICON = render_layered_icon(
              background_height = 27,
            )
 
+DELETE_ICON = render_layered_icon(
+
+                chars = [
+                  chr(ordinal)
+                  for ordinal in (65, 66)
+                ],
+
+                dimension_name  = 'height',
+                dimension_value = 19,
+
+                colors = [BLACK, (215, 0, 0)],
+
+                rotation_degrees = -90,
+
+                background_width  = 27,
+                background_height = 27,
+
+              )
+
+PENCIL_ICON = render_layered_icon(
+
+                chars = [
+                  chr(ordinal)
+                  for ordinal in range(115, 119)
+                ],
+
+                dimension_name  = 'height',
+                dimension_value = 21,
+
+                colors = [
+                  BLACK,
+                  (255, 225, 140),
+                  (255, 255, 0),
+                  (255, 170, 170)
+                ],
+
+                background_width  = 27,
+                background_height = 27,
+
+              )
+
+MOVING_ICON = render_layered_icon(
+
+                chars = [
+                  chr(ordinal)
+                  for ordinal in (50, 51)
+                ],
+
+                dimension_name  = 'height',
+                dimension_value = 19,
+
+                colors = [BLACK, (30, 130, 70)],
+
+                rotation_degrees = -90,
+
+                background_width  = 27,
+                background_height = 27,
+
+              )
+
+(
+
+  _green_square,
+  _blue_square,
+
+) = (
+
+  render_layered_icon(
+
+    chars=[chr(ordinal) for ordinal in (38, 39)],
+
+    dimension_name  = 'height',
+    dimension_value = 20,
+ 
+    colors = [BLACK, fill_color],
+
+    background_width  = 23,
+    background_height = 23,
+
+  )
+
+  for fill_color in (
+
+    (30, 130, 70),
+    (30, 70, 130),
+
+  )
+
+)
+
+DUPLICATION_ICON = (
+  combine_surfaces(
+    [_green_square, _blue_square],
+    retrieve_pos_from = 'center',
+    assign_pos_to     = 'center',
+    offset_pos_by     = (4, 4),
+  )
+)
+
+
 ### icon map
 
 ICON_MAP = {
@@ -488,6 +614,11 @@ ICON_MAP = {
   'web_icon'          : WEB_ICON,
   'aww_icon'          : AWW_ICON,
   'text_editing'      : TEXT_EDITING_ICON,
+  'python_viewing'    : PYTHON_VIEWING_ICON,
+  'moving'            : MOVING_ICON,
+  'duplication'       : DUPLICATION_ICON,
+  'delete'            : DELETE_ICON,
+  'pencil'            : PENCIL_ICON,
 }
 
 
@@ -532,17 +663,3 @@ for (
 
     ICON_MAP[new_key] = new_surf
 
-
-_node0 = ICON_MAP['color_index_0_node']
-_node1 = ICON_MAP['color_index_1_node']
-
-DUPLICATION_ICON = (
-  combine_surfaces(
-    [_node0, _node1],
-    retrieve_pos_from = 'center',
-    assign_pos_to     = 'center',
-    offset_pos_by     = (4, 4),
-  )
-)
-
-ICON_MAP['duplication'] = DUPLICATION_ICON

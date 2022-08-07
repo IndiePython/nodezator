@@ -56,7 +56,8 @@ class ProxyNodePopupMenu(GeneralPopupCommands):
           0,
 
           {
-            'label'   : "Edit this node's title",
+            'label'   : "Edit title",
+            'icon'    : 'pencil',
             'command' : self.edit_node_title,
           },
 

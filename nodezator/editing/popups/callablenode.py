@@ -5,12 +5,17 @@ from config import APP_REFS
 
 from menu.main import MenuManager
 
-from editing.popups.constants import GeneralPopupCommands
+from editing.popups.constants import (
+                                GeneralPopupCommands,
+                                get_node_info,
+                              )
 
 from graphman.callablenode.main import CallableNode
 
 
 class CallableNodePopupMenu(GeneralPopupCommands):
+
+    get_node_info = get_node_info
 
     def __init__(self):
 
@@ -25,12 +30,14 @@ class CallableNodePopupMenu(GeneralPopupCommands):
         for command in (
 
           {
-             'label': "View main callable info",
+             'label'  : "View main callable info",
+             'icon'   : 'python_viewing',
              'command': self.view_callable_info,
           },
 
           {
-             'label': "View node script",
+             'label'  : "View node script",
+             'icon'   : 'python_viewing',
              'command': self.view_node_script,
           },
 
@@ -83,7 +90,8 @@ class CallableNodePopupMenu(GeneralPopupCommands):
           1,
 
           {
-             'label': "Get source info",
+             'label'  : "Get source info",
+             'icon'   : 'python_viewing',
              'command': self.get_node_info,
           },
 
@@ -177,6 +185,3 @@ class CallableNodePopupMenu(GeneralPopupCommands):
                       self.obj_under_mouse,
                       'callable_info',
                     )
-
-    def get_node_info(self):
-        APP_REFS.ea.view_info(self.obj_under_mouse)

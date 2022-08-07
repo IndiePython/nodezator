@@ -22,16 +22,19 @@ class GeneralPopupCommands:
 
               {
                  'label': "Move",
+                 'icon': 'moving',
                  'command': self.move_obj,
               },
 
               {
                  'label': "Duplicate",
+                 'icon': 'duplication',
                  'command': self.duplicate_obj,
               },
 
               {
                  'label'   : "Delete",
+                 'icon'    : 'delete',
                  'command' : self.delete_obj,
               },
 
@@ -43,6 +46,7 @@ class GeneralPopupCommands:
 
               {
                 'label'   : "Move selected",
+                'icon'    : 'moving',
                 'command' : get_suppressing_callable(
                               APP_REFS.ea.start_moving,
                               ContinueLoopException,
@@ -51,6 +55,7 @@ class GeneralPopupCommands:
 
               {
                 'label'   : "Duplicate selected",
+                'icon'    : 'duplication',
                 'command' : get_suppressing_callable(
                               APP_REFS.ea.duplicate_selected,
                               ContinueLoopException,
@@ -59,6 +64,7 @@ class GeneralPopupCommands:
 
               {
                 'label'   : "Delete selected",
+                'icon'    : 'delete',
                 'command' : APP_REFS.ea.remove_selected,
               },
 
@@ -95,3 +101,9 @@ class GeneralPopupCommands:
         )
 
         APP_REFS.ea.remove_selected()
+
+
+## function for injection
+
+def get_node_info(self):
+    APP_REFS.ea.view_info(self.obj_under_mouse)

@@ -18,6 +18,7 @@ class TextBlockPopupMenu(GeneralPopupCommands):
 
           {
              'label'  : "Edit text",
+             'icon'   : 'text_editing',
              'command': self.edit_block_text,
           },
 
