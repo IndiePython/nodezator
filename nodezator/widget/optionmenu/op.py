@@ -228,11 +228,11 @@ class OptionMenuLifetimeOperations(Object2D):
         self.option_widgets.rect.midtop = self.rect.midbottom
 
         self.option_widgets.rect.clamp_ip(
-                                   self.deflated_clamp_area
+                                   self.clamp_area
                                  )
 
     def align_options_and_scroll_arrows(self):
-        align_area = self.deflated_clamp_area
+        align_area = self.clamp_area
 
         self.option_widgets.rect.center = self.rect.center
 
@@ -360,7 +360,7 @@ class OptionMenuLifetimeOperations(Object2D):
         left  = options_rect.left
         right = options_rect.right
 
-        clamp_area = self.deflated_clamp_area
+        clamp_area = self.clamp_area
 
         top = clamp_area.top + self.upper_scroll_arrow.get_height()
         bottom = clamp_area.bottom - self.lower_scroll_arrow.get_height()
@@ -450,7 +450,7 @@ class OptionMenuLifetimeOperations(Object2D):
         """"""
         rect = self.option_widgets.rect
 
-        scroll_area = self.deflated_clamp_area
+        scroll_area = self.clamp_area
 
         rect.move_ip(0, dy)
 
@@ -521,7 +521,7 @@ class OptionMenuLifetimeOperations(Object2D):
 
     def draw_options_and_scroll_arrows(self):
         """"""
-        draw_area = self.deflated_clamp_area
+        draw_area = self.clamp_area
 
         ### draw options which collide with the draw area
         self.option_widgets.draw_colliding(draw_area)

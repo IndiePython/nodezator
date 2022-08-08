@@ -247,16 +247,9 @@ class OptionMenu(OptionMenuLifetimeOperations):
 
         ### store value and options
 
-        self.value   = value
-        self.options = options
-
-        ### store a slightly deflated copy of the given
-        ### clamp area, to compensate for the slight
-        ### inflation applied when drawing an outline
-        ### around the option widgets, when the menu is
-        ### expanded
-        self.deflated_clamp_area = \
-                             clamp_area.inflate(-2, -2)
+        self.value      = value
+        self.options    = options
+        self.clamp_area = clamp_area
 
         ### store other attributes
 
@@ -529,7 +522,7 @@ class OptionMenu(OptionMenuLifetimeOperations):
 
         if (
          self.option_widgets.rect.height
-         > self.deflated_clamp_area.height
+         > self.clamp_area.height
         ):
             (
               self.upper_scroll_arrow,
