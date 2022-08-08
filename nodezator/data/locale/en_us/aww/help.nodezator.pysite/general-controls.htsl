@@ -319,7 +319,7 @@
     </tr>
 
     <tr>
-      <td><b>&lt;w&gt;</b>, <b>&lt;a&gt;</b>, <b>&lt;s&gt;</b>, <b>&lt;d&gt;</b> while moving</td>
+      <td><b>&lt;w&gt;</b>, <b>&lt;a&gt;</b>, <b>&lt;s&gt;</b>, <b>&lt;d&gt;, &lt;up arrow&gt;</b>, <b>&lt;left arrow&gt;</b>, <b>&lt;down arrow&gt;</b>, <b>&lt;right arrow&gt;</b> while moving objects</td>
       <td>Moves around on canvas</td>
     </tr>
 

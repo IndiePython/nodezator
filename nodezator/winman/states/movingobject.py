@@ -7,6 +7,7 @@ from pygame import (
               KMOD_CTRL, K_ESCAPE, K_x, K_y,
               K_KP0, K_RSHIFT, K_LSHIFT, MOUSEBUTTONUP,
               K_w, K_a, K_s, K_d, K_o,
+              K_UP, K_LEFT, K_DOWN, K_RIGHT,
             )
 
 from pygame.event   import get as get_events
@@ -91,36 +92,39 @@ class MovingObjectState:
 
         ### state of keys related to scrolling
 
-        w_key = key_input[K_w]
-        a_key = key_input[K_a]
-        s_key = key_input[K_s]
-        d_key = key_input[K_d]
-
-        ### the state of control is used to know when not
-        ### consider the D key for scrolling (when the key
-        ### is pressed because the user pressed Ctrl-D to
-        ### duplicate the selected nodes in the 'loaded_file'
-        ### state and didn't release the button yet)
-        ctrl = mods_bitmask & KMOD_CTRL
+        up    = key_input[K_w] or key_input[K_UP]
+        left  = key_input[K_a] or key_input[K_LEFT]
+        down  = key_input[K_s] or key_input[K_DOWN]
+        right = key_input[K_d] or key_input[K_RIGHT]
 
         ### perform scrolling or not, according to state
         ### of keys
 
         ## vertical scrolling
 
-        if  w_key and not s_key:
+        if  up and not down:
             APP_REFS.ea.scroll_up()
 
-        elif s_key and not w_key:
+        elif down and not up:
             APP_REFS.ea.scroll_down()
 
         ## horizontal scrolling
 
-        if a_key and not d_key:
+        if left and not right:
             APP_REFS.ea.scroll_left()
 
-        elif d_key and not a_key and not ctrl:
-            APP_REFS.ea.scroll_right()
+        elif right and not left:
+
+            ### the state of control is used to know when
+            ### not to consider the D key for scrolling
+            ### (when the key is pressed because the user
+            ### pressed Ctrl-D to duplicate the selected
+            ### nodes in the 'loaded_file' state and didn't
+            ### release the button yet)
+
+            if not (mods_bitmask & KMOD_CTRL):
+
+                APP_REFS.ea.scroll_right()
 
     ### update
 
