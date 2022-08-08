@@ -18,6 +18,10 @@ from pygame import (
               K_w, K_a, K_s, K_d, K_n, K_o,
               K_i, K_e, K_p, K_t, K_3, K_j,
 
+              K_UP, K_LEFT, K_DOWN, K_RIGHT,
+
+              K_MENU,
+
               MOUSEMOTION, MOUSEBUTTONUP,
               MOUSEBUTTONDOWN,
 
@@ -29,6 +33,8 @@ from pygame.key import (
                   get_mods    as get_mods_bitmask,
                   get_pressed as get_pressed_keys,
                 )
+
+from pygame.mouse import get_pos as get_mouse_pos
 
 from pygame.display import update
 
@@ -260,6 +266,33 @@ class LoadedFileState:
 
                     else: APP_REFS.ea.select_all()
 
+                ## canvas context menu
+
+                elif event.key == K_MENU:
+
+                    mouse_pos = get_mouse_pos()
+
+                    ### mark the mouse position for the
+                    ### editing assistant, that is, the
+                    ### position from where the popup
+                    ### spawned;
+                    ###
+                    ### this position is used in case the
+                    ### user performs a command to add an
+                    ### object to the canvas, as the
+                    ### position of the object (we have
+                    ### been using it as the midtop
+                    ### coordinate of new objects)
+                    APP_REFS.ea.popup_spawn_pos = mouse_pos
+
+                    ### then give focus to the popup menu
+
+                    (
+                      self
+                      .canvas_popup_menu
+                      .check_focus(mouse_pos)
+                    )
+
 
                 ## jump to corner feature
 
@@ -278,37 +311,47 @@ class LoadedFileState:
         key_input, modif_bitmask = \
             get_pressed_keys(), get_mods_bitmask()
 
+        ### check whether the control key is pressed
+        ctrl = modif_bitmask & KMOD_CTRL
+
+        ### if the control key is pressed we give up
+        ### scrolling altogether by returning earlier;
+        ###
+        ### we do so because we assume the control key
+        ### is pressed because the user is attempting
+        ### to use one of the scroll keys for other
+        ### purpose other than scrolling;
+        ###
+        ### for instance, the "s" and "d" keys, can be used
+        ### together with the control (ctrl) key to save
+        ### the file and duplicate selected nodes,
+        ### respectively
+        if ctrl: return
+
         ### state of keys related to scrolling
 
-        w_key = key_input[K_w]
-        a_key = key_input[K_a]
-        s_key = key_input[K_s]
-        d_key = key_input[K_d]
-
-        ### the state of control is used to know when not
-        ### consider the keys for scrolling (when the keys
-        ### are actually pressed for other purposes, like
-        ### Ctrl-S to save the file, Ctrl-D to duplicate
-        ### selected nodes, etc.)
-        ctrl = modif_bitmask & KMOD_CTRL
+        up    = key_input[K_w] or key_input[K_UP]
+        left  = key_input[K_a] or key_input[K_LEFT]
+        down  = key_input[K_s] or key_input[K_DOWN]
+        right = key_input[K_d] or key_input[K_RIGHT]
 
         ### perform scrolling or not, according to state
         ### of keys
 
         ## vertical scrolling
 
-        if w_key and not s_key and not ctrl:
+        if up and not down:
             APP_REFS.ea.scroll_up()
 
-        elif s_key and not w_key and not ctrl:
+        elif down and not up:
             APP_REFS.ea.scroll_down()
 
         ## horizontal scrolling
 
-        if a_key and not d_key and not ctrl:
+        if left and not right:
             APP_REFS.ea.scroll_left()
 
-        elif d_key and not a_key and not ctrl:
+        elif right and not left:
             APP_REFS.ea.scroll_right()
 
     def loaded_file_on_mouse_click(self, event):

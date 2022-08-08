@@ -76,7 +76,7 @@
   <tbody>
 
     <tr>
-      <td><b>&lt;w&gt;</b>, <b>&lt;a&gt;</b>, <b>&lt;s&gt;</b>, <b>&lt;d&gt;</b></td>
+      <td><b>&lt;w&gt;</b>, <b>&lt;a&gt;</b>, <b>&lt;s&gt;</b>, <b>&lt;d&gt;, &lt;up arrow&gt;</b>, <b>&lt;left arrow&gt;</b>, <b>&lt;down arrow&gt;</b>, <b>&lt;right arrow&gt;</b></td>
       <td>Moves around on canvas</td>
     </tr>
 
@@ -86,7 +86,7 @@
     </tr>
 
     <tr>
-      <td><b>&lt;Shift+digit&gt;</b>, where digit is any digit from 1 to 9;</td>
+      <td><b>&lt;Shift + Numpad [1-9]&gt;</b>;</td>
       <td>Moves to corner of node layout; each digit represents a corner analogous to the corner they occupy in the keyboard's numpad: 5 on the center, 1 on the bottomleft, 2 on the midbottom and so on.</td>
     </tr>
 
@@ -170,7 +170,52 @@
 </table>
 
 
-<h2>Node-related</h2>
+<h2>All objects</h2>
+
+<table>
+
+  <thead>
+
+    <tr>
+      <th class="col-3">Control</th>
+      <th class="col-5">Result</th>
+    </tr>
+
+  </thead>
+
+  <tbody>
+
+    <tr>
+      <td><b>&lt;Ctrl+a&gt;</b></td>
+      <td>Selects all objects</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Ctrl+Shift+a&gt;</b></td>
+      <td>Deselects all objects</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Delete&gt;</b></td>
+      <td>Deletes selected objects; numpad delete won't work.</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Ctrl+d&gt;</b></td>
+      <td>Duplicates selected objects and allows you to move them</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Escape&gt;</b> key or <b>Right-click</b> while moving duplicates just after duplication</td>
+      <td>Cancels the duplication, deleting the duplicates</td>
+    </tr>
+
+  </tbody>
+
+</table>
+
+
+<h2>Node-only</h2>
 
 <table>
 
@@ -187,48 +232,46 @@
 
     <tr>
       <td><b>&lt;i&gt;</b></td>
-      <td>Shows source of __main__.py file used to define the user-defined node in active selection</td>
+      <td>If the active selected node is an user-defined node, it shows the source of __main__.py file used to define the node in active selection; if it is an app-defined node, it shows general info about the node, which usually includes its source.</td>
     </tr>
 
     <tr>
       <td><b>&lt;Shift+i&gt;</b></td>
-      <td>Shows source of callable of the user-defined node in active selection</td>
-    </tr>
-
-    <tr>
-      <td><b>&lt;Ctrl+a&gt;</b></td>
-      <td>Selects all objects</td>
-    </tr>
-
-    <tr>
-      <td><b>&lt;Ctrl+Shift+a&gt;</b></td>
-      <td>Deselects all objects</td>
-    </tr>
-
-    <tr>
-      <td><b>&lt;Delete&gt;</b></td>
-      <td>Deletes selected objects</td>
-    </tr>
-
-    <tr>
-      <td><b>&lt;Ctrl+d&gt;</b></td>
-      <td>Duplicates selected objects and allows you to move them</td>
-    </tr>
-
-    <tr>
-      <td><b>&lt;Escape&gt;</b> key or <b>Right-click</b> while moving duplicates just after duplication</td>
-      <td>Cancels the duplication, deleting the duplicates</td>
+      <td>If the active selected node is an user-defined node, it shows the source of the main callable used to define the node; If the node is an app-defined node, then it is the same as the &klt;i&gt; key;</td>
     </tr>
 
     <tr>
       <td><b>&lt;Shift+#&gt;</b> key</td>
-      <td>Comment/uncomment subgraph of selected node(s).</td>
+      <td>Comment/uncomment subgraph of the active selected node. That is, this actions propagates to all connected nodes (the subgraph), regardless of whether those other nodes are selected or not.</td>
     </tr>
 
   </tbody>
 
 </table>
 
+<h2>Text block-only</h2>
+
+<table>
+
+  <thead>
+
+    <tr>
+      <th class="col-3">Control</th>
+      <th class="col-5">Result</th>
+    </tr>
+
+  </thead>
+
+  <tbody>
+
+    <tr>
+      <td><b>&lt;t&gt;</b></td>
+      <td>Edit text of the text block.</td>
+    </tr>
+
+  </tbody>
+
+</table>
 
 <h2>Moving objects</h2>
 
