@@ -122,7 +122,7 @@
 
     <tr>
       <td><b>Right-click</b> empty space on screen</td>
-      <td>Brings the popup menu "Add node".</td>
+      <td>Brings the "Add node" context menu.</td>
     </tr>
 
   </tbody>
@@ -237,7 +237,7 @@
 
     <tr>
       <td><b>&lt;Shift+i&gt;</b></td>
-      <td>If the active selected node is an user-defined node, it shows the source of the main callable used to define the node; If the node is an app-defined node, then it is the same as the &klt;i&gt; key;</td>
+      <td>If the active selected node is an user-defined node, it shows the source of the main callable used to define the node; If the node is an app-defined node, then it is the same as the &lt;i&gt; key;</td>
     </tr>
 
     <tr>
@@ -350,6 +350,11 @@
     <tr>
       <td><b>&lt;Ctrl+Shift+j&gt;</b></td>
       <td>Displays the user log contents in the text viewer</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Menu&gt;</b> key (beside the right ctrl key)</td>
+      <td>Brings the "Add node" context menu.</td>
     </tr>
 
   </tbody>
