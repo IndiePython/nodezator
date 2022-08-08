@@ -20,6 +20,8 @@
 ### example function
 def function_name(param1, param2):
     return param1 + param2
+
+main_callable = function_name
 </python>
 
 <img src="images/ch-defining-your-first_img00.png" alt="Node generated from example function" />
