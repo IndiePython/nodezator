@@ -389,7 +389,7 @@ class DataHandling:
             ## update the node's label surface
             node.update_label_surface()
 
-    def comment_uncomment_nodes(self):
+    def comment_uncomment_selected_nodes(self):
         """Toggle commented out state of selected nodes.
 
         Nodes attached to the selected ones are also
@@ -410,23 +410,25 @@ class DataHandling:
         if not selected_nodes:
 
             create_and_show_dialog(
-              "You need first to select node(s) in order"
-              " to be able to comment/uncomment them"
+              "In order to comment/uncomment selected"
+              " nodes at least one must be selected"
             )
 
-            return
+        ### otherwise, delegate the
+        ### commenting/uncommenting to another
+        ### method
+        else: self.comment_uncomment_nodes(selected_nodes)
 
-        ### otherwise, iterate over each subgraph,
-        ### commenting out/uncommenting the nodes,
-        ### depending on their initial state
-        ###
-        ### also, keep track of the toggled states so
-        ### that you know which actions you performed,
-        ### in order to notify the user properly
+    def comment_uncomment_nodes(self, nodes):
+        """Toggle commenting state in each subgraph.
+
+        Also, keeps track of the toggled states so that
+        actions performed are properly reported.
+        """
 
         toggled_states = set()
 
-        for subgraph in yield_subgraphs(selected_nodes):
+        for subgraph in yield_subgraphs(nodes):
             
             ### sample the state of the nodes from one of
             ### them; it can be any node, we use the first

@@ -31,7 +31,7 @@ class OperatorNodePopupMenu(GeneralPopupCommands):
 
         super().__init__()
 
-        menu_list = self.GENERAL_SINGLE_COMMANDS.copy()
+        menu_list = self.NODE_ONLY_SINGLE_COMMANDS.copy()
 
         node_replacing_submenu = []
 
@@ -87,7 +87,7 @@ class OperatorNodePopupMenu(GeneralPopupCommands):
         ###
 
         menu_list.extend(
-          self.GENERAL_COLLECTIVE_COMMANDS
+          self.NODE_INCLUSIVE_COLLECTIVE_COMMANDS
         )
 
         self.operator_node_and_selected_popup = (

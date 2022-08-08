@@ -24,7 +24,7 @@ class CallableNodePopupMenu(GeneralPopupCommands):
         ###
 
         user_def_node_menu_list = (
-          self.GENERAL_SINGLE_COMMANDS.copy()
+          self.NODE_ONLY_SINGLE_COMMANDS.copy()
         )
 
         for command in (
@@ -62,7 +62,7 @@ class CallableNodePopupMenu(GeneralPopupCommands):
         ###
 
         user_def_node_menu_list.extend(
-          self.GENERAL_COLLECTIVE_COMMANDS
+          self.NODE_INCLUSIVE_COLLECTIVE_COMMANDS
         )
 
         self.user_def_node_and_selected_popup = (
@@ -82,7 +82,7 @@ class CallableNodePopupMenu(GeneralPopupCommands):
         ###
 
         app_def_node_menu_list = (
-          self.GENERAL_SINGLE_COMMANDS.copy()
+          self.NODE_ONLY_SINGLE_COMMANDS.copy()
         )
 
         app_def_node_menu_list.insert(
@@ -114,7 +114,7 @@ class CallableNodePopupMenu(GeneralPopupCommands):
         ###
 
         app_def_node_menu_list.extend(
-          self.GENERAL_COLLECTIVE_COMMANDS
+          self.NODE_INCLUSIVE_COLLECTIVE_COMMANDS
         )
 
         self.app_def_node_and_selected_popup = (

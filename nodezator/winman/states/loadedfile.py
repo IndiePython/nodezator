@@ -219,7 +219,12 @@ class LoadedFileState:
                   and event.mod &  KMOD_SHIFT
 
                 ):
-                    APP_REFS.ea.comment_uncomment_nodes()
+
+                    (
+                      APP_REFS
+                      .ea
+                      .comment_uncomment_selected_nodes()
+                    )
 
                 ## display the text of the user log
 

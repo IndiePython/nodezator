@@ -16,20 +16,20 @@ class GeneralPopupCommands:
 
         cls = self.__class__
 
-        if not hasattr(cls, 'GENERAL_COLLECTIVE_COMMANDS'):
+        if not hasattr(cls, 'SINGLE_COMMANDS'):
 
-            cls.GENERAL_SINGLE_COMMANDS = [
+            cls.SINGLE_COMMANDS = [
 
               {
-                 'label': "Move",
-                 'icon': 'moving',
-                 'command': self.move_obj,
+                 'label'   : "Move",
+                 'icon'    : 'moving',
+                 'command' : self.move_obj,
               },
 
               {
-                 'label': "Duplicate",
-                 'icon': 'duplication',
-                 'command': self.duplicate_obj,
+                 'label'   : "Duplicate",
+                 'icon'    : 'duplication',
+                 'command' : self.duplicate_obj,
               },
 
               {
@@ -40,7 +40,27 @@ class GeneralPopupCommands:
 
             ]
 
-            cls.GENERAL_COLLECTIVE_COMMANDS = [
+            cls.NODE_ONLY_SINGLE_COMMANDS = (
+
+              cls.SINGLE_COMMANDS
+
+              + [
+
+                  {
+
+                    'label'   : "Comment/uncomment",
+                    'command' : (
+                      self
+                      .toggle_commenting_state_of_node
+                    ),
+
+                  }
+
+                ]
+
+            )
+
+            cls.COLLECTIVE_COMMANDS = [
 
               {'label' : "---"},
 
@@ -69,6 +89,26 @@ class GeneralPopupCommands:
               },
 
             ]
+
+            cls.NODE_INCLUSIVE_COLLECTIVE_COMMANDS = (
+
+              cls.COLLECTIVE_COMMANDS
+
+              + [
+
+                  {
+                    'label' : "Comment/uncomment selected",
+                    'command': (
+                      APP_REFS
+                      .ea
+                      .comment_uncomment_selected_nodes
+                    ),
+                  }
+
+
+                ]
+
+            )
 
     def move_obj(self):
 
@@ -101,6 +141,12 @@ class GeneralPopupCommands:
         )
 
         APP_REFS.ea.remove_selected()
+
+    def toggle_commenting_state_of_node(self):
+
+        APP_REFS.ea.comment_uncomment_nodes(
+                      [self.obj_under_mouse]
+                    )
 
 
 ## function for injection

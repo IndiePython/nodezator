@@ -7,6 +7,8 @@ from menu.main import MenuManager
 
 from editing.popups.constants import GeneralPopupCommands
 
+from graphman.textblock.main import TextBlock
+
 
 class TextBlockPopupMenu(GeneralPopupCommands):
 
@@ -22,7 +24,7 @@ class TextBlockPopupMenu(GeneralPopupCommands):
              'command': self.edit_block_text,
           },
 
-        ] + self.GENERAL_SINGLE_COMMANDS
+        ] + self.SINGLE_COMMANDS
 
         self.text_block_only_popup = (
 
@@ -40,13 +42,28 @@ class TextBlockPopupMenu(GeneralPopupCommands):
 
         ###
 
-        menu_list.extend(self.GENERAL_COLLECTIVE_COMMANDS)
-
-        self.text_block_and_selected_popup = (
+        self.text_block_and_node_in_selected_popup = (
 
           MenuManager(
 
-            menu_list,
+            (
+              menu_list
+              + self.NODE_INCLUSIVE_COLLECTIVE_COMMANDS
+            ),
+
+            is_menubar  = False,
+            use_outline = True,
+            keep_focus_when_unhovered=True,
+
+          )
+
+        )
+
+        self.text_block_and_no_node_in_selected_popup = (
+
+          MenuManager(
+
+            menu_list + self.COLLECTIVE_COMMANDS,
 
             is_menubar  = False,
             use_outline = True,
@@ -60,13 +77,29 @@ class TextBlockPopupMenu(GeneralPopupCommands):
 
         self.obj_under_mouse = text_block
 
-        if text_block in APP_REFS.ea.selected_objs:
+        selected = APP_REFS.ea.selected_objs
 
-            (
-              self
-              .text_block_and_selected_popup
-              .focus_if_within_boundaries(mouse_pos) 
-            )
+        if text_block in selected:
+
+            if any(
+              obj
+              for obj in selected
+              if not isinstance(obj, TextBlock)
+            ):
+
+                (
+                  self
+                  .text_block_and_node_in_selected_popup
+                  .focus_if_within_boundaries(mouse_pos) 
+                )
+
+            else:
+
+                (
+                  self
+                  .text_block_and_no_node_in_selected_popup
+                  .focus_if_within_boundaries(mouse_pos) 
+                )
 
         else: (
                 self

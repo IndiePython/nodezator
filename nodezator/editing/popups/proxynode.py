@@ -35,11 +35,11 @@ class ProxyNodePopupMenu(GeneralPopupCommands):
 
           MenuManager(
 
-            self.GENERAL_SINGLE_COMMANDS,
+            self.NODE_ONLY_SINGLE_COMMANDS,
 
             is_menubar  = False,
             use_outline = True,
-            keep_focus_when_unhovered=True,
+            keep_focus_when_unhovered = True,
 
           )
 
@@ -48,7 +48,7 @@ class ProxyNodePopupMenu(GeneralPopupCommands):
         ###
 
         data_node_menu_list = (
-          self.GENERAL_SINGLE_COMMANDS.copy()
+          self.NODE_ONLY_SINGLE_COMMANDS.copy()
         )
 
         data_node_menu_list.insert(
@@ -85,8 +85,8 @@ class ProxyNodePopupMenu(GeneralPopupCommands):
           MenuManager(
 
             (
-                 self.GENERAL_COLLECTIVE_COMMANDS
-               + self.GENERAL_SINGLE_COMMANDS
+               self.NODE_ONLY_SINGLE_COMMANDS
+               +  self.NODE_INCLUSIVE_COLLECTIVE_COMMANDS
             ),
 
             is_menubar  = False,
@@ -100,7 +100,7 @@ class ProxyNodePopupMenu(GeneralPopupCommands):
         ###
 
         data_node_menu_list.extend(
-          self.GENERAL_COLLECTIVE_COMMANDS
+          self.NODE_INCLUSIVE_COLLECTIVE_COMMANDS
         )
 
         self.data_node_and_selected_popup = (
