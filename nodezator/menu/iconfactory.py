@@ -6,6 +6,8 @@ from surfsman.icon import render_layered_icon
 
 from surfsman.render import combine_surfaces
 
+from fontsman.constants import ENC_SANS_BOLD_FONT_PATH
+
 from imagesman.cache import IMAGE_SURFS_DB
 
 from colorsman.colors import (
@@ -587,6 +589,21 @@ DUPLICATION_ICON = (
   )
 )
 
+HASH_ICON = render_layered_icon(
+
+              chars = ['#'],
+
+              font_path=ENC_SANS_BOLD_FONT_PATH,
+
+              dimension_name  = 'height',
+              dimension_value = 19,
+
+              colors = [WHITE],
+
+              background_width  = 27,
+              background_height = 27,
+
+            )
 
 ### icon map
 
@@ -619,6 +636,7 @@ ICON_MAP = {
   'duplication'       : DUPLICATION_ICON,
   'delete'            : DELETE_ICON,
   'pencil'            : PENCIL_ICON,
+  'hash'              : HASH_ICON,
 }
 
 

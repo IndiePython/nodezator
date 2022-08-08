@@ -49,6 +49,7 @@ class GeneralPopupCommands:
                   {
 
                     'label'   : "Comment/uncomment",
+                    'icon'    : 'hash',
                     'command' : (
                       self
                       .toggle_commenting_state_of_node
@@ -97,8 +98,9 @@ class GeneralPopupCommands:
               + [
 
                   {
-                    'label' : "Comment/uncomment selected",
-                    'command': (
+                    'label'   : "Comment/uncomment selected",
+                    'icon'    : 'hash',
+                    'command' : (
                       APP_REFS
                       .ea
                       .comment_uncomment_selected_nodes
