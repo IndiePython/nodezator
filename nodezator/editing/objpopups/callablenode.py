@@ -5,7 +5,7 @@ from config import APP_REFS
 
 from menu.main import MenuManager
 
-from editing.popups.constants import (
+from editing.objpopups.constants import (
                                 GeneralPopupCommands,
                                 get_node_info,
                               )

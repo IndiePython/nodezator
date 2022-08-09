@@ -5,7 +5,7 @@ from config import APP_REFS
 
 from menu.main import MenuManager
 
-from editing.popups.constants import GeneralPopupCommands
+from editing.objpopups.constants import GeneralPopupCommands
 
 from graphman.textblock.main import TextBlock
 

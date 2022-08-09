@@ -24,21 +24,21 @@ from editing.categorycolors import (
 
 ## classes for composition
 
-from editing.popups.widgetcreation import (
+from editing.objpopups.widgetcreation import (
                                 WidgetCreationPopupMenu,
                               )
 
-from editing.popups.callablenode import (
+from editing.objpopups.callablenode import (
                                    CallableNodePopupMenu
                                  )
 
-from editing.popups.proxynode import ProxyNodePopupMenu
+from editing.objpopups.proxynode import ProxyNodePopupMenu
 
-from editing.popups.operatornode import (
+from editing.objpopups.operatornode import (
                                    OperatorNodePopupMenu
                                  )
 
-from editing.popups.textblock import TextBlockPopupMenu
+from editing.objpopups.textblock import TextBlockPopupMenu
 
 
 class EditingAssistant(

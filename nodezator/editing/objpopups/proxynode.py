@@ -9,7 +9,7 @@ from widget.stringentry import StringEntry
 
 from menu.main import MenuManager
 
-from editing.popups.constants import GeneralPopupCommands
+from editing.objpopups.constants import GeneralPopupCommands
 
 
 

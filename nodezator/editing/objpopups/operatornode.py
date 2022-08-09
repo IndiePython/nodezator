@@ -13,7 +13,7 @@ from ourstdlibs.behaviour import get_suppressing_callable
 
 from our3rdlibs.behaviour import set_status_message
 
-from editing.popups.constants import (
+from editing.objpopups.constants import (
                                 GeneralPopupCommands,
                                 get_node_info,
                               )
