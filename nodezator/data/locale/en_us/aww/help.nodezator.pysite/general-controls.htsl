@@ -19,7 +19,7 @@
 
     <tr>
       <th class="col-3">Control</th>
-      <th class="col-5">Result</th>
+      <th class="col-7">Result</th>
     </tr>
 
   </thead>
@@ -67,8 +67,8 @@
   <thead>
 
     <tr>
-      <th class="col-3">Control</th>
-      <th class="col-5">Result</th>
+      <th class="col-4">Control</th>
+      <th class="col-7">Result</th>
     </tr>
 
   </thead>
@@ -102,8 +102,8 @@
   <thead>
 
     <tr>
-      <th class="col-3">Control</th>
-      <th class="col-5">Result</th>
+      <th class="col-4">Control</th>
+      <th class="col-7">Result</th>
     </tr>
 
   </thead>
@@ -125,6 +125,11 @@
       <td>Brings the "Add node" context menu.</td>
     </tr>
 
+    <tr>
+      <td><b>Right-click</b> any node or text block</td>
+      <td>Brings the context menu for that object.</td>
+    </tr>
+
   </tbody>
 
 </table>
@@ -138,7 +143,7 @@
 
     <tr>
       <th class="col-3">Control</th>
-      <th class="col-5">Result</th>
+      <th class="col-7">Result</th>
     </tr>
 
   </thead>
@@ -177,8 +182,8 @@
   <thead>
 
     <tr>
-      <th class="col-3">Control</th>
-      <th class="col-5">Result</th>
+      <th class="col-4">Control</th>
+      <th class="col-7">Result</th>
     </tr>
 
   </thead>
@@ -223,7 +228,7 @@
 
     <tr>
       <th class="col-3">Control</th>
-      <th class="col-5">Result</th>
+      <th class="col-7">Result</th>
     </tr>
 
   </thead>
@@ -256,7 +261,7 @@
   <thead>
 
     <tr>
-      <th class="col-3">Control</th>
+      <th class="col-2">Control</th>
       <th class="col-5">Result</th>
     </tr>
 
@@ -266,7 +271,31 @@
 
     <tr>
       <td><b>&lt;t&gt;</b></td>
-      <td>Edit text of the text block.</td>
+      <td>Edit text of the text block in active selection.</td>
+    </tr>
+
+  </tbody>
+
+</table>
+
+<h2>Data node-only</h2>
+
+<table>
+
+  <thead>
+
+    <tr>
+      <th class="col-2">Control</th>
+      <th class="col-5">Result</th>
+    </tr>
+
+  </thead>
+
+  <tbody>
+
+    <tr>
+      <td><b>&lt;t&gt;</b></td>
+      <td>Edit title of the data node in active selection.</td>
     </tr>
 
   </tbody>
@@ -280,8 +309,8 @@
   <thead>
 
     <tr>
-      <th class="col-3">Control</th>
-      <th class="col-5">Result</th>
+      <th class="col-4">Control</th>
+      <th class="col-4">Result</th>
     </tr>
 
   </thead>
@@ -334,8 +363,8 @@
   <thead>
 
     <tr>
-      <th class="col-3">Control</th>
-      <th class="col-5">Result</th>
+      <th class="col-4">Control</th>
+      <th class="col-7">Result</th>
     </tr>
 
   </thead>
@@ -353,7 +382,7 @@
     </tr>
 
     <tr>
-      <td><b>&lt;Menu&gt;</b> key (beside the right ctrl key)</td>
+      <td><b>&lt;Menu&gt;</b> (key beside the right ctrl key)</td>
       <td>Brings the "Add node" context menu.</td>
     </tr>
 
