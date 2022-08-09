@@ -30,15 +30,17 @@ class CallableNodePopupMenu(GeneralPopupCommands):
         for command in (
 
           {
-             'label'  : "View main callable info",
-             'icon'   : 'python_viewing',
-             'command': self.view_callable_info,
+             'label'    : "View main callable info",
+             'key_text' : 'Shift+i',
+             'icon'     : 'python_viewing',
+             'command'  : self.view_callable_info,
           },
 
           {
-             'label'  : "View node script",
-             'icon'   : 'python_viewing',
-             'command': self.view_node_script,
+             'label'    : "View node script",
+             'key_text' : 'i',
+             'icon'     : 'python_viewing',
+             'command'  : self.view_node_script,
           },
 
         ):
@@ -90,9 +92,10 @@ class CallableNodePopupMenu(GeneralPopupCommands):
           1,
 
           {
-             'label'  : "Get source info",
-             'icon'   : 'python_viewing',
-             'command': self.get_node_info,
+             'label'    : "Get source info",
+             'key_text' : 'i',
+             'icon'     : 'python_viewing',
+             'command'  : self.get_node_info,
           },
 
         )

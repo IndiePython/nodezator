@@ -19,9 +19,10 @@ class TextBlockPopupMenu(GeneralPopupCommands):
         menu_list = [
 
           {
-             'label'  : "Edit text",
-             'icon'   : 'text_editing',
-             'command': self.edit_block_text,
+             'label'    : "Edit text",
+             'key_text' : 't',
+             'icon'     : 'text_editing',
+             'command'  : self.edit_block_text,
           },
 
         ] + self.SINGLE_COMMANDS
@@ -109,10 +110,6 @@ class TextBlockPopupMenu(GeneralPopupCommands):
 
     def edit_block_text(self):
 
-        APP_REFS.ea.deselect_all()
-
-        APP_REFS.ea.add_obj_to_selection(
+        APP_REFS.ea.edit_text_block_text(
           self.obj_under_mouse
         )
-
-        APP_REFS.ea.edit_text_of_selected()

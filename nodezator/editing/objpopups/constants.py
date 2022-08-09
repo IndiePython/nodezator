@@ -66,27 +66,34 @@ class GeneralPopupCommands:
               {'label' : "---"},
 
               {
-                'label'   : "Move selected",
-                'icon'    : 'moving',
-                'command' : get_suppressing_callable(
-                              APP_REFS.ea.start_moving,
-                              ContinueLoopException,
-                            ),
+                'label'    : "Move selected",
+                'key_text' : 'g',
+                'icon'     : 'moving',
+                'command'  : get_suppressing_callable(
+                               APP_REFS.ea.start_moving,
+                               ContinueLoopException,
+                             ),
               },
 
               {
-                'label'   : "Duplicate selected",
-                'icon'    : 'duplication',
-                'command' : get_suppressing_callable(
-                              APP_REFS.ea.duplicate_selected,
-                              ContinueLoopException,
-                            ),
+                'label'    : "Duplicate selected",
+                'key_text' : 'Ctrl+d',
+                'icon'     : 'duplication',
+                'command'  : get_suppressing_callable(
+                               (
+                                 APP_REFS
+                                 .ea
+                                 .duplicate_selected
+                               ),
+                               ContinueLoopException,
+                             ),
               },
 
               {
-                'label'   : "Delete selected",
-                'icon'    : 'delete',
-                'command' : APP_REFS.ea.remove_selected,
+                'label'    : "Delete selected",
+                'key_text' : 'Delete',
+                'icon'     : 'delete',
+                'command'  : APP_REFS.ea.remove_selected,
               },
 
             ]
@@ -98,9 +105,10 @@ class GeneralPopupCommands:
               + [
 
                   {
-                    'label'   : "Comment/uncomment selected",
-                    'icon'    : 'hash',
-                    'command' : (
+                    'label'    : "Comment/uncomment selected",
+                    'key_text' : 'Shift+#',
+                    'icon'     : 'hash',
+                    'command'  : (
                       APP_REFS
                       .ea
                       .comment_uncomment_selected_nodes

@@ -205,7 +205,7 @@ class LoadedFileState:
                         APP_REFS.ea.view_node_script()
 
                 ## edit text of selected text block or
-                ## label of raw data node
+                ## label of data node
 
                 elif event.key == K_t:
                     APP_REFS.ea.edit_text_of_selected()

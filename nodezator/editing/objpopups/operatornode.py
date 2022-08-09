@@ -44,9 +44,10 @@ class OperatorNodePopupMenu(GeneralPopupCommands):
           },
 
           {
-             'label'  : "Get source info",
-             'icon'   : 'python_viewing',
-             'command': self.get_node_info,
+             'label'    : "Get source info",
+             'key_text' : 'i',
+             'icon'     : 'python_viewing',
+             'command'  : self.get_node_info,
           },
 
         ):

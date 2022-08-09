@@ -26,6 +26,8 @@ from os import linesep
 
 from config import APP_REFS
 
+from pygameconstants import SCREEN_RECT
+
 from logman.main import get_new_logger
 
 from translation import TRANSLATION_HOLDER as t
@@ -48,6 +50,8 @@ from textman.viewer.main import view_text
 from textman.editor.main import edit_text
 
 from fileman.main import select_path
+
+from widget.stringentry import StringEntry
 
 from graphman.utils import yield_subgraphs
 
@@ -140,10 +144,23 @@ is_text_block_text_valid = (
 
 )
 
+
 ### main class definition
 
 class DataHandling:
     """Data handling operations."""
+
+    def __init__(self):
+
+        self.title_entry = (
+
+          StringEntry(
+            value = 'output',
+            command = self.update_data_node_title,
+            validation_command = 'isidentifier',
+          )
+
+        )
 
     def info_from_active_selection(self, source_name):
         """Display info about active selection node.
@@ -258,45 +275,51 @@ class DataHandling:
 
     def edit_text_of_selected(self):
 
-        ### if the active obj is not a text block, notify
-        ### situation to user and return earlier
+        ### reference active obj locally
+        obj = self.active_obj
 
+        ### retrieve its type
         type_ = type(self.active_obj)
 
-        if type_ is TextBlock:
-            self.edit_text_block_text()
+        ### if it is a text block or data node trigger
+        ### edition of its text
 
-        #elif type_ is ProxyNode:
-        #    self.edit_proxy_node_label()
+        if type_ is TextBlock:
+            self.edit_text_block_text(obj)
+
+        elif (
+                  type_ is ProxyNode
+          and not hasattr(obj.proxy_socket, 'parent')
+        ):
+            self.edit_data_node_title(obj)
+
+        ### if the active obj is not a text block or data
+        ### node, notify situation to user
 
         else:
 
             create_and_show_dialog(
-              "The text block must be the active"
-              " selection if you want to edit its text."
+              "The active selection must be a text block"
+              " or data node for its text to be edited."
             )
 
-    def edit_text_block_text(self):
+    def edit_text_block_text(self, text_block):
         """Edit text block text on text editor."""
-
-        ### otherwise, edit the text block's text in the
-        ### text editor
-
-        ## reference text block locally
-        block = self.active_obj
-
-        ## retrieve its text
-        text = block.data['text']
+        ### retrieve its text
+        text = text_block.data['text']
 
         ### edit the text
 
-        edited_text = \
-            edit_text(
-              text=text,
-              font_path=FIRA_MONO_BOLD_FONT_PATH,
-              syntax_highlighting='comment',
-              validation_command=is_text_block_text_valid
-            )
+        edited_text = (
+
+          edit_text(
+            text=text,
+            font_path=FIRA_MONO_BOLD_FONT_PATH,
+            syntax_highlighting='comment',
+            validation_command=is_text_block_text_valid
+          )
+
+        )
 
         ### if the edited text is None, it means the user
         ### cancelled editing the text, so we just indicate
@@ -322,7 +345,7 @@ class DataHandling:
         else:
 
             ## insert the new text
-            block.data['text'] = edited_text
+            text_block.data['text'] = edited_text
 
             ## indicate the change in the data
             indicate_unsaved()
@@ -334,60 +357,31 @@ class DataHandling:
             )
 
             ## rebuild the surface of the text block
-            block.rebuild_surf()
+            text_block.rebuild_surf()
 
-    def edit_proxy_label(self):
-        """Edit proxy node label on form."""
-        ### reference node locally
-        node = self.active_obj
+    def edit_data_node_title(self, data_node):
 
-        ### retrieve label's text
-        text = node.data['label_text']
+        entry = self.title_entry
 
-        ### TODO implement form to be used in the block
-        ### below
+        entry.set(data_node.title, False)
 
-        ### edit the text
-        ...
+        entry.rect.midtop = (
+          data_node.rect.move(0, 5).midtop
+        )
 
-        ### if the edited text is None, it means the user
-        ### cancelled editing the text, so we just indicate
-        ### such in the status bar
+        entry.rect.clamp_ip(SCREEN_RECT)
 
-        if edited_text is None:
+        APP_REFS.window_manager.draw()
 
-            set_status_message(
-              "Cancelled editing text of"
-              " raw data node's label."
-            )
+        entry.data_node = data_node
 
-        ### if the edited text is equal to the original
-        ### one, we do nothing besides indicating such
-        ### in the status bar
+        entry.get_focus()
 
-        elif edited_text == text:
+    def update_data_node_title(self):
 
-            set_status_message(
-              "Text of raw data node's label wasn't"
-              " updated, since text didn't change"
-            )
-
-        else:
-
-            ## insert the new text
-            node.data['label_text'] = edited_text
-
-            ## indicate the change in the data
-            indicate_unsaved()
-
-            ## indicate finished action in status bar
-
-            set_status_message(
-              "Text of text block was edited."
-            )
-
-            ## update the node's label surface
-            node.update_label_surface()
+        entry = self.title_entry
+        new_title = entry.get()
+        entry.data_node.update_title(new_title)
 
     def comment_uncomment_selected_nodes(self):
         """Toggle commented out state of selected nodes.

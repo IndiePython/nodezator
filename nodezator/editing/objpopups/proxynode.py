@@ -3,10 +3,6 @@
 
 from config import APP_REFS
 
-from pygameconstants import SCREEN_RECT
-
-from widget.stringentry import StringEntry
-
 from menu.main import MenuManager
 
 from editing.objpopups.constants import GeneralPopupCommands
@@ -18,16 +14,6 @@ class ProxyNodePopupMenu(GeneralPopupCommands):
     def __init__(self):
 
         super().__init__()
-
-        self.entry = (
-
-          StringEntry(
-            value = 'output',
-            command = self.update_data_node_title,
-            validation_command = 'isidentifier',
-          )
-
-        )
 
         ###
 
@@ -56,9 +42,10 @@ class ProxyNodePopupMenu(GeneralPopupCommands):
           0,
 
           {
-            'label'   : "Edit title",
-            'icon'    : 'pencil',
-            'command' : self.edit_node_title,
+            'label'    : "Edit title",
+            'key_text' : 't',
+            'icon'     : 'pencil',
+            'command'  : self.edit_node_title,
           },
 
         )
@@ -159,23 +146,6 @@ class ProxyNodePopupMenu(GeneralPopupCommands):
 
     def edit_node_title(self):
 
-        entry = self.entry
-
-        entry.set(
-          self.obj_under_mouse.title, False
-        )
-
-        entry.rect.midtop = (
-          self.obj_under_mouse.rect.move(0, 5).midtop
-        )
-
-        entry.rect.clamp_ip(SCREEN_RECT)
-
-        APP_REFS.window_manager.draw()
-
-        self.entry.get_focus()
-
-    def update_data_node_title(self):
-
-        new_title = self.entry.get()
-        self.obj_under_mouse.update_title(new_title)
+        APP_REFS.ea.edit_data_node_title(
+                      self.obj_under_mouse
+                    )
