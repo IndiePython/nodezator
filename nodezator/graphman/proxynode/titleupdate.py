@@ -19,7 +19,11 @@ def update_title(self, new_title):
 
     output_socket.output_name = new_title
 
-    APP_REFS.gm.fix_output_socket_id(output_socket, old_id)
+    if hasattr(output_socket, 'children'):
+
+        APP_REFS.gm.fix_output_socket_id(
+                      output_socket, old_id
+                    )
 
     self.title = new_title
 
