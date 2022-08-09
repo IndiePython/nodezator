@@ -331,16 +331,17 @@ class Iterable2D(Collection2D):
     def __len__(self):
         """Return length.
 
-        Works by iterating over the elements while keeping
-        track of the indices and then returning the last
-        index plus one.
+        Works by counting how many iterations it takes
+        to finish iteration.
         """
-        ### iterate over elements while keeping track of the
-        ### indices
-        for index, _ in enumerate(self.callable_obj()): pass
+        ### start a count variable
+        count = 0
 
-        ### return current index plus 1
-        return index + 1
+        ### increment the count as you iterate
+        for _ in self.callable_obj(): count += 1
+
+        ### return the count
+        return count
 
     def __bool__(self):
         """Return True if there's at least one item."""
