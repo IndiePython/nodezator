@@ -24,7 +24,7 @@ from editing.categorycolors import (
 
 ## classes for composition
 
-from editing.objpopups.widgetcreation import (
+from editing.widgetpopups.creation import (
                                 WidgetCreationPopupMenu,
                               )
 
