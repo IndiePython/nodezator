@@ -26,6 +26,8 @@ from os import linesep
 
 from config import APP_REFS
 
+from pygameconstants import SCREEN_RECT
+
 from logman.main import get_new_logger
 
 from translation import TRANSLATION_HOLDER as t
@@ -49,13 +51,11 @@ from textman.editor.main import edit_text
 
 from fileman.main import select_path
 
+from widget.stringentry import StringEntry
+
 from graphman.utils import yield_subgraphs
 
 from graphman.callablenode.main import CallableNode
-from graphman.stlibnode.main    import StandardLibNode
-from graphman.builtinnode.main  import BuiltinNode
-from graphman.operatornode.main import OperatorNode
-from graphman.capsulenode.main  import CapsuleNode
 from graphman.proxynode.main    import ProxyNode
 from graphman.textblock.main    import TextBlock
 
@@ -89,7 +89,13 @@ ACTION_DESCRIPTION_MAP = {
 ### utility functions
 
 def retrieve_callable_info(callable_obj):
-    """Return callable source or its docstring.
+    """Return 2-tuple.
+
+    The first value is the callable source or its
+    docstring.
+
+    The second value is a boolean which is True if
+    the source was retrieve and false otherwise.
 
     Parameters
     ==========
@@ -103,18 +109,24 @@ def retrieve_callable_info(callable_obj):
     ### if it is not possible (for instance, the built-in
     ### function 'pow' can't have its source retrieved,
     ### even though it works with inspect.signature),
-    ### just used the docstring or a placeholder text,
+    ### just use the docstring or a placeholder text,
     ### if the docstring is None
 
     except (OSError, TypeError):
         
+        managed_to_get_source = False
+
         text = getdoc(callable_obj)
           
         if text is None:
             text = t.editing.data.no_source_available
 
-    ### finally return the text retrieved/used
-    return text
+    ### if it is, set flag to True
+    else: managed_to_get_source = True
+
+    ### finally return the text retrieved/used and
+    ### the flag
+    return text, managed_to_get_source
 
 
 ## boolean function to check whether text of text block
@@ -132,19 +144,32 @@ is_text_block_text_valid = (
 
 )
 
+
 ### main class definition
 
 class DataHandling:
     """Data handling operations."""
 
-    def view_code(self, source_name):
-        """Display source of active node's script.
+    def __init__(self):
+
+        self.title_entry = (
+
+          StringEntry(
+            value = 'output',
+            command = self.update_data_node_title,
+            validation_command = 'isidentifier',
+          )
+
+        )
+
+    def info_from_active_selection(self, source_name):
+        """Display info about active selection node.
 
         Parameters
         ==========
         source_name (string)
             name indicating the kind of source to be
-            shown; can be 'node_script' or 'callable_source'.
+            shown; can be 'node_script' or 'callable_info'.
         """
 
         ### if there's no active selection, notify user
@@ -178,119 +203,123 @@ class DataHandling:
 
             return
 
-        ### otherwise, retrieve and present node's
-        ### source/info according to its type and
-        ### the requested source
+        self.view_info(self.active_obj, source_name)
 
-        if type(self.active_obj) in (
+    view_node_script = partialmethod(
+                         info_from_active_selection,
+                         'node_script'
+                       )
 
-          StandardLibNode,
-          BuiltinNode,
-          OperatorNode,
-          CapsuleNode,
+    view_callable_info = partialmethod(
+                           info_from_active_selection,
+                           'callable_info'
+                         )
 
-        ):
+    def view_info(self, obj, source_name='node_script'):
+        """Retrieve and present obj's source/info."""
 
-            text = self.active_obj.get_source_info()
+        if type(obj) == CallableNode:
 
-        elif source_name == 'node_script':
+            if source_name == 'node_script':
 
-            ## retrieve the source of the script from which
-            ## the node's callable was retrieved
+                ## retrieve the source of the script from
+                ## which the node's callable was retrieved
 
-            text = (
+                text = (
 
-              # from the APP_REFS obj...
-              APP_REFS
+                  # from the APP_REFS obj...
+                  APP_REFS
 
-              # retrieve a map containing pathlib.Path
-              # objects pointing to node scripts
-              .script_path_map
+                  # retrieve a map containing pathlib.Path
+                  # objects pointing to node scripts
+                  .script_path_map
 
-              # use the id of the node's defining object
-              # to retrieve the pathlib.Path instance
-              # which points to the node's script
+                  # use the script id of the node to
+                  # retrieve the pathlib.Path instance
+                  # which points to the node's script
+                  [obj.data['script_id']]
 
-              [
+                  # and grab its contents
+                  .read_text()
 
-                APP_REFS.id_map[
-                           self
-                           .active_obj
-                           .signature_callable
-                         ]
-              ]
+                )
 
-              # and grab its contents
-              .read_text()
+                show_line_number = True
 
-            )
+            elif source_name == 'callable_info':
 
-        elif source_name == 'callable_source':
+                ## retrieve information about the node's
+                ## main callable
 
-            ## retrieve information about the node's
-            ## callable
+                text, managed_to_get_source = (
 
-            text = retrieve_callable_info(
-                     self.active_obj.signature_callable
-                   )
+                  retrieve_callable_info(obj.main_callable)
+
+                )
+
+                show_line_number = managed_to_get_source
+
+        else:
+
+            show_line_number = False
+            text = obj.get_source_info()
+
 
         ### then display the text
 
         view_text(
           text,
           syntax_highlighting='python',
-          show_line_number=True,
+          show_line_number=show_line_number,
         )
-
-    view_node_script = partialmethod(
-                         view_code, 'node_script'
-                       )
-
-    view_callable_source = partialmethod(
-                             view_code, 'callable_source'
-                           )
 
     def edit_text_of_selected(self):
 
-        ### if the active obj is not a text block, notify
-        ### situation to user and return earlier
+        ### reference active obj locally
+        obj = self.active_obj
 
+        ### retrieve its type
         type_ = type(self.active_obj)
 
-        if type_ is TextBlock:
-            self.edit_text_block_text()
+        ### if it is a text block or data node trigger
+        ### edition of its text
 
-        #elif type_ is ProxyNode:
-        #    self.edit_proxy_node_label()
+        if type_ is TextBlock:
+            self.edit_text_block_text(obj)
+
+        elif (
+                  type_ is ProxyNode
+          and not hasattr(obj.proxy_socket, 'parent')
+        ):
+            self.edit_data_node_title(obj)
+
+        ### if the active obj is not a text block or data
+        ### node, notify situation to user
 
         else:
 
             create_and_show_dialog(
-              "The text block must be the active"
-              " selection if you want to edit its text."
+              "The active selection must be a text block"
+              " or data node for its text to be edited."
             )
 
-    def edit_text_block_text(self):
+    def edit_text_block_text(self, text_block):
         """Edit text block text on text editor."""
-
-        ### otherwise, edit the text block's text in the
-        ### text editor
-
-        ## reference text block locally
-        block = self.active_obj
-
-        ## retrieve its text
-        text = block.data['text']
+        ### retrieve its text
+        text = text_block.data['text']
 
         ### edit the text
 
-        edited_text = \
-            edit_text(
-              text=text,
-              font_path=FIRA_MONO_BOLD_FONT_PATH,
-              syntax_highlighting='comment',
-              validation_command=is_text_block_text_valid
-            )
+        edited_text = (
+
+          edit_text(
+            text=text,
+            font_path=FIRA_MONO_BOLD_FONT_PATH,
+            syntax_highlighting='comment',
+            validation_command=is_text_block_text_valid
+          )
+
+        )
 
         ### if the edited text is None, it means the user
         ### cancelled editing the text, so we just indicate
@@ -316,7 +345,7 @@ class DataHandling:
         else:
 
             ## insert the new text
-            block.data['text'] = edited_text
+            text_block.data['text'] = edited_text
 
             ## indicate the change in the data
             indicate_unsaved()
@@ -328,62 +357,33 @@ class DataHandling:
             )
 
             ## rebuild the surface of the text block
-            block.rebuild_surf()
+            text_block.rebuild_surf()
 
-    def edit_proxy_label(self):
-        """Edit proxy node label on form."""
-        ### reference node locally
-        node = self.active_obj
+    def edit_data_node_title(self, data_node):
 
-        ### retrieve label's text
-        text = node.data['label_text']
+        entry = self.title_entry
 
-        ### TODO implement form to be used in the block
-        ### below
+        entry.set(data_node.title, False)
 
-        ### edit the text
-        ...
+        entry.rect.midtop = (
+          data_node.rect.move(0, 5).midtop
+        )
 
-        ### if the edited text is None, it means the user
-        ### cancelled editing the text, so we just indicate
-        ### such in the status bar
+        entry.rect.clamp_ip(SCREEN_RECT)
 
-        if edited_text is None:
+        APP_REFS.window_manager.draw()
 
-            set_status_message(
-              "Cancelled editing text of"
-              " raw data node's label."
-            )
+        entry.data_node = data_node
 
-        ### if the edited text is equal to the original
-        ### one, we do nothing besides indicating such
-        ### in the status bar
+        entry.get_focus()
 
-        elif edited_text == text:
+    def update_data_node_title(self):
 
-            set_status_message(
-              "Text of raw data node's label wasn't"
-              " updated, since text didn't change"
-            )
+        entry = self.title_entry
+        new_title = entry.get()
+        entry.data_node.update_title(new_title)
 
-        else:
-
-            ## insert the new text
-            node.data['label_text'] = edited_text
-
-            ## indicate the change in the data
-            indicate_unsaved()
-
-            ## indicate finished action in status bar
-
-            set_status_message(
-              "Text of text block was edited."
-            )
-
-            ## update the node's label surface
-            node.update_label_surface()
-
-    def comment_uncomment_nodes(self):
+    def comment_uncomment_selected_nodes(self):
         """Toggle commented out state of selected nodes.
 
         Nodes attached to the selected ones are also
@@ -404,23 +404,25 @@ class DataHandling:
         if not selected_nodes:
 
             create_and_show_dialog(
-              "You need first to select node(s) in order"
-              " to be able to comment/uncomment them"
+              "In order to comment/uncomment selected"
+              " nodes at least one must be selected"
             )
 
-            return
+        ### otherwise, delegate the
+        ### commenting/uncommenting to another
+        ### method
+        else: self.comment_uncomment_nodes(selected_nodes)
 
-        ### otherwise, iterate over each subgraph,
-        ### commenting out/uncommenting the nodes,
-        ### depending on their initial state
-        ###
-        ### also, keep track of the toggled states so
-        ### that you know which actions you performed,
-        ### in order to notify the user properly
+    def comment_uncomment_nodes(self, nodes):
+        """Toggle commenting state in each subgraph.
+
+        Also, keeps track of the toggled states so that
+        actions performed are properly reported.
+        """
 
         toggled_states = set()
 
-        for subgraph in yield_subgraphs(selected_nodes):
+        for subgraph in yield_subgraphs(nodes):
             
             ### sample the state of the nodes from one of
             ### them; it can be any node, we use the first

@@ -6,6 +6,8 @@ from surfsman.icon import render_layered_icon
 
 from surfsman.render import combine_surfaces
 
+from fontsman.constants import ENC_SANS_BOLD_FONT_PATH
+
 from imagesman.cache import IMAGE_SURFS_DB
 
 from colorsman.colors import (
@@ -26,7 +28,7 @@ TEXT_BLOCK_FG = (
 )
 
 
-### below we create icon surface and at the bottom we
+### below we create icon surfaces and at the bottom we
 ### store them within an icon map
 
 FOLDER_ICON = render_layered_icon(
@@ -111,6 +113,68 @@ EXECUTE_ICON = render_layered_icon(
 
                )
 
+_TEXT_ICON = render_layered_icon(
+
+               chars=[
+                 chr(ordinal) for ordinal in (37, 36)
+               ],
+
+               dimension_name  = 'height',
+               dimension_value = 20,
+ 
+               colors = [BLACK, WHITE],
+
+               background_width  = 27,
+               background_height = 27,
+
+             )
+
+_SMALL_PENCIL_ICON = render_layered_icon(
+
+                       chars = [
+                         chr(ordinal)
+                         for ordinal in range(115, 119)
+                       ],
+
+                       dimension_name  = 'height',
+                       dimension_value = 14,
+
+                       colors = [
+                         BLACK,
+                         (255, 225, 140),
+                         (255, 255, 0),
+                         (255, 170, 170)
+                       ]
+
+                     )
+
+TEXT_EDITING_ICON = (
+  combine_surfaces(
+    [_TEXT_ICON, _SMALL_PENCIL_ICON],
+    retrieve_pos_from = 'bottomright',
+    assign_pos_to     = 'bottomright',
+    offset_pos_by     = (-2, -2),
+  )
+)
+
+_SMALL_EYE_ICON = render_layered_icon(
+
+                    chars = [
+                      chr(ordinal)
+                      for ordinal in (87, 88, 89)
+                    ],
+
+                    dimension_name  = 'height',
+                    dimension_value = 14,
+
+                    colors = [
+                      BLACK,
+                      WHITE,
+                      (115, 40, 30)
+                    ],
+
+                 )
+
 _SMALL_TEXT_ICON = render_layered_icon(
 
                      chars=[
@@ -139,6 +203,14 @@ PYTHON_ICON = (
   [{'use_alpha': True}]
 )
 
+PYTHON_VIEWING_ICON = (
+  combine_surfaces(
+    [PYTHON_ICON, _SMALL_EYE_ICON],
+    retrieve_pos_from = 'bottomright',
+    assign_pos_to     = 'bottomright',
+  )
+)
+
 INFO_ICON = render_layered_icon(
               chars=[
                 chr(ordinal) for ordinal in (167, 63, 64, 168)
@@ -157,7 +229,8 @@ INFO_ICON = render_layered_icon(
 
 QUESTION_MARK = render_layered_icon(
                   chars=[
-                    chr(ordinal) for ordinal in (167, 92, 93, 168)
+                    chr(ordinal)
+                    for ordinal in (167, 92, 93, 168)
                   ],
 
                   dimension_name  = 'height',
@@ -417,6 +490,121 @@ AWW_ICON = render_layered_icon(
              background_height = 27,
            )
 
+DELETE_ICON = render_layered_icon(
+
+                chars = [
+                  chr(ordinal)
+                  for ordinal in (65, 66)
+                ],
+
+                dimension_name  = 'height',
+                dimension_value = 19,
+
+                colors = [BLACK, (215, 0, 0)],
+
+                rotation_degrees = -90,
+
+                background_width  = 27,
+                background_height = 27,
+
+              )
+
+PENCIL_ICON = render_layered_icon(
+
+                chars = [
+                  chr(ordinal)
+                  for ordinal in range(115, 119)
+                ],
+
+                dimension_name  = 'height',
+                dimension_value = 21,
+
+                colors = [
+                  BLACK,
+                  (255, 225, 140),
+                  (255, 255, 0),
+                  (255, 170, 170)
+                ],
+
+                background_width  = 27,
+                background_height = 27,
+
+              )
+
+MOVING_ICON = render_layered_icon(
+
+                chars = [
+                  chr(ordinal)
+                  for ordinal in (50, 51)
+                ],
+
+                dimension_name  = 'height',
+                dimension_value = 19,
+
+                colors = [BLACK, (30, 130, 70)],
+
+                rotation_degrees = -90,
+
+                background_width  = 27,
+                background_height = 27,
+
+              )
+
+(
+
+  _green_square,
+  _blue_square,
+
+) = (
+
+  render_layered_icon(
+
+    chars=[chr(ordinal) for ordinal in (38, 39)],
+
+    dimension_name  = 'height',
+    dimension_value = 20,
+ 
+    colors = [BLACK, fill_color],
+
+    background_width  = 23,
+    background_height = 23,
+
+  )
+
+  for fill_color in (
+
+    (30, 130, 70),
+    (30, 70, 130),
+
+  )
+
+)
+
+DUPLICATION_ICON = (
+  combine_surfaces(
+    [_green_square, _blue_square],
+    retrieve_pos_from = 'center',
+    assign_pos_to     = 'center',
+    offset_pos_by     = (4, 4),
+  )
+)
+
+HASH_ICON = render_layered_icon(
+
+              chars = ['#'],
+
+              font_path=ENC_SANS_BOLD_FONT_PATH,
+
+              dimension_name  = 'height',
+              dimension_value = 19,
+
+              colors = [WHITE],
+
+              background_width  = 27,
+              background_height = 27,
+
+            )
+
 ### icon map
 
 ICON_MAP = {
@@ -442,8 +630,18 @@ ICON_MAP = {
   'question'          : QUESTION_MARK,
   'web_icon'          : WEB_ICON,
   'aww_icon'          : AWW_ICON,
+  'text_editing'      : TEXT_EDITING_ICON,
+  'python_viewing'    : PYTHON_VIEWING_ICON,
+  'moving'            : MOVING_ICON,
+  'duplication'       : DUPLICATION_ICON,
+  'delete'            : DELETE_ICON,
+  'pencil'            : PENCIL_ICON,
+  'hash'              : HASH_ICON,
 }
 
+
+## more icons defined below and inserted
+## into the map
 
 for (
   index, node_category_color
@@ -482,3 +680,4 @@ for (
                )
 
     ICON_MAP[new_key] = new_surf
+

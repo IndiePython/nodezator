@@ -607,13 +607,10 @@ class StringEntry(Object2D):
         ### finally update the screen (pygame.display.update)
         update()
 
-    def get_focus(self, event):
-        """Perform setups and get focus to itself.
+    def on_mouse_click(self, event):
+        """Delegate focus-related setups to get_focus().
 
-        "Getting focus" means assuming control of the
-        application loop.
-
-        This method is aliased as "on_mouse_click" to
+        This method is called "on_mouse_click" to
         comply with the mouse interaction protocol.
 
         Parameters
@@ -630,6 +627,14 @@ class StringEntry(Object2D):
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.
+        """
+        self.get_focus()
+
+    def get_focus(self):
+        """Perform setups and get focus to itself.
+
+        "Getting focus" means assuming control of the
+        application loop.
         """
         ### assign behaviours
 
@@ -650,9 +655,6 @@ class StringEntry(Object2D):
         ### give focus to self by raising a manager switch
         ### exception with a reference to this widget
         raise SwitchLoopException(self)
-
-    ### alias get_focus method
-    on_mouse_click = get_focus
 
     def lose_focus(self):
         """Focus loop holder.

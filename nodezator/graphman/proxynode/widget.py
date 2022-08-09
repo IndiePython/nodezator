@@ -140,7 +140,7 @@ class WidgetOps:
                           )
 
             self.propagate_output(
-                   self.label_text,
+                   self.title,
                    type_codename,
                  )
 
@@ -181,7 +181,8 @@ class WidgetOps:
           partial(
 
             (
-              self
+              APP_REFS
+              .ea
               .widget_creation_popup_menu
               .trigger_simple_widget_picking
             ),
@@ -234,7 +235,7 @@ class WidgetOps:
                           )
 
             self.propagate_output(
-                   self.label_text,
+                   self.title,
                    type_codename,
                  )
 

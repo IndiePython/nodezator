@@ -1,4 +1,8 @@
 
+### local imports
+
+from config import APP_REFS
+
 from classes2d.single import Object2D
 
 
@@ -15,9 +19,4 @@ class Socket(Object2D):
         Works by triggering behaviours related to defining
         line segments and resulting links between sockets.
         """
-        (
-          self
-          .node
-          .graph_manager
-          .trigger_defining_segment(self)
-        )
+        APP_REFS.gm.trigger_defining_segment(self)

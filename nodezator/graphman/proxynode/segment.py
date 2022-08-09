@@ -69,7 +69,7 @@ class SegmentOps:
         output_socket.update_type_codename(type_codename)
 
         self.propagate_output(
-               self.label_text, type_codename
+               self.title, type_codename
              )
 
     def propagate_output(self, source_name, type_codename):

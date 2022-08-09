@@ -68,7 +68,7 @@ from colorsman.colors import (
 from dialog import create_and_show_dialog
 
 ## class extension
-from graphman.widget.picker.subforms import SubformCreation
+from editing.widgetpicker.subforms import SubformCreation
 
 
 ### constants

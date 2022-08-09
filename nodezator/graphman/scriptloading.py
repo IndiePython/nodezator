@@ -95,14 +95,6 @@ from colorsman.colors import NODE_CATEGORY_COLORS
 ### implement/teach it, or not even be needed);
 
 
-### TODO review docstring;
-###
-### - add description of id_map;
-### - I believe we don't store the script's text, as
-###   said in the docstring, but rather the location
-###   to that text (path); check and fix docstring if
-###   needed;
-
 def load_scripts(node_packs_paths):
     """Load modules and store specific data in dicts.
 
@@ -129,7 +121,6 @@ def load_scripts(node_packs_paths):
 
     node_def_map       = APP_REFS.node_def_map
     signature_map      = APP_REFS.signature_map
-    id_map             = APP_REFS.id_map
     script_path_map    = APP_REFS.script_path_map
     category_path_map  = APP_REFS.category_path_map
     category_index_map = APP_REFS.category_index_map
@@ -444,9 +435,8 @@ def load_scripts(node_packs_paths):
                       ] = signature_obj
 
 
-                # define id for script and associate it
-                # with the signature callable in the proper
-                # map
+                # define id for script and also store it
+                # in the node definition dict
 
                 script_id = (
                   node_pack_name,
@@ -454,7 +444,7 @@ def load_scripts(node_packs_paths):
                   script_dir.name,
                 )
 
-                id_map[signature_callable] = script_id
+                node_def_dict['script_id'] = script_id
 
                 # store the node definition object in the
                 # proper map with the id we created

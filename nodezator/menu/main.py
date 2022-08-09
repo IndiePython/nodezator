@@ -201,8 +201,8 @@ class MenuManager(
           horiz_bg_width     = 0,
           vertical_bg_height = 0,
 
-          use_outline         = False,
-          keep_focus_when_out = False
+          use_outline = False,
+          keep_focus_when_unhovered = False
 
         ):
         """Assign variables and perform setups.
@@ -272,7 +272,8 @@ class MenuManager(
             popup menu, to make constrast between the menu
             manager and what is behind it.
 
-        keep_focus_when_out (boolean, defaults to False)
+        keep_focus_when_unhovered
+        (boolean, defaults to False)
             defines whether to keep the focus when the
             mouse isn't hovering any meaning object in the
             menu manager and there's no active branch.
@@ -299,12 +300,15 @@ class MenuManager(
 
         ### store arguments
 
-        self.loop_holder         = loop_holder
-        self.draw_behind         = draw_behind
-        self.boundaries_rect     = boundaries_rect
-        self.is_menubar          = is_menubar
-        self.use_outline         = use_outline
-        self.keep_focus_when_out = keep_focus_when_out
+        self.loop_holder     = loop_holder
+        self.draw_behind     = draw_behind
+        self.boundaries_rect = boundaries_rect
+        self.is_menubar      = is_menubar
+        self.use_outline     = use_outline
+
+        self.keep_focus_when_unhovered = (
+          keep_focus_when_unhovered
+        )
 
         ### assign an empty update operation to the
         ### instance, since it is a loop holder

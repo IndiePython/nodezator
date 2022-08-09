@@ -205,13 +205,13 @@ class LoadedFileState:
                 elif event.key == K_i:
 
                     if event.mod & KMOD_SHIFT:
-                        APP_REFS.ea.view_callable_source()
+                        APP_REFS.ea.view_callable_info()
 
                     else:
                         APP_REFS.ea.view_node_script()
 
                 ## edit text of selected text block or
-                ## label of raw data node
+                ## label of data node
 
                 elif event.key == K_t:
                     APP_REFS.ea.edit_text_of_selected()
@@ -225,7 +225,12 @@ class LoadedFileState:
                   and event.mod &  KMOD_SHIFT
 
                 ):
-                    APP_REFS.ea.comment_uncomment_nodes()
+
+                    (
+                      APP_REFS
+                      .ea
+                      .comment_uncomment_selected_nodes()
+                    )
 
                 ## display the text of the user log
 
@@ -581,12 +586,14 @@ class LoadedFileState:
         ### check nodes for collision, executing its
         ### respective method if so and returning
 
-        for node in (
-        APP_REFS.gm.nodes.get_on_screen()):
+        for obj in chain(
+          APP_REFS.gm.nodes.get_on_screen(),
+          APP_REFS.gm.text_blocks.get_on_screen(),
+        ):
 
-            if node.rect.collidepoint(mouse_pos):
+            if obj.rect.collidepoint(mouse_pos):
 
-                node.on_right_mouse_release(event)
+                obj.on_right_mouse_release(event)
                 break
 
         ### otherwise, it means the user right-clicked an
@@ -608,7 +615,12 @@ class LoadedFileState:
             APP_REFS.ea.popup_spawn_pos = event.pos
 
             ### then give focus to the popup menu
-            self.canvas_popup_menu.check_focus(event.pos)
+
+            (
+              self
+              .canvas_popup_menu
+              .focus_if_within_boundaries(event.pos)
+            )
 
     ### update
 

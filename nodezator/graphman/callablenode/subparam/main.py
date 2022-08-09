@@ -6,6 +6,8 @@ from functools import partialmethod
 
 ### local imports
 
+from config import APP_REFS
+
 from dialog import create_and_show_dialog
 
 from our3rdlibs.behaviour import indicate_unsaved
@@ -635,7 +637,7 @@ class SubparameterHandling(
 
             except AttributeError: pass
 
-            else: self.graph_manager.fix_input_socket_id(
-                                       input_socket,
-                                       old_id,
-                                     )
+            else: APP_REFS.gm.fix_input_socket_id(
+                                input_socket,
+                                old_id,
+                              )

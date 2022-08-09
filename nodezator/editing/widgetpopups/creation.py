@@ -19,7 +19,7 @@ from graphman.presets import (
                         WIDGET_PRESET_MENU_LABEL_MAP,
                       )
 
-from graphman.widget.picker.main import pick_widget
+from editing.widgetpicker.main import pick_widget
 
 
 class WidgetCreationPopupMenu(MenuManager):
@@ -67,7 +67,7 @@ class WidgetCreationPopupMenu(MenuManager):
 
           is_menubar  = False,
           use_outline = True,
-          keep_focus_when_out=True,
+          keep_focus_when_unhovered=True,
 
         )
 
@@ -79,7 +79,7 @@ class WidgetCreationPopupMenu(MenuManager):
           node, *other_references
         )
 
-        self.check_focus(get_mouse_pos())
+        self.focus_if_within_boundaries(get_mouse_pos())
 
     def trigger_subparameter_widget_instantiation(
           self, widget_data=None,

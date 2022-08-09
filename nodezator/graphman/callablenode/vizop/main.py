@@ -12,6 +12,8 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
+from config import APP_REFS
+
 from pygameconstants import SCREEN
 
 ## function to extend class
@@ -31,9 +33,8 @@ class VisualRelatedOperations:
     def on_mouse_action(self, method_name, event):
         """Check whether any object was targeted by mouse.
 
-        Works by checking if any object collided with
-        mouse position when it was clicked/released and
-        calling its respective method method if it exists.
+        if not, act as though the node itself was the
+        target of the mouse action.
 
         Parameters
         ==========
@@ -93,11 +94,17 @@ class VisualRelatedOperations:
                 ### objects' rects intersect)
                 break
 
-        ### if we don't collide with any object though, set
-        ### flags according to the given method name;
+        ### if we don't collide with any object though, we
+        ### consider as though the node itself was the
+        ### target of the mouse method;
         ###
-        ### the flags are used to support the selection and
-        ### "move by dragging" features
+        ### if such method is 'on_mouse_click' or
+        ### 'on_mouse_release', set flags according to the
+        ### method name; the flags are used to support the
+        ### selection and "move by dragging" features
+        ###
+        ### if we are dealing with a right mouse release
+        ### method, we show the popup menu
 
         else:
 
@@ -109,60 +116,28 @@ class VisualRelatedOperations:
                 self.mouse_release_target = True
                 self.mouse_click_target   = False
 
+            elif method_name == 'on_right_mouse_release':
+
+                (
+                  APP_REFS
+                  .ea
+                  .callable_node_popup_menu
+                  .show(self, event.pos)
+                )
+
     on_mouse_click = partialmethod(
-                         on_mouse_action, 'on_mouse_click')
+                       on_mouse_action, 'on_mouse_click'
+                     )
 
     on_mouse_release = partialmethod(
-                         on_mouse_action, 'on_mouse_release')
+                         on_mouse_action,
+                         'on_mouse_release'
+                       )
 
-    ### TODO should be used to trigger a popup menu with
-    ### options specific to this node and its objects, like
-    ### viewing the source of the callable, marking an
-    ### input socket to receive data from outside the graph
-    ### or marking an output socket to return data to the
-    ### outside of the graph, etc.
-
-    def on_right_mouse_release(self, event):
-        """Check whether any object was targeted by mouse.
-
-        Works by checking if any object collided with
-        mouse position when its right button was released and
-        calling its respective method method if it exists.
-
-        Parameters
-        ==========
-
-        event (pygame.event.Event of
-            pygame.MOUSEBUTTONUP type)
-
-            required in order to comply with protocol
-            used; needed here so we can retrieve the
-            position of the mouse click in order to
-            know over which object the mouse button was
-            clicked/released.
-              
-            Check pygame.event module documentation on
-            pygame website for more info about this event
-            object.
-        """
-        mouse_pos = event.pos
-
-        for socket in chain(
-          self.input_sockets,
-          self.placeholder_sockets,
-          self.output_sockets,
-        ):
-            
-            if socket.rect.collidepoint(mouse_pos):
-                
-                try: method = socket.on_right_mouse_release
-
-                except AttributeError: return
-
-                else:
-
-                    method(event)
-                    break
+    on_right_mouse_release = partialmethod(
+                               on_mouse_action,
+                               'on_right_mouse_release',
+                             )
 
     def draw(self):
         """Draw node elements on screen."""
@@ -218,6 +193,6 @@ class VisualRelatedOperations:
             if socket.rect.collidepoint(mouse_pos):
                 break
 
-        else: self.graph_manager.cancel_defining_segment()
+        else: APP_REFS.gm.cancel_defining_segment()
 
-        self.graph_manager.resume_defining_segment(socket)
+        APP_REFS.gm.resume_defining_segment(socket)

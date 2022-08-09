@@ -450,13 +450,14 @@ class BehaviourDefinitions(Object2D):
 
             self.scroll_area.move_ip(dx, dy)
 
-    def check_focus(self, mouse_pos):
+    def focus_if_within_boundaries(self, mouse_pos):
         """Check whether to give menu manager focus.
 
         This method should be used when the menu manager is
         used as a popup menu to determine whether the mouse
         click happened within the boundaries rect defined for
-        the existence of the menu.
+        the existence of the menu, in which case the menu
+        is shown.
 
         mouse_pos (2-tuple of integers)
             represent position of the mouse cursor. It is the

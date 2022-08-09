@@ -22,6 +22,24 @@ from editing.categorycolors import (
                               change_category_colors,
                             )
 
+## classes for composition
+
+from editing.widgetpopups.creation import (
+                                WidgetCreationPopupMenu,
+                              )
+
+from editing.objpopups.callablenode import (
+                                   CallableNodePopupMenu
+                                 )
+
+from editing.objpopups.proxynode import ProxyNodePopupMenu
+
+from editing.objpopups.operatornode import (
+                                   OperatorNodePopupMenu
+                                 )
+
+from editing.objpopups.textblock import TextBlockPopupMenu
+
 
 class EditingAssistant(
 
@@ -58,6 +76,28 @@ class EditingAssistant(
 
         self.rebuild_category_color_form = (
           rebuild_category_color_form
+        )
+
+        ### create and store popup menus
+
+        self.widget_creation_popup_menu = (
+          WidgetCreationPopupMenu()
+        )
+
+        self.callable_node_popup_menu = (
+          CallableNodePopupMenu()
+        )
+
+        self.proxy_node_popup_menu = (
+          ProxyNodePopupMenu()
+        )
+
+        self.operator_node_popup_menu = (
+          OperatorNodePopupMenu()
+        )
+
+        self.text_block_popup_menu = (
+          TextBlockPopupMenu()
         )
 
     def prepare_for_new_session(self):

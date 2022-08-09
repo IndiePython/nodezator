@@ -6,6 +6,8 @@ from functools import partial
 
 ### local imports
 
+from config import APP_REFS
+
 from ourstdlibs.behaviour import remove_by_identity
 
 from our3rdlibs.button import Button
@@ -644,7 +646,8 @@ class WidgetOps:
               partial(
 
                 (
-                  self
+                  APP_REFS
+                  .ea
                   .widget_creation_popup_menu
                   .trigger_simple_widget_picking
                 ),

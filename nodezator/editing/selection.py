@@ -168,10 +168,6 @@ class SelectionHandling:
     select_all   = partialmethod(select_all_toggle,  True)
     deselect_all = partialmethod(select_all_toggle, False)
 
-    ### method used to assist in the "move by dragging"
-    ### feature; you can see it in action on
-    ### winman.states.loadedfile module
-
     def add_obj_to_selection(self, obj):
         """Add object to selection, if not selected already.
 
@@ -180,8 +176,11 @@ class SelectionHandling:
         Parameters
         ==========
         obj
-            (graphman.callablenode.CallableNode or
-            graphman.textblock.TextBlock)
+        ( graphman.callablenode.CallableNode (or subclass)
+          or graphman.textblock.TextBlock
+          or graphman.proxynode.ProxyNode
+          or graphman.proxynode.OperatorNode instance
+        )
             obj to be added to selection.
         """
         if obj not in self.selected_objs:

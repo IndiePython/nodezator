@@ -1,7 +1,10 @@
 """Facility for third party behaviour related tools."""
 
-### standard library import
+### standard library imports
+
 from functools import partial
+
+from contextlib import contextmanager
 
 
 ### third-party imports
@@ -96,6 +99,34 @@ def toggle_caption(indicate_saved):
 indicate_saved   = partial(toggle_caption, True)
 indicate_unsaved = partial(toggle_caption, False)
 
+
+@contextmanager
+def saved_or_unsaved_state_kept():
+    """Restore saved/unsaved state at the end, if needed.
+
+    That is, this context manager makes sure that, once we
+    leave the context, the saved/unsaved state is kept the
+    same it was at the beginning.
+    """
+    ### store state before entering context
+    changes_were_saved = are_changes_saved()
+
+    ### enter context
+    try: yield
+
+    ### now that we left the context, restore the state
+    ### if it is different from when it was at the
+    ### beginning
+
+    finally:
+
+        changes_are_saved = are_changes_saved()
+
+        if changes_were_saved and not changes_are_saved:
+            indicate_saved()
+
+        elif not changes_were_saved and changes_are_saved:
+            indicate_unsaved()
 
 def get_current_fps():
     """Return current fps custom formatted.

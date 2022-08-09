@@ -8,6 +8,8 @@ from functools import partial
 
 ### local imports
 
+from config import APP_REFS
+
 from classes2d.single import Object2D
 
 from graphman.widget.utils import WIDGET_CLASS_MAP
@@ -279,7 +281,8 @@ def create_var_parameter_objs(self, param_obj):
               partial(
 
                 (
-                  self
+                  APP_REFS
+                  .ea
                   .widget_creation_popup_menu
                   .trigger_simple_widget_picking
                 ),
@@ -573,7 +576,8 @@ def create_var_parameter_objs(self, param_obj):
     command = partial(
 
                 (
-                  self
+                  APP_REFS
+                  .ea
                   .widget_creation_popup_menu
                   .trigger_simple_widget_picking
                 ),

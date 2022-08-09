@@ -46,12 +46,6 @@ class CallableNode(
     called "data", also received upon instantiation.
     """
 
-    ### placeholders for class attributes
-
-    graph_manager              = None
-    widget_creation_popup_menu = None
-
-
     ### XXX ponder: instead of making a method like this
     ### one which goes out of its way to meet requirements
     ### of two different use cases, it would most likely
@@ -171,6 +165,12 @@ class CallableNode(
 
         self.data = data
         self.set_data_defaults()
+
+        ### store script id on node's data
+
+        data['script_id'] = (
+          node_defining_object['script_id']
+        )
 
         ### store the id in its own attribute for easy
         ### access

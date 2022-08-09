@@ -37,14 +37,14 @@ def free_up_memory():
 
 
     ### try retrieving a reference to the graph manager
-    try: graph_manager = window_manager.gm
+    try: gm = APP_REFS.gm
 
     ### if such attribute doesn't exist, just pass
     except AttributeError: pass
 
     ### otherwise, trigger its corresponding operation to
     ### free memory
-    else: graph_manager.free_up_memory()
+    else: gm.free_up_memory()
 
 
     ### try gathering references for menus created
@@ -97,7 +97,6 @@ def free_up_memory():
     for attr_name in (
       'node_def_map',
       'signature_map',
-      'id_map',
       'script_path_map',
       'category_path_map',
       'category_index_map',

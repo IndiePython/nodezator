@@ -1,5 +1,5 @@
-include nodezator/app_icon.png
-include nodezator/glossary.rst
+include nodezator/data/app_icon.png
+include nodezator/data/glossary.rst
 include nodezator/data/app_themes/emeralds_on_coal.pyl
 include nodezator/data/fonts/OFL_license_for_all_other_fonts.txt
 include nodezator/data/fonts/cc0_license_for_nodezator_icons.txt

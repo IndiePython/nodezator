@@ -447,6 +447,18 @@ class SupportOperations:
         ### the current id of the input socket
         child_data['id'] = input_socket.get_id()
 
+    def fix_output_socket_id(self, output_socket, old_id):
+        """Fix output socket id on socket tree."""
+        ### iterate over the tree data in the socket,
+        ### trees, looking for the one with the old id
+
+        for parent_data in self.parent_sockets_data:
+            if parent_data['id'] == old_id: break
+
+        ### update the id of the parent data with the
+        ### current id of the output socket
+        parent_data['id'] = output_socket.get_id()
+
     def sever_all_connections(self, node):
         """Sever all existing connections on given node."""
         ### sever connections from input sockets, if any
