@@ -9,7 +9,7 @@ from pathlib import Path
 
 ### local imports
 
-from appinfo import APP_CONFIG_DIR_NAME
+from appinfo import APP_DIR_NAME
 
 from our3rdlibs.userlogger import USER_LOGGER
 
@@ -74,7 +74,7 @@ elif 'XDG_CONFIG_HOME' in environ:
 else: config_dir = Path(environ['HOME']) / '.config'
 
 
-APP_CONFIG_DIR = config_dir / APP_CONFIG_DIR_NAME
+APP_CONFIG_DIR = config_dir / APP_DIR_NAME
 
 BOOKMARKS_FILE  = APP_CONFIG_DIR / 'bookmarks.pyl'
 RECENT_FILES    = APP_CONFIG_DIR / 'recent_files.pyl'

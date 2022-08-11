@@ -30,10 +30,11 @@ APP_VERSION = AppVersion(1, 2, 2, 'release_candidate')
 
 TITLE = 'Nodezator'
 
-## used to name configuration directory; it is important in
+## used to name directories related to the app, like
+## the config and log folders; it is important in
 ## case the title ever uses a name with characters not
 ## supported by any major operating system;
-APP_CONFIG_DIR_NAME = 'nodezator'
+APP_DIR_NAME = 'nodezator'
 
 ABBREVIATED_TITLE = 'NDZ'
 
