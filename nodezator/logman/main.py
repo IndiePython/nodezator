@@ -2,41 +2,56 @@
 
 ### standard library imports
 
-from pathlib import Path
+from os import environ
 
 from os.path import getsize
 
+from pathlib import Path
+
 from platform import (
-                     python_version,
-                     python_implementation,
-                     system       as get_os_name,
-                     architecture as get_architecture_info)
+
+                python_version,
+                python_implementation,
+
+                system       as get_os_name,
+                architecture as get_architecture_info,
+
+              )
 
 from pprint import pformat
 
-from datetime  import datetime, timezone
+from datetime import datetime, timezone
+
 from traceback import format_exception
 
-from logging          import DEBUG, Formatter, getLogger
+from logging import DEBUG, Formatter, getLogger
+
 from logging.handlers import RotatingFileHandler
 
 
 ## for temporary stdout suppression
 
 from io import StringIO
+
 from contextlib import redirect_stdout
 
 
 ### local imports
-from appinfo import TITLE, APP_VERSION
-
+from appinfo import TITLE, APP_VERSION, APP_DIR_NAME
 
 ### constants
 
-## define log directory, creating it if not existent
+## path to log folder
 
-LOGS_DIR = Path(__file__).parent.parent / 'logs'
-if not LOGS_DIR.exists(): LOGS_DIR.mkdir()
+if 'APPDATA' in environ:
+    general_log_dir = Path(environ['APPDATA'])
+
+else: general_log_dir = Path(environ['HOME']) / '.local'
+
+APP_LOGS_DIR = general_log_dir / APP_DIR_NAME / 'logs'
+
+if not APP_LOGS_DIR.exists():
+    APP_LOGS_DIR.mkdir(parents=True)
 
 ## UTC offset in the "±HHMM" format
 UTC_OFFSET = \
@@ -179,7 +194,7 @@ def custom_format_filename(name):
 
 filename = 'session.{}.0.log'.format(UTC_OFFSET)
 
-log_filepath = str(LOGS_DIR / filename)
+log_filepath = str(APP_LOGS_DIR / filename)
 
 last_run_handler = RotatingFileHandler(
                      filename    = log_filepath,
