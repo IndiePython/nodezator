@@ -85,6 +85,8 @@ from widget.colorbutton import ColorButton
 
 from widget.checkbutton import CheckButton
 
+from widget.optiontray.main import OptionTray
+
 
 ### constants
 
@@ -130,7 +132,7 @@ class ImageExportForm(Object2D):
         """Setup form objects."""
         ### build surf and rect for background
 
-        self.image = render_rect(500, 330, WINDOW_BG)
+        self.image = render_rect(500, 370, WINDOW_BG)
         draw_border(self.image)
 
         self.rect  = self.image.get_rect()
@@ -284,6 +286,53 @@ class ImageExportForm(Object2D):
           )
 
         self.widgets.append(self.chosen_filepath_label)
+
+        ### update the topleft to a value a bit below
+        ### the bottomleft corner of the widgets already
+        ### in the versatile list
+        topleft = self.widgets.rect.move(0, 20).bottomleft
+
+        ### instantiate widgets for image type
+
+        image_type_label = (
+
+          Object2D.from_surface(
+
+            render_text("Image type:", **TEXT_SETTINGS),
+
+            coordinates_name  = 'topleft',
+            coordinates_value = topleft,
+
+          )
+
+        )
+
+        self.widgets.append(image_type_label)
+
+        ## option tray for image type
+
+        midleft = (
+          image_type_label.rect.move(10, 0).midright
+        )
+
+        self.image_type_tray = (
+
+          OptionTray(
+
+            value   ='.html',
+            options = ('.html', '.svg', '.png'),
+
+            name = 'image_type',
+
+            command = self.update_image_type,
+
+            coordinates_name  = 'midleft',
+            coordinates_value = midleft,
+          )
+
+        )
+
+        self.widgets.append(self.image_type_tray)
 
         ### update the topleft to a value a bit below
         ### the bottomleft corner of the widgets already
@@ -526,23 +575,21 @@ class ImageExportForm(Object2D):
                   path_name=DEFAULT_FILENAME
                 )
 
-        ### act according to whether paths were given
-
-        ## if paths were given, there can only be one,
-        ## it should be used as the new filepath
+        ### if paths were given, there can only be one,
+        ### it should be used as the new filepath
 
         if paths:
             new_filepath = paths[0]
+            self.set_new_filepath(new_filepath)
 
-        ## if no path is given, we return earlier, since
-        ## it means the user cancelled setting a new
-        ## path
-        else: return
+        ###
+
+    def set_new_filepath(self, filepath):
 
         ### if the extension is not allowed, notify the
         ### user and cancel the operation by returning
 
-        suffix = new_filepath.suffix.lower()
+        suffix = filepath.suffix.lower()
 
         if suffix not in ('.svg', '.html', '.png'):
 
@@ -552,6 +599,10 @@ class ImageExportForm(Object2D):
             )
 
             return
+
+        else: self.image_type_tray.set(suffix, False)
+
+        ###
 
         if suffix in ('.svg', '.html'):
             
@@ -579,7 +630,18 @@ class ImageExportForm(Object2D):
 
         ### finally update the label using the given value
         ### as a string
-        self.chosen_filepath_label.set(str(new_filepath))
+        self.chosen_filepath_label.set(str(filepath))
+
+    def update_image_type(self):
+
+        filepath   = self.chosen_filepath_label.get()
+        new_suffix = self.image_type_tray.get()
+
+        new_filepath = (
+          Path(filepath).with_suffix(new_suffix)
+        )
+
+        self.set_new_filepath(new_filepath)
 
     def get_image_exporting_settings(self, size):
         """Return settings to export an image."""
@@ -770,6 +832,14 @@ class ImageExportForm(Object2D):
             else: value = method()
 
             data[widget.name] = value
+
+        ### exclude the 'image_type' key from the data,
+        ### since the data is already present in the
+        ### filepath (the extension of the file), and
+        ### the widget from which it was retrieved is
+        ### just there for convenience (to make it easier
+        ### to switch between different image types)
+        data.pop('image_type')
 
         ### calculate the size of the new image taking
         ### the margins into account
