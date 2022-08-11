@@ -39,6 +39,7 @@ from contextlib import redirect_stdout
 ### local imports
 from appinfo import TITLE, APP_VERSION, APP_DIR_NAME
 
+
 ### constants
 
 ## path to log folder
@@ -52,10 +53,6 @@ APP_LOGS_DIR = general_log_dir / APP_DIR_NAME / 'logs'
 
 if not APP_LOGS_DIR.exists():
     APP_LOGS_DIR.mkdir(parents=True)
-
-## UTC offset in the "±HHMM" format
-UTC_OFFSET = \
-    datetime.now(timezone.utc).astimezone().strftime("%z")
 
 ## log level
 LOG_LEVEL = DEBUG
@@ -155,7 +152,7 @@ class PylLogFormatter(Formatter):
                  {
                    'name'      : record.name,
                    'func_name' : record.funcName,
-                   'timestamp' : str(datetime.utcnow()),
+                   'timestamp' : str(datetime.now()),
                    'level'     : record.levelname,
                    'message'   : record.msg,
                    'exc_info'  : exc_info,
@@ -192,9 +189,7 @@ def custom_format_filename(name):
 
 ### define a handler to generate a log file for each run
 
-filename = 'session.{}.0.log'.format(UTC_OFFSET)
-
-log_filepath = str(APP_LOGS_DIR / filename)
+log_filepath = str(APP_LOGS_DIR / 'session.0.log')
 
 last_run_handler = RotatingFileHandler(
                      filename    = log_filepath,
@@ -244,26 +239,23 @@ logger.info('Configured logging.')
 ### (url can be found in appinfo.py);
 
 ## OS/system name
-logger.debug("OS/system name is " + get_os_name())
+logger.debug(f"OS/system name is {get_os_name()}")
 
 ## architecture
+
 logger.debug(
-"Architecture info is {}".format(
-                            str(get_architecture_info())))
+         f"Architecture info is {get_architecture_info()}"
+       )
 
 ## python version
-logger.debug("Python version is " + python_version())
+logger.debug(f"Python version is {python_version()}")
 
 ## python implementation
 logger.debug(
-"Python implementation is " + python_implementation())
+  f"Python implementation is {python_implementation()}"
+)
 
 ## pygame version
-
-logger.debug("Checking pygame module availability.")
-
-
-## TODO review block below and its comments
 
 ## execute an import statement to guarantee pygame is
 ## installed;
@@ -272,29 +264,27 @@ logger.debug("Checking pygame module availability.")
 ## pygame is first imported from appearing; we do so by
 ## temporarily redirecting stdout to a temporary file;
 ## there is no ill-meaning towards the pygame message
-## here, since we make the very logo of the library
-## in our splash screen;
+## here, since we display the very logo of the library
+## in our splash screen, with a link to its website;
 
 try:
 
     with StringIO() as temp_stream:
+
         with redirect_stdout(temp_stream):
-            from pygame.version import vernum
+
+            from pygame.version import ver
 
 except ImportError:
 
     logger.exception(
-             "Pygame doesn't seem to be available."
+             "pygame doesn't seem to be available."
              " Reraising."
            )
 
     raise
 
-else:
-
-    logger.debug(
-      "pygame version is " + ".".join(map(str, vernum))
-    )
+else: logger.debug(f"pygame version is {ver}")
 
 ## app version
 
@@ -304,4 +294,9 @@ logger.debug((
 )
 
 ## timezone
+
+UTC_OFFSET = (
+  datetime.now(timezone.utc).astimezone().strftime("%z")
+)
+
 logger.debug("UTC offset (timezone) is " + UTC_OFFSET)
