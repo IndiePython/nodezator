@@ -230,24 +230,37 @@ class SplashScreen(SplashScreenOperations):
         ### create and set objects to support animation
         self.set_animation_support_objects()
 
-        ### position objects
-        self.position_and_define_boundaries()
-
-        ### url label
+        ### url label;
+        ###
+        ### the 100 is a temporary value which is
+        ### replaced by self.rect.width minus 10 within
+        ### the positioning method
 
         self.url_label = (
 
           Label(
-            text='url',
-            max_width = self.rect.width,
+            text = 'url',
+            max_width = 100,
             **URL_TEXT_SETTINGS,
           )
 
         )
-        ###
-        self.center_splashscreen()
 
-        ###
+        ### position objects
+        self.position_and_define_boundaries()
+
+        ### define an attribute to hold a reference to
+        ### the rect of an object hovered by the mouse
+        ### or hold None, when there aren't any
+        self.hovered_rect = None
+
+        ### define a flag to indicate when the url label
+        ### must be drawn
+        self.draw_url_label = False
+
+        ### append the splash screen centering method
+        ### as a window resizing setup
+
         APP_REFS.window_resize_setups.append(
 
           self.center_splashscreen
@@ -542,8 +555,10 @@ class SplashScreen(SplashScreenOperations):
         draw_depth_finish(self.image)
 
         ### obtain a rect for the surface
-
         self.rect = self.image.get_rect()
+
+        ### update the url_label's max_width
+        self.url_label.max_width = self.rect.width - 10
 
         ### create and store a custom list wherein to
         ### store buttons; the list must be store both
@@ -563,15 +578,6 @@ class SplashScreen(SplashScreenOperations):
               in ('on_mouse_click', 'on_mouse_release')
             ):
                 buttons.append(obj)
-
-        ### define an attribute to hold a reference to
-        ### the rect of an object hovered by the mouse
-        ### or hold None, when there aren't any
-        self.hovered_rect = None
-
-        ### define a flag to indicate when the url label
-        ### must be drawn
-        self.draw_url_label = False
 
         ### define surfaces with solid colors to represent
         ### the shadows at the bottom and right of the
@@ -618,6 +624,9 @@ class SplashScreen(SplashScreenOperations):
           )
 
         )
+
+        ### center the splashscreen
+        self.center_splashscreen()
 
     def center_splashscreen(self):
 
