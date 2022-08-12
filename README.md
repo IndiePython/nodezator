@@ -11,11 +11,13 @@ Moreover, creating nodes is very straightforward: all you need to define a node 
 ```python
 def get_circle_area(radius:float=0.0):
     return math.pi * (radius ** 2)
+
+main_callable = get_circle_area
 ```
 
 ![node image](https://nodezator.com/images/get_circle_area_node.png)
 
-Visit the app's [homepage][] and check this [youtube video] presenting it.
+Visit the app's [homepage][] and check this [youtube video][] presenting it.
 
 It is a Python desktop app made with [pygame][], by Kennedy Richard Silva Guerra ([me][]), 31, as part of the [Indie Python][] project.
 
@@ -29,8 +31,7 @@ If you have Python installed in your system and it has both pygame and numpy ava
 If you want to install it, just type the commands below in a terminal with Python 3 available. It will install nodezator and also, if not available yet, pygame and numpy.
  
 ```bash
-python3 -m pip install --upgrade pip
-python3 -m pip install --upgrade nodezator
+pip install nodezator
 ```
 
 If everything went well, after installing, you should be able to start by simply typing `nodezator` or `python3 -m nodezator` in your command line.
