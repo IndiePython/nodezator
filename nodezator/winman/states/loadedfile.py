@@ -295,7 +295,9 @@ class LoadedFileState:
                     (
                       self
                       .canvas_popup_menu
-                      .check_focus(mouse_pos)
+                      .focus_if_within_boundaries(
+                         mouse_pos
+                       )
                     )
 
 

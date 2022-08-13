@@ -40,6 +40,10 @@ from editing.objpopups.operatornode import (
 
 from editing.objpopups.textblock import TextBlockPopupMenu
 
+from editing.socketpopups.output import (
+                                   OutputSocketPopupMenu
+                                 )
+
 
 class EditingAssistant(
 
@@ -80,9 +84,13 @@ class EditingAssistant(
 
         ### create and store popup menus
 
+        ## widget-related
+
         self.widget_creation_popup_menu = (
           WidgetCreationPopupMenu()
         )
+
+        ## objects
 
         self.callable_node_popup_menu = (
           CallableNodePopupMenu()
@@ -98,6 +106,12 @@ class EditingAssistant(
 
         self.text_block_popup_menu = (
           TextBlockPopupMenu()
+        )
+
+        ## sockets
+
+        self.output_socket_popup_menu = (
+          OutputSocketPopupMenu()
         )
 
     def prepare_for_new_session(self):

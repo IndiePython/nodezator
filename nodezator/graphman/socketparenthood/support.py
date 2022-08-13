@@ -10,7 +10,10 @@ from graphman.socketparenthood.utils import (
 
 from graphman.utils import yield_subgraph_nodes
 
-from our3rdlibs.behaviour import indicate_unsaved
+from our3rdlibs.behaviour import (
+                            indicate_unsaved,
+                            set_status_message,
+                          )
 
 
 class SupportOperations:
@@ -508,3 +511,35 @@ class SupportOperations:
 
         ### signal the severances performed
         self.signal_severance_of_removed_sockets()
+
+    def sever_children(self, output_socket):
+        """Sever all children of given output socket."""
+
+        try: children = output_socket.children
+
+        except AttributeError:
+
+            ### notify user of impossibility
+            set_status_message("No children to disconnect")
+
+        else:
+
+            # note that we use a copy of the children
+            # list; this is so because the children
+            # list itself is altered while executing
+            # the segment severing method
+
+            for child in children[:]:
+
+                self.sever_segment_between_sockets(
+                       output_socket, child,
+                     )
+
+            ### signal the severances performed
+            self.signal_severance_of_removed_sockets()
+
+            ### notify user of success
+            set_status_message("All children disconnected")
+
+            ### indicate the change in the data
+            indicate_unsaved()
