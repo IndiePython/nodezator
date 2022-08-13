@@ -6,6 +6,8 @@ from xml.etree.ElementTree import Element
 
 ### local imports
 
+from config import APP_REFS
+
 from graphman.socket.base import Socket
 
 from graphman.socket.surfs import (
@@ -31,7 +33,7 @@ class OutputSocket(Socket):
           node,
           type_codename,
           output_name = 'output',
-          center=(0, 0),
+          center = (0, 0),
         ):
         """Store arguments, setup image, rect and position.
 
@@ -104,6 +106,27 @@ class OutputSocket(Socket):
     def get_id(self):
         """Return a custom id from gathered data."""
         return (self.node.id, self.output_name)
+
+    def on_right_mouse_release(self, event):
+        """React to right mouse button release.
+
+        Parameters
+        ==========
+
+        event (pygame.event.Event of pygame.MOUSEBUTTONUP
+        type)
+
+            required in order to comply with protocol
+            used;
+
+            Check pygame.event module documentation on
+            pygame website for more info about this event
+            object.
+        """
+        APP_REFS.ea.output_socket_popup_menu.show(
+                                               self,
+                                               event.pos,
+                                             )
 
     def svg_repr(self):
         """"""
