@@ -44,6 +44,10 @@ from editing.socketpopups.input import (
                                   InputSocketPopupMenu
                                 )
 
+from editing.socketpopups.proxy import (
+                                  ProxySocketPopupMenu
+                                )
+
 from editing.socketpopups.output import (
                                    OutputSocketPopupMenu
                                  )
@@ -116,6 +120,10 @@ class EditingAssistant(
 
         self.input_socket_popup_menu = (
           InputSocketPopupMenu()
+        )
+
+        self.proxy_socket_popup_menu = (
+          ProxySocketPopupMenu()
         )
 
         self.output_socket_popup_menu = (
