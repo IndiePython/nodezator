@@ -129,10 +129,6 @@ class WidgetOps:
               type_to_codename(expected_type)
             )
 
-            self.proxy_socket.update_type_codename(
-                                type_codename
-                              )
-
             output_socket = self.output_socket
 
             output_socket.update_type_codename(
