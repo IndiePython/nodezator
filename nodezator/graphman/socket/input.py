@@ -4,13 +4,9 @@
 from xml.etree.ElementTree import Element
 
 
-### third-party import
-from pygame.mouse import get_pos as get_mouse_pos
-
-
 ### local imports
 
-from dialog import create_and_show_dialog
+from config import APP_REFS
 
 from our3rdlibs.behaviour import (
                             indicate_unsaved,
@@ -95,39 +91,26 @@ class InputSocket(Socket):
         self.image = self.circle_surf
 
     def on_right_mouse_release(self, event):
+        """React to right mouse button release.
 
-        if self.subparameter_index is None: return
-        
-        options = [
-          ("Mark input for unpacking",   'pack'),
-          ("Unmark input for unpacking", 'unpack'),
-          ("Do nothing",                 False),
-        ]
+        Parameters
+        ==========
 
-        answer = create_and_show_dialog(
+        event (pygame.event.Event of pygame.MOUSEBUTTONUP
+        type)
 
-                   "What would you like to do?",
-                   options,
+            required in order to comply with protocol
+            used;
 
-                   button_pos_from  = 'bottomleft',
-                   button_pos_to    = 'topleft',
-                   button_offset_by = (0, 10),
+            Check pygame.event module documentation on
+            pygame website for more info about this event
+            object.
+        """
+        APP_REFS.ea.input_socket_popup_menu.show(
+                                              self,
+                                              event.pos,
+                                            )
 
-                   dialog_pos_from = 'topleft',
-                   dialog_pos_to   = 'topleft',
-                   dialog_offset_by= get_mouse_pos(),
-
-                   dismissable=True,
-
-                 )
-
-        if not answer: return
-
-        elif answer == 'pack':
-            self.mark_for_unpacking()
-
-        elif answer == 'unpack':
-            self.unmark_for_unpacking()
 
     def mark_for_unpacking(self):
         
@@ -140,28 +123,33 @@ class InputSocket(Socket):
           [self.parameter_name]
 
         ):
-            create_and_show_dialog(
-              "No need to mark input for unpacking,"
-              " it was already marked for such."
+
+            ## create status message
+
+            status_message = (
+              "Didn't need to unpack: input"
+              " unpacked already."
             )
 
-            return
+        else:
 
-        else: (
-                self
-                .node
-                .mark_subparameter_for_unpacking
-                (self)
-              )
+            ## mark subparameter for unpacking
 
-        ## create status message
-        status_message = "Marked input for unpacking"
+            (
+              self
+              .node
+              .mark_subparameter_for_unpacking
+              (self)
+            )
 
-        ## since we changed the data, mark it
-        ## as unsaved
-        indicate_unsaved()
+            ## create status message
+            status_message = "Marked input for unpacking"
 
-        ## inform user of change in statusbar
+            ## since we changed the data, mark it
+            ## as unsaved
+            indicate_unsaved()
+
+        ## display statusbar message
         set_status_message(status_message)
 
     def unmark_for_unpacking(self):
@@ -176,6 +164,8 @@ class InputSocket(Socket):
 
         ):
 
+            ## unmark subparameter for unpacking
+
             (
               self
               .node
@@ -183,21 +173,21 @@ class InputSocket(Socket):
               (self)
             )
 
+            ## create status message
+            status_message = "Undid unpacking"
+
+            ## since we changed the data, mark it
+            ## as unsaved
+            indicate_unsaved()
+
         else:
 
-            create_and_show_dialog(
-              "No need to unmark input for unpacking,"
-              " it was already unmarked."
+            ## create status message
+
+            status_message = (
+              "Didn't need to undo unpacking: input"
+              " already not unpacked"
             )
-
-            return
-
-        ## create status message
-        status_message = "Unmarked input for unpacking"
-
-        ## since we changed the data, mark it
-        ## as unsaved
-        indicate_unsaved()
 
         ## inform user of change in statusbar
         set_status_message(status_message)

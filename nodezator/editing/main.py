@@ -40,6 +40,10 @@ from editing.objpopups.operatornode import (
 
 from editing.objpopups.textblock import TextBlockPopupMenu
 
+from editing.socketpopups.input import (
+                                  InputSocketPopupMenu
+                                )
+
 from editing.socketpopups.output import (
                                    OutputSocketPopupMenu
                                  )
@@ -109,6 +113,10 @@ class EditingAssistant(
         )
 
         ## sockets
+
+        self.input_socket_popup_menu = (
+          InputSocketPopupMenu()
+        )
 
         self.output_socket_popup_menu = (
           OutputSocketPopupMenu()
