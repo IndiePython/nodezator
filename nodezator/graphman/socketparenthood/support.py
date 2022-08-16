@@ -543,3 +543,37 @@ class SupportOperations:
 
             ### indicate the change in the data
             indicate_unsaved()
+
+    def sever_parent(self, socket):
+        """Sever parent of given socket."""
+
+        try: parent = socket.parent
+
+        except AttributeError:
+
+            ### notify user of impossibility
+            set_status_message("No parent to disconnect")
+
+        else:
+
+            # we can freely remove the connection
+            # of the input sockets without worrying
+            # about the effects on the 'flat_values'
+            # list we are iterating, because the
+            # effects of the operation on the list are
+            # only accounted for (if any), when we
+            # execute the severance signaling method
+
+            self.sever_segment_between_sockets(
+                   parent,
+                   socket,
+                 )
+
+            ### signal the severance performed
+            self.signal_severance_of_removed_sockets()
+
+            ### notify user of success
+            set_status_message("Disconnected socket")
+
+            ### indicate the change in the data
+            indicate_unsaved()

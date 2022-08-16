@@ -6,6 +6,8 @@ from xml.etree.ElementTree import Element
 
 ### local imports
 
+from config import APP_REFS
+
 from graphman.socket.surfs import (
                              HOLLOW_SOCKET_CIRCLE_SURF,
                              CODENAME_TO_STYLE_MAP,
@@ -119,6 +121,27 @@ class ProxySocket(Socket):
         else:
             for child in children:
                 child.receive_input(data)
+
+    def on_right_mouse_release(self, event):
+        """React to right mouse button release.
+
+        Parameters
+        ==========
+
+        event (pygame.event.Event of pygame.MOUSEBUTTONUP
+        type)
+
+            required in order to comply with protocol
+            used;
+
+            Check pygame.event module documentation on
+            pygame website for more info about this event
+            object.
+        """
+        APP_REFS.ea.proxy_socket_popup_menu.show(
+                                              self,
+                                              event.pos,
+                                            )
 
     def svg_repr(self):
 
