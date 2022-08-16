@@ -2,7 +2,7 @@
 
 ### third-party imports
 
-from pygame import QUIT, MOUSEBUTTONUP
+from pygame import QUIT, MOUSEBUTTONUP, KEYUP, K_ESCAPE
 
 from pygame.draw    import rect    as draw_rect
 from pygame.event   import get     as get_events
@@ -212,6 +212,14 @@ class BehaviourDefinitions(Object2D):
         for event in get_events():
 
             if event.type == QUIT: raise QuitAppException
+
+            elif event.type == KEYUP:
+
+                # if released escape key, focus the
+                # loop holder
+
+                if event.key == K_ESCAPE:
+                    self.focus_loop_holder()
 
             ## mouse
 
