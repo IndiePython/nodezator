@@ -30,7 +30,7 @@ from ourstdlibs.path import (
 
 from ourstdlibs.pyl import load_pyl, save_pyl
 
-from loopman.exception import SwitchLoopException
+from our3rdlibs.userlogger import USER_LOGGER
 
 from our3rdlibs.behaviour import (
                             are_changes_saved,
@@ -38,7 +38,15 @@ from our3rdlibs.behaviour import (
                             set_status_message,
                           )
 
+from loopman.exception import SwitchLoopException
+
+from logman.main import get_new_logger
+
 from recentfile import store_recent_file
+
+
+### create logger for module
+logger = get_new_logger(__name__)
 
 
 ### constants
@@ -209,7 +217,8 @@ class FileOperations:
         if filepath and not are_changes_saved():
 
             answer = show_dialog_from_key(
-                            'open_new_while_unsaved_dialog')
+                       'open_new_while_unsaved_dialog'
+                     )
 
             if   answer == "open new": pass
             elif answer == "save first": self.save()
@@ -291,32 +300,68 @@ class FileOperations:
 
                     save_timestamped_backup(
                       filepath,
-                      USER_PREFS['NUMBER_OF_BACKUPS']
+                      USER_PREFS['NUMBER_OF_BACKUPS'],
                     )
 
                     # copy swap file contents into
                     # source file
 
-                    swap_contents = \
-                    swap_path.read_text(encoding="utf-8")
+                    swap_contents = (
+                      swap_path.read_text(encoding='utf-8')
+                    )
 
-                    filepath.write_text(swap_contents,
-                                        encoding="utf-8")
+                    filepath.write_text(
+                               swap_contents,
+                               encoding='utf-8',
+                             )
 
                 else: return
 
-            ## otherwise we just copy the source
-            ## contents into it
+            ### try loading the file, storing its data
+            try: loaded_data = load_pyl(filepath)
 
-            else:
+            ### if loading fails abort opening the file by
+            ### leaving this method after notifying the
+            ### user of the problem
 
-                # copy source file text to swap file
+            except Exception as err:
 
-                source_contents = \
-                        filepath.read_text(encoding='utf-8')
+                message = (
+                  "An error occurred while trying to"
+                  " open a file."
+                )
+
+                logger.exception(message)
+
+                USER_LOGGER.exception(message)
+
+                create_and_show_dialog(
+
+                   (
+                      "An error ocurred while trying to"
+                     f" open {filepath}. Check the user"
+                      " log (<Ctrl+Shift+j>) for details."
+                   ),
+
+                   level_name = 'error',
+
+                )
+
+                return
+
+            ### if swap path does not exist, we copy the
+            ### source contents into it
+
+            if not swap_path.is_file():
+
+                source_contents = (
+                  filepath.read_text(encoding='utf-8')
+                )
 
                 swap_path.write_text(
-                          source_contents, encoding='utf-8')
+                            source_contents,
+                            encoding='utf-8',
+                          )
 
             ### store both paths for access throughout the
             ### system
@@ -342,13 +387,13 @@ class FileOperations:
 
             APP_REFS.swap_path = swap_path
 
-            ### clean up native format json data that may
+            ### clean up native format data that may
             ### exist from previous session
             APP_REFS.data.clear()
 
             ### replace such data with new native format
-            ### json data loaded from the file to be opened
-            APP_REFS.data = load_pyl(APP_REFS.source_path)
+            ### data loaded from the file to be opened
+            APP_REFS.data = loaded_data
 
             ### store filepath as a recently open file, so
             ### it is available in the "File > Open recent"
@@ -658,7 +703,7 @@ class FileOperations:
         )
 
     def save_data(self):
-        """Save json data on filepath.
+        """Save data on filepath.
 
         Support method for the save methods self.save() and
         self.save_as().

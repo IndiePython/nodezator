@@ -15,7 +15,15 @@ def load_pyl(filepath):
       str(filepath), mode='r', encoding='utf-8'
     ) as f:
 
-        return literal_eval(f.read())
+        try: return literal_eval(f.read())
+
+        except Exception as err:
+
+            message = (
+              f"Error while trying to load {filepath}."
+            )
+
+            raise Exception(message) from err
 
 def save_pyl(
 
@@ -24,27 +32,35 @@ def save_pyl(
 
       *,
 
-      indent =   2,
-
-      # arbitrary large value, since .pyl is used mostly to
-      # store data and shouldn't be read by humans often;
-      width  = 300,
+      indent =  2,
+      width  = 80,
 
     ):
     """Save pretty-formatted python literal in filepath."""
+
     with open(
       str(filepath), mode='w', encoding='utf-8'
     ) as f:
 
-        f.write(
+        try:
 
-            pformat(
+            f.write(
 
-              python_literal,
+                pformat(
 
-              indent = indent,
-              width  = width,
+                  python_literal,
 
+                  indent = indent,
+                  width  = width,
+
+                )
+
+              )
+
+        except Exception as err:
+
+            message = (
+              f"Error while trying to save {filepath}."
             )
 
-          )
+            raise Exception(message) from err
