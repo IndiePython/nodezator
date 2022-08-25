@@ -1281,7 +1281,7 @@ def snippet_node_to_text(
                 else:
                     
                     if subparam_index in (
-                      self
+                      node
                       .data
                       ['subparam_unpacking_map']
                       [param_name]
