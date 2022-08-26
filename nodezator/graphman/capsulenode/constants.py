@@ -326,7 +326,7 @@ with open(
 
     $string = f.read()
 
-""".strip
+""".strip()
 ).substitute,
 
   'write_text_file' : Template("""
@@ -389,7 +389,7 @@ $output = None
   'load_pyl_file' : Template("""
 
 with open($filepath, mode='r', encoding=$encoding) as f:
-    $obj = literal_eval(f.read())
+    $output = literal_eval(f.read())
 
 """.strip()).substitute,
 
