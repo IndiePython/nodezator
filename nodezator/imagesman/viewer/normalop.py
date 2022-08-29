@@ -10,13 +10,22 @@ from functools import partialmethod
 ### third-party imports
 
 from pygame import (
-                   QUIT, KEYDOWN, K_ESCAPE, MOUSEBUTTONUP,
-                   K_UP, K_DOWN, K_LEFT, K_RIGHT,
-                   K_w, K_a, K_s, K_d,
-                   K_k, K_h, K_j, K_l,
-                   K_f,
-                   K_PAGEUP, K_PAGEDOWN, K_HOME, K_END,
-                   MOUSEMOTION)
+
+              QUIT,
+
+              KEYDOWN,
+
+              K_ESCAPE, K_RETURN, K_KP_ENTER,
+              K_UP, K_DOWN, K_LEFT, K_RIGHT,
+              K_w, K_a, K_s, K_d,
+              K_k, K_h, K_j, K_l,
+              K_f,
+              K_PAGEUP, K_PAGEDOWN, K_HOME, K_END,
+
+              MOUSEBUTTONUP,
+              MOUSEMOTION,
+
+            )
 
 from pygame.display import update
 
@@ -62,8 +71,10 @@ class NormalModeOperations(Object2D):
             if event.type == QUIT: raise QuitAppException()
 
             elif event.type == KEYDOWN:
-                
-                if event.key == K_ESCAPE:
+
+                if event.key in (
+                  K_ESCAPE, K_RETURN, K_KP_ENTER
+                ):
                     self.running = False
 
                 elif event.key in (

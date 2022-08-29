@@ -2,7 +2,15 @@
 
 ### third-party imports
 
-from pygame import Surface, QUIT, KEYUP, K_ESCAPE
+from pygame import (
+
+              QUIT,
+
+              KEYUP, K_ESCAPE, K_RETURN, K_KP_ENTER,
+
+              Surface,
+
+            )
 
 from pygame.display import update
 
@@ -94,7 +102,9 @@ def show_surface(
 
             elif event.type == KEYUP:
 
-                if event.key == K_ESCAPE:
+                if event.key in (
+                  K_ESCAPE, K_RETURN, K_KP_ENTER
+                ):
                     running = False
 
         ## blit in this order: background, text, surface,

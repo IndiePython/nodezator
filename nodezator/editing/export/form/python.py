@@ -12,7 +12,7 @@ from pygame import (
 
               QUIT,
 
-              KEYUP, K_ESCAPE,
+              KEYUP, K_ESCAPE, K_RETURN, K_KP_ENTER,
 
               MOUSEBUTTONDOWN, MOUSEBUTTONUP,
 
@@ -491,7 +491,12 @@ class PythonExportForm(Object2D):
             ### KEYUP
 
             elif event.type == KEYUP:
-                if event.key == K_ESCAPE: self.cancel()
+
+                if event.key == K_ESCAPE:
+                    self.cancel()
+
+                elif event.key in (K_RETURN, K_KP_ENTER):
+                    self.submit_form()
 
             ### MOUSEBUTTONDOWN
 

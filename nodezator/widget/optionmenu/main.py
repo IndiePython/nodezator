@@ -701,6 +701,10 @@ def build_option_widget(option, role_to_maps, set_method):
     ### of the obj using the same name as the variable
     obj.chosen_surf = chosen_surf
 
+    ### store a partial on the 'select' attribute of the
+    ### widget that causes it to be selected
+    obj.select = partial(set_method, option)
+
     ### define function complying with the mouse interaction
     ### protocol making it so it executes the command
 

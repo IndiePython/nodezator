@@ -1,4 +1,4 @@
-"""Faciliy w/ class extension w/ splash screen operations."""
+"""Facility w/ class extension w/ splash screen operations."""
 
 ### standard library import
 from functools import partialmethod
@@ -10,7 +10,7 @@ from pygame import (
 
               QUIT,
 
-              KEYUP, K_ESCAPE,
+              KEYUP, K_ESCAPE, K_RETURN, K_KP_ENTER,
 
               KEYDOWN, KMOD_CTRL, K_w,
 
@@ -97,8 +97,8 @@ class SplashScreenOperations(Object2D):
             ### proper behaviour to quit the application
             if event.type == QUIT: raise QuitAppException
 
-            ### if the "escape" key is released, raise
-            ### the SwitchLoopException without
+            ### if one of the following keys is released,
+            ### raise the SwitchLoopException without
             ### arguments, which causes the window manager
             ### to obtain control of the screen, that is,
             ### the splash screen looses focus and
@@ -106,7 +106,9 @@ class SplashScreenOperations(Object2D):
 
             elif event.type == KEYUP:
 
-                if event.key == K_ESCAPE:
+                if event.key in (
+                  K_ESCAPE, K_RETURN, K_KP_ENTER
+                ):
                     raise SwitchLoopException
 
             ### pressing "Ctrl" + "W" also triggers

@@ -9,9 +9,15 @@ from functools import partial, partialmethod
 from collections import defaultdict
 
 
-### third-paraty imports
+### third-party imports
 
-from pygame import QUIT, MOUSEBUTTONDOWN, MOUSEBUTTONUP
+from pygame import (
+
+              QUIT,
+              MOUSEBUTTONDOWN, MOUSEBUTTONUP,
+              KEYUP, K_ESCAPE, K_RETURN, K_KP_ENTER,
+
+            )
 
 from pygame.event import get as get_events
 
@@ -580,6 +586,14 @@ class NodePacksRenamingChangeForm(Object2D):
         for event in get_events():
 
             if event.type == QUIT: raise QuitAppException
+
+            elif event.type == KEYUP:
+
+                if event.key == K_ESCAPE:
+                    self.cancel()
+
+                elif event.key in (K_RETURN, K_KP_ENTER):
+                    self.submit_form()
 
             elif event.type == MOUSEBUTTONDOWN:
 

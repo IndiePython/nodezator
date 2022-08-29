@@ -2,7 +2,11 @@
 
 ### third-party imports
 
-from pygame import QUIT, MOUSEBUTTONUP, KEYUP, K_ESCAPE
+from pygame import (
+              QUIT,
+              KEYUP, K_ESCAPE, K_RETURN, K_KP_ENTER,
+              MOUSEBUTTONUP,
+            )
 
 from pygame.draw    import rect    as draw_rect
 from pygame.event   import get     as get_events
@@ -210,7 +214,6 @@ class BehaviourDefinitions(Object2D):
         ### process events from the event queue
 
         for event in get_events():
-
             if event.type == QUIT: raise QuitAppException
 
             elif event.type == KEYUP:
@@ -220,6 +223,12 @@ class BehaviourDefinitions(Object2D):
 
                 if event.key == K_ESCAPE:
                     self.focus_loop_holder()
+
+                # otherwise, invoke the hovered widget,
+                # if any
+
+                elif event.key in (K_RETURN, K_KP_ENTER):
+                    self.invoke_hovered_widget()
 
             ## mouse
 

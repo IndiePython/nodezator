@@ -5,8 +5,8 @@ from pygame import (
 
               QUIT,
 
-              KEYUP, K_ESCAPE,
-
+              KEYUP,
+              K_SPACE, K_RETURN, K_KP_ENTER, K_ESCAPE,
               MOUSEBUTTONDOWN, MOUSEBUTTONUP,
 
               Rect,
@@ -334,8 +334,13 @@ class AudioPlayer(Object2D):
 
             elif event.type == KEYUP:
                 
-                if event.key == K_ESCAPE:
+                if event.key in (
+                  K_ESCAPE, K_RETURN, K_KP_ENTER
+                ):
                     self.running = False
+
+                elif event.key == K_SPACE:
+                    self.toggle_play()
 
             elif event.type == MOUSEBUTTONDOWN:
 

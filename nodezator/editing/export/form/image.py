@@ -12,7 +12,7 @@ from pygame import (
 
               QUIT,
 
-              KEYUP, K_ESCAPE,
+              KEYUP, K_ESCAPE, K_RETURN, K_KP_ENTER,
 
               MOUSEBUTTONDOWN, MOUSEBUTTONUP
 
@@ -730,14 +730,19 @@ class ImageExportForm(Object2D):
     def handle_input(self):
         """Process events from event queue."""
         for event in get_events():
-
             ### QUIT
             if event.type == QUIT: raise QuitAppException
 
             ### KEYUP
 
             elif event.type == KEYUP:
-                if event.key == K_ESCAPE: self.cancel()
+
+                if event.key == K_ESCAPE:
+                    self.cancel()
+
+                elif event.key in (K_RETURN, K_KP_ENTER):
+                    self.submit_form()
+
 
             ### MOUSEBUTTONDOWN
 

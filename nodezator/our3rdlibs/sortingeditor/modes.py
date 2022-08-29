@@ -12,7 +12,7 @@ from pygame import (
 
               QUIT,
 
-              KEYUP, K_ESCAPE,
+              KEYUP, K_ESCAPE, K_RETURN, K_KP_ENTER,
               K_LEFT, K_a, K_RIGHT, K_d,
 
               MOUSEBUTTONDOWN,
@@ -114,19 +114,32 @@ class SortingEditorModes(Object2D):
             ### quit the app
             if event.type == QUIT: raise QuitAppException
 
-            ### if the escape key is released, turn the
-            ### "running" flag off and the "cancel" flag on;
-            ###
-            ### this will cause the edition session to be
-            ### ended (the widget loop will be exited in the
-            ### "sort_sequence" method)
+            ### KEYUP
 
             elif event.type == KEYUP:
-                
+
+                ## if the escape key is released, turn
+                ## the "running" flag off and the
+                ## "cancel" flag on;
+                ##
+                ## this will cause the edition session
+                ## to be ended (the widget loop will be
+                ## exited in the "sort_sequence" method)
+
                 if event.key == K_ESCAPE:
 
                     self.running = False
                     self.cancel  = True
+
+                ## if one of the enter keys are release,
+                ## though, we set the running flag off,
+                ## and leave the cancel flag untouched;
+                ## since the cancelling flag is off by
+                ## default, it means we are confirming
+                ## the edition
+
+                elif event.key in (K_RETURN, K_KP_ENTER):
+                    self.running = False
 
             ### execute the respective methods for when
             ### the mouse left button is pressed or released

@@ -5,6 +5,7 @@
 from pygame import (
 
               QUIT, KEYUP, K_ESCAPE,
+              K_RETURN, K_KP_ENTER,
               MOUSEBUTTONUP, MOUSEMOTION,
 
               VIDEORESIZE,
@@ -284,6 +285,9 @@ class OptionMenuLifetimeOperations(Object2D):
                 if event.key == K_ESCAPE:
                     self.lose_focus()
 
+                elif event.key in (K_RETURN, K_KP_ENTER):
+                    self.choose_option_under_mouse()
+
             ### act when the mouse left or right button
             ### is released
 
@@ -436,6 +440,27 @@ class OptionMenuLifetimeOperations(Object2D):
             if widget.rect.collidepoint(mouse_pos):
 
                 widget.on_mouse_release(event)
+                self.lose_focus()
+
+    def choose_option_under_mouse(self):
+        """Choose option under mouse, if any."""
+        ### get mouse position
+        mouse_pos = get_mouse_pos()
+
+        ### iterate over option widgets, looking for the
+        ### widget which collides with the mouse
+
+        for widget in self.option_widgets:
+
+            ## if you find the widget, execute its
+            ## select method and lose the focus
+            ## of this option menu (there's no need to
+            ## break out of this "for loop", since loosing
+            ## the focus does so by raising an exception)
+
+            if widget.rect.collidepoint(mouse_pos):
+
+                widget.select()
                 self.lose_focus()
 
     def scroll_with_mousewheel(self, event):

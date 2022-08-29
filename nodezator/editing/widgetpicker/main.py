@@ -12,7 +12,7 @@ from pygame import (
 
               QUIT,
 
-              KEYUP, K_ESCAPE,
+              KEYUP, K_ESCAPE, K_RETURN, K_KP_ENTER,
 
               MOUSEBUTTONDOWN, MOUSEBUTTONUP,
 
@@ -414,7 +414,12 @@ class WidgetPicker(
             if event.type == QUIT: raise QuitAppException
 
             elif event.type == KEYUP:
-                if event.key == K_ESCAPE: self.exit_form()
+
+                if event.key == K_ESCAPE:
+                    self.exit_form()
+
+                elif event.key in (K_RETURN, K_KP_ENTER):
+                    self.submit_data()
 
             elif event.type == MOUSEBUTTONDOWN:
 

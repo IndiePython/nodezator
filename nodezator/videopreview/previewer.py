@@ -3,7 +3,7 @@
 
 from pygame import (
               QUIT,
-              KEYUP, K_ESCAPE,
+              KEYUP, K_ESCAPE, K_RETURN, K_KP_ENTER,
               MOUSEBUTTONDOWN,
             )
 
@@ -241,7 +241,9 @@ class VideoPreviewer(Object2D):
 
             elif event.type == KEYUP:
                 
-                if event.key == K_ESCAPE:
+                if event.key in (
+                  K_ESCAPE, K_RETURN, K_KP_ENTER
+                ):
                     self.running = False
 
             elif event.type == MOUSEBUTTONDOWN:

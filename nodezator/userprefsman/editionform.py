@@ -10,6 +10,7 @@ from pygame import (
               QUIT,
               MOUSEBUTTONDOWN,
               MOUSEBUTTONUP,
+              KEYUP, K_ESCAPE, K_RETURN, K_KP_ENTER
             )
 
 from pygame.event   import get as get_events
@@ -385,9 +386,26 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
         """Process events from event queue."""
 
         for event in get_events():
-
             ### QUIT
             if event.type == QUIT: self.quit()
+
+            ### KEYUP
+
+            elif event.type == KEYUP:
+
+                ## exit the preferences dialog by
+                ## pressing "Esc"
+
+                if event.key == K_ESCAPE:
+                    self.exit_loop()
+
+                ## confirm edition and exit form by
+                ## pressing one of the "enter" keys
+
+                elif event.key in (K_RETURN, K_KP_ENTER):
+
+                    self.finish_form()
+                    self.exit_loop()
 
             ### MOUSEBUTTONDOWN
 

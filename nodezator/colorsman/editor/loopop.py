@@ -11,6 +11,7 @@ from pygame import (
               MOUSEBUTTONDOWN, MOUSEBUTTONUP,
               KEYDOWN, K_LEFT, K_a, K_RIGHT, K_d,
               K_HOME, K_END, K_DELETE,
+              KEYUP, K_ESCAPE, K_RETURN, K_KP_ENTER,
             )
 
 from pygame.event import get as get_events
@@ -190,6 +191,16 @@ class LoopOperations(Object2D, LoopHolder):
             ### perform the corresponding action if the user
             ### presses the left mouse button, passing the
             ### event object as an argument of the operation
+
+            elif event.type == KEYUP:
+
+                if event.key == K_ESCAPE:
+
+                    self.cancel()
+                    break
+
+                elif event.key in (K_RETURN, K_KP_ENTER):
+                    self.exit_loop()
 
             elif event.type == MOUSEBUTTONDOWN:
 

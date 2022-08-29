@@ -3,9 +3,11 @@
 ### third-party imports
 
 from pygame import (
-                   QUIT,
-                   KEYUP, K_ESCAPE, K_w, K_UP, K_s, K_DOWN,
-                   MOUSEBUTTONUP)
+              QUIT,
+              KEYUP, K_ESCAPE, K_RETURN, K_KP_ENTER,
+              K_w, K_UP, K_s, K_DOWN,
+              MOUSEBUTTONUP,
+            )
 
 from pygame.event import get as get_events
 
@@ -231,7 +233,6 @@ class ColorListMode:
     def color_list_event_handling(self):
         """Event handling for the color list mode."""
         for event in get_events():
-            
             ### raise specific exception if user tries to
             ### quit the application
 
@@ -239,12 +240,14 @@ class ColorListMode:
                 raise QuitAppException
 
             ### trigger exiting the color viewer by setting
-            ### 'running' flag to False if the escape
-            ### key is released
+            ### 'running' flag to False if one of following
+            ### keys is released
 
             elif event.type == KEYUP:
                 
-                if event.key == K_ESCAPE:
+                if event.key in (
+                  K_ESCAPE, K_RETURN, K_KP_ENTER
+                ):
                     self.running = False
 
             ### if a mouse button is released...

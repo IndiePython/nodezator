@@ -3,11 +3,18 @@
 ### third-party imports
 
 from pygame import (
-              QUIT, KEYDOWN, KEYUP,
+
+              QUIT,
+
+              KEYDOWN, KEYUP,
               KMOD_CTRL, K_ESCAPE, K_x, K_y,
-              K_KP0, K_RSHIFT, K_LSHIFT, MOUSEBUTTONUP,
+              K_RETURN, K_KP_ENTER,
+              K_KP0, K_RSHIFT, K_LSHIFT,
               K_w, K_a, K_s, K_d, K_o,
               K_UP, K_LEFT, K_DOWN, K_RIGHT,
+
+              MOUSEBUTTONUP,
+
             )
 
 from pygame.event   import get as get_events
@@ -74,6 +81,9 @@ class MovingObjectState:
 
                 elif event.key == K_ESCAPE:
                     APP_REFS.ea.cancel_moving()
+
+                elif event.key in (K_RETURN, K_KP_ENTER):
+                    APP_REFS.ea.confirm_moving()
 
                 elif event.key == K_x:
                     APP_REFS.ea.constrain_to_x()

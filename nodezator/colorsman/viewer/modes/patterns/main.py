@@ -6,7 +6,16 @@ from types import GeneratorType
 
 ### third-party imports
 
-from pygame import QUIT, KEYUP, K_ESCAPE, MOUSEBUTTONUP
+from pygame import (
+
+              QUIT,
+
+              KEYUP,
+              K_ESCAPE, K_RETURN, K_KP_ENTER,
+
+              MOUSEBUTTONUP,
+
+            )
 
 from pygame.event import get as get_events
 
@@ -248,13 +257,15 @@ class PatternsMode:
             ### tries to quit the app
             if event.type == QUIT: raise QuitAppException
 
-            ### if the user releases the escape key,
+            ### if user releases one of following keys,
             ### trigger exiting the colors viewer by
             ### setting the 'running' flag to False
 
             elif event.type == KEYUP:
-                
-                if event.key == K_ESCAPE:
+
+                if event.key in (
+                  K_ESCAPE,K_RETURN, K_KP_ENTER
+                ):
                     self.running = False
 
             ### if the left mouse button is released,

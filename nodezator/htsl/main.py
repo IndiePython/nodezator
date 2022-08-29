@@ -20,7 +20,7 @@ from pygame import (
               QUIT,
 
               KEYUP,
-              K_ESCAPE,
+              K_ESCAPE, K_RETURN, K_KP_ENTER,
 
               K_w, K_a, K_s, K_d,
               K_k, K_h, K_j, K_l,
@@ -382,7 +382,9 @@ class HTSLBrowser(
 
             elif event.type == KEYUP:
                 
-                if event.key == K_ESCAPE:
+                if event.key in (
+                  K_ESCAPE, K_RETURN, K_KP_ENTER
+                ):
                     self.exit_loop()
 
                 elif event.key == K_PAGEUP:

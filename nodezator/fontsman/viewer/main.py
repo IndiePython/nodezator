@@ -14,7 +14,7 @@ from string import (
 
 from pygame import (
               QUIT,
-              KEYUP, K_ESCAPE,
+              KEYUP, K_ESCAPE, K_RETURN, K_KP_ENTER,
               K_a, K_s, K_d, K_w,
             )
 
@@ -223,12 +223,14 @@ class FontsViewer(Object2D, LoopHolder):
     def handle_events(self):
         
         for event in get_events():
-            
+
             if event.type == QUIT: self.quit()
 
             elif event.type == KEYUP:
-                
-                if event.key == K_ESCAPE:
+
+                if event.key in (
+                  K_RETURN, K_KP_ENTER, K_ESCAPE
+                ):
                     self.running = False
 
     ### TODO create methods to automatically

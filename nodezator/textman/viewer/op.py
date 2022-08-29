@@ -7,13 +7,20 @@ from math import inf as INFINITY
 ### third-party imports
 
 from pygame import (
-              QUIT, KEYUP, K_ESCAPE, MOUSEBUTTONUP,
+
+              QUIT,
+
+              KEYUP,
+              K_ESCAPE, K_RETURN, K_KP_ENTER,
               K_UP, K_DOWN, K_LEFT, K_RIGHT,
               K_w, K_a, K_s, K_d,
               K_k, K_h, K_j, K_l,
               K_PAGEUP, K_PAGEDOWN, K_HOME, K_END,
               KMOD_SHIFT,
+
+              MOUSEBUTTONUP,
               MOUSEMOTION,
+
             )
 
 from pygame.display import update
@@ -126,16 +133,19 @@ class Operations(Object2D):
         """Retrieve and respond to events."""
         for event in get_events():
 
-            ### exiting app by clicking the close button
+            ### exit app by clicking the close button
             ### in the window
             if event.type == QUIT: raise QuitAppException
 
 
             elif event.type == KEYUP:
 
-                ## exiting the text viewer by pressing "Esc"
+                ## exit the text viewer by releasing
+                ## any of the following keys
 
-                if event.key == K_ESCAPE:
+                if event.key in (
+                  K_ESCAPE, K_RETURN, K_KP_ENTER
+                ):
                     self.running = False
 
                 ## jump large amounts of pixels up or down

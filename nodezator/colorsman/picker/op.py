@@ -9,7 +9,7 @@ from functools import partialmethod
 from pygame import (
 
               QUIT,
-              KEYUP, K_ESCAPE,
+              KEYUP, K_ESCAPE, K_RETURN, K_KP_ENTER,
 
               MOUSEBUTTONUP, MOUSEMOTION,
 
@@ -362,17 +362,19 @@ class Operations(LoopHolder):
         ### settings
 
         for event in get_events():
-            
+
             ### quit the application
             if event.type == QUIT: self.quit()
 
-            ### if the escape key is released, turn on the
-            ### the 'cancel' flag and trigger the exit of
-            ### the loop
+            ### if one of the following keys is released,
+            ### turn on the the 'cancel' flag and trigger
+            ### the exit of the loop
 
             elif event.type == KEYUP:
                 
-                if event.key == K_ESCAPE:
+                if event.key in (
+                  K_ESCAPE, K_RETURN, K_KP_ENTER
+                ):
 
                     self.cancel = True
                     self.exit_loop()
@@ -382,7 +384,6 @@ class Operations(LoopHolder):
             ### with the event object
 
             elif event.type == MOUSEBUTTONUP:
-                
                 if event.button == 1:
                     self.on_mouse_release(event)
 
