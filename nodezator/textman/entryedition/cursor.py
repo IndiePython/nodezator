@@ -374,3 +374,49 @@ class EntryCursor:
             # assign the size of the character currently
             # under the cursor to the cursor
             self.rect.size = char_obj.rect.size
+
+
+    def delete_previous_word(self):
+        """Delete word before cursor.
+
+        If we use it when there are characters before
+        the cursor, the characters are deleted until the
+        next space.
+
+        If there are no characters before the cursor, then
+        nothing happens.
+        """
+        while True:
+
+            ### if self.col equals 0, there's no character
+            ### before the cursor to delete, so we can leave
+            ### the method right away
+            if self.col == 0: return
+
+            ### otherwise we delete the character before the
+            ### cursor
+
+            # Check if the next character is a new word. If
+            # so we are done.
+            char_obj = self.get()[self.col - 1]
+            if char_obj == ' ':
+                self.delete_previous()
+                return
+
+            ## pop the character behind the current column
+            ## from the line, referencing it
+            char_obj = self.line.pop(self.col - 1)
+
+            ## reposition the characters in the line one
+            ## beside the other, so they end up occupying
+            ## the space left by the removed character
+            self.line.reposition_chars()
+
+            ## since the cursor went back one column,
+            ## decrement the current column by one unit
+            self.col += -1
+
+            ### we then reposition cursor so that it sits in
+            ### the appropriate position according to its column
+            ### number; this also update its size when suitable
+            self.reposition()

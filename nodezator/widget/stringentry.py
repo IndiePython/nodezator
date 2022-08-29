@@ -507,7 +507,11 @@ class StringEntry(Object2D):
                 ### remove characters
 
                 elif event.key == K_BACKSPACE:
-                    self.cursor.delete_previous()
+
+                    if event.mod & KMOD_CTRL:
+                        self.cursor.delete_previous_word()
+
+                    else: self.cursor.delete_previous()
 
                 elif event.key == K_DELETE:
                     self.cursor.delete_under()
