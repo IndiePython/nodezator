@@ -1,10 +1,10 @@
 # Nodezator
 
-Nodezator is a multi-purpose visual editor to connect Python functions (and callables in general) visually in order to produce flexible parametric behavior/data/applications/snippets.
+Nodezator is a multi-purpose visual node editor for the Python programming language. It works by connecting Python functions (and callables in general) visually in order to produce flexible parametric behavior/data/applications/snippets.
 
 ![nodezator screenshot](https://nodezator.com/images/screenshot.png)
 
-Nodezator also allows you to export your node layouts as pure Python, so your workflow never becomes dependent on the app itself. We guarantee your freedom!
+Nodezator also allows you to export your node layouts as plain Python code, so your workflow is never overly dependent on the app itself. We guarantee your freedom!
 
 Moreover, creating nodes is very straightforward: all you need to define a node is a function, since Nodezator automatically converts functions into nodes. For instance, the function below is automatically turned into the following node:
 
