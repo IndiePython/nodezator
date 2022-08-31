@@ -40,6 +40,9 @@ APP_REFS = SimpleNamespace(
              ## window resize setup commands
              window_resize_setups = CallList(),
 
+             ## placeholder for copy of screen
+             SCREEN_COPY = None,
+
            )
 
 

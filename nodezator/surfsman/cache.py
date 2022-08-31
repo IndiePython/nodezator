@@ -1,14 +1,12 @@
 """Commonly used objects/tools."""
 
-### standard library import
-from functools import partial
-
-
 ### third-party import
 from pygame import Surface
 
 
 ### local imports
+
+from config import APP_REFS
 
 from pygameconstants import (
                        SCREEN,
@@ -33,17 +31,15 @@ from colorsman.colors import (
 EMPTY_SURF = Surface((0, 0)).convert()
 
 ### copy of screen to use as its cache
-SCREEN_COPY = SCREEN.copy()
+APP_REFS.SCREEN_COPY = SCREEN.copy()
 
 ### special operations related to the screen copy
 
-cache_screen_state = (
-  partial(SCREEN_COPY.blit, SCREEN, (0, 0))
-)
+def cache_screen_state():
+    APP_REFS.SCREEN_COPY.blit(SCREEN, (0, 0))
 
-draw_cached_screen_state = (
-  partial(blit_on_screen, SCREEN_COPY, (0, 0))
-)
+def draw_cached_screen_state():
+    blit_on_screen(APP_REFS.SCREEN_COPY, (0, 0))
 
 ### general map to store single colored surfaces for
 ### reuse

@@ -157,6 +157,9 @@ def watch_window_size():
         ### redraw the window manager
         APP_REFS.window_manager.draw()
 
+        ### update the screen copy
+        APP_REFS.SCREEN_COPY = SCREEN.copy()
+
         ### if there's a request to draw after the setups,
         ### do so and delete the request
 
