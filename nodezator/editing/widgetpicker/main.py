@@ -130,19 +130,6 @@ class WidgetPicker(
 
         self.rect = self.image.get_rect()
 
-        ### store a semitransparent object
-
-        self.semitransp_obj = (
-
-          Object2D.from_surface(
-            render_rect(
-              *SCREEN_RECT.size,
-              (*CONTRAST_LAYER_COLOR, 130)
-            )
-          )
-
-        )
-
         ### create and store caption
 
         self.caption = (
@@ -252,6 +239,20 @@ class WidgetPicker(
 
         for subform in self.subform_map.values():
             subform.rect.move_ip(diff)
+
+        ### store a semitransparent object the size of
+        ### the screen
+
+        self.semitransp_obj = (
+
+          Object2D.from_surface(
+            render_rect(
+              *SCREEN_RECT.size,
+              (*CONTRAST_LAYER_COLOR, 130)
+            )
+          )
+
+        )
 
     def build_option_menu(self):
         """Build option menu to pick the kind of widget."""
