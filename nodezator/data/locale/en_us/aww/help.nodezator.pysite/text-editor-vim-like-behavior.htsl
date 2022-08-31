@@ -1,18 +1,20 @@
 <htsl>
 
 <head>
-  <title>Text Editor Help</title>
+  <title>Text editor actions/controls for vim-like behavior</title>
 </head>
 
 <body>
 
-  <h1>Text Editor Help</h1>
+  <h1>Text editor actions/controls for vim-like behavior</h1>
 
   <p>The text editor was created with the purpose of helping make small adjustments in text/code on the fly, not to replace a full-fledged text editor or IDE.</p>
 
   <p>Below you'll find some of the controls currently available. You'll notice they resemble a bit how text is edited in the VIM text editor, with some changes. In the future, we intend to either provide emulation of the EMACS text editor or at least allow it indirectly by making the user able to customize keybidings and behaviour.</p>
 
   <p>The number and complexity of text operations provided should increase as well, in order to make the text editor even more useful for the users.</p>
+
+  <p>If you are interested, you can also check the actions/controls available for the <a href="text-editor-default-behavior.htsl">default behavior</a> of the text editor. The text editor behavior can be selected in the user preferences in the <b>Edit &gt; User preferences</b> menu.</p>
 
 
   <h2>Mode-independent actions/controls</h2>

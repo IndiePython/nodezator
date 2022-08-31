@@ -1,0 +1,94 @@
+<htsl>
+
+<head>
+  <title>Text editor actions/controls for default behavior</title>
+</head>
+
+<body>
+
+  <h1>Text editor actions/controls for default behavior</h1>
+
+  <p>The text editor was created with the purpose of helping make small adjustments in text/code on the fly, not to replace a full-fledged text editor or IDE.</p>
+
+  <p>Below you'll find some of the controls currently available. The number and complexity of text operations provided should increase as well, in order to make the text editor even more useful for the users.</p>
+
+  <p>If you are interested, you can also check the actions/controls available for the <a href="text-editor-vim-like-behavior.htsl">vim-like behavior</a> of the text editor. The text editor behavior can be selected in the user preferences in the <b>Edit &gt; User preferences</b> menu.</p>
+
+
+  <h2>Actions/controls</h2>
+
+  <table>
+
+    <thead>
+
+      <tr>
+        <th class="col-3">Action/control</th>
+        <th class="col-6">Result</th>
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      <tr>
+        <td><b>Cancel</b> button at the bottom right corner of text editor panel</td>
+        <td>Cancels text edition and exits editor</td>
+      </tr>
+
+      <tr>
+        <td><b>Ok</b> button at the bottom right corner of text editor panel</td>
+        <td>Confirms text edition and exits editor (unless the text inside has a validation routine set and the text doesn't validate)</td>
+      </tr>
+
+      <tr>
+        <td><b>&lt;F1&gt;</b> key</td>
+        <td>Shows this text</td>
+      </tr>
+
+      <tr>
+        <td><b>&lt;HOME&gt;</b> and <b>&lt;END&gt;</b> keys</td>
+        <td>Moves cursor to beginning or ending of line, respectively</td>
+      </tr>
+
+      <tr>
+        <td><b>&lt;PAGE UP&gt;</b> and <b>&lt;PAGE DOWN&gt;</b> keys</td>
+        <td>Jumps cursor many lines up or down</td>
+      </tr>
+
+      <tr>
+        <td><b>&lt;SHIFT + HOME&gt;</b> and <b>&lt;SHIFT + END&gt;</b> keys</td>
+        <td>Moves cursor to first line or last line of text, respectively</td>
+      </tr>
+
+      <tr>
+        <td><b>&lt;SHIFT + PAGE UP&gt;</b> and <b>&lt;SHIFT + PAGE DOWN&gt;</b> keys</td>
+        <td>Moves cursor to first line or last line of text, respectively (same as keys above)</td>
+      </tr>
+
+      <tr>
+        <td>Mouse wheel up/down</td>
+        <td>Jumps 4 lines up or down</td>
+      </tr>
+
+      <tr>
+        <td><b>&lt;TAB&gt;</b> key</td>
+        <td>Inserts 4 spaces in the text</td>
+      </tr>
+
+      <tr>
+        <td><b>&lt;BACKSPACE&gt;</b> key</td>
+        <td>Deletes character before the cursor</td>
+      </tr>
+
+      <tr>
+        <td><b>&lt;DELETE&gt;</b> key</td>
+        <td>Deletes character where the cursor is sitting</td>
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</body>
+
+</htsl>

@@ -13,8 +13,18 @@
     <p>Here are some useful pages:</p>
 
     <ul>
+
       <li><a href="general-controls.htsl">General Controls</a></li>
-      <li><a href="text-editor.htsl">Text editor controls</a></li>
+
+      <li>Text editor controls
+
+        <ul>
+          <li><a href="text-editor-default-behavior.htsl">When default behavior is set</a></li>
+          <li><a href="text-editor-vim-like-behavior.htsl">When vim-like behavior is set</a></li>
+        </ul>
+
+      </li>
+
     </ul>
 
   </body>

@@ -19,6 +19,8 @@ from pygame.event import get as get_events
 
 from loopman.exception import QuitAppException
 
+from userprefsman.main import USER_PREFS
+
 from htsl.main import open_htsl_link
 
 from textman.editor.constants import NUMBER_OF_VISIBLE_LINES
@@ -38,19 +40,43 @@ class InsertMode:
             elif event.type == KEYDOWN:
 
                 ### show help text for text editor
+                ### according to text editor behavior
+                ### set
 
                 if event.key == K_F1:
 
-                    open_htsl_link(
-                      'htap://help.nodezator.pysite/'
-                      'text-editor.htsl'
-                    )
+                    if (
+                      USER_PREFS['TEXT_EDITOR_BEHAVIOR']
+                      == 'default'
+                    ):
 
-                ### exit insert mode and update
-                ### cursor position
+                        open_htsl_link(
+                          'htap://help.nodezator.pysite/'
+                          'text-editor-default-behavior.htsl'
+                        )
+
+                    elif (
+                      USER_PREFS['TEXT_EDITOR_BEHAVIOR']
+                      == 'vim-like'
+                    ):
+
+                        open_htsl_link(
+                          'htap://help.nodezator.pysite/'
+                          'text-editor-vim-like-behavior.htsl'
+                        )
+
+                ### if escape key is pressed...
 
                 elif event.key == K_ESCAPE:
-                    self.enable_normal_mode()
+
+                    ## if the text editor behavior is set
+                    ## to be vim-like, exit insert mode
+                    ## and update cursor position;
+
+                    if (
+                      USER_PREFS['TEXT_EDITOR_BEHAVIOR']
+                      == 'vim-like'
+                    ): self.enable_normal_mode()
 
                 ### move cursor
 

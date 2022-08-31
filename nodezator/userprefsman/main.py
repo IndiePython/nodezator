@@ -56,6 +56,7 @@ USER_PREFS = {
   'NUMBER_OF_BACKUPS'       : 5,
   'USER_LOGGER_MAX_LINES'   : 1000,
   'CUSTOM_STDOUT_MAX_LINES' : 1000,
+  'TEXT_EDITOR_BEHAVIOR'    : 'default',
 }
 
 

@@ -189,6 +189,7 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
           t.user_preferences_form.backup_files,
           t.user_preferences_form.user_logger_lines,
           t.user_preferences_form.custom_stdout_lines,
+          'Text editor behavior',
         ):
             
             label_obj = Object2D.from_surface(
@@ -259,6 +260,19 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
 
         )
 
+        text_editor_behavior_option_menu = (
+
+          OptionMenu(
+            loop_holder=self,
+            options = ('default', 'vim-like'),
+            value = USER_PREFS['TEXT_EDITOR_BEHAVIOR'],
+            name='TEXT_EDITOR_BEHAVIOR',
+            draw_on_window_resize = self.draw,
+            max_width = 0,
+          )
+
+        )
+
         labels.rect.snap_rects_ip(
                       retrieve_pos_from = 'bottomleft',
                       assign_pos_to     = 'topleft',
@@ -279,6 +293,7 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
             number_backups_intfloat_entry,
             user_logger_lines_intfloat_entry,
             custom_stdout_lines_intfloat_entry,
+            text_editor_behavior_option_menu,
           ]
 
         )

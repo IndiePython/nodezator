@@ -12,6 +12,8 @@ from pygame import Rect
 
 from surfsman.cache import EMPTY_SURF
 
+from userprefsman.main import USER_PREFS
+
 from classes2d.collections import List2D
 
 from fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
@@ -263,6 +265,20 @@ class Cursor(
         ## of the character under it (if there is such
         ## character)
         self.reposition()
+
+        ## if text editor behavior is the default one,
+        ## cause the text editor to behave like a simple
+        ## textarea-like text editor, instead of using the
+        ## vim keybindings;
+
+        if USER_PREFS['TEXT_EDITOR_BEHAVIOR'] == 'default':
+
+            ## start the insert text mode
+            self.insert_before()
+
+            ## erase statusbar message by setting value to
+            ## an empty string
+            self.te.statusbar.set("")
 
     def create_line_number_surfaces(self):
         """Create and store surfaces to show line number."""

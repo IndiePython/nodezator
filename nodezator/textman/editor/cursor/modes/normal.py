@@ -49,7 +49,7 @@ class NormalMode:
 
                     open_htsl_link(
                       'htap://help.nodezator.pysite/'
-                      'text-editor.htsl'
+                      'text-editor-vim-like-behavior.htsl'
                     )
 
                 ### keys to move cursor
