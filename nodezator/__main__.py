@@ -7,6 +7,7 @@ https://kennedyrichard.com
 https://twitter.com/KennedyRichard
 
 https://nodezator.com
+https://github.com/IndiePython/nodezator
 """
 
 ### standard library imports
