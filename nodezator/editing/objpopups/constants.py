@@ -3,11 +3,11 @@
 
 from contextlib import suppress
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from loopman.exception import ContinueLoopException
+from ...loopman.exception import ContinueLoopException
 
-from ourstdlibs.behaviour import get_suppressing_callable
+from ...ourstdlibs.behaviour import get_suppressing_callable
 
 
 class GeneralPopupCommands:

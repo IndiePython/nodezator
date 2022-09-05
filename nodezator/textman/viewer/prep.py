@@ -10,38 +10,38 @@ from pygame.math import Vector2
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from dialog import create_and_show_dialog
+from ...dialog import create_and_show_dialog
 
-from syntaxman.exception import SyntaxMappingError
+from ...syntaxman.exception import SyntaxMappingError
 
-from syntaxman.utils import get_ready_theme
+from ...syntaxman.utils import get_ready_theme
 
-from fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
+from ...fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
 
-from ourstdlibs.timeutils import get_friendly_time
-from ourstdlibs.behaviour import empty_function
+from ...ourstdlibs.timeutils import get_friendly_time
+from ...ourstdlibs.behaviour import empty_function
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from surfsman.draw   import draw_border
-from surfsman.render import render_rect
+from ...surfsman.draw import draw_border
+from ...surfsman.render import render_rect
 
-from surfsman.cache import RECT_SURF_MAP
+from ...surfsman.cache import RECT_SURF_MAP
 
-from textman.render import (
+from ..render import (
                       get_text_size,
                       render_text,
                     )
 
-from textman.text import (
+from ..text import (
                     get_normal_lines,
                     get_highlighted_lines,
                   )
 
 ## common constants
-from textman.viewer.constants import (
+from .constants import (
                             DEFAULT_TEXT_SETTINGS,
                             TEXT_SETTINGS_PRESETS_MAP,
                             TEXT_VIEWER_RECT,

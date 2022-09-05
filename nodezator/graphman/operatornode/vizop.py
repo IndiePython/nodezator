@@ -13,9 +13,9 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from pygameconstants import SCREEN
+from ...pygameconstants import SCREEN
 
 
 class VisualRelatedOperations:

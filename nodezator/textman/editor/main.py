@@ -17,32 +17,32 @@ from pygame.math import Vector2
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from pygameconstants import (
+from ...pygameconstants import (
                        SCREEN_RECT,
                        maintain_fps,
                        FPS,
                        blit_on_screen,
                      )
 
-from dialog import create_and_show_dialog
+from ...dialog import create_and_show_dialog
 
-from ourstdlibs.collections.general import CallList
+from ...ourstdlibs.collections.general import CallList
 
-from our3rdlibs.behaviour import watch_window_size
+from ...our3rdlibs.behaviour import watch_window_size
 
-from surfsman.cache import UNHIGHLIGHT_SURF_MAP
+from ...surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ...classes2d.single import Object2D
+from ...classes2d.collections import List2D
 
-from surfsman.draw   import draw_border
-from surfsman.render import render_rect
+from ...surfsman.draw import draw_border
+from ...surfsman.render import render_rect
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                         BLACK,
                         WHITE,
                         WINDOW_FG, WINDOW_BG,
@@ -50,20 +50,20 @@ from colorsman.colors import (
                         CONTRAST_LAYER_COLOR,
                       )
 
-from textman.render import render_text
+from ..render import render_text
 
-from fontsman.constants import (
+from ...fontsman.constants import (
                           ENC_SANS_BOLD_FONT_HEIGHT,
                           ENC_SANS_BOLD_FONT_PATH,
                           FIRA_MONO_BOLD_FONT_HEIGHT,
                           FIRA_MONO_BOLD_FONT_PATH,
                         )
 
-from textman.label.main import Label
+from ..label.main import Label
 
-from textman.editor.cursor.main import Cursor
+from .cursor.main import Cursor
 
-from textman.editor.constants import (
+from .constants import (
                                 TEXT_EDITOR_RECT,
                                 EDITING_AREA_RECT,
                               )

@@ -27,48 +27,48 @@ from pygame.math import Vector2
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from translation import TRANSLATION_HOLDER as t
+from ...translation import TRANSLATION_HOLDER as t
 
-from pygameconstants import (
+from ...pygameconstants import (
                        SCREEN_RECT,
                        FPS,
                        maintain_fps,
                      )
 
-from our3rdlibs.behaviour import watch_window_size
+from ...our3rdlibs.behaviour import watch_window_size
 
-from our3rdlibs.button import Button
+from ...our3rdlibs.button import Button
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from textman.render import render_text
+from ...textman.render import render_text
 
-from surfsman.draw import draw_border
-from surfsman.render import render_rect
+from ...surfsman.draw import draw_border
+from ...surfsman.render import render_rect
 
-from widget.optionmenu.main import OptionMenu
+from ...widget.optionmenu.main import OptionMenu
 
-from loopman.exception import (
+from ...loopman.exception import (
                          QuitAppException,
                          SwitchLoopException,
                        )
 
-from fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
+from ...fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
 
-from graphman.widget.utils import WIDGET_CLASS_MAP
+from ...graphman.widget.utils import WIDGET_CLASS_MAP
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                         BUTTON_FG, BUTTON_BG,
                         WINDOW_FG, WINDOW_BG,
                         CONTRAST_LAYER_COLOR,
                       )
 
-from dialog import create_and_show_dialog
+from ...dialog import create_and_show_dialog
 
 ## class extension
-from editing.widgetpicker.subforms import SubformCreation
+from .subforms import SubformCreation
 
 
 ### constants

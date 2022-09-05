@@ -34,30 +34,30 @@ from pygame.math import Vector2
 
 ### local imports
 
-from pygameconstants import (
+from ...pygameconstants import (
                        SCREEN,
                        SCREEN_RECT,
                        blit_on_screen,
                      )
 
-from surfsman.draw import draw_border_on_area
+from ...surfsman.draw import draw_border_on_area
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from loopman.exception import QuitAppException
+from ...loopman.exception import QuitAppException
 
-from surfsman.cache import (
+from ...surfsman.cache import (
                       UNHIGHLIGHT_SURF_MAP,
                       draw_cached_screen_state,
                     )
 
-from our3rdlibs.keyconst import KEYPAD_TO_COORDINATE_MAP
+from ...our3rdlibs.keyconst import KEYPAD_TO_COORDINATE_MAP
 
-from colorsman.colors import IMAGES_VIEWER_BORDER
+from ...colorsman.colors import IMAGES_VIEWER_BORDER
 
-from imagesman.cache import IMAGE_SURFS_DB
+from ..cache import IMAGE_SURFS_DB
 
-from imagesman.viewer.constants import (
+from .constants import (
                                      VIEWER_BORDER_THICKNESS,
                                      LARGE_THUMB,
                                      PATH_LABEL)

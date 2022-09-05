@@ -6,13 +6,13 @@ from pathlib import Path
 
 ### local imports
 
-from ourstdlibs.pyl import load_pyl, save_pyl
+from ....ourstdlibs.pyl import load_pyl, save_pyl
 
-from ourstdlibs.color.custom import custom_format_color
+from ....ourstdlibs.color.custom import custom_format_color
 
-from dialog import create_and_show_dialog
+from ....dialog import create_and_show_dialog
 
-from fileman.main import select_path
+from ....fileman.main import select_path
 
 
 class ImportExportOperations:

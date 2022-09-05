@@ -6,7 +6,7 @@ from itertools import takewhile
 
 ### local imports
 
-from graphman.stlibnode.constants import (
+from .constants import (
                      STLIB_IDS_TO_CALLABLES_MAP,
                      STLIB_IDS_TO_SIGNATURES_MAP,
                      STLIB_IDS_TO_SIGNATURE_CALLABLES_MAP,
@@ -14,12 +14,12 @@ from graphman.stlibnode.constants import (
                      STLIB_IDS_TO_SOURCE_VIEW_TEXT,
                    )
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                         STANDARD_LIB_NODES_CATEGORY_COLOR
                       )
 
 ## superclass
-from graphman.callablenode.main import CallableNode
+from ..callablenode.main import CallableNode
 
 
 class StandardLibNode(CallableNode):

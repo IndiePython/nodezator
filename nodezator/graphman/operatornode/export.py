@@ -13,7 +13,7 @@ from pygame.math import Vector2
 
 ### local imports
 
-from graphman.operatornode.constants import (
+from .constants import (
                                   OP_CHARS_HEIGHT,
                                   AB_CHARS_HEIGHT,
                                   NODE_OUTLINE_THICKNESS,
@@ -21,9 +21,9 @@ from graphman.operatornode.constants import (
                                   CHAR_FILTERING_MAP,
                                 )
 
-from graphman.operatornode.surfs import CHAR_CENTERXS_MAP
+from .surfs import CHAR_CENTERXS_MAP
 
-from colorsman.colors import (
+from ...colorsman.colors import (
 
                      BLACK,
 

@@ -1,9 +1,9 @@
 
 ### local imports
 
-from fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
+from ...fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
 
-from graphman.socket.surfs import SOCKET_DIAMETER
+from ..socket.surfs import SOCKET_DIAMETER
 
 
 NODE_OUTLINE_THICKNESS = 2

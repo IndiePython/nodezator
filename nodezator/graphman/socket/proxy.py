@@ -6,16 +6,16 @@ from xml.etree.ElementTree import Element
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from graphman.socket.surfs import (
+from .surfs import (
                              HOLLOW_SOCKET_CIRCLE_SURF,
                              CODENAME_TO_STYLE_MAP,
                            )
 
-from graphman.socket.base import Socket
+from .base import Socket
 
-from colorsman.colors import HOLLOW_SOCKET_OUTLINE
+from ...colorsman.colors import HOLLOW_SOCKET_OUTLINE
 
 
 class ProxySocket(Socket):

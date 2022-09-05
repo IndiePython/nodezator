@@ -6,33 +6,33 @@ from pygame import Rect
 
 ### local imports
 
-from pygameconstants import SCREEN_RECT
+from ..pygameconstants import SCREEN_RECT
 
-from ourstdlibs.behaviour import empty_function
+from ..ourstdlibs.behaviour import empty_function
 
-from classes2d.collections import List2D
+from ..classes2d.collections import List2D
 
-from surfsman.cache import (
+from ..surfsman.cache import (
                       RECT_SURF_MAP,
                       draw_cached_screen_state,
                     )
 
-from colorsman.colors import MENU_BG
+from ..colorsman.colors import MENU_BG
 
 ## class extensions
 
-from menu.behaviour import BehaviourDefinitions
-from menu.hover     import HoveringOperations
-from menu.scroll    import Scrollability
+from .behaviour import BehaviourDefinitions
+from .hover import HoveringOperations
+from .scroll import Scrollability
 
 ## classes for composition
 
-from menu.command      import Command
-from menu.submenu.main import Menu
+from .command import Command
+from .submenu.main import Menu
 
 ## surface factory utility
 
-from menu.surffactory import (
+from .surffactory import (
                         create_top_surfaces,
                         create_equal_surfaces,
                       )

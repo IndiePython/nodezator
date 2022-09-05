@@ -41,7 +41,7 @@ from operator import sub, mul
 
 ### local imports
 
-from alphamask.utils import (
+from .utils import (
                        size_from_alpha_values,
                        unit_from_full_alpha_values,
                        full_from_unit_alpha_values,

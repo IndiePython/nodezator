@@ -24,53 +24,53 @@ from os import linesep
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from pygameconstants import SCREEN_RECT
+from ..pygameconstants import SCREEN_RECT
 
-from logman.main import get_new_logger
+from ..logman.main import get_new_logger
 
-from translation import TRANSLATION_HOLDER as t
+from ..translation import TRANSLATION_HOLDER as t
 
-from dialog import create_and_show_dialog
+from ..dialog import create_and_show_dialog
 
-from our3rdlibs.userlogger import USER_LOGGER
+from ..our3rdlibs.userlogger import USER_LOGGER
 
-from ourstdlibs.exceptionutils import bool_func_from_raiser
+from ..ourstdlibs.exceptionutils import bool_func_from_raiser
 
-from our3rdlibs.behaviour import (
+from ..our3rdlibs.behaviour import (
                             indicate_unsaved,
                             set_status_message,
                           )
 
-from fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
+from ..fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
 
-from textman.viewer.main import view_text
+from ..textman.viewer.main import view_text
 
-from textman.editor.main import edit_text
+from ..textman.editor.main import edit_text
 
-from fileman.main import select_path
+from ..fileman.main import select_path
 
-from widget.stringentry import StringEntry
+from ..widget.stringentry import StringEntry
 
-from graphman.utils import yield_subgraphs
+from ..graphman.utils import yield_subgraphs
 
-from graphman.callablenode.main import CallableNode
-from graphman.proxynode.main    import ProxyNode
-from graphman.textblock.main    import TextBlock
+from ..graphman.callablenode.main import CallableNode
+from ..graphman.proxynode.main import ProxyNode
+from ..graphman.textblock.main import TextBlock
 
-from graphman.textblock.check import (
+from ..graphman.textblock.check import (
                                 check_text_block_text,
                               )
 
-from graphman.nodepacksissues import (
+from ..graphman.nodepacksissues import (
                          get_formatted_current_node_packs,
                          check_node_packs,
                        )
 
-from graphman.exception import NODE_PACK_ERRORS
+from ..graphman.exception import NODE_PACK_ERRORS
 
-from graphman.scriptloading import load_scripts
+from ..graphman.scriptloading import load_scripts
 
 
 ### create logger for module

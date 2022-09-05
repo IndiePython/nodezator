@@ -17,19 +17,19 @@ from pygame.draw import line as draw_line
 
 ### local imports
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from classes2d.collections import List2D
+from ..classes2d.collections import List2D
 
-from textman.render import render_text
+from ..textman.render import render_text
 
-from textman.cache import CachedTextObject
+from ..textman.cache import CachedTextObject
 
-from rectsman.main import RectsManager
+from ..rectsman.main import RectsManager
 
-from surfsman.render import render_rect, unite_surfaces
+from ..surfsman.render import render_rect, unite_surfaces
 
-from colorsman.colors import (
+from ..colorsman.colors import (
 
                         HTSL_CANVAS_BG,
                         HTSL_MARKED_TEXT_BG,
@@ -39,7 +39,7 @@ from colorsman.colors import (
 
                       )
 
-from htsl.constants import (
+from .constants import (
 
                       ANCHOR_TEXT_SETTINGS_MINUS_FG,
 

@@ -11,80 +11,80 @@ from pygame.display import update, set_caption
 
 ## general widgets and other tools
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from userprefsman.main import USER_PREFS
+from ..userprefsman.main import USER_PREFS
 
-from dialog import (
+from ..dialog import (
               create_and_show_dialog,
               show_dialog_from_key,
             )
 
-from pygameconstants import SCREEN_RECT, blit_on_screen
+from ..pygameconstants import SCREEN_RECT, blit_on_screen
 
-from appinfo import FULL_TITLE, ABBREVIATED_TITLE
+from ..appinfo import FULL_TITLE, ABBREVIATED_TITLE
 
-from ourstdlibs.path      import get_custom_path_repr
-from ourstdlibs.behaviour import empty_function
+from ..ourstdlibs.path import get_custom_path_repr
+from ..ourstdlibs.behaviour import empty_function
 
-from ourstdlibs.collections.general import CallList
+from ..ourstdlibs.collections.general import CallList
 
-from ourstdlibs.pyl import save_pyl
+from ..ourstdlibs.pyl import save_pyl
 
-from ourstdlibs.path import save_timestamped_backup
+from ..ourstdlibs.path import save_timestamped_backup
 
-from our3rdlibs.userlogger import USER_LOGGER
+from ..our3rdlibs.userlogger import USER_LOGGER
 
-from our3rdlibs.behaviour import set_status_message
+from ..our3rdlibs.behaviour import set_status_message
 
-from logman.main import get_new_logger
+from ..logman.main import get_new_logger
 
-from fileman.main import select_path
+from ..fileman.main import select_path
 
-from recentfile import store_recent_file
+from ..recentfile import store_recent_file
 
-from surfsman.cache import UNHIGHLIGHT_SURF_MAP
+from ..surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
-from surfsman.render import render_rect, render_separator
+from ..surfsman.render import render_rect, render_separator
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from colorsman.colors import GRAPH_BG, WINDOW_BG, MENU_BG
+from ..colorsman.colors import GRAPH_BG, WINDOW_BG, MENU_BG
 
-from memoryman import free_up_memory
+from ..memoryman import free_up_memory
 
 ## widgets/tools for composition
 
 # related to node editing
 
-from editing.main import EditingAssistant
-from graphman.main import GraphManager
+from ..editing.main import EditingAssistant
+from ..graphman.main import GraphManager
 
-from graphman.nodepacksissues import (
+from ..graphman.nodepacksissues import (
                          get_formatted_current_node_packs,
                          check_node_packs,
                        )
 
-from graphman.exception import NODE_PACK_ERRORS
+from ..graphman.exception import NODE_PACK_ERRORS
 
 # splash screen
-from splashscreen.main import SplashScreen
+from ..splashscreen.main import SplashScreen
 
 
 ## window manager class/function extensions
 
-from winman.states.nofile       import NoFileState
-from winman.states.loadedfile   import LoadedFileState
-from winman.states.segmentdef   import SegmentDefinitionState
-from winman.states.segmentsev   import SegmentSeveranceState
-from winman.states.movingobject import MovingObjectState
-from winman.states.boxselection import BoxSelectionState
+from .states.nofile import NoFileState
+from .states.loadedfile import LoadedFileState
+from .states.segmentdef import SegmentDefinitionState
+from .states.segmentsev import SegmentSeveranceState
+from .states.movingobject import MovingObjectState
+from .states.boxselection import BoxSelectionState
 
-from winman.menu   import MenuSetup
-from winman.label  import MonitorLabelSetup
-from winman.switch import setup_switches
+from .menu import MenuSetup
+from .label import MonitorLabelSetup
+from .switch import setup_switches
 
-from winman.fileop import FileOperations
+from .fileop import FileOperations
 
 
 ### create logger for module

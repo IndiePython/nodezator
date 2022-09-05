@@ -12,14 +12,14 @@ from pygame.mouse import get_pos as get_mouse_pos
 
 ### local imports
 
-from menu.main import MenuManager
+from ...menu.main import MenuManager
 
-from graphman.presets import (
+from ...graphman.presets import (
                         WIDGET_DATA_PRESET_MAP,
                         WIDGET_PRESET_MENU_LABEL_MAP,
                       )
 
-from editing.widgetpicker.main import pick_widget
+from ..widgetpicker.main import pick_widget
 
 
 class WidgetCreationPopupMenu(MenuManager):

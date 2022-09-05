@@ -19,15 +19,15 @@ from pygame.draw  import rect     as draw_rect
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from pygameconstants import SCREEN
+from ..pygameconstants import SCREEN
 
-from ourstdlibs.mathutils import get_rect_from_points
+from ..ourstdlibs.mathutils import get_rect_from_points
 
-from loopman.exception import ContinueLoopException
+from ..loopman.exception import ContinueLoopException
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         ACTIVE_SELECTION,
                         NORMAL_SELECTION,
                       )

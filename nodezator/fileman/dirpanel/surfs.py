@@ -6,11 +6,11 @@ from pygame.transform import rotate as rotate_surface
 
 ### local imports
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from surfsman.render import combine_surfaces
+from ...surfsman.render import combine_surfaces
 
-from colorsman.colors import BLACK
+from ...colorsman.colors import BLACK
 
 
 

@@ -16,37 +16,37 @@ from pygame.time import get_ticks as get_milliseconds
 
 ### local imports
 
-from pygameconstants import SCREEN
+from ...pygameconstants import SCREEN
 
-from dialog import create_and_show_dialog
+from ...dialog import create_and_show_dialog
 
-from ourstdlibs.behaviour import get_oblivious_callable
+from ...ourstdlibs.behaviour import get_oblivious_callable
 
-from surfsman.draw import (
+from ...surfsman.draw import (
                      blit_aligned,
                      draw_border,
                      draw_depth_finish,
                    )
 
-from surfsman.render import render_rect
+from ...surfsman.render import render_rect
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ...classes2d.single import Object2D
+from ...classes2d.collections import List2D
 
-from textman.label.main import Label
+from ...textman.label.main import Label
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                         BUTTON_BG,
                         NORMAL_PATH_FG,
                         NORMAL_PATH_BG,
                         ACTIVE_SELECTION_OUTLINE,
                       )
 
-from fileman.pathobj import PathObject
+from ..pathobj import PathObject
 
-from fileman.dirpanel.newpathform import get_path
+from .newpathform import get_path
 
-from fileman.dirpanel.surfs import (
+from .surfs import (
                               HOME_BUTTON_SURF,
                               RELOAD_DIR_BUTTON_SURF,
                               PARENT_BUTTON_SURF,
@@ -54,7 +54,7 @@ from fileman.dirpanel.surfs import (
                               NEW_FOLDER_BUTTON_SURF,
                             )
 
-from fileman.constants import (
+from ..constants import (
                          FONT_HEIGHT,
                          PATH_OBJ_QUANTITY,
                          PATH_OBJ_PADDING,
@@ -64,9 +64,9 @@ from fileman.constants import (
 
 ## class extensions
 
-from fileman.dirpanel.loadop  import LoadingOperations
-from fileman.dirpanel.mouseop import MouseOperations
-from fileman.dirpanel.extraop import ExtraOperations
+from .loadop import LoadingOperations
+from .mouseop import MouseOperations
+from .extraop import ExtraOperations
 
 
 class DirectoryPanel(

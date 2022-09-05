@@ -6,18 +6,18 @@ from pygame.draw import line as draw_line
 
 ### local imports
 
-from ourstdlibs.collections.general import FactoryDict
+from ...ourstdlibs.collections.general import FactoryDict
 
-from surfsman.render import (
+from ...surfsman.render import (
                        render_rect,
                        combine_surfaces,
                      )
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
+from ...fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
 
-from colorsman.colors import (
+from ...colorsman.colors import (
 
                         NODE_BODY_BG,
                         COMMENTED_OUT_NODE_BG,
@@ -42,7 +42,7 @@ from colorsman.colors import (
 
                       )
 
-from graphman.callablenode.constants import (
+from .constants import (
                                NODE_WIDTH,
                                NODE_BODY_HEAD_HEIGHT,
                                NODE_OUTLINE_THICKNESS,

@@ -17,37 +17,37 @@ from pygame.time import get_ticks as get_milliseconds
 
 ### local imports
 
-from userprefsman.main import BOOKMARKS_FILE
+from ...userprefsman.main import BOOKMARKS_FILE
 
-from dialog import create_and_show_dialog
+from ...dialog import create_and_show_dialog
 
-from ourstdlibs.pyl import load_pyl, save_pyl
+from ...ourstdlibs.pyl import load_pyl, save_pyl
 
-from ourstdlibs.behaviour import get_oblivious_callable
+from ...ourstdlibs.behaviour import get_oblivious_callable
 
-from surfsman.draw import (
+from ...surfsman.draw import (
                      blit_aligned,
                      draw_border,
                      draw_depth_finish,
                    )
 
-from surfsman.render import render_rect
+from ...surfsman.render import render_rect
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ...classes2d.single import Object2D
+from ...classes2d.collections import List2D
 
-from colorsman.colors import BUTTON_BG
+from ...colorsman.colors import BUTTON_BG
 
-from fileman.pathobj import PathObject
+from ..pathobj import PathObject
 
-from fileman.constants import (
+from ..constants import (
                          PATH_OBJ_QUANTITY,
                          PATH_OBJ_PADDING,
                          BKM_PANEL_WIDTH,
                          MAX_MSECS_TO_2ND_MOUSE_EVENT,
                        )
 
-from fileman.bookmarkpanel.surfs import (
+from .surfs import (
                                    BOOKMARK_BUTTON_SURF,
                                    UNBOOKMARK_BUTTON_SURF,
                                  )

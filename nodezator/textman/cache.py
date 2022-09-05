@@ -68,11 +68,11 @@ The ones you want to import are:
 
 ### local imports
 
-from ourstdlibs.dictutils import settings_to_hashable_repr
+from ..ourstdlibs.dictutils import settings_to_hashable_repr
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from textman.render import render_text
+from .render import render_text
 
 
 ### constant: pairs containing special characters and

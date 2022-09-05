@@ -5,15 +5,15 @@ from collections import ChainMap
 
 ### local imports
 
-from config import DATA_DIR
+from .config import DATA_DIR
 
-from userprefsman.main import USER_PREFS
+from .userprefsman.main import USER_PREFS
 
-from ourstdlibs.pyl import load_pyl
+from .ourstdlibs.pyl import load_pyl
 
-from ourstdlibs.treeutils import merge_nested_dicts
+from .ourstdlibs.treeutils import merge_nested_dicts
 
-from ourstdlibs.collections.nestedfromdict import (
+from .ourstdlibs.collections.nestedfromdict import (
 
                                        NestedObjectFromDict
 

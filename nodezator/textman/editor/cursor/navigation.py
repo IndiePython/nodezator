@@ -8,7 +8,7 @@ from functools import partialmethod
 
 
 ### local import
-from textman.editor.constants import NUMBER_OF_VISIBLE_LINES
+from ..constants import NUMBER_OF_VISIBLE_LINES
 
 
 ### XXX

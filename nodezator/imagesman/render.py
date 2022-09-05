@@ -18,17 +18,17 @@ from pygame.transform import scale as scale_surf
 
 ### local imports
 
-from surfsman.draw import (
+from ..surfsman.draw import (
                      blit_aligned,
                      draw_checker_pattern,
                      draw_not_found_icon,
                    )
 
-from surfsman.render import render_rect
+from ..surfsman.render import render_rect
 
-from our3rdlibs.userlogger import USER_LOGGER
+from ..our3rdlibs.userlogger import USER_LOGGER
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         IMAGE_NOT_FOUND_FG,
                         IMAGE_NOT_FOUND_BG,
                         TRANSP_IMAGE_A,

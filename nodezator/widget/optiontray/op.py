@@ -1,7 +1,7 @@
 """Option tray class extension with lifetime operations."""
 
 ### local import
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
 
 class OptionTrayLifetimeOperations(Object2D):

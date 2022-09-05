@@ -17,9 +17,9 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from textman.entryedition.line import EntryLine
+from .line import EntryLine
 
-from colorsman.colors import BLACK
+from ...colorsman.colors import BLACK
 
 
 class EntryCursor:

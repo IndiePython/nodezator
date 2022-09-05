@@ -5,7 +5,7 @@ from functools import partial
 
 
 ### local import
-from ourstdlibs.collections.general import CallList
+from ..ourstdlibs.collections.general import CallList
 
 
 def get_logging_wrapper(logging_method):

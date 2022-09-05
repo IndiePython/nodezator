@@ -2,11 +2,11 @@
 
 ### local imports
 
-from surfsman.icon import render_layered_icon
+from ..surfsman.icon import render_layered_icon
 
-from imagesman.cache import IMAGE_SURFS_DB
+from ..imagesman.cache import IMAGE_SURFS_DB
 
-from colorsman.colors import BLACK, WHITE
+from ..colorsman.colors import BLACK, WHITE
 
 
 FOLDER_ICON = render_layered_icon(

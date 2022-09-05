@@ -40,37 +40,37 @@ from pygame.math import Vector2
 
 ### local imports
 
-from ourstdlibs.behaviour import (
+from ..ourstdlibs.behaviour import (
                             empty_function,
                             return_untouched,
                           )
 
-from ourstdlibs.stringutils import VALIDATION_COMMAND_MAP
+from ..ourstdlibs.stringutils import VALIDATION_COMMAND_MAP
 
-from ourstdlibs.color.creation import get_contrasting_bw
+from ..ourstdlibs.color.creation import get_contrasting_bw
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from surfsman.render import render_rect
+from ..surfsman.render import render_rect
 
-from fontsman.constants import (
+from ..fontsman.constants import (
                           ENC_SANS_BOLD_FONT_HEIGHT,
                           ENC_SANS_BOLD_FONT_PATH,
                         )
 
-from textman.editor.main import edit_text
+from ..textman.editor.main import edit_text
 
-from loopman.exception import (
+from ..loopman.exception import (
                          QuitAppException,
                          SwitchLoopException,
                        )
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         STRING_ENTRY_FG,
                         STRING_ENTRY_BG,
                       )
 
-from textman.entryedition.cursor import EntryCursor
+from ..textman.entryedition.cursor import EntryCursor
 
 
 class StringEntry(Object2D):

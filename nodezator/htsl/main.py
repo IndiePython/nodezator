@@ -45,29 +45,29 @@ from pygame.math import Vector2
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from pygameconstants import SCREEN_RECT, blit_on_screen
+from ..pygameconstants import SCREEN_RECT, blit_on_screen
 
-from translation import APP_WIDE_WEB_DIR
+from ..translation import APP_WIDE_WEB_DIR
 
-from ourstdlibs.meta import initialize_bases
+from ..ourstdlibs.meta import initialize_bases
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from fontsman.constants import ENC_SANS_BOLD_FONT_PATH
+from ..fontsman.constants import ENC_SANS_BOLD_FONT_PATH
 
-from textman.label.main import Label
+from ..textman.label.main import Label
 
-from surfsman.icon import render_layered_icon
+from ..surfsman.icon import render_layered_icon
 
-from loopman.main import LoopHolder
+from ..loopman.main import LoopHolder
 
-from surfsman.render import render_rect
+from ..surfsman.render import render_rect
 
-from surfsman.cache import UNHIGHLIGHT_SURF_MAP
+from ..surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         HTSL_BROWSER_BG,
                         HTSL_CANVAS_BG,
                         HTSL_DOCUMENT_TITLE_TEXT_FG,
@@ -75,7 +75,7 @@ from colorsman.colors import (
                       )
 
 ## extension class
-from htsl.prep import Preparation
+from .prep import Preparation
 
 
 ### constants

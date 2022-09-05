@@ -10,12 +10,12 @@ from pygame.math import Vector2
 
 ### local imports
 
-from pygameconstants import (
+from ..pygameconstants import (
                        blit_on_screen,
                        SCREEN_RECT,
                      )
 
-from rectsman.main import (
+from ..rectsman.main import (
                      rect_property,
                      RectsManager,
                    )

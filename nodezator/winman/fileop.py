@@ -6,43 +6,43 @@ from pathlib import Path
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from userprefsman.main import USER_PREFS
+from ..userprefsman.main import USER_PREFS
 
-from appinfo import NATIVE_FILE_EXTENSION
+from ..appinfo import NATIVE_FILE_EXTENSION
 
-from dialog import (
+from ..dialog import (
               create_and_show_dialog,
               show_dialog_from_key,
             )
 
-from fileman.main import (
+from ..fileman.main import (
                     select_path,
                     create_path,
                   )
 
-from ourstdlibs.path import (
+from ..ourstdlibs.path import (
                        get_swap_path,
                        get_custom_path_repr,
                        save_timestamped_backup,
                      )
 
-from ourstdlibs.pyl import load_pyl, save_pyl
+from ..ourstdlibs.pyl import load_pyl, save_pyl
 
-from our3rdlibs.userlogger import USER_LOGGER
+from ..our3rdlibs.userlogger import USER_LOGGER
 
-from our3rdlibs.behaviour import (
+from ..our3rdlibs.behaviour import (
                             are_changes_saved,
                             indicate_saved,
                             set_status_message,
                           )
 
-from loopman.exception import SwitchLoopException
+from ..loopman.exception import SwitchLoopException
 
-from logman.main import get_new_logger
+from ..logman.main import get_new_logger
 
-from recentfile import store_recent_file
+from ..recentfile import store_recent_file
 
 
 ### create logger for module

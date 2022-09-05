@@ -15,7 +15,7 @@ from pygame.key import get_mods as get_key_mods
 
 
 ### local import
-from fileman.constants import PATH_OBJ_QUANTITY
+from ..constants import PATH_OBJ_QUANTITY
 
 
 class ExtraOperations:

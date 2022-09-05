@@ -2,7 +2,7 @@
 
 ### local imports
 
-from graphman.capsulenode.constants import (
+from .constants import (
 
                CAPSULE_IDS_TO_CALLABLES_MAP,
                CAPSULE_IDS_TO_SIGNATURES_MAP,
@@ -12,10 +12,10 @@ from graphman.capsulenode.constants import (
 
              )
 
-from colorsman.colors import CAPSULE_NODES_CATEGORY_COLOR
+from ...colorsman.colors import CAPSULE_NODES_CATEGORY_COLOR
 
 ## superclass
-from graphman.callablenode.main import CallableNode
+from ..callablenode.main import CallableNode
 
 
 class CapsuleNode(CallableNode):

@@ -10,17 +10,17 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from pygameconstants import SCREEN
+from ...pygameconstants import SCREEN
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from graphman.textblock.surf  import get_text_block_surf
-from graphman.textblock.check import check_text_block_text
+from .surf import get_text_block_surf
+from .check import check_text_block_text
 
 ### function for injection
-from graphman.textblock.export import svg_repr
+from .export import svg_repr
 
 
 class TextBlock(Object2D):

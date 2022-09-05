@@ -13,20 +13,20 @@ from pygame.mouse import get_pos as get_mouse_pos
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from translation import TRANSLATION_HOLDER as t
+from ..translation import TRANSLATION_HOLDER as t
 
-from pygameconstants import SCREEN_RECT
+from ..pygameconstants import SCREEN_RECT
 
-from fontsman.constants import (
+from ..fontsman.constants import (
                           FIRA_MONO_BOLD_FONT_HEIGHT,
                           FIRA_MONO_BOLD_FONT_PATH,
                         )
 
-from colorsman.colors import WM_LABEL_FG, WM_LABEL_BG
+from ..colorsman.colors import WM_LABEL_FG, WM_LABEL_BG
 
-from textman.label.autolabel import AutoLabel
+from ..textman.label.autolabel import AutoLabel
 
 
 ##### constant definition

@@ -5,9 +5,9 @@ from pygame.draw import line as draw_line
 
 ### local imports
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from colorsman.colors import BLACK
+from ...colorsman.colors import BLACK
 
 
 BOOKMARK_BUTTON_SURF = render_layered_icon( 

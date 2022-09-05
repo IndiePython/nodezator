@@ -6,11 +6,11 @@ from pathlib import Path
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from appinfo import NODE_SCRIPT_NAME
+from ..appinfo import NODE_SCRIPT_NAME
 
-from graphman.exception import (
+from .exception import (
                         NodePackNotFoundError,
                         NodePackNotADirectoryError,
                         NodePackLackingCategoryError,

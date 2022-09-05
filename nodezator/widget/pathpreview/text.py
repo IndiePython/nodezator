@@ -13,44 +13,44 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from dialog import create_and_show_dialog
+from ...dialog import create_and_show_dialog
 
-from logman.main import get_new_logger
+from ...logman.main import get_new_logger
 
-from our3rdlibs.userlogger import USER_LOGGER
+from ...our3rdlibs.userlogger import USER_LOGGER
 
-from textman.viewer.main import view_text
+from ...textman.viewer.main import view_text
 
-from surfsman.draw import (
+from ...surfsman.draw import (
                      draw_depth_finish,
                      draw_not_found_icon,
                    )
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from fontsman.constants import (
+from ...fontsman.constants import (
                           FIRA_MONO_BOLD_FONT_PATH,
                           FIRA_MONO_BOLD_FONT_HEIGHT,
                         )
 
-from textman.render import (
+from ...textman.render import (
                       fit_text,
                       get_text_size,
                       render_text,
                     )
 
-from textman.text import render_highlighted_line
+from ...textman.text import render_highlighted_line
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                         BLACK,
                         WHITE,
                         TEXTPREVIEW_FG,
                         TEXTPREVIEW_BG,
                       )
 
-from widget.pathpreview.base import _BasePreview
+from .base import _BasePreview
 
-from widget.pathpreview.constants import (
+from .constants import (
 
                                  SP_BUTTON_SURFS,
                                  SP_BUTTON_RECTS,
@@ -62,12 +62,12 @@ from widget.pathpreview.constants import (
 
                                )
 
-from syntaxman.utils import (
+from ...syntaxman.utils import (
                        SYNTAX_TO_MAPPING_FUNCTION,
                        get_ready_theme,
                      )
 
-from syntaxman.exception import SyntaxMappingError
+from ...syntaxman.exception import SyntaxMappingError
 
 
 GENERAL_TEXT_SETTINGS = {

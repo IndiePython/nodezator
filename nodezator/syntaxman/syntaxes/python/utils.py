@@ -5,7 +5,7 @@ from itertools import count
 
 
 ### local import
-from syntaxman.syntaxes.comment import get_comment_syntax_map
+from ..comment import get_comment_syntax_map
 
 
 MULTI_LINE_STR_QUOTES = '"""', "'''"

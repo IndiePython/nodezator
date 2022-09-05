@@ -6,13 +6,13 @@ from xml.etree.ElementTree import Element
 
 ### local imports
 
-from graphman.socket.surfs import (
+from .surfs import (
                              HOLLOW_SOCKET_CIRCLE_SURF,
                            )
 
-from graphman.socket.base import Socket
+from .base import Socket
 
-from colorsman.colors import HOLLOW_SOCKET_OUTLINE
+from ...colorsman.colors import HOLLOW_SOCKET_OUTLINE
 
 
 class PlaceholderSocket(Socket):

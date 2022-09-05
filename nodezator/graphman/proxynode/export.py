@@ -9,15 +9,15 @@ from itertools import chain
 
 ### local imports
 
-from pointsman2d.shape     import cross_from_rect
-from pointsman2d.transform import rotate_points
+from ...pointsman2d.shape import cross_from_rect
+from ...pointsman2d.transform import rotate_points
 
-from graphman.proxynode.constants import (
+from .constants import (
                                   NODE_OUTLINE_THICKNESS,
                                   FONT_HEIGHT,
                                 )
 
-from colorsman.colors import (
+from ...colorsman.colors import (
 
                    BLACK,
 

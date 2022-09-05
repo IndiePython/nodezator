@@ -12,18 +12,18 @@ from pygame import Surface
 
 ### local imports
 
-from fontsman.cache import FONTS_DB
+from ..fontsman.cache import FONTS_DB
 
-from fontsman.constants import (
+from ..fontsman.constants import (
                           ENC_SANS_BOLD_FONT_PATH,
                           ENC_SANS_BOLD_FONT_HEIGHT,
                         )
 
-from surfsman.draw import draw_border, draw_depth_finish
+from ..surfsman.draw import draw_border, draw_depth_finish
 
-from rectsman.main import RectsManager
+from ..rectsman.main import RectsManager
 
-from colorsman.colors import BLACK
+from ..colorsman.colors import BLACK
 
 
 def get_text_size(

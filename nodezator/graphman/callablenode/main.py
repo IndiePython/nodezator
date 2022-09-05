@@ -2,27 +2,27 @@
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
 ## class extensions
 
-from graphman.callablenode.preproc import Preprocessing
+from .preproc import Preprocessing
 
-from graphman.callablenode.vizprep.main import (
+from .vizprep.main import (
                                   VisualRelatedPreparations
                                 )
 
-from graphman.callablenode.vizop.main import (
+from .vizop.main import (
                                    VisualRelatedOperations
                                  )
 
-from graphman.callablenode.subparam.main import (
+from .subparam.main import (
                                       SubparameterHandling
                                     )
 
-from graphman.callablenode.execution import Execution
+from .execution import Execution
 
-from graphman.callablenode.export import Exporting
+from .export import Exporting
 
 
 class CallableNode(

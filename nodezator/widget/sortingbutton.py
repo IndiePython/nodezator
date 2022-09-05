@@ -11,27 +11,27 @@ from xml.etree.ElementTree import Element
 
 ### local imports
 
-from ourstdlibs.behaviour import empty_function
+from ..ourstdlibs.behaviour import empty_function
 
-from surfsman.draw   import blit_aligned, draw_border
-from surfsman.render import render_rect
+from ..surfsman.draw import blit_aligned, draw_border
+from ..surfsman.render import render_rect
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from our3rdlibs.sortingeditor.main import sort_sequence
+from ..our3rdlibs.sortingeditor.main import sort_sequence
 
-from textman.render import render_text, fit_text
+from ..textman.render import render_text, fit_text
 
-from textman.viewer.main import view_text
+from ..textman.viewer.main import view_text
 
-from surfsman.icon import render_layered_icon
+from ..surfsman.icon import render_layered_icon
 
-from fontsman.constants import (
+from ..fontsman.constants import (
                           ENC_SANS_BOLD_FONT_HEIGHT,
                           ENC_SANS_BOLD_FONT_PATH,
                         )
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         BLACK,
                         LIST_SORTING_BUTTON_FG,
                         LIST_SORTING_BUTTON_BG,

@@ -20,31 +20,31 @@ from pygame.key import get_pressed as get_pressed_keys
 
 ### local imports
 
-from pygameconstants import blit_on_screen
+from ....pygameconstants import blit_on_screen
 
-from ourstdlibs.color.conversion import (
+from ....ourstdlibs.color.conversion import (
                                    full_rgb_to_html_name,
                                    full_rgb_to_hex_string,
                                  )
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ....classes2d.single import Object2D
+from ....classes2d.collections import List2D
 
-from loopman.exception import QuitAppException
+from ....loopman.exception import QuitAppException
 
-from surfsman.draw   import draw_border
-from surfsman.render import render_rect
+from ....surfsman.draw import draw_border
+from ....surfsman.render import render_rect
 
-from textman.render import render_text
+from ....textman.render import render_text
 
-from fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
+from ....fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
 
-from colorsman.colors import (
+from ...colors import (
                                COLOR_VIEWER_COLOR_LIST_FG,
                                COLOR_VIEWER_COLOR_LIST_BG,
                             )
 
-from colorsman.color2d import Color2D
+from ...color2d import Color2D
 
 
 ### size in pixels of the surfaces representing each color

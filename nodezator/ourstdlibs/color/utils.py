@@ -11,16 +11,16 @@ from functools import partial
 
 ### local imports
 
-from ourstdlibs.iterutils import get_type_yielder
+from ..iterutils import get_type_yielder
 
-from ourstdlibs.color.largemaps import (
+from .largemaps import (
                                   HTML_COLOR_MAP,
                                   PYGAME_COLOR_MAP,
                                 )
 
-from ourstdlibs.color.constants import HUE_SETS_MAP
+from .constants import HUE_SETS_MAP
 
-from ourstdlibs.color.property import (
+from .property import (
                                  PROPERTY_GETTER_MAP,
                                  get_hue,
                                )

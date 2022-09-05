@@ -20,7 +20,7 @@ from pygame.mixer import pre_init as pre_init_mixer
 
 
 ### local imports
-from appinfo import FULL_TITLE, ABBREVIATED_TITLE
+from .appinfo import FULL_TITLE, ABBREVIATED_TITLE
 
 
 ### pygame mixer pre-initialization

@@ -9,7 +9,7 @@ from pygame.time import get_ticks as get_milliseconds
 
 
 ### local import
-from fileman.constants import MAX_MSECS_TO_2ND_MOUSE_EVENT
+from ..constants import MAX_MSECS_TO_2ND_MOUSE_EVENT
 
 
 class MouseOperations:

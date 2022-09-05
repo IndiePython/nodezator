@@ -2,19 +2,19 @@
 
 ### local imports
 
-from ourstdlibs.behaviour import empty_function
+from ..ourstdlibs.behaviour import empty_function
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from imagesman.cache import IMAGE_SURFS_DB
+from ..imagesman.cache import IMAGE_SURFS_DB
 
-from textman.render import render_text
+from ..textman.render import render_text
 
-from fontsman.constants import (
+from ..fontsman.constants import (
                                ENC_SANS_BOLD_FONT_HEIGHT,
                                ENC_SANS_BOLD_FONT_PATH)
 
-from colorsman.colors import BUTTON_FG, BUTTON_BG
+from ..colorsman.colors import BUTTON_FG, BUTTON_BG
 
 
 ### XXX needs lots of refactoring and implementing

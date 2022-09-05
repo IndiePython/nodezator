@@ -16,16 +16,16 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from loopman.exception import SwitchLoopException
+from ...loopman.exception import SwitchLoopException
 
-from ourstdlibs.behaviour import (
+from ...ourstdlibs.behaviour import (
                             empty_function,
                             return_untouched,
                           )
 
-from widget.intfloatentry.numeval import numeric_evaluation
+from .numeval import numeric_evaluation
 
 
 INFS_AND_NANS = (

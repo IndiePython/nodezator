@@ -13,7 +13,7 @@ from colorsys import (
                      )
 
 
-from ourstdlibs.color.constants import (
+from .constants import (
                                    HLS_FACTORS,
                                    HSV_FACTORS,
                                    HLS_NAMES,

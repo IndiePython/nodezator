@@ -20,27 +20,27 @@ from pygame.display import update
 
 ### local imports
 
-from translation import DIALOGS_MAP
+from .translation import DIALOGS_MAP
 
-from pygameconstants import SCREEN_RECT, blit_on_screen
+from .pygameconstants import SCREEN_RECT, blit_on_screen
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from .classes2d.single import Object2D
+from .classes2d.collections import List2D
 
-from loopman.main import LoopHolder
+from .loopman.main import LoopHolder
 
-from surfsman.draw   import blit_aligned, draw_border
-from surfsman.render import render_rect
-from surfsman.icon   import render_layered_icon
+from .surfsman.draw import blit_aligned, draw_border
+from .surfsman.render import render_rect
+from .surfsman.icon import render_layered_icon
 
-from textman.cache  import CachedTextObject
-from textman.render import render_text
+from .textman.cache import CachedTextObject
+from .textman.render import render_text
 
-from fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
+from .fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
 
-from surfsman.cache import UNHIGHLIGHT_SURF_MAP
+from .surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
-from colorsman.colors import (
+from .colorsman.colors import (
 
   CONTRAST_LAYER_COLOR,
 

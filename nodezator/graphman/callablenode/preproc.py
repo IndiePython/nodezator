@@ -11,16 +11,16 @@ from inspect import Parameter
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from graphman.presets import (
+from ..presets import (
                         PARAM_ANNOTATION_PRESET_MAP,
                         OUTPUT_ANNOTATION_PRESET_MAP,
                       )
 
-from graphman.widget.utils import get_widget_metadata
+from ..widget.utils import get_widget_metadata
 
-from graphman.validation.main import (
+from ..validation.main import (
                         check_return_annotation_mini_lang,
                       )
 

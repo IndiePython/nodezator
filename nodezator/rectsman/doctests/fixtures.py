@@ -6,7 +6,7 @@ from re import findall
 from pygame import Rect
 
 ### local imports
-from rectsman.main import \
+from ..main import \
                              RectsManager, rect_property
 
 

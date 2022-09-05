@@ -6,20 +6,20 @@ from math import inf as INFINITY
 
 ### local imports
 
-from ourstdlibs.behaviour import (
+from ...ourstdlibs.behaviour import (
                                    empty_function,
                                    get_oblivious_callable,
                                  )
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ...classes2d.single import Object2D
+from ...classes2d.collections import List2D
 
-from rectsman.main import RectsManager, rect_property
+from ...rectsman.main import RectsManager, rect_property
 
-from our3rdlibs.iterablewidget.surfs import ADD_BUTTON_SURF
+from .surfs import ADD_BUTTON_SURF
 
 ## class extension
-from our3rdlibs.iterablewidget.op import (
+from .op import (
                              ListWidgetLifetimeOperations,
                            )
 

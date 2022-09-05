@@ -8,28 +8,28 @@ from functools import partial, partialmethod
 
 ### local imports
 
-from classes2d.collections import List2D
+from ....classes2d.collections import List2D
 
-from ourstdlibs.color.utils import (
+from ....ourstdlibs.color.utils import (
                           get_color_sorter_by_properties,
                         )
 
-from ourstdlibs.color.creation import (
+from ....ourstdlibs.color.creation import (
                               random_color_from_existing,
                             )
 
-from dialog import create_and_show_dialog
+from ....dialog import create_and_show_dialog
 
-from colorsman.color2d import Color2D
+from ...color2d import Color2D
 
-from colorsman.viewer.main import view_colors
+from ...viewer.main import view_colors
 
-from colorsman.picker.main import (
+from ...picker.main import (
                              pick_html_colors,
                              pick_pygame_colors,
                            )
 
-from colorsman.editor.panel.constants import (
+from .constants import (
                                         COLOR_WIDGET_SIZE
                                       )
 

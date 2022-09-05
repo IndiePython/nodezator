@@ -1,7 +1,7 @@
 """Constants for setting up the colors editor's widgets."""
 
 ### local import
-from fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
+from ....fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
 
 
 ### height of text in pixels; also used as the height for

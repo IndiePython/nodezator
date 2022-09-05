@@ -2,53 +2,53 @@
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from ourstdlibs.meta import initialize_bases
+from ..ourstdlibs.meta import initialize_bases
 
 ## class extensions
 
-from editing.gridlogic   import GridHandling
-from editing.objinsert   import ObjectInsertionRemoval
-from editing.selection   import SelectionHandling
-from editing.reposition  import Repositioning
-from editing.export.main import Exporting
-from editing.data        import DataHandling
+from .gridlogic import GridHandling
+from .objinsert import ObjectInsertionRemoval
+from .selection import SelectionHandling
+from .reposition import Repositioning
+from .export.main import Exporting
+from .data import DataHandling
 
 ## more operations
 
-from editing.categorycolors import (
+from .categorycolors import (
                               rebuild_category_color_form,
                               change_category_colors,
                             )
 
 ## classes for composition
 
-from editing.widgetpopups.creation import (
+from .widgetpopups.creation import (
                                 WidgetCreationPopupMenu,
                               )
 
-from editing.objpopups.callablenode import (
+from .objpopups.callablenode import (
                                    CallableNodePopupMenu
                                  )
 
-from editing.objpopups.proxynode import ProxyNodePopupMenu
+from .objpopups.proxynode import ProxyNodePopupMenu
 
-from editing.objpopups.operatornode import (
+from .objpopups.operatornode import (
                                    OperatorNodePopupMenu
                                  )
 
-from editing.objpopups.textblock import TextBlockPopupMenu
+from .objpopups.textblock import TextBlockPopupMenu
 
-from editing.socketpopups.input import (
+from .socketpopups.input import (
                                   InputSocketPopupMenu
                                 )
 
-from editing.socketpopups.proxy import (
+from .socketpopups.proxy import (
                                   ProxySocketPopupMenu
                                 )
 
-from editing.socketpopups.output import (
+from .socketpopups.output import (
                                    OutputSocketPopupMenu
                                  )
 

@@ -9,11 +9,11 @@ from pygame.transform import rotate as rotate_surface
 
 ### local imports
 
-from surfsman.render import combine_surfaces, render_rect
+from ...surfsman.render import combine_surfaces, render_rect
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                         BLACK,
                         PATHPREVIEW_BG,
                       )

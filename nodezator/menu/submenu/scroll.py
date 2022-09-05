@@ -7,21 +7,21 @@ from pygame import Rect
 
 ### local imports
 
-from surfsman.draw   import blit_aligned, draw_depth_finish
-from surfsman.render import render_rect
+from ...surfsman.draw import blit_aligned, draw_depth_finish
+from ...surfsman.render import render_rect
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from colorsman.colors import MENU_BG
+from ...colorsman.colors import MENU_BG
 
 ## common constants/tools
 
-from menu.common import (
+from ..common import (
                         UP_ARROW_SURF, DOWN_ARROW_SURF,
                         SCROLL_SPEED)
 
 ## utilities
-from menu.submenu.utils import get_boundaries
+from .utils import get_boundaries
 
 
 class MenuScrolling:

@@ -11,9 +11,9 @@ from functools import wraps
 
 ### local imports
 
-from ourstdlibs.timeutils import friendly_delta_from_secs
+from .timeutils import friendly_delta_from_secs
 
-from ourstdlibs.pyl import load_pyl, save_pyl
+from .pyl import load_pyl, save_pyl
 
 
 @contextmanager

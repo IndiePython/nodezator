@@ -33,37 +33,37 @@ from pygame.image import save as save_image
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from dialog import create_and_show_dialog
+from ...dialog import create_and_show_dialog
 
-from logman.main import get_new_logger
+from ...logman.main import get_new_logger
 
-from our3rdlibs.userlogger import USER_LOGGER
+from ...our3rdlibs.userlogger import USER_LOGGER
 
-from ourstdlibs.timeutils import friendly_delta_from_secs
+from ...ourstdlibs.timeutils import friendly_delta_from_secs
 
-from our3rdlibs.behaviour import set_status_message
+from ...our3rdlibs.behaviour import set_status_message
 
-from rectsman.main import RectsManager
+from ...rectsman.main import RectsManager
 
-from editing.export.form.image import (
+from .form.image import (
                            get_image_exporting_settings
                          )
 
-from editing.export.form.python import (
+from .form.python import (
                            get_python_exporting_settings
                          )
 
-from graphman.callablenode.export import CALLABLE_NODE_CSS
-from graphman.proxynode.export    import PROXY_NODE_CSS
-from graphman.stlibnode.export    import STLIB_NODE_CSS
-from graphman.builtinnode.export  import BUILTIN_NODE_CSS
-from graphman.capsulenode.export  import CAPSULE_NODE_CSS
-from graphman.operatornode.export import OPERATOR_NODE_CSS
-from graphman.textblock.export    import TEXT_BLOCK_CSS
-from graphman.socket.surfs        import SOCKET_AND_LINE_CSS
-from graphman.widget.export       import WIDGET_CSS
+from ...graphman.callablenode.export import CALLABLE_NODE_CSS
+from ...graphman.proxynode.export import PROXY_NODE_CSS
+from ...graphman.stlibnode.export import STLIB_NODE_CSS
+from ...graphman.builtinnode.export import BUILTIN_NODE_CSS
+from ...graphman.capsulenode.export import CAPSULE_NODE_CSS
+from ...graphman.operatornode.export import OPERATOR_NODE_CSS
+from ...graphman.textblock.export import TEXT_BLOCK_CSS
+from ...graphman.socket.surfs import SOCKET_AND_LINE_CSS
+from ...graphman.widget.export import WIDGET_CSS
 
 
 ### create logger for module

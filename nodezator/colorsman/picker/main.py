@@ -6,13 +6,13 @@ from functools import partial
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from pygameconstants import SCREEN_RECT
+from ...pygameconstants import SCREEN_RECT
 
-from ourstdlibs.color.utils import get_int_sequence_repr
+from ...ourstdlibs.color.utils import get_int_sequence_repr
 
-from ourstdlibs.color.conversion import (
+from ...ourstdlibs.color.conversion import (
                                    full_rgb_to_hex_string,
                                    full_rgb_to_hls,
                                    full_rgb_to_html_name,
@@ -20,41 +20,41 @@ from ourstdlibs.color.conversion import (
                                    full_rgba_to_luma,
                                  )
 
-from ourstdlibs.collections.general import (
+from ...ourstdlibs.collections.general import (
                                       CallList,
                                       FactoryDict,
                                     )
 
-from ourstdlibs.behaviour import get_oblivious_callable
+from ...ourstdlibs.behaviour import get_oblivious_callable
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ...classes2d.single import Object2D
+from ...classes2d.collections import List2D
 
-from surfsman.render import render_rect
-from surfsman.draw   import draw_border
+from ...surfsman.render import render_rect
+from ...surfsman.draw import draw_border
 
-from textman.render import render_text
+from ...textman.render import render_text
 
-from textman.label.main import Label
+from ...textman.label.main import Label
 
-from fontsman.constants import (
+from ...fontsman.constants import (
                           ENC_SANS_BOLD_FONT_HEIGHT,
                           ENC_SANS_BOLD_FONT_PATH,
                           FIRA_MONO_BOLD_FONT_HEIGHT,
                           FIRA_MONO_BOLD_FONT_PATH,
                         )
 
-from colorsman.colors import (
+from ..colors import (
                         BUTTON_FG, BUTTON_BG,
                         WINDOW_FG, WINDOW_BG,
                       )
 
-from colorsman.picker.constants import (
+from .constants import (
                                   DEFAULT_LABEL_MESSAGE
                                 )
 
 ## class extension
-from colorsman.picker.op import Operations
+from .op import Operations
 
 
 ### font settings

@@ -2,17 +2,17 @@
 
 ### local imports
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from fontsman.constants import (
+from ..constants import (
                                FIRA_MONO_BOLD_FONT_HEIGHT,
                                FIRA_MONO_BOLD_FONT_PATH)
 
-from textman.render import render_text
+from ...textman.render import render_text
 
-from surfsman.render import combine_surfaces
+from ...surfsman.render import combine_surfaces
 
-from colorsman.colors import BLACK, WHITE
+from ...colorsman.colors import BLACK, WHITE
 
 
 SIZE_FORMATTER = '{}x{}'.format

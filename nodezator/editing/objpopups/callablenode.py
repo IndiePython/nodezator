@@ -1,16 +1,16 @@
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from menu.main import MenuManager
+from ...menu.main import MenuManager
 
-from editing.objpopups.constants import (
+from .constants import (
                                 GeneralPopupCommands,
                                 get_node_info,
                               )
 
-from graphman.callablenode.main import CallableNode
+from ...graphman.callablenode.main import CallableNode
 
 
 class CallableNodePopupMenu(GeneralPopupCommands):

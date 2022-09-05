@@ -4,7 +4,7 @@
 from collections.abc import Iterator
 
 ### local import
-from ourstdlibs.dictutils import flatten_keys
+from ..ourstdlibs.dictutils import flatten_keys
 
 
 ## parameter annotation preset map

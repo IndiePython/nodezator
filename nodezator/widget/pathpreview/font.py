@@ -20,30 +20,30 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from ourstdlibs.path import get_new_filename
+from ...ourstdlibs.path import get_new_filename
 
-from fontsman.preview.cache import (
+from ...fontsman.preview.cache import (
                             FONT_PREVIEWS_DB,
                             update_cache_for_font_preview,
                           )
 
-from fontsman.viewer.main import view_fonts
+from ...fontsman.viewer.main import view_fonts
 
-from surfsman.cache import NOT_FOUND_SURF_MAP
+from ...surfsman.cache import NOT_FOUND_SURF_MAP
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                         BLACK,
                         WHITE,
                         PATHPREVIEW_BG,
                       )
 
-from widget.pathpreview.base import _BasePreview
+from .base import _BasePreview
 
-from widget.pathpreview.constants import (
+from .constants import (
 
                                  SP_BUTTON_SURFS,
                                  SP_BUTTON_RECTS,

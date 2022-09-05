@@ -6,13 +6,13 @@ from pathlib import Path
 
 ### local imports
 
-from classes2d.collections import List2D
+from ..classes2d.collections import List2D
 
-from surfdef import surfdef_obj_from_element
+from ..surfdef import surfdef_obj_from_element
 
-from htsl.constants import KNOWN_TAGS
+from .constants import KNOWN_TAGS
 
-from htsl.creation import (
+from .creation import (
 
                      TextBlock,
                      BlockQuote,
@@ -25,11 +25,11 @@ from htsl.creation import (
 
                    )
 
-from htsl.image import get_image_obj
+from .image import get_image_obj
 
-from htsl.codeblock import get_python_codeblock
+from .codeblock import get_python_codeblock
 
-from colorsman.colors import HTSL_CANVAS_BG
+from ..colorsman.colors import HTSL_CANVAS_BG
 
 class Preparation:
 

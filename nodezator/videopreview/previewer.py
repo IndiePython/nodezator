@@ -16,35 +16,35 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from config import APP_REFS, FFMPEG_AVAILABLE
+from ..config import APP_REFS, FFMPEG_AVAILABLE
 
-from pygameconstants import (
+from ..pygameconstants import (
                        SCREEN,
                        SCREEN_RECT,
                        maintain_fps,
                      )
 
-from ourstdlibs.behaviour import get_oblivious_callable
+from ..ourstdlibs.behaviour import get_oblivious_callable
 
-from our3rdlibs.behaviour import watch_window_size
+from ..our3rdlibs.behaviour import watch_window_size
 
-from loopman.exception import (
+from ..loopman.exception import (
                          QuitAppException,
                          SwitchLoopException,
                        )
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from surfsman.render import render_rect
-from surfsman.draw   import draw_border
+from ..surfsman.render import render_rect
+from ..surfsman.draw import draw_border
 
-from textman.render import render_text
+from ..textman.render import render_text
 
-from colorsman.colors import BLACK, WHITE
+from ..colorsman.colors import BLACK, WHITE
 
-from widget.intfloatentry.main import IntFloatEntry
+from ..widget.intfloatentry.main import IntFloatEntry
 
-from videopreview.cache import (
+from .cache import (
                             VIDEO_METADATA_MAP,
                             CachedVideoObject,
                           )

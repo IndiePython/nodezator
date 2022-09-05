@@ -10,11 +10,11 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from pygameconstants import SCREEN, blit_on_screen
+from ....pygameconstants import SCREEN, blit_on_screen
 
-from ourstdlibs.behaviour import had_to_set_new_value
+from ....ourstdlibs.behaviour import had_to_set_new_value
 
-from textman.editor.constants import (
+from ..constants import (
                                 TEXT_EDITOR_RECT,
                                 EDITING_AREA_RECT,
                               )

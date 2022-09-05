@@ -10,7 +10,7 @@ from pygame.draw import line as draw_line
 
 ### local imports
 
-from our3rdlibs.grid.main import (
+from .main import (
                             enforce_multiple,
                             generate_grid_lines,
                             move_grid_lines_along_axis,

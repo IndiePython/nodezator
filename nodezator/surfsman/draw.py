@@ -25,7 +25,7 @@ from pygame.draw import (
 
 ### local imports
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                              BLACK, WHITE,
                              SHADOW_COLOR, HIGHLIGHT_COLOR)
 

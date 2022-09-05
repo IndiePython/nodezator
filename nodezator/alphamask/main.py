@@ -71,9 +71,9 @@ working directly with transparency in .png files.
 
 ### local import
 
-from imagesman.cache import IMAGE_SURFS_DB
+from ..imagesman.cache import IMAGE_SURFS_DB
 
-from alphamask.utils import (
+from .utils import (
                        size_from_alpha_values,
                        unit_from_full_alpha_values,
                        full_from_unit_alpha_values,
@@ -82,8 +82,8 @@ from alphamask.utils import (
 
 ## class extensions
 
-from alphamask.basicop import AlphaMaskBasicOperations
-from alphamask.masksop import (
+from .basicop import AlphaMaskBasicOperations
+from .masksop import (
                          AlphaMaskOperationsBetweenMasks
                        )
 

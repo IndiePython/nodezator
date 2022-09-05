@@ -1,6 +1,6 @@
 
 
-from graphman.socket.surfs import type_to_codename
+from ..socket.surfs import type_to_codename
 
 
 class SegmentOps:

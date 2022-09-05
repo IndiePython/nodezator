@@ -42,14 +42,14 @@ from pygame.transform import (
 
 ### local imports
 
-from fontsman.constants import ICON_FONT_PATH
+from ..fontsman.constants import ICON_FONT_PATH
 
-from surfsman.draw import (
+from .draw import (
                      draw_border,
                      draw_depth_finish,
                    )
 
-from colorsman.colors import BLACK
+from ..colorsman.colors import BLACK
 
 
 

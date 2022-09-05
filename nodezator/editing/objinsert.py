@@ -9,32 +9,32 @@ from itertools import chain, count
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from dialog import create_and_show_dialog
+from ..dialog import create_and_show_dialog
 
-from appinfo import NODES_KEY
+from ..appinfo import NODES_KEY
 
-from translation import TRANSLATION_HOLDER as t
+from ..translation import TRANSLATION_HOLDER as t
 
-from logman.main import get_new_logger
+from ..logman.main import get_new_logger
 
-from our3rdlibs.userlogger import USER_LOGGER
+from ..our3rdlibs.userlogger import USER_LOGGER
 
-from our3rdlibs.behaviour import (
+from ..our3rdlibs.behaviour import (
                             indicate_unsaved,
                             saved_or_unsaved_state_kept,
                           )
 
-from graphman.callablenode.main import CallableNode
-from graphman.operatornode.main import OperatorNode
-from graphman.builtinnode.main  import BuiltinNode
-from graphman.stlibnode.main    import StandardLibNode
-from graphman.capsulenode.main  import CapsuleNode
-from graphman.proxynode.main    import ProxyNode
-from graphman.textblock.main    import TextBlock
+from ..graphman.callablenode.main import CallableNode
+from ..graphman.operatornode.main import OperatorNode
+from ..graphman.builtinnode.main import BuiltinNode
+from ..graphman.stlibnode.main import StandardLibNode
+from ..graphman.capsulenode.main import CapsuleNode
+from ..graphman.proxynode.main import ProxyNode
+from ..graphman.textblock.main import TextBlock
 
-from editing.widgetpicker.main import pick_widget
+from .widgetpicker.main import pick_widget
 
 
 ### create logger for module

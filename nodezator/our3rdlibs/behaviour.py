@@ -13,18 +13,18 @@ from pygame.display import get_caption, set_caption
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from pygameconstants import (
+from ..pygameconstants import (
                        _CLOCK,
                        SCREEN,
                        SCREEN_RECT,
                        SCREEN_WIDTH, SCREEN_HEIGHT,
                      )
 
-from loopman.exception import QuitAppException
+from ..loopman.exception import QuitAppException
 
-from translation import STATUS_MESSAGES_MAP
+from ..translation import STATUS_MESSAGES_MAP
 
 
 ### store current screen size

@@ -6,19 +6,19 @@ from functools import partial
 
 ### local imports
 
-from ourstdlibs.behaviour import remove_by_identity
+from ....ourstdlibs.behaviour import remove_by_identity
 
-from our3rdlibs.behaviour import indicate_unsaved
+from ....our3rdlibs.behaviour import indicate_unsaved
 
-from classes2d.single import Object2D
+from ....classes2d.single import Object2D
 
-from widget.stringentry import StringEntry
+from ....widget.stringentry import StringEntry
 
-from rectsman.main import RectsManager
+from ....rectsman.main import RectsManager
 
-from graphman.callablenode.constants import FONT_HEIGHT
+from ..constants import FONT_HEIGHT
 
-from graphman.callablenode.surfs import (
+from ..surfs import (
                                  UNPACKING_ICON_SURFS_MAP, 
                                )
 

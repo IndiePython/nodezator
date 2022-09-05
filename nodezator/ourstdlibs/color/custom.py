@@ -6,20 +6,20 @@ in custom ways, according to our own design.
 
 ### local imports
 
-from ourstdlibs.color.property import get_saturation
+from .property import get_saturation
 
-from ourstdlibs.color.utils import (
+from .utils import (
                               map_colors_by_hue,
                               sort_colors_by_luma,
                               validate_hex_color_string,
                             )
 
-from ourstdlibs.color.conversion import (
+from .conversion import (
                                 hex_string_to_full_rgb,
                                 full_rgb_to_hex_string,
                               )
 
-from ourstdlibs.iterutils import separate_by_condition
+from ..iterutils import separate_by_condition
 
 
 ### formatting related functions

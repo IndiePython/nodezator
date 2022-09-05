@@ -1,7 +1,7 @@
 """Facility for exception related utilities."""
 
 ### local imports
-from ourstdlibs.behaviour import (
+from .behaviour import (
                              return_untouched,
                              get_decorator_from_wrapper)
 

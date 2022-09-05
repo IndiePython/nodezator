@@ -5,15 +5,15 @@ from pygame.image import load as load_image
 
 ### local imports
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from classes2d.collections import List2D
+from ..classes2d.collections import List2D
 
-from surfdef import surfdef_obj_from_element
+from ..surfdef import surfdef_obj_from_element
 
-from surfsman.render import render_rect
+from ..surfsman.render import render_rect
 
-from colorsman.colors import HTSL_CANVAS_BG
+from ..colorsman.colors import HTSL_CANVAS_BG
 
 
 HTSL_CACHE = {}

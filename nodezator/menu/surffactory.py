@@ -2,31 +2,31 @@
 
 ### local imports
 
-from surfsman.draw import (
+from ..surfsman.draw import (
                      draw_depth_finish,
                      blit_aligned,
                    )
 
-from surfsman.icon import render_layered_icon
+from ..surfsman.icon import render_layered_icon
 
-from surfsman.render import (
+from ..surfsman.render import (
                        render_rect,
                        render_separator,
                      )
 
-from textman.render import (
+from ..textman.render import (
                       render_text,
                       get_text_size,
                     )
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         MENU_BG,
                         MENU_HOVERED_BG,
                         BLACK,
                         WHITE,
                       )
 
-from menu.common import (
+from .common import (
 
                    ## kwargs
 
@@ -41,7 +41,7 @@ from menu.common import (
 
                  )
 
-from menu.iconfactory import ICON_MAP
+from .iconfactory import ICON_MAP
 
 
 ICON_WIDTH = (

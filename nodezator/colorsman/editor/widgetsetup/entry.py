@@ -2,10 +2,10 @@
 
 ### local imports
 
-from colorsman.editor.widgetsetup.constants import FONT_HEIGHT
+from .constants import FONT_HEIGHT
 
 ## extra utilities
-from ourstdlibs.color.utils import (
+from ....ourstdlibs.color.utils import (
                               validate_hex_color_string,
                               validate_html_color_name,
                               validate_pygame_color_name,
@@ -14,9 +14,9 @@ from ourstdlibs.color.utils import (
 
 ## widgets
 
-from widget.stringentry import StringEntry
+from ....widget.stringentry import StringEntry
 
-from widget.intfloatentry.main import IntFloatEntry
+from ....widget.intfloatentry.main import IntFloatEntry
 
 
 def setup_entries(self):

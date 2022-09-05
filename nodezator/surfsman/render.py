@@ -11,19 +11,19 @@ from pygame.transform import rotate as rotate_surface
 
 ### local imports
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         BLACK,
                         WINDOW_BG,
                         SHADOW_COLOR,
                         HIGHLIGHT_COLOR,
                       )
 
-from surfsman.draw import (
+from .draw import (
                      draw_border,
                      draw_depth_finish,
                    )
 
-from rectsman.main import RectsManager
+from ..rectsman.main import RectsManager
 
 
 def render_rect(width, height, color=BLACK):

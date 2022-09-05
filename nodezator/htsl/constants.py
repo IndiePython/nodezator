@@ -1,7 +1,7 @@
 
 ### local imports
 
-from fontsman.constants import (
+from ..fontsman.constants import (
 
                       NOTO_SANS_REGULAR_FONT_PATH,
                       NOTO_SANS_BOLD_FONT_PATH,
@@ -13,7 +13,7 @@ from fontsman.constants import (
 
                     )
 
-from colorsman.colors import (
+from ..colorsman.colors import (
 
                         HTSL_GENERAL_TEXT_FG,
                         HTSL_HEADING_TEXT_FG,

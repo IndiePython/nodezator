@@ -13,49 +13,49 @@ from webbrowser import open as open_url
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from pygameconstants import SCREEN
+from ..pygameconstants import SCREEN
 
-from translation import TRANSLATION_HOLDER as t
+from ..translation import TRANSLATION_HOLDER as t
 
-from ourstdlibs.collections.general import CallList
+from ..ourstdlibs.collections.general import CallList
 
-from our3rdlibs.behaviour import quit_app
+from ..our3rdlibs.behaviour import quit_app
 
-from htsl.main import open_htsl_link
+from ..htsl.main import open_htsl_link
 
-from menu.main import MenuManager
+from ..menu.main import MenuManager
 
-from recentfile import get_recent_files
+from ..recentfile import get_recent_files
 
-from userprefsman.editionform import edit_user_preferences
+from ..userprefsman.editionform import edit_user_preferences
 
-from winman.nodepacksforms.selection import (
+from .nodepacksforms.selection import (
                            present_change_node_packs_form,
                          )
 
-from winman.nodepacksforms.renaming import (
+from .nodepacksforms.renaming import (
                            present_rename_node_packs_form,
                          )
 
-from graphman.presets import (
+from ..graphman.presets import (
                         WIDGET_DATA_PRESET_MAP,
                         WIDGET_PRESET_MENU_LABEL_MAP,
                       )
 
-from graphman.operatornode.constants import OPERATIONS_MAP
+from ..graphman.operatornode.constants import OPERATIONS_MAP
 
-from graphman.builtinnode.constants import (
+from ..graphman.builtinnode.constants import (
                             BUILTIN_IDS_TO_CALLABLES_MAP,
                           )
 
-from graphman.stlibnode.constants import (
+from ..graphman.stlibnode.constants import (
                           STLIB_IDS_TO_CALLABLES_MAP,
                           STLIB_IDS_TO_MODULE,
                         )
 
-from graphman.capsulenode.constants import (
+from ..graphman.capsulenode.constants import (
                           CAPSULE_IDS_TO_CALLABLES_MAP,
                         )
 

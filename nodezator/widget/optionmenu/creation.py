@@ -7,13 +7,13 @@ used by the option menu itself in its 'image' attribute.
 
 ### local imports
 
-from surfsman.draw import blit_aligned, draw_border
+from ...surfsman.draw import blit_aligned, draw_border
 
-from surfsman.render import render_rect
+from ...surfsman.render import render_rect
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from textman.render import render_text
+from ...textman.render import render_text
 
 
 ### constants

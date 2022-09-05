@@ -9,7 +9,7 @@ from itertools   import count
 
 
 ### local import
-from ourstdlibs.exceptionutils import bool_func_from_raiser
+from .exceptionutils import bool_func_from_raiser
 
 
 ### validation command map

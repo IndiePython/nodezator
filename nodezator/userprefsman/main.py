@@ -9,15 +9,15 @@ from pathlib import Path
 
 ### local imports
 
-from appinfo import APP_DIR_NAME
+from ..appinfo import APP_DIR_NAME
 
-from our3rdlibs.userlogger import USER_LOGGER
+from ..our3rdlibs.userlogger import USER_LOGGER
 
-from ourstdlibs.pyl import load_pyl
+from ..ourstdlibs.pyl import load_pyl
 
-from userprefsman.validation import validate_prefs_dict
+from .validation import validate_prefs_dict
 
-from logman.main import get_new_logger
+from ..logman.main import get_new_logger
 
 
 ### module level logger

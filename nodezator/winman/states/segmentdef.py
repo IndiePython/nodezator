@@ -21,9 +21,9 @@ from pygame.display import update
 
 ### local import
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from loopman.exception import QuitAppException
+from ...loopman.exception import QuitAppException
 
 
 class SegmentDefinitionState:

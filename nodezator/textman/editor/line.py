@@ -6,18 +6,18 @@ from pygame import Rect
 
 ### local imports
 
-from classes2d.collections import List2D
+from ...classes2d.collections import List2D
 
-from syntaxman.utils import (
+from ...syntaxman.utils import (
                        AVAILABLE_SYNTAXES,
                        get_ready_theme,
                      )
 
-from fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
+from ...fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
 
-from textman.cache import CachedTextObject
+from ..cache import CachedTextObject
 
-from textman.editor.constants import (
+from .constants import (
                                 SANS_FONT_SETTINGS,
                                 MONO_FONT_SETTINGS,
                               )

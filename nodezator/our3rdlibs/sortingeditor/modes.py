@@ -41,17 +41,17 @@ from pygame.display import update
 
 ### local imports
 
-from ourstdlibs.behaviour import empty_function
+from ...ourstdlibs.behaviour import empty_function
 
-from ourstdlibs.collections.general import CallList
+from ...ourstdlibs.collections.general import CallList
 
-from surfsman.draw import draw_border
+from ...surfsman.draw import draw_border
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from loopman.exception import QuitAppException
+from ...loopman.exception import QuitAppException
 
-from colorsman.colors import ITEM_OUTLINE
+from ...colorsman.colors import ITEM_OUTLINE
 
 
 ### constant

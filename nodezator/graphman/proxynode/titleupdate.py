@@ -1,14 +1,14 @@
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from our3rdlibs.behaviour import (
+from ...our3rdlibs.behaviour import (
                             indicate_unsaved,
                             set_status_message,
                           )
 
-from graphman.socket.surfs import type_to_codename
+from ..socket.surfs import type_to_codename
 
 def update_title(self, new_title):
     """Update node's title, performing needed setups."""

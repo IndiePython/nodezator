@@ -22,11 +22,11 @@ if str_app_dir not in path: path.insert(0, str_app_dir)
 
 ### local imports
 
-from logman.main import get_new_logger
+from .logman.main import get_new_logger
 
-from appinfo import TITLE, NATIVE_FILE_EXTENSION
+from .appinfo import TITLE, NATIVE_FILE_EXTENSION
 
-from config import APP_REFS
+from .config import APP_REFS
 
 
 ### store reference to application directory
@@ -51,7 +51,7 @@ def main(filepath=None):
     logger.info("Loading application.")
 
     ## try loading
-    try: from mainloop import run_app
+    try: from .mainloop import run_app
 
     ## catch unexpected exceptions so we can log them
     ## before reraising

@@ -6,21 +6,21 @@ from pygame.time import get_ticks as get_pygame_msecs
 
 ### local imports
 
-from ourstdlibs.behaviour import empty_function
+from ....ourstdlibs.behaviour import empty_function
 
-from ourstdlibs.color.creation import get_contrasting_bw
+from ....ourstdlibs.color.creation import get_contrasting_bw
 
-from syntaxman.exception import SyntaxMappingError
+from ....syntaxman.exception import SyntaxMappingError
 
-from syntaxman.utils import (
+from ....syntaxman.utils import (
                        AVAILABLE_SYNTAXES,
                        SYNTAX_TO_MAPPING_FUNCTION,
                        get_ready_theme,
                      )
 
-from fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
+from ....fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
 
-from textman.editor.constants import (
+from ..constants import (
                                 SANS_FONT_SETTINGS,
                                 MONO_FONT_SETTINGS,
                               )

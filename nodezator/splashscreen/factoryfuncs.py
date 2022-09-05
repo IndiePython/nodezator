@@ -9,46 +9,46 @@ from webbrowser import open as open_url
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from translation import TRANSLATION_HOLDER as t
+from ..translation import TRANSLATION_HOLDER as t
 
-from logman.main import get_new_logger
+from ..logman.main import get_new_logger
 
-from ourstdlibs.behaviour import get_oblivious_callable
+from ..ourstdlibs.behaviour import get_oblivious_callable
 
-from htsl.main import open_htsl_link
+from ..htsl.main import open_htsl_link
 
-from rectsman.main import RectsManager
+from ..rectsman.main import RectsManager
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ..classes2d.single import Object2D
+from ..classes2d.collections import List2D
 
-from surfsman.draw import blit_aligned
+from ..surfsman.draw import blit_aligned
 
-from surfsman.render import (
+from ..surfsman.render import (
                        combine_surfaces,
                        unite_surfaces,
                        render_rect,
                      )
 
-from surfsman.icon import render_layered_icon
+from ..surfsman.icon import render_layered_icon
 
-from imagesman.cache import IMAGE_SURFS_DB
+from ..imagesman.cache import IMAGE_SURFS_DB
 
-from textman.render import (
+from ..textman.render import (
                       render_text,
                       render_multiline_text,
                     )
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         BLACK,
                         WHITE,
                         SPLASH_BG,
                         NODE_BODY_BG,
                       )
 
-from splashscreen.constants import TEXT_SETTINGS
+from .constants import TEXT_SETTINGS
 
 
 ### create logger for module

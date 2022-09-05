@@ -6,9 +6,9 @@ from pathlib import Path
 
 ### local imports
 
-from userprefsman.main import RECENT_FILES
+from .userprefsman.main import RECENT_FILES
 
-from ourstdlibs.pyl import load_pyl, save_pyl
+from .ourstdlibs.pyl import load_pyl, save_pyl
 
 
 def get_recent_files():

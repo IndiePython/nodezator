@@ -6,12 +6,12 @@ from functools import partialmethod
 
 ### local imports
 
-from ourstdlibs.color.largemaps import (
+from ...ourstdlibs.color.largemaps import (
                                   HTML_COLOR_MAP,
                                   PYGAME_COLOR_MAP,
                                 )
 
-from ourstdlibs.color.conversion import (
+from ...ourstdlibs.color.conversion import (
                                    COLOR_CONVERSION_MAP,
                                    hex_string_to_full_rgb,
                                    full_rgb_to_html_name,

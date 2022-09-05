@@ -34,47 +34,47 @@ from pygame.mixer import music
 
 ### local imports
 
-from config import APP_REFS
+from .config import APP_REFS
 
-from pygameconstants import (
+from .pygameconstants import (
                        SCREEN,
                        SCREEN_RECT,
                        FPS,
                        maintain_fps,
                      )
 
-from dialog import create_and_show_dialog
+from .dialog import create_and_show_dialog
 
-from logman.main import get_new_logger
+from .logman.main import get_new_logger
 
-from ourstdlibs.behaviour import get_oblivious_callable
+from .ourstdlibs.behaviour import get_oblivious_callable
 
-from our3rdlibs.userlogger import USER_LOGGER
+from .our3rdlibs.userlogger import USER_LOGGER
 
-from our3rdlibs.behaviour import watch_window_size
+from .our3rdlibs.behaviour import watch_window_size
 
-from loopman.exception import (
+from .loopman.exception import (
                          QuitAppException,
                          SwitchLoopException,
                        )
 
-from classes2d.single import Object2D
+from .classes2d.single import Object2D
 
-from classes2d.surfaceswitcher import (
+from .classes2d.surfaceswitcher import (
                                  SURF_SWITCHER_CLASS_MAP
                                )
 
-from surfsman.draw import draw_border
+from .surfsman.draw import draw_border
 
-from surfsman.render import render_rect
+from .surfsman.render import render_rect
 
-from surfsman.icon import render_layered_icon
+from .surfsman.icon import render_layered_icon
 
-from textman.render import render_text
+from .textman.render import render_text
 
-from colorsman.colors import BLACK, WHITE
+from .colorsman.colors import BLACK, WHITE
 
-from widget.intfloatentry.main import IntFloatEntry
+from .widget.intfloatentry.main import IntFloatEntry
 
 
 PlayingPausedObject = (

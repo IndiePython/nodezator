@@ -45,34 +45,34 @@ from pygame.math import Vector2
 
 ### local imports
 
-from ourstdlibs.behaviour import (
+from ..ourstdlibs.behaviour import (
                             empty_function,
                           )
 
-from ourstdlibs.color.creation import get_contrasting_bw
+from ..ourstdlibs.color.creation import get_contrasting_bw
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from surfsman.render import render_rect
+from ..surfsman.render import render_rect
 
-from fontsman.constants import (
+from ..fontsman.constants import (
                           FIRA_MONO_BOLD_FONT_HEIGHT,
                           FIRA_MONO_BOLD_FONT_PATH,
                         )
 
-from textman.editor.main import edit_text
+from ..textman.editor.main import edit_text
 
-from loopman.exception import (
+from ..loopman.exception import (
                          QuitAppException,
                          SwitchLoopException,
                        )
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         LITERAL_ENTRY_FG,
                         LITERAL_ENTRY_BG,
                       )
 
-from textman.entryedition.cursor import EntryCursor
+from ..textman.entryedition.cursor import EntryCursor
 
 
 class LiteralEntry(Object2D):

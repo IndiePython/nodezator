@@ -28,22 +28,22 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from pygameconstants import SCREEN
+from ..pygameconstants import SCREEN
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from loopman.exception import (
+from ..loopman.exception import (
                          SwitchLoopException,
                          QuitAppException,
                        )
 
-from colorsman.colors import SPLASH_FONT
+from ..colorsman.colors import SPLASH_FONT
 
-from recentfile import get_recent_files
+from ..recentfile import get_recent_files
 
-from splashscreen.factoryfuncs import get_recent_file_objs
+from .factoryfuncs import get_recent_file_objs
 
-from splashscreen.animsetup import (
+from .animsetup import (
                                    keep_animation_playing,
                                    keep_animation_paused)
 

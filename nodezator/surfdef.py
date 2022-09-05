@@ -30,15 +30,15 @@ from pygame.draw import (
 
 ### local imports
 
-from classes2d.single import Object2D
+from .classes2d.single import Object2D
 
-from classes2d.collections import List2D
+from .classes2d.collections import List2D
 
-from surfsman.draw import draw_border
+from .surfsman.draw import draw_border
 
-from surfsman.render import render_rect
+from .surfsman.render import render_rect
 
-from htsl.creation import TextBlock
+from .htsl.creation import TextBlock
 
 
 def surfdef_obj_from_element(

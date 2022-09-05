@@ -6,15 +6,15 @@ from pygame import Rect
 
 ### local imports
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from surfsman.render import render_rect
+from ...surfsman.render import render_rect
 
-from fontsman.constants import ENC_SANS_BOLD_FONT_PATH
+from ...fontsman.constants import ENC_SANS_BOLD_FONT_PATH
 
-from textman.cache import TEXT_SURFS_DB
+from ..cache import TEXT_SURFS_DB
 
-from colorsman.colors import BLACK
+from ...colorsman.colors import BLACK
 
 
 # XXX it's not clear why the Label constructor parameters

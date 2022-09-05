@@ -10,7 +10,7 @@ from subprocess import run as run_subprocess
 
 
 ### local import
-from ourstdlibs.collections.general import CallList
+from .ourstdlibs.collections.general import CallList
 
 
 ### an object to hold references/data used throughout the

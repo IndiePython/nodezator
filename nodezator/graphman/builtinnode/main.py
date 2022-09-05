@@ -6,17 +6,17 @@ from itertools import takewhile
 
 ### local imports
 
-from graphman.builtinnode.constants import (
+from .constants import (
                     BUILTIN_IDS_TO_CALLABLES_MAP,
                     BUILTIN_IDS_TO_SIGNATURES_MAP,
                     BUILTIN_IDS_TO_SIGNATURE_CALLABLES_MAP,
                     BUILTIN_IDS_TO_SOURCE_VIEW_TEXT,
                   )
 
-from colorsman.colors import BUILTIN_NODES_CATEGORY_COLOR
+from ...colorsman.colors import BUILTIN_NODES_CATEGORY_COLOR
 
 ## superclass
-from graphman.callablenode.main import CallableNode
+from ..callablenode.main import CallableNode
 
 
 class BuiltinNode(CallableNode):

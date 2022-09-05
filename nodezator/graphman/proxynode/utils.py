@@ -1,5 +1,5 @@
 
-from our3rdlibs.behaviour import indicate_unsaved
+from ...our3rdlibs.behaviour import indicate_unsaved
 
 
 def update_with_widget(data, key, widget):

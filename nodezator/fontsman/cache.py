@@ -23,7 +23,7 @@ from pygame.font import Font
 
 
 ### local import
-from fontsman.exception import UnattainableFontHeight
+from .exception import UnattainableFontHeight
 
 
 

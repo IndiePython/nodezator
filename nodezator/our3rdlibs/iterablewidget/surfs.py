@@ -2,9 +2,9 @@
 
 ### local imports
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                              LIST_WIDGET_BUTTON_FG,
                              LIST_WIDGET_BUTTON_BG,
                              LIST_WIDGET_REMOVE_BUTTON_FG)

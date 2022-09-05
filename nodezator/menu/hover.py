@@ -2,9 +2,9 @@
 
 ### local imports
 
-from loopman.exception import SwitchLoopException
+from ..loopman.exception import SwitchLoopException
 
-from logman.main import get_new_logger
+from ..logman.main import get_new_logger
 
 
 ### create logger for module

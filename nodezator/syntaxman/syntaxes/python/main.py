@@ -21,17 +21,17 @@ from tokenize import (
 
 ### local imports
 
-from ourstdlibs.mathutils import get_remaining_intervals
+from ....ourstdlibs.mathutils import get_remaining_intervals
 
-from ourstdlibs.exceptionutils import \
+from ....ourstdlibs.exceptionutils import \
                               new_raiser_from_existing_deco
 
-from syntaxman.exception import SyntaxMappingError
+from ...exception import SyntaxMappingError
 
-from syntaxman.syntaxes.python.namemap import \
+from .namemap import \
                                          HIGHLIGHT_NAME_MAP
 
-from syntaxman.syntaxes.python.utils import (
+from .utils import (
                                is_triple_quotes_string,
                                has_def_or_class_statement,
                                interval_of_next_def_word,

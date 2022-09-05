@@ -2,12 +2,12 @@
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from loopman.exception import ContinueLoopException
-from our3rdlibs.behaviour import indicate_unsaved
+from ...loopman.exception import ContinueLoopException
+from ...our3rdlibs.behaviour import indicate_unsaved
 
-from graphman.socket.output import OutputSocket
+from ..socket.output import OutputSocket
 
 
 class UserActions:

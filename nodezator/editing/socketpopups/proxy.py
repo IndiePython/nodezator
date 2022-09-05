@@ -1,9 +1,9 @@
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from menu.main import MenuManager
+from ...menu.main import MenuManager
 
 
 class ProxySocketPopupMenu(MenuManager):

@@ -37,7 +37,7 @@ from contextlib import redirect_stdout
 
 
 ### local imports
-from appinfo import TITLE, APP_VERSION, APP_DIR_NAME
+from ..appinfo import TITLE, APP_VERSION, APP_DIR_NAME
 
 
 ### constants

@@ -9,9 +9,9 @@ from collections.abc import Iterable, Iterator
 
 ### local imports
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from colorsman.colors import (
+from ...colorsman.colors import (
 
                         ## hollow socket
                         HOLLOW_SOCKET_OUTLINE,

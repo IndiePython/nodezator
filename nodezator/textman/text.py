@@ -8,14 +8,14 @@ from pygame import Rect, Surface
 
 ### local imports
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ..classes2d.single import Object2D
+from ..classes2d.collections import List2D
 
-from surfsman.cache import EMPTY_SURF
+from ..surfsman.cache import EMPTY_SURF
 
-from textman.render import render_text
+from .render import render_text
 
-from syntaxman.utils import SYNTAX_TO_MAPPING_FUNCTION
+from ..syntaxman.utils import SYNTAX_TO_MAPPING_FUNCTION
 
 
 ### functions

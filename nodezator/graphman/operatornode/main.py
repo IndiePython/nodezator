@@ -1,25 +1,25 @@
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from ourstdlibs.meta import initialize_bases
+from ...ourstdlibs.meta import initialize_bases
 
 
 ### class extensions
 
-from graphman.operatornode.vizprep import (
+from .vizprep import (
                                 VisualRelatedPreparations,
                               )
 
-from graphman.operatornode.vizop import (
+from .vizop import (
                                  VisualRelatedOperations,
                                )
 
-from graphman.operatornode.execution import Execution
+from .execution import Execution
 
-from graphman.operatornode.export import Exporting
+from .export import Exporting
 
-from graphman.operatornode.constants import (
+from .constants import (
 
                  OPERATIONS_MAP,
                  OPERATIONS_SIGNATURE_MAP,

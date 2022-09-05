@@ -2,24 +2,24 @@
 
 ### local imports
 
-from config import SYNTAX_THEMES_DIR
+from ..config import SYNTAX_THEMES_DIR
 
-from ourstdlibs.pyl import load_pyl
+from ..ourstdlibs.pyl import load_pyl
 
-from ourstdlibs.dictutils import settings_to_hashable_repr
+from ..ourstdlibs.dictutils import settings_to_hashable_repr
 
 
 ## syntax mapping functions
 
-from syntaxman.syntaxes.python.main import (
+from .syntaxes.python.main import (
                                       get_python_syntax_map
                                     )
 
-from syntaxman.syntaxes.comment import (
+from .syntaxes.comment import (
                                   get_comment_syntax_map
                                 )
 
-from syntaxman.syntaxes.userlog import (
+from .syntaxes.userlog import (
                                   get_user_log_syntax_map 
                                 )
 

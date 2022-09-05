@@ -5,22 +5,22 @@ from functools import partial
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from menu.main import MenuManager
+from ...menu.main import MenuManager
 
-from ourstdlibs.behaviour import get_suppressing_callable
+from ...ourstdlibs.behaviour import get_suppressing_callable
 
-from our3rdlibs.behaviour import set_status_message
+from ...our3rdlibs.behaviour import set_status_message
 
-from editing.objpopups.constants import (
+from .constants import (
                                 GeneralPopupCommands,
                                 get_node_info,
                               )
 
-from loopman.exception import ContinueLoopException
+from ...loopman.exception import ContinueLoopException
 
-from graphman.operatornode.constants import OPERATIONS_MAP
+from ...graphman.operatornode.constants import OPERATIONS_MAP
 
 
 class OperatorNodePopupMenu(GeneralPopupCommands):

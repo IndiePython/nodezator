@@ -4,7 +4,7 @@ from copy            import deepcopy
 from collections.abc import Mapping
 
 ### local import
-from ourstdlibs.behaviour import flatten_mapping_values
+from ...behaviour import flatten_mapping_values
 
 
 ### XXX development note: in the future, the list class

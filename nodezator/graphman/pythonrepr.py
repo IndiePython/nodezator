@@ -6,17 +6,17 @@ from textwrap import indent, wrap
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from appinfo import NODE_SCRIPT_NAME
+from ..appinfo import NODE_SCRIPT_NAME
 
-from classes2d.collections import List2D
+from ..classes2d.collections import List2D
 
-from rectsman.utils import get_minimum_distance_function
+from ..rectsman.utils import get_minimum_distance_function
 
-from graphman.utils import yield_subgraphs
+from .utils import yield_subgraphs
 
-from widget.defaultholder import DefaultHolder
+from ..widget.defaultholder import DefaultHolder
 
 
 ### constants

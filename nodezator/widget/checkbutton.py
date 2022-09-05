@@ -6,15 +6,15 @@ from xml.etree.ElementTree import Element
 
 ### local imports
 
-from ourstdlibs.behaviour import empty_function
+from ..ourstdlibs.behaviour import empty_function
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from surfsman.icon import render_layered_icon
+from ..surfsman.icon import render_layered_icon
 
-from surfsman.draw import draw_border
+from ..surfsman.draw import draw_border
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         CHECKBUTTON_FG,
                         CHECKBUTTON_BG,
                         CHECKBUTTON_OUTLINE,

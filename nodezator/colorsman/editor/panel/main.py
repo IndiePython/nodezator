@@ -23,27 +23,27 @@ from pygame.mouse import (
 
 ### local imports
 
-from pygameconstants import SCREEN
+from ....pygameconstants import SCREEN
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ....classes2d.single import Object2D
+from ....classes2d.collections import List2D
 
-from surfsman.draw   import draw_border_on_area
-from surfsman.render import render_rect
+from ....surfsman.draw import draw_border_on_area
+from ....surfsman.render import render_rect
 
-from surfsman.icon import render_layered_icon
+from ....surfsman.icon import render_layered_icon
 
-from colorsman.colors import BLACK, WINDOW_BG
+from ...colors import BLACK, WINDOW_BG
 
-from colorsman.editor.panel.constants import (
+from .constants import (
                                         COLOR_WIDGET_SIZE
                                       )
 
-from colorsman.editor.panel.data import (
+from .data import (
                                    ImportExportOperations
                                  )
 
-from colorsman.editor.panel.colorsop import (
+from .colorsop import (
                                         ColorsOperations
                                       )
 

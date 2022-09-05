@@ -1,7 +1,7 @@
 
 
 ### local import
-from our3rdlibs.iterablewidget.list import ListWidget
+from .list import ListWidget
 
 
 class SetWidget(ListWidget):

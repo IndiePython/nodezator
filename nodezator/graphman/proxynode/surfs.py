@@ -5,23 +5,23 @@ from functools import partial
 
 ### local imports
 
-from textman.render import render_text
+from ...textman.render import render_text
 
-from surfsman.draw   import draw_border
-from surfsman.render import render_rect
+from ...surfsman.draw import draw_border
+from ...surfsman.render import render_rect
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from graphman.proxynode.constants import (
+from .constants import (
                                     FONT_HEIGHT,
                                     HEADER_HEIGHT,
                                     MAX_WIDTH,
                                     NODE_OUTLINE_THICKNESS,
                                   )
 
-from ourstdlibs.collections.general import FactoryDict
+from ...ourstdlibs.collections.general import FactoryDict
 
-from colorsman.colors import (
+from ...colorsman.colors import (
 
                    PROXY_NODE_NORMAL_BG,
                    PROXY_NODE_NORMAL_FG,

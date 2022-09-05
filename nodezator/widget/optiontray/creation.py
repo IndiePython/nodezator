@@ -13,15 +13,15 @@ from pygame.draw import line as draw_line
 
 ### local imports
 
-from surfsman.draw   import blit_aligned, draw_border
-from surfsman.render import render_rect
+from ...surfsman.draw import blit_aligned, draw_border
+from ...surfsman.render import render_rect
 
-from classes2d.single      import Object2D
-from classes2d.collections import Iterable2D
+from ...classes2d.single import Object2D
+from ...classes2d.collections import Iterable2D
 
-from textman.render import render_text
+from ...textman.render import render_text
 
-from colorsman.colors import OPTION_TRAY_OPTION_SEPARATOR
+from ...colorsman.colors import OPTION_TRAY_OPTION_SEPARATOR
 
 
 ### class definition

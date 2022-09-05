@@ -12,12 +12,12 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from config import APP_REFS
+from ....config import APP_REFS
 
-from pygameconstants import SCREEN
+from ....pygameconstants import SCREEN
 
 ## function to extend class
-from graphman.callablenode.vizop.reposition import (
+from .reposition import (
                                    reposition_elements,
                                  )
 

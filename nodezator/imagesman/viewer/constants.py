@@ -2,26 +2,26 @@
 
 ### local imports
 
-from pygameconstants import SCREEN_RECT
+from ...pygameconstants import SCREEN_RECT
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ...classes2d.single import Object2D
+from ...classes2d.collections import List2D
 
-from fontsman.constants import (
+from ...fontsman.constants import (
                                ENC_SANS_BOLD_FONT_HEIGHT,
                                ENC_SANS_BOLD_FONT_PATH)
 
-from textman.label.main import Label
+from ...textman.label.main import Label
 
-from textman.render import render_text
+from ...textman.render import render_text
 
-from imagesman.cache import CachedImageObject
+from ..cache import CachedImageObject
 
-from surfsman.render import combine_surfaces
+from ...surfsman.render import combine_surfaces
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                              BLACK, WHITE,
                              IMAGES_VIEWER_FG,
                              IMAGES_VIEWER_BG,

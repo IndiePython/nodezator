@@ -10,37 +10,37 @@ from pygame.math import Vector2
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from pygameconstants import (
+from ...pygameconstants import (
                        SCREEN_RECT,
                        FPS,
                        maintain_fps,
                      )
 
-from ourstdlibs.behaviour import empty_function
+from ...ourstdlibs.behaviour import empty_function
 
-from our3rdlibs.behaviour import watch_window_size
+from ...our3rdlibs.behaviour import watch_window_size
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ...classes2d.single import Object2D
+from ...classes2d.collections import List2D
 
-from surfsman.render import render_rect
+from ...surfsman.render import render_rect
 
-from surfsman.cache import (
+from ...surfsman.cache import (
                       cache_screen_state,
                       draw_cached_screen_state
                     )
 
-from imagesman.cache import IMAGE_SURFS_DB
+from ..cache import IMAGE_SURFS_DB
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                              IMAGES_VIEWER_FG,
                              IMAGES_VIEWER_BG,
                              THUMB_BG)
 
 
-from imagesman.viewer.constants import (
+from .constants import (
                                   VIEWER_RECT,
                                   VIEWER_ICON,
                                   VIEWER_CAPTION,
@@ -51,8 +51,8 @@ from imagesman.viewer.constants import (
                                   VIEWER_PADDING,
                                 )
 
-from imagesman.viewer.normalop import NormalModeOperations
-from imagesman.viewer.fullop   import FullModeOperations
+from .normalop import NormalModeOperations
+from .fullop import FullModeOperations
 
 
 ### TODO finish subpackage (implementing viewer)

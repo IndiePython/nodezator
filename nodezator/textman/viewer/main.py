@@ -6,36 +6,36 @@ from pygame.math import Vector2
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from pygameconstants import SCREEN_RECT
+from ...pygameconstants import SCREEN_RECT
 
-from ourstdlibs.collections.general import CallList
+from ...ourstdlibs.collections.general import CallList
 
-from ourstdlibs.behaviour import empty_function
+from ...ourstdlibs.behaviour import empty_function
 
-from surfsman.draw import draw_border
+from ...surfsman.draw import draw_border
 
-from surfsman.render import combine_surfaces
+from ...surfsman.render import combine_surfaces
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from fontsman.constants import (
+from ...fontsman.constants import (
                           ENC_SANS_BOLD_FONT_HEIGHT,
                           ENC_SANS_BOLD_FONT_PATH,
                         )
 
-from textman.label.main import Label
+from ..label.main import Label
 
-from textman.render import (
+from ..render import (
                       render_text,
                       render_multiline_text,
                     )
 
-from surfsman.icon  import render_layered_icon
-from surfsman.cache import RECT_SURF_MAP
+from ...surfsman.icon import render_layered_icon
+from ...surfsman.cache import RECT_SURF_MAP
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                         BLACK, WHITE,
                         TEXT_VIEWER_HELP_FG,
                         TEXT_VIEWER_HELP_BG,
@@ -47,11 +47,11 @@ from colorsman.colors import (
 
 ## class extensions
 
-from textman.viewer.op   import Operations
-from textman.viewer.prep import TextPreparation
+from .op import Operations
+from .prep import TextPreparation
 
 ## common constants
-from textman.viewer.constants import (
+from .constants import (
                                 TEXT_VIEWER_RECT,
                                 CUSTOM_STDOUT_RECT,
                               )

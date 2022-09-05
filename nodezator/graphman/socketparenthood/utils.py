@@ -21,9 +21,9 @@ The code was further refactored and commented by me
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from pygameconstants import SCREEN_RECT
+from ...pygameconstants import SCREEN_RECT
 
 
 ### clipping utilities

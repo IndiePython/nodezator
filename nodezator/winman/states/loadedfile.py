@@ -41,17 +41,17 @@ from pygame.display import update
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from our3rdlibs.keyconst import KEYPAD_TO_COORDINATE_MAP
+from ...our3rdlibs.keyconst import KEYPAD_TO_COORDINATE_MAP
 
-from loopman.exception import (
+from ...loopman.exception import (
                          QuitAppException,
                          ContinueLoopException,
                          SwitchLoopException,
                        )
 
-from htsl.main import open_htsl_link
+from ...htsl.main import open_htsl_link
 
 
 class LoadedFileState:

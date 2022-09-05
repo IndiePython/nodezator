@@ -11,17 +11,17 @@ from pygame.display import update
 
 ### local imports and provisional screen filling
 
-from config import APP_REFS
+from .config import APP_REFS
 
-from pygameconstants import (
+from .pygameconstants import (
                        SCREEN,
                        FPS,
                        maintain_fps,
                      )
 
-from colorsman.colors import WINDOW_BG
+from .colorsman.colors import WINDOW_BG
 
-from our3rdlibs.behaviour import watch_window_size
+from .our3rdlibs.behaviour import watch_window_size
 
 
 ## before going on, fill the screen with the window
@@ -36,22 +36,22 @@ SCREEN.fill(WINDOW_BG)
 update()
 
 
-from logman.main import get_new_logger
+from .logman.main import get_new_logger
 
-from our3rdlibs.behaviour import (
+from .our3rdlibs.behaviour import (
                             are_changes_saved,
                             remove_buffer,
                           )
 
-from loopman.exception import (
+from .loopman.exception import (
                          ContinueLoopException,
                          SwitchLoopException,
                          QuitAppException,
                        )
 
-from dialog import show_dialog_from_key
+from .dialog import show_dialog_from_key
 
-from winman.main import perform_startup_preparations
+from .winman.main import perform_startup_preparations
 
 
 ### create logger for module

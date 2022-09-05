@@ -9,9 +9,9 @@ from itertools import cycle
 
 ### local imports
 
-from alphamask.main import AlphaMask
+from .....alphamask.main import AlphaMask
 
-from surfsman.draw import draw_linear_gradient
+from .....surfsman.draw import draw_linear_gradient
 
 
 ### mask obtained from an image representing a wave

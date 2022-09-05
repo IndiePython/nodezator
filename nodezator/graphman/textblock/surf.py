@@ -6,15 +6,15 @@ from pygame import Surface
 
 ### local imports
 
-from surfsman.draw import draw_border
+from ...surfsman.draw import draw_border
 
-from syntaxman.utils import get_ready_theme
+from ...syntaxman.utils import get_ready_theme
 
-from textman.text import get_highlighted_lines
+from ...textman.text import get_highlighted_lines
 
-from colorsman.colors import TEXT_BLOCK_OUTLINE
+from ...colorsman.colors import TEXT_BLOCK_OUTLINE
 
-from graphman.textblock.constants import (
+from .constants import (
                                     FONT_HEIGHT,
                                     FONT_PATH,
                                     PADDING,

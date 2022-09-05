@@ -1,13 +1,13 @@
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from menu.main import MenuManager
+from ...menu.main import MenuManager
 
-from editing.objpopups.constants import GeneralPopupCommands
+from .constants import GeneralPopupCommands
 
-from graphman.textblock.main import TextBlock
+from ...graphman.textblock.main import TextBlock
 
 
 class TextBlockPopupMenu(GeneralPopupCommands):

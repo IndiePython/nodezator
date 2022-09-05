@@ -38,20 +38,20 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from surfsman.draw import (
+from ...surfsman.draw import (
                      draw_border,
                      draw_border_on_area,
                    )
 
-from surfsman.cache import draw_cached_screen_state
+from ...surfsman.cache import draw_cached_screen_state
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from loopman.exception import QuitAppException
+from ...loopman.exception import QuitAppException
 
-from colorsman.colors import IMAGES_VIEWER_BORDER
+from ...colorsman.colors import IMAGES_VIEWER_BORDER
 
-from imagesman.viewer.constants import (
+from .constants import (
                                      VIEWER_BORDER_THICKNESS,
                                      LARGE_THUMB,
                                      PATH_LABEL)

@@ -9,17 +9,17 @@ from pygame.font import Font
 
 ### local imports
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from classes2d.collections import List2D
+from ...classes2d.collections import List2D
 
-from surfsman.render import render_rect
+from ...surfsman.render import render_rect
 
-from surfsman.draw import (
+from ...surfsman.draw import (
                      draw_not_found_icon,
                    )
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                         BLACK, WHITE,
                         IMAGE_NOT_FOUND_FG,
                         IMAGE_NOT_FOUND_BG,

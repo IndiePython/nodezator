@@ -9,29 +9,29 @@ from xml.etree.ElementTree import Element
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from ourstdlibs.path import get_new_filename
+from ...ourstdlibs.path import get_new_filename
 
-from imagesman.cache import (
+from ...imagesman.cache import (
                        ORIGINAL_IMAGE_SURFS_MAP,
                        IMAGE_SURFS_DB,
                        update_cache_for_image,
                      )
 
-from imagesman.viewer.main import view_images
+from ...imagesman.viewer.main import view_images
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                         BLACK, WHITE,
                         PATHPREVIEW_BG,
                         THUMB_BG,
                       )
 
-from widget.pathpreview.base import _BasePreview
+from .base import _BasePreview
 
-from widget.pathpreview.constants import (
+from .constants import (
                                  SP_BUTTON_SURFS,
                                  SP_BUTTON_RECTS,
                                  BUTTON_WIDTH,

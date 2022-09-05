@@ -7,7 +7,7 @@ from pygame.math import Vector2
 
 
 ### local import
-from ourstdlibs.mathutils import get_reaching_multiple
+from ...ourstdlibs.mathutils import get_reaching_multiple
 
 
 def enforce_multiple(unit_rect, area_rect):

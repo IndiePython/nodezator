@@ -24,12 +24,12 @@ from pygame import Rect
 
 ### local imports (class extensions)
 
-from rectsman.special   import SpecialMethods
-from rectsman.spatial   import SpatialProperties
-from rectsman.sizepos   import SizePositionMethods
-from rectsman.singlepos import PositionSingleRectsMethods
+from .special import SpecialMethods
+from .spatial import SpatialProperties
+from .sizepos import SizePositionMethods
+from .singlepos import PositionSingleRectsMethods
 
-from rectsman.cluster import get_clusters
+from .cluster import get_clusters
 
 
 ### "rect" property definition (getter and setter)

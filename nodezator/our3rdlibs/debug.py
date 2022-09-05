@@ -21,7 +21,7 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from pygameconstants import (
+from ..pygameconstants import (
                        FPS,
                        SCREEN,
                        SCREEN_RECT,
@@ -29,11 +29,11 @@ from pygameconstants import (
                        blit_on_screen,
                      )
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from textman.render import render_text
+from ..textman.render import render_text
 
-from colorsman.colors import WHITE, BLACK, GREY
+from ..colorsman.colors import WHITE, BLACK, GREY
 
 
 ### function to display surface

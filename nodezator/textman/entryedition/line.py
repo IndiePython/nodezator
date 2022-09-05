@@ -6,9 +6,9 @@ from pygame import Rect
 
 ### local imports
 
-from classes2d.collections import List2D
+from ...classes2d.collections import List2D
 
-from textman.cache import CachedTextObject
+from ..cache import CachedTextObject
 
 
 class EntryLine(List2D):

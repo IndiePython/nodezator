@@ -24,14 +24,14 @@ from pygame.display import update
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from loopman.exception import (
+from ...loopman.exception import (
                          QuitAppException,
                          SwitchLoopException,
                        )
 
-from htsl.main import open_htsl_link
+from ...htsl.main import open_htsl_link
 
 
 class NoFileState:

@@ -5,7 +5,7 @@ from string import punctuation, whitespace
 
 
 ### local import
-from ourstdlibs.mathutils import get_remaining_intervals
+from ...ourstdlibs.mathutils import get_remaining_intervals
 
 
 ### constants

@@ -6,23 +6,23 @@ from functools import partial
 
 ### local imports
 
-from config import APP_REFS
+from ....config import APP_REFS
 
-from ourstdlibs.behaviour import remove_by_identity
+from ....ourstdlibs.behaviour import remove_by_identity
 
-from our3rdlibs.button import Button
+from ....our3rdlibs.button import Button
 
-from our3rdlibs.behaviour import indicate_unsaved
+from ....our3rdlibs.behaviour import indicate_unsaved
 
-from widget.stringentry import StringEntry
+from ....widget.stringentry import StringEntry
 
-from rectsman.main import RectsManager
+from ....rectsman.main import RectsManager
 
-from graphman.widget.utils import WIDGET_CLASS_MAP
+from ...widget.utils import WIDGET_CLASS_MAP
 
-from graphman.callablenode.utils import update_with_widget
+from ..utils import update_with_widget
 
-from graphman.callablenode.surfs import (
+from ..surfs import (
 
                               ADD_BUTTON_SURF,
                               REMOVE_BUTTON_SURF,
@@ -31,7 +31,7 @@ from graphman.callablenode.surfs import (
 
                             )
 
-from graphman.callablenode.constants import FONT_HEIGHT
+from ..constants import FONT_HEIGHT
 
 
 class WidgetOps:

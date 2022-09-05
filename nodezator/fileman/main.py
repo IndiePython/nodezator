@@ -13,34 +13,34 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from pygameconstants import SCREEN_RECT
+from ..pygameconstants import SCREEN_RECT
 
-from translation import TRANSLATION_HOLDER as t
+from ..translation import TRANSLATION_HOLDER as t
 
-from ourstdlibs.behaviour import (
+from ..ourstdlibs.behaviour import (
                             empty_function,
                             get_oblivious_callable,
                           )
 
-from surfsman.draw import draw_border
-from surfsman.render import render_rect
+from ..surfsman.draw import draw_border
+from ..surfsman.render import render_rect
 
-from surfsman.icon import render_layered_icon
+from ..surfsman.icon import render_layered_icon
 
-from surfsman.cache import UNHIGHLIGHT_SURF_MAP
+from ..surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
-from widget.stringentry import StringEntry
+from ..widget.stringentry import StringEntry
 
-from classes2d.single      import Object2D
-from classes2d.collections import Set2D
+from ..classes2d.single import Object2D
+from ..classes2d.collections import Set2D
 
-from textman.render import render_text
+from ..textman.render import render_text
 
-from textman.label.main import Label
+from ..textman.label.main import Label
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         BLACK,
                         NORMAL_PATH_FG,
                         NORMAL_PATH_BG,
@@ -48,15 +48,15 @@ from colorsman.colors import (
                         WINDOW_BG, WINDOW_FG,
                       )
 
-from fileman.constants import FILEMAN_SIZE, FONT_HEIGHT
+from .constants import FILEMAN_SIZE, FONT_HEIGHT
 
 ## class extension
-from fileman.op import FileManagerOperations
+from .op import FileManagerOperations
 
 ## classes for composition
 
-from fileman.dirpanel.main      import DirectoryPanel
-from fileman.bookmarkpanel.main import BookmarkPanel
+from .dirpanel.main import DirectoryPanel
+from .bookmarkpanel.main import BookmarkPanel
 
 
 ### XXX for extra flexibility, the order in which some

@@ -3,22 +3,22 @@
 
 ## class extensions
 
-from graphman.proxynode.vizprep import (
+from .vizprep import (
                                 VisualRelatedPreparations,
                               )
 
-from graphman.proxynode.vizop.main import (
+from .vizop.main import (
                                  VisualRelatedOperations,
                                )
 
-from graphman.proxynode.widget import WidgetOps
+from .widget import WidgetOps
 
-from graphman.proxynode.segment import SegmentOps
+from .segment import SegmentOps
 
-from graphman.proxynode.export import Exporting
+from .export import Exporting
 
 ## function for injection
-from graphman.proxynode.titleupdate import update_title
+from .titleupdate import update_title
 
 
 class ProxyNode(

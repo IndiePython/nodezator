@@ -13,25 +13,25 @@ from pygame.draw import line as draw_line
 
 ### local imports
 
-from surfsman.draw   import blit_aligned
-from surfsman.render import render_rect
+from .....surfsman.draw import blit_aligned
+from .....surfsman.render import render_rect
 
-from classes2d.single import Object2D
+from .....classes2d.single import Object2D
 
-from textman.render import render_text
+from .....textman.render import render_text
 
-from graphman.callablenode.surfs import (
+from ...surfs import (
                            BODY_HEAD_SURFS_MAP,
                            KEYWORD_KEY_SURF,
                          )
 
-from graphman.callablenode.constants import (
+from ...constants import (
                                NODE_WIDTH,
                                FONT_HEIGHT,
                                NODE_OUTLINE_THICKNESS,
                              )
 
-from colorsman.colors import (
+from .....colorsman.colors import (
                         NODE_OUTLINE, 
                         NODE_BODY_BG,
                         COMMENTED_OUT_NODE_BG,

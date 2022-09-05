@@ -17,28 +17,28 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from ourstdlibs.behaviour import empty_function
+from ...ourstdlibs.behaviour import empty_function
 
-from fileman.main import select_path
+from ...fileman.main import select_path
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from fontsman.constants import (
+from ...fontsman.constants import (
                           ENC_SANS_BOLD_FONT_PATH,
                           ENC_SANS_BOLD_FONT_HEIGHT,
                         )
 
-from textman.render import render_text, fit_text
+from ...textman.render import render_text, fit_text
 
-from surfsman.render import render_rect
+from ...surfsman.render import render_rect
 
-from surfsman.draw import draw_depth_finish, blit_aligned
+from ...surfsman.draw import draw_depth_finish, blit_aligned
 
-from colorsman.colors import PATHPREVIEW_BG
+from ...colorsman.colors import PATHPREVIEW_BG
 
-from widget.intfloatentry.main import IntFloatEntry
+from ..intfloatentry.main import IntFloatEntry
 
-from widget.pathpreview.constants import (
+from .constants import (
                                     ICON_SURF,
                                     BUTTON_SURFS,
                                     BUTTON_RECTS,

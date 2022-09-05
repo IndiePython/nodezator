@@ -6,16 +6,16 @@ from xml.etree.ElementTree import Element
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from our3rdlibs.behaviour import (
+from ...our3rdlibs.behaviour import (
                             indicate_unsaved,
                             set_status_message,
                           )
 
-from graphman.socket.base import Socket
+from .base import Socket
 
-from graphman.socket.surfs import CODENAME_TO_STYLE_MAP
+from .surfs import CODENAME_TO_STYLE_MAP
 
 
 class InputSocket(Socket):

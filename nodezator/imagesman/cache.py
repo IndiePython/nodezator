@@ -40,16 +40,16 @@ from pathlib import Path
 
 ### local imports
 
-from config import IMAGES_DIR
+from ..config import IMAGES_DIR
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from ourstdlibs.dictutils import (
+from ..ourstdlibs.dictutils import (
                             settings_to_hashable_repr,
                             hashable_repr_to_settings,
                           )
 
-from imagesman.render import render_image_from_original
+from .render import render_image_from_original
 
 
 ORIGINAL_IMAGE_SURFS_MAP = {}

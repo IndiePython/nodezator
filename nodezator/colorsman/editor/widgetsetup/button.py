@@ -6,21 +6,21 @@ from functools import partial
 
 ### local imports
 
-from ourstdlibs.collections.general import CallList
+from ....ourstdlibs.collections.general import CallList
 
-from ourstdlibs.behaviour import get_oblivious_callable
+from ....ourstdlibs.behaviour import get_oblivious_callable
 
-from textman.render import render_text
+from ....textman.render import render_text
 
-from surfsman.icon import render_layered_icon
+from ....surfsman.icon import render_layered_icon
 
-from surfsman.draw   import draw_depth_finish
-from surfsman.render import render_rect, combine_surfaces
+from ....surfsman.draw import draw_depth_finish
+from ....surfsman.render import render_rect, combine_surfaces
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ....classes2d.single import Object2D
+from ....classes2d.collections import List2D
 
-from colorsman.colors import (
+from ...colors import (
                                BLACK,
                                WHITE,
                                BUTTON_FG,
@@ -29,7 +29,7 @@ from colorsman.colors import (
                                WINDOW_BG
                              )
 
-from colorsman.editor.widgetsetup.constants import (
+from .constants import (
                                               FONT_HEIGHT,
                                               TEXT_PADDING,
                                               ICON_HEIGHT,
@@ -39,11 +39,11 @@ from colorsman.editor.widgetsetup.constants import (
 
 ## widgets
 
-from widget.checkbutton import CheckButton
+from ....widget.checkbutton import CheckButton
 
-from widget.optionmenu.main import OptionMenu
+from ....widget.optionmenu.main import OptionMenu
 
-from widget.sortingbutton import SortingButton
+from ....widget.sortingbutton import SortingButton
 
 
 def setup_buttons(self):

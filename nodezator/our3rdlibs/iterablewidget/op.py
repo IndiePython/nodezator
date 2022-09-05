@@ -6,12 +6,12 @@ from functools import partial, partialmethod
 
 ### local imports
 
-from ourstdlibs.behaviour import get_oblivious_callable
+from ...ourstdlibs.behaviour import get_oblivious_callable
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D
+from ...classes2d.single import Object2D
+from ...classes2d.collections import List2D
 
-from our3rdlibs.iterablewidget.surfs import (
+from .surfs import (
                                        MOVE_UP_BUTTON_SURF,
                                        MOVE_DOWN_BUTTON_SURF,
                                        REMOVE_BUTTON_SURF,

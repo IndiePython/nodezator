@@ -17,24 +17,24 @@ from pygame.display import get_surface
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from pygameconstants import SCREEN, SCREEN_RECT
+from ..pygameconstants import SCREEN, SCREEN_RECT
 
-from dialog import create_and_show_dialog
+from ..dialog import create_and_show_dialog
 
-from ourstdlibs.collections.general import CallList
+from ..ourstdlibs.collections.general import CallList
 
-from ourstdlibs.behaviour import (
+from ..ourstdlibs.behaviour import (
                             empty_function,
                             get_attribute_rotator,
                           )
 
-from our3rdlibs.grid.oop import ScrollableGrid
+from ..our3rdlibs.grid.oop import ScrollableGrid
 
-from rectsman.main import RectsManager
+from ..rectsman.main import RectsManager
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         SMALL_GRID_COLOR,
                         LARGE_GRID_COLOR,
                       )

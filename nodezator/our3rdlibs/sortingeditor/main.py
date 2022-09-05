@@ -16,36 +16,36 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from pygameconstants import (
+from ...pygameconstants import (
                        SCREEN_RECT,
                        FPS,
                        maintain_fps,
                      )
 
-from ourstdlibs.behaviour import get_oblivious_callable
+from ...ourstdlibs.behaviour import get_oblivious_callable
 
-from ourstdlibs.collections.general import CallList
+from ...ourstdlibs.collections.general import CallList
 
-from our3rdlibs.behaviour import watch_window_size
+from ..behaviour import watch_window_size
 
-from surfsman.draw   import blit_aligned
-from surfsman.render import render_rect
+from ...surfsman.draw import blit_aligned
+from ...surfsman.render import render_rect
 
-from classes2d.single      import Object2D
-from classes2d.collections import List2D, Set2D
+from ...classes2d.single import Object2D
+from ...classes2d.collections import List2D, Set2D
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from textman.render import render_text
+from ...textman.render import render_text
 
-from fontsman.constants import (
+from ...fontsman.constants import (
                           ENC_SANS_BOLD_FONT_HEIGHT,
                           ENC_SANS_BOLD_FONT_PATH,
                         )
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                         BLACK,
                         BUTTON_FG, BUTTON_BG,
                         WINDOW_FG, WINDOW_BG,
@@ -55,7 +55,7 @@ from colorsman.colors import (
                       )
 
 ## class extension
-from our3rdlibs.sortingeditor.modes import (
+from .modes import (
                                       SortingEditorModes
                                     )
 

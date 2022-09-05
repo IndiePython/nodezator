@@ -35,21 +35,21 @@ from pygame.key import (
 
 ### local imports
 
-from pygameconstants import (
+from ...pygameconstants import (
                        SCREEN_RECT,
                        FPS,
                        blit_on_screen,
                        maintain_fps,
                      )
 
-from our3rdlibs.behaviour import watch_window_size
+from ...our3rdlibs.behaviour import watch_window_size
 
-from surfsman.draw import draw_border
-from surfsman.cache import UNHIGHLIGHT_SURF_MAP
+from ...surfsman.draw import draw_border
+from ...surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from loopman.exception import QuitAppException
+from ...loopman.exception import QuitAppException
 
 
 ### constants

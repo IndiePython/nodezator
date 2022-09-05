@@ -2,11 +2,11 @@
 
 ### local imports
 
-from imagesman.cache import IMAGE_SURFS_DB
+from ....imagesman.cache import IMAGE_SURFS_DB
 
-from classes2d.collections import List2D
+from ....classes2d.collections import List2D
 
-from our3rdlibs.scale import Scale
+from ....our3rdlibs.scale import Scale
 
 
 

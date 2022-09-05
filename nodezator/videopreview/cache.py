@@ -39,18 +39,18 @@ from collections import deque
 
 ### local imports
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from ourstdlibs.dictutils import (
+from ..ourstdlibs.dictutils import (
                             settings_to_hashable_repr,
                             hashable_repr_to_settings,
                           )
 
-from surfsman.render import render_rect
+from ..surfsman.render import render_rect
 
-from surfsman.draw import blit_aligned
+from ..surfsman.draw import blit_aligned
 
-from videopreview.render import render_video_data
+from .render import render_video_data
 
 
 VIDEO_METADATA_MAP = {}

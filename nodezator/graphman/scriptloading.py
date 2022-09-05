@@ -24,24 +24,24 @@ from inspect import signature
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from appinfo import (
+from ..appinfo import (
                NODE_SCRIPT_NAME,
                NODE_DEF_VAR_NAMES,
                NODE_CATEGORY_METADATA_FILENAME,
              )
 
-from ourstdlibs.pyl import load_pyl
+from ..ourstdlibs.pyl import load_pyl
 
-from ourstdlibs.importutils import (
+from ..ourstdlibs.importutils import (
                               remove_import_visibility,
                               grant_import_visibility,
                             )
 
-from graphman.exception import NodeScriptsError
+from .exception import NodeScriptsError
 
-from colorsman.colors import NODE_CATEGORY_COLORS
+from ..colorsman.colors import NODE_CATEGORY_COLORS
 
 
 ### XXX idea: make it possible to reload individual node

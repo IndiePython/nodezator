@@ -21,32 +21,32 @@ from pygame.display import update
 
 ### local imports
 
-from translation import TRANSLATION_HOLDER as t
+from ..translation import TRANSLATION_HOLDER as t
 
-from pygameconstants import (
+from ..pygameconstants import (
                        SCREEN_RECT,
                        FPS,
                        maintain_fps,
                        blit_on_screen,
                      )
 
-from dialog import create_and_show_dialog
+from ..dialog import create_and_show_dialog
 
-from ourstdlibs.behaviour import (
+from ..ourstdlibs.behaviour import (
                             empty_function,
                             get_oblivious_callable,
                           )
 
-from our3rdlibs.behaviour import watch_window_size
+from ..our3rdlibs.behaviour import watch_window_size
 
-from loopman.exception import (
+from ..loopman.exception import (
                          SwitchLoopException,
                          QuitAppException,
                        )
 
-from surfsman.cache import UNHIGHLIGHT_SURF_MAP
+from ..surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
 
 class FileManagerOperations(Object2D):

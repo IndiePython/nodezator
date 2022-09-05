@@ -6,9 +6,9 @@ from functools import partial
 
 ### local imports
 
-from pygameconstants import SCREEN_RECT
+from ..pygameconstants import SCREEN_RECT
 
-from hideswitch import HideSwitch
+from ..hideswitch import HideSwitch
 
 
 ### utility function

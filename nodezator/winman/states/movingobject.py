@@ -28,9 +28,9 @@ from pygame.key import (
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from loopman.exception import QuitAppException
+from ...loopman.exception import QuitAppException
 
 
 class MovingObjectState:

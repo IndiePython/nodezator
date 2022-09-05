@@ -2,9 +2,9 @@
 
 ### local imports
 
-from textman.label.main import Label
+from .main import Label
 
-from colorsman.colors import BLACK
+from ...colorsman.colors import BLACK
 
 
 class AutoLabel(Label):

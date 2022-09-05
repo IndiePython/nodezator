@@ -6,9 +6,9 @@ from pygame import Rect
 
 ### local imports
 
-from rectsman.main import RectsManager
+from ....rectsman.main import RectsManager
 
-from graphman.callablenode.constants import (
+from ..constants import (
 
                                 FONT_HEIGHT,
                                 BODY_CONTENT_OFFSET,

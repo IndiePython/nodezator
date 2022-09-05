@@ -30,12 +30,12 @@ from pathlib import Path
 
 ### local imports
 
-from ourstdlibs.dictutils import (
+from ...ourstdlibs.dictutils import (
                             settings_to_hashable_repr,
                             hashable_repr_to_settings,
                           )
 
-from fontsman.preview.render import render_font_preview
+from .render import render_font_preview
 
 
 class FontPreviewsDatabase(dict):

@@ -22,38 +22,38 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from pygameconstants import (
+from ...pygameconstants import (
                        SCREEN,
                        SCREEN_RECT,
                        blit_on_screen,
                      )
 
-from ourstdlibs.color.largemaps import (
+from ...ourstdlibs.color.largemaps import (
                                   HTML_COLOR_MAP,
                                   PYGAME_COLOR_MAP,
                                 )
 
-from ourstdlibs.color.custom import (
+from ...ourstdlibs.color.custom import (
                                custom_format_color,
                                get_custom_sorted_colors,
                              )
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from surfsman.cache import (
+from ...surfsman.cache import (
                       UNHIGHLIGHT_SURF_MAP,
                       RECT_SURF_MAP,
                       cache_screen_state,
                       draw_cached_screen_state,
                     )
 
-from loopman.main import LoopHolder
+from ...loopman.main import LoopHolder
 
-from colorsman.colors import BLACK, WHITE, WINDOW_BG
+from ..colors import BLACK, WHITE, WINDOW_BG
 
-from colorsman.color2d import Color2D
+from ..color2d import Color2D
 
-from colorsman.picker.constants import (
+from .constants import (
                                   DEFAULT_LABEL_MESSAGE,
                                 )
 

@@ -10,17 +10,17 @@ from pygame import Rect
 
 ### local imports
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from surfsman.draw   import blit_aligned
-from surfsman.render import render_rect
+from ..surfsman.draw import blit_aligned
+from ..surfsman.render import render_rect
 
-from menu.common import (
+from .common import (
                         LEFT_ARROW_SURF, RIGHT_ARROW_SURF,
                         UP_ARROW_SURF, DOWN_ARROW_SURF,
                         SCROLL_SPEED)
 
-from colorsman.colors import MENU_BG
+from ..colorsman.colors import MENU_BG
 
 
 class Scrollability:

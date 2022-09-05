@@ -15,12 +15,12 @@ from functools import partial
 
 ### local imports
 
-from ourstdlibs.color.largemaps import (
+from .largemaps import (
                                   HTML_COLOR_MAP,
                                   PYGAME_COLOR_MAP,
                                 )
 
-from ourstdlibs.color.constants import (
+from .constants import (
                                   RGBA_FACTOR,
                                   HLS_FACTORS,
                                   HSV_FACTORS,

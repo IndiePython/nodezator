@@ -6,25 +6,25 @@ from pygame import Rect
 
 ### local imports
 
-from config import APP_REFS
+from ....config import APP_REFS
 
-from ourstdlibs.collections.fldict.main import FlatListDict
+from ....ourstdlibs.collections.fldict.main import FlatListDict
 
-from classes2d.single import Object2D
+from ....classes2d.single import Object2D
 
-from textman.render import render_text
+from ....textman.render import render_text
 
-from rectsman.main import RectsManager
+from ....rectsman.main import RectsManager
 
-from colorsman.colors import (
+from ....colorsman.colors import (
                         NODE_CATEGORY_COLORS,
                         NODE_TITLE,
                         BLACK,
                       )
 
-from graphman.socket.surfs import type_to_codename
+from ...socket.surfs import type_to_codename
 
-from graphman.callablenode.constants import (
+from ..constants import (
                                        FONT_HEIGHT,
                                        NODE_WIDTH,
                                      )
@@ -32,26 +32,26 @@ from graphman.callablenode.constants import (
 
 ## functions for injection
 
-from graphman.callablenode.vizprep.param import (
+from .param import (
                                     create_parameter_objs
                                   )
 
-from graphman.callablenode.vizprep.varparam import (
+from .varparam import (
                                   create_var_parameter_objs
                                 )
 
 ## class extension
-from graphman.callablenode.vizprep.bodysetup.main import (
+from .bodysetup.main import (
                                     BodySetupOperations
                                   )
 
 ## class for composition
-from graphman.socket.output import OutputSocket
+from ...socket.output import OutputSocket
 
 
 ## other objects for composition
 
-from graphman.callablenode.surfs import (
+from ..surfs import (
                            NODE_ROOFS_MAP,
                            TOP_CORNERS_MAP,
                            NORMAL_BOTTOM_CORNERS,

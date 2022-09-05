@@ -4,7 +4,7 @@
 from os import linesep
 
 ### local import
-from appinfo import MAIN_CALLABLE_VAR_NAME
+from ..appinfo import MAIN_CALLABLE_VAR_NAME
 
 
 ### raised when loading/processing a native file

@@ -2,11 +2,11 @@
 
 ### local imports
 
-from config import APP_REFS
+from ..config import APP_REFS
 
-from ourstdlibs.behaviour import empty_function
+from ..ourstdlibs.behaviour import empty_function
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
 
 class Command(Object2D):

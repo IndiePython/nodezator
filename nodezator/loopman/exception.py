@@ -1,7 +1,7 @@
 """Loop management exceptions."""
 
 ### local import
-from config import APP_REFS
+from ..config import APP_REFS
 
 
 class SwitchLoopException(Exception):

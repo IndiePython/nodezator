@@ -21,11 +21,11 @@ from pygame.mixer import Sound
 
 ### local imports
 
-from config import FFMPEG_AVAILABLE
+from ..config import FFMPEG_AVAILABLE
 
-from videopreview.constants import get_video_metadata
+from .constants import get_video_metadata
 
-from surfsman.draw import draw_not_found_icon
+from ..surfsman.draw import draw_not_found_icon
 
 
 ### TODO review/refactor

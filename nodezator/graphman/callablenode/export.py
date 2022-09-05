@@ -9,22 +9,22 @@ from itertools import chain
 
 ### local imports
 
-from rectsman.main import RectsManager
+from ...rectsman.main import RectsManager
 
-from graphman.callablenode.constants import (
+from .constants import (
                                NODE_OUTLINE_THICKNESS,
                                FONT_HEIGHT,
                              )
 
-from graphman.callablenode.surfs import (
+from .surfs import (
                                 TOP_CORNERS_MAP,
                                 UNPACKING_ICON_SURFS_MAP,
                               )
 
-from pointsman2d.shape     import cross_from_rect
-from pointsman2d.transform import rotate_points
+from ...pointsman2d.shape import cross_from_rect
+from ...pointsman2d.transform import rotate_points
 
-from colorsman.colors import (
+from ...colorsman.colors import (
 
                         BLACK,
                         NODE_BODY_BG,

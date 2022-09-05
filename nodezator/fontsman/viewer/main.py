@@ -31,25 +31,25 @@ from pygame.math import Vector2
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from pygameconstants import SCREEN_RECT
+from ...pygameconstants import SCREEN_RECT
 
-from dialog import create_and_show_dialog
+from ...dialog import create_and_show_dialog
 
-from logman.main import get_new_logger
+from ...logman.main import get_new_logger
 
-from our3rdlibs.userlogger import USER_LOGGER
+from ...our3rdlibs.userlogger import USER_LOGGER
 
-from loopman.main import LoopHolder
+from ...loopman.main import LoopHolder
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from classes2d.collections import List2D
+from ...classes2d.collections import List2D
 
-from surfsman.render import render_rect
+from ...surfsman.render import render_rect
 
-from fontsman.viewer.render import render_char_info
+from .render import render_char_info
 
 
 CHARS = (

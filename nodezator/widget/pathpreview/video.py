@@ -13,15 +13,15 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from config import APP_REFS, FFMPEG_AVAILABLE
+from ...config import APP_REFS, FFMPEG_AVAILABLE
 
-from dialog import create_and_show_dialog
+from ...dialog import create_and_show_dialog
 
-from ourstdlibs.path import get_new_filename
+from ...ourstdlibs.path import get_new_filename
 
-from videopreview.previewer import preview_videos
+from ...videopreview.previewer import preview_videos
 
-from videopreview.cache import (
+from ...videopreview.cache import (
 
                       VIDEO_METADATA_MAP,
                       VIDEO_DATA_DB,
@@ -29,17 +29,17 @@ from videopreview.cache import (
 
                     )
 
-from surfsman.draw import blit_aligned
+from ...surfsman.draw import blit_aligned
 
-from surfsman.icon import render_layered_icon
+from ...surfsman.icon import render_layered_icon
 
-from textman.render import render_multiline_text
+from ...textman.render import render_multiline_text
 
-from colorsman.colors import BLACK, PATHPREVIEW_BG
+from ...colorsman.colors import BLACK, PATHPREVIEW_BG
 
-from widget.pathpreview.base import _BasePreview
+from .base import _BasePreview
 
-from widget.pathpreview.constants import (
+from .constants import (
 
                                  SP_BUTTON_SURFS,
                                  SP_BUTTON_RECTS,

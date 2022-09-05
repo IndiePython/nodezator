@@ -6,21 +6,21 @@ from functools import partialmethod
 
 ### local imports
 
-from config import APP_REFS
+from ....config import APP_REFS
 
-from dialog import create_and_show_dialog
+from ....dialog import create_and_show_dialog
 
-from our3rdlibs.behaviour import indicate_unsaved
+from ....our3rdlibs.behaviour import indicate_unsaved
 
-from graphman.socket.input import InputSocket
+from ...socket.input import InputSocket
 
-from graphman.socket.surfs import type_to_codename
+from ...socket.surfs import type_to_codename
 
 ## class extensions
 
-from graphman.callablenode.subparam.widget  import WidgetOps
-from graphman.callablenode.subparam.segment import SegmentOps
-from graphman.callablenode.subparam.unpacking import (
+from .widget import WidgetOps
+from .segment import SegmentOps
+from .unpacking import (
                                                 UnpackingOps
                                               )
 

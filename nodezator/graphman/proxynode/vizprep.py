@@ -10,38 +10,38 @@ from pygame import Rect
 
 ### local imports
 
-from config import APP_REFS
+from ...config import APP_REFS
 
-from ourstdlibs.collections.general import CallList
+from ...ourstdlibs.collections.general import CallList
 
-from our3rdlibs.button import Button
+from ...our3rdlibs.button import Button
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from rectsman.main import RectsManager
+from ...rectsman.main import RectsManager
 
-from graphman.widget.utils import WIDGET_CLASS_MAP
+from ..widget.utils import WIDGET_CLASS_MAP
 
-from graphman.socket.surfs import type_to_codename
+from ..socket.surfs import type_to_codename
 
-from graphman.proxynode.utils import update_with_widget
+from .utils import update_with_widget
 
-from graphman.proxynode.surfs import (
+from .surfs import (
                               LABEL_SURF_MAP,
                               HEADER_SURF_MAP,
                               ADD_BUTTON_SURF,
                               REMOVE_BUTTON_SURF,
                             )
 
-from graphman.proxynode.constants import (
+from .constants import (
                             HEADER_LABEL_WIDTH_INCREMENT,
                           )
 
 
 ## classes for composition
 
-from graphman.socket.proxy  import ProxySocket
-from graphman.socket.output import OutputSocket
+from ..socket.proxy import ProxySocket
+from ..socket.output import OutputSocket
 
 
 

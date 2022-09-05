@@ -13,41 +13,41 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from ourstdlibs.behaviour import empty_function
+from ..ourstdlibs.behaviour import empty_function
 
-from ourstdlibs.stringutils import VALIDATION_COMMAND_MAP
+from ..ourstdlibs.stringutils import VALIDATION_COMMAND_MAP
 
-from surfsman.draw   import blit_aligned, draw_depth_finish
-from surfsman.render import render_rect, combine_surfaces
-from surfsman.icon   import render_layered_icon
+from ..surfsman.draw import blit_aligned, draw_depth_finish
+from ..surfsman.render import render_rect, combine_surfaces
+from ..surfsman.icon import render_layered_icon
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from textman.text   import render_highlighted_line
-from textman.render import (
+from ..textman.text import render_highlighted_line
+from ..textman.render import (
                       fit_text,
                       get_text_size,
                       render_text,
                     )
 
-from textman.viewer.main import view_text
-from textman.editor.main import edit_text
+from ..textman.viewer.main import view_text
+from ..textman.editor.main import edit_text
 
-from fontsman.constants import (
+from ..fontsman.constants import (
                           ENC_SANS_BOLD_FONT_HEIGHT,
                           ENC_SANS_BOLD_FONT_PATH,
                           FIRA_MONO_BOLD_FONT_PATH,
                         )
 
-from syntaxman.utils import (
+from ..syntaxman.utils import (
                        AVAILABLE_SYNTAXES,
                        SYNTAX_TO_MAPPING_FUNCTION,
                        get_ready_theme,
                      )
 
-from syntaxman.exception import SyntaxMappingError
+from ..syntaxman.exception import SyntaxMappingError
 
-from colorsman.colors import (
+from ..colorsman.colors import (
                         BLACK,
                         WHITE,
                         TEXT_DISPLAY_BG,

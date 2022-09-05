@@ -6,14 +6,14 @@ from xml.etree.ElementTree import Element
 
 ### local imports
 
-from fontsman.constants import (
+from ..fontsman.constants import (
                                ENC_SANS_BOLD_FONT_HEIGHT,
                                ENC_SANS_BOLD_FONT_PATH,
                              )
 
-from textman.label.main import Label
+from ..textman.label.main import Label
 
-from textman.render import fit_text
+from ..textman.render import fit_text
 
 
 ### XXX the default holder could work as a button,

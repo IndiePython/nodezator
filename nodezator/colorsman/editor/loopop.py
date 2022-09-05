@@ -21,15 +21,15 @@ from pygame.display import update
 
 ### local imports
 
-from pygameconstants import blit_on_screen
+from ...pygameconstants import blit_on_screen
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from loopman.main import LoopHolder
+from ...loopman.main import LoopHolder
 
-from surfsman.cache import UNHIGHLIGHT_SURF_MAP
+from ...surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
-from ourstdlibs.color.custom import custom_format_color
+from ...ourstdlibs.color.custom import custom_format_color
 
 
 class LoopOperations(Object2D, LoopHolder):

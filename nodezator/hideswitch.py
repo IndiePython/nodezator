@@ -6,17 +6,17 @@ from itertools import cycle
 
 ### local imports
 
-from config import APP_REFS
+from .config import APP_REFS
 
-from pygameconstants import SCREEN_RECT
+from .pygameconstants import SCREEN_RECT
 
-from ourstdlibs.behaviour import empty_function
+from .ourstdlibs.behaviour import empty_function
 
-from classes2d.single import Object2D
+from .classes2d.single import Object2D
 
-from surfsman.icon import render_layered_icon
+from .surfsman.icon import render_layered_icon
 
-from colorsman.colors import HIDE_SWITCH_FG, HIDE_SWITCH_BG
+from .colorsman.colors import HIDE_SWITCH_FG, HIDE_SWITCH_BG
 
 
 # XXX maybe the switches should change the update/drawing

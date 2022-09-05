@@ -2,9 +2,9 @@
 
 ### local imports
 
-from config import APP_COLORS_FILE
+from ..config import APP_COLORS_FILE
 
-from ourstdlibs.pyl import load_pyl
+from ..ourstdlibs.pyl import load_pyl
 
 
 ### utility function

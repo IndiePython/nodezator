@@ -1,9 +1,9 @@
 
-from graphman.callablenode.constants import (
+from ..callablenode.constants import (
                                NODE_OUTLINE_THICKNESS
                              )
 
-from colorsman.colors import (
+from ...colorsman.colors import (
 
                         BLACK,
                         NODE_OUTLINE,

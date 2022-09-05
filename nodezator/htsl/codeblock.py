@@ -9,22 +9,22 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from classes2d.single import Object2D
+from ..classes2d.single import Object2D
 
-from surfsman.render import render_rect
+from ..surfsman.render import render_rect
 
-from textman.render import render_text, get_text_size
+from ..textman.render import render_text, get_text_size
 
-from textman.text import (
+from ..textman.text import (
                     get_normal_lines,
                     get_highlighted_lines,
                   )
 
-from syntaxman.exception import SyntaxMappingError
+from ..syntaxman.exception import SyntaxMappingError
 
-from syntaxman.utils import get_ready_theme
+from ..syntaxman.utils import get_ready_theme
 
-from htsl.constants import GENERAL_CODE_TEXT_SETTINGS
+from .constants import GENERAL_CODE_TEXT_SETTINGS
 
 
 ###

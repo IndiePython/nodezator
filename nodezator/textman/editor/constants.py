@@ -6,12 +6,12 @@ from pygame import Rect
 
 ### local imports
 
-from fontsman.constants import (
+from ...fontsman.constants import (
                           ENC_SANS_BOLD_FONT_PATH,
                           FIRA_MONO_BOLD_FONT_PATH,
                         )
 
-from colorsman.colors import (
+from ...colorsman.colors import (
                         TEXT_EDITING_AREA_FG,
                         TEXT_EDITING_AREA_BG,
                       )

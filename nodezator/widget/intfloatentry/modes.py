@@ -45,15 +45,15 @@ from pygame.math import Vector2
 
 ### local imports
 
-from pygameconstants import SCREEN_RECT
+from ...pygameconstants import SCREEN_RECT
 
-from ourstdlibs.behaviour import empty_function
+from ...ourstdlibs.behaviour import empty_function
 
-from surfsman.render import render_rect
+from ...surfsman.render import render_rect
 
-from classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from loopman.exception import QuitAppException
+from ...loopman.exception import QuitAppException
 
 
 ### constants

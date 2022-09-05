@@ -24,31 +24,31 @@ from pygame.display import update
 
 ### local imports
 
-from pygameconstants import blit_on_screen
+from .....pygameconstants import blit_on_screen
 
-from ourstdlibs.behaviour import (
+from .....ourstdlibs.behaviour import (
                             empty_function,
                             get_oblivious_callable,
                           )
 
-from loopman.exception import QuitAppException
+from .....loopman.exception import QuitAppException
 
-from widget.optionmenu.main import OptionMenu
+from .....widget.optionmenu.main import OptionMenu
 
-from classes2d.single import Object2D
+from .....classes2d.single import Object2D
 
-from textman.render    import render_text
-from fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
+from .....textman.render import render_text
+from .....fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
 
-from colorsman.colors import (
+from ....colors import (
                             BUTTON_FG, BUTTON_BG,
                             WINDOW_FG, WINDOW_BG)
 
 
 ## pattern drawing functions
 
-from colorsman.viewer.modes.patterns.waves import draw_waves
-from colorsman.viewer.modes.patterns.particles import(
+from .waves import draw_waves
+from .particles import(
                                                 draw_circles)
 
 

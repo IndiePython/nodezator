@@ -2,15 +2,15 @@
 
 ### local imports
 
-from graphman.socket.output import OutputSocket
+from ..socket.output import OutputSocket
 
-from graphman.socketparenthood.utils import (
+from .utils import (
                                        do_segments_cross
                                      )
 
-from graphman.utils import yield_subgraph_nodes
+from ..utils import yield_subgraph_nodes
 
-from our3rdlibs.behaviour import (
+from ...our3rdlibs.behaviour import (
                             indicate_unsaved,
                             set_status_message,
                           )

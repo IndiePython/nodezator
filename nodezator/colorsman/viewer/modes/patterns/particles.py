@@ -16,9 +16,9 @@ from pygame.math import Vector2
 
 ### local imports
 
-from surfsman.draw import draw_linear_gradient
+from .....surfsman.draw import draw_linear_gradient
 
-from surfsman.icon import render_layered_icon
+from .....surfsman.icon import render_layered_icon
 
 
 ### constant: standard distance between two points in
