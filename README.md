@@ -26,9 +26,9 @@ It is a Python desktop app made with [pygame][], by Kennedy Richard Silva Guerra
 
 This app can be used as a standalone application (that is, an app that doesn't require installation) or can be installed with pip.
 
-If you have Python installed in your system and it has both pygame and numpy available, all you need to do is download this repository and run the `nodezator/__main__.py` file.
+If you have Python installed in your system and it has both pygame and numpy available, all you need to do is download this repository and inside the repository folder run the `python -m nodezator` command.
 
-If you want to install it, just type the commands below in a terminal with Python 3 available. It will install nodezator and also, if not available yet, pygame and numpy.
+If you want to install it, just execute the command below. It will install nodezator and also, if not available yet, pygame and numpy.
  
 ```bash
 pip install nodezator
