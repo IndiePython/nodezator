@@ -434,14 +434,6 @@ class LoadedFileState:
             raise SwitchLoopException(self.menubar)
 
 
-        ### obtain a bitmask which you'll use to check
-        ### the state of modifier keys along the method
-        bitmask = get_mods_bitmask()
-
-        ### store the state of the ctrl key
-        ctrl_pressed = bitmask & KMOD_CTRL
-
-
         ### iterate over objects to check whether any of
         ### them was hovered by the mouse in this mouse
         ### motion event;
@@ -450,15 +442,13 @@ class LoadedFileState:
           APP_REFS.gm.text_blocks.get_on_screen(),
           APP_REFS.gm.nodes.get_on_screen()
         ):
-            
+
             if obj.rect.collidepoint(mouse_pos):
 
-                ## if a hovered object was the target of a
-                ## click action before, select the object
-                ## (if the ctrl key is pressed, the other
-                ## objects are deselected before this one
-                ## is selected) and trigger the movement
-                ## of the selection;
+                ## if a hovered object was the target
+                ## of a click action before, deselect all
+                ## objects, select this one and trigger
+                ## its movement;
                 ##
                 ## for more information about the
                 ## 'mouse_click_target' attribute of nodes
@@ -470,10 +460,8 @@ class LoadedFileState:
                     ## set the flag to False
                     obj.mouse_click_target = False
 
-                    ## deselect all objects if ctrl is
-                    ## pressed
-                    if ctrl_pressed:
-                        APP_REFS.ea.deselect_all()
+                    ## deselect all objects
+                    APP_REFS.ea.deselect_all()
 
                     ## selected the object and start moving
                     ## the selection
@@ -503,6 +491,13 @@ class LoadedFileState:
             ## we are dragging the mouse (if it is on
             ## when executing this mouse motion method)
             self.clicked_mouse = False
+
+            ## obtain a bitmask which you'll use to check
+            ## the state of modifier keys along the method
+            bitmask = get_mods_bitmask()
+
+            ## store the state of the ctrl key
+            ctrl_pressed = bitmask & KMOD_CTRL
 
             ## store the state of the shift key
             shift_pressed = bitmask & KMOD_SHIFT
