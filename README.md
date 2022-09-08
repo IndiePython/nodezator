@@ -41,7 +41,7 @@ That's all, but, if you encounter any problems, contact me with one of the metho
 
 ## Usage
 
-Check the app [manual][] to know how to use it. It is also available in-app in the menu **Help > Open manual**
+Check the app [manual][] to know how to use it. It is also available in-app in the menu **Help > Open manual**. The in-app version is always the most accurate, since it is updated first, whereas the web-version is exported from it. Nonetheless, effort is made to always keep both of them up to date and in sync.
 
 
 ## Finding and sharing nodes for download
