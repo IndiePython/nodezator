@@ -75,6 +75,8 @@
 
 <p>To instantiate them, just right-click an empty space on the canvas and click one of the commands inside the <b>New data node</b> submenu within the popup menu that appears to pick the kind of widget/data to be held by the node, including an option that presents a more complex form to specify the widget more precisely.</p>
 
+<p>The default title on the data node can be changed, but it doesn't accept spaces or punctuation other than the underscore ("_") and it must start with a letter or underscore. This is so because the title of the data node is used as the variable name when the layout is exported as a Python script.</p>
+
 
 <h2 id="redirect-nodes">Redirect nodes</h2>
 
