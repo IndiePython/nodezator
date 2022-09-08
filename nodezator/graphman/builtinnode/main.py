@@ -112,11 +112,9 @@ class BuiltinNode(CallableNode):
 
         )
 
-        ### create controls to indicate when the node was
-        ### subject to mouse events
-
-        self.mouse_release_target = False
-        self.mouse_click_target   = False
+        ### create contros to indicate when the node was
+        ### subject to mouse click
+        self.mouse_click_target = False
 
         ### create visuals of the node
         self.create_visual_elements()

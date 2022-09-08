@@ -60,77 +60,62 @@ class SelectionHandling:
 
             )
 
-    def check_selections(self):
-        """Check whether selected objects must be updated."""
-        mouse_pos = get_mouse_pos()
+    def change_selection_state(self, obj):
+        """Change object's selection state.
 
-        ### check whether any object on screen was the
-        ### recent target of a mouse release action (that is,
-        ### an action directed at the object itself, not its
-        ### inner objects, if it has those)
+        The change depends on shift key being pressed
+        or not and consists of selecting, deselecting or
+        turning the object the active selection.
+        """
+        ### if shift is pressed... 
 
-        for obj in chain(
-          APP_REFS.gm.nodes.get_on_screen(),
-          APP_REFS.gm.text_blocks.get_on_screen(),
-        ):
+        if KMOD_SHIFT & get_mods_bitmask():
 
-            ### if it was...
+            ## if object isn't event selected,
+            ## make it so by appending to
+            ## 'selected_objs'; also make it the
+            ## active object
 
-            if obj.mouse_release_target:
+            if obj not in self.selected_objs:
 
-                ### unmark it as a recent target of the
-                ### mentioned mouse action
-                obj.mouse_release_target = False
+                self.selected_objs.append(obj)
+                self.active_obj = obj
 
-                ### if shift is pressed... 
+            ## if it is already selected (since
+            ## the previous 'if block' failed) and
+            ## not active, just make it the active
+            ## selection
 
-                if KMOD_SHIFT & get_mods_bitmask():
+            elif obj is not self.active_obj:
+                self.active_obj = obj
 
-                    ## if object isn't event selected,
-                    ## make it so by appending to
-                    ## 'selected_objs'; also make it the
-                    ## active object
+            ## if the object is the active
+            ## selection though, unselect it
+            ## and set the active obj to another
+            ## object or None
 
-                    if obj not in self.selected_objs:
+            else:
 
-                        self.selected_objs.append(obj)
-                        self.active_obj = obj
+                self.selected_objs.remove(obj)
 
-                    ## if it is already selected (since
-                    ## the previous 'if block' failed) and
-                    ## not active, just make it the active
-                    ## selection
+                try: self.active_obj = \
+                            self.selected_objs[-1]
 
-                    elif obj is not self.active_obj:
-                        self.active_obj = obj
+                except IndexError:
+                    self.active_obj = None
 
-                    ## if the object is the active
-                    ## selection though, unselect it
-                    ## and set the active obj to another
-                    ## object or None
+        ### if shift is not pressed, though...
 
-                    else:
+        else:
 
-                        self.selected_objs.remove(obj)
+            ### unselect all objects and keep
+            ### the current obj as the only
+            ### selected, active one
 
-                        try: self.active_obj = \
-                                    self.selected_objs[-1]
+            self.selected_objs.clear()
 
-                        except IndexError:
-                            self.active_obj = None
-
-                ### if shift is not pressed, though...
-
-                else:
-
-                    ### unselect all objects and keep
-                    ### the current obj as the only
-                    ### selected, active one
-
-                    self.selected_objs.clear()
-
-                    self.selected_objs.append(obj)
-                    self.active_obj = obj
+            self.selected_objs.append(obj)
+            self.active_obj = obj
 
     def select_all_toggle(self, should_select):
         """Toggle (de)selection of all objs.

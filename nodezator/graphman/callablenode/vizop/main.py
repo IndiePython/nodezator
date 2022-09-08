@@ -99,9 +99,12 @@ class VisualRelatedOperations:
         ### target of the mouse method;
         ###
         ### if such method is 'on_mouse_click' or
-        ### 'on_mouse_release', set flags according to the
-        ### method name; the flags are used to support the
-        ### selection and "move by dragging" features
+        ### 'on_mouse_release', set on or off the
+        ### mouse_click_target flag according to the
+        ### method name; the flag is used to support the
+        ### "move by dragging" feature; the method
+        ### 'on_mouse_release' also causes the selection
+        ### state of the object to change;
         ###
         ### if we are dealing with a right mouse release
         ### method, we show the popup menu
@@ -113,8 +116,8 @@ class VisualRelatedOperations:
 
             elif method_name == 'on_mouse_release':
 
-                self.mouse_release_target = True
-                self.mouse_click_target   = False
+                self.mouse_click_target = False
+                APP_REFS.ea.change_selection_state(self)
 
             elif method_name == 'on_right_mouse_release':
 

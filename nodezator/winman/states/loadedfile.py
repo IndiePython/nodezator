@@ -623,8 +623,6 @@ class LoadedFileState:
 
     def loaded_file_update(self):
         """Update method for the 'loaded_file' state."""
-        APP_REFS.ea.check_selections()
-
         for item in self.labels_update_methods: item()
         for item in self.switches_update_methods: item()
 

@@ -69,23 +69,23 @@ class TextBlock(Object2D):
         self.rect = self.image.get_rect()
         self.rect.midtop = self.midtop
 
-        ### create controls to indicate when the text block
-        ### was subject to a mouse events
-
-        self.mouse_release_target = False
-        self.mouse_click_target   = False
+        ### create control to indicate when the text block
+        ### was subject to a mouse click
+        self.mouse_click_target = False
 
     def on_mouse_action(self, method_name, event):
         """Behave according to given method name.
 
         When the method name is 'on_mouse_click' or
-        'on_mouse_release', works by marking the text block
-        as a target of the mouse release or mouse click
-        action by changing the values of the respective
-        flags in specific ways.
-        
-        The flags are used to support the object selection
-        and "move by dragging" features.
+        'on_mouse_release', works by marking/unmarking
+        the text block as a target of the mouse click.
+        Additionally, when the 'on_mouse_release' event
+        also triggers the editing assistant method to
+        check whether the object must have its selected
+        state changed.
+
+        The flags are used to support the
+        "move by dragging" features.
 
         When the method name is 'on_right_mouse_release',
         presents the popup menu for text blocks.
@@ -108,8 +108,8 @@ class TextBlock(Object2D):
 
         elif method_name == 'on_mouse_release':
 
-            self.mouse_release_target = True
-            self.mouse_click_target   = False
+            self.mouse_click_target = False
+            APP_REFS.ea.change_selection_state(self)
 
         elif method_name == 'on_right_mouse_release':
 
