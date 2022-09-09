@@ -1,4 +1,4 @@
-{
+TEST_DATA = {
   "compliant_cases": {
     "compliant_case00" : [
       {"name": "output_name01"},

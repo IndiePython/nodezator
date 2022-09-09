@@ -14,20 +14,9 @@ Before presenting the doctests, let's import the objects
 to be tested in this module and import/define other
 utilities for our tests.
 
->>> ### let's start by loading the functions we want to
+>>> ### let's start by loading the function we want to
 >>> ### test
-
 >>> from .main import check_return_annotation_mini_lang
-
->>> ### import other useful libraries
-
->>> from pathlib import Path
->>> from ast import literal_eval # used to load test data
-
->>> ### define the path for this directory,
->>> ### from where we'll load test data in json files
-
->>> current_dir = Path(__file__).parent
 
 >>> ### define an exception class map to convert strings into
 >>> ### the exception classes to which they refer
@@ -156,18 +145,14 @@ Doctests for check_return_annotation_mini_lang function
 =======================================================
 
 >>> ### load test data for the the function and test it
-
->>> ## load the test data
->>> test_data_file = current_dir / 'ret_annot_test_data.pyl'
->>> with test_data_file.open(mode='r', encoding='utf-8') as f:
-...     test_data = literal_eval(f.read())
+>>> from .fixtures import TEST_DATA
 >>> 
 >>> ## pass function along with test data to the function
 >>> ## used to test them together; no output must be
 >>> ## generated
 >>> 
 >>> test_function_with_test_data(
-...   check_return_annotation_mini_lang, test_data)
+...   check_return_annotation_mini_lang, TEST_DATA)
 >>> 
 
 """
