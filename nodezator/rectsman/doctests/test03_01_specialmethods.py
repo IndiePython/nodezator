@@ -19,8 +19,7 @@ needed or because the default implementation from the
 "object" type is used instead.
 
 >>> ### let's import an useful fixture
->>> from rectsman.doctests.fixtures import (
-... get_fresh_groups)
+>>> from .fixtures import get_fresh_groups
 
 
 __iter__(): returning an iterator
@@ -118,24 +117,19 @@ IndexError: Invalid rect Index
 >>> pygame_rect[2.2] # type not allowed
 Traceback (most recent call last):
 ...
-TypeError: sequence index must be integer, not 'float'
+TypeError: Invalid Rect slice
 >>> rects_man[2.2] # same problem and same error
 Traceback (most recent call last):
 ...
-TypeError: sequence index must be integer, not 'float'
+TypeError: Invalid Rect slice
 
-Note that slicing is not allowed in pygame.Rect, and
-thereby not in RectsManager too.
+Note that slicing is allowed in pygame.Rect, and
+thereby in RectsManager too.
 
->>> # trying to get a slice
 >>> pygame_rect[1:3]
-Traceback (most recent call last):
-...
-TypeError: sequence index must be integer, not 'slice'
+[0, 20]
 >>> rects_man[1:3]
-Traceback (most recent call last):
-...
-TypeError: sequence index must be integer, not 'slice'
+[-10, 40]
 
 
 __setitem__(index, value) or instance[index] = value
@@ -201,12 +195,12 @@ IndexError: Invalid rect Index
 >>> pygame_rect[2.2] = 20
 Traceback (most recent call last):
 ...
-TypeError: sequence index must be integer, not 'float'
+TypeError: Invalid Rect slice
 >>> # RectsManager: the same problem and same error
 >>> rects_man[2.2] = 20
 Traceback (most recent call last):
 ...
-TypeError: sequence index must be integer, not 'float'
+TypeError: Invalid Rect slice
 
 >>> # pygame.Rect: index is ok, but value type is not
 >>> # allowed (string)
@@ -262,14 +256,19 @@ handling:
 
 >>> rects_man, pygame_rect = g1.rect, g1[0].rect
 
->>> # trying to delete the 1st item of the rect from the
->>> # first object in the group
->>> del pygame_rect[0]
+>>> # trying to delete an existing item of the rect
+>>> # from the first object in the group (a pygame
+>>> # rect) causes a segmentation fault, so we
+>>> # skip the test below
+>>> del pygame_rect[0] # doctest: +SKIP
 Traceback (most recent call last):
 ...
 TypeError: Must assign numeric values
->>> # now the 1st item of the RectsManager instance
->>> del rects_man[0]
+
+>>> # the rectsman tries to emulate the behavior,
+>>> # so a segmentation fault happens as well, so
+>>> # we need to skip the test as well
+>>> del rects_man[0] # doctest: +SKIP
 Traceback (most recent call last):
 ...
 TypeError: Must assign numeric values
@@ -338,7 +337,7 @@ Finally, I'd just like to add that this inconsistency was
 already fixed in the online repository. Your pygame version
 might already be free from this problem.
 
-Also, Regardless of all this, the tests used in lieu of the
+Also, regardless of all this, the tests used in lieu of the
 "check_error_raising" function work just as fine whether
 your pygame version has this problem or not.
 

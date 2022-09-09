@@ -1,13 +1,13 @@
 """Facility for rectsman package doctests' fixtures."""
 
+### standard library import
 from re import findall
 
-### third party import
+### third-party import
 from pygame import Rect
 
 ### local imports
-from ..main import \
-                             RectsManager, rect_property
+from ..main import RectsManager, rect_property
 
 
 ### constant

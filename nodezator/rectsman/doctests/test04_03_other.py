@@ -1,7 +1,7 @@
 """Facility for rectsman package doctests.
 
 >>> ### let's import an useful fixture
->>> from rectsman.doctests.fixtures import get_fresh_groups
+>>> from .fixtures import get_fresh_groups
 
 
 Other topics part 03

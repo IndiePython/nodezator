@@ -2,8 +2,7 @@
 
 >>> ### let's import pygame.Rect and also useful fixtures
 >>> from pygame import Rect
->>> from rectsman.doctests.fixtures import (
-... Simple, get_fresh_groups)
+>>> from .fixtures import Simple, get_fresh_groups
 
 
 Other topics part 01
@@ -101,7 +100,7 @@ Sometimes, instead of resizing and repositioning a
 pygame.Rect instance per se, we want to replace it
 altogether. By doing something like this:
 
->>> # just an example:
+>>> # we skip it because it is just an example
 >>> a_obj.rect = new_rect  # doctest: +SKIP
 
 However, the property in g1.rect was originally read-only,

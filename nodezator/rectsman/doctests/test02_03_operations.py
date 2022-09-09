@@ -18,7 +18,7 @@ test such operations.
 
 >>> ### let's import pygame.Rect and also useful fixtures
 >>> from pygame import Rect
->>> from rectsman.doctests.fixtures import (
+>>> from .fixtures import (
 ... get_fresh_groups, check_error_raising
 ... )
 

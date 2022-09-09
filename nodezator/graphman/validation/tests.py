@@ -17,9 +17,7 @@ utilities for our tests.
 >>> ### let's start by loading the functions we want to
 >>> ### test
 
->>> from graphman.validation.main import (
-...   check_return_annotation_mini_lang
-... )
+>>> from .main import check_return_annotation_mini_lang
 
 >>> ### import other useful libraries
 

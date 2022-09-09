@@ -17,7 +17,7 @@ the pygame.Rect class and also two functions to help us
 test such operations.
 
 >>> from pygame import Rect
->>> from rectsman.doctests.fixtures import (
+>>> from .fixtures import (
 ...   get_fresh_groups,
 ...   check_error_raising
 ... )

@@ -20,7 +20,7 @@ needed or because the default implementation from the
 
 >>> ### let's import Rect and also useful fixtures
 >>> from pygame import Rect
->>> from rectsman.doctests.fixtures import (
+>>> from .fixtures import (
 ... Simple, ListGroup, get_fresh_groups
 ... )
 
@@ -234,22 +234,27 @@ which is the expected behaviour.
 >>> g1, _ = get_fresh_groups()
 
 >>> # the deletion of attributes like width and height
->>> # raise different error types and messages (this can
->>> # be observed in others properties as well)
+>>> # raise attribute errors
+
 >>> del g1.rect.width # doctest: +ELLIPSIS
 Traceback (most recent call last):
 ...
-SystemError: <built-in function delattr> returned NULL ...
->>> del g1.rect.height
+AttributeError: can...t delete attribute
+
+>>> del g1.rect.height # doctest: +ELLIPSIS
 Traceback (most recent call last):
 ...
-TypeError: invalid rect assignment
+AttributeError: can...t delete attribute
 
->>> ### the two tests below are skipped, because they cause
->>> ### fatal errors (this can be observed in others
->>> ### properties as well)
->>> del g1.rect.topleft # doctest: +SKIP
->>> del g1.rect.size    # doctest: +SKIP
+>>> del g1.rect.topleft # doctest: +ELLIPSIS
+Traceback (most recent call last):
+...
+AttributeError: can...t delete attribute
+
+>>> del g1.rect.size # doctest: +ELLIPSIS
+Traceback (most recent call last):
+...
+AttributeError: can...t delete attribute
 
 >>> # as discussed, trying to delete RectsManager attributes
 >>> # will fail too, because this tries to delete the same

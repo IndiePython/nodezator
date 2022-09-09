@@ -40,7 +40,7 @@ further returned.
 Before presenting each operation, let's first import
 two functions to help us test such operations.
 
->>> from rectsman.doctests.fixtures import (
+>>> from .fixtures import (
 ...   get_fresh_groups,
 ...   check_error_raising
 ... )

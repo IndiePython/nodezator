@@ -107,6 +107,8 @@ compatible with the pygame.Rect API shown in the online
 docs, thereby implementing size transformation as well.
 Therefore, code like shown below is now possible, too:
 
+>>> # again, since this is just a demosntration, we
+>>> # skip the tests
 >>> obj.rect.width = 50          # doctest: +SKIP
 >>> obj.rect.width += 50         # doctest: +SKIP
 >>> obj.rect.inflate_ip(40, 40)  # doctest: +SKIP
@@ -183,9 +185,11 @@ property and RectsManager class are meant to be used. But
 let's first import them here, along with the pygame.Rect
 class, which will help us demonstrate some concepts.
 
->>> from pygame import Rect
->>> from rectsman.main import (
-... RectsManager, rect_property)
+>>> from pygame import Rect # doctest: +ELLIPSIS
+pygame 2...
+Hello from the pygame community...
+
+>>> from ..main import RectsManager, rect_property
 
 
 Instantiation
