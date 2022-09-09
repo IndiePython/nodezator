@@ -141,10 +141,8 @@ abstract base class to help with testing.
 >>> from collections.abc import Mapping
 
 >>> ### loading the class and the utility function
->>> from ourstdlibs.collections.fldict.main import (
-...   FlatListDict
-... )
->>> from ourstdlibs.behaviour import flatten_mapping_values
+>>> from .main import FlatListDict
+>>> from ...behaviour import flatten_mapping_values
 
 Below we have names of games mapped to their respective
 genre (fighting, actions, etc.), in a variable called
@@ -238,13 +236,15 @@ The flat_values, as a read-only property, cannot be
 reassigned or deleted. This works as a poka-yoke mechanism
 to prevent unintentional misuse:
 
->>> fl_dict.flat_values = list()
+>>> fl_dict.flat_values = list() # doctest: +ELLIPSIS
 Traceback (most recent call last):
-AttributeError: can\'t set attribute
+...
+AttributeError: can\'t set attribute 'flat_values'
 
->>> del fl_dict.flat_values
+>>> del fl_dict.flat_values # doctest: +ELLIPSIS
 Traceback (most recent call last):
-AttributeError: can\'t delete attribute
+...
+AttributeError: can\'t delete attribute 'flat_values'
 
 
 ### Utility function
@@ -788,3 +788,17 @@ False
 >>> sum(monthly_exp.flat_values)
 6200.0
 """
+
+from doctest import DocTestSuite
+
+
+def load_tests(loader, tests, pattern):
+    """Return a test suite.
+
+    This function is used for test discovery and its name,
+    signature and return value are defined by the load_tests
+    protocol described in the standard library unittest
+    module online documentation.
+    """
+    ### return a test suite from the doctests in this module
+    return DocTestSuite()
