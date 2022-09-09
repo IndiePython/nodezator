@@ -3,14 +3,12 @@
 ### local imports
 
 from .constants import (
-
-               CAPSULE_IDS_TO_CALLABLES_MAP,
-               CAPSULE_IDS_TO_SIGNATURES_MAP,
-               CAPSULE_IDS_TO_SUBSTITUTION_CALLABLE_MAP,
-               CAPSULE_IDS_TO_STLIB_IMPORT_MAP,
-               CAPSULE_IDS_TO_SOURCE_VIEW_TEXT,
-
-             )
+    CAPSULE_IDS_TO_CALLABLES_MAP,
+    CAPSULE_IDS_TO_SIGNATURES_MAP,
+    CAPSULE_IDS_TO_SUBSTITUTION_CALLABLE_MAP,
+    CAPSULE_IDS_TO_STLIB_IMPORT_MAP,
+    CAPSULE_IDS_TO_SOURCE_VIEW_TEXT,
+)
 
 from ...colorsman.colors import CAPSULE_NODES_CATEGORY_COLOR
 
@@ -22,7 +20,7 @@ class CapsuleNode(CallableNode):
     """Handles callables from encapsulation of code."""
 
     category_color = CAPSULE_NODES_CATEGORY_COLOR
-    available_ids  = CAPSULE_IDS_TO_CALLABLES_MAP.keys()
+    available_ids = CAPSULE_IDS_TO_CALLABLES_MAP.keys()
 
     def __init__(self, data, midtop=None):
         """Setup attributes for storage and control.
@@ -43,35 +41,27 @@ class CapsuleNode(CallableNode):
         ### roles in the node (both the main and signature
         ### callable)
 
-        signature_callable      = \
-        self.signature_callable = \
-        self.main_callable      = (
-
-          CAPSULE_IDS_TO_CALLABLES_MAP[data['capsule_id']] 
-
-        )
+        signature_callable = (
+            self.signature_callable
+        ) = self.main_callable = CAPSULE_IDS_TO_CALLABLES_MAP[data["capsule_id"]]
 
         ### retrieve and store the substitution callable
 
-        self.substitution_callable = (
-
-          CAPSULE_IDS_TO_SUBSTITUTION_CALLABLE_MAP
-          [data['capsule_id']]
-
-        )
+        self.substitution_callable = CAPSULE_IDS_TO_SUBSTITUTION_CALLABLE_MAP[
+            data["capsule_id"]
+        ]
 
         ### if there's an stlib import associated with
         ### the id, store it
 
-        try: self.stlib_import_text = (
-               CAPSULE_IDS_TO_STLIB_IMPORT_MAP
-               [data['capsule_id']]
-             )
+        try:
+            self.stlib_import_text = CAPSULE_IDS_TO_STLIB_IMPORT_MAP[data["capsule_id"]]
 
-        except KeyError: pass
+        except KeyError:
+            pass
 
         ### use the capsule_id as the title text
-        self.title_text = data['capsule_id']
+        self.title_text = data["capsule_id"]
 
         ### store the instance data argument in its own
         ### attribute
@@ -87,15 +77,8 @@ class CapsuleNode(CallableNode):
         ## callable, it will use the already created data,
         ## shared through class attributes
 
-        if (
-
-          signature_callable
-          not in self.__class__.preprocessed_callables
-
-        ):
-            self.inspect_callable_object(
-                   signature_callable
-                 )
+        if signature_callable not in self.__class__.preprocessed_callables:
+            self.inspect_callable_object(signature_callable)
 
         ### reference maps from class attributes in
         ### instance; maps are related to the signature
@@ -110,18 +93,11 @@ class CapsuleNode(CallableNode):
 
         ### store the id in its own attribute for easy
         ### access
-        self.id = self.data['id']
+        self.id = self.data["id"]
 
         ### store the midtop position
 
-        self.midtop = (
-
-          midtop
-          if midtop is not None 
-
-          else self.data['midtop']
-
-        )
+        self.midtop = midtop if midtop is not None else self.data["midtop"]
 
         ### create control to indicate when the node was
         ### subject to mouse click
@@ -138,17 +114,14 @@ class CapsuleNode(CallableNode):
 
         Overrides super().get_signature().
         """
-        return (
-          CAPSULE_IDS_TO_SIGNATURES_MAP
-          [self.data['capsule_id']]
-        )
+        return CAPSULE_IDS_TO_SIGNATURES_MAP[self.data["capsule_id"]]
 
     def get_color_identifier(self):
         """Return specific color identifier.
 
         Overrides super().get_color_identifier().
         """
-        return 'capsule_node'
+        return "capsule_node"
 
     def store_category_color_data(self):
         """Do nothing.
@@ -163,10 +136,4 @@ class CapsuleNode(CallableNode):
     def get_source_info(self):
         """Return information about node source."""
 
-        return (
-
-          CAPSULE_IDS_TO_SOURCE_VIEW_TEXT[
-            self.data['capsule_id']
-          ]
-
-        )
+        return CAPSULE_IDS_TO_SOURCE_VIEW_TEXT[self.data["capsule_id"]]

@@ -1,5 +1,4 @@
-
-WIDGET_CSS = '''
+WIDGET_CSS = """
 
 
 g.file_not_found_shapes > rect {
@@ -153,4 +152,4 @@ g.sorting_button > text {
 .thumb_bg {
   fill: rgb(40, 40, 90);
 }
-'''
+"""

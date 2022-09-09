@@ -17,7 +17,6 @@ from .proxynode.main import ProxyNode
 from .textblock.main import TextBlock
 
 
-
 class DataEdition:
     """Contains methods for node layout edition."""
 
@@ -33,13 +32,9 @@ class DataEdition:
         ### using its id
         self.nodes_data[node.id] = node.data
 
-    create_callable_node = partialmethod(
-                             create_node, CallableNode
-                           )
+    create_callable_node = partialmethod(create_node, CallableNode)
 
-    create_proxy_node = partialmethod(
-                             create_node, ProxyNode
-                        )
+    create_proxy_node = partialmethod(create_node, ProxyNode)
 
     def insert_node(self, node):
         """Insert node into node map and node's data."""
@@ -68,10 +63,10 @@ class DataEdition:
         self.nodes_data.pop(node.id)
 
     def create_text_block(
-          self,
-          text_block_data,
-          text_block_absolute_midtop,
-        ):
+        self,
+        text_block_data,
+        text_block_absolute_midtop,
+    ):
         """Instantiate, build visuals and insert new node.
 
         text_block_data (dict)
@@ -82,10 +77,7 @@ class DataEdition:
         """
         ### instantiate text block
 
-        text_block = TextBlock(
-                        text_block_data,
-                        text_block_absolute_midtop
-                      )
+        text_block = TextBlock(text_block_data, text_block_absolute_midtop)
 
         ### insert it in the data
         self.insert_text_block(text_block)
@@ -113,6 +105,4 @@ class DataEdition:
         ### remove the text block data from the text
         ### block data list
 
-        remove_by_identity(
-          text_block.data, self.text_blocks_data
-        )
+        remove_by_identity(text_block.data, self.text_blocks_data)

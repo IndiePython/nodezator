@@ -13,17 +13,16 @@ from .export import ExportOperations
 
 
 class SocketParenthood(
-      DrawingOperations,
-      UserActions,
-      SupportOperations,
-      ExportOperations,
-    ):
-
+    DrawingOperations,
+    UserActions,
+    SupportOperations,
+    ExportOperations,
+):
     def setup_parent_sockets_data(self, parent_sockets_data):
         """Store data and perform setups.
 
         Setups performed:
-        
+
         - Organizing sockets into general tree structures
           of height 1
             Works by having sockets reference each other
@@ -47,10 +46,8 @@ class SocketParenthood(
         ### in the 'parents' attribute
 
         self.parents = [
-
-          self.reference_parent_children(parent_data)
-          for parent_data in self.parent_sockets_data
-
+            self.reference_parent_children(parent_data)
+            for parent_data in self.parent_sockets_data
         ]
 
         ### create a list to store sockets to be signaled
@@ -60,23 +57,23 @@ class SocketParenthood(
         self.sockets_for_signaling = []
 
     def reference_parent_children(
-          self,
-          parent_data,
-          parent=None,
-        ):
+        self,
+        parent_data,
+        parent=None,
+    ):
         """Make parent and children reference each other.
 
         Works recursively through the tree structure.
         """
-        class_name = parent_data['class_name']
+        class_name = parent_data["class_name"]
 
         ### treat ids according to class name
 
-        if class_name == 'OutputSocket':
+        if class_name == "OutputSocket":
 
             ## retrieve the node id and output name from
             ## the 'id' field of the tree data
-            node_id, output_name = parent_data['id']
+            node_id, output_name = parent_data["id"]
 
             ## use the node id to find the node, and the
             ## output name to find the output socket
@@ -86,19 +83,20 @@ class SocketParenthood(
 
             ## TODO review this try/except/else clauses
 
-            try: oslm = node.output_socket_live_map
+            try:
+                oslm = node.output_socket_live_map
 
             except AttributeError:
                 socket = node.output_socket
 
-            else: socket = oslm[output_name]
+            else:
+                socket = oslm[output_name]
 
-
-        elif class_name == 'InputSocket':
+        elif class_name == "InputSocket":
 
             ## retrieve the parts of the 'id' field of the
             ## tree data
-            parts = parent_data['id']
+            parts = parent_data["id"]
 
             ## calculate length
             length = len(parts)
@@ -118,26 +116,19 @@ class SocketParenthood(
 
                 ## TODO review this try/except/else clauses
 
-                try: islf = node.input_socket_live_flmap
+                try:
+                    islf = node.input_socket_live_flmap
 
                 except AttributeError:
-                    
+
                     socket = next(
+                        socket
+                        for socket in (node.input_sockets)
+                        if (socket.parameter_name == param_name)
+                    )
 
-                               socket
-
-                               for socket in (
-                                 node.input_sockets
-                               )
-
-                               if (
-                                 socket.parameter_name
-                                 == param_name
-                               )
-
-                             )
-
-                else: socket = islf[param_name]
+                else:
+                    socket = islf[param_name]
 
             elif length == 3:
 
@@ -150,19 +141,13 @@ class SocketParenthood(
 
                 node = self.node_map[node_id]
 
-                socket = (
-                  node
-                  .input_socket_live_flmap
-                  [param_name]
-                  [subparam_index]
-                )
+                socket = node.input_socket_live_flmap[param_name][subparam_index]
 
-
-        elif class_name == 'ProxySocket':
+        elif class_name == "ProxySocket":
 
             ## retrieve the node id from the 'id' field of
             ## the tree data
-            node_id, _ = parent_data['id']
+            node_id, _ = parent_data["id"]
 
             ## use the retrieved data to find the node
             ## and then the proxy socket
@@ -177,7 +162,8 @@ class SocketParenthood(
 
         ## try storing socket reference in list in
         ## parent's children attribute
-        try: parent.children.append(socket)
+        try:
+            parent.children.append(socket)
 
         ## if list doesn't exist, we create it already
         ## holding our socket
@@ -185,11 +171,13 @@ class SocketParenthood(
         except AttributeError:
 
             # try assigning new list
-            try: parent.children = [socket]
+            try:
+                parent.children = [socket]
 
             # if this still fails, that's ok; we just
             # pass, since it means the parent is None;
-            except AttributeError: pass
+            except AttributeError:
+                pass
 
         ### if the tree data has a 'children' field,
         ### pass each of them to this method recursively;
@@ -198,18 +186,20 @@ class SocketParenthood(
         ### fail for them; the other types of sockets
         ### may have children or not;
 
-        try: children_data = parent_data['children']
+        try:
+            children_data = parent_data["children"]
 
-        except KeyError: pass
+        except KeyError:
+            pass
 
         else:
 
             for child_data in children_data:
 
                 self.reference_parent_children(
-                       child_data,
-                       socket,
-                     )
+                    child_data,
+                    socket,
+                )
 
         ### finally, return the socket
         return socket

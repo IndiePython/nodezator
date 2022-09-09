@@ -11,23 +11,23 @@ from pygame.draw import line as draw_line
 ### local imports
 
 from .main import (
-                            enforce_multiple,
-                            generate_grid_lines,
-                            move_grid_lines_along_axis,
-                          )
+    enforce_multiple,
+    generate_grid_lines,
+    move_grid_lines_along_axis,
+)
 
 
 class ScrollableGrid(object):
     """Grid object with grid line scrolling feature."""
 
     def __init__(
-          self,
-          screen,
-          line_width,
-          color,
-          unit_rect,
-          area_rect,
-        ):
+        self,
+        screen,
+        line_width,
+        color,
+        unit_rect,
+        area_rect,
+    ):
         """Generate and store grid-like lines.
 
         Works by generating and operating pairs of
@@ -50,7 +50,7 @@ class ScrollableGrid(object):
             Width of grid lines in pixels.
         color
             3-tuple of integers representing red, green and
-            blue values respectively, from 0 to 255. List or 
+            blue values respectively, from 0 to 255. List or
             pygame.Color instance are also allowed.
         unit_rect
             pygame.Rect instance representing an unit in the
@@ -61,22 +61,20 @@ class ScrollableGrid(object):
         """
         ### enforce "multiple-of" relationship between
         ### unit rect and area rect dimensions
-        self.unit_rect, self.area_rect = \
-                     enforce_multiple(unit_rect, area_rect)
+        self.unit_rect, self.area_rect = enforce_multiple(unit_rect, area_rect)
 
         ### store remaining data
 
-        self.screen     = screen
+        self.screen = screen
         self.line_width = line_width
-        self.color      = color
+        self.color = color
 
         ### generate and store grid lines in both
         ### orientations
 
-        self.h_lines, self.v_lines = \
-            generate_grid_lines(
-                self.unit_rect, self.area_rect,
-                use_vectors=True, separate_orientation=True)
+        self.h_lines, self.v_lines = generate_grid_lines(
+            self.unit_rect, self.area_rect, use_vectors=True, separate_orientation=True
+        )
 
         ## also reference all lines in a single list
         self.all_lines = [*self.h_lines, *self.v_lines]
@@ -87,10 +85,10 @@ class ScrollableGrid(object):
         for point_pair in self.all_lines:
 
             draw_line(
-              self.screen,
-              self.color,
-              *point_pair,
-              self.line_width,
+                self.screen,
+                self.color,
+                *point_pair,
+                self.line_width,
             )
 
     def scroll(self, dx, dy):
@@ -102,14 +100,14 @@ class ScrollableGrid(object):
         """
         ### scroll grid vertical lines
 
-        if dx: move_grid_lines_along_axis(
-                 self.v_lines, 'x', dx,
-                 self.unit_rect, self.area_rect
-               )
+        if dx:
+            move_grid_lines_along_axis(
+                self.v_lines, "x", dx, self.unit_rect, self.area_rect
+            )
 
         ### scroll grid horizontal lines
 
-        if dy: move_grid_lines_along_axis(
-                 self.h_lines, 'y', dy,
-                 self.unit_rect, self.area_rect
-               )
+        if dy:
+            move_grid_lines_along_axis(
+                self.h_lines, "y", dy, self.unit_rect, self.area_rect
+            )

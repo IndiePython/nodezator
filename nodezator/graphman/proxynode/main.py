@@ -1,15 +1,14 @@
-
 ### local imports
 
 ## class extensions
 
 from .vizprep import (
-                                VisualRelatedPreparations,
-                              )
+    VisualRelatedPreparations,
+)
 
 from .vizop.main import (
-                                 VisualRelatedOperations,
-                               )
+    VisualRelatedOperations,
+)
 
 from .widget import WidgetOps
 
@@ -22,14 +21,12 @@ from .titleupdate import update_title
 
 
 class ProxyNode(
-
-      VisualRelatedPreparations,
-      VisualRelatedOperations,
-      WidgetOps,
-      SegmentOps,
-      Exporting,
-
-    ):
+    VisualRelatedPreparations,
+    VisualRelatedOperations,
+    WidgetOps,
+    SegmentOps,
+    Exporting,
+):
     """Represents a data source within a script.
 
     Such data source can be a variable or the output
@@ -65,25 +62,18 @@ class ProxyNode(
         ### the titles of data nodes became editable,
         ### so it is needed in order not to break things;
 
-        if 'title' not in self.data:
-            self.data['title'] = 'output'
+        if "title" not in self.data:
+            self.data["title"] = "output"
 
         ### store some values from the node data in their
         ### own attributes for easy access
 
-        for attr_name in ('id', 'title'):
+        for attr_name in ("id", "title"):
             setattr(self, attr_name, self.data[attr_name])
 
         ### store the midtop position
 
-        self.midtop = (
-
-          midtop
-          if midtop is not None 
-
-          else self.data['midtop']
-
-        )
+        self.midtop = midtop if midtop is not None else self.data["midtop"]
 
         ### create control to indicate when the node was
         ### subject to mouse click

@@ -10,8 +10,7 @@ from ...colorsman.colors import BLACK
 class AutoLabel(Label):
     """A label with custom autoupdating ability."""
 
-    def __init__(
-        self, monitor_routine, formatter=str, **kwargs):
+    def __init__(self, monitor_routine, formatter=str, **kwargs):
         """Perform setups and assign data for reuse.
 
         Extends appcommon.text.label.main.Label.__init__
@@ -38,12 +37,15 @@ class AutoLabel(Label):
         ### store arguments
 
         self.monitor_routine = monitor_routine
-        self.formatter       = formatter
+        self.formatter = formatter
 
         ### apply formatter to text if text was provided
-        try: formatted_text = self.formatter(kwargs["text"])
-        except KeyError: pass
-        else: kwargs["text"] = formatted_text
+        try:
+            formatted_text = self.formatter(kwargs["text"])
+        except KeyError:
+            pass
+        else:
+            kwargs["text"] = formatted_text
 
         ### initialize superclass
         super().__init__(**kwargs)

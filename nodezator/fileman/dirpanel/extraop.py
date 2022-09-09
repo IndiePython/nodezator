@@ -31,12 +31,7 @@ class ExtraOperations:
         ### get all indices from the values in the selection
         ### state which are True
 
-        indices = [
-          index
-          for index, value
-          in enumerate(self.selection_states)
-          if value
-        ]
+        indices = [index for index, value in enumerate(self.selection_states) if value]
 
         ### if the difference between the highest and
         ### lowest indices is higher than one, it means
@@ -48,8 +43,9 @@ class ExtraOperations:
 
         if highest - lowest > 1:
 
-            self.selection_states[lowest : highest + 1] = \
-                          [True] * ((highest - lowest) + 1)
+            self.selection_states[lowest : highest + 1] = [True] * (
+                (highest - lowest) + 1
+            )
 
     def scroll(self, up):
         """Scroll paths on path objects.
@@ -63,7 +59,7 @@ class ExtraOperations:
         ## scroll up
 
         if up:
-            
+
             ## if the first path is on the first path obj,
             ## then there's no further item above, so we
             ## return earlier to avoid scrolling
@@ -72,25 +68,26 @@ class ExtraOperations:
 
             ## otherwise we define the rotation amount
             ## to rotating the paths up one path
-            else: rotation_amount = 1
+            else:
+                rotation_amount = 1
 
         ## scroll down
 
         else:
-            
+
             ## reference the path in the last path obj
             last_path = self.path_objs[-1].path
 
             ## if such path is last path available or None,
             ## then there's no further item below, so we
             ## return earlier to avoid scrolling
-            if last_path == self.paths[-1] \
-            or last_path is None:
+            if last_path == self.paths[-1] or last_path is None:
                 return
 
             ## otherwise we define the rotation amount
             ## to rotating the paths down one path
-            else: rotation_amount = -1
+            else:
+                rotation_amount = -1
 
         ### we then perform the rotation using the defined
         ### amount
@@ -105,7 +102,7 @@ class ExtraOperations:
         ### update outline rect attribute
         self.update_outline_rect()
 
-    scroll_up   = partialmethod(scroll, True)
+    scroll_up = partialmethod(scroll, True)
     scroll_down = partialmethod(scroll, False)
 
     def bulk_selection_change(self, should_select):
@@ -121,8 +118,7 @@ class ExtraOperations:
         ### apply the should_select argument (a boolean)
         ### to the selection states of all paths (works
         ### even if there's no selectable paths)
-        self.selection_states[:] = \
-              [should_select] * len(self.selection_states)
+        self.selection_states[:] = [should_select] * len(self.selection_states)
 
         ### update appearance of all paths
         self.update_path_objs_appearance()
@@ -131,7 +127,7 @@ class ExtraOperations:
         ### so the file manager updates its path selection
         self.fm.update_path_selection()
 
-    select_all   = partialmethod(bulk_selection_change,  True)
+    select_all = partialmethod(bulk_selection_change, True)
     deselect_all = partialmethod(bulk_selection_change, False)
 
     def move_selection(self, amount):
@@ -151,7 +147,8 @@ class ExtraOperations:
         """
         ### if there's no paths to be selected, there's
         ### no point in walking any items, so return earlier
-        if not self.selectable_paths: return
+        if not self.selectable_paths:
+            return
 
         ### store the length of the selectable paths
         n_of_selectables = len(self.selectable_paths)
@@ -167,8 +164,7 @@ class ExtraOperations:
 
         if not shift_pressed:
 
-            self.selection_states[:] = \
-                    [False] * len(self.selection_states)
+            self.selection_states[:] = [False] * len(self.selection_states)
 
         ### calculate start index (from where we'll move
         ### the selection) depending on the value of the
@@ -176,54 +172,40 @@ class ExtraOperations:
         ### movement
 
         start_index = (
-
-          ## use the index itself if not None
-
-          last_selected_index
-          if last_selected_index is not None
-
-          ## otherwise, define an index based on the
-          ## whether you're jumping forward or back
-
-          else (
-
-            # zero
-
-            0
-            if amount > 0
-
-            # or the last index
-            else -1 % n_of_selectables
-          )
-
+            ## use the index itself if not None
+            last_selected_index
+            if last_selected_index is not None
+            ## otherwise, define an index based on the
+            ## whether you're jumping forward or back
+            else (
+                # zero
+                0
+                if amount > 0
+                # or the last index
+                else -1 % n_of_selectables
+            )
         )
 
         ### calculate the destination index
 
         destination_index = (
-
-          ## if there were no last selected index before
-          ## (it is None) and we are moving a single step
-          ## (regardless of direction), make it so the
-          ## destination is the start index itself, since
-          ## it means we are beginning to select items,
-          ## the first one being the start index itself
-
-          start_index
-          if last_selected_index is None and abs(amount) == 1
-
-          ## otherwise, the destination index is the start
-          ## index plus the amount we'll jump
-          else start_index + amount
-
+            ## if there were no last selected index before
+            ## (it is None) and we are moving a single step
+            ## (regardless of direction), make it so the
+            ## destination is the start index itself, since
+            ## it means we are beginning to select items,
+            ## the first one being the start index itself
+            start_index
+            if last_selected_index is None and abs(amount) == 1
+            ## otherwise, the destination index is the start
+            ## index plus the amount we'll jump
+            else start_index + amount
         )
 
         ### of course, don't forget to clamp the value to
         ### limit it to the range of selectable paths
 
-        clamped_index = max(
-          0, min(destination_index, n_of_selectables - 1)
-        )
+        clamped_index = max(0, min(destination_index, n_of_selectables - 1))
 
         ### make sure the clamped destination index is
         ### selected and marked as the last selected one
@@ -262,7 +244,8 @@ class ExtraOperations:
         extra_scrolling_needed = destination_index < 0
 
         ### if such extra scrolling is needed, perform it
-        if extra_scrolling_needed: self.scroll_up()
+        if extra_scrolling_needed:
+            self.scroll_up()
 
         ### if any kind of scrolling was needed, update
         ### the path in each path object and also the
@@ -284,15 +267,13 @@ class ExtraOperations:
         self.fm.update_path_selection()
 
     go_to_previous = partialmethod(move_selection, -1)
-    go_to_next     = partialmethod(move_selection,  1)
+    go_to_next = partialmethod(move_selection, 1)
 
-    jump_many_up   = partialmethod(move_selection,
-                                        -PATH_OBJ_QUANTITY)
-    jump_many_down = partialmethod(move_selection,
-                                         PATH_OBJ_QUANTITY)
+    jump_many_up = partialmethod(move_selection, -PATH_OBJ_QUANTITY)
+    jump_many_down = partialmethod(move_selection, PATH_OBJ_QUANTITY)
 
     go_to_first = partialmethod(move_selection, -INFINITY)
-    go_to_last  = partialmethod(move_selection,  INFINITY)
+    go_to_last = partialmethod(move_selection, INFINITY)
 
     def needed_scrolling(self):
         """Return whether scrolling was performed or not.
@@ -312,12 +293,9 @@ class ExtraOperations:
         ### retrieve indices of paths being displayed
 
         displayed_indices = [
-
-          get_selectable_index(path_obj.path)
-
-          for path_obj in self.path_objs
-          if path_obj.path in self.selectable_paths
-
+            get_selectable_index(path_obj.path)
+            for path_obj in self.path_objs
+            if path_obj.path in self.selectable_paths
         ]
 
         ### if last selected path is showing (its index is
@@ -337,25 +315,22 @@ class ExtraOperations:
         ## retrieve index of paths appearing on top and
         ## bottom of the directory panel
 
-        top_index    = min(displayed_indices)
+        top_index = min(displayed_indices)
         bottom_index = max(displayed_indices)
 
         ## define amount of scrolling based on position
         ## of last selected index relative to the top index
 
         scrolling_amount = (
-
-          # we use the difference between the top index
-          # and the last selected index if the last
-          # selected one comes before the top index
-          top_index - last_selected_index
-          if last_selected_index < top_index
-
-          # otherwise it means the last selected index
-          # appears after the bottom index, so we use
-          # the difference between them
-          else bottom_index - last_selected_index
-
+            # we use the difference between the top index
+            # and the last selected index if the last
+            # selected one comes before the top index
+            top_index - last_selected_index
+            if last_selected_index < top_index
+            # otherwise it means the last selected index
+            # appears after the bottom index, so we use
+            # the difference between them
+            else bottom_index - last_selected_index
         )
 
         self.paths_deque.rotate(scrolling_amount)
@@ -368,9 +343,7 @@ class ExtraOperations:
         """Select path and ensure it appears on panel."""
         ### deselect all paths
 
-        self.selection_states[:] = (
-               [False] * len(self.selection_states)
-             )
+        self.selection_states[:] = [False] * len(self.selection_states)
 
         ### perform tasks to make the path selected
 
@@ -389,7 +362,8 @@ class ExtraOperations:
 
         ### if we needed to scroll, update the path in each
         ### path object
-        if needed_scrolling: self.update_path_objects_paths()
+        if needed_scrolling:
+            self.update_path_objects_paths()
 
         ### update outline rect attribute
         self.update_outline_rect()

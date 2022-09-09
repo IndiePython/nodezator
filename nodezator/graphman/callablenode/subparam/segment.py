@@ -17,10 +17,10 @@ from ....widget.stringentry import StringEntry
 from ....rectsman.main import RectsManager
 
 from ..surfs import (
-                                ADD_BUTTON_SURF,
-                                SUBP_UP_BUTTON_SURF,
-                                SUBP_DOWN_BUTTON_SURF,
-                              )
+    ADD_BUTTON_SURF,
+    SUBP_UP_BUTTON_SURF,
+    SUBP_DOWN_BUTTON_SURF,
+)
 
 from ..constants import FONT_HEIGHT
 
@@ -40,9 +40,7 @@ class SegmentOps:
         """
         ### reference the map for input sockets for this
         ### parameter
-        param_input_sockets = (
-                 self.input_socket_live_flmap[param_name]
-               )
+        param_input_sockets = self.input_socket_live_flmap[param_name]
 
         ### create a new input socket (input sockets
         ### represent parameters/subparameters, so this
@@ -71,30 +69,23 @@ class SegmentOps:
         ## gather the input socket's rect
         subrectsman_rects.append(input_socket.rect)
 
-
         ### create new "move subparam" buttons to be put
         ### alongside the created socket
 
-        bottomleft = (
-          input_socket.rect.move(2, 0).midright
-        )
+        bottomleft = input_socket.rect.move(2, 0).midright
 
-        move_subparam_up = partial(
-                             self.move_subparam_up,
-                             input_socket
-                           )
+        move_subparam_up = partial(self.move_subparam_up, input_socket)
 
         subp_up_button = Button(
-                           surface=SUBP_UP_BUTTON_SURF,
-                           command=move_subparam_up,
-                           coordinates_name="bottomleft",
-                           coordinates_value=bottomleft
-                         )
+            surface=SUBP_UP_BUTTON_SURF,
+            command=move_subparam_up,
+            coordinates_name="bottomleft",
+            coordinates_value=bottomleft,
+        )
 
         sub_flmap = self.subparam_up_button_flmap
 
-        (sub_flmap
-        [param_name][subparam_index]) = subp_up_button
+        (sub_flmap[param_name][subparam_index]) = subp_up_button
 
         # this dict subclass instance must be updated
         # every time it is changed
@@ -103,25 +94,20 @@ class SegmentOps:
         # gather the button's rect
         subrectsman_rects.append(subp_up_button.rect)
 
-
         topleft = bottomleft
 
-        move_subparam_down = partial(
-                               self.move_subparam_down,
-                               input_socket
-                             )
+        move_subparam_down = partial(self.move_subparam_down, input_socket)
 
         subp_down_button = Button(
-                             surface=SUBP_DOWN_BUTTON_SURF,
-                             command=move_subparam_down,
-                             coordinates_name="topleft",
-                             coordinates_value=topleft
-                           )
+            surface=SUBP_DOWN_BUTTON_SURF,
+            command=move_subparam_down,
+            coordinates_name="topleft",
+            coordinates_value=topleft,
+        )
 
         sdb_flmap = self.subparam_down_button_flmap
 
-        (sdb_flmap
-        [param_name][subparam_index]) = subp_down_button
+        (sdb_flmap[param_name][subparam_index]) = subp_down_button
 
         # this dict subclass instance must be updated
         # every time it is changed
@@ -129,7 +115,6 @@ class SegmentOps:
 
         # gather the button's rect
         subrectsman_rects.append(subp_down_button.rect)
-
 
         ### create a new "add widget" button to be put
         ### alongside the created socket,
@@ -139,30 +124,19 @@ class SegmentOps:
 
         midleft = input_socket.rect.move(15, 0).midright
 
-        command = (
-
-          partial(
-            (
-              APP_REFS
-              .ea
-              .widget_creation_popup_menu
-              .trigger_simple_widget_picking
-            ),
-
+        command = partial(
+            (APP_REFS.ea.widget_creation_popup_menu.trigger_simple_widget_picking),
             self,
             param_name,
             input_socket,
-
-          )
-
         )
 
         button = Button(
-                   surface=ADD_BUTTON_SURF,
-                   command=command,
-                   coordinates_name="midleft",
-                   coordinates_value=midleft
-                 )
+            surface=ADD_BUTTON_SURF,
+            command=command,
+            coordinates_name="midleft",
+            coordinates_value=midleft,
+        )
 
         wab_flmap = self.widget_add_button_flmap
 
@@ -176,7 +150,6 @@ class SegmentOps:
         ## gather the add button's rect
         subrectsman_rects.append(button.rect)
 
-
         ## with the gathered rects, we already
         ## create a subrectsman for this subparameter
         ## (even though we may yet need to add the
@@ -186,24 +159,18 @@ class SegmentOps:
         ## param rectsman from its
         ## ('_get_all_rects.__self__' attribute)
 
-        subrectsman = RectsManager(
-                           subrectsman_rects.__iter__)
+        subrectsman = RectsManager(subrectsman_rects.__iter__)
 
-        (self.subparam_rectsman_map
-           [param_name][subparam_index]) = subrectsman
+        (self.subparam_rectsman_map[param_name][subparam_index]) = subrectsman
 
-        rect_list = (
-          self.param_rectsman_map[param_name]
-          ._get_all_rects.__self__
-        )
+        rect_list = self.param_rectsman_map[param_name]._get_all_rects.__self__
 
         rect_list.append(subrectsman)
-
 
         ### if variable is of keyword-variable kind
         ### instantiate a subparam keyword widget
 
-        if self.var_kind_map[param_name] == 'var_key':
+        if self.var_kind_map[param_name] == "var_key":
 
             ## use the left of the add button and the top
             ## of the subrectsman (3 pixels higher by
@@ -211,62 +178,42 @@ class SegmentOps:
             ## bottomleft coordinate for the keyword
             ## entry widget
 
-            bottomleft = (
-              input_socket.rect.right + 15,
-              subrectsman.top - 3
-            )
+            bottomleft = (input_socket.rect.right + 15, subrectsman.top - 3)
 
             ## define a name for the keyword
             keyword_name = self.get_new_keyword_name()
 
             ## put together a command which takes proper
             ## measures when updating the keyword name
-            command = partial(
-                        self.update_keyword, input_socket)
+            command = partial(self.update_keyword, input_socket)
 
             ## instantiate the keyword entry and take
             ## additional measures
 
             # instantiate
 
-            subparam_keyword_entry = (
-
-              StringEntry(
+            subparam_keyword_entry = StringEntry(
                 value=keyword_name,
                 font_height=FONT_HEIGHT,
                 width=155,
-                coordinates_name='bottomleft',
+                coordinates_name="bottomleft",
                 coordinates_value=bottomleft,
-                command=command
-              )
-
+                command=command,
             )
 
             # store the subparam keyword entry
 
             (
-
-              self
-              .subparam_keyword_entry_live_map
-              [subparam_index]
-
+                self.subparam_keyword_entry_live_map[subparam_index]
             ) = subparam_keyword_entry
 
             # gather the subparam keyword rect
-            subrectsman_rects.append(
-                                subparam_keyword_entry.rect
-                              )
+            subrectsman_rects.append(subparam_keyword_entry.rect)
 
             # also store the name of the keyword created
             # in the dedicated map for keyword names
 
-            (
-
-              self.data
-              ['subparam_keyword_map']
-              [subparam_index]
-
-            ) = keyword_name
+            (self.data["subparam_keyword_map"][subparam_index]) = keyword_name
 
         ### reposition all objects within the node
         self.reposition_elements()
@@ -296,7 +243,7 @@ class SegmentOps:
         ### obtain parameter name and subparameter index
         ### from input socket
 
-        param_name     = input_socket.parameter_name
+        param_name = input_socket.parameter_name
         subparam_index = input_socket.subparameter_index
 
         ### use the parameter name to obtain a map of
@@ -305,13 +252,12 @@ class SegmentOps:
 
         ### reference the list of subparameters for
         ### unpacking locally for easier access
-        subparams_for_unpacking = (
-          self.data['subparam_unpacking_map'][param_name]
-        )
+        subparams_for_unpacking = self.data["subparam_unpacking_map"][param_name]
 
         ### try accessing a widget instance for the
         ### subparameter using its index
-        try: subparam_widgets[subparam_index]
+        try:
+            subparam_widgets[subparam_index]
 
         ### if the attempt fails, then the recently severed
         ### input socket must be removed, since it has no
@@ -321,12 +267,7 @@ class SegmentOps:
 
             ## remove input socket
 
-            (
-              self
-              .input_socket_live_flmap
-              [param_name]
-              .pop(subparam_index)
-            )
+            (self.input_socket_live_flmap[param_name].pop(subparam_index))
 
             # this dict subclass instance must be updated
             # whenever it changes
@@ -335,38 +276,21 @@ class SegmentOps:
             ## remove the subparam index from list inside
             ## subparam map
 
-            (
-              self
-              .data
-              ['subparam_map']
-              [param_name]
-              .remove(subparam_index)
-            )
+            (self.data["subparam_map"][param_name].remove(subparam_index))
 
             ## remove "move subparam" buttons
 
-            (
-              self
-              .subparam_up_button_flmap
-              [param_name]
-              .pop(subparam_index)
-            )
+            (self.subparam_up_button_flmap[param_name].pop(subparam_index))
 
             # this dict subclass instance must be updated
             # whenever it changes
             self.subparam_up_button_flmap.update()
 
-            (
-              self
-              .subparam_down_button_flmap
-              [param_name]
-              .pop(subparam_index)
-            )
+            (self.subparam_down_button_flmap[param_name].pop(subparam_index))
 
             # this dict subclass instance must be updated
             # whenever it changes
             self.subparam_down_button_flmap.update()
-
 
             ## since the input socket was removed...
 
@@ -379,12 +303,7 @@ class SegmentOps:
 
                 ## remove unpacking icon
 
-                (
-                  self
-                  .subparam_unpacking_icon_flmap
-                  [param_name]
-                  .pop(subparam_index)
-                )
+                (self.subparam_unpacking_icon_flmap[param_name].pop(subparam_index))
 
                 # this special dict subclass instance must
                 # be updated whenever it is changed
@@ -393,78 +312,51 @@ class SegmentOps:
                 ## remove subparameter index from list
                 ## within the subparameter unpacking map
 
-                (
-                  self.data
-                  ['subparam_unpacking_map']
-                  [param_name]
-                  .remove(subparam_index)
-                )
+                (self.data["subparam_unpacking_map"][param_name].remove(subparam_index))
 
             ## else if the parameter is of keyword-variable
             ## kind remove the keyword entry from the
             ## respective map and the keyword from the
             ## respective map as well
 
-            elif self.var_kind_map[param_name] == 'var_key':
+            elif self.var_kind_map[param_name] == "var_key":
 
                 ## remove keyword entry widget
 
-                (
-                  self
-                  .subparam_keyword_entry_live_map
-                  .pop(subparam_index)
-                )
+                (self.subparam_keyword_entry_live_map.pop(subparam_index))
 
                 ## remove keyword name from subparameter
                 ## keyword map
 
-                (
-                  self.data
-                  ['subparam_keyword_map']
-                  .pop(subparam_index)
-                )
+                (self.data["subparam_keyword_map"].pop(subparam_index))
 
             ## remove the add widget button for the
             ## subparameter
 
-            (
-              self
-              .widget_add_button_flmap
-              [param_name]
-              .pop(subparam_index)
-            )
+            (self.widget_add_button_flmap[param_name].pop(subparam_index))
 
             # this special dict subclass instance must
             # be updated whenever it is changed
             self.widget_add_button_flmap.update()
 
-
             ## also update the rectsman hierarchy in order
             ## to take the removal of the subparameter into
             ## account
-            
+
             # remove the subparameter rectsman from the
             # subparameter rectsman map
 
-            subrectsman = (
-              self
-              .subparam_rectsman_map
-              [param_name]
-              .pop(subparam_index)
-            )
+            subrectsman = self.subparam_rectsman_map[param_name].pop(subparam_index)
 
             # remove the subrectsman from list in the
             # __self__ attribute of the parameter rectsman
             # _get_all_rects attribute (it contains the
             # bound __iter__ method of the list)
 
-            rect_list = (
-              self.param_rectsman_map[param_name]
-              ._get_all_rects.__self__
-            )
+            rect_list = self.param_rectsman_map[param_name]._get_all_rects.__self__
 
             remove_by_identity(subrectsman, rect_list)
-            
+
             ## fix names of remaining subparameters
             self.fix_subparameter_indices(param_name)
 

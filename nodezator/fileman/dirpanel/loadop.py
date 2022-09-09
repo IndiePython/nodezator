@@ -2,11 +2,12 @@
 
 ### standard library imports
 
-from pathlib     import Path
+from pathlib import Path
 from collections import deque
 
 
 ### utility function
+
 
 def alphabetical_sorting_with_folders_first(path):
     """Return tuples used to sort paths.
@@ -18,6 +19,7 @@ def alphabetical_sorting_with_folders_first(path):
 
 
 ### class definition
+
 
 class LoadingOperations:
     """Methods related to directory loading."""
@@ -36,15 +38,14 @@ class LoadingOperations:
         ### gather directories and files from current dir
         ### sorting them alphabetically, folder first
 
-        paths = \
-            sorted(
-              (
+        paths = sorted(
+            (
                 item
                 for item in self.current_dir.iterdir()
-                if not item.name.startswith('.')
-              ),
-              key=alphabetical_sorting_with_folders_first
-            )
+                if not item.name.startswith(".")
+            ),
+            key=alphabetical_sorting_with_folders_first,
+        )
 
         ## also insert the parent directory, at the beginning
         ## of the list, so the parent folder can be easily
@@ -71,9 +72,7 @@ class LoadingOperations:
         ### selection states (boolean values) of each
         ### selectable path
 
-        self.selection_states = [
-          False for _ in self.selectable_paths
-        ]
+        self.selection_states = [False for _ in self.selectable_paths]
 
         ### since setting all selection states to False,
         ### as we just did above, make it so they are
@@ -110,18 +109,19 @@ class LoadingOperations:
 
     def load_selected(self):
         """Load single selected path.
-        
+
         Note that the call to the change_current_dir method
         only has effect if the path is a directory and
         exists.
         """
         ### don't proceed if number of selected paths isn't
         ### one
-        if sum(self.selection_states) != 1: return
+        if sum(self.selection_states) != 1:
+            return
 
         ### otherwise retrieve the selected path and load it
 
-        index         = self.selection_states.index(True)
+        index = self.selection_states.index(True)
         selected_path = self.selectable_paths[index]
 
         self.change_current_dir(selected_path)
@@ -136,7 +136,7 @@ class LoadingOperations:
         ### reference current directory locally as a
         ### child directory and also its parent
 
-        child_dir  = self.current_dir
+        child_dir = self.current_dir
         parent_dir = child_dir.parent
 
         ### load the parent
@@ -158,7 +158,7 @@ class LoadingOperations:
         it here every time the method is executed, but I'm
         not 100% sure whether there is an use-case where
         the home folder ever changes.
-        
+
         I strongly believe such use-case doesn't exist
         or is so rare as to be not worth considering, but
         I refuse the temptation to guess. And besides,

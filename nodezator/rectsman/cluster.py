@@ -1,5 +1,6 @@
 """Function for extending rectsman.main.RectsManager class."""
 
+
 def get_clusters(self, *inflation):
     """Return clusters formed by close rects.
 
@@ -27,19 +28,14 @@ def get_clusters(self, *inflation):
     ### rects
 
     while rects:
-        
+
         ## get an inflated version of the current
         ## cluster and check whether any rect from
         ## the list collides with it
 
-        inflated = cluster_rect.inflate(
-                                  *inflation
-                                )
+        inflated = cluster_rect.inflate(*inflation)
 
-        result = inflated.collidelist([
-                            rect
-                            for rect in rects
-                          ])
+        result = inflated.collidelist([rect for rect in rects])
 
         ## no collision;
         ##
@@ -59,8 +55,9 @@ def get_clusters(self, *inflation):
         ## means the rect which collided is part
         ## of the cluster, so we append it to the
         ## cluster
-        else: cluster.append(rects.pop(result))
-
+        else:
+            cluster.append(rects.pop(result))
 
     ### if there's still rects in the cluster, yield it
-    if cluster: yield cluster
+    if cluster:
+        yield cluster

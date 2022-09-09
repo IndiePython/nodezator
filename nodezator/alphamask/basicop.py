@@ -142,6 +142,7 @@ from pygame.surfarray import pixels_alpha
 
 ### class definition
 
+
 class AlphaMaskBasicOperations:
     """Provides basic operations for AlphaMask's instances."""
 
@@ -205,11 +206,11 @@ class AlphaMaskBasicOperations:
         ### from each surf's column by the values from
         ### each mask's column
 
-        for surf_alpha_column, mask_full_alpha_column \
-        in zip(surf_alpha_values, self.full_alpha_values):
+        for surf_alpha_column, mask_full_alpha_column in zip(
+            surf_alpha_values, self.full_alpha_values
+        ):
 
             surf_alpha_column[:] = mask_full_alpha_column
-
 
         ### delete references to the array so the surface is
         ### unlocked;
@@ -258,12 +259,7 @@ class AlphaMaskBasicOperations:
 
             for x, alpha_factor in enumerate(column):
 
-                surf_alpha_values[y][x] = \
-                  round(
-                    surf_alpha_values[y][x]
-                    * alpha_factor
-                  )
-
+                surf_alpha_values[y][x] = round(surf_alpha_values[y][x] * alpha_factor)
 
         ### delete the array so the surface is unlocked;
         ###
@@ -303,7 +299,8 @@ class AlphaMaskBasicOperations:
         ### whether it has a fourth value lower than 255
 
         ## check whether the color has an alpha value
-        try: alpha = color[3]
+        try:
+            alpha = color[3]
 
         ## if it hasn't, it means it is a solid color, so
         ## so we use the masking operation which replaces
@@ -319,21 +316,17 @@ class AlphaMaskBasicOperations:
             ### pick operation
 
             (
-
-              ## if alpha is lower than 255, it means the
-              ## color has some transparency to it,
-              ## so we pick the operation suitable for such
-              ## kind of color
-              self.mask_by_multiplying
-              if alpha < 255
-
-              ## otherwise we use the one best suited to
-              ## mask surfaces with solid colors
-              else self.mask_by_replacing
-
-
-            ## we then pass the surface to the
-            ## operation we just chose
+                ## if alpha is lower than 255, it means the
+                ## color has some transparency to it,
+                ## so we pick the operation suitable for such
+                ## kind of color
+                self.mask_by_multiplying
+                if alpha < 255
+                ## otherwise we use the one best suited to
+                ## mask surfaces with solid colors
+                else self.mask_by_replacing
+                ## we then pass the surface to the
+                ## operation we just chose
             )(surf)
 
         ### finally, return the surface

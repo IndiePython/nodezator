@@ -7,36 +7,37 @@ from string import digits, ascii_letters
 ### third-party imports
 
 from pygame import (
+    ### event types
+    QUIT,
+    KEYDOWN,
+    KEYUP,
+    MOUSEBUTTONUP,
+    MOUSEMOTION,
+    VIDEORESIZE,
+    ### keys
+    K_ESCAPE,
+    K_RETURN,
+    K_KP_ENTER,
+    K_BACKSPACE,
+    K_DELETE,
+    K_LEFT,
+    K_RIGHT,
+    K_HOME,
+    K_END,
+    K_LSHIFT,
+    K_RSHIFT,
+    KMOD_SHIFT,
+    K_e,
+    KMOD_CTRL,
+)
 
-              ### event types
-
-              QUIT,
-
-              KEYDOWN, KEYUP,
-
-              MOUSEBUTTONUP,
-              MOUSEMOTION,
-
-              VIDEORESIZE,
-
-              ### keys
-
-              K_ESCAPE, K_RETURN, K_KP_ENTER,
-              K_BACKSPACE, K_DELETE,
-              K_LEFT, K_RIGHT, K_HOME, K_END,
-              K_LSHIFT, K_RSHIFT,
-              KMOD_SHIFT,
-              K_e, KMOD_CTRL,
-
-            )
-
-from pygame.event import get      as get_events
-from pygame.key   import get_mods as get_mods_bitmask
+from pygame.event import get as get_events
+from pygame.key import get_mods as get_mods_bitmask
 
 from pygame.mouse import (
-                    set_pos     as set_mouse_pos,
-                    set_visible as set_mouse_visibility,
-                  )
+    set_pos as set_mouse_pos,
+    set_visible as set_mouse_visibility,
+)
 
 from pygame.display import update
 
@@ -61,44 +62,34 @@ from ...loopman.exception import QuitAppException
 ## allowed characters
 
 ALLOWED_CHARS = (
-  ### digits so users can form any number
-  digits
-
-  ### ascii letters for more complex expressions
-  + ascii_letters
-
-  ### characters used to type operators
-  + '=+-/*%<>'
-
-  ### '.' dot to mark the decimal point of floats
-  + '.'
-
-  ### parentheses to help form complex numerical expressions,
-  ### including some function calls
-  + '()'
-
-  ### brackets representing sequences (for instance:
-  ### 'mean([33, 47, 22])'
-  + '[]'
-
-  ### comma to also help with function calls with multiple
-  ### arguments
-  + ','
-
-  ### space character, to improve readability when
-  ### writing complex expressions
-  + ' '
-
-  ### underscore to allow for the usage of underscore in
-  ### numerical literals which is possible since Python
-  ### 3.6 (for instance: 100_000, 0x_FF_FF_FF_FF)
-  + '_'
-
-  ### quotes are also needed in order to type expressions
-  ### like "int('0xff', 16)", "int('0b011', 2)", etc.
-  + "'"
-  + '"'
-
+    ### digits so users can form any number
+    digits
+    ### ascii letters for more complex expressions
+    + ascii_letters
+    ### characters used to type operators
+    + "=+-/*%<>"
+    ### '.' dot to mark the decimal point of floats
+    + "."
+    ### parentheses to help form complex numerical expressions,
+    ### including some function calls
+    + "()"
+    ### brackets representing sequences (for instance:
+    ### 'mean([33, 47, 22])'
+    + "[]"
+    ### comma to also help with function calls with multiple
+    ### arguments
+    + ","
+    ### space character, to improve readability when
+    ### writing complex expressions
+    + " "
+    ### underscore to allow for the usage of underscore in
+    ### numerical literals which is possible since Python
+    ### 3.6 (for instance: 100_000, 0x_FF_FF_FF_FF)
+    + "_"
+    ### quotes are also needed in order to type expressions
+    ### like "int('0xff', 16)", "int('0b011', 2)", etc.
+    + "'"
+    + '"'
 )
 
 
@@ -113,6 +104,7 @@ MOUSE_ATTENUATION = 50
 
 ### class definition
 
+
 class IntFloatModes(Object2D):
     """Mode-related operations for the IntFloatEntry."""
 
@@ -123,8 +115,9 @@ class IntFloatModes(Object2D):
         keyboard.
         """
         for event in get_events():
-            
-            if event.type == QUIT: raise QuitAppException
+
+            if event.type == QUIT:
+                raise QuitAppException
 
             elif event.type == KEYUP:
 
@@ -133,8 +126,7 @@ class IntFloatModes(Object2D):
                 ### need to revert back from expanded view
                 ### and perform setups to resume the edition
 
-                if event.key in (
-                K_ESCAPE, K_RETURN, K_KP_ENTER):
+                if event.key in (K_ESCAPE, K_RETURN, K_KP_ENTER):
 
                     self.check_expanded_view_reversal()
                     self.resume_editing()
@@ -165,15 +157,15 @@ class IntFloatModes(Object2D):
                     if event.mod & KMOD_CTRL:
                         self.cursor.delete_previous_word()
 
-                    else: self.cursor.delete_previous()
+                    else:
+                        self.cursor.delete_previous()
 
                 elif event.key == K_DELETE:
                     self.cursor.delete_under()
 
                 ### enable expanded view
 
-                elif event.key == K_e \
-                and event.mod & KMOD_CTRL:
+                elif event.key == K_e and event.mod & KMOD_CTRL:
                     self.enable_expanded_view()
 
                 ### if the keydown event has a non-empty
@@ -181,8 +173,7 @@ class IntFloatModes(Object2D):
                 ### is also an allowed char, add such
                 ### character
 
-                elif event.unicode \
-                and  event.unicode in ALLOWED_CHARS:
+                elif event.unicode and event.unicode in ALLOWED_CHARS:
                     self.cursor.add_text(event.unicode)
 
             ### releasing either the left or right button
@@ -204,9 +195,7 @@ class IntFloatModes(Object2D):
 
             elif event.type == VIDEORESIZE:
 
-                self.movement_watch_out_routine = (
-                       self.watch_out_for_movement
-                     )
+                self.movement_watch_out_routine = self.watch_out_for_movement
 
         self.movement_watch_out_routine()
 
@@ -238,7 +227,8 @@ class IntFloatModes(Object2D):
     def enable_expanded_view(self):
         """Expand widget horizontally to provide space."""
         ### check the existence of a 'backups' attribute
-        try: self.backups
+        try:
+            self.backups
 
         ### if it doesn't exist, it means the expanded
         ### view isn't enabled, so we do so
@@ -249,9 +239,9 @@ class IntFloatModes(Object2D):
             ### rect
 
             self.backups = [
-              self.background,
-              self.image,
-              self.rect,
+                self.background,
+                self.image,
+                self.rect,
             ]
 
             ### create a new rect with the same height,
@@ -259,7 +249,7 @@ class IntFloatModes(Object2D):
             ### (except we decrease the width a bit to
             ### provide a nice margin from the boundaries
             ### of the screen)
-            
+
             new_rect = SCREEN_RECT.inflate(-40, 0)
             new_rect.height = self.rect.height
 
@@ -272,10 +262,7 @@ class IntFloatModes(Object2D):
             ### create a new background and image for
             ### the respective attributes
 
-            self.background = render_rect(
-                                *self.rect.size,
-                                self.background_color
-                              )
+            self.background = render_rect(*self.rect.size, self.background_color)
 
             self.image = self.background.copy()
 
@@ -287,27 +274,26 @@ class IntFloatModes(Object2D):
 
         ### otherwise, since it is enabled already we do
         ### nothing
-        else: pass
+        else:
+            pass
 
     def check_expanded_view_reversal(self):
         """Perform setups to exit expanded view if needed."""
         ### check the existence of a 'backups' attribute
-        try: self.backups
+        try:
+            self.backups
 
         ### if such attribute doesn't exists, just pass,
         ### since there's nothing to revert
-        except AttributeError: pass
+        except AttributeError:
+            pass
 
         ### otherwise, restore the backups, delete the
         ### 'backups' attribute and update the image
 
         else:
-            
-            (
-              self.background,
-              self.image,
-              self.rect
-            ) = self.backups
+
+            (self.background, self.image, self.rect) = self.backups
 
             del self.backups
 
@@ -321,7 +307,8 @@ class IntFloatModes(Object2D):
         """
         for event in get_events():
 
-            if event.type == QUIT: raise QuitAppException
+            if event.type == QUIT:
+                raise QuitAppException
 
             ### enable the next mode depending on the event
             ### that happens first
@@ -343,9 +330,7 @@ class IntFloatModes(Object2D):
 
             elif event.type == VIDEORESIZE:
 
-                self.movement_watch_out_routine = (
-                       self.watch_out_for_movement
-                     )
+                self.movement_watch_out_routine = self.watch_out_for_movement
 
         self.movement_watch_out_routine()
 
@@ -367,8 +352,9 @@ class IntFloatModes(Object2D):
         the mouse.
         """
         for event in get_events():
-            
-            if event.type == QUIT: raise QuitAppException
+
+            if event.type == QUIT:
+                raise QuitAppException
 
             ### if a shift key is pressed or released,
             ### change the influence of the shift key
@@ -379,7 +365,7 @@ class IntFloatModes(Object2D):
             ## shift key pressed
 
             elif event.type == KEYDOWN:
-                
+
                 if event.key in (K_LSHIFT, K_RSHIFT):
                     self.change_shift_influence(True)
 
@@ -413,9 +399,7 @@ class IntFloatModes(Object2D):
 
             elif event.type == VIDEORESIZE:
 
-                self.movement_watch_out_routine = (
-                       self.watch_out_for_movement
-                     )
+                self.movement_watch_out_routine = self.watch_out_for_movement
 
         self.movement_watch_out_routine()
 
@@ -448,16 +432,12 @@ class IntFloatModes(Object2D):
         ### however, before we use it, we attenuate it
         ### a bit, to compensate for the massive number
         ### of pixels the mouse can suddenly traverse
-        attenuated_delta_x = (
-          delta_x_in_pixels // MOUSE_ATTENUATION
-        )
+        attenuated_delta_x = delta_x_in_pixels // MOUSE_ATTENUATION
 
         ### we finally calculate the increment in the value
         ### of the widget using the distance we just
         ### calculated multiplied by the current increment
-        value_increment = (
-          attenuated_delta_x * self.increment
-        )
+        value_increment = attenuated_delta_x * self.increment
 
         ### the value of the widget is obtained by summing
         ### the base value with the increment
@@ -480,18 +460,18 @@ class IntFloatModes(Object2D):
         ## position of the mouse dragging origin with the
         ## horizontal distance between the center of the
         ## screen and the mouse position at the beginning
-        ## of this method 
+        ## of this method
 
         if clamped_value == value:
-            self.dragging_origin_x += SCREEN_CENTERX - x_pos 
+            self.dragging_origin_x += SCREEN_CENTERX - x_pos
 
         ## otherwise, set the clamped value as the new
         ## base value and reset the mouse dragging origin
         ## to the center of the screen
 
-        else: 
+        else:
 
-            self.base_value        = clamped_value
+            self.base_value = clamped_value
             self.dragging_origin_x = SCREEN_CENTERX
 
         ### finally center the mouse in the screen
@@ -514,20 +494,16 @@ class IntFloatModes(Object2D):
         ### in the widget
 
         self.increment = (
-
-          self.preciser_drag_increment
-          if shift_pressed
-
-          else self.normal_drag_increment
-
+            self.preciser_drag_increment
+            if shift_pressed
+            else self.normal_drag_increment
         )
 
         ### assign the current value displayed as the
         ### base value which will be the target of the
         ### incrementation/decrementation performed
         ### whenever the mouse moves
-        self.base_value = \
-                     self.evaluate_string(self.cursor.get())
+        self.base_value = self.evaluate_string(self.cursor.get())
 
         ### set the origin of the mouse dragging movement
         ### to the center of the screen
@@ -547,21 +523,21 @@ class IntFloatModes(Object2D):
     def enable_standby_mode(self):
         """Assign behaviours for standby mode."""
         self.handle_input = self.standby_control
-        self.update       = self.update_behind
-        self.draw         = self.standby_draw
+        self.update = self.update_behind
+        self.draw = self.standby_draw
 
     def enable_keyboard_edition_mode(self):
         """Assign behaviours for keyboard edition mode."""
         self.handle_input = self.keyboard_edition_control
-        self.update       = self.keyboard_edition_update
-        self.draw         = self.keyboard_edition_draw
+        self.update = self.keyboard_edition_update
+        self.draw = self.keyboard_edition_draw
 
     def enable_mouse_edition_mode(self):
         """Perform setups to enable mouse edition mode."""
         ### assign specific behaviours
 
-        self.update       = self.update_behind
-        self.draw         = self.mouse_edition_draw
+        self.update = self.update_behind
+        self.draw = self.mouse_edition_draw
         self.handle_input = self.mouse_edition_control
 
         ### disable the mouse visibility
@@ -583,9 +559,7 @@ class IntFloatModes(Object2D):
         ###    incremented/decremented whenever the mouse
         ###    moves
 
-        self.change_shift_influence(
-               get_mods_bitmask() & KMOD_SHIFT
-             )
+        self.change_shift_influence(get_mods_bitmask() & KMOD_SHIFT)
 
     def perform_mouse_edition_exit_setups(self):
         """Restore mouse settings and clean attributes."""
@@ -601,12 +575,10 @@ class IntFloatModes(Object2D):
 
         last_reference_pos = self.get_reference_pos()
 
-        if last_reference_pos == self.reference_pos: return
+        if last_reference_pos == self.reference_pos:
+            return
 
-        diff = (
-          Vector2(last_reference_pos)
-          - self.reference_pos
-        )
+        diff = Vector2(last_reference_pos) - self.reference_pos
 
         self.reference_pos = last_reference_pos
 
@@ -621,6 +593,4 @@ class IntFloatModes(Object2D):
         self.draw()
 
         ##
-        self.movement_watch_out_routine = (
-               empty_function
-             )
+        self.movement_watch_out_routine = empty_function

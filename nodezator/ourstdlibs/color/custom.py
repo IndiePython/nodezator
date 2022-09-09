@@ -9,20 +9,21 @@ in custom ways, according to our own design.
 from .property import get_saturation
 
 from .utils import (
-                              map_colors_by_hue,
-                              sort_colors_by_luma,
-                              validate_hex_color_string,
-                            )
+    map_colors_by_hue,
+    sort_colors_by_luma,
+    validate_hex_color_string,
+)
 
 from .conversion import (
-                                hex_string_to_full_rgb,
-                                full_rgb_to_hex_string,
-                              )
+    hex_string_to_full_rgb,
+    full_rgb_to_hex_string,
+)
 
 from ..iterutils import separate_by_condition
 
 
 ### formatting related functions
+
 
 def get_custom_color_format_info(color_value):
     """Return color format name and length of color value.
@@ -79,29 +80,27 @@ def get_custom_color_format_info(color_value):
     ### a tuple
 
     if isinstance(color_value, tuple):
-        
+
         ## if all items are integers within a valid range
         ## and the length is either 3 or 4, we have a valid
         ## color representation, so we return its info
 
         if all(
-             isinstance(item, int) and 0 <= item <= 255
-             for item in color_value
-           ) and len(color_value) in (3, 4):
+            isinstance(item, int) and 0 <= item <= 255 for item in color_value
+        ) and len(color_value) in (3, 4):
 
-            return ('single_rgb', 1)
+            return ("single_rgb", 1)
 
         ## if all items are all string which pass a custom
         ## validation, we have a valid color representation,
         ## so we return its info
 
         elif all(
-               isinstance(item, str)
-               and validate_hex_color_string(item)
-               for item in color_value
-             ):
+            isinstance(item, str) and validate_hex_color_string(item)
+            for item in color_value
+        ):
 
-            return ('multiple_hex', len(color_value))
+            return ("multiple_hex", len(color_value))
 
         ## if all items are tuples of length 3 or 4 and
         ## their subitems are integers within a valid
@@ -109,27 +108,21 @@ def get_custom_color_format_info(color_value):
         ## representation, so we return its info
 
         elif all(
-
             isinstance(item, tuple)
-
             and len(item) in (3, 4)
-
             and all(
-              isinstance(subitem, int) and 0 <= subitem <= 255
-              for subitem in item
+                isinstance(subitem, int) and 0 <= subitem <= 255 for subitem in item
             )
-
             for item in color_value
-
-        ): return ('multiple_rgb', len(color_value))
+        ):
+            return ("multiple_rgb", len(color_value))
 
     ### perform specific check for when the color value is
     ### a string, returning the info in case we have a
     ### a valid color representation (the test passes)
 
-    elif isinstance(color_value, str) \
-    and validate_hex_color_string(color_value):
-        return ('single_hex', 1)
+    elif isinstance(color_value, str) and validate_hex_color_string(color_value):
+        return ("single_hex", 1)
 
     ### if we reach this point in the function, it means
     ### no "return" statement were reached since no test
@@ -137,17 +130,16 @@ def get_custom_color_format_info(color_value):
     ### representation, we raise a ValueError
 
     raise ValueError(
-            "color value must be either an hex string"
-            " representing rgb(a) values ('#ffffff') or"
-            " a tuple of rgb(a) values as integers"
-            " from 0 to 255; you can also provide a"
-            " tuple with such values, as long as"
-            " you use the same type for all values"
-          )
+        "color value must be either an hex string"
+        " representing rgb(a) values ('#ffffff') or"
+        " a tuple of rgb(a) values as integers"
+        " from 0 to 255; you can also provide a"
+        " tuple with such values, as long as"
+        " you use the same type for all values"
+    )
 
-def custom_format_color(
-      color_value, color_format, alone_when_single
-    ):
+
+def custom_format_color(color_value, color_format, alone_when_single):
     """Return color value converted to specified format.
 
     Parameters
@@ -169,15 +161,11 @@ def custom_format_color(
     ### retrieve the current format name and length of
     ### color value
 
-    format_name, length = (
-
-      get_custom_color_format_info(color_value)
-
-    )
+    format_name, length = get_custom_color_format_info(color_value)
 
     ### make it so the color value is treated as multiple
     ### color values if it represents a single color
-    if 'single' in format_name:
+    if "single" in format_name:
         color_value = (color_value,)
 
     ### if the requested color format is rgb integers but
@@ -185,26 +173,18 @@ def custom_format_color(
     ### by hex strings, convert each item from hex strings
     ### to rgb(a) colors
 
-    if color_format == 'rgb_tuple' and 'hex' in format_name:
-        
-        color_value = tuple(
-           hex_string_to_full_rgb(item)
-           for item in color_value
-        )
+    if color_format == "rgb_tuple" and "hex" in format_name:
+
+        color_value = tuple(hex_string_to_full_rgb(item) for item in color_value)
 
     ### if, otherwise, the requested color format is hex
     ### string, but the format name indicates the colors are
     ### represented by rgb(a) colors (tuples), convert each
     ### string into its respective tuple of rgb(a) values
 
-    elif color_format == 'hex_string' \
-    and 'rgb' in format_name:
+    elif color_format == "hex_string" and "rgb" in format_name:
 
-        color_value = tuple(
-         full_rgb_to_hex_string(item)
-         for item in color_value
-        )
-
+        color_value = tuple(full_rgb_to_hex_string(item) for item in color_value)
 
     ### if the color value represents a single color and
     ### it was requested that the color itself is used when
@@ -220,9 +200,8 @@ def custom_format_color(
 
 ### TODO explain parameters in docstring below
 
-def validate_custom_color_format(
-      color_value, color_format, alone_when_single
-    ):
+
+def validate_custom_color_format(color_value, color_format, alone_when_single):
     """Raise error if value or its type isn't valid.
 
     This is different from the validation provided by
@@ -231,38 +210,35 @@ def validate_custom_color_format(
     representations.
     """
     ### get the format name and length of the color value
-    format_name, length = \
-                    get_custom_color_format_info(color_value)
+    format_name, length = get_custom_color_format_info(color_value)
 
     ### if the color format requested is rgb integers but
     ### the color value isn't or doesn't contain rgb
     ### values, raise a TypeError
 
-    if color_format == 'rgb_tuple' \
-    and 'rgb' not in format_name:
-        
+    if color_format == "rgb_tuple" and "rgb" not in format_name:
+
         raise TypeError(
-                "since the 'color_format' argument"
-                " was set to 'rgb_tuple', individual"
-                " colors must be represented by a tuple"
-                " of integers representing rgb(a) values"
-                " with 0 <= integer <= 255"
-              )
+            "since the 'color_format' argument"
+            " was set to 'rgb_tuple', individual"
+            " colors must be represented by a tuple"
+            " of integers representing rgb(a) values"
+            " with 0 <= integer <= 255"
+        )
 
     ### if the color format requested is hex string but
     ### the color value isn't or doesn't contain hex
     ### strings, raise a TypeError
 
-    elif color_format == 'hex_string' \
-    and 'hex' not in format_name:
+    elif color_format == "hex_string" and "hex" not in format_name:
 
         raise TypeError(
-                "since the 'color_format' was set to"
-                " 'hex_string', individual colors must be"
-                " represented by a string formated as an "
-                " hex color string; for instance, '#ffffff'"
-                " or '#ffffffff'"
-              )
+            "since the 'color_format' was set to"
+            " 'hex_string', individual colors must be"
+            " represented by a string formated as an "
+            " hex color string; for instance, '#ffffff'"
+            " or '#ffffffff'"
+        )
 
     ### if the color value represents a single color
     ### and is requested to use the color itself as
@@ -271,17 +247,13 @@ def validate_custom_color_format(
     ### values (thus containing the 'multiple' substring in
     ### its format_name), raise a ValueError
 
-    if (
-      length == 1
-      and alone_when_single
-      and 'multiple' in format_name
-    ):
+    if length == 1 and alone_when_single and "multiple" in format_name:
 
         raise ValueError(
-                "when color value represents a single"
-                " color, it must be the color itself,"
-                " not a tuple of colors of length 1"
-              )
+            "when color value represents a single"
+            " color, it must be the color itself,"
+            " not a tuple of colors of length 1"
+        )
 
     ### if the color value represents a single color but
     ### otherwise it is requested to not use the color
@@ -291,18 +263,14 @@ def validate_custom_color_format(
     ### containing the 'single' substring in its
     ### format_name), raise a ValueError
 
-    elif (
-      length == 1
-      and not alone_when_single
-      and 'single' in format_name
-    ):
+    elif length == 1 and not alone_when_single and "single" in format_name:
 
         raise ValueError(
-                "when the color value represents a single"
-                " color, it must still be a tuple of"
-                " colors with length 1, not the color"
-                " itself"
-              )
+            "when the color value represents a single"
+            " color, it must still be a tuple of"
+            " colors with length 1, not the color"
+            " itself"
+        )
 
     ### if we reach this point in the function, it means
     ### no error was raised; we return the format name and
@@ -318,6 +286,7 @@ def validate_custom_color_format(
 ### ideal for sorting somewhat large collections of colors
 ### of varying hues (as opposed to small color palletes,
 ### for instance)
+
 
 def get_custom_sorted_colors(colors):
     """Return a list of custom-sorted colors from given one.
@@ -348,7 +317,7 @@ def get_custom_sorted_colors(colors):
     function to use as the key of list.sort or the
     "sorted" built-in function, instead of returning
     a new list as we in this function.
-    
+
     However I think presenting the steps as done in this
     function makes it easier to understand and maintain
     this function.
@@ -364,8 +333,9 @@ def get_custom_sorted_colors(colors):
     ### separate the colors into those which have no
     ### saturation and the ones which have
 
-    no_sat_colors, colors_with_saturation = \
-        separate_by_condition(colors, get_saturation)
+    no_sat_colors, colors_with_saturation = separate_by_condition(
+        colors, get_saturation
+    )
 
     ### sort the colors without saturation by their
     ### luma
@@ -382,8 +352,7 @@ def get_custom_sorted_colors(colors):
     ### the dict is a collections.OrderedDict instance
     ### with items ordered according to how the hue
     ### naturally progresses from 0 to 359
-    hue_name_to_colors = \
-            map_colors_by_hue(colors_with_saturation)
+    hue_name_to_colors = map_colors_by_hue(colors_with_saturation)
 
     ### we are only interested in the values of such
     ### dict (the lists of colors)
@@ -408,6 +377,7 @@ def get_custom_sorted_colors(colors):
 
     ### finally, return such list
     return colors
+
 
 #    Alternative implementation of function above
 #    ============================================
@@ -490,7 +460,7 @@ def get_custom_sorted_colors(colors):
 #        ### which is the lightness
 #
 #        else:
-#            
+#
 #            ### create an enumeration which we'll use as
 #            ### provide of pairs comprised by an arbitrary
 #            ### hue index greater than 1 and the range of
@@ -498,7 +468,7 @@ def get_custom_sorted_colors(colors):
 #            enumeration = enumerate(
 #                            HUE_SETS_MAP.values(), start=1
 #                          )
-#            
+#
 #            ### if the color's hue is within the given range,
 #            ### break out of the "for loop" so that the
 #            ### hue_index variable keep representing the

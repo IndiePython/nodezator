@@ -9,14 +9,14 @@ from functools import partial, partialmethod
 ### third-party imports
 
 from pygame import (
-
-              QUIT,
-
-              KEYUP, K_ESCAPE, K_RETURN, K_KP_ENTER,
-
-              MOUSEBUTTONDOWN, MOUSEBUTTONUP,
-
-            )
+    QUIT,
+    KEYUP,
+    K_ESCAPE,
+    K_RETURN,
+    K_KP_ENTER,
+    MOUSEBUTTONDOWN,
+    MOUSEBUTTONUP,
+)
 
 from pygame.event import get as get_events
 
@@ -32,10 +32,10 @@ from ...config import APP_REFS
 from ...translation import TRANSLATION_HOLDER as t
 
 from ...pygameconstants import (
-                       SCREEN_RECT,
-                       FPS,
-                       maintain_fps,
-                     )
+    SCREEN_RECT,
+    FPS,
+    maintain_fps,
+)
 
 from ...our3rdlibs.behaviour import watch_window_size
 
@@ -51,19 +51,21 @@ from ...surfsman.render import render_rect
 from ...widget.optionmenu.main import OptionMenu
 
 from ...loopman.exception import (
-                         QuitAppException,
-                         SwitchLoopException,
-                       )
+    QuitAppException,
+    SwitchLoopException,
+)
 
 from ...fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
 
 from ...graphman.widget.utils import WIDGET_CLASS_MAP
 
 from ...colorsman.colors import (
-                        BUTTON_FG, BUTTON_BG,
-                        WINDOW_FG, WINDOW_BG,
-                        CONTRAST_LAYER_COLOR,
-                      )
+    BUTTON_FG,
+    BUTTON_BG,
+    WINDOW_FG,
+    WINDOW_BG,
+    CONTRAST_LAYER_COLOR,
+)
 
 from ...dialog import create_and_show_dialog
 
@@ -83,25 +85,22 @@ FONT_HEIGHT = ENC_SANS_BOLD_FONT_HEIGHT
 
 AVAILABLE_WIDGETS = list(WIDGET_CLASS_MAP.keys())
 
-for key in (
-  'default_holder',
-  'option_menu',
-  'option_tray',
-  'sorting_button'
-):
+for key in ("default_holder", "option_menu", "option_tray", "sorting_button"):
     AVAILABLE_WIDGETS.remove(key)
 
 # also add some new ones, which actually are variations
 # of some of the keys we just removed
 
-AVAILABLE_WIDGETS.extend((
-  'option_menu_with_strings',
-  'option_menu_with_intfloats',
-  'option_tray_with_strings',
-  'option_tray_with_intfloats',
-  'sorting_button_with_strings',
-  'sorting_button_with_intfloats',
-))
+AVAILABLE_WIDGETS.extend(
+    (
+        "option_menu_with_strings",
+        "option_menu_with_intfloats",
+        "option_tray_with_strings",
+        "option_tray_with_intfloats",
+        "sorting_button_with_strings",
+        "sorting_button_with_intfloats",
+    )
+)
 
 # also sort the list
 AVAILABLE_WIDGETS.sort()
@@ -110,15 +109,13 @@ AVAILABLE_WIDGETS.sort()
 ### class definition
 
 
-### XXX 
+### XXX
 ### you must decide what to do about the list widget
 ### increasing its height; should the widget picker
 ### contents be scrollable? ponder
 
-class WidgetPicker(
-      Object2D,
-      SubformCreation
-    ):
+
+class WidgetPicker(Object2D, SubformCreation):
     """Form to define new widget and its settings."""
 
     def __init__(self):
@@ -132,36 +129,19 @@ class WidgetPicker(
 
         ### create and store caption
 
-        self.caption = (
-
-          Object2D.from_surface(
-
-                     surface=(
-
-                       render_text(
-
-                         text=(
-                           t
-                           .graph_manager
-                           .widget_picker
-                           .caption
-                         ),
-
-                         font_height = 17,
-                         padding     = 5,
-
-                         foreground_color = WINDOW_FG,
-                         border_thickness = 2,
-                         border_color     = WINDOW_FG,
-
-                       )
-                     ),
-
-                     coordinates_name='topleft',
-                     coordinates_value=(
-                       self.rect.move(10, 10).topleft
-                     ),
-                   )
+        self.caption = Object2D.from_surface(
+            surface=(
+                render_text(
+                    text=(t.graph_manager.widget_picker.caption),
+                    font_height=17,
+                    padding=5,
+                    foreground_color=WINDOW_FG,
+                    border_thickness=2,
+                    border_color=WINDOW_FG,
+                )
+            ),
+            coordinates_name="topleft",
+            coordinates_value=(self.rect.move(10, 10).topleft),
         )
 
         ### build option menu
@@ -174,41 +154,27 @@ class WidgetPicker(
         ### (equivalent to setting the running flag to
         ### False, which triggers the exiting of the
         ### loop)
-        self.exit_form = \
-            partial(setattr, self, "running", False)
+        self.exit_form = partial(setattr, self, "running", False)
 
         ### create and store form related buttons
 
         self.cancel_button = Button.from_text(
-
-                               text=(
-                                 t
-                                 .graph_manager
-                                 .widget_picker
-                                 .cancel
-                               ),
-
-                               padding=5,
-                               foreground_color=BUTTON_FG,
-                               background_color=BUTTON_BG,
-                               depth_finish_thickness=1,
-                               command=self.exit_form,
-
-                             )
+            text=(t.graph_manager.widget_picker.cancel),
+            padding=5,
+            foreground_color=BUTTON_FG,
+            background_color=BUTTON_BG,
+            depth_finish_thickness=1,
+            command=self.exit_form,
+        )
 
         self.submit_button = Button.from_text(
-                               text=(
-                                 t
-                                 .graph_manager
-                                 .widget_picker
-                                 .submit
-                               ),
-                               padding=5,
-                               foreground_color=BUTTON_FG,
-                               background_color=BUTTON_BG,
-                               depth_finish_thickness=1,
-                               command=self.submit_data
-                             )
+            text=(t.graph_manager.widget_picker.submit),
+            padding=5,
+            foreground_color=BUTTON_FG,
+            background_color=BUTTON_BG,
+            depth_finish_thickness=1,
+            command=self.submit_data,
+        )
 
         ### assign subform according to current
         ### kind of widget selected
@@ -219,15 +185,11 @@ class WidgetPicker(
 
         self.center_widget_picker_form()
 
-        APP_REFS.window_resize_setups.append(
-          self.center_widget_picker_form
-        )
+        APP_REFS.window_resize_setups.append(self.center_widget_picker_form)
 
     def center_widget_picker_form(self):
 
-        diff = (
-          Vector2(SCREEN_RECT.center) - self.rect.center
-        )
+        diff = Vector2(SCREEN_RECT.center) - self.rect.center
 
         self.rect.center = SCREEN_RECT.center
 
@@ -243,15 +205,8 @@ class WidgetPicker(
         ### store a semitransparent object the size of
         ### the screen
 
-        self.semitransp_obj = (
-
-          Object2D.from_surface(
-            render_rect(
-              *SCREEN_RECT.size,
-              (*CONTRAST_LAYER_COLOR, 130)
-            )
-          )
-
+        self.semitransp_obj = Object2D.from_surface(
+            render_rect(*SCREEN_RECT.size, (*CONTRAST_LAYER_COLOR, 130))
         )
 
     def build_option_menu(self):
@@ -263,36 +218,24 @@ class WidgetPicker(
 
         ## position related arguments
 
-        coordinates_name  = "topleft"
-        coordinates_value = (
-          self.caption.rect.move(0, 10).bottomleft
-        )
+        coordinates_name = "topleft"
+        coordinates_value = self.caption.rect.move(0, 10).bottomleft
 
         ## command
         command = self.update_widget_subform
 
         ### instantiate option menu
 
-        self.widget_kind_options = (
-
-          OptionMenu(
-
-            loop_holder = self,
-
-            value       = value,
-            options     = AVAILABLE_WIDGETS,
-            max_width   = 230,
-            font_height = FONT_HEIGHT,
-
-            draw_on_window_resize = self.draw,
-
-            coordinates_name  = coordinates_name,
-            coordinates_value = coordinates_value,
-
-            command = command,
-
-          )
-
+        self.widget_kind_options = OptionMenu(
+            loop_holder=self,
+            value=value,
+            options=AVAILABLE_WIDGETS,
+            max_width=230,
+            font_height=FONT_HEIGHT,
+            draw_on_window_resize=self.draw,
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+            command=command,
         )
 
     def build_widget_subforms(self):
@@ -341,29 +284,24 @@ class WidgetPicker(
     def reposition_form_elements(self):
         """Position form buttons below widget subform."""
         ### align subform below widget kind option menu
-        self.widget_subform.rect.topleft = (
-          self
-          .widget_kind_options
-          .rect.move(0, 10).bottomleft
-        )
+        self.widget_subform.rect.topleft = self.widget_kind_options.rect.move(
+            0, 10
+        ).bottomleft
 
         ### align cancel button left with the self.rect
         ### left, with a little offset
-        self.cancel_button.rect.left = \
-                                self.rect.move(5, 0).left
+        self.cancel_button.rect.left = self.rect.move(5, 0).left
 
         ### align cancel button top with the widget subform
         ### bottom, then offset it a little
 
-        self.cancel_button.rect.top = \
-                            self.widget_subform.rect.bottom
+        self.cancel_button.rect.top = self.widget_subform.rect.bottom
         self.cancel_button.rect.y += 10
 
-        ### then align the submit button topleft with the 
+        ### then align the submit button topleft with the
         ### cancel button topright just a little bit more
         ### to the right
-        self.submit_button.rect.topleft = \
-            self.cancel_button.rect.move(10, 0).topright
+        self.submit_button.rect.topleft = self.cancel_button.rect.move(10, 0).topright
 
     def pick_widget(self):
         """Display form; return widget instantiation data."""
@@ -412,7 +350,8 @@ class WidgetPicker(
         """Process events from event queue."""
         for event in get_events():
 
-            if event.type == QUIT: raise QuitAppException
+            if event.type == QUIT:
+                raise QuitAppException
 
             elif event.type == KEYUP:
 
@@ -452,7 +391,7 @@ class WidgetPicker(
             mouse interaction protocol used; here we
             use it to retrieve the position of the
             mouse when the first button was released.
-              
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -463,9 +402,9 @@ class WidgetPicker(
         ### chain all widgets together
 
         other_widgets = (
-          self.widget_kind_options,
-          self.cancel_button,
-          self.submit_button
+            self.widget_kind_options,
+            self.cancel_button,
+            self.submit_button,
         )
 
         objs = chain(self.widget_subform, other_widgets)
@@ -477,28 +416,22 @@ class WidgetPicker(
                 colliding_obj = obj
                 break
 
-        else: colliding_obj = None
+        else:
+            colliding_obj = None
 
         if colliding_obj:
 
-            try: method = getattr(
-                            colliding_obj, method_name
-                          )
+            try:
+                method = getattr(colliding_obj, method_name)
 
-            except AttributeError: pass
-            else: method(event)
+            except AttributeError:
+                pass
+            else:
+                method(event)
 
-    on_mouse_click = (
-      partialmethod(
-        mouse_method_on_collision, "on_mouse_click"
-      )
-    )
+    on_mouse_click = partialmethod(mouse_method_on_collision, "on_mouse_click")
 
-    on_mouse_release = (
-      partialmethod(
-        mouse_method_on_collision, "on_mouse_release"
-      )
-    )
+    on_mouse_release = partialmethod(mouse_method_on_collision, "on_mouse_release")
 
     def submit_data(self):
         """Submit form data.
@@ -520,9 +453,9 @@ class WidgetPicker(
         ### only contain that substring
 
         for substring in (
-          'option_menu',
-          'option_tray',
-          'sorting_button',
+            "option_menu",
+            "option_tray",
+            "sorting_button",
         ):
 
             if widget_name.startswith(substring):
@@ -545,16 +478,19 @@ class WidgetPicker(
 
             ## check whether needed method/attribute
             ## are present
-            try: widget.get, widget.name
+            try:
+                widget.get, widget.name
 
             ## if not, just pass (it is probably just
             ## a widget to display information for the
             ## user, like a label)
-            except AttributeError: pass
+            except AttributeError:
+                pass
 
             ## otherwise, use the tested method/attribute
             ## to fill the widget_kwargs dict
-            else: kwargs[widget.name] = widget.get()
+            else:
+                kwargs[widget.name] = widget.get()
 
         ### if values received are ok, store the
         ### widget_data dict in an attribute and exit the
@@ -564,7 +500,6 @@ class WidgetPicker(
 
             self.widget_data = widget_data
             self.exit_form()
-
 
     def is_widget_data_ok(self, widget_data):
         """Return True if widget data won't cause errors.
@@ -583,7 +518,8 @@ class WidgetPicker(
         kwargs = widget_data["widget_kwargs"]
 
         ### try instantiating the widget
-        try: widget = widget_cls(**kwargs)
+        try:
+            widget = widget_cls(**kwargs)
 
         ### if the instantiation fails, inform the user of
         ### such error using a dialogue
@@ -591,16 +527,17 @@ class WidgetPicker(
         except Exception as err:
 
             msg = (
-              "It seems the values provided for the widget"
-              " aren't valid. If you wish to proceed,"
-              " please, fix the values. A '{}' exception"
-              " with the following message was issued: {}"
+                "It seems the values provided for the widget"
+                " aren't valid. If you wish to proceed,"
+                " please, fix the values. A '{}' exception"
+                " with the following message was issued: {}"
             ).format(type(err).__name__, str(err))
 
             create_and_show_dialog(msg)
 
         ### otherwise return True
-        else: return True
+        else:
+            return True
 
     def update(self):
         """Empty method.
@@ -609,7 +546,7 @@ class WidgetPicker(
         loop holder (that is, it must have handle_input,
         update, and draw methods).
         """
-    
+
     def draw(self):
         """Draw itself and widgets.
 
@@ -621,12 +558,13 @@ class WidgetPicker(
 
         self.widget_kind_options.draw()
 
-        for obj in self.widget_subform: obj.draw()
+        for obj in self.widget_subform:
+            obj.draw()
 
         self.cancel_button.draw()
         self.submit_button.draw()
 
-        update() # pygame.display.update
+        update()  # pygame.display.update
 
 
 pick_widget = WidgetPicker().pick_widget

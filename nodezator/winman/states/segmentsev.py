@@ -24,7 +24,8 @@ class SegmentSeveranceState:
         for event in get_events():
 
             ### QUIT
-            if event.type == QUIT: raise QuitAppException
+            if event.type == QUIT:
+                raise QuitAppException
 
             ### MOUSEBUTTONUP
 
@@ -32,17 +33,12 @@ class SegmentSeveranceState:
 
                 if event.button == 1:
 
-                    (
-                      APP_REFS
-                      .gm
-                      .resume_severing_segments
-                      (event.pos)
-                    )
+                    (APP_REFS.gm.resume_severing_segments(event.pos))
 
             ### KEYUP
 
             elif event.type == KEYUP:
-                
+
                 if event.key == K_ESCAPE:
                     APP_REFS.gm.cancel_severing_segments()
 
@@ -50,8 +46,10 @@ class SegmentSeveranceState:
 
     def segment_severance_update(self):
         """Update method for 'segment_severance' state."""
-        for item in self.labels_update_methods: item()
-        for item in self.switches_update_methods: item()
+        for item in self.labels_update_methods:
+            item()
+        for item in self.switches_update_methods:
+            item()
 
     ### draw
 
@@ -64,10 +62,12 @@ class SegmentSeveranceState:
         APP_REFS.gm.draw()
         APP_REFS.gm.draw_temp_cutting_segment()
 
-        for item in self.labels_drawing_methods: item()
-        for item in self.switches_drawing_methods: item()
+        for item in self.labels_drawing_methods:
+            item()
+        for item in self.switches_drawing_methods:
+            item()
 
         self.separator.draw()
         self.menubar.draw_top_items()
 
-        update() # pygame.display.update
+        update()  # pygame.display.update

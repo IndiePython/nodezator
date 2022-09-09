@@ -2,21 +2,21 @@
 
 ### standard library imports
 
-from pathlib   import Path
+from pathlib import Path
 from functools import partial, partialmethod
 
 
 ### third-paraty imports
 
 from pygame import (
-
-              QUIT,
-
-              KEYUP, K_ESCAPE, K_RETURN, K_KP_ENTER,
-
-              MOUSEBUTTONDOWN, MOUSEBUTTONUP,
-
-            )
+    QUIT,
+    KEYUP,
+    K_ESCAPE,
+    K_RETURN,
+    K_KP_ENTER,
+    MOUSEBUTTONDOWN,
+    MOUSEBUTTONUP,
+)
 
 from pygame.event import get as get_events
 
@@ -32,11 +32,11 @@ from ....config import APP_REFS
 from ....translation import TRANSLATION_HOLDER as t
 
 from ....pygameconstants import (
-                       SCREEN_RECT,
-                       FPS,
-                       maintain_fps,
-                       blit_on_screen,
-                     )
+    SCREEN_RECT,
+    FPS,
+    maintain_fps,
+    blit_on_screen,
+)
 
 
 from ....dialog import create_and_show_dialog
@@ -55,9 +55,9 @@ from ....classes2d.single import Object2D
 from ....classes2d.collections import List2D
 
 from ....fontsman.constants import (
-                          ENC_SANS_BOLD_FONT_HEIGHT,
-                          ENC_SANS_BOLD_FONT_PATH,
-                        )
+    ENC_SANS_BOLD_FONT_HEIGHT,
+    ENC_SANS_BOLD_FONT_PATH,
+)
 
 from ....textman.render import render_text
 from ....textman.label.main import Label
@@ -68,47 +68,45 @@ from ....surfsman.draw import draw_border, draw_depth_finish
 from ....surfsman.render import render_rect
 
 from ....loopman.exception import (
-                         QuitAppException,
-                         SwitchLoopException,
-                       )
+    QuitAppException,
+    SwitchLoopException,
+)
 
 from ....our3rdlibs.iterablewidget.list import ListWidget
 
 from ....widget.stringentry import StringEntry
 
 from ....colorsman.colors import (
-                        CONTRAST_LAYER_COLOR,
-                        BUTTON_FG, BUTTON_BG,
-                        WINDOW_FG, WINDOW_BG,
-                      )
+    CONTRAST_LAYER_COLOR,
+    BUTTON_FG,
+    BUTTON_BG,
+    WINDOW_FG,
+    WINDOW_BG,
+)
 
 
 ### constants
 
 TEXT_SETTINGS = {
-  'font_height'      : ENC_SANS_BOLD_FONT_HEIGHT,
-  'font_path'        : ENC_SANS_BOLD_FONT_PATH,
-  'padding'          : 5,
-  'foreground_color' : WINDOW_FG,
-  'background_color' : WINDOW_BG,
+    "font_height": ENC_SANS_BOLD_FONT_HEIGHT,
+    "font_path": ENC_SANS_BOLD_FONT_PATH,
+    "padding": 5,
+    "foreground_color": WINDOW_FG,
+    "background_color": WINDOW_BG,
 }
 
 BUTTON_SETTINGS = {
-  'font_height'            : ENC_SANS_BOLD_FONT_HEIGHT,
-  'font_path'              : ENC_SANS_BOLD_FONT_PATH,
-  'padding'                : 5,
-  'depth_finish_thickness' : 1,
-  'foreground_color'       : BUTTON_FG,
-  'background_color'       : BUTTON_BG,
+    "font_height": ENC_SANS_BOLD_FONT_HEIGHT,
+    "font_path": ENC_SANS_BOLD_FONT_PATH,
+    "padding": 5,
+    "depth_finish_thickness": 1,
+    "foreground_color": BUTTON_FG,
+    "background_color": BUTTON_BG,
 }
 
-DEFAULT_FILENAME = (
-  t.editing.python_export_form.default_filename
-) + '.py'
+DEFAULT_FILENAME = (t.editing.python_export_form.default_filename) + ".py"
 
-NEW_PYTHON_FILEPATH_CAPTION = (
-  t.editing.python_export_form.pick_new_path
-) + " (.py)"
+NEW_PYTHON_FILEPATH_CAPTION = (t.editing.python_export_form.pick_new_path) + " (.py)"
 
 ### class definition
 
@@ -123,19 +121,15 @@ class PythonExportForm(Object2D):
         self.image = render_rect(540, 270, WINDOW_BG)
         draw_border(self.image)
 
-        self.rect  = self.image.get_rect()
+        self.rect = self.image.get_rect()
 
         ### store a semitransparent object
 
-        self.rect_size_semitransp_obj = \
-          Object2D.from_surface(
-            surface=render_rect(
-                   *self.rect.size,
-                   (*CONTRAST_LAYER_COLOR, 130)
-                 ),
-            coordinates_name='center',
-            coordinates_value=SCREEN_RECT.center
-          )
+        self.rect_size_semitransp_obj = Object2D.from_surface(
+            surface=render_rect(*self.rect.size, (*CONTRAST_LAYER_COLOR, 130)),
+            coordinates_name="center",
+            coordinates_value=SCREEN_RECT.center,
+        )
 
         ### build widgets
         self.build_form_widgets()
@@ -148,15 +142,11 @@ class PythonExportForm(Object2D):
 
         self.center_python_export_form()
 
-        APP_REFS.window_resize_setups.append(
-          self.center_python_export_form
-        )
+        APP_REFS.window_resize_setups.append(self.center_python_export_form)
 
     def center_python_export_form(self):
 
-        diff = (
-          Vector2(SCREEN_RECT.center) - self.rect.center
-        )
+        diff = Vector2(SCREEN_RECT.center) - self.rect.center
 
         ## center rect on screen
         self.rect.center = SCREEN_RECT.center
@@ -175,24 +165,16 @@ class PythonExportForm(Object2D):
 
         ### instantiate a caption for the form
 
-        caption_label = \
-            Object2D.from_surface(
-              surface=render_text(
-                     text=(
-                       t
-                       .editing
-                       .python_export_form
-                       .caption
-                     ),
-                     border_thickness=2,
-                     border_color=(
-                       TEXT_SETTINGS['foreground_color']
-                     ),
-                     **TEXT_SETTINGS,
-                   ),
-              coordinates_name='topleft',
-              coordinates_value=topleft
-            )
+        caption_label = Object2D.from_surface(
+            surface=render_text(
+                text=(t.editing.python_export_form.caption),
+                border_thickness=2,
+                border_color=(TEXT_SETTINGS["foreground_color"]),
+                **TEXT_SETTINGS,
+            ),
+            coordinates_name="topleft",
+            coordinates_value=topleft,
+        )
 
         self.widgets.append(caption_label)
 
@@ -201,24 +183,18 @@ class PythonExportForm(Object2D):
         ### in the versatile list
         topleft = self.widgets.rect.move(0, 20).bottomleft
 
-
         ### instantiate widgets for filepath
 
         ## filepath label
 
         new_file_label = Object2D.from_surface(
-                           surface=render_text(
-                                  text=(
-                                    t
-                                    .editing
-                                    .python_export_form
-                                    .new_python_file
-                                  ) + ":",
-                                  **TEXT_SETTINGS
-                                ),
-                           coordinates_name='topleft',
-                           coordinates_value=topleft
-                         )
+            surface=render_text(
+                text=(t.editing.python_export_form.new_python_file) + ":",
+                **TEXT_SETTINGS,
+            ),
+            coordinates_name="topleft",
+            coordinates_value=topleft,
+        )
 
         self.widgets.append(new_file_label)
 
@@ -226,19 +202,13 @@ class PythonExportForm(Object2D):
 
         midleft = new_file_label.rect.move(5, 0).midright
 
-        change_filepath_button = \
-                        Button.from_text(
-                          text=(
-                            t
-                            .editing
-                            .python_export_form
-                            .change
-                          ),
-                          command=self.change_filepath,
-                          coordinates_name='midleft',
-                          coordinates_value=midleft,
-                          **BUTTON_SETTINGS
-                        )
+        change_filepath_button = Button.from_text(
+            text=(t.editing.python_export_form.change),
+            command=self.change_filepath,
+            coordinates_name="midleft",
+            coordinates_value=midleft,
+            **BUTTON_SETTINGS,
+        )
 
         draw_depth_finish(change_filepath_button.image)
 
@@ -246,21 +216,19 @@ class PythonExportForm(Object2D):
 
         ## chosen filepath label
 
-        midleft = \
-            change_filepath_button.rect.move(5, 0).midright
+        midleft = change_filepath_button.rect.move(5, 0).midright
 
         initial_text = str(Path.home() / DEFAULT_FILENAME)
 
-        self.chosen_filepath_label = \
-          Label(
+        self.chosen_filepath_label = Label(
             text=initial_text,
-            name='python_file_path',
+            name="python_file_path",
             max_width=325,
             ellipsis_at_end=False,
-            coordinates_name='midleft',
+            coordinates_name="midleft",
             coordinates_value=midleft,
-            **TEXT_SETTINGS
-          )
+            **TEXT_SETTINGS,
+        )
 
         self.widgets.append(self.chosen_filepath_label)
 
@@ -274,131 +242,90 @@ class PythonExportForm(Object2D):
 
         ## additional levels label
 
-        additional_levels_label = \
-          Object2D.from_surface(
-                        surface=render_text(
-                               text=(
-                                 t
-                                 .editing
-                                 .python_export_form
-                                 .additional_levels
-                               ),
-                               **TEXT_SETTINGS
-                             ),
-                        coordinates_name='topleft',
-                        coordinates_value=topleft,
-                      )
+        additional_levels_label = Object2D.from_surface(
+            surface=render_text(
+                text=(t.editing.python_export_form.additional_levels), **TEXT_SETTINGS
+            ),
+            coordinates_name="topleft",
+            coordinates_value=topleft,
+        )
 
         self.widgets.append(additional_levels_label)
 
         ## additional levels list widget
 
-        topleft = (
-          additional_levels_label
-          .rect.move(5, 10).bottomleft
-        )
+        topleft = additional_levels_label.rect.move(5, 10).bottomleft
 
-        widget_factory = (
-
-          partial(
+        widget_factory = partial(
             StringEntry,
             loop_holder=self,
-            draw_on_window_resize = self.draw,
+            draw_on_window_resize=self.draw,
             width=330,
-            name='additional_level',
-          )
-
+            name="additional_level",
         )
 
-        default_factory = '.'.__str__
+        default_factory = ".".__str__
 
-        levels_list_widget = (
-
-          ListWidget(
-            name='additional_levels',
+        levels_list_widget = ListWidget(
+            name="additional_levels",
             value=(),
             widget_factory=widget_factory,
             default_factory=default_factory,
-            coordinates_name='topleft',
+            coordinates_name="topleft",
             coordinates_value=topleft,
-          )
-
         )
 
         self.widgets.append(levels_list_widget)
-
 
         ### create and store behaviour for exiting the form
         ### (equivalent to setting the form data to None
         ### and the 'running' flag to False)
 
-        self.cancel = \
-          CallList((
-            partial(setattr, self, 'form_data', None),
-            partial(setattr, self, 'running', False)
-          ))
+        self.cancel = CallList(
+            (
+                partial(setattr, self, "form_data", None),
+                partial(setattr, self, "running", False),
+            )
+        )
 
         ### create, position and store form related buttons
 
         ## submit button
 
-        self.submit_button = (
-
-          Button.from_text(
-                   text=(
-                     t
-                     .editing
-                     .python_export_form
-                     .submit
-                   ),
-                   command=self.submit_form,
-                   **BUTTON_SETTINGS,
-                 )
-
+        self.submit_button = Button.from_text(
+            text=(t.editing.python_export_form.submit),
+            command=self.submit_form,
+            **BUTTON_SETTINGS,
         )
 
         draw_depth_finish(self.submit_button.image)
 
-        self.submit_button.rect.bottomright = (
-          self.rect.move(-10, -10).bottomright
-        )
+        self.submit_button.rect.bottomright = self.rect.move(-10, -10).bottomright
 
         ## cancel button
 
-
-        self.cancel_button = (
-
-          Button.from_text(
-                   text=(
-                     t
-                     .editing
-                     .python_export_form
-                     .cancel
-                   ),
-                   command=self.cancel,
-                   **BUTTON_SETTINGS,
-                 )
+        self.cancel_button = Button.from_text(
+            text=(t.editing.python_export_form.cancel),
+            command=self.cancel,
+            **BUTTON_SETTINGS,
         )
 
         draw_depth_finish(self.cancel_button.image)
 
-        self.cancel_button.rect.midright = (
-          self.submit_button.rect.move(-5, 0).midleft
-        )
+        self.cancel_button.rect.midright = self.submit_button.rect.move(-5, 0).midleft
 
         ## store
 
-        self.widgets.extend(
-            (self.cancel_button, self.submit_button))
+        self.widgets.extend((self.cancel_button, self.submit_button))
 
     def change_filepath(self):
         """Pick new path and update label using it."""
         ### pick new path
 
         paths = create_path(
-                  caption=NEW_PYTHON_FILEPATH_CAPTION,
-                  path_name=DEFAULT_FILENAME,
-                )
+            caption=NEW_PYTHON_FILEPATH_CAPTION,
+            path_name=DEFAULT_FILENAME,
+        )
 
         ### act according to whether paths were given
 
@@ -411,16 +338,15 @@ class PythonExportForm(Object2D):
         ## if no path is given, we return earlier, since
         ## it means the user cancelled setting a new
         ## path
-        else: return
+        else:
+            return
 
         ### if the extension is not allowed, notify the
         ### user and cancel the operation by returning
 
-        if new_filepath.suffix.lower() != '.py':
+        if new_filepath.suffix.lower() != ".py":
 
-            create_and_show_dialog(
-              "File extension must be '.py'"
-            )
+            create_and_show_dialog("File extension must be '.py'")
 
             return
 
@@ -437,10 +363,7 @@ class PythonExportForm(Object2D):
         ### so that screen behind form appears as if
         ### unhighlighted
 
-        blit_on_screen(
-          UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size],
-          (0, 0)
-        )
+        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
 
         ### loop until running attribute is set to False
 
@@ -486,7 +409,8 @@ class PythonExportForm(Object2D):
         for event in get_events():
 
             ### QUIT
-            if event.type == QUIT: raise QuitAppException
+            if event.type == QUIT:
+                raise QuitAppException
 
             ### KEYUP
 
@@ -518,7 +442,8 @@ class PythonExportForm(Object2D):
 
                     ## cancel editing form if mouse left
                     ## button is released out of boundaries
-                    else: self.cancel()
+                    else:
+                        self.cancel()
 
     # XXX in the future, maybe a "Reset" button would be
     # nice
@@ -537,7 +462,7 @@ class PythonExportForm(Object2D):
             mouse interaction protocol used; here we
             use it to retrieve the position of the
             mouse when the first button was released.
-              
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -554,27 +479,23 @@ class PythonExportForm(Object2D):
                 colliding_obj = obj
                 break
 
-        else: return
+        else:
+            return
 
         ### if you manage to find a colliding obj, execute
         ### the requested method on it, passing along the
         ### received event
 
-        try: method = getattr(colliding_obj, method_name)
-        except AttributeError: pass
-        else: method(event)
+        try:
+            method = getattr(colliding_obj, method_name)
+        except AttributeError:
+            pass
+        else:
+            method(event)
 
-    on_mouse_click = (
-      partialmethod(
-        mouse_method_on_collision, "on_mouse_click"
-      )
-    )
+    on_mouse_click = partialmethod(mouse_method_on_collision, "on_mouse_click")
 
-    on_mouse_release = (
-      partialmethod(
-        mouse_method_on_collision, "on_mouse_release"
-      )
-    )
+    on_mouse_release = partialmethod(mouse_method_on_collision, "on_mouse_release")
 
     def submit_form(self):
         """Treat data and, if valid, setup form to exit."""
@@ -586,9 +507,12 @@ class PythonExportForm(Object2D):
 
         for widget in self.widgets:
 
-            try: method = widget.get
-            except AttributeError: continue
-            else: value = method()
+            try:
+                method = widget.get
+            except AttributeError:
+                continue
+            else:
+                value = method()
 
             data[widget.name] = value
 
@@ -605,12 +529,11 @@ class PythonExportForm(Object2D):
         super().draw()
 
         ### draw widgets
-        for widget in self.widgets: widget.draw()
+        for widget in self.widgets:
+            widget.draw()
 
         ### update screen (pygame.display.update)
         update()
 
 
-get_python_exporting_settings = (
-  PythonExportForm().get_python_exporting_settings
-)
+get_python_exporting_settings = PythonExportForm().get_python_exporting_settings

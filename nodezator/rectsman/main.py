@@ -34,10 +34,12 @@ from .cluster import get_clusters
 
 ### "rect" property definition (getter and setter)
 
+
 @property
 def rect_property(self):
     """Return the rects manager obj."""
     return self._rects_man
+
 
 @rect_property.setter
 def rect_property(self, rect):
@@ -52,24 +54,24 @@ def rect_property(self, rect):
     """
     ### copy the rects manager and store its copy in the
     ### same attribute
-    self._rects_man = \
-               RectsManager(self._rects_man._get_all_rects)
+    self._rects_man = RectsManager(self._rects_man._get_all_rects)
 
     ### transfer topleft and size values of the received
     ### rect to the copy
 
-    self._rects_man.size    = rect.size
+    self._rects_man.size = rect.size
     self._rects_man.topleft = rect.topleft
 
 
 ### RectsManager class definition
 
+
 class RectsManager(
-      SpecialMethods,
-      SizePositionMethods,
-      SpatialProperties,
-      PositionSingleRectsMethods,
-    ):
+    SpecialMethods,
+    SizePositionMethods,
+    SpatialProperties,
+    PositionSingleRectsMethods,
+):
     """Controls multiple pygame.Rect instances.
 
     This class has the same basic API of pygame.Rect found
@@ -85,12 +87,12 @@ class RectsManager(
     Check the "doctests" directory to find extensive
     documentation and doctests regarding the usage of
     this class.
-    
+
     Such documentation also has a discussion regarding a
     future/possible redesign, which keeps the pygame.Rect
     API compatibility but has even more flexible behaviour
     and also new ones beyond the pygame.Rect API.
-    
+
     For now, there is only two methods provided which are
     beyond the pygame.Rect API, which is the '__iter__'
     method from the 'special.py' module (even though the
@@ -106,17 +108,14 @@ class RectsManager(
     ### in item assignement (__setitem__ method)
 
     _index_to_property = {
-
-       0: "left",
-       1: "top",
-       2: "width",
-       3: "height",
-
-      -4: "left",
-      -3: "top",
-      -2: "width",
-      -1: "height"
-
+        0: "left",
+        1: "top",
+        2: "width",
+        3: "height",
+        -4: "left",
+        -3: "top",
+        -2: "width",
+        -1: "height",
     }
 
     ### define sample rect for emulating pygame.Rect
@@ -125,7 +124,6 @@ class RectsManager(
 
     ### inject function to work as a method
     get_clusters = get_clusters
-
 
     def __init__(self, get_all_rects):
         """Store callable used to get all rect instances."""
@@ -143,8 +141,8 @@ class RectsManager(
     def union_rect(self):
         """Return union of all rects."""
         ### separate first rect and remaining rects
-        try: first_rect, *remaining_rects = \
-                                    self._get_all_rects()
+        try:
+            first_rect, *remaining_rects = self._get_all_rects()
 
         ### if a value error occurs (when self.get_all_rects
         ### returns no rects), raise a RuntimeError from it
@@ -152,8 +150,7 @@ class RectsManager(
 
         except ValueError as err:
 
-            msg = \
-              "'_get_all_rects' callable returns no rects"
+            msg = "'_get_all_rects' callable returns no rects"
 
             raise RuntimeError(msg) from err
 
@@ -170,18 +167,12 @@ class RectsManager(
         ### named
 
         backup = {
-
-          id(rect) : tuple(
-                       getattr(rect, name)
-                       for name in attr_names
-                     )
-
-          for rect in self._get_all_rects()
-
+            id(rect): tuple(getattr(rect, name) for name in attr_names)
+            for rect in self._get_all_rects()
         }
 
         ### suspend execution by yielding;
-        ### 
+        ###
         ### exceptions occurring in this step are
         ### purposefully not caught;
         yield
@@ -190,8 +181,7 @@ class RectsManager(
 
         for rect in self._get_all_rects():
 
-            for name, value \
-            in zip(attr_names, backup[id(rect)]):
+            for name, value in zip(attr_names, backup[id(rect)]):
                 setattr(rect, name, value)
 
     ### some pygame.Rect API methods
@@ -228,7 +218,8 @@ class RectsManager(
         discussion about such behaviours in the extensive
         documentation referenced in this class' docstring.
         """
-        for rect in self._get_all_rects(): rect.normalize()
+        for rect in self._get_all_rects():
+            rect.normalize()
 
     ## conditional tests
 
@@ -317,14 +308,14 @@ class RectsManager(
         the elements to be tested for collision. The second
         argument is optional and must be a boolean or integer
         indicating True or False.
-        
+
         Passing False or omitting the argument altogether,
         makes it so the keys in the dict are used for
         collision testing (they'll probably be tuples, since
         keys in dictionaries must be hashable, which lists
         and pygame.Rect instances are not, they can only be
         used as values).
-        
+
         If you pass True instead, the opposite happens, that
         is, the values of the dict are used for collision
         testing.
@@ -344,29 +335,23 @@ class RectsManager(
         the elements to be tested for collision. The second
         argument is optional and must be a boolean or integer
         indicating True or False.
-        
+
         Passing False or omitting the argument altogether,
         makes it so the keys in the dict are used for
         collision testing (they'll probably be tuples, since
         keys in dictionaries must be hashable, which lists
         and pygame.Rect instances are not, they can only be
         used as values).
-        
+
         If you pass True instead, the opposite happens, that
         is, the values of the dict are used for collision
         testing.
         """
         return self.union_rect.collidedictall(*args)
 
-
     ### extra non-destructive operations
 
-    def union_from_temporary_operation(
-          self,
-          in_place_method_name,
-          *args,
-          **kwargs
-        ):
+    def union_from_temporary_operation(self, in_place_method_name, *args, **kwargs):
         """Return union rect as if rects were changed.
 
         That is, as if an "in place" operation were
@@ -375,36 +360,25 @@ class RectsManager(
         ### while keeping original position and size of
         ### each rect...
 
-        with self.keep_rects_attrs('topleft', 'size'):
+        with self.keep_rects_attrs("topleft", "size"):
 
             ### execute 'in place' method
 
-            getattr(
-              self, in_place_method_name
-            )(*args, **kwargs)
+            getattr(self, in_place_method_name)(*args, **kwargs)
 
             ### return union rect of rects
             return self.union_rect
 
-    snap_rects = partialmethod(
-                   union_from_temporary_operation,
-                   'snap_rects_ip'
-                 )
+    snap_rects = partialmethod(union_from_temporary_operation, "snap_rects_ip")
 
-    snap_rects_intermittently = \
-      partialmethod(
-        union_from_temporary_operation,
-        'snap_rects_intermittently_ip'
-      )
+    snap_rects_intermittently = partialmethod(
+        union_from_temporary_operation, "snap_rects_intermittently_ip"
+    )
 
-    lay_rects_like_table = \
-      partialmethod(
-        union_from_temporary_operation,
-        'lay_rects_like_table_ip'
-      )
+    lay_rects_like_table = partialmethod(
+        union_from_temporary_operation, "lay_rects_like_table_ip"
+    )
 
-    snap_rects_to_points = \
-      partialmethod(
-        union_from_temporary_operation,
-        'snap_rects_to_points_ip'
-      )
+    snap_rects_to_points = partialmethod(
+        union_from_temporary_operation, "snap_rects_to_points_ip"
+    )

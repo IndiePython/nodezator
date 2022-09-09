@@ -74,26 +74,22 @@ working directly with transparency in .png files.
 from ..imagesman.cache import IMAGE_SURFS_DB
 
 from .utils import (
-                       size_from_alpha_values,
-                       unit_from_full_alpha_values,
-                       full_from_unit_alpha_values,
-                       full_alpha_values_from_surface,
-                     )
+    size_from_alpha_values,
+    unit_from_full_alpha_values,
+    full_from_unit_alpha_values,
+    full_alpha_values_from_surface,
+)
 
 ## class extensions
 
 from .basicop import AlphaMaskBasicOperations
-from .masksop import (
-                         AlphaMaskOperationsBetweenMasks
-                       )
+from .masksop import AlphaMaskOperationsBetweenMasks
 
 
 ### class definition
 
-class AlphaMask(
-      AlphaMaskBasicOperations,
-      AlphaMaskOperationsBetweenMasks
-    ):
+
+class AlphaMask(AlphaMaskBasicOperations, AlphaMaskOperationsBetweenMasks):
     """Stores alpha mask data and provides operations."""
 
     ### methods to support initialization
@@ -115,9 +111,7 @@ class AlphaMask(
         ## XXX profiling note: this should be pretty quick;
         ## would it be quicker though if we calculate this
         ## ourselves?
-        self.bounding_rect = self.get_colored_surface(
-                                    (0, 0, 0)
-                                  ).get_bounding_rect()
+        self.bounding_rect = self.get_colored_surface((0, 0, 0)).get_bounding_rect()
 
     @classmethod
     def from_image_name(cls, png_image_name):
@@ -140,13 +134,7 @@ class AlphaMask(
         ### on, so the values of the alpha channel are
         ### available
 
-        return cls.from_surface(
-                     (
-                       IMAGE_SURFS_DB
-                       [png_image_name]
-                       [{'use_alpha': True}]
-                     )
-                   )
+        return cls.from_surface((IMAGE_SURFS_DB[png_image_name][{"use_alpha": True}]))
 
     @classmethod
     def from_surface(cls, surf):
@@ -158,9 +146,7 @@ class AlphaMask(
             surface from which to obtain the alpha values
             for the mask.
         """
-        return cls.from_full_alpha_values(
-                     full_alpha_values_from_surface(surf)
-                   )
+        return cls.from_full_alpha_values(full_alpha_values_from_surface(surf))
 
     @classmethod
     def from_full_alpha_values(cls, full_alpha_values):
@@ -171,8 +157,7 @@ class AlphaMask(
         ### to 1.0, that is, fully transparent to fully
         ### opaque)
 
-        unit_alpha_values = \
-              unit_from_full_alpha_values(full_alpha_values)
+        unit_alpha_values = unit_from_full_alpha_values(full_alpha_values)
 
         ### pass both lists of lists representing alpha
         ### values in different formats to the class
@@ -186,8 +171,7 @@ class AlphaMask(
         ### lists, but this time with the items converted
         ### to integers in the range(256), where 0 means
         ### full transparency and 255 full opacity
-        full_alpha_values = \
-        full_from_unit_alpha_values(unit_alpha_values)
+        full_alpha_values = full_from_unit_alpha_values(unit_alpha_values)
 
         ### pass both lists of lists representing alpha
         ### values in different formats to the class

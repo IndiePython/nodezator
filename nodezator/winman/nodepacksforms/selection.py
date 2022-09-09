@@ -10,12 +10,14 @@ from functools import partial, partialmethod
 ### third-party imports
 
 from pygame import (
-
-              QUIT,
-              MOUSEBUTTONDOWN, MOUSEBUTTONUP,
-              KEYUP, K_ESCAPE, K_RETURN, K_KP_ENTER,
-
-            )
+    QUIT,
+    MOUSEBUTTONDOWN,
+    MOUSEBUTTONUP,
+    KEYUP,
+    K_ESCAPE,
+    K_RETURN,
+    K_KP_ENTER,
+)
 
 from pygame.event import get as get_events
 
@@ -31,11 +33,11 @@ from ...config import APP_REFS
 from ...translation import TRANSLATION_HOLDER as t
 
 from ...pygameconstants import (
-                       SCREEN_RECT,
-                       FPS,
-                       maintain_fps,
-                       blit_on_screen,
-                     )
+    SCREEN_RECT,
+    FPS,
+    maintain_fps,
+    blit_on_screen,
+)
 
 from ...appinfo import NATIVE_FILE_EXTENSION
 
@@ -57,9 +59,9 @@ from ...classes2d.single import Object2D
 from ...classes2d.collections import List2D
 
 from ...fontsman.constants import (
-                          ENC_SANS_BOLD_FONT_HEIGHT,
-                          ENC_SANS_BOLD_FONT_PATH,
-                        )
+    ENC_SANS_BOLD_FONT_HEIGHT,
+    ENC_SANS_BOLD_FONT_PATH,
+)
 
 from ...textman.render import render_text
 from ...textman.label.main import Label
@@ -70,17 +72,19 @@ from ...surfsman.draw import draw_border, draw_depth_finish
 from ...surfsman.render import render_rect
 
 from ...loopman.exception import (
-                         QuitAppException,
-                         SwitchLoopException,
-                       )
+    QuitAppException,
+    SwitchLoopException,
+)
 
 from ...graphman.exception import NODE_PACK_ERRORS
 
 from ...colorsman.colors import (
-                        CONTRAST_LAYER_COLOR,
-                        WINDOW_FG, WINDOW_BG,
-                        BUTTON_FG, BUTTON_BG,
-                      )
+    CONTRAST_LAYER_COLOR,
+    WINDOW_FG,
+    WINDOW_BG,
+    BUTTON_FG,
+    BUTTON_BG,
+)
 
 
 ## widgets
@@ -93,38 +97,33 @@ from ...widget.pathpreview.path import PathPreview
 ### constants
 
 TEXT_SETTINGS = {
-  'font_height'      : ENC_SANS_BOLD_FONT_HEIGHT,
-  'font_path'        : ENC_SANS_BOLD_FONT_PATH,
-  'padding'          : 5,
-  'foreground_color' : WINDOW_FG,
-  'background_color' : WINDOW_BG
+    "font_height": ENC_SANS_BOLD_FONT_HEIGHT,
+    "font_path": ENC_SANS_BOLD_FONT_PATH,
+    "padding": 5,
+    "foreground_color": WINDOW_FG,
+    "background_color": WINDOW_BG,
 }
 
 BUTTON_SETTINGS = {
-  'font_height'            : ENC_SANS_BOLD_FONT_HEIGHT,
-  'font_path'              : ENC_SANS_BOLD_FONT_PATH,
-  'padding'                : 5,
-  'depth_finish_thickness' : 1,
-  'foreground_color'       : BUTTON_FG,
-  'background_color'       : BUTTON_BG
+    "font_height": ENC_SANS_BOLD_FONT_HEIGHT,
+    "font_path": ENC_SANS_BOLD_FONT_PATH,
+    "padding": 5,
+    "depth_finish_thickness": 1,
+    "foreground_color": BUTTON_FG,
+    "background_color": BUTTON_BG,
 }
 
 FILE_MANAGER_CAPTION = (
-  t
-  .editing
-  .change_node_packs_on_any_file_form
-  .file_manager_caption
+    t.editing.change_node_packs_on_any_file_form.file_manager_caption
 ).format(NATIVE_FILE_EXTENSION)
 
-FORM_CAPTION = (
-  t
-  .editing
-  .change_node_packs_on_any_file_form
-  .form_caption
-).format(NATIVE_FILE_EXTENSION)
+FORM_CAPTION = (t.editing.change_node_packs_on_any_file_form.form_caption).format(
+    NATIVE_FILE_EXTENSION
+)
 
 
 ### class definition
+
 
 class NodePacksSelectionChangeForm(Object2D):
     """Form for changing node packs on any file."""
@@ -136,25 +135,18 @@ class NodePacksSelectionChangeForm(Object2D):
         self.image = render_rect(500, 205, WINDOW_BG)
         draw_border(self.image)
 
-        self.rect  = self.image.get_rect()
+        self.rect = self.image.get_rect()
 
         ### store a semitransparent object
 
-        self.rect_size_semitransp_obj = (
-
-          Object2D.from_surface(
-            surface=render_rect(
-                   *self.rect.size,
-                   (*CONTRAST_LAYER_COLOR, 130)
-                 ),
-            coordinates_name='center',
-            coordinates_value=SCREEN_RECT.center
-          )
-
+        self.rect_size_semitransp_obj = Object2D.from_surface(
+            surface=render_rect(*self.rect.size, (*CONTRAST_LAYER_COLOR, 130)),
+            coordinates_name="center",
+            coordinates_value=SCREEN_RECT.center,
         )
 
         ###
-        self.chosen_filepath = Path('.')
+        self.chosen_filepath = Path(".")
 
         ### build widgets
         self.build_form_widgets()
@@ -167,15 +159,11 @@ class NodePacksSelectionChangeForm(Object2D):
 
         self.center_pack_selection_form()
 
-        APP_REFS.window_resize_setups.append(
-          self.center_pack_selection_form
-        )
+        APP_REFS.window_resize_setups.append(self.center_pack_selection_form)
 
     def center_pack_selection_form(self):
 
-        diff = (
-          Vector2(SCREEN_RECT.center) - self.rect.center
-        )
+        diff = Vector2(SCREEN_RECT.center) - self.rect.center
 
         self.rect.center = SCREEN_RECT.center
 
@@ -192,30 +180,17 @@ class NodePacksSelectionChangeForm(Object2D):
 
         ### instantiate a caption for the form
 
-        caption_label = (
-
-          Object2D.from_surface(
-
+        caption_label = Object2D.from_surface(
             surface=(
-
-              render_text(
-
-                text=FORM_CAPTION,
-
-                border_thickness=2,
-                border_color=(
-                  TEXT_SETTINGS['foreground_color']
-                ),
-                **TEXT_SETTINGS
-              )
-
+                render_text(
+                    text=FORM_CAPTION,
+                    border_thickness=2,
+                    border_color=(TEXT_SETTINGS["foreground_color"]),
+                    **TEXT_SETTINGS,
+                )
             ),
-
-            coordinates_name='topleft',
-            coordinates_value=topleft
-
-          )
-
+            coordinates_name="topleft",
+            coordinates_value=topleft,
         )
 
         self.widgets.append(caption_label)
@@ -225,56 +200,35 @@ class NodePacksSelectionChangeForm(Object2D):
         ### in the versatile list
         topleft = self.widgets.rect.move(0, 20).bottomleft
 
-
         ### instantiate widgets for filepath
 
         ## filepath choose button
 
-        choose_filepath_button = (
-          Object2D.from_surface(
+        choose_filepath_button = Object2D.from_surface(
             surface=render_text(
-                   text=(
-                     t
-                     .editing
-                     .change_node_packs_on_any_file_form
-                     .choose_filepath
-                   ),
-                   **BUTTON_SETTINGS
-                 ),
-            coordinates_name='topleft',
+                text=(t.editing.change_node_packs_on_any_file_form.choose_filepath),
+                **BUTTON_SETTINGS,
+            ),
+            coordinates_name="topleft",
             coordinates_value=topleft,
-          )
         )
 
-        choose_filepath_button.on_mouse_release = (
-          self.choose_filepath
-        )
+        choose_filepath_button.on_mouse_release = self.choose_filepath
 
         self.widgets.append(choose_filepath_button)
 
         ## chosen filepath label
 
-        midleft = (
-          choose_filepath_button.rect.move(5, 0).midright
-        )
+        midleft = choose_filepath_button.rect.move(5, 0).midright
 
-        self.chosen_filepath_label = (
-
-          Label(
-            text=(
-              t
-              .editing
-              .change_node_packs_on_any_file_form
-              .no_filepath_chosen
-            ),
-            name='filepath',
+        self.chosen_filepath_label = Label(
+            text=(t.editing.change_node_packs_on_any_file_form.no_filepath_chosen),
+            name="filepath",
             max_width=345,
             ellipsis_at_end=False,
-            coordinates_name='midleft',
+            coordinates_name="midleft",
             coordinates_value=midleft,
-            **TEXT_SETTINGS
-          )
-
+            **TEXT_SETTINGS,
         )
 
         self.widgets.append(self.chosen_filepath_label)
@@ -284,74 +238,48 @@ class NodePacksSelectionChangeForm(Object2D):
         ### in the versatile list
         topleft = self.widgets.rect.move(0, 15).bottomleft
 
-
         ### instantiate widgets for nodes directory
 
         ## nodes directory label
 
-        node_packs_label = (
-          Object2D.from_surface(
+        node_packs_label = Object2D.from_surface(
             surface=(
-              render_text(
-                text=(
-                  t
-                  .editing
-                  .change_node_packs_on_any_file_form
-                  .node_packs
-                ) + ":",
-                **TEXT_SETTINGS
-              )
+                render_text(
+                    text=(t.editing.change_node_packs_on_any_file_form.node_packs)
+                    + ":",
+                    **TEXT_SETTINGS,
+                )
             ),
-            coordinates_name='topleft',
+            coordinates_name="topleft",
             coordinates_value=topleft,
-          )
         )
 
         self.widgets.append(node_packs_label)
 
         ## node packs checkbutton
 
-        topleft = (
-          node_packs_label.rect.move(5, 0).topright
-        )
+        topleft = node_packs_label.rect.move(5, 0).topright
 
-        self.node_packs_checkbutton = (
-
-          CheckButton(
-
-            value   = False,
-            command = self.toggle_node_packs_preview,
-
-            coordinates_name  = 'topleft',
-            coordinates_value = topleft,
-
-          )
-
+        self.node_packs_checkbutton = CheckButton(
+            value=False,
+            command=self.toggle_node_packs_preview,
+            coordinates_name="topleft",
+            coordinates_value=topleft,
         )
 
         self.widgets.append(self.node_packs_checkbutton)
 
         ## node packs path preview button
 
-        topleft = (
-          self
-          .node_packs_checkbutton
-          .rect
-          .move(5, 0)
-          .topright
-        )
+        topleft = self.node_packs_checkbutton.rect.move(5, 0).topright
 
-        self.node_packs_pathpreview = (
-
-          PathPreview(
-            value = '.',
-            name = 'node_packs',
-            loop_holder = self,
-            draw_on_window_resize = self.draw,
-            coordinates_name  = 'topleft',
-            coordinates_value = topleft
-          )
-
+        self.node_packs_pathpreview = PathPreview(
+            value=".",
+            name="node_packs",
+            loop_holder=self,
+            draw_on_window_resize=self.draw,
+            coordinates_name="topleft",
+            coordinates_value=topleft,
         )
 
         self.widgets.append(self.node_packs_pathpreview)
@@ -360,72 +288,42 @@ class NodePacksSelectionChangeForm(Object2D):
         ### edition (equivalent to setting the form data to
         ### None and setting the 'running' flag to False)
 
-        self.cancel = (
-
-          CallList((
-            partial(setattr, self, 'form_data', None),
-            partial(setattr, self, 'running', False)
-          ))
-
+        self.cancel = CallList(
+            (
+                partial(setattr, self, "form_data", None),
+                partial(setattr, self, "running", False),
+            )
         )
 
         ### create, position and store form related buttons
 
         ## submit button
 
-        self.submit_button = (
-
-          Button.from_text(
-
-            text=(
-              t
-              .editing
-              .change_node_packs_on_any_file_form
-              .submit
-            ),
+        self.submit_button = Button.from_text(
+            text=(t.editing.change_node_packs_on_any_file_form.submit),
             command=self.submit_form,
             **BUTTON_SETTINGS,
-          )
-
         )
 
         draw_depth_finish(self.submit_button.image)
 
-        self.submit_button.rect.bottomright = (
-          self.rect.move(-10, -10).bottomright
-        )
+        self.submit_button.rect.bottomright = self.rect.move(-10, -10).bottomright
 
         ## cancel button
 
-        self.cancel_button = (
-
-          Button.from_text(
-
-            text=(
-              t
-              .editing
-              .change_node_packs_on_any_file_form
-              .cancel
-            ),
+        self.cancel_button = Button.from_text(
+            text=(t.editing.change_node_packs_on_any_file_form.cancel),
             command=self.cancel,
             **BUTTON_SETTINGS,
-
-          )
-
         )
 
         draw_depth_finish(self.cancel_button.image)
 
-        self.cancel_button.rect.midright = (
-          self.submit_button.rect.move(-5, 0).midleft
-        )
+        self.cancel_button.rect.midright = self.submit_button.rect.move(-5, 0).midleft
 
         ## store
 
-        self.widgets.extend(
-          (self.cancel_button, self.submit_button)
-        )
-
+        self.widgets.extend((self.cancel_button, self.submit_button))
 
     def choose_filepath(self, event):
         """Pick new path and update label using it.
@@ -436,7 +334,7 @@ class NodePacksSelectionChangeForm(Object2D):
                type)
           although not used, it is required in order to
           comply with protocol used;
-              
+
           Check pygame.event module documentation on
           pygame website for more info about this event
           object.
@@ -454,11 +352,7 @@ class NodePacksSelectionChangeForm(Object2D):
 
             self.chosen_filepath = paths[0]
 
-            self.chosen_filepath_label.set(
-
-              str(self.chosen_filepath)
-
-            )
+            self.chosen_filepath_label.set(str(self.chosen_filepath))
 
     def toggle_node_packs_preview(self):
         node_packs_preview = self.node_packs_pathpreview
@@ -478,10 +372,7 @@ class NodePacksSelectionChangeForm(Object2D):
         ### draw semi-transparent object so screen behind
         ### form appears as if unhighlighted
 
-        blit_on_screen(
-          UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size],
-          (0, 0)
-        )
+        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
 
         ### loop until running attribute is set to False
 
@@ -522,7 +413,8 @@ class NodePacksSelectionChangeForm(Object2D):
         """Process events from event queue."""
         for event in get_events():
 
-            if event.type == QUIT: raise QuitAppException
+            if event.type == QUIT:
+                raise QuitAppException
 
             elif event.type == KEYUP:
 
@@ -563,7 +455,7 @@ class NodePacksSelectionChangeForm(Object2D):
             mouse interaction protocol used; here we
             use it to retrieve the position of the
             mouse when the first button was released.
-              
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -579,28 +471,28 @@ class NodePacksSelectionChangeForm(Object2D):
                 colliding_obj = obj
                 break
 
-        else: return
+        else:
+            return
 
         ### if you manage to find a colliding obj, execute
         ### the requested method on it, passing along the
         ### received event
 
-        try: method = getattr(colliding_obj, method_name)
-        except AttributeError: pass
-        else: method(event)
+        try:
+            method = getattr(colliding_obj, method_name)
+        except AttributeError:
+            pass
+        else:
+            method(event)
 
-    on_mouse_click = (
-      partialmethod(
+    on_mouse_click = partialmethod(
         mouse_method_on_collision,
-        'on_mouse_click',
-      )
+        "on_mouse_click",
     )
 
-    on_mouse_release = (
-      partialmethod(
+    on_mouse_release = partialmethod(
         mouse_method_on_collision,
-        'on_mouse_release',
-      )
+        "on_mouse_release",
     )
 
     def submit_form(self):
@@ -608,12 +500,13 @@ class NodePacksSelectionChangeForm(Object2D):
         if not self.chosen_filepath.is_file():
             return
 
-        elif not self.chosen_filepath.suffix == '.ndz':
+        elif not self.chosen_filepath.suffix == ".ndz":
             return
 
         if not self.node_packs_checkbutton.get():
 
-            try: data = load_pyl(self.chosen_filepath)
+            try:
+                data = load_pyl(self.chosen_filepath)
 
             except Exception as err:
 
@@ -622,30 +515,23 @@ class NodePacksSelectionChangeForm(Object2D):
 
             else:
 
-                try: del data['node_packs']
-                except KeyError: pass
+                try:
+                    del data["node_packs"]
+                except KeyError:
+                    pass
 
                 save_pyl(data, self.chosen_filepath)
 
         else:
-            
+
             value = self.node_packs_pathpreview.get()
 
-            paths = (
+            paths = [value] if isinstance(value, str) else value
 
-              [value]
-              if isinstance(value, str)
+            paths = [Path(path) for path in paths]
 
-              else value
-
-            )
-            
-            paths = [
-              Path(path)
-              for path in paths
-            ]
-
-            try: check_node_packs(paths)
+            try:
+                check_node_packs(paths)
 
             except NODE_PACK_ERRORS as err:
 
@@ -654,7 +540,8 @@ class NodePacksSelectionChangeForm(Object2D):
 
             else:
 
-                try: data = load_pyl(self.chosen_filepath)
+                try:
+                    data = load_pyl(self.chosen_filepath)
 
                 except Exception as err:
 
@@ -665,63 +552,45 @@ class NodePacksSelectionChangeForm(Object2D):
 
                     ###
 
-                    current_value = (
-                      data.get('node_packs', [])
-                    )
+                    current_value = data.get("node_packs", [])
 
                     if isinstance(current_value, str):
                         current_value = [current_value]
 
-                    current = [
-                      Path(item) for item in current_value
-                    ]
+                    current = [Path(item) for item in current_value]
 
-                    current_names = {
-                      path.name
-                      for path in current
-                    }
+                    current_names = {path.name for path in current}
 
                     removed_names = {
-
-                      path.name
-                      for path in paths
-                      if path.name not in current_names
-
+                        path.name for path in paths if path.name not in current_names
                     }
 
-                    nodes_data = data.get('nodes', {})
+                    nodes_data = data.get("nodes", {})
 
                     orphaned_nodes_ids = []
                     not_removable_packs = set()
 
-                    for node_id, node_data in (
-                      nodes_data.items()
-                    ):
+                    for node_id, node_data in nodes_data.items():
 
-                        if 'script_id' not in node_data:
+                        if "script_id" not in node_data:
                             continue
 
-                        node_pack_name = (
-                          node_data['script_id'][0]
-                        )
+                        node_pack_name = node_data["script_id"][0]
 
                         if node_pack_name in removed_names:
 
-                            (
-                              not_removable_packs
-                              .add(node_pack_name)
-                            )
+                            (not_removable_packs.add(node_pack_name))
 
                         orphaned_nodes_ids.append(node_id)
 
                     if orphaned_nodes_ids:
 
                         message = (
-                           "before removing packs named"
-                          f" {not_removable_packs}, you"
-                           " must remove the nodes of ids"
-                          f" {orphaned_nodes_ids}, which"
-                           " belong to those node packs"
+                            "before removing packs named"
+                            f" {not_removable_packs}, you"
+                            " must remove the nodes of ids"
+                            f" {orphaned_nodes_ids}, which"
+                            " belong to those node packs"
                         )
 
                         create_and_show_dialog(message)
@@ -730,15 +599,12 @@ class NodePacksSelectionChangeForm(Object2D):
                     ###
 
                     value = (
-
-                      str(paths[0])
-                      if len(paths) == 1
-
-                      else [str(path) for path in paths]
-
+                        str(paths[0])
+                        if len(paths) == 1
+                        else [str(path) for path in paths]
                     )
 
-                    data['node_packs'] = value
+                    data["node_packs"] = value
 
                     save_pyl(data, self.chosen_filepath)
 
@@ -762,6 +628,5 @@ class NodePacksSelectionChangeForm(Object2D):
 
 
 present_change_node_packs_form = (
-  NodePacksSelectionChangeForm()
-  .present_change_node_packs_form
+    NodePacksSelectionChangeForm().present_change_node_packs_form
 )

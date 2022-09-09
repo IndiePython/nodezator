@@ -9,16 +9,18 @@ from itertools import chain
 ### third-party imports
 
 from pygame import (
-
-              QUIT,
-
-              KEYUP, K_ESCAPE, K_RETURN, K_KP_ENTER,
-              K_LEFT, K_a, K_RIGHT, K_d,
-
-              MOUSEBUTTONDOWN,
-              MOUSEBUTTONUP,
-
-            )
+    QUIT,
+    KEYUP,
+    K_ESCAPE,
+    K_RETURN,
+    K_KP_ENTER,
+    K_LEFT,
+    K_a,
+    K_RIGHT,
+    K_d,
+    MOUSEBUTTONDOWN,
+    MOUSEBUTTONUP,
+)
 
 from pygame.math import Vector2
 
@@ -27,14 +29,14 @@ from pygame.event import get as get_events
 from pygame.key import get_pressed as get_pressed_keys
 
 from pygame.mouse import (
-                    get_pos     as get_mouse_pos,
-                    set_visible as set_mouse_visibility,
-                  )
+    get_pos as get_mouse_pos,
+    set_visible as set_mouse_visibility,
+)
 
 from pygame.draw import (
-                   line as draw_line,
-                   rect as draw_rect,
-                 )
+    line as draw_line,
+    rect as draw_rect,
+)
 
 from pygame.display import update
 
@@ -59,6 +61,7 @@ SCROLL_X_SPEED = 20
 
 ### utility function
 
+
 def draw_vertical_lines(image, offset_rect):
     """Draw vertical lines above and below given rect.
 
@@ -76,32 +79,20 @@ def draw_vertical_lines(image, offset_rect):
     ### of the rect
 
     top, centerx, bottom = (
-
-      getattr(offset_rect, attr_name)
-
-      for attr_name
-      in ('top', 'centerx', 'bottom')
-
+        getattr(offset_rect, attr_name) for attr_name in ("top", "centerx", "bottom")
     )
 
     ### iterate over values representing the starting and
     ### ending values of the y coordinate of the lines
     ### to be draw, drawing such lines
 
-    for y_start, y_end in (
-      (top - 1, top - 20), (bottom + 1, bottom + 20)
-    ):
+    for y_start, y_end in ((top - 1, top - 20), (bottom + 1, bottom + 20)):
 
-        draw_line(
-          image,
-          ITEM_OUTLINE,
-          (centerx, y_start),
-          (centerx, y_end),
-          2
-        )
+        draw_line(image, ITEM_OUTLINE, (centerx, y_start), (centerx, y_end), 2)
 
 
 ### class definition
+
 
 class SortingEditorModes(Object2D):
     """Mode-related operations for the SortingEditor."""
@@ -109,10 +100,11 @@ class SortingEditorModes(Object2D):
     def normal_mode_handle_events(self):
         """Event handling for the normal mode."""
         for event in get_events():
-            
+
             ### raise custom exception if user tries to
             ### quit the app
-            if event.type == QUIT: raise QuitAppException
+            if event.type == QUIT:
+                raise QuitAppException
 
             ### KEYUP
 
@@ -129,7 +121,7 @@ class SortingEditorModes(Object2D):
                 if event.key == K_ESCAPE:
 
                     self.running = False
-                    self.cancel  = True
+                    self.cancel = True
 
                 ## if one of the enter keys are release,
                 ## though, we set the running flag off,
@@ -168,7 +160,7 @@ class SortingEditorModes(Object2D):
             We use it to retrieve the mouse position when
             the mouse left button is pressed; it is also
             required in order to comply w/ the protocol used;
-          
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -179,10 +171,8 @@ class SortingEditorModes(Object2D):
         ### iterate over items
 
         for item in chain(
-
-          self.items,
-          self.available_items,
-
+            self.items,
+            self.available_items,
         ):
 
             ## if there's a collision, break out of
@@ -190,25 +180,19 @@ class SortingEditorModes(Object2D):
 
             if item.rect.collidepoint(mouse_pos):
                 break
-                    
+
         ### if we didn't break out of the "for loop", it
         ### means we didn't collide with any items, so
         ### we can exit the method by returning
-        else: return
-            
+        else:
+            return
+
         ### otherwise, we have hit an item, so we enable
         ### the drag mode passing the references to both
         ### the list and the item which collided with the
         ### mouse
 
-        collection = (
-
-          self.items
-          if item in self.items
-
-          else self.available_items
-
-        )
+        collection = self.items if item in self.items else self.available_items
 
         self.enable_drag_mode(collection, item)
 
@@ -221,13 +205,9 @@ class SortingEditorModes(Object2D):
         ### retrieve the state of keys representing the
         ### left and right scrolling actions
 
-        scroll_left = any(
-          pressed_keys[i] for i in (K_LEFT, K_a)
-        )
+        scroll_left = any(pressed_keys[i] for i in (K_LEFT, K_a))
 
-        scroll_right = any(
-          pressed_keys[i] for i in (K_RIGHT, K_d)
-        )
+        scroll_right = any(pressed_keys[i] for i in (K_RIGHT, K_d))
 
         ### trigger the corresponding actions according to
         ### the states of the keys retrieved in the previous
@@ -251,23 +231,21 @@ class SortingEditorModes(Object2D):
         ### get vertical position of mouse
         _, y = get_mouse_pos()
 
-        ### pick list according to the area the mouse hovers 
+        ### pick list according to the area the mouse hovers
 
         a_list = (
-
-          ## if the mouse is above the bottom of the
-          ## items area, use the list of items
-          self.items
-          if y < self.items_area.bottom
-
-          ## otherwise use the pool of available items
-          else self.available_items
-
+            ## if the mouse is above the bottom of the
+            ## items area, use the list of items
+            self.items
+            if y < self.items_area.bottom
+            ## otherwise use the pool of available items
+            else self.available_items
         )
 
         ### if the list has no items, there's no point in
         ### scrolling it, so we return
-        if not a_list: return
+        if not a_list:
+            return
 
         ### reference useful rects locally
 
@@ -282,12 +260,10 @@ class SortingEditorModes(Object2D):
         ### specific boundaries depending on the
         ### direction of the movement
 
-        if speed < 0 \
-        and moved_rect.right < scroll_boundary.right:
+        if speed < 0 and moved_rect.right < scroll_boundary.right:
             return
 
-        elif speed > 0 \
-        and moved_rect.left > scroll_boundary.left:
+        elif speed > 0 and moved_rect.left > scroll_boundary.left:
             return
 
         ### if the movement wasn't cancelled in the previous
@@ -297,16 +273,17 @@ class SortingEditorModes(Object2D):
         ### rect
         list_rect.x = moved_rect.x
 
-    scroll_left  = partialmethod(scroll, -SCROLL_X_SPEED)
-    scroll_right = partialmethod(scroll,  SCROLL_X_SPEED)
+    scroll_left = partialmethod(scroll, -SCROLL_X_SPEED)
+    scroll_right = partialmethod(scroll, SCROLL_X_SPEED)
 
     def drag_mode_handle_events(self):
         """Event handling for the drag mode."""
         for event in get_events():
-            
+
             ### raise specific error if the user attempts
             ### to quit the app
-            if event.type == QUIT: raise QuitAppException
+            if event.type == QUIT:
+                raise QuitAppException
 
             ### trigger mouse release action if mouse
             ### left button is released
@@ -318,18 +295,16 @@ class SortingEditorModes(Object2D):
 
     def drag_obj(self):
         """Center dragged object on mouse w/ an offset."""
-        self.dragged_obj.rect.center = \
-                get_mouse_pos() + self.dragged_offset
+        self.dragged_obj.rect.center = get_mouse_pos() + self.dragged_offset
 
     def enable_normal_mode(self):
         """Set normal mode behaviours and perform setups."""
         ### set GUD methods to behaviours that correspond
         ### the the normal mode
 
-        self.handle_input = CallList([
-                           self.normal_mode_handle_events,
-                           self.handle_keyboard_input
-                         ])
+        self.handle_input = CallList(
+            [self.normal_mode_handle_events, self.handle_keyboard_input]
+        )
 
         self.update = empty_function
         self.draw = self.normal_mode_draw
@@ -351,13 +326,11 @@ class SortingEditorModes(Object2D):
         ### set GUD methods to behaviours that correspond
         ### the the drag mode
 
-        self.handle_input = (
-
-          CallList([
-            self.drag_mode_handle_events,
-            self.handle_keyboard_input,
-          ])
-
+        self.handle_input = CallList(
+            [
+                self.drag_mode_handle_events,
+                self.handle_keyboard_input,
+            ]
         )
 
         self.update = self.drag_obj
@@ -365,7 +338,6 @@ class SortingEditorModes(Object2D):
 
         ### set the mouse visibility off
         set_mouse_visibility(False)
-
 
         ###
 
@@ -388,22 +360,14 @@ class SortingEditorModes(Object2D):
 
             if collection:
 
-                clamped = max(
-
-                            min(
-                              len(collection) - 1, index
-                            ),
-
-                            0
-
-                          )
+                clamped = max(min(len(collection) - 1, index), 0)
 
                 nearest_obj = collection[clamped]
 
                 self.reposition_list(
-                       collection,
-                       nearest_obj,
-                     )
+                    collection,
+                    nearest_obj,
+                )
 
             ### if dragged objects wasn't the first or last
             ### object in the list, move it a bit up, so
@@ -416,11 +380,11 @@ class SortingEditorModes(Object2D):
                 self.dragged_obj.rect.move_ip(0, -27)
 
         else:
-            
+
             new_obj = Object2D.from_surface(
-                                 surface = obj.image,
-                                 value = obj.value,
-                               )
+                surface=obj.image,
+                value=obj.value,
+            )
 
             new_obj.rect.center = obj.rect.center
 
@@ -431,10 +395,7 @@ class SortingEditorModes(Object2D):
         ### and the center of the object to be dragged
         ### across the screen
 
-        self.dragged_offset = (
-          self.dragged_obj.rect.center
-          - Vector2(get_mouse_pos())
-        )
+        self.dragged_offset = self.dragged_obj.rect.center - Vector2(get_mouse_pos())
 
     def perform_drag_mode_exit_setups(self):
         """Perform actions to conclude the dragging action."""
@@ -448,15 +409,12 @@ class SortingEditorModes(Object2D):
         ### dragged object was dropped
 
         collection = (
-
-          ## if the obj was above the bottom of the items
-          ## area, then use the items list
-          self.items
-          if centery < self.items_area.bottom
-
-          ## otherwise use the pool of available items
-          else self.available_items
-
+            ## if the obj was above the bottom of the items
+            ## area, then use the items list
+            self.items
+            if centery < self.items_area.bottom
+            ## otherwise use the pool of available items
+            else self.available_items
         )
 
         if collection is self.items:
@@ -486,7 +444,7 @@ class SortingEditorModes(Object2D):
             We use it to retrieve the mouse position when
             the mouse left button is released; it is also
             required in order to comply w/ the protocol used;
-          
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -504,14 +462,15 @@ class SortingEditorModes(Object2D):
             ### of the "for loop"
 
             if button.rect.collidepoint(mouse_pos):
-                
-                try: method = getattr(
-                                button, 'on_mouse_release'
-                              )
 
-                except AttributeError: pass
+                try:
+                    method = getattr(button, "on_mouse_release")
 
-                else: method()
+                except AttributeError:
+                    pass
+
+                else:
+                    method()
 
                 break
 
@@ -519,9 +478,9 @@ class SortingEditorModes(Object2D):
         """Draw operations for the normal mode."""
         ### reference objects/data locally for quick access
 
-        image  = self.image
+        image = self.image
         offset = self.offset
-        rect   = self.rect.inflate(-2, -2)
+        rect = self.rect.inflate(-2, -2)
 
         ### clean the widget surface
         image.blit(self.clean_bg, (0, 0))
@@ -530,10 +489,7 @@ class SortingEditorModes(Object2D):
 
         for button in self.buttons:
 
-            image.blit(
-                    button.image,
-                    button.rect.move(offset)
-                  )
+            image.blit(button.image, button.rect.move(offset))
 
         ### iterate over the lists of items, drawing the
         ### items on the widget surface
@@ -551,15 +507,15 @@ class SortingEditorModes(Object2D):
         super().draw()
 
         ### finally update the screen
-        update() # pygame.display.update
+        update()  # pygame.display.update
 
     def drag_mode_draw(self):
         """Draw operations for the drag mode."""
         ### reference objects/data locally for quick access
 
-        image  = self.image
+        image = self.image
         offset = self.offset
-        rect   = self.rect.inflate(-2, -2)
+        rect = self.rect.inflate(-2, -2)
 
         ### clean the widget surface
         image.blit(self.clean_bg, (0, 0))
@@ -568,10 +524,7 @@ class SortingEditorModes(Object2D):
 
         for button in self.buttons:
 
-            image.blit(
-              button.image,
-              button.rect.move(offset)
-            )
+            image.blit(button.image, button.rect.move(offset))
 
         ### iterate over the lists of items, drawing the
         ### items and additional vertical lines around them
@@ -600,12 +553,7 @@ class SortingEditorModes(Object2D):
 
             draw_vertical_lines(image, offset_rect)
 
-            draw_rect(
-              image,
-              ITEM_OUTLINE,
-              offset_rect.inflate(2, 2),
-              2
-            )
+            draw_rect(image, ITEM_OUTLINE, offset_rect.inflate(2, 2), 2)
 
         ### draw a border around the widget
         draw_border(image, thickness=2)
@@ -614,4 +562,4 @@ class SortingEditorModes(Object2D):
         super().draw()
 
         ### finally update the screen
-        update() # pygame.display.update
+        update()  # pygame.display.update

@@ -10,6 +10,7 @@ from ..comment import get_comment_syntax_map
 
 MULTI_LINE_STR_QUOTES = '"""', "'''"
 
+
 def is_triple_quotes_string(string):
     """Return whether the string has triple quotes or not.
 
@@ -21,24 +22,13 @@ def is_triple_quotes_string(string):
     """
 
     return (
-
-      ## True if string starts with either '"""' or "'''"
-
-      any(
-        string.startswith(quote_str)
-        for quote_str in MULTI_LINE_STR_QUOTES
-      )
-
-      and
-
-      ## True if string ends with either '"""' or "'''"
-
-      any(
-        string.startswith(quote_str)
-        for quote_str in MULTI_LINE_STR_QUOTES
-      )
-
+        ## True if string starts with either '"""' or "'''"
+        any(string.startswith(quote_str) for quote_str in MULTI_LINE_STR_QUOTES)
+        and
+        ## True if string ends with either '"""' or "'''"
+        any(string.startswith(quote_str) for quote_str in MULTI_LINE_STR_QUOTES)
     )
+
 
 def has_def_or_class_statement(line_text):
     """Return whether line starts w/ 'def ' or 'class '.
@@ -59,10 +49,8 @@ def has_def_or_class_statement(line_text):
     ### 'def' or 'class' portion appears isolated in the
     ### line, not as part of a longer word;
 
-    return any(
-      startswith(substring)
-      for substring in ('def ', 'class ')
-    )
+    return any(startswith(substring) for substring in ("def ", "class "))
+
 
 def interval_of_next_def_word(line_text):
     """Return interval of word after 'def'/'class' statement.
@@ -75,35 +63,32 @@ def interval_of_next_def_word(line_text):
     ### get words from line text
 
     words = (
-
-      ## get the line text
-      line_text
-
-      ## next strip any whitespace at beginning
-      .lstrip()
-
-      ## then replace any '(' character for a ' ' character
-      ## so it doesn't get attached to the word before it
-      ## when we split the string into words
-      .replace('(', ' ')
-
-      ## finally split the line into words
-      .split()
-
+        ## get the line text
+        line_text
+        ## next strip any whitespace at beginning
+        .lstrip()
+        ## then replace any '(' character for a ' ' character
+        ## so it doesn't get attached to the word before it
+        ## when we split the string into words
+        .replace("(", " ")
+        ## finally split the line into words
+        .split()
     )
 
     ## now check whether any of the words representing
     ## definition statements ('def' and 'class') are
     ## present
 
-    for word in ('def', 'class'):
+    for word in ("def", "class"):
 
         ## check whether the word is present by grabbing
         ## its index in the list of words
-        try: index = words.index(word)
+        try:
+            index = words.index(word)
 
         ## if it isn't just pass
-        except ValueError: pass
+        except ValueError:
+            pass
 
         ## if it is present however, then the word we
         ## look for should be just after it, that is,
@@ -112,13 +97,13 @@ def interval_of_next_def_word(line_text):
         else:
 
             ## grab the word in the next index
-            next_word = words[index+1]
+            next_word = words[index + 1]
 
             ## calculate an return the interval of the
             ## next word
 
             including_start = line_text.index(next_word)
-            excluding_end   = including_start + len(next_word)
+            excluding_end = including_start + len(next_word)
 
             return (including_start, excluding_end)
 
@@ -128,8 +113,8 @@ def interval_of_next_def_word(line_text):
     ## is wrong and raise an error to notify this
 
     raise RuntimeError(
-      "logic went wrong somewhere since this raise statement"
-      " wasn't supposed to execute"
+        "logic went wrong somewhere since this raise statement"
+        " wasn't supposed to execute"
     )
 
 
@@ -141,15 +126,16 @@ def represents_applied_decorator(line_index, source_lines):
     ### if the quantity of '@' characters in the line
     ### isn't 1, we assume it isn't a decorator being
     ### applied, so we return an empty tuple
-    if line_text.count('@') != 1: return ()
-    
+    if line_text.count("@") != 1:
+        return ()
+
     ### XXX note that, in the 'if block' above, even though
     ### we assume that a line which doesn't have only one
     ### '@' character is't a decorator, there is still a
     ### possibility, however rare, in which we could still
     ### have a decorator being applied with more than one
     ### '@' character in the same line:
-    ### 
+    ###
     ### the other(s) character(s) could be inside strings
     ### in arguments of a call, in case the decorator is
     ### returned by a callable;
@@ -167,13 +153,12 @@ def represents_applied_decorator(line_index, source_lines):
     ### for now, the string analysis we use here isn't
     ### perfect, but covers common cases satisfactorily;
 
-
     ### define the index of the '@' character and the
     ### slice of the text before it, which we'll call
     ### "the indent of 'at'"
 
-    index_of_at  = line_text.index('@')
-    indent_of_at = line_text[0: index_of_at]
+    index_of_at = line_text.index("@")
+    indent_of_at = line_text[0:index_of_at]
 
     ### calculate the interval of the word after '@'
 
@@ -183,21 +168,16 @@ def represents_applied_decorator(line_index, source_lines):
     ## grab word after '@'
 
     word = (
-
-      ## grab slice of line after the '@'
-      line_text[index_after_at:]
-
-      ## next replace any '(' character for a ' ' character
-      ## so it doesn't get attached to the word before it
-      ## when we split the string into words
-      .replace('(', ' ')
-
-      ## then split the string into words
-      .split()
-
-      ## and finally grab the first word
-      [0]
-
+        ## grab slice of line after the '@'
+        line_text[index_after_at:]
+        ## next replace any '(' character for a ' ' character
+        ## so it doesn't get attached to the word before it
+        ## when we split the string into words
+        .replace("(", " ")
+        ## then split the string into words
+        .split()
+        ## and finally grab the first word
+        [0]
     )
 
     ## having found the word, now calculate its interval
@@ -206,7 +186,6 @@ def represents_applied_decorator(line_index, source_lines):
     excluding_end = including_start + len(word)
 
     next_word_interval = including_start, excluding_end
-
 
     ### now let's check whether the next lines comply with
     ### the decorator declaration by iterating over which
@@ -229,7 +208,7 @@ def represents_applied_decorator(line_index, source_lines):
     ## iterate over each subsequent line
 
     for index in count(start=next_line_index):
-        
+
         ## grab the text of the line
         line_text = source_lines[index]
 
@@ -241,7 +220,7 @@ def represents_applied_decorator(line_index, source_lines):
         ## since we assume it isn't the application
         ## of a decorator
 
-        current_indent = line_text[0: index_of_at]
+        current_indent = line_text[0:index_of_at]
 
         if current_indent != indent_of_at:
             return ()
@@ -263,24 +242,25 @@ def represents_applied_decorator(line_index, source_lines):
         ## this function using the tokenize module as
         ## discussed previously
 
-
         ## if current line has an '@' character at the
         ## same position that there's an '@' character in
         ## the first line, we must perform specific checks...
 
-        if line_text[index_of_at] == '@':
+        if line_text[index_of_at] == "@":
 
             ## if quantity of '@' characters in the line
             ## isn't 1, we abort highlighting by returning
             ## an empty tuple
-            if line_text.count('@') != 1: return ()
+            if line_text.count("@") != 1:
+                return ()
 
             ## otherwise we assume this is ok and go on to
             ## check the next line (it may be that the
             ## decorators are nested, and this is why we
             ## found a '@' before hitting a 'def' or 'class'
             ## statement)
-            else: continue
+            else:
+                continue
 
         ## if at the beginning of the substring from the
         ## index of '@' you find a def or class statement,
@@ -291,19 +271,18 @@ def represents_applied_decorator(line_index, source_lines):
 
         startswith = line_text[index_of_at:].startswith
 
-        if any(
-          startswith(substring)
-          for substring in ('def ', 'class ')
-        ):
+        if any(startswith(substring) for substring in ("def ", "class ")):
             return next_word_interval
 
         ## otherwise we abort highlighting by returning
         ## an empty tuple
-        else: return ()
+        else:
+            return ()
+
 
 def get_comment_offset_intervals(line_text, comment_start):
     """Return intervals for comment syntax with offset.
-    
+
     Such syntax separates normal comment text from special
     "todo" words (TODO, XXX and FIXME). The offset is
     need because the comment doesn't always start from
@@ -346,40 +325,19 @@ def get_comment_offset_intervals(line_text, comment_start):
     ### in that interval belogs
 
     return [
-
-      ## 2-tuple (pair)
-
-      (
-
-        ## 1st item:
-        ## the interval, but offset by the comment start
-
+        ## 2-tuple (pair)
         (
-          including_start + comment_start,
-          excluding_end   + comment_start
-        ),
-
-        ## 2nd item:
-        ## custom category name based on the original value
-        ## of the category name from the data source
-
-        (
-
-          'comment'
-          if category_name == 'normal'
-
-          else 'todo_word'
-
+            ## 1st item:
+            ## the interval, but offset by the comment start
+            (including_start + comment_start, excluding_end + comment_start),
+            ## 2nd item:
+            ## custom category name based on the original value
+            ## of the category name from the data source
+            ("comment" if category_name == "normal" else "todo_word"),
         )
-
-      )
-
-      ## note that the key from the data source is further
-      ## decomposed into the interval boundaries called
-      ## "including_start" and "excluding_end" and the
-      ## value, called category_name, is used as-is
-
-      for (including_start, excluding_end), category_name
-      in interval_category_pairs
-
+        ## note that the key from the data source is further
+        ## decomposed into the interval boundaries called
+        ## "including_start" and "excluding_end" and the
+        ## value, called category_name, is used as-is
+        for (including_start, excluding_end), category_name in interval_category_pairs
     ]

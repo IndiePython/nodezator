@@ -11,24 +11,27 @@ from xml.etree.ElementTree import Element
 ### third-party imports
 
 from pygame import (
-
-              ## event types
-
-              QUIT, KEYUP, KEYDOWN, MOUSEBUTTONUP,
-
-              VIDEORESIZE,
-
-              ## keys
-
-              K_BACKSPACE, K_DELETE, KMOD_CTRL,
-              K_LEFT, K_RIGHT, K_HOME, K_END,
-              K_ESCAPE, K_RETURN, K_KP_ENTER,
-              K_t,
-
-              ## rect class
-              Rect,
-
-            )
+    ## event types
+    QUIT,
+    KEYUP,
+    KEYDOWN,
+    MOUSEBUTTONUP,
+    VIDEORESIZE,
+    ## keys
+    K_BACKSPACE,
+    K_DELETE,
+    KMOD_CTRL,
+    K_LEFT,
+    K_RIGHT,
+    K_HOME,
+    K_END,
+    K_ESCAPE,
+    K_RETURN,
+    K_KP_ENTER,
+    K_t,
+    ## rect class
+    Rect,
+)
 
 from pygame.display import update
 
@@ -37,13 +40,12 @@ from pygame.event import get as get_events
 from pygame.math import Vector2
 
 
-
 ### local imports
 
 from ..ourstdlibs.behaviour import (
-                            empty_function,
-                            return_untouched,
-                          )
+    empty_function,
+    return_untouched,
+)
 
 from ..ourstdlibs.stringutils import VALIDATION_COMMAND_MAP
 
@@ -54,21 +56,21 @@ from ..classes2d.single import Object2D
 from ..surfsman.render import render_rect
 
 from ..fontsman.constants import (
-                          ENC_SANS_BOLD_FONT_HEIGHT,
-                          ENC_SANS_BOLD_FONT_PATH,
-                        )
+    ENC_SANS_BOLD_FONT_HEIGHT,
+    ENC_SANS_BOLD_FONT_PATH,
+)
 
 from ..textman.editor.main import edit_text
 
 from ..loopman.exception import (
-                         QuitAppException,
-                         SwitchLoopException,
-                       )
+    QuitAppException,
+    SwitchLoopException,
+)
 
 from ..colorsman.colors import (
-                        STRING_ENTRY_FG,
-                        STRING_ENTRY_BG,
-                      )
+    STRING_ENTRY_FG,
+    STRING_ENTRY_BG,
+)
 
 from ..textman.entryedition.cursor import EntryCursor
 
@@ -86,7 +88,7 @@ class StringEntry(Object2D):
     multi-line editing by pressing Ctrl-T.
 
     For instance, check this function call:
-        
+
         function(**{key: value})
 
     Where 'key' must always be a string, but can be any
@@ -115,37 +117,24 @@ class StringEntry(Object2D):
     """
 
     def __init__(
-
-          self,
-
-          value = '',
-
-          loop_holder = None,
-
-          font_height = ENC_SANS_BOLD_FONT_HEIGHT,
-          font_path   = ENC_SANS_BOLD_FONT_PATH,
-
-          width = 155,
-
-          name = 'string_entry',
-
-          command = empty_function,
-
-          validation_command = None,
-          formatting_command = return_untouched,
-
-          update_behind = empty_function,
-          draw_behind   = empty_function,
-
-          draw_on_window_resize = empty_function,
-
-          coordinates_name  = 'topleft',
-          coordinates_value = (0, 0),
-
-          foreground_color = STRING_ENTRY_FG,
-          background_color = STRING_ENTRY_BG,
-
-        ):
+        self,
+        value="",
+        loop_holder=None,
+        font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+        font_path=ENC_SANS_BOLD_FONT_PATH,
+        width=155,
+        name="string_entry",
+        command=empty_function,
+        validation_command=None,
+        formatting_command=return_untouched,
+        update_behind=empty_function,
+        draw_behind=empty_function,
+        draw_on_window_resize=empty_function,
+        coordinates_name="topleft",
+        coordinates_value=(0, 0),
+        foreground_color=STRING_ENTRY_FG,
+        background_color=STRING_ENTRY_BG,
+    ):
         """Perform setups and assign data for reuse.
 
         Parameters
@@ -173,12 +162,12 @@ class StringEntry(Object2D):
         validation_command (None, string or callable)
             if it is None, the instance is set up so that
             no validation is done.
-            
+
             If it is a string, it must be a key in a
             preset map used to grab a valid command, for
             instance, the name of a built-in "str" method
             to use as the validation command.
-            
+
             If it is a callable, it must accept a single
             argument and its return value is used to
             determine whether validation passed (when the
@@ -226,9 +215,7 @@ class StringEntry(Object2D):
 
         if type(value) is not str:
 
-            raise TypeError(
-              "'value' received must be of 'str' type"
-            )
+            raise TypeError("'value' received must be of 'str' type")
 
         ### convert the colors passed into tuples for
         ### simplicity (since colors can be given as
@@ -241,10 +228,10 @@ class StringEntry(Object2D):
         ### store some of the arguments in their own
         ### attributes
 
-        self.name               = name
-        self.value              = value
-        self.command            = command
-        self.loop_holder        = loop_holder
+        self.name = name
+        self.value = value
+        self.command = command
+        self.loop_holder = loop_holder
         self.formatting_command = formatting_command
 
         ### store the validation command (this is a
@@ -257,16 +244,11 @@ class StringEntry(Object2D):
 
         self.rect = Rect(0, 0, width, font_height)
 
-        setattr(
-          self.rect, coordinates_name, coordinates_value)
+        setattr(self.rect, coordinates_name, coordinates_value)
 
         ### create a background surface for the widget
 
-        self.background = render_rect(
-                            width,
-                            font_height,
-                            background_color
-                          )
+        self.background = render_rect(width, font_height, background_color)
 
         ### also store a copy of it as the image
         ### representing this widget
@@ -276,10 +258,10 @@ class StringEntry(Object2D):
         ### dictionary
 
         render_settings = {
-          "font_height"      : font_height,
-          "font_path"        : font_path,
-          "foreground_color" : foreground_color,
-          "background_color" : background_color
+            "font_height": font_height,
+            "font_path": font_path,
+            "foreground_color": foreground_color,
+            "background_color": background_color,
         }
 
         ### instantiate the entry cursor class, which is
@@ -289,15 +271,11 @@ class StringEntry(Object2D):
         ### until the edition in the entry is confirmed
         ### or the value is set with self.set())
 
-        self.cursor = (
-
-          EntryCursor(
+        self.cursor = EntryCursor(
             value,
             render_settings,
             self,
             get_contrasting_bw(background_color),
-          )
-
         )
 
         ### update the surface of the widget
@@ -306,14 +284,14 @@ class StringEntry(Object2D):
         ### store behaviours
 
         self.update_behind = update_behind
-        self.draw_behind   = draw_behind
+        self.draw_behind = draw_behind
 
         self.draw_on_window_resize = draw_on_window_resize
 
         ### define behaviours
 
-        self.draw         = super().draw
-        self.update       = empty_function
+        self.draw = super().draw
+        self.update = empty_function
         self.handle_input = self.handle_events
 
     @property
@@ -333,8 +311,8 @@ class StringEntry(Object2D):
         ### check whether the value received is present
         ### in the validation command map
 
-        try: command = \
-             VALIDATION_COMMAND_MAP[validation_command]
+        try:
+            command = VALIDATION_COMMAND_MAP[validation_command]
 
         ### if it is absent, though...
 
@@ -352,19 +330,18 @@ class StringEntry(Object2D):
             else:
 
                 msg = (
-                  "'validation_command' received invalid"
-                  " input: {} (it must be a valid string"
-                  " or callable)"
+                    "'validation_command' received invalid"
+                    " input: {} (it must be a valid string"
+                    " or callable)"
                 ).format(repr(validation_command))
 
                 raise ValueError(msg)
 
-
-
         ### check whether the value received is valid
 
         ## try validating
-        try: value = command(self.value)
+        try:
+            value = command(self.value)
 
         ## if an exception occurred while validating,
         ## catch the exception and raise a new exception
@@ -374,9 +351,9 @@ class StringEntry(Object2D):
         except Exception as err:
 
             raise RuntimeError(
-              "An exception was raised while using the"
-              " specified validation command on the"
-              " provided value"
+                "An exception was raised while using the"
+                " specified validation command on the"
+                " provided value"
             ) from err
 
         ## if validation works, but the result is false,
@@ -387,13 +364,13 @@ class StringEntry(Object2D):
             if not value:
 
                 raise ValueError(
-                  "the 'validation_command' received"
-                  " doesn't validate the 'value' received."
+                    "the 'validation_command' received"
+                    " doesn't validate the 'value' received."
                 )
 
         ### finally, let's store the validation command
         self._validation_command = command
-            
+
     def get(self):
         """Return text content of widget."""
         return self.value
@@ -417,8 +394,8 @@ class StringEntry(Object2D):
         ### return earlier if value is already set or
         ### doesn't validate
 
-        if value == self.value \
-        or not self.validation_command(value): return
+        if value == self.value or not self.validation_command(value):
+            return
 
         ### otherwise set the value
 
@@ -435,14 +412,15 @@ class StringEntry(Object2D):
         self.update_image()
 
         ### also, if requested, execute the custom command
-        if custom_command: self.command()
+        if custom_command:
+            self.command()
 
     def update_image(self):
         """Update image surface attribute."""
         ### reference objects locally
 
-        image   = self.image
-        line    = self.cursor.line
+        image = self.image
+        line = self.cursor.line
         topleft = self.rect.topleft
 
         ### clean image using the background
@@ -467,8 +445,9 @@ class StringEntry(Object2D):
     def handle_events(self):
         """Iterate over event queue processing events."""
         for event in get_events():
-            
-            if event.type == QUIT: raise QuitAppException
+
+            if event.type == QUIT:
+                raise QuitAppException
 
             elif event.type == KEYUP:
 
@@ -476,16 +455,15 @@ class StringEntry(Object2D):
                 ### escape or enter/numpad enter resumes
                 ### the edition
 
-                if event.key in (
-                K_ESCAPE, K_RETURN, K_KP_ENTER):
+                if event.key in (K_ESCAPE, K_RETURN, K_KP_ENTER):
                     self.resume_editing()
 
             elif event.type == KEYDOWN:
-                
+
                 ### ignore keys below
 
-                if event.key in (
-                K_ESCAPE, K_RETURN, K_KP_ENTER): pass
+                if event.key in (K_ESCAPE, K_RETURN, K_KP_ENTER):
+                    pass
 
                 ### move cursor
 
@@ -511,7 +489,8 @@ class StringEntry(Object2D):
                     if event.mod & KMOD_CTRL:
                         self.cursor.delete_previous_word()
 
-                    else: self.cursor.delete_previous()
+                    else:
+                        self.cursor.delete_previous()
 
                 elif event.key == K_DELETE:
                     self.cursor.delete_under()
@@ -532,7 +511,8 @@ class StringEntry(Object2D):
                     ### keys doesn't produce characters
                     ### of our interest (only strings like
                     ### '\x08', etc.)
-                    else: pass
+                    else:
+                        pass
 
                 ### if the keydown event has a non-empty
                 ### string as its unicode attribute, add
@@ -559,18 +539,13 @@ class StringEntry(Object2D):
 
             elif event.type == VIDEORESIZE:
 
-                self.handle_input = (
-                  self.watch_out_for_movement
-                )
+                self.handle_input = self.watch_out_for_movement
 
     def watch_out_for_movement(self):
 
         if self.rect.topleft != self.last_topleft:
 
-            diff = (
-              Vector2(self.rect.topleft)
-              - self.last_topleft
-            )
+            diff = Vector2(self.rect.topleft) - self.last_topleft
 
             self.last_topleft = self.rect.topleft
 
@@ -627,7 +602,7 @@ class StringEntry(Object2D):
             required in order to comply with protocol
             used; when needed it can be used to retrieve
             the position of the mouse click, for instance.
-              
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -642,8 +617,8 @@ class StringEntry(Object2D):
         """
         ### assign behaviours
 
-        self.update       = self.update_focused
-        self.draw         = self.draw_focused
+        self.update = self.update_focused
+        self.draw = self.draw_focused
         self.handle_input = self.handle_events
 
         ### align line topleft with self.rect.topleft and
@@ -669,7 +644,7 @@ class StringEntry(Object2D):
         ### restore default behaviours for update and
         ### drawing operations
 
-        self.draw   = super().draw
+        self.draw = super().draw
         self.update = empty_function
 
         ### switch to the stored loop holder (if
@@ -712,8 +687,7 @@ class StringEntry(Object2D):
             if self.validation_command(entry_text):
 
                 # format contents
-                formatted_value = \
-                    self.formatting_command(entry_text)
+                formatted_value = self.formatting_command(entry_text)
 
                 # set formatted value as entry text
                 self.cursor.set(formatted_value)
@@ -778,58 +752,41 @@ class StringEntry(Object2D):
         line = self.cursor.line
         line.rect.topleft = self.rect.topleft
 
-        text = ''.join(
-                    obj.text
-                    for obj in
-                    line.get_colliding(self.rect)
-                  )
+        text = "".join(obj.text for obj in line.get_colliding(self.rect))
 
         rect = self.rect
 
-        x_str, y_str, width_str, height_str = (
-
-          map(str, rect)
-
-        )
+        x_str, y_str, width_str, height_str = map(str, rect)
 
         ###
 
-        group = Element('g', {'class': 'string_entry'})
+        group = Element("g", {"class": "string_entry"})
 
         group.append(
-
-                Element(
-
-                  'rect',
-
-                  {
-                    'x'      : x_str,
-                    'y'      : y_str,
-                    'width'  : width_str,
-                    'height' : height_str,
-                  }
-                )
-
-              )
+            Element(
+                "rect",
+                {
+                    "x": x_str,
+                    "y": y_str,
+                    "width": width_str,
+                    "height": height_str,
+                },
+            )
+        )
 
         (
-          text_x_str,
-          text_y_str,
+            text_x_str,
+            text_y_str,
         ) = map(str, rect.move(0, -3).bottomleft)
 
         text_element = Element(
-
-                         'text',
-
-                         {
-
-                           'x' : text_x_str,
-                           'y' : text_y_str,
-
-                           'text-anchor': 'start',
-
-                         }
-                       )
+            "text",
+            {
+                "x": text_x_str,
+                "y": text_y_str,
+                "text-anchor": "start",
+            },
+        )
 
         text_element.text = text
 

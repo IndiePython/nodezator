@@ -1,4 +1,3 @@
-
 ### local imports
 
 from ...config import APP_REFS
@@ -11,7 +10,7 @@ class Socket(Object2D):
 
     def __repr__(self):
         """Return an unambiguous string representation."""
-        return '{}()'.format(self.__class__.__name__)
+        return "{}()".format(self.__class__.__name__)
 
     def on_mouse_click(self, event):
         """Trigger segment definition behaviour.

@@ -3,14 +3,27 @@
 ### third-party imports
 
 from pygame import (
-              QUIT, KEYDOWN, MOUSEBUTTONUP,
-
-              K_ESCAPE, K_BACKSPACE,
-              K_RETURN, K_KP_ENTER, K_TAB, KMOD_CTRL,
-              K_UP, K_DOWN, K_LEFT, K_RIGHT,
-              K_DELETE, KMOD_SHIFT, K_HOME, K_END,
-              K_PAGEUP, K_PAGEDOWN, K_F1,
-            )
+    QUIT,
+    KEYDOWN,
+    MOUSEBUTTONUP,
+    K_ESCAPE,
+    K_BACKSPACE,
+    K_RETURN,
+    K_KP_ENTER,
+    K_TAB,
+    KMOD_CTRL,
+    K_UP,
+    K_DOWN,
+    K_LEFT,
+    K_RIGHT,
+    K_DELETE,
+    KMOD_SHIFT,
+    K_HOME,
+    K_END,
+    K_PAGEUP,
+    K_PAGEDOWN,
+    K_F1,
+)
 
 from pygame.event import get as get_events
 
@@ -35,7 +48,8 @@ class InsertMode:
         """Get and handle events for insert mode."""
         for event in get_events():
 
-            if event.type == QUIT: raise QuitAppException
+            if event.type == QUIT:
+                raise QuitAppException
 
             elif event.type == KEYDOWN:
 
@@ -45,24 +59,18 @@ class InsertMode:
 
                 if event.key == K_F1:
 
-                    if (
-                      USER_PREFS['TEXT_EDITOR_BEHAVIOR']
-                      == 'default'
-                    ):
+                    if USER_PREFS["TEXT_EDITOR_BEHAVIOR"] == "default":
 
                         open_htsl_link(
-                          'htap://help.nodezator.pysite/'
-                          'text-editor-default-behavior.htsl'
+                            "htap://help.nodezator.pysite/"
+                            "text-editor-default-behavior.htsl"
                         )
 
-                    elif (
-                      USER_PREFS['TEXT_EDITOR_BEHAVIOR']
-                      == 'vim-like'
-                    ):
+                    elif USER_PREFS["TEXT_EDITOR_BEHAVIOR"] == "vim-like":
 
                         open_htsl_link(
-                          'htap://help.nodezator.pysite/'
-                          'text-editor-vim-like-behavior.htsl'
+                            "htap://help.nodezator.pysite/"
+                            "text-editor-vim-like-behavior.htsl"
                         )
 
                 ### if escape key is pressed...
@@ -73,10 +81,8 @@ class InsertMode:
                     ## to be vim-like, exit insert mode
                     ## and update cursor position;
 
-                    if (
-                      USER_PREFS['TEXT_EDITOR_BEHAVIOR']
-                      == 'vim-like'
-                    ): self.enable_normal_mode()
+                    if USER_PREFS["TEXT_EDITOR_BEHAVIOR"] == "vim-like":
+                        self.enable_normal_mode()
 
                 ### move cursor
 
@@ -107,7 +113,7 @@ class InsertMode:
                 ### TAB key adds 4 spaces
 
                 elif event.key == K_TAB:
-                    
+
                     ### XXX as of now, we do have a tab
                     ### representation which is the tab
                     ### character itself ('\t'), but which
@@ -133,14 +139,15 @@ class InsertMode:
                     ### to decide the number of spaces
                     ### the tab character representation
                     ### uses
-                    self.add_text(' ' * 4)
+                    self.add_text(" " * 4)
 
                 ### ignore event if ctrl key is pressed
                 ### since the combination of ctrl key and
                 ### other keys doesn't produce characters
                 ### of our interest (only strings like
                 ### '\x08', etc.)
-                elif event.mod & KMOD_CTRL: pass
+                elif event.mod & KMOD_CTRL:
+                    pass
 
                 ### if the keydown event has a non-empty
                 ### string as its unicode attribute, add
@@ -157,14 +164,16 @@ class InsertMode:
                     if KMOD_SHIFT & event.mod:
                         self.go_to_top_ins()
 
-                    else: self.go_to_line_start_ins()
+                    else:
+                        self.go_to_line_start_ins()
 
                 elif event.key == K_END:
 
                     if KMOD_SHIFT & event.mod:
                         self.go_to_bottom_ins()
 
-                    else: self.go_to_line_end_ins()
+                    else:
+                        self.go_to_line_end_ins()
 
                 ### jump a page up or down (a page is the
                 ### number of lines which fits the editing
@@ -175,15 +184,16 @@ class InsertMode:
                     if KMOD_SHIFT & event.mod:
                         self.go_to_top_ins()
 
-                    else: self.jump_page_up_ins()
+                    else:
+                        self.jump_page_up_ins()
 
                 elif event.key == K_PAGEDOWN:
 
                     if KMOD_SHIFT & event.mod:
                         self.go_to_bottom_ins()
 
-                    else: self.jump_page_down_ins()
-
+                    else:
+                        self.jump_page_down_ins()
 
             elif event.type == MOUSEBUTTONUP:
 
@@ -257,7 +267,6 @@ class InsertMode:
             ### edition routine
             self.edition_routine()
 
-
         ### since we're about to evaluate the "elif" block
         ### below, we know the condition in the previous
         ### "if" block is False, which means there is no
@@ -299,7 +308,8 @@ class InsertMode:
                 self.top_visible_line_index += -1
 
             ## otherwise decrement the visible row index
-            else: self.visible_row += -1
+            else:
+                self.visible_row += -1
 
             ### update the cursor column so it sits after
             ### the last character in the current line
@@ -352,14 +362,14 @@ class InsertMode:
             ### the editing area
             self.check_editing_area()
 
-
         ### the only other possible scenario is that in
         ### which there's no character before the cursor
         ### and also no line before the current one;
         ### in such case, the cursor is at the very
         ### beginning of the text, and no actual change
         ### takes place, so we just pass
-        else: pass
+        else:
+            pass
 
     def delete_under_or_merge_lines(self):
         """Delete char under cursor or merge lines.
@@ -403,7 +413,6 @@ class InsertMode:
             ### edition routine
             self.edition_routine()
 
-
         ### if there's no character sitting at the position
         ### where cursor is, it means the cursor is sitting
         ### at the very end of the line;
@@ -418,15 +427,16 @@ class InsertMode:
             index_to_remove = self.row + 1
 
             ### try removing the line below the current one
-            try: removed_line = \
-                            self.lines.pop(index_to_remove)
+            try:
+                removed_line = self.lines.pop(index_to_remove)
 
             ### if there is not such line, then there is
             ### no more text to be deleted after the cursor,
             ### which means this method has no effect in the
             ### text's contents, so we just exit earlier by
             ### returning
-            except IndexError: return
+            except IndexError:
+                return
 
             ### otherwise, we take measures so that the line
             ### we just removed is merged with the current
@@ -459,9 +469,8 @@ class InsertMode:
             ### "if block"
 
             visible_range = range(
-              self.top_visible_line_index,
-              self.top_visible_line_index
-              + NUMBER_OF_VISIBLE_LINES
+                self.top_visible_line_index,
+                self.top_visible_line_index + NUMBER_OF_VISIBLE_LINES,
             )
 
             ### if the line we removed was a visible one,
@@ -492,11 +501,11 @@ class InsertMode:
         ### instantiate a new line holding the characters
         ### from the part of the line where the cursor sits
         ### and on
-        new_line = Line(current_line[self.col:])
+        new_line = Line(current_line[self.col :])
 
         ### make the current line hold only the part of the
         ### line before the cursor
-        current_line[:] = current_line[:self.col]
+        current_line[:] = current_line[: self.col]
 
         ### define the index of the new line
         new_line_index = self.row + 1
@@ -519,9 +528,8 @@ class InsertMode:
         ### "if block"
 
         visible_range = range(
-          self.top_visible_line_index,
-          self.top_visible_line_index
-          + NUMBER_OF_VISIBLE_LINES
+            self.top_visible_line_index,
+            self.top_visible_line_index + NUMBER_OF_VISIBLE_LINES,
         )
 
         ### if the index of the new inserted line is within
@@ -533,7 +541,8 @@ class InsertMode:
         ### otherwise, we increment the index of the top
         ### visible line, so that when we update the visible
         ### lines, the new line now appears at the bottom
-        else: self.top_visible_line_index += 1
+        else:
+            self.top_visible_line_index += 1
 
         ### since some change took place, we execute the
         ### edition routine;

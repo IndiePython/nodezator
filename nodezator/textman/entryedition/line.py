@@ -33,7 +33,7 @@ class EntryLine(List2D):
         self.font_settings = font_settings
 
         ### define height for a special "line rect"
-        line_rect_height = font_settings['font_height']
+        line_rect_height = font_settings["font_height"]
 
         ### instantiate a special rect for the line
         ### (don't store it on self.rect, since self.rect
@@ -48,7 +48,7 @@ class EntryLine(List2D):
 
     def get_all_rects(self):
         """Return rects composing this line.
-        
+
         This includes the line rect plus the rects of each
         text object in this list.
 
@@ -74,10 +74,7 @@ class EntryLine(List2D):
         """
         ### extend line with objects from each character
 
-        self.extend(
-          CachedTextObject(char, self.font_settings)
-          for char in text
-        )
+        self.extend(CachedTextObject(char, self.font_settings) for char in text)
 
         ### finally, reposition the characters
         self.reposition_chars()
@@ -108,16 +105,13 @@ class EntryLine(List2D):
             ## insert...
 
             self.insert(
-
-                   ## ...at the current index...
-                   index,
-
-                   ## a special text object instantiated
-                   ## from the character, using the
-                   ## stored font settings
-                   CachedTextObject(char, self.font_settings)
-
-                 )
+                ## ...at the current index...
+                index,
+                ## a special text object instantiated
+                ## from the character, using the
+                ## stored font settings
+                CachedTextObject(char, self.font_settings),
+            )
 
         ### finally, reposition the characters
         self.reposition_chars()
@@ -131,7 +125,7 @@ class EntryLine(List2D):
         is the topright value of the rect in the 'line_rect'
         attribute.
         """
-        self.rect.snap_rects_ip('topright', 'topleft')
+        self.rect.snap_rects_ip("topright", "topleft")
 
     def get(self):
         """Return text held by line.
@@ -139,4 +133,4 @@ class EntryLine(List2D):
         Works by joining the text held by each text object
         representing a character in the line.
         """
-        return ''.join(obj.text for obj in self)
+        return "".join(obj.text for obj in self)

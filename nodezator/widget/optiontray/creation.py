@@ -26,6 +26,7 @@ from ...colorsman.colors import OPTION_TRAY_OPTION_SEPARATOR
 
 ### class definition
 
+
 class OptionTrayCreationOperations:
     """Operations to create OptionTray assets."""
 
@@ -36,37 +37,13 @@ class OptionTrayCreationOperations:
         ### and selected state
 
         normal_obj_dict = OrderedDict(
-
-          (
-
-            value,
-
-            get_option_obj(
-              str(value),
-              self.normal_text_settings
-            )
-
-          )
-
-          for value in self.options
-
+            (value, get_option_obj(str(value), self.normal_text_settings))
+            for value in self.options
         )
 
         selected_obj_dict = OrderedDict(
-
-          (
-
-            value,
-
-            get_option_obj(
-              str(value),
-              self.selected_text_settings
-            )
-
-          )
-
-          for value in self.options
-
+            (value, get_option_obj(str(value), self.selected_text_settings))
+            for value in self.options
         )
 
         ### position the text objects in both dictionaries
@@ -74,14 +51,11 @@ class OptionTrayCreationOperations:
 
         for a_dict in (normal_obj_dict, selected_obj_dict):
 
-            objs_rectsman = Iterable2D(
-                              a_dict.values().__iter__
-                            ).rect
+            objs_rectsman = Iterable2D(a_dict.values().__iter__).rect
 
             objs_rectsman.snap_rects_ip(
-                            retrieve_pos_from='bottomright',
-                            assign_pos_to='bottomleft'
-                          )
+                retrieve_pos_from="bottomright", assign_pos_to="bottomleft"
+            )
 
             objs_rectsman.topleft = (0, 0)
 
@@ -91,13 +65,9 @@ class OptionTrayCreationOperations:
         ### appearance) create a base surface to surround
         ### all text objects representing the options
 
-        bg_color = \
-            self.normal_text_settings['background_color']
+        bg_color = self.normal_text_settings["background_color"]
 
-        base_surf = render_rect(
-                      *objs_rectsman.size,
-                      bg_color
-                    )
+        base_surf = render_rect(*objs_rectsman.size, bg_color)
 
         ### now, for each option, blit over a copy of the
         ### base surface all the options, with the selected
@@ -113,7 +83,7 @@ class OptionTrayCreationOperations:
         ## one being iterated as the selected one
 
         for selected_option in self.options:
-            
+
             ## create copy of base surface
             base_copy = base_surf.copy()
 
@@ -122,7 +92,7 @@ class OptionTrayCreationOperations:
             ## state
 
             for option in self.options:
-                
+
                 ## obtain a text object with a
                 ## surface for that option;
                 ##
@@ -134,12 +104,7 @@ class OptionTrayCreationOperations:
                 ## not selected
 
                 text_obj = (
-
-                  selected_obj_dict
-                  if option == selected_option
-
-                  else normal_obj_dict
-
+                    selected_obj_dict if option == selected_option else normal_obj_dict
                 )[option]
 
                 ## reference the text object's rect locally
@@ -149,9 +114,7 @@ class OptionTrayCreationOperations:
                 ## the copy of the base surface, according
                 ## to the position of the object's rect
 
-                base_copy.blit(
-                            text_obj.image, text_obj_rect
-                          )
+                base_copy.blit(text_obj.image, text_obj_rect)
 
                 ## blit a line at the left side of the
                 ## text obj rect, to make it easier to
@@ -159,11 +122,11 @@ class OptionTrayCreationOperations:
                 ## other
 
                 draw_line(
-                  base_copy,
-                  OPTION_TRAY_OPTION_SEPARATOR,
-                  text_obj_rect.topleft,
-                  text_obj_rect.bottomleft,
-                  1,
+                    base_copy,
+                    OPTION_TRAY_OPTION_SEPARATOR,
+                    text_obj_rect.topleft,
+                    text_obj_rect.bottomleft,
+                    1,
                 )
 
             ## finally draw a black border around the base
@@ -192,25 +155,18 @@ class OptionTrayCreationOperations:
         ### the objects, not their appearance
 
         return tuple(
+            accumulate(
+                ## create object representing an option
+                ## and grab the width from its rect...
+                get_option_obj(str(value), self.normal_text_settings).rect.width
+                ## ...for each of the existing options
+                for value in self.options
+            )
+        )
 
-                 accumulate(
-
-                   ## create object representing an option
-                   ## and grab the width from its rect...
-
-                   get_option_obj(
-                     str(value),
-                     self.normal_text_settings
-                   ).rect.width
-
-                   ## ...for each of the existing options
-                   for value in self.options
-
-                 )
-
-               )
 
 ### utility function
+
 
 def get_option_obj(text, text_settings):
     """Create and return custom text object.
@@ -233,27 +189,20 @@ def get_option_obj(text, text_settings):
     ### original one, with the same height; 6 is just
     ### an arbitrary value based on what looks good
 
-    new_surf = render_rect(
-                 width + 6,
-                 height,
-                 text_settings['background_color']
-               )
+    new_surf = render_rect(width + 6, height, text_settings["background_color"])
 
     ### blit the original surface over the new one,
     ### with their center coordinates aligned
 
     blit_aligned(
-      surf,
-      new_surf,
-      retrieve_pos_from = 'center',
-      assign_pos_to     = 'center',
+        surf,
+        new_surf,
+        retrieve_pos_from="center",
+        assign_pos_to="center",
     )
 
     ### finally return an object containing the new surface
     ### as its 'image' attribute and a rect obtained from
     ### the surface as the 'rect' attribute
 
-    return Object2D(
-             image = new_surf,
-             rect  = new_surf.get_rect()
-           )
+    return Object2D(image=new_surf, rect=new_surf.get_rect())

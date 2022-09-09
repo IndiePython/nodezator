@@ -2,7 +2,7 @@
 
 ### standard library imports
 
-from pathlib   import Path
+from pathlib import Path
 from functools import partialmethod
 
 
@@ -10,7 +10,7 @@ from functools import partialmethod
 
 from pygame import Rect
 
-from pygame.draw import rect      as draw_rect
+from pygame.draw import rect as draw_rect
 from pygame.time import get_ticks as get_milliseconds
 
 
@@ -23,10 +23,10 @@ from ...dialog import create_and_show_dialog
 from ...ourstdlibs.behaviour import get_oblivious_callable
 
 from ...surfsman.draw import (
-                     blit_aligned,
-                     draw_border,
-                     draw_depth_finish,
-                   )
+    blit_aligned,
+    draw_border,
+    draw_depth_finish,
+)
 
 from ...surfsman.render import render_rect
 
@@ -36,31 +36,31 @@ from ...classes2d.collections import List2D
 from ...textman.label.main import Label
 
 from ...colorsman.colors import (
-                        BUTTON_BG,
-                        NORMAL_PATH_FG,
-                        NORMAL_PATH_BG,
-                        ACTIVE_SELECTION_OUTLINE,
-                      )
+    BUTTON_BG,
+    NORMAL_PATH_FG,
+    NORMAL_PATH_BG,
+    ACTIVE_SELECTION_OUTLINE,
+)
 
 from ..pathobj import PathObject
 
 from .newpathform import get_path
 
 from .surfs import (
-                              HOME_BUTTON_SURF,
-                              RELOAD_DIR_BUTTON_SURF,
-                              PARENT_BUTTON_SURF,
-                              NEW_FILE_BUTTON_SURF,
-                              NEW_FOLDER_BUTTON_SURF,
-                            )
+    HOME_BUTTON_SURF,
+    RELOAD_DIR_BUTTON_SURF,
+    PARENT_BUTTON_SURF,
+    NEW_FILE_BUTTON_SURF,
+    NEW_FOLDER_BUTTON_SURF,
+)
 
 from ..constants import (
-                         FONT_HEIGHT,
-                         PATH_OBJ_QUANTITY,
-                         PATH_OBJ_PADDING,
-                         PATH_OBJ_PARENT_TEXT,
-                         DIR_PANEL_WIDTH,
-                       )
+    FONT_HEIGHT,
+    PATH_OBJ_QUANTITY,
+    PATH_OBJ_PADDING,
+    PATH_OBJ_PARENT_TEXT,
+    DIR_PANEL_WIDTH,
+)
 
 ## class extensions
 
@@ -70,15 +70,15 @@ from .extraop import ExtraOperations
 
 
 class DirectoryPanel(
-      LoadingOperations,
-      MouseOperations,
-      ExtraOperations,
-    ):
+    LoadingOperations,
+    MouseOperations,
+    ExtraOperations,
+):
     """A panel to show the current directory contents."""
 
     def __init__(self, file_manager):
         """Assign variables, perform setups.
-        
+
         Parameters
         ==========
         file_manager (fileman.main.FileManager instance)
@@ -92,13 +92,10 @@ class DirectoryPanel(
         ### create a rect attribute
 
         self.rect = Rect(
-
-                      (0, 0),
-
-                      ## size
-                      (DIR_PANEL_WIDTH, 0)
-
-                    )
+            (0, 0),
+            ## size
+            (DIR_PANEL_WIDTH, 0),
+        )
 
         ### create a current directory attribute, using
         ### the pathlib.Path to the home directory
@@ -120,63 +117,33 @@ class DirectoryPanel(
         ## manager and the right of the file manager
         ## (with a bit of padding)
 
-        max_width = (
-
-          (self.fm.rect.right - 18)
-
-          - (
-            self.fm.rect.left
-            + self.fm.current_path_label_offset[0]
-          )
-
+        max_width = (self.fm.rect.right - 18) - (
+            self.fm.rect.left + self.fm.current_path_label_offset[0]
         )
 
         ## creation
 
-        self.current_path_lb = (
-
-          Label(
+        self.current_path_lb = Label(
             str(self.current_dir),
             font_height=FONT_HEIGHT,
             foreground_color=NORMAL_PATH_FG,
             background_color=NORMAL_PATH_BG,
             max_width=max_width,
-            ellipsis_at_end=False
-          )
-
+            ellipsis_at_end=False,
         )
 
         ### create and store buttons
 
-        for button_fg_surf, button_attr_name, behaviour \
-        in (
-
-          (
-            HOME_BUTTON_SURF,
-            'home_button',
-            self.load_home
-          ),
-          (
-            RELOAD_DIR_BUTTON_SURF,
-            'reload_dir_button',
-            self.load_current_dir_contents
-          ),
-          (
-            PARENT_BUTTON_SURF,
-            'parent_button',
-            self.load_parent
-          ),
-          (
-            NEW_FILE_BUTTON_SURF,
-            'new_file_button',
-            self.present_new_file_form
-          ),
-          (
-            NEW_FOLDER_BUTTON_SURF,
-            'new_folder_button',
-            self.present_new_folder_form
-          )
-
+        for button_fg_surf, button_attr_name, behaviour in (
+            (HOME_BUTTON_SURF, "home_button", self.load_home),
+            (
+                RELOAD_DIR_BUTTON_SURF,
+                "reload_dir_button",
+                self.load_current_dir_contents,
+            ),
+            (PARENT_BUTTON_SURF, "parent_button", self.load_parent),
+            (NEW_FILE_BUTTON_SURF, "new_file_button", self.present_new_file_form),
+            (NEW_FOLDER_BUTTON_SURF, "new_folder_button", self.present_new_folder_form),
         ):
 
             ## create button
@@ -185,31 +152,26 @@ class DirectoryPanel(
             # color
 
             button = Object2D.from_surface(
-                       render_rect(
-                         *button_fg_surf.get_size(),
-                         color = BUTTON_BG,
-                       )
-                     )
+                render_rect(
+                    *button_fg_surf.get_size(),
+                    color=BUTTON_BG,
+                )
+            )
 
             # combine both surfs
 
             blit_aligned(
-
-              surface_to_blit = button_fg_surf,
-              target_surface  = button.image,
-
-              retrieve_pos_from = 'center',
-              assign_pos_to     = 'center'
-
+                surface_to_blit=button_fg_surf,
+                target_surface=button.image,
+                retrieve_pos_from="center",
+                assign_pos_to="center",
             )
 
             # improve style
             draw_depth_finish(button.image)
 
             ## assign behaviour
-            button.on_mouse_release = (
-                     get_oblivious_callable(behaviour)
-                   )
+            button.on_mouse_release = get_oblivious_callable(behaviour)
 
             ## store button in attribute
             setattr(self, button_attr_name, button)
@@ -223,12 +185,9 @@ class DirectoryPanel(
 
         ### create and store surface to use as background
 
-        self.image = render_rect(
-                       *self.path_objs.rect.size,
-                       NORMAL_PATH_BG
-                     )
+        self.image = render_rect(*self.path_objs.rect.size, NORMAL_PATH_BG)
 
-        draw_border(self.image) # XXX is this needed?
+        draw_border(self.image)  # XXX is this needed?
 
     def create_path_objects(self):
         """Instantiate and store path objects."""
@@ -238,24 +197,19 @@ class DirectoryPanel(
         ### create special list to hold the path objects
 
         self.path_objs = List2D(
-
-          PathObject(
-            path=None,
-            width=width,
-            padding=PATH_OBJ_PADDING,
-          )
-
-          for _ in range(PATH_OBJ_QUANTITY)
-
+            PathObject(
+                path=None,
+                width=width,
+                padding=PATH_OBJ_PADDING,
+            )
+            for _ in range(PATH_OBJ_QUANTITY)
         )
 
         ### position objs relative to each other
 
         self.path_objs.rect.snap_rects_ip(
-
-          retrieve_pos_from = 'bottomleft',
-          assign_pos_to     = 'topleft',
-
+            retrieve_pos_from="bottomleft",
+            assign_pos_to="topleft",
         )
 
         ### assign height of self.path_objs plus 2
@@ -296,12 +250,14 @@ class DirectoryPanel(
         ### check whether the index corresponds to a path
         ### in the self.selectable_paths
 
-        try: path = self.selectable_paths[index]
+        try:
+            path = self.selectable_paths[index]
 
         ### if a TypeError is raised, then it is None,
         ### in which case we set the outline rect to None
-        except TypeError: self.outline_rect = None
-        
+        except TypeError:
+            self.outline_rect = None
+
         ### otherwise we check whether any of the path
         ### object holds that path
 
@@ -319,7 +275,8 @@ class DirectoryPanel(
                     break
 
             ## otherwise set the outline rect to None
-            else: self.outline_rect = None
+            else:
+                self.outline_rect = None
 
     def update_path_objects_paths(self):
         """Update the paths of each path object.
@@ -336,21 +293,22 @@ class DirectoryPanel(
         ### the paths deque (or None, if not available)
 
         for index, path_obj in enumerate(self.path_objs):
-            
-            try: path = self.paths_deque[index]
 
-            except IndexError: path = None
+            try:
+                path = self.paths_deque[index]
+
+            except IndexError:
+                path = None
 
             path_obj.update_path(path, parent_dir)
 
     def update_path_objs_appearance(self):
         """Update path objects to reflect selection state."""
         for path_obj in self.path_objs:
-            
-            ### try retrieving the index of the path
-            try: index = self.selectable_paths.index(
-                                            path_obj.path)
 
+            ### try retrieving the index of the path
+            try:
+                index = self.selectable_paths.index(path_obj.path)
 
             ### in case a value error occurs, it means
             ### the path isn't selectable (it is either
@@ -375,24 +333,26 @@ class DirectoryPanel(
             else:
 
                 selected_state = self.selection_states[index]
-                path_obj.change_selection_appearance(
-                                             selected_state)
+                path_obj.change_selection_appearance(selected_state)
 
     def draw(self):
         """Draw objects."""
         ### draw path objects
-        for obj in self.path_objs: obj.draw()
+        for obj in self.path_objs:
+            obj.draw()
 
         ### draw outline rect, if it is not None
 
-        try: draw_rect(
-               SCREEN,
-               ACTIVE_SELECTION_OUTLINE,
-               self.outline_rect,
-               2,
-             )
+        try:
+            draw_rect(
+                SCREEN,
+                ACTIVE_SELECTION_OUTLINE,
+                self.outline_rect,
+                2,
+            )
 
-        except TypeError: pass
+        except TypeError:
+            pass
 
     def change_current_dir(self, new_dir):
         """Change directory and rebuild content widgets.
@@ -402,7 +362,8 @@ class DirectoryPanel(
         ### if new_dir is falsy or it isn't even a directory
         ### or doesn't exist, cancel execution of the rest
         ### of the method by returning earlier
-        if not new_dir or not new_dir.is_dir(): return
+        if not new_dir or not new_dir.is_dir():
+            return
 
         ### otherwise, try loading the new directory,
         ### if you have the needed permission
@@ -415,7 +376,8 @@ class DirectoryPanel(
 
         ## try loading the contents of the new directory,
         ## which is now the current one
-        try: self.load_current_dir_contents()
+        try:
+            self.load_current_dir_contents()
 
         ## if you don't have the needed permission, inform
         ## the user and set the previous directory back
@@ -427,13 +389,10 @@ class DirectoryPanel(
             ## the error
 
             error_msg = (
-              "It seems we don't have permission to access"
-              " the directory. The following error was"
-              " issued: {}: {}"
-            ).format(
-                err.__class__.__name__,
-                str(err)
-              )
+                "It seems we don't have permission to access"
+                " the directory. The following error was"
+                " issued: {}: {}"
+            ).format(err.__class__.__name__, str(err))
 
             ## present the dialog
             create_and_show_dialog(error_msg)
@@ -447,40 +406,34 @@ class DirectoryPanel(
         ### return list...
 
         return [
-
-          ## of paths
-          path
-
-          ## from pairs of path + selection state
-
-          for path, selection_state
-
-          in zip(
-               self.selectable_paths,
-               self.selection_states
-             )
-
-          ## if said selection state is True 
-          if selection_state
-
+            ## of paths
+            path
+            ## from pairs of path + selection state
+            for path, selection_state in zip(
+                self.selectable_paths, self.selection_states
+            )
+            ## if said selection state is True
+            if selection_state
         ]
 
     def get_name_of_last_selected(self):
         """Return name of last selected path."""
         ### try retrieving last selected path, if there
         ### is one
-        try: last_selected_path = \
-             self.selectable_paths[self.last_selected_index]
+        try:
+            last_selected_path = self.selectable_paths[self.last_selected_index]
 
         ### if a TypeError is raised, then the index of
         ### last selected path is None, which means no path
         ### was selected yet, in which case we return an
         ### empty string
-        except TypeError: return ''
+        except TypeError:
+            return ""
 
         ### otherwise we return the name of the retrieved
         ### path
-        else: return last_selected_path.name
+        else:
+            return last_selected_path.name
 
     def present_new_path_form(self, is_file):
         """Present form to get a new path and pick action.
@@ -503,19 +456,20 @@ class DirectoryPanel(
         ### if the form data is None, it means the user
         ### cancelled the action, so return now to prevent
         ### any action from happening
-        if form_data is None: return
+        if form_data is None:
+            return
 
         ### otherwise we proceed according to the requested
         ### action
-        
+
         ## reference the action name and the new path
 
-        action_name = form_data['action_name']
-        path        = form_data['path']
+        action_name = form_data["action_name"]
+        path = form_data["path"]
 
         ## act according to requested action
 
-        if action_name == 'return_path':
+        if action_name == "return_path":
 
             ## make it so the file manager has the path
             ## in its selection, then submit the selection
@@ -523,19 +477,18 @@ class DirectoryPanel(
             self.fm.store_given_path(path)
             self.fm.submit_selected()
 
-        elif action_name == 'create_path':
-            
+        elif action_name == "create_path":
+
             ## pick path creation operation according to
             ## kind of path chosen
 
-            creation_operation = (
-              Path.touch if is_file else Path.mkdir
-            )
+            creation_operation = Path.touch if is_file else Path.mkdir
 
             ## try creating path ('exist_ok' set to False
             ## causes an error to be raised if path already
             ## exists)
-            try: creation_operation(path, exist_ok=False)
+            try:
+                creation_operation(path, exist_ok=False)
 
             ## report error message if error occurs
 
@@ -549,13 +502,8 @@ class DirectoryPanel(
                 # the error
 
                 error_msg = (
-                  "The following error prevented the {}"
-                  " from being created: {}: {}"
-                ).format(
-                    path_kind,
-                    err.__class__.name,
-                    str(err)
-                  )
+                    "The following error prevented the {}" " from being created: {}: {}"
+                ).format(path_kind, err.__class__.name, str(err))
 
                 # present the dialog
                 create_and_show_dialog(error_msg)
@@ -575,29 +523,20 @@ class DirectoryPanel(
 
         else:
 
-            raise RuntimeError((
-              "'action_name' must be either 'return path'"
-              " or 'create path'"
-            ))
+            raise RuntimeError(
+                ("'action_name' must be either 'return path'" " or 'create path'")
+            )
 
-    present_new_file_form = (
-      partialmethod(present_new_path_form, True)
-    )
+    present_new_file_form = partialmethod(present_new_path_form, True)
 
-    present_new_folder_form = (
-      partialmethod(present_new_path_form, False)
-    )
+    present_new_folder_form = partialmethod(present_new_path_form, False)
 
     def reposition(self):
         """Reposition panel relative to file manager."""
 
-        self.rect.topleft = (
-          self.fm.rect.move(305, 100).topleft
-        )
+        self.rect.topleft = self.fm.rect.move(305, 100).topleft
 
-        self.path_objs.rect.topleft = (
-          self.rect.move(1, 1).topleft
-        )
+        self.path_objs.rect.topleft = self.rect.move(1, 1).topleft
 
         for path_obj in self.path_objs:
             path_obj.reposition_icon_and_text()

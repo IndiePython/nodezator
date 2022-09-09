@@ -7,24 +7,24 @@ from pygame import Rect
 ### local imports
 
 from ...fontsman.constants import (
-                          ENC_SANS_BOLD_FONT_PATH,
-                          FIRA_MONO_BOLD_FONT_PATH,
-                        )
+    ENC_SANS_BOLD_FONT_PATH,
+    FIRA_MONO_BOLD_FONT_PATH,
+)
 
 from ...colorsman.colors import (
-                        TEXT_EDITING_AREA_FG,
-                        TEXT_EDITING_AREA_BG,
-                      )
+    TEXT_EDITING_AREA_FG,
+    TEXT_EDITING_AREA_BG,
+)
 
 
 ### general constants
 
-FONT_HEIGHT             = 20
+FONT_HEIGHT = 20
 NUMBER_OF_VISIBLE_LINES = 28
 
 EDITING_AREA_HEIGHT = FONT_HEIGHT * NUMBER_OF_VISIBLE_LINES
 
-TEXT_EDITOR_WIDTH  = 1000
+TEXT_EDITOR_WIDTH = 1000
 TEXT_EDITOR_HEIGHT = EDITING_AREA_HEIGHT + 100
 
 # note that the 100 pixels we add to the text editor's
@@ -39,8 +39,7 @@ TEXT_EDITOR_HEIGHT = EDITING_AREA_HEIGHT + 100
 
 ## rect representing the text editor
 
-TEXT_EDITOR_RECT = \
-    Rect(0, 0, TEXT_EDITOR_WIDTH, TEXT_EDITOR_HEIGHT)
+TEXT_EDITOR_RECT = Rect(0, 0, TEXT_EDITOR_WIDTH, TEXT_EDITOR_HEIGHT)
 
 ## rect representing the editing area
 ##
@@ -62,15 +61,15 @@ EDITING_AREA_RECT.center = TEXT_EDITOR_RECT.center
 ### the TextEditor.edit_text() call
 
 SANS_FONT_SETTINGS = {
-  'font_height'      : FONT_HEIGHT,
-  'font_path'        : ENC_SANS_BOLD_FONT_PATH,
-  'foreground_color' : TEXT_EDITING_AREA_FG,
-  'background_color' : TEXT_EDITING_AREA_BG
+    "font_height": FONT_HEIGHT,
+    "font_path": ENC_SANS_BOLD_FONT_PATH,
+    "foreground_color": TEXT_EDITING_AREA_FG,
+    "background_color": TEXT_EDITING_AREA_BG,
 }
 
 MONO_FONT_SETTINGS = {
-  'font_height'      : FONT_HEIGHT,
-  'font_path'        : FIRA_MONO_BOLD_FONT_PATH,
-  'foreground_color' : TEXT_EDITING_AREA_FG,
-  'background_color' : TEXT_EDITING_AREA_BG
+    "font_height": FONT_HEIGHT,
+    "font_path": FIRA_MONO_BOLD_FONT_PATH,
+    "foreground_color": TEXT_EDITING_AREA_FG,
+    "background_color": TEXT_EDITING_AREA_BG,
 }

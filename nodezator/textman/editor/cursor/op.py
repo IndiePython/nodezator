@@ -15,12 +15,13 @@ from ....pygameconstants import SCREEN, blit_on_screen
 from ....ourstdlibs.behaviour import had_to_set_new_value
 
 from ..constants import (
-                                TEXT_EDITOR_RECT,
-                                EDITING_AREA_RECT,
-                              )
+    TEXT_EDITOR_RECT,
+    EDITING_AREA_RECT,
+)
 
 
 ### class definition
+
 
 class GeneralOperations:
     """General operations for the cursor class' lifetime."""
@@ -36,7 +37,7 @@ class GeneralOperations:
         ### calculate the maximum number of characters
         ### needed to blit the number of a line
 
-        n_of_lines      = len(self.lines)
+        n_of_lines = len(self.lines)
         max_char_needed = len(str(n_of_lines))
 
         ### the max_char_needed variable contains what we
@@ -51,9 +52,8 @@ class GeneralOperations:
         ### one), we trigger the adjustment of the editing
         ### area right away
 
-        if had_to_set_new_value(
-          self, 'max_char_needed', max_char_needed
-        ): self.adjust_editing_area_left_and_width()
+        if had_to_set_new_value(self, "max_char_needed", max_char_needed):
+            self.adjust_editing_area_left_and_width()
 
     def adjust_editing_area_left_and_width(self):
         """Adjust the left and width of the editing area.
@@ -66,29 +66,21 @@ class GeneralOperations:
         ### maximum width occupied by the surfaces forming
         ### line numbers
 
-        max_lineno_width = (
-          self.max_char_needed
-          * self.__class__.DIGIT_SURF_WIDTH
-        )
-
+        max_lineno_width = self.max_char_needed * self.__class__.DIGIT_SURF_WIDTH
 
         ### based on the maximum width we just calculated,
         ### define a new left for the editing area
 
         new_left = (
-
-          # start from the x coordinate from where we
-          # blit line numbers 
-          self.te.line_number_x
-
-          # add the width which will be occupied by the
-          # line numbers
-          + max_lineno_width
-
-          # add 15 pixels as padding between the line
-          # numbers and the left of the text editing area
-          + 15
-
+            # start from the x coordinate from where we
+            # blit line numbers
+            self.te.line_number_x
+            # add the width which will be occupied by the
+            # line numbers
+            + max_lineno_width
+            # add 15 pixels as padding between the line
+            # numbers and the left of the text editing area
+            + 15
         )
 
         ### the right used is always the right of the text
@@ -112,7 +104,7 @@ class GeneralOperations:
         ### assigning the new_left and new_width to their
         ### respective properties
 
-        EDITING_AREA_RECT.left  = new_left
+        EDITING_AREA_RECT.left = new_left
         EDITING_AREA_RECT.width = new_width
 
         ### now that the editing area is rellocated and its
@@ -120,10 +112,7 @@ class GeneralOperations:
         ### editor again, along with the area for the
         ### line numbers
 
-        self.te.paint_editing_and_lineno_areas(
-                  self.background_color,
-                  self.lineno_bg
-                )
+        self.te.paint_editing_and_lineno_areas(self.background_color, self.lineno_bg)
 
         ### since we changed the position of the text
         ### editing area along the x axis, we need to
@@ -135,10 +124,7 @@ class GeneralOperations:
         ## the text editing area and the left of the text
         ## (represented here by the lines)
 
-        delta_x = (
-          EDITING_AREA_RECT.left
-          - self.visible_lines.rect.left
-        )
+        delta_x = EDITING_AREA_RECT.left - self.visible_lines.rect.left
 
         ## offset the cursor and lines in the x axis by
         ## the obtained delta x
@@ -169,12 +155,12 @@ class GeneralOperations:
         There might be, though, rare cases where a character
         has a height different than that of the vast majority
         of other character.
-        
+
         We didn't address this possibility yet, because on
         top of being rare, the slight difference in height
         might not be enough to justify adjusting the position
         of objects vertically.
-        
+
         That is, the character might still be visible enough
         to be comfortably identified by the user editing the
         text.
@@ -188,13 +174,14 @@ class GeneralOperations:
         ### reference the cursor rect and obtain a copy of
         ### it clamped to the editing area rect
 
-        rect    = self.rect
+        rect = self.rect
         clamped = rect.clamp(EDITING_AREA_RECT)
 
         ### if such rects have the same horizontal position,
         ### it means there is no need for horizontal clamping
         ### so we just return right away
-        if clamped.x == rect.x: return
+        if clamped.x == rect.x:
+            return
 
         ### otherwise, it means we need to clamp the cursor
         ### horizontally and move the visible lines
@@ -228,8 +215,7 @@ class GeneralOperations:
         ### number
 
         for lineno, line in enumerate(
-          self.visible_lines,
-          self.top_visible_line_index + 1 # start lineno
+            self.visible_lines, self.top_visible_line_index + 1  # start lineno
         ):
 
             ### draw line
@@ -252,16 +238,12 @@ class GeneralOperations:
             ## coordinate so they are blitted one beside
             ## the other
 
-            for char \
-            in str(lineno).rjust(self.max_char_needed, ' '):
+            for char in str(lineno).rjust(self.max_char_needed, " "):
 
                 ## blit line number character on screen
                 ## (character is either a space or a digit)
 
-                blit_on_screen(
-                         digit_surf_map[char],
-                         (lineno_x, line_y)
-                       )
+                blit_on_screen(digit_surf_map[char], (lineno_x, line_y))
 
                 ## increment x coordinate of line number
                 lineno_x += digit_width
@@ -271,9 +253,7 @@ class GeneralOperations:
 
     def get_text(self):
         """Return text of lines joined with os.linesep."""
-        return linesep.join(
-                         line.get() for line in self.lines
-                       )
+        return linesep.join(line.get() for line in self.lines)
 
     def get_mode(self):
         """Return current mode name as string."""
@@ -281,10 +261,10 @@ class GeneralOperations:
         ### used
 
         if self.handle_input == self.normal_mode_handling:
-            return 'normal'
+            return "normal"
 
         elif self.handle_input == self.insert_mode_handling:
-            return 'insert'
+            return "insert"
 
         ### if no known event handling method is being used,
         ### which should not be possible, we assume
@@ -292,10 +272,12 @@ class GeneralOperations:
 
         else:
 
-            raise RuntimeError((
+            raise RuntimeError(
+                (
                     "Entered 'else' block never supposed to"
                     " be entered; logic went wrong somewhere"
-                  ))
+                )
+            )
 
     def enable_normal_mode(self):
         """Assign normal mode behaviour to event handling."""
@@ -314,7 +296,8 @@ class GeneralOperations:
         ### prevent the cursor from resting at the right
         ### side of the last character, in case it is
         ### positioned there when leaving insert mode
-        if mode_name == 'insert': self.go_left()
+        if mode_name == "insert":
+            self.go_left()
 
         ### indicate the normal mode in the statusbar
         ### (by having it show nothing, just like in Vim
@@ -333,7 +316,8 @@ class GeneralOperations:
     def free_up_memory(self):
         """Free memory by removing all text objects."""
         ### clear character objects from each line
-        for line in self.lines: line.clear()
+        for line in self.lines:
+            line.clear()
 
         ### then clear the lines themselves
         self.lines.clear()

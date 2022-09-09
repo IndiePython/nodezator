@@ -14,6 +14,7 @@ from ..classes2d.single import Object2D
 
 from ..surfsman.draw import draw_checker_pattern
 from ..surfsman.render import render_rect
+
 # TODO render_rect usage throughout the module should
 # probably be replaced by usage of the RECT_SURF_MAP
 # from surfsman/cache.py, which caches the surface;
@@ -31,6 +32,7 @@ CONTRASTING_COLOR_MAP = FactoryDict(get_contrasting_bw)
 
 ### utility function
 
+
 def new_checkered_surf_from_size(size):
     """Return surface of given size with checker pattern.
 
@@ -46,17 +48,14 @@ def new_checkered_surf_from_size(size):
 
     ### draw the checker pattern on it
 
-    draw_checker_pattern(
-      checkered_surf,
-      TRANSP_COLOR_A, TRANSP_COLOR_B,
-      16, 16
-    )
+    draw_checker_pattern(checkered_surf, TRANSP_COLOR_A, TRANSP_COLOR_B, 16, 16)
 
     ### return the surface
     return checkered_surf
 
 
 ### class definition
+
 
 class Color2D(Object2D):
     """Common color representation.
@@ -69,25 +68,18 @@ class Color2D(Object2D):
     checkered pattern visible through the color's
     transparency to make the transparency apparent.
     """
-    
+
     ### class attribute containing a dictionary used to
     ### map a given size to a surface of that size with a
     ### checkered pattern
 
     # TODO this map should probably be a module level
     # constant
-    SIZE_TO_CHECKERED_SURF = FactoryDict(
-                               new_checkered_surf_from_size
-                             )
+    SIZE_TO_CHECKERED_SURF = FactoryDict(new_checkered_surf_from_size)
 
     def __init__(
-          self,
-          width,
-          height,
-          color,
-          coordinates_name='topleft',
-          coordinates_value=(0, 0)
-        ):
+        self, width, height, color, coordinates_name="topleft", coordinates_value=(0, 0)
+    ):
         """Store arguments and perform setups.
 
         Parameters
@@ -124,9 +116,7 @@ class Color2D(Object2D):
 
         self.rect = self.image.get_rect()
 
-        setattr(
-          self.rect, coordinates_name, coordinates_value
-        )
+        setattr(self.rect, coordinates_name, coordinates_value)
 
     def set_color(self, color):
         """Store color and create surface representing it.
@@ -166,15 +156,10 @@ class Color2D(Object2D):
 
         self.color = color
 
-        self.contrasting_color = CONTRASTING_COLOR_MAP[
-                                   color
-                                 ]
-
+        self.contrasting_color = CONTRASTING_COLOR_MAP[color]
 
         ### obtain a checkered surface with this widget size
-        checkered_surf = self.SIZE_TO_CHECKERED_SURF[
-                                self.size
-                              ]
+        checkered_surf = self.SIZE_TO_CHECKERED_SURF[self.size]
 
         ### copy the checkered surface in the 'image'
         ### attribute

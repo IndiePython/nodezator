@@ -7,37 +7,41 @@ from collections import defaultdict
 from io import BytesIO
 
 from tokenize import (
-
-                     ## tokens to ignore
-                     ENCODING, ENDMARKER, NEWLINE, NL,
-                     INDENT, DEDENT,
-
-                     ## tokens to process
-                     COMMENT, NUMBER, NAME, STRING, OP,
-
-                     ## function for tokenizing source
-                     tokenize)
+    ## tokens to ignore
+    ENCODING,
+    ENDMARKER,
+    NEWLINE,
+    NL,
+    INDENT,
+    DEDENT,
+    ## tokens to process
+    COMMENT,
+    NUMBER,
+    NAME,
+    STRING,
+    OP,
+    ## function for tokenizing source
+    tokenize,
+)
 
 
 ### local imports
 
 from ....ourstdlibs.mathutils import get_remaining_intervals
 
-from ....ourstdlibs.exceptionutils import \
-                              new_raiser_from_existing_deco
+from ....ourstdlibs.exceptionutils import new_raiser_from_existing_deco
 
 from ...exception import SyntaxMappingError
 
-from .namemap import \
-                                         HIGHLIGHT_NAME_MAP
+from .namemap import HIGHLIGHT_NAME_MAP
 
 from .utils import (
-                               is_triple_quotes_string,
-                               has_def_or_class_statement,
-                               interval_of_next_def_word,
-                               represents_applied_decorator,
-                               get_comment_offset_intervals
-                             )
+    is_triple_quotes_string,
+    has_def_or_class_statement,
+    interval_of_next_def_word,
+    represents_applied_decorator,
+    get_comment_offset_intervals,
+)
 
 
 ### XXX implement doctest highlighting inside docstrings
@@ -46,16 +50,15 @@ from .utils import (
 
 ### constant (tokens which are not processed)
 
-TOKENS_TO_IGNORE = {
-  ENCODING, ENDMARKER, NEWLINE, NL, INDENT, DEDENT
-}
+TOKENS_TO_IGNORE = {ENCODING, ENDMARKER, NEWLINE, NL, INDENT, DEDENT}
 
 
 ### function definition
 
+
 @new_raiser_from_existing_deco(
-  new_exception=SyntaxMappingError,
-  new_message="error while mapping syntax of Python code"
+    new_exception=SyntaxMappingError,
+    new_message="error while mapping syntax of Python code",
 )
 def get_python_syntax_map(source_text):
     """Return dict mapping portions to respective category.
@@ -93,7 +96,7 @@ def get_python_syntax_map(source_text):
     >>> # "python -m doctest" can't find this function
     >>> # anymore, so this test isn't performed; think
     >>> # about solutions for this
-    
+
     >>> text = "condition = True"
     >>> expected_output = {
     ...   0: {
@@ -125,32 +128,24 @@ def get_python_syntax_map(source_text):
     ### representing tokens (data from each token) when we
     ### iterate over it
 
-    raw_tokens = tokenize(
-                   BytesIO(
-                     source_text.encode('utf-8')
-                   ).readline
-                 )
-    
+    raw_tokens = tokenize(BytesIO(source_text.encode("utf-8")).readline)
+
     ### also list all lines in the source
     source_lines = source_text.splitlines()
 
-
     ### iterate over tokens changing them as desired;
 
-    for (
-      token_type, token_string,
-      token_start, token_end, token_line
-    ) in raw_tokens:
+    for (token_type, token_string, token_start, token_end, token_line) in raw_tokens:
 
         ### ignore tokens
 
         ## ignore tokens from special constant
-        if token_type in TOKENS_TO_IGNORE: continue
-
-        ## ignore all OP tokens, except '@'
-        if token_type == OP and token_string != '@':
+        if token_type in TOKENS_TO_IGNORE:
             continue
 
+        ## ignore all OP tokens, except '@'
+        if token_type == OP and token_string != "@":
+            continue
 
         ### store the line number where the token begins
         ### (STRING tokens may take multiple lines)
@@ -158,7 +153,6 @@ def get_python_syntax_map(source_text):
 
         ### store the interval of the token
         interval = token_start[1], token_end[1]
-
 
         ### process single line token
 
@@ -175,29 +169,21 @@ def get_python_syntax_map(source_text):
                 ## define category name
 
                 string_category_name = (
-
-                  'triple_quotes_string'
-                  if is_triple_quotes_string(token_string)
-
-                  else 'string'
-
+                    "triple_quotes_string"
+                    if is_triple_quotes_string(token_string)
+                    else "string"
                 )
 
                 ## map interval to category name
 
-                (
-                  line_index_to_data[line_index][interval]
-                ) = string_category_name
-
+                (line_index_to_data[line_index][interval]) = string_category_name
 
             ## if token is a number, just map the interval
             ## to the 'number' category name
 
             elif token_type == NUMBER:
 
-                (
-                  line_index_to_data[line_index][interval]
-                ) = 'number'
+                (line_index_to_data[line_index][interval]) = "number"
 
             ## comments have special treatment in which
             ## "todo" words, though part of the comment,
@@ -213,42 +199,36 @@ def get_python_syntax_map(source_text):
                 ## decompose comments into normal comment
                 ## text and "todo" words
 
-                interval_category_pairs = \
-                    get_comment_offset_intervals(
-                               token_line, interval[0])
-                
+                interval_category_pairs = get_comment_offset_intervals(
+                    token_line, interval[0]
+                )
+
                 ## map the intervals to their respective
                 ## category names
 
-                for interval, comment_category_name \
-                in interval_category_pairs:
+                for interval, comment_category_name in interval_category_pairs:
 
-                    (
-                      line_index_to_data
-                      [line_index][interval]
-                    ) = comment_category_name
+                    (line_index_to_data[line_index][interval]) = comment_category_name
 
             ## names (identifiers) in Python are highlighted
             ## according to several rules...
 
             elif token_type == NAME:
-                
+
                 ## if the name is present in a special map,
                 ## grab the respective value as the
                 ## category of that name and map the interval
                 ## to that category
 
-                try: category_of_name = \
-                           HIGHLIGHT_NAME_MAP[token_string]
+                try:
+                    category_of_name = HIGHLIGHT_NAME_MAP[token_string]
 
-                except KeyError: pass
+                except KeyError:
+                    pass
 
                 else:
 
-                    (
-                      line_index_to_data[line_index][interval]
-                    ) = category_of_name
-
+                    (line_index_to_data[line_index][interval]) = category_of_name
 
                 ## additionally, if the name is a 'def' or
                 ## 'class' statement, mark the word after
@@ -264,16 +244,13 @@ def get_python_syntax_map(source_text):
                 ## an attribute name used after a '.'
                 ## operator, for instance)
 
-                if token_string in ('def', 'class') \
-                and has_def_or_class_statement(token_line):
+                if token_string in ("def", "class") and has_def_or_class_statement(
+                    token_line
+                ):
 
-                    interval = \
-                      interval_of_next_def_word(token_line)
+                    interval = interval_of_next_def_word(token_line)
 
-                    (
-                      line_index_to_data
-                      [line_index][interval]
-                    ) = 'name_after_definition'
+                    (line_index_to_data[line_index][interval]) = "name_after_definition"
 
             ## process the '@' operator;
             ##
@@ -282,7 +259,7 @@ def get_python_syntax_map(source_text):
             ## "for loop" we ignored all other operators)
 
             elif token_type == OP:
-                
+
                 ## if the '@' represents the usage of
                 ## a decorator over a class, method or
                 ## function definition (regardless of
@@ -298,9 +275,9 @@ def get_python_syntax_map(source_text):
                 # operator itself) if it really
                 # represents the usage of a decorator
 
-                decorator_name_interval = \
-                    represents_applied_decorator(
-                                  line_index, source_lines)
+                decorator_name_interval = represents_applied_decorator(
+                    line_index, source_lines
+                )
 
                 # if the interval of the name after the
                 # decorator really exists, it means we
@@ -310,16 +287,12 @@ def get_python_syntax_map(source_text):
                 # category names
 
                 if decorator_name_interval:
-                    
-                    (
-                      line_index_to_data
-                      [line_index][interval]
-                    ) = 'decorator_at'
+
+                    (line_index_to_data[line_index][interval]) = "decorator_at"
 
                     (
-                      line_index_to_data
-                      [line_index][decorator_name_interval]
-                    ) = 'name_after_decorator_at'
+                        line_index_to_data[line_index][decorator_name_interval]
+                    ) = "name_after_decorator_at"
 
         ### otherwise process multiline string
         ###
@@ -338,11 +311,11 @@ def get_python_syntax_map(source_text):
             if token_type != STRING:
 
                 raise RuntimeError(
-                  (
-                    "a token other than STRING has reached"
-                    " this 'else' block, which is unexpected"
-                    "; its token string: '{}'"
-                  ).format(token_string)
+                    (
+                        "a token other than STRING has reached"
+                        " this 'else' block, which is unexpected"
+                        "; its token string: '{}'"
+                    ).format(token_string)
                 )
 
             ## process string as a triple quotes string
@@ -353,15 +326,13 @@ def get_python_syntax_map(source_text):
                 ## last lines containing the string
 
                 first_line_index = line_index
-                last_line_index  = token_end  [0] - 1
+                last_line_index = token_end[0] - 1
 
                 ## iterate over the indices of each line,
                 ## from the first to the last one
 
-                for line_index in range(
-                  first_line_index, last_line_index + 1
-                ):
-                    
+                for line_index in range(first_line_index, last_line_index + 1):
+
                     ## grab the line text
                     line_text = source_lines[line_index]
 
@@ -372,23 +343,19 @@ def get_python_syntax_map(source_text):
 
                     if line_index == first_line_index:
 
-                        interval = (
-                          token_start[1], len(line_text)
-                        )
+                        interval = (token_start[1], len(line_text))
 
                     elif line_index == last_line_index:
                         interval = (0, token_end[1])
 
-                    else: interval = (0, len(line_text))
+                    else:
+                        interval = (0, len(line_text))
 
                     ## then map that interval to the name
                     ## of the category representing triple
                     ## quotes strings
 
-                    (
-                      line_index_to_data
-                      [line_index][interval]
-                    ) = 'triple_quotes_string'
+                    (line_index_to_data[line_index][interval]) = "triple_quotes_string"
 
             ## just cause the string spans multiple lines,
             ## it doesn't mean it is a triple quotes string,
@@ -399,10 +366,7 @@ def get_python_syntax_map(source_text):
 
             else:
 
-                (
-                  line_index_to_data[line_index][interval]
-                ) = 'string'
-
+                (line_index_to_data[line_index][interval]) = "string"
 
     ### since we already know which intervals contains
     ### highlighted text, now we only need to do the
@@ -410,19 +374,17 @@ def get_python_syntax_map(source_text):
     ### of text contain normal text
 
     for line_index, line_text in enumerate(source_lines):
-        
+
         ## ignore line if it is empty
-        if not line_text: continue
+        if not line_text:
+            continue
 
         ## otherwise define the intervals of normal text
 
-        normal_intervals = \
-          get_remaining_intervals(
+        normal_intervals = get_remaining_intervals(
             all_indices=range(len(line_text)),
-            intervals_to_subtract=(
-              line_index_to_data[line_index].keys()
-            )
-          )
+            intervals_to_subtract=(line_index_to_data[line_index].keys()),
+        )
 
         ## and store then in the highlight data as
         ## "normal" text;
@@ -434,12 +396,10 @@ def get_python_syntax_map(source_text):
 
             for interval in normal_intervals:
 
-                (
-                  line_index_to_data[line_index][interval]
-                ) = 'normal'
+                (line_index_to_data[line_index][interval]) = "normal"
 
-        except RuntimeError: pass
-
+        except RuntimeError:
+            pass
 
     ### finally return the highlighting data as a regular
     ### dict since we don't need the defaultdict

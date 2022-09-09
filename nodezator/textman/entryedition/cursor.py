@@ -26,14 +26,12 @@ class EntryCursor:
     """Simple text cursor for entry-like widgets."""
 
     def __init__(
-
-          self,
-          text,
-          font_settings,
-          entry_widget,
-          cursor_color=BLACK,
-
-        ):
+        self,
+        text,
+        font_settings,
+        entry_widget,
+        cursor_color=BLACK,
+    ):
         """Store variables and perform setups.
 
         Parameters
@@ -54,7 +52,7 @@ class EntryCursor:
 
         ### retrieve the font height from the font settings
         ### to use as the height of this cursor
-        height = font_settings['font_height']
+        height = font_settings["font_height"]
 
         ### create a rect for the cursor
 
@@ -71,11 +69,7 @@ class EntryCursor:
 
         ### instantiate an empty line
 
-        self.line = EntryLine(
-                      '',
-                      self.entry_widget.rect.topleft,
-                      font_settings
-                    )
+        self.line = EntryLine("", self.entry_widget.rect.topleft, font_settings)
 
         ### set text on line and perform additional setups;
         ### from now on, the line will be holding the text
@@ -120,7 +114,7 @@ class EntryCursor:
         ### reference the cursor rect locally and obtain
         ### a copy of it clamped to the entry's rect
 
-        rect    = self.rect
+        rect = self.rect
         clamped = rect.clamp(self.entry_widget.rect)
 
         ### if such rects are equal, it means the clamping
@@ -128,7 +122,8 @@ class EntryCursor:
         ### was already inside the entry's rect; if this is
         ### the case, there's nothing left to do, so we can
         ### return right away
-        if clamped == rect: return
+        if clamped == rect:
+            return
 
         ### otherwise, it means we need to clamp the cursor
         ### and move the text (represented here by the line)
@@ -149,7 +144,7 @@ class EntryCursor:
         ### reference the entry's image and rect locally
 
         entry_image = self.entry_widget.image
-        entry_rect  = self.entry_widget.rect
+        entry_rect = self.entry_widget.rect
 
         ### define offset
         offset = -Vector2(entry_rect.topleft)
@@ -160,26 +155,17 @@ class EntryCursor:
 
             if char_obj.rect.colliderect(entry_rect):
 
-                entry_image.blit(
-                  char_obj.image,
-                  char_obj.rect.move(offset)
-                )
+                entry_image.blit(char_obj.image, char_obj.rect.move(offset))
 
         ### draw cursor rect
 
-        draw_rect(
-          entry_image,
-          self.cursor_color,
-          self.rect.move(offset),
-          1
-        )
-
+        draw_rect(entry_image, self.cursor_color, self.rect.move(offset), 1)
 
     ### navigation method
 
     def navigate(self, cols):
         """Jump number of columns provided.
-        
+
         Parameters
         ==========
         cols (integer)
@@ -212,7 +198,8 @@ class EntryCursor:
 
         ## try retrieving character sitting at the column we
         ## just defined
-        try: char_obj = self.line[self.col]
+        try:
+            char_obj = self.line[self.col]
 
         ## if an IndexError occurs, it means that there is
         ## no character where the cursor sits, so we
@@ -224,11 +211,10 @@ class EntryCursor:
             ## right of the last character
 
             if (
-              # line is not empty
-              max_col_index
-
-              # and index is an unit after the last index
-              and self.col == max_col_index
+                # line is not empty
+                max_col_index
+                # and index is an unit after the last index
+                and self.col == max_col_index
             ):
 
                 # if this is the case, we just position the
@@ -236,34 +222,34 @@ class EntryCursor:
                 # (the one sitting at the column before the
                 # current one)
 
-                char_obj = self.line[self.col-1]
+                char_obj = self.line[self.col - 1]
                 self.rect.topleft = char_obj.rect.topright
 
             ## in all other scenarios we assume the line is
             ## empty, so we just place the cursor at the
             ## beginning of the line
-            else: self.rect.topleft = self.line.rect.topleft
+            else:
+                self.rect.topleft = self.line.rect.topleft
 
         ## if we otherwise succeed in retrieving the char
         ## in the current column, we move the cursor to the
         ## position of that character object;
-        ## 
+        ##
         ## we also update the cursor size to that of the
         ## character obj
 
         else:
 
             self.rect.topleft = char_obj.rect.topleft
-            self.rect.size    = char_obj.rect.size
+            self.rect.size = char_obj.rect.size
 
-    go_left  = partialmethod(navigate, -1)
-    go_right = partialmethod(navigate,  1)
+    go_left = partialmethod(navigate, -1)
+    go_right = partialmethod(navigate, 1)
 
     go_to_beginning = partialmethod(navigate, -INFINITY)
-    go_to_end       = partialmethod(navigate,  INFINITY)
+    go_to_end = partialmethod(navigate, INFINITY)
 
-    reposition = partialmethod(navigate,  0)
-
+    reposition = partialmethod(navigate, 0)
 
     ### text editing operations
 
@@ -305,7 +291,8 @@ class EntryCursor:
         ### if self.col equals 0, there's no character
         ### before the cursor to delete, so we can leave
         ### the method right away
-        if self.col == 0: return
+        if self.col == 0:
+            return
 
         ### otherwise we delete the character before the
         ### cursor
@@ -342,7 +329,8 @@ class EntryCursor:
         ### of the line, then there is no character sitting
         ### under the cursor for us to delete, so we leave
         ### the method right away
-        if self.col >= len(self.line): return
+        if self.col >= len(self.line):
+            return
 
         ### otherwise we delete the character under the
         ### cursor
@@ -351,7 +339,8 @@ class EntryCursor:
         del self.line[self.col]
 
         ## try retrieving a char object under the cursor
-        try: char_obj = self.line[self.col]
+        try:
+            char_obj = self.line[self.col]
 
         ## if there's no character (an index error occurs),
         ## it means we deleted the character in the last
@@ -359,7 +348,8 @@ class EntryCursor:
         ## under the cursor now;
         ##
         ## there's no problem with this, so we just pass
-        except IndexError: pass
+        except IndexError:
+            pass
 
         ## if the char object exists, though, we need to
         ## perform extra tasks
@@ -374,7 +364,6 @@ class EntryCursor:
             # assign the size of the character currently
             # under the cursor to the cursor
             self.rect.size = char_obj.rect.size
-
 
     def delete_previous_word(self):
         """Delete word before cursor.
@@ -391,7 +380,8 @@ class EntryCursor:
             ### if self.col equals 0, there's no character
             ### before the cursor to delete, so we can leave
             ### the method right away
-            if self.col == 0: return
+            if self.col == 0:
+                return
 
             ### otherwise we delete the character before the
             ### cursor
@@ -399,7 +389,7 @@ class EntryCursor:
             # Check if the next character is a new word. If
             # so we are done.
             char_obj = self.get()[self.col - 1]
-            if char_obj == ' ':
+            if char_obj == " ":
                 self.delete_previous()
                 return
 

@@ -12,10 +12,10 @@ from ...classes2d.single import Object2D
 from ...classes2d.collections import List2D
 
 from .surfs import (
-                                       MOVE_UP_BUTTON_SURF,
-                                       MOVE_DOWN_BUTTON_SURF,
-                                       REMOVE_BUTTON_SURF,
-                                     )
+    MOVE_UP_BUTTON_SURF,
+    MOVE_DOWN_BUTTON_SURF,
+    REMOVE_BUTTON_SURF,
+)
 
 
 ### XXX lots of operations of this class could be
@@ -27,28 +27,32 @@ from .surfs import (
 ### regarding the usage of the custom command
 
 ### sentinel class
-class Sentinel: pass
+class Sentinel:
+    pass
+
 
 ### class definition
+
 
 class ListWidgetLifetimeOperations:
     """Operations for lifetime of ListWidget instances."""
 
     def add_item(
-          self,
-          value=Sentinel,
-          custom_command=True,
-          quantity_command=True,
-          reference_clickables=True,
-          update_value=True,
-        ):
+        self,
+        value=Sentinel,
+        custom_command=True,
+        quantity_command=True,
+        reference_clickables=True,
+        update_value=True,
+    ):
         """Create new widget for the widget list.
 
         Accompanying buttons are also created.
         """
         ### if value is a sentinel, grab a new one from
         ### the default factory
-        if value is Sentinel: value = self.default_factory()
+        if value is Sentinel:
+            value = self.default_factory()
 
         ### if the self.value will be updated, and thereby
         ### incremented, since this operation adds an item,
@@ -72,83 +76,60 @@ class ListWidgetLifetimeOperations:
 
         ### instantiate and store moving buttons
 
-
         ## move up button
 
         move_up_on_mouse_release = get_oblivious_callable(
-                                     partial(
-                                       self.move_item_up,
-                                       item_objs
-                                     )
-                                   )
+            partial(self.move_item_up, item_objs)
+        )
 
-        move_up_button = \
-          Object2D(
+        move_up_button = Object2D(
             image=MOVE_UP_BUTTON_SURF,
             rect=MOVE_UP_BUTTON_SURF.get_rect(),
-            on_mouse_release=move_up_on_mouse_release
-          )
+            on_mouse_release=move_up_on_mouse_release,
+        )
 
         ## move down button
 
         move_down_on_mouse_release = get_oblivious_callable(
-                                       partial(
-                                         self.move_item_down,
-                                         item_objs
-                                       )
-                                     )
+            partial(self.move_item_down, item_objs)
+        )
 
-        move_down_button = \
-          Object2D(
+        move_down_button = Object2D(
             image=MOVE_DOWN_BUTTON_SURF,
             rect=MOVE_DOWN_BUTTON_SURF.get_rect(),
-            on_mouse_release=move_down_on_mouse_release
-          )
+            on_mouse_release=move_down_on_mouse_release,
+        )
 
         ### instantiate widget
-        widget = self.widget_factory(
-                        value=value,
-                        command=self.command
-                      )
+        widget = self.widget_factory(value=value, command=self.command)
 
         ### instantiate delete button
 
         ## on_mouse_release command
 
         remove_on_mouse_release = get_oblivious_callable(
-                                    partial(
-                                      self.remove_item,
-                                      item_objs
-                                    )
-                                  )
+            partial(self.remove_item, item_objs)
+        )
 
         ## obj
 
-        remove_button = \
-          Object2D(
+        remove_button = Object2D(
             image=REMOVE_BUTTON_SURF,
             rect=REMOVE_BUTTON_SURF.get_rect(),
-            on_mouse_release=remove_on_mouse_release
-          )
+            on_mouse_release=remove_on_mouse_release,
+        )
 
         ### store all objects in the list
 
-        item_objs.extend((
-          move_up_button,
-          move_down_button,
-          widget,
-          remove_button
-        ))
+        item_objs.extend((move_up_button, move_down_button, widget, remove_button))
 
         ### position the objects side to side, aligning
         ### each object's midright with the next object's
         ### midleft, with just a bit of horizontal offset
 
         item_objs.rect.snap_rects_ip(
-                         retrieve_pos_from = 'midright',
-                         assign_pos_to     = 'midleft',
-                         offset_pos_by     = (5, 0)
-                       )
+            retrieve_pos_from="midright", assign_pos_to="midleft", offset_pos_by=(5, 0)
+        )
 
         ### align the item's topleft with the topleft of
         ### the add_button
@@ -156,8 +137,7 @@ class ListWidgetLifetimeOperations:
 
         ### and position the add button below the item,
         ### adding a bit of padding
-        self.add_button.rect.top = \
-             item_objs.rect.bottom + self.vertical_padding
+        self.add_button.rect.top = item_objs.rect.bottom + self.vertical_padding
 
         ### finally insert the item into the all_objects
         ### list, before the last item, which is the
@@ -166,19 +146,23 @@ class ListWidgetLifetimeOperations:
 
         ### execute specific commands, if requested
 
-        if custom_command: self.command()
-        if quantity_command: self.quantity_command()
-        if reference_clickables: self.reference_clickables()
+        if custom_command:
+            self.command()
+        if quantity_command:
+            self.quantity_command()
+        if reference_clickables:
+            self.reference_clickables()
 
         ### if requested, update the value of this widget
-        if update_value: self.value = self.get()
+        if update_value:
+            self.value = self.get()
 
     def remove_item(
-          self,
-          item,
-          custom_command=True,
-          quantity_command=True,
-        ):
+        self,
+        item,
+        custom_command=True,
+        quantity_command=True,
+    ):
         """Remove given item."""
         ### since this operation removes an item,
         ### we must only allow it if the resulting length
@@ -190,7 +174,8 @@ class ListWidgetLifetimeOperations:
         ## if resulting length isn't equal or above the
         ## minimum length allowed, we cancel this
         ## operation by returning earlier
-        if not resulting_length >= self.min_len: return
+        if not resulting_length >= self.min_len:
+            return
 
         ### store the current topleft of the whole widget
         ### (this is used for repositioning the remaining
@@ -219,12 +204,11 @@ class ListWidgetLifetimeOperations:
         ### reposition remaining items
 
         (
-          self.all_objects.rect
-          .snap_rects_ip(
-             retrieve_pos_from = 'bottomleft',
-             assign_pos_to     = 'topleft',
-             offset_pos_by     = (0, self.vertical_padding)
-           )
+            self.all_objects.rect.snap_rects_ip(
+                retrieve_pos_from="bottomleft",
+                assign_pos_to="topleft",
+                offset_pos_by=(0, self.vertical_padding),
+            )
         )
 
         self.all_objects.rect.topleft = current_topleft
@@ -235,8 +219,10 @@ class ListWidgetLifetimeOperations:
 
         ### execute specific commands, if requested
 
-        if custom_command: self.command()
-        if quantity_command: self.quantity_command()
+        if custom_command:
+            self.command()
+        if quantity_command:
+            self.quantity_command()
 
         ### admin task: reference clickable items
         self.reference_clickables()
@@ -253,7 +239,7 @@ class ListWidgetLifetimeOperations:
               It is required in order to comply with
               protocol used. We retrieve the mouse position
               from its "pos" attribute.
-              
+
               Check pygame.event module documentation on
               pygame website for more info about this event
               object.
@@ -290,16 +276,16 @@ class ListWidgetLifetimeOperations:
 
         if colliding_obj:
 
-            try: mouse_method = \
-                        getattr(colliding_obj, method_name)
-            except AttributeError: pass
-            else: mouse_method(event)
+            try:
+                mouse_method = getattr(colliding_obj, method_name)
+            except AttributeError:
+                pass
+            else:
+                mouse_method(event)
 
-    on_mouse_click = \
-        partialmethod(call_mouse_method, "on_mouse_click")
+    on_mouse_click = partialmethod(call_mouse_method, "on_mouse_click")
 
-    on_mouse_release = \
-        partialmethod(call_mouse_method, "on_mouse_release")
+    on_mouse_release = partialmethod(call_mouse_method, "on_mouse_release")
 
     def reference_clickables(self):
         """Create list w/ references of clickable objects.
@@ -325,19 +311,20 @@ class ListWidgetLifetimeOperations:
             ## containing a lot of clickable objects,
             ## so we use it to extend the clickable objs
             ## instead of appending it
-            else: clickable_objs.extend(item)
+            else:
+                clickable_objs.extend(item)
 
         ### store the list of clickable objects in its
         ### own attribute
         self.clickable_objs = clickable_objs
 
-    def move_item(
-        self, steps, item_to_move, custom_command=True):
+    def move_item(self, steps, item_to_move, custom_command=True):
         """Move given item up or down."""
         ### if there's only one value, moving makes no
         ### sense, so cancel the execution of the rest of
         ### the method by returning earlier
-        if len(self.value) == 1: return
+        if len(self.value) == 1:
+            return
 
         ### reference all_objects locally for quicker and
         ### easier access
@@ -359,7 +346,8 @@ class ListWidgetLifetimeOperations:
         ### discover the index of the item to be moved
 
         for n, item in enumerate(all_objects):
-            if item is item_to_move: break
+            if item is item_to_move:
+                break
 
         ### calculate its new value by adding the number of
         ### steps to it
@@ -387,12 +375,11 @@ class ListWidgetLifetimeOperations:
         all_objects.append(self.add_button)
 
         (
-          all_objects.rect
-          .snap_rects_ip(
-            retrieve_pos_from = 'bottomleft',
-            assign_pos_to     = 'topleft',
-            offset_pos_by     = (0, self.vertical_padding)
-          )
+            all_objects.rect.snap_rects_ip(
+                retrieve_pos_from="bottomleft",
+                assign_pos_to="topleft",
+                offset_pos_by=(0, self.vertical_padding),
+            )
         )
 
         all_objects.rect.topleft = current_topleft
@@ -402,10 +389,11 @@ class ListWidgetLifetimeOperations:
         self.value = self.get()
 
         ### execute custom command, if requested
-        if custom_command: self.command()
+        if custom_command:
+            self.command()
 
-    move_item_up   = partialmethod(move_item, -1)
-    move_item_down = partialmethod(move_item,  1)
+    move_item_up = partialmethod(move_item, -1)
+    move_item_down = partialmethod(move_item, 1)
 
     def get(self):
         """Return value of widget list (a list of values).
@@ -417,24 +405,21 @@ class ListWidgetLifetimeOperations:
         ### in this ListWidget instance
 
         return [
-
-          ## retrieve the subitem in the index 2 and
-          ## grab the return value of its get() method...
-          item[2].get()
-
-          ## for each item obtained from the "all_objects"
-          ## list, except the last one, which is the add
-          ## button
-          for item in self.all_objects[:-1]
-
+            ## retrieve the subitem in the index 2 and
+            ## grab the return value of its get() method...
+            item[2].get()
+            ## for each item obtained from the "all_objects"
+            ## list, except the last one, which is the add
+            ## button
+            for item in self.all_objects[:-1]
         ]
 
     def set(
-          self,
-          value,
-          custom_command=True,
-          quantity_command=True,
-        ):
+        self,
+        value,
+        custom_command=True,
+        quantity_command=True,
+    ):
         """Set value of this widget.
 
         By value, we mean a list of values, which is the
@@ -457,16 +442,16 @@ class ListWidgetLifetimeOperations:
         ### if the value is the same as the current one,
         ### there's no point in executing the operation,
         ### so we return earlier
-        if value == self.value: return
+        if value == self.value:
+            return
 
         ### also, if the length of the specified value
         ### isn't allowed, we also cancel the operation
         ### by returning earlier
-        
+
         length = len(value)
 
-        if not length >= self.min_len \
-        or not length <= self.max_len:
+        if not length >= self.min_len or not length <= self.max_len:
             return
 
         ### if we reach this point in the method, it means
@@ -499,9 +484,7 @@ class ListWidgetLifetimeOperations:
 
             for item_value in self.value:
 
-                self.add_item(
-                       item_value, False, False, False, False
-                     )
+                self.add_item(item_value, False, False, False, False)
 
         ## if anything does fail, print the error and restore
         ## the original value
@@ -516,8 +499,10 @@ class ListWidgetLifetimeOperations:
 
         else:
 
-            if custom_command: self.command()
-            if quantity_command: self.quantity_command()
+            if custom_command:
+                self.command()
+            if quantity_command:
+                self.quantity_command()
 
         ## finally reference the clickable objects,
         ## regardless of whether the 'try' block above
@@ -526,4 +511,5 @@ class ListWidgetLifetimeOperations:
 
     def draw(self):
         """Draw widgets and buttons."""
-        for obj in self.all_objects: obj.draw()
+        for obj in self.all_objects:
+            obj.draw()

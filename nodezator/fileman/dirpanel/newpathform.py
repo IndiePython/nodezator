@@ -7,11 +7,13 @@ from functools import partialmethod
 ### third-party imports
 
 from pygame import (
-              QUIT, KEYDOWN,
-              MOUSEBUTTONDOWN, MOUSEBUTTONUP,
-            )
+    QUIT,
+    KEYDOWN,
+    MOUSEBUTTONDOWN,
+    MOUSEBUTTONUP,
+)
 
-from pygame.event   import get as get_events
+from pygame.event import get as get_events
 from pygame.display import update
 
 from pygame.math import Vector2
@@ -24,10 +26,10 @@ from ...config import APP_REFS
 from ...translation import TRANSLATION_HOLDER as t
 
 from ...pygameconstants import (
-                       SCREEN_RECT,
-                       FPS,
-                       maintain_fps,
-                     )
+    SCREEN_RECT,
+    FPS,
+    maintain_fps,
+)
 
 from ...dialog import create_and_show_dialog
 
@@ -49,14 +51,16 @@ from ...surfsman.draw import draw_border, draw_depth_finish
 from ...surfsman.render import render_rect
 
 from ...loopman.exception import (
-                         QuitAppException,
-                         SwitchLoopException,
-                       )
+    QuitAppException,
+    SwitchLoopException,
+)
 
 from ...colorsman.colors import (
-                        BUTTON_FG, BUTTON_BG,
-                        WINDOW_FG, WINDOW_BG,
-                      )
+    BUTTON_FG,
+    BUTTON_BG,
+    WINDOW_FG,
+    WINDOW_BG,
+)
 
 from ..surfs import FILE_ICON, FOLDER_ICON
 
@@ -87,7 +91,7 @@ class PathForm(Object2D):
         self.image = render_rect(470, 140, WINDOW_BG)
         draw_border(self.image)
 
-        self.rect  = self.image.get_rect()
+        self.rect = self.image.get_rect()
 
         ### build widgets
         self.build_form_widgets()
@@ -100,15 +104,11 @@ class PathForm(Object2D):
 
         self.center_new_path_form()
 
-        APP_REFS.window_resize_setups.append(
-          self.center_new_path_form
-        )
+        APP_REFS.window_resize_setups.append(self.center_new_path_form)
 
     def center_new_path_form(self):
 
-        diff = (
-          Vector2(SCREEN_RECT.center) - self.rect.center
-        )
+        diff = Vector2(SCREEN_RECT.center) - self.rect.center
 
         self.rect.center = SCREEN_RECT.center
         self.widgets.rect.move_ip(diff)
@@ -124,20 +124,14 @@ class PathForm(Object2D):
 
         ### instantiate a caption for the form
 
-        self.caption_label = \
-                      Label(
-                        text=(
-                          t
-                          .file_manager
-                          .new_path_form
-                          .caption
-                        ),
-                        font_height=ENC_SANS_BOLD_FONT_HEIGHT,
-                        foreground_color=WINDOW_FG,
-                        background_color=WINDOW_BG,
-                        coordinates_name='topleft',
-                        coordinates_value=topleft
-                      )
+        self.caption_label = Label(
+            text=(t.file_manager.new_path_form.caption),
+            font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+            foreground_color=WINDOW_FG,
+            background_color=WINDOW_BG,
+            coordinates_name="topleft",
+            coordinates_value=topleft,
+        )
 
         self.widgets.append(self.caption_label)
 
@@ -152,28 +146,21 @@ class PathForm(Object2D):
         self.icon = Object2D()
 
         self.icon.image = FILE_ICON
-        self.icon.rect  = self.icon.image.get_rect()
+        self.icon.rect = self.icon.image.get_rect()
         self.icon.rect.topleft = topleft
 
         self.widgets.append(self.icon)
 
         ### instantiate type name label
 
-        self.type_name_label = \
-                  Label(
-                    text=(
-                      t
-                      .file_manager
-                      .new_path_form
-                      .type_path_name
-                      + ":"
-                    ),
-                    font_height=ENC_SANS_BOLD_FONT_HEIGHT,
-                    foreground_color=WINDOW_FG,
-                    background_color=WINDOW_BG,
-                    coordinates_name='midleft',
-                    coordinates_value=self.icon.rect.midright
-                  )
+        self.type_name_label = Label(
+            text=(t.file_manager.new_path_form.type_path_name + ":"),
+            font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+            foreground_color=WINDOW_FG,
+            background_color=WINDOW_BG,
+            coordinates_name="midleft",
+            coordinates_value=self.icon.rect.midright,
+        )
 
         self.widgets.append(self.type_name_label)
 
@@ -184,88 +171,75 @@ class PathForm(Object2D):
 
         ### instantiate path name entry
 
-        self.path_name_entry = (
-
-          StringEntry(
-
-            value='',
+        self.path_name_entry = StringEntry(
+            value="",
             loop_holder=self,
             width=self.rect.width - 20,
             font_height=ENC_SANS_BOLD_FONT_HEIGHT,
-
-            draw_on_window_resize = (
-
-                CallList([
-                  lambda: APP_REFS.fm.draw(),
-                  self.draw,
-                ])
-
+            draw_on_window_resize=(
+                CallList(
+                    [
+                        lambda: APP_REFS.fm.draw(),
+                        self.draw,
+                    ]
+                )
             ),
-
-            coordinates_name='topleft',
-            coordinates_value=topleft
-
-          )
-
+            coordinates_name="topleft",
+            coordinates_value=topleft,
         )
 
         self.widgets.append(self.path_name_entry)
-
 
         ### create, position and store form related buttons
 
         bottomright = self.rect.move(-10, -10).bottomright
 
         for attr_name, text, mouse_release_action in (
-          (
-            'create_button',
-            t.file_manager.new_path_form.create,
-            self.submit_for_creation
-          ),
-          (
-            'return_path_button',
-            t.file_manager.new_path_form.return_path,
-            self.submit_for_returning
-          ),
-          (
-            'cancel_button',
-            t.file_manager.new_path_form.cancel,
-            self.cancel_form
-          )
+            (
+                "create_button",
+                t.file_manager.new_path_form.create,
+                self.submit_for_creation,
+            ),
+            (
+                "return_path_button",
+                t.file_manager.new_path_form.return_path,
+                self.submit_for_returning,
+            ),
+            ("cancel_button", t.file_manager.new_path_form.cancel, self.cancel_form),
         ):
 
             ## create button
 
-            button = \
-              Button.from_text(
+            button = Button.from_text(
                 text=text,
                 font_height=ENC_SANS_BOLD_FONT_HEIGHT,
                 padding=5,
                 foreground_color=BUTTON_FG,
                 background_color=BUTTON_BG,
-                coordinates_name='bottomright',
+                coordinates_name="bottomright",
                 coordinates_value=bottomright,
-                command=mouse_release_action
-              )
+                command=mouse_release_action,
+            )
 
             ## improve surface style by giving a finish
             ## to convey depth
             draw_depth_finish(button.image)
-            
+
             ## store in dedicated attribute
             setattr(self, attr_name, button)
 
             ## update the bottomright for the next button
             bottomright = button.rect.move(-5, 0).bottomleft
 
-
         ## also store buttons on the widgets special list
 
-        self.widgets.extend((
-          self.create_button,
-          self.return_path_button,
-          self.cancel_button,
-        ))
+        self.widgets.extend(
+            (
+                self.create_button,
+                self.return_path_button,
+                self.cancel_button,
+            )
+        )
 
     def cancel_form(self):
         """Cancel form edition.
@@ -278,36 +252,34 @@ class PathForm(Object2D):
 
     def submit_form(self, action_name):
         """Create new form data with given action."""
-        self.form_data = {'action_name': action_name}
+        self.form_data = {"action_name": action_name}
 
         ### try retrieve name from entry name and building
         ### path using self.parent as the parent
-        try: path = self.parent / self.path_name_entry.get()
+        try:
+            path = self.parent / self.path_name_entry.get()
 
         except Exception as err:
 
             ### TODO display a proper error message
 
             create_and_show_dialog(
-              "Something went wrong.",
-              level_name='error',
+                "Something went wrong.",
+                level_name="error",
             )
 
         ### if the pathlib.Path object is successfully built,
         ### add it to the form data
-        else: self.form_data['path'] = path
+        else:
+            self.form_data["path"] = path
 
         ### trigger form exit by setting special flag to
         ### False
         self.running = False
 
-    submit_for_creation = (
-      partialmethod(submit_form, 'create_path')
-    )
+    submit_for_creation = partialmethod(submit_form, "create_path")
 
-    submit_for_returning = (
-      partialmethod(submit_form, 'return_path')
-    )
+    submit_for_returning = partialmethod(submit_form, "return_path")
 
     def get_path(self, parent, is_file):
         """Return form data after user edits form."""
@@ -317,9 +289,7 @@ class PathForm(Object2D):
         ### set icon surface according to whether the path
         ### is meant for a file or folder
 
-        self.icon.image = (
-          FILE_ICON if is_file else FOLDER_ICON
-        )
+        self.icon.image = FILE_ICON if is_file else FOLDER_ICON
 
         ### set caption and "type name" labels' text
         ### according to whether the path is meant for
@@ -328,29 +298,19 @@ class PathForm(Object2D):
         ## caption label
 
         self.caption_label.set(
-
-          t.file_manager.new_path_form.get_new_file
-          if is_file
-
-          else t.file_manager.new_path_form.get_new_folder
-
+            t.file_manager.new_path_form.get_new_file
+            if is_file
+            else t.file_manager.new_path_form.get_new_folder
         )
 
-        draw_border(
-          self.caption_label.image,
-          color=WINDOW_FG,
-          thickness=2
-        )
+        draw_border(self.caption_label.image, color=WINDOW_FG, thickness=2)
 
         ## type name label
 
         self.type_name_label.set(
-
-          t.file_manager.new_path_form.type_file_name
-          if is_file
-
-          else t.file_manager.new_path_form.type_folder_name
-
+            t.file_manager.new_path_form.type_file_name
+            if is_file
+            else t.file_manager.new_path_form.type_folder_name
         )
 
         ### set form data to None
@@ -398,7 +358,8 @@ class PathForm(Object2D):
         """Process events from event queue."""
         for event in get_events():
 
-            if event.type == QUIT: raise QuitAppException
+            if event.type == QUIT:
+                raise QuitAppException
 
             elif event.type == MOUSEBUTTONDOWN:
 
@@ -428,7 +389,7 @@ class PathForm(Object2D):
             mouse interaction protocol used; here we
             use it to retrieve the position of the
             mouse when the first button was released.
-              
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -444,23 +405,23 @@ class PathForm(Object2D):
                 colliding_obj = obj
                 break
 
-        else: return
+        else:
+            return
 
         ### if you manage to find a colliding obj, execute
         ### the requested method on it, passing along the
         ### received event
 
-        try: method = getattr(colliding_obj, method_name)
-        except AttributeError: pass
-        else: method(event)
+        try:
+            method = getattr(colliding_obj, method_name)
+        except AttributeError:
+            pass
+        else:
+            method(event)
 
-    on_mouse_click = \
-        partialmethod(
-            mouse_method_on_collision, "on_mouse_click")
+    on_mouse_click = partialmethod(mouse_method_on_collision, "on_mouse_click")
 
-    on_mouse_release = \
-        partialmethod(
-            mouse_method_on_collision, "on_mouse_release")
+    on_mouse_release = partialmethod(mouse_method_on_collision, "on_mouse_release")
 
     def draw(self):
         """Draw itself and widgets.
@@ -475,5 +436,6 @@ class PathForm(Object2D):
 
         ### update screen (pygame.display.update)
         update()
+
 
 get_path = PathForm().get_path

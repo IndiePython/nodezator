@@ -14,23 +14,17 @@ from ...textman.text import get_highlighted_lines
 
 from ...colorsman.colors import TEXT_BLOCK_OUTLINE
 
-from .constants import (
-                                    FONT_HEIGHT,
-                                    FONT_PATH,
-                                    PADDING,
-                                    OUTLINE_THICKNESS
-                                  )
+from .constants import FONT_HEIGHT, FONT_PATH, PADDING, OUTLINE_THICKNESS
 
 
 GENERAL_TEXT_KWARGS = {
-  'font_height' : FONT_HEIGHT,
-  'font_path'   : FONT_PATH,
+    "font_height": FONT_HEIGHT,
+    "font_path": FONT_PATH,
 }
 
-COMMENT_THEME_MAP = \
-    get_ready_theme('comment', GENERAL_TEXT_KWARGS)
+COMMENT_THEME_MAP = get_ready_theme("comment", GENERAL_TEXT_KWARGS)
 
-TEXT_BLOCK_BG = COMMENT_THEME_MAP['background_color']
+TEXT_BLOCK_BG = COMMENT_THEME_MAP["background_color"]
 
 
 def get_text_block_surf(text):
@@ -58,7 +52,7 @@ def get_text_block_surf(text):
     text like the one in this function is guarded by
     try/exception clauses to prevent from errors when
     mapping the syntax.
-    
+
     We don't do so here, because comments don't have wrong
     syntax. They either have special syntax ("todo" words)
     or no syntax at all. Thus, the probability of syntax
@@ -70,21 +64,15 @@ def get_text_block_surf(text):
     ### docstring of this function to know why we don't
     ### use a try/except clause here)
 
-    text_objs = \
-      get_highlighted_lines(
-        'comment',
-        text,
-        syntax_settings_map=(
-          COMMENT_THEME_MAP['text_settings']
-        )
-      )
+    text_objs = get_highlighted_lines(
+        "comment", text, syntax_settings_map=(COMMENT_THEME_MAP["text_settings"])
+    )
 
     ### position text objects representing lines
     ### one below the other
 
     text_objs.rect.snap_rects_ip(
-      retrieve_pos_from='bottomleft',
-      assign_pos_to='topleft'
+        retrieve_pos_from="bottomleft", assign_pos_to="topleft"
     )
 
     ## calculate extra space in the surface for padding
@@ -95,7 +83,7 @@ def get_text_block_surf(text):
     ## why we multiply the measures by 2 before summing
     ## them up
 
-    padding_both_edges =           PADDING * 2
+    padding_both_edges = PADDING * 2
     outline_both_edges = OUTLINE_THICKNESS * 2
 
     extra_space = padding_both_edges + outline_both_edges
@@ -103,20 +91,16 @@ def get_text_block_surf(text):
     ## get final size
 
     size = (
-
-      ## from the special list of text objects
-      text_objs
-
-      ## get a rect (a special rect which represents the
-      ## union of the rects of all text objects in the list)
-      .rect
-
-      ## and produce a copy which is inflated in both
-      ## dimensions by the value of extra_space
-      .inflate(extra_space, extra_space)
-      
-      ## and finally get its size
-      .size
+        ## from the special list of text objects
+        text_objs
+        ## get a rect (a special rect which represents the
+        ## union of the rects of all text objects in the list)
+        .rect
+        ## and produce a copy which is inflated in both
+        ## dimensions by the value of extra_space
+        .inflate(extra_space, extra_space)
+        ## and finally get its size
+        .size
     )
 
     ## create, fill and outline the surface
@@ -125,12 +109,7 @@ def get_text_block_surf(text):
 
     surf.fill(TEXT_BLOCK_BG)
 
-    draw_border(
-      surf,
-      color=TEXT_BLOCK_OUTLINE,
-      thickness=OUTLINE_THICKNESS
-    )
-
+    draw_border(surf, color=TEXT_BLOCK_OUTLINE, thickness=OUTLINE_THICKNESS)
 
     ### finally blit text objects into surface and return
     ### the surface

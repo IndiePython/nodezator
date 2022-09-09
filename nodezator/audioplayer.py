@@ -1,31 +1,30 @@
-
 ### third-party imports
 
 from pygame import (
-
-              QUIT,
-
-              KEYUP,
-              K_SPACE, K_RETURN, K_KP_ENTER, K_ESCAPE,
-              MOUSEBUTTONDOWN, MOUSEBUTTONUP,
-
-              Rect,
-
-            )
+    QUIT,
+    KEYUP,
+    K_SPACE,
+    K_RETURN,
+    K_KP_ENTER,
+    K_ESCAPE,
+    MOUSEBUTTONDOWN,
+    MOUSEBUTTONUP,
+    Rect,
+)
 
 from pygame.event import get as get_events
 
 from pygame.mouse import (
-                    get_pos     as get_mouse_pos,
-                    get_pressed as get_mouse_pressed,
-                  )
+    get_pos as get_mouse_pos,
+    get_pressed as get_mouse_pressed,
+)
 
 from pygame.display import update
 
 from pygame.draw import (
-                   rect    as draw_rect,
-                   polygon as draw_polygon,
-                 )
+    rect as draw_rect,
+    polygon as draw_polygon,
+)
 
 from pygame.math import Vector2
 
@@ -37,11 +36,11 @@ from pygame.mixer import music
 from .config import APP_REFS
 
 from .pygameconstants import (
-                       SCREEN,
-                       SCREEN_RECT,
-                       FPS,
-                       maintain_fps,
-                     )
+    SCREEN,
+    SCREEN_RECT,
+    FPS,
+    maintain_fps,
+)
 
 from .dialog import create_and_show_dialog
 
@@ -54,15 +53,13 @@ from .our3rdlibs.userlogger import USER_LOGGER
 from .our3rdlibs.behaviour import watch_window_size
 
 from .loopman.exception import (
-                         QuitAppException,
-                         SwitchLoopException,
-                       )
+    QuitAppException,
+    SwitchLoopException,
+)
 
 from .classes2d.single import Object2D
 
-from .classes2d.surfaceswitcher import (
-                                 SURF_SWITCHER_CLASS_MAP
-                               )
+from .classes2d.surfaceswitcher import SURF_SWITCHER_CLASS_MAP
 
 from .surfsman.draw import draw_border
 
@@ -77,61 +74,32 @@ from .colorsman.colors import BLACK, WHITE
 from .widget.intfloatentry.main import IntFloatEntry
 
 
-PlayingPausedObject = (
-
-  SURF_SWITCHER_CLASS_MAP[
-
-    frozenset(
-      ('playing', 'paused')
-    )
-
-  ]
-
-)
+PlayingPausedObject = SURF_SWITCHER_CLASS_MAP[frozenset(("playing", "paused"))]
 
 PAUSED_ICON = render_layered_icon(
-
-                chars = [
-                  chr(ordinal)
-                  for ordinal in (81, 82)
-                ],
-
-                dimension_name  = 'height',
-                dimension_value = 18,
-
-                colors = [BLACK, WHITE],
-
-                rotation_degrees = -90,
-
-                depth_finish_thickness = 1,
-                depth_finish_outset    = True,
-
-                background_width  = 24,
-                background_height = 24,
-                background_color  = (50, 50, 50),
-
-              )
+    chars=[chr(ordinal) for ordinal in (81, 82)],
+    dimension_name="height",
+    dimension_value=18,
+    colors=[BLACK, WHITE],
+    rotation_degrees=-90,
+    depth_finish_thickness=1,
+    depth_finish_outset=True,
+    background_width=24,
+    background_height=24,
+    background_color=(50, 50, 50),
+)
 
 PLAYING_ICON = render_layered_icon(
-
-                 chars = [
-                   chr(ordinal)
-                   for ordinal in (75, 76)
-                 ],
-
-                 dimension_name  = 'height',
-                 dimension_value = 18,
-
-                 colors = [BLACK, WHITE],
-
-                 depth_finish_thickness = 1,
-                 depth_finish_outset    = False,
-
-                 background_width  = 24,
-                 background_height = 24,
-                 background_color  = (50, 50, 50),
-
-               )
+    chars=[chr(ordinal) for ordinal in (75, 76)],
+    dimension_name="height",
+    dimension_value=18,
+    colors=[BLACK, WHITE],
+    depth_finish_thickness=1,
+    depth_finish_outset=False,
+    background_width=24,
+    background_height=24,
+    background_color=(50, 50, 50),
+)
 
 
 ### create logger for module
@@ -139,7 +107,6 @@ logger = get_new_logger(__name__)
 
 
 class AudioPlayer(Object2D):
-    
     def __init__(self):
         """"""
 
@@ -150,112 +117,74 @@ class AudioPlayer(Object2D):
 
         ###
 
-        self.caption = (
-
-          Object2D.from_surface(
-
+        self.caption = Object2D.from_surface(
             render_text(
-              text='Audio Player',
-              font_height=17,
-              padding=5,
-              border_thickness=2,
-              background_color=WHITE,
-              foreground_color=BLACK
+                text="Audio Player",
+                font_height=17,
+                padding=5,
+                border_thickness=2,
+                background_color=WHITE,
+                foreground_color=BLACK,
             ),
-
-          )
-
         )
 
         ###
 
-
-        self.toggle_play_button = (
-
-          PlayingPausedObject(
-
+        self.toggle_play_button = PlayingPausedObject(
             {
-              'playing': PLAYING_ICON,
-              'paused' : PAUSED_ICON,
+                "playing": PLAYING_ICON,
+                "paused": PAUSED_ICON,
             },
-
-            on_mouse_release = (
-              get_oblivious_callable(self.toggle_play)
-            ),
-
-          )
-
+            on_mouse_release=(get_oblivious_callable(self.toggle_play)),
         )
 
         self.toggle_play_button.switch_to_paused_surface()
 
         ###
 
-
-        self.audio_index_entry = (
-
-          IntFloatEntry(
-
+        self.audio_index_entry = IntFloatEntry(
             value=0,
-            loop_holder = self,
-            numeric_classes_hint = 'int',
-            min_value = 0,
-
-            command = self.set_audio_from_entry,
-
-            draw_on_window_resize = self.draw,
-
-          )
-
+            loop_holder=self,
+            numeric_classes_hint="int",
+            min_value=0,
+            command=self.set_audio_from_entry,
+            draw_on_window_resize=self.draw,
         )
-
 
         ###
 
-        self.volume = .4
+        self.volume = 0.4
         music.set_volume(self.volume)
 
         ###
 
-        volume_area = self.volume_area = (
-
-          Rect((0, 0), (100, 30))
-
-        )
+        volume_area = self.volume_area = Rect((0, 0), (100, 30))
 
         ###
 
         self.center_and_redefine_objects()
 
-        APP_REFS.window_resize_setups.append(
-          self.center_and_redefine_objects
-        )
+        APP_REFS.window_resize_setups.append(self.center_and_redefine_objects)
 
     def center_and_redefine_objects(self):
 
         self.rect.center = SCREEN_RECT.center
 
-        self.caption.rect.topleft = (
-          self.rect.move(10, 10).topleft
-        )
+        self.caption.rect.topleft = self.rect.move(10, 10).topleft
 
-        self.toggle_play_button.rect.midleft = (
-          self.caption.rect.move(5, 0).midright
-        )
+        self.toggle_play_button.rect.midleft = self.caption.rect.move(5, 0).midright
 
-        self.audio_index_entry.rect.midleft = (
-          self.toggle_play_button.rect.move(5, 0).midright
-        )
+        self.audio_index_entry.rect.midleft = self.toggle_play_button.rect.move(
+            5, 0
+        ).midright
 
-        self.volume_area.midleft = (
-          self.audio_index_entry.rect.move(10, 0).midright
-        )
+        self.volume_area.midleft = self.audio_index_entry.rect.move(10, 0).midright
 
         self.full_volume_points = (
-               self.volume_area.bottomleft,
-               self.volume_area.topright,
-               self.volume_area.bottomright
-             )
+            self.volume_area.bottomleft,
+            self.volume_area.topright,
+            self.volume_area.bottomright,
+        )
 
         self.set_current_volume_points()
 
@@ -268,20 +197,15 @@ class AudioPlayer(Object2D):
         volume = self.volume
 
         self.current_volume_points = (
-               start_vector,
-               start_vector.lerp(volume_area.topright,    volume),
-               start_vector.lerp(volume_area.bottomright, volume)
-             )
+            start_vector,
+            start_vector.lerp(volume_area.topright, volume),
+            start_vector.lerp(volume_area.bottomright, volume),
+        )
 
     def play_audio(self, audio_paths, index=0):
 
         self.audio_paths = (
-
-          [audio_paths]
-          if isinstance(audio_paths, str)
-
-          else audio_paths
-
+            [audio_paths] if isinstance(audio_paths, str) else audio_paths
         )
 
         index = max(0, min(len(self.audio_paths) - 1, index))
@@ -292,9 +216,9 @@ class AudioPlayer(Object2D):
 
         self.audio_index_entry.set(index, False)
         self.audio_index_entry.set_range(
-                                 0,
-                                 len(self.audio_paths) - 1,
-                               )
+            0,
+            len(self.audio_paths) - 1,
+        )
 
         self.set_current_volume_points()
 
@@ -312,8 +236,8 @@ class AudioPlayer(Object2D):
 
             try:
 
-               loop_holder.handle_input()
-               loop_holder.draw()
+                loop_holder.handle_input()
+                loop_holder.draw()
 
             except SwitchLoopException as err:
                 loop_holder = err.loop_holder
@@ -328,15 +252,13 @@ class AudioPlayer(Object2D):
     def handle_events(self):
 
         for event in get_events():
-            
+
             if event.type == QUIT:
                 raise QuitAppException
 
             elif event.type == KEYUP:
-                
-                if event.key in (
-                  K_ESCAPE, K_RETURN, K_KP_ENTER
-                ):
+
+                if event.key in (K_ESCAPE, K_RETURN, K_KP_ENTER):
                     self.running = False
 
                 elif event.key == K_SPACE:
@@ -348,7 +270,7 @@ class AudioPlayer(Object2D):
                     self.on_mouse_click(event)
 
             elif event.type == MOUSEBUTTONUP:
-                
+
                 if event.button == 1:
                     self.on_mouse_release(event)
 
@@ -378,14 +300,9 @@ class AudioPlayer(Object2D):
 
         volume_area = self.volume_area
 
-        if (
-          mouse_buttons_pressed[0]
-          and volume_area.collidepoint(mouse_pos)
-        ):
-            
-            self.volume = (
-              (mouse_x - volume_area.x) / volume_area.width
-            )
+        if mouse_buttons_pressed[0] and volume_area.collidepoint(mouse_pos):
+
+            self.volume = (mouse_x - volume_area.x) / volume_area.width
 
             music.set_volume(self.volume)
             self.set_current_volume_points()
@@ -399,13 +316,9 @@ class AudioPlayer(Object2D):
         self.toggle_play_button.draw()
         self.audio_index_entry.draw()
 
-        draw_polygon(
-          SCREEN, BLACK, self.full_volume_points, 2
-        )
+        draw_polygon(SCREEN, BLACK, self.full_volume_points, 2)
 
-        draw_polygon(
-          SCREEN, BLACK, self.current_volume_points
-        )
+        draw_polygon(SCREEN, BLACK, self.current_volume_points)
 
         ### update the screen (pygame.display.update)
         update()
@@ -417,14 +330,12 @@ class AudioPlayer(Object2D):
             music.unload()
             music.stop()
 
-            (
-              self.toggle_play_button
-              .switch_to_paused_surface()
-            )
+            (self.toggle_play_button.switch_to_paused_surface())
 
         else:
 
-            try: music.load(self.audio_path)
+            try:
+                music.load(self.audio_path)
 
             except Exception as err:
 
@@ -434,15 +345,12 @@ class AudioPlayer(Object2D):
                 USER_LOGGER.exception(msg)
 
                 create_and_show_dialog(
-
-                  (
-                    "An error ocurred while trying to"
-                    " load current audio file. Check the"
-                    " user log for details"
-                  ),
-
-                  level_name = 'error',
-
+                    (
+                        "An error ocurred while trying to"
+                        " load current audio file. Check the"
+                        " user log for details"
+                    ),
+                    level_name="error",
                 )
 
             else:
@@ -450,11 +358,7 @@ class AudioPlayer(Object2D):
                 music.set_volume(self.volume)
                 music.play()
 
-                (
-                  self
-                  .toggle_play_button
-                  .switch_to_playing_surface()
-                )
+                (self.toggle_play_button.switch_to_playing_surface())
 
     def set_audio_from_entry(self):
         """Browse audio files by number of given steps."""

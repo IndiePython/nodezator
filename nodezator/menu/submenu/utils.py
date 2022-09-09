@@ -1,5 +1,6 @@
 """Quick utilities for the menu.submenu.main.Menu class."""
 
+
 def is_top_menu(obj):
     """Return True if obj is a top menu.
 
@@ -16,6 +17,7 @@ def is_top_menu(obj):
     menu.
     """
     return not isinstance(obj.parent, obj.__class__)
+
 
 def get_boundaries(obj):
     """Return the boundaries_rect attribute of menu manager.
@@ -43,11 +45,13 @@ def get_boundaries(obj):
         ## breaking condition: if the parent isn't of the
         ## same class of obj (its child), we can break of
         ## the loop
-        if not isinstance(parent, obj.__class__): break
+        if not isinstance(parent, obj.__class__):
+            break
 
         ## otherwise we just consider the parent as the
         ## obj for the next iteration
-        else: obj = parent
+        else:
+            obj = parent
 
     ### once we break out of the while loop, we return the
     ### boundaries_rect attribute of the parent

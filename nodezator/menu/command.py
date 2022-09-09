@@ -19,15 +19,15 @@ class Command(Object2D):
     children. It is like a 'leaf' on the menu manager
     tree-like structure.
     """
-    
+
     def __init__(
-          self,
-          parent,
-          data,
-          surface_map,
-        ):
+        self,
+        parent,
+        data,
+        surface_map,
+    ):
         """Store variables and perform setups.
-        
+
         Parameters
         ==========
 
@@ -42,55 +42,54 @@ class Command(Object2D):
         """
         ### store arguments
 
-        self.parent     = parent
-        self.label_text = data['label']
+        self.parent = parent
+        self.label_text = data["label"]
 
         ### perform extra setups depending on data received
 
-        if set(data['label']) == {'-'}:
+        if set(data["label"]) == {"-"}:
 
             self.invoke = empty_function
             self.surface_map = surface_map
 
-        elif 'widget' in data:
-            
-            self.attribute_name = data['attribute_name']
+        elif "widget" in data:
+
+            self.attribute_name = data["attribute_name"]
 
             self.top_surface_map = surface_map
 
-            if data['widget'] == 'checkbutton':
+            if data["widget"] == "checkbutton":
                 self.invoke = self.toggle_boolean
 
-            elif data['widget'] == 'radiobutton':
+            elif data["widget"] == "radiobutton":
 
-                self.value  = data['value']
+                self.value = data["value"]
                 self.invoke = self.set_value
 
-            else: raise ValueError(
-                          "if 'widget' key exists, it must"
-                          " be either 'checkbutton' or"
-                          " 'radiobutton'"
-                        )
+            else:
+                raise ValueError(
+                    "if 'widget' key exists, it must"
+                    " be either 'checkbutton' or"
+                    " 'radiobutton'"
+                )
 
             ##
 
-            self.surface_map_updating_routine = (
-              self.update_surface_map
-            )
+            self.surface_map_updating_routine = self.update_surface_map
 
             self.surface_map_updating_routine()
 
         else:
 
-            self.invoke = data['command']
+            self.invoke = data["command"]
             self.surface_map = surface_map
 
         ### reference the normal surface as the 'image'
         ### attribute of this instance and also obtain
         ### a rect from it
 
-        self.image = self.surface_map['normal']
-        self.rect  = self.image.get_rect()
+        self.image = self.surface_map["normal"]
+        self.rect = self.image.get_rect()
 
     def highlight(self):
         """Change image to highlighted surface.
@@ -98,12 +97,12 @@ class Command(Object2D):
         Also collapse all sibling items (other commands and
         menu.submenu.main.Menu instances).
         """
-        self.image = self.surface_map['highlighted']
+        self.image = self.surface_map["highlighted"]
         self.collapse_siblings()
 
     def unhighlight(self):
         """Change image to normal surface."""
-        self.image = self.surface_map['normal']
+        self.image = self.surface_map["normal"]
 
     def collapse_siblings(self):
         """Collapse all sibling items.
@@ -113,7 +112,7 @@ class Command(Object2D):
         """
         for child in self.parent.children:
 
-            if hasattr(child, 'is_expanded'):
+            if hasattr(child, "is_expanded"):
                 child.is_expanded = False
 
     def get_formatted_tree(self):
@@ -123,12 +122,12 @@ class Command(Object2D):
 
         obj = self
 
-        while hasattr(obj, 'label_text'):
+        while hasattr(obj, "label_text"):
 
             texts.append(obj.label_text)
             obj = obj.parent
-            
-        return ' > '.join(reversed(texts))
+
+        return " > ".join(reversed(texts))
 
     def update_surface_map(self):
         """Update surface map according to attribute value.
@@ -141,22 +140,17 @@ class Command(Object2D):
         the appropriate surface map is assigned to the
         'surface_map' attribute.
         """
-        current_value = getattr(
-                          APP_REFS, self.attribute_name
-                        )
+        current_value = getattr(APP_REFS, self.attribute_name)
 
         key = (
-
-          current_value
-          if isinstance(current_value, bool)
-
-          else self.value == current_value
-
+            current_value
+            if isinstance(current_value, bool)
+            else self.value == current_value
         )
 
         self.surface_map = self.top_surface_map[key]
 
-        self.image = self.surface_map['normal']
+        self.image = self.surface_map["normal"]
 
     def set_value(self):
         """Set 'value' as current value."""
@@ -166,11 +160,7 @@ class Command(Object2D):
         """Toogle boolean value."""
 
         setattr(
-
-          APP_REFS,
-          self.attribute_name, 
-          not getattr(APP_REFS, self.attribute_name)
-
+            APP_REFS, self.attribute_name, not getattr(APP_REFS, self.attribute_name)
         )
 
     def __repr__(self):
@@ -183,7 +173,7 @@ class Command(Object2D):
         We could add its string representation or docstring
         to the command string representation, but it would
         fill the terminal with too much information.
-        
+
         Hence, we use the simplest representation: just
         returning the command label.
 

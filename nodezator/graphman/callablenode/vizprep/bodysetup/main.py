@@ -3,18 +3,16 @@
 ### local imports
 
 from ...surfs import (
-                           NORMAL_NODE_FOOT,
-                           COMMENTED_OUT_NODE_FOOT,
-                           NORMAL_BOTTOM_CORNERS,
-                           COMMENTED_OUT_BOTTOM_CORNERS,
-                           NO_VARPARAM_NODE_BODY_MAP,
-                           UNPACKING_ICON_SURFS_MAP,
-                         )
+    NORMAL_NODE_FOOT,
+    COMMENTED_OUT_NODE_FOOT,
+    NORMAL_BOTTOM_CORNERS,
+    COMMENTED_OUT_BOTTOM_CORNERS,
+    NO_VARPARAM_NODE_BODY_MAP,
+    UNPACKING_ICON_SURFS_MAP,
+)
 
 ## function for injection
-from .creation import (
-                                      create_body_surface
-                                    )
+from .creation import create_body_surface
 
 
 class BodySetupOperations:
@@ -43,7 +41,6 @@ class BodySetupOperations:
         self.assign_body_surface()
         self.assign_unpacking_icon_surfs()
 
-
     ### methods representing modular operations
 
     def perform_body_height_change_setups(self):
@@ -57,10 +54,7 @@ class BodySetupOperations:
         ### between the top rectsman's bottom and the bottom
         ### rectsman's top
 
-        new_body_height = (
-          self.bottom_rectsman.top
-          - self.top_rectsman.bottom
-        )
+        new_body_height = self.bottom_rectsman.top - self.top_rectsman.bottom
 
         ### store the current height locally
         current_body_height = self.body.rect.height
@@ -94,29 +88,18 @@ class BodySetupOperations:
         ## there's no need to do so for the foot, since
         ## there's an attribute which already references
         ## it
-        bottomleft_corner, bottomright_corner = \
-                                            self.corners[2:]
+        bottomleft_corner, bottomright_corner = self.corners[2:]
 
         ## assign the appropriate surfaces to the 'image'
         ## attribute of the respective objects
 
-        (
-          self.foot.image,
-          bottomleft_corner.image,
-          bottomright_corner.image
-        ) = (
-
-          ## surfaces for commented out nodes,
-          ## when the node is commented out
-          (
-            COMMENTED_OUT_NODE_FOOT,
-            *COMMENTED_OUT_BOTTOM_CORNERS
-          )
-          if self.data.get('commented_out', False)
-
-          ## otherwise, surfaces for uncommented nodes
-          else (NORMAL_NODE_FOOT, *NORMAL_BOTTOM_CORNERS)
-
+        (self.foot.image, bottomleft_corner.image, bottomright_corner.image) = (
+            ## surfaces for commented out nodes,
+            ## when the node is commented out
+            (COMMENTED_OUT_NODE_FOOT, *COMMENTED_OUT_BOTTOM_CORNERS)
+            if self.data.get("commented_out", False)
+            ## otherwise, surfaces for uncommented nodes
+            else (NORMAL_NODE_FOOT, *NORMAL_BOTTOM_CORNERS)
         )
 
     def assign_body_surface(self):
@@ -162,10 +145,7 @@ class BodySetupOperations:
         ### this key only ends up being relevant if the
         ### node's callable has no variable parameters
 
-        body_surf_key = (
-          self.signature_callable,
-          self.data.get('commented_out', False)
-        )
+        body_surf_key = (self.signature_callable, self.data.get("commented_out", False))
 
         ### check whether the callable of the node in the
         ### current state (commented out or not) has an
@@ -180,8 +160,8 @@ class BodySetupOperations:
         ### for more info about this, check this method's
         ### docstring
 
-        try: body_surf = \
-                    NO_VARPARAM_NODE_BODY_MAP[body_surf_key]
+        try:
+            body_surf = NO_VARPARAM_NODE_BODY_MAP[body_surf_key]
 
         ### if it hasn't, we will go ahead and create the
         ### surface
@@ -203,30 +183,20 @@ class BodySetupOperations:
             ### executed
 
             if not self.var_kind_map:
-                 NO_VARPARAM_NODE_BODY_MAP[body_surf_key] = \
-                                                    body_surf
-
+                NO_VARPARAM_NODE_BODY_MAP[body_surf_key] = body_surf
 
         ### finally, store such surface as the body surface
         self.body.image = body_surf
 
     def assign_unpacking_icon_surfs(self):
         """Assign proper surfaces to unpacking icons, if any."""
-        if not self.var_kind_map: return
+        if not self.var_kind_map:
+            return
 
-        is_commented_out = self.data.get('commented_out', False)
+        is_commented_out = self.data.get("commented_out", False)
 
-        for param_name, param_kind in (
-          self.var_kind_map.items()
-        ):
-            
-            for button in (
-              self
-              .subparam_unpacking_icon_flmap
-              [param_name]
-              .values()
-            ):
-                
-                button.image = UNPACKING_ICON_SURFS_MAP[
-                                 (param_kind, is_commented_out)
-                               ]
+        for param_name, param_kind in self.var_kind_map.items():
+
+            for button in self.subparam_unpacking_icon_flmap[param_name].values():
+
+                button.image = UNPACKING_ICON_SURFS_MAP[(param_kind, is_commented_out)]

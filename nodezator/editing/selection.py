@@ -2,19 +2,19 @@
 
 ### standard library imports
 
-from itertools   import chain
-from functools   import partialmethod
+from itertools import chain
+from functools import partialmethod
 from collections import deque
-from random      import sample
+from random import sample
 
 
 ### third-party imports
 
 from pygame import Rect, KMOD_SHIFT, KMOD_CTRL
 
-from pygame.key   import get_mods as get_mods_bitmask
-from pygame.mouse import get_pos  as get_mouse_pos
-from pygame.draw  import rect     as draw_rect
+from pygame.key import get_mods as get_mods_bitmask
+from pygame.mouse import get_pos as get_mouse_pos
+from pygame.draw import rect as draw_rect
 
 
 ### local imports
@@ -28,12 +28,13 @@ from ..ourstdlibs.mathutils import get_rect_from_points
 from ..loopman.exception import ContinueLoopException
 
 from ..colorsman.colors import (
-                        ACTIVE_SELECTION,
-                        NORMAL_SELECTION,
-                      )
+    ACTIVE_SELECTION,
+    NORMAL_SELECTION,
+)
 
 
 ### class definition
+
 
 class SelectionHandling:
     """Contains data and behaviour to support selection."""
@@ -43,7 +44,7 @@ class SelectionHandling:
         ### define controls
 
         self.selected_objs = deque()
-        self.active_obj    = None
+        self.active_obj = None
 
     ### methods supporting selection in general
 
@@ -52,12 +53,7 @@ class SelectionHandling:
         for obj in self.selected_objs:
 
             obj.draw_selection_outline(
-
-              ACTIVE_SELECTION
-              if obj is self.active_obj
-              
-              else NORMAL_SELECTION
-
+                ACTIVE_SELECTION if obj is self.active_obj else NORMAL_SELECTION
             )
 
     def change_selection_state(self, obj):
@@ -67,7 +63,7 @@ class SelectionHandling:
         or not and consists of selecting, deselecting or
         turning the object the active selection.
         """
-        ### if shift is pressed... 
+        ### if shift is pressed...
 
         if KMOD_SHIFT & get_mods_bitmask():
 
@@ -98,8 +94,8 @@ class SelectionHandling:
 
                 self.selected_objs.remove(obj)
 
-                try: self.active_obj = \
-                            self.selected_objs[-1]
+                try:
+                    self.active_obj = self.selected_objs[-1]
 
                 except IndexError:
                     self.active_obj = None
@@ -136,21 +132,18 @@ class SelectionHandling:
 
             ### select all objects
 
-            self.selected_objs.extend(
-              chain(
-                APP_REFS.gm.nodes,
-                APP_REFS.gm.text_blocks
-              )
-            )
+            self.selected_objs.extend(chain(APP_REFS.gm.nodes, APP_REFS.gm.text_blocks))
 
             ### try setting the active selection to the last
             ### selected object
-            try: self.active_obj = self.selected_objs[-1]
+            try:
+                self.active_obj = self.selected_objs[-1]
 
             ### otherwise set the active selection to None
-            except IndexError: self.active_obj = None
+            except IndexError:
+                self.active_obj = None
 
-    select_all   = partialmethod(select_all_toggle,  True)
+    select_all = partialmethod(select_all_toggle, True)
     deselect_all = partialmethod(select_all_toggle, False)
 
     def add_obj_to_selection(self, obj):
@@ -183,8 +176,7 @@ class SelectionHandling:
         ### get a copy of the scrolling amount by adding
         ### (0, 0) to it and store the copy as the initial
         ### scrolling
-        self.initial_scrolling = \
-                        self.scrolling_amount + (0, 0)
+        self.initial_scrolling = self.scrolling_amount + (0, 0)
 
         ### create a rect with arbitrary values,
         ### representing a selection box
@@ -194,7 +186,7 @@ class SelectionHandling:
         ### window manager and go to beginning of the app
         ### loop
 
-        APP_REFS.window_manager.set_state('box_selection')
+        APP_REFS.window_manager.set_state("box_selection")
         raise ContinueLoopException
 
     def cancel_box_selection(self):
@@ -205,7 +197,7 @@ class SelectionHandling:
         ### set 'loaded_file' mode back and go to beginning
         ### of loop
 
-        APP_REFS.window_manager.set_state('loaded_file')
+        APP_REFS.window_manager.set_state("loaded_file")
         raise ContinueLoopException
 
     def confirm_box_selection(self):
@@ -230,7 +222,7 @@ class SelectionHandling:
         bitmask = get_mods_bitmask()
 
         shift = bitmask & KMOD_SHIFT
-        ctrl  = bitmask & KMOD_CTRL
+        ctrl = bitmask & KMOD_CTRL
 
         ### perform box collision selection according
         ### to suitable scenario defined below depending
@@ -263,7 +255,7 @@ class SelectionHandling:
         ### set 'loaded_file' mode back and go to beginning
         ### of loop
 
-        APP_REFS.window_manager.set_state('loaded_file')
+        APP_REFS.window_manager.set_state("loaded_file")
         raise ContinueLoopException
 
     def get_box_colliding(self):
@@ -274,20 +266,13 @@ class SelectionHandling:
         ### return set with each colliding object
 
         return {
-            
-          ## store an object...
-          obj
-
-          ## for each obj among the function nodes and
-          ## text blocks...
-
-          for obj in chain(
-            APP_REFS.gm.nodes, APP_REFS.gm.text_blocks
-          )
-
-          ## if that object collides with the selection box
-          if collides(obj.rect)
-
+            ## store an object...
+            obj
+            ## for each obj among the function nodes and
+            ## text blocks...
+            for obj in chain(APP_REFS.gm.nodes, APP_REFS.gm.text_blocks)
+            ## if that object collides with the selection box
+            if collides(obj.rect)
         }
 
     def box_select_extend_colliding(self):
@@ -297,7 +282,8 @@ class SelectionHandling:
 
         ### if there are no colliding objects, there's
         ### no point in keep going, so return early
-        if not colliding_objs: return
+        if not colliding_objs:
+            return
 
         ### otherwise update the selection and the active
         ### obj
@@ -313,9 +299,7 @@ class SelectionHandling:
         ### assign a random object among the colliding ones
         ### as the active object
 
-        self.active_obj = (
-          sample(list(colliding_objs), 1).pop()
-        )
+        self.active_obj = sample(list(colliding_objs), 1).pop()
 
     def box_deselect_colliding(self):
         """Remove objs colliding w/box from selection."""
@@ -324,7 +308,8 @@ class SelectionHandling:
 
         ### if there are no colliding objects, there's
         ### no point in keep going, so return early
-        if not colliding_objs: return
+        if not colliding_objs:
+            return
 
         ### otherwise removing colliding object from
         ### selection and set the active obj
@@ -343,11 +328,7 @@ class SelectionHandling:
         ### on whether there are selected objects or not
 
         self.active_obj = (
-
-          sample(list(self.selected_objs), 1).pop()
-          if self.selected_objs
-          else None
-
+            sample(list(self.selected_objs), 1).pop() if self.selected_objs else None
         )
 
     def clean_selection_box_attrs(self):
@@ -361,15 +342,12 @@ class SelectionHandling:
         ### calculate the point 1 of the box
 
         box_point_1 = (
-
-          ## grab the absolute point in the screen where
-          ## the box selection started
-          self.initial_box_pos
-
-          ## and add the difference between the inital
-          ## scrolling and the current scrolling
-          + (self.scrolling_amount - self.initial_scrolling)
-
+            ## grab the absolute point in the screen where
+            ## the box selection started
+            self.initial_box_pos
+            ## and add the difference between the inital
+            ## scrolling and the current scrolling
+            + (self.scrolling_amount - self.initial_scrolling)
         )
 
         ### the point 2 of the box is the current mouse
@@ -378,13 +356,12 @@ class SelectionHandling:
 
         ### now, using the points, define the data for
         ### the selection box
-        left, top, width, height = \
-            get_rect_from_points(box_point_1, box_point_2)
+        left, top, width, height = get_rect_from_points(box_point_1, box_point_2)
 
         ### and update the selection box
 
         self.selection_box.topleft = left, top
-        self.selection_box.size    = width, height
+        self.selection_box.size = width, height
 
     def draw_selection_box(self):
         """Draw selection box rect on the screen.
@@ -413,10 +390,9 @@ class SelectionHandling:
         ### box if its smallest dimension is less than
         ### 4 pixels
 
-        if min(self.selection_box.size) < 4: return
+        if min(self.selection_box.size) < 4:
+            return
 
         ### otherwise we draw the selection box
 
-        draw_rect(
-          SCREEN, NORMAL_SELECTION, self.selection_box, 2
-        )
+        draw_rect(SCREEN, NORMAL_SELECTION, self.selection_box, 2)

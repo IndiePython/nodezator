@@ -9,17 +9,15 @@ from pygame import Rect
 from ....rectsman.main import RectsManager
 
 from ..constants import (
-
-                                FONT_HEIGHT,
-                                BODY_CONTENT_OFFSET,
-                                NODE_OUTLINE_THICKNESS,
-                                SUBPARAM_OFFSET_FROM_LABEL,
-                                DISTANCE_BETWEEN_PARAMS,
-                                DISTANCE_BETWEEN_SUBPARAMS,
-                                DISTANCE_BETWEEN_OUTPUTS,
-                                OUTPUT_OFFSET,
-
-                              )
+    FONT_HEIGHT,
+    BODY_CONTENT_OFFSET,
+    NODE_OUTLINE_THICKNESS,
+    SUBPARAM_OFFSET_FROM_LABEL,
+    DISTANCE_BETWEEN_PARAMS,
+    DISTANCE_BETWEEN_SUBPARAMS,
+    DISTANCE_BETWEEN_OUTPUTS,
+    OUTPUT_OFFSET,
+)
 
 
 def reposition_elements(self):
@@ -66,7 +64,8 @@ def reposition_elements(self):
 
         ## try retrieving the variable kind of the
         ## parameter
-        try: self.var_kind_map[param_name]
+        try:
+            self.var_kind_map[param_name]
 
         ## if the retrieval fails, then we have
         ## a regular parameter
@@ -77,13 +76,9 @@ def reposition_elements(self):
             ## parameters, as well as the list of the
             ## underlying rects controlled by the rectsman
 
-            param_rectsman = (
-              self.param_rectsman_map[param_name]
-            )
+            param_rectsman = self.param_rectsman_map[param_name]
 
-            rect_list = (
-              param_rectsman._get_all_rects.__self__
-            )
+            rect_list = param_rectsman._get_all_rects.__self__
 
             ## if there's more than one rect in the
             ## parameter, it means there's a widget
@@ -129,10 +124,7 @@ def reposition_elements(self):
 
                 param_rectsman.top = top
 
-                top = max(
-                        param_rectsman.bottom,
-                        socket_rect.bottom
-                      )
+                top = max(param_rectsman.bottom, socket_rect.bottom)
 
                 del rect_list[-1]
 
@@ -149,27 +141,19 @@ def reposition_elements(self):
             ## the top for the next object will be below
             ## the text rect plus an offset given as a
             ## constant
-            top = (
-              text_rect.bottom + SUBPARAM_OFFSET_FROM_LABEL
-            )
+            top = text_rect.bottom + SUBPARAM_OFFSET_FROM_LABEL
 
             ## we then retrieve the names of the
             ## subparameters sorted
 
-            sorted_subparam_indices = (
-              sorted(
-                self.input_socket_live_flmap[param_name]
-              )
-            )
+            sorted_subparam_indices = sorted(self.input_socket_live_flmap[param_name])
 
             ## if there are indeed subparameters, store the
             ## name of the last one (we'll use it soon)
 
             if sorted_subparam_indices:
 
-                last_subparam_index = (
-                  sorted_subparam_indices[-1]
-                )
+                last_subparam_index = sorted_subparam_indices[-1]
 
             ## iterate over each subparameter index in order,
             ## repositioning each subparameter as you go
@@ -178,12 +162,9 @@ def reposition_elements(self):
 
                 # retrieve rectsman for the subparameter
 
-                subparam_rectsman = (
-                  self
-                  .subparam_rectsman_map
-                  [param_name]
-                  [subparam_index]
-                )
+                subparam_rectsman = self.subparam_rectsman_map[param_name][
+                    subparam_index
+                ]
 
                 # assign top
                 subparam_rectsman.top = top
@@ -201,26 +182,14 @@ def reposition_elements(self):
             ## retrieve the rects from the placeholder
             ## socket and the "add subparameter button"
 
-            socket_rect = (
-              self
-              .placeholder_socket_live_map
-              [param_name]
-              .rect
-            )
+            socket_rect = self.placeholder_socket_live_map[param_name].rect
 
-            button_rect = (
-              self
-              .placeholder_add_button_map
-              [param_name]
-              .rect
-            )
+            button_rect = self.placeholder_add_button_map[param_name].rect
 
             ## put the "add subparameter button" a bit to the
             ## right of the placeholder, both vertically
             ## aligned
-            button_rect.midleft = (
-              socket_rect.move(5, 0).midright
-            )
+            button_rect.midleft = socket_rect.move(5, 0).midright
 
             ## reposition socket rect and button rect
             ## together as if they were a single rect
@@ -229,10 +198,8 @@ def reposition_elements(self):
 
             # instantiate rectsman
 
-            rectsman = RectsManager(
-                        (socket_rect, button_rect).__iter__
-                       )
-                
+            rectsman = RectsManager((socket_rect, button_rect).__iter__)
+
             # assign the defined top and add 4 pixels, to
             # push them just a bit down for extra padding
             rectsman.top = top + 4
@@ -248,7 +215,6 @@ def reposition_elements(self):
         if param_name != last_param_name:
             top += DISTANCE_BETWEEN_PARAMS
 
-
     ### position each output socket
 
     ## get names of output sockets (their order is defined
@@ -263,7 +229,8 @@ def reposition_elements(self):
 
     ## also offset the defined top by the output offset
     ## given as a constant, that is, if there are parameters
-    if parameters: top += OUTPUT_OFFSET
+    if parameters:
+        top += OUTPUT_OFFSET
 
     ## iterate over socket names, retrieving the rect of
     ## each socket in order to position it
@@ -286,9 +253,7 @@ def reposition_elements(self):
         ## them through a temporary rects manager instance
 
         # instantiate rectsman
-        rectsman = (
-          RectsManager((text_rect, socket_rect).__iter__)
-        )
+        rectsman = RectsManager((text_rect, socket_rect).__iter__)
 
         # assign top to the temporary rectsman
         rectsman.top = top
@@ -312,7 +277,6 @@ def reposition_elements(self):
     ## node
     output_rectsman.centerx = top_rectsman.right
 
-
     ### position the id text object
 
     ## reference the rect of the id text object locally
@@ -330,7 +294,6 @@ def reposition_elements(self):
     ## the centerx of the top rectsman, so it is
     ## horizontally centered on the node
     id_text_rect.centerx = top_rectsman.centerx
-
 
     ### position the bottom rectsman
 
@@ -351,13 +314,7 @@ def reposition_elements(self):
     bottom_rectsman.bottom = id_text_rect.bottom
     bottom_rectsman.top += NODE_OUTLINE_THICKNESS + 4
 
-
     ### perform extra administrative task: updating
     ### the height of self.rect
 
-    self.rect.height = (
-
-      bottom_rectsman.bottom
-      - top_rectsman.top
-
-    )
+    self.rect.height = bottom_rectsman.bottom - top_rectsman.top

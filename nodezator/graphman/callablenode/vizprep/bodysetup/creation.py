@@ -21,22 +21,22 @@ from .....classes2d.single import Object2D
 from .....textman.render import render_text
 
 from ...surfs import (
-                           BODY_HEAD_SURFS_MAP,
-                           KEYWORD_KEY_SURF,
-                         )
+    BODY_HEAD_SURFS_MAP,
+    KEYWORD_KEY_SURF,
+)
 
 from ...constants import (
-                               NODE_WIDTH,
-                               FONT_HEIGHT,
-                               NODE_OUTLINE_THICKNESS,
-                             )
+    NODE_WIDTH,
+    FONT_HEIGHT,
+    NODE_OUTLINE_THICKNESS,
+)
 
 from .....colorsman.colors import (
-                        NODE_OUTLINE, 
-                        NODE_BODY_BG,
-                        COMMENTED_OUT_NODE_BG,
-                        NODE_LABELS,
-                      )
+    NODE_OUTLINE,
+    NODE_BODY_BG,
+    COMMENTED_OUT_NODE_BG,
+    NODE_LABELS,
+)
 
 
 ### constant: rect from the keyword key surf
@@ -55,22 +55,12 @@ def create_body_surface(self):
     ### on the "commented out" state
 
     node_light_bg_color = (
-
-      COMMENTED_OUT_NODE_BG
-      if self.data.get('commented_out', False)
-
-      else NODE_BODY_BG
-
+        COMMENTED_OUT_NODE_BG if self.data.get("commented_out", False) else NODE_BODY_BG
     )
-
 
     ### create a surface for the body of the node
 
-    body_surf = render_rect(
-                  NODE_WIDTH,
-                  body_height,
-                  node_light_bg_color
-                )
+    body_surf = render_rect(NODE_WIDTH, body_height, node_light_bg_color)
 
     ### obtain body head surf from corresponding map
     BODY_HEAD_SURF = BODY_HEAD_SURFS_MAP[self.category_color]
@@ -81,15 +71,12 @@ def create_body_surface(self):
     ### part of the body appear as if merged with its top
 
     blit_aligned(
-
-      ## surface to blit
-      BODY_HEAD_SURF,
-
-      ## target surface
-      body_surf,
-
-      'midtop', ## retrieve pos from this
-      'midtop', ## assign pos to this
+        ## surface to blit
+        BODY_HEAD_SURF,
+        ## target surface
+        body_surf,
+        "midtop",  ## retrieve pos from this
+        "midtop",  ## assign pos to this
     )
 
     ### create a rect representing the height of text
@@ -100,25 +87,18 @@ def create_body_surface(self):
     ### relative to the surface's origin, define an offset
     ### equal to the body's topleft coordinates inverted
 
-    offset = tuple(
-               -value
-               for value in self.body.rect.topleft
-             )
+    offset = tuple(-value for value in self.body.rect.topleft)
 
     ### iterate over the name of each parameter, blitting
     ### text surfaces representing them on the body of
     ### the node in the appropriate locations
 
-    parameters_names = (
-      self.signature_obj.parameters.keys()
-    )
+    parameters_names = self.signature_obj.parameters.keys()
 
     for param_name in parameters_names:
 
         ### retrieve the rectsman of the parameter
-        param_rectsman = (
-          self.param_rectsman_map[param_name]
-        )
+        param_rectsman = self.param_rectsman_map[param_name]
 
         ### position the text rect in the appropriate place
         ### so we can use its topleft as the spot wherein
@@ -130,7 +110,8 @@ def create_body_surface(self):
         ### of variable kind)
 
         ## try retrieving the variable kind of the parameter
-        try: var_kind = self.var_kind_map[param_name] 
+        try:
+            var_kind = self.var_kind_map[param_name]
 
         ## if a KeyError is raised, then we have a regular
         ## parameter here, and the position of the text rect
@@ -146,11 +127,10 @@ def create_body_surface(self):
             text_rect.left = top_rectsman.left + 10
 
             ## position the text rect vertically
-            
+
             # retrieve the list of rects controlled by
             # the rects manager of the parameter
-            rect_list = \
-                param_rectsman._get_all_rects.__self__
+            rect_list = param_rectsman._get_all_rects.__self__
 
             # if there's more than 1 rect controlled by
             # the parameter rectsman, than we can be sure
@@ -158,10 +138,8 @@ def create_body_surface(self):
             # hangs above the parameter rectsman, 2 pixels
             # separating them
 
-            if len(
-              param_rectsman._get_all_rects.__self__
-            ) > 1:
-                
+            if len(param_rectsman._get_all_rects.__self__) > 1:
+
                 text_rect.bottom = param_rectsman.top
                 text_rect.top += -2
 
@@ -173,8 +151,7 @@ def create_body_surface(self):
             else:
 
                 input_socket_rect = rect_list[0]
-                text_rect.centery = \
-                              input_socket_rect.centery
+                text_rect.centery = input_socket_rect.centery
                 text_rect.top += -2
 
             ## define text
@@ -203,40 +180,28 @@ def create_body_surface(self):
             ## the parameter is of variable kind and
             ## the specific variable kind)
 
-            asterisks = (
-              '*' if var_kind == "var_pos"
-              else '**' 
-            )
+            asterisks = "*" if var_kind == "var_pos" else "**"
 
             text = asterisks + param_name
 
         ### define coordinates info
 
-        coordinates_name = 'topleft'
+        coordinates_name = "topleft"
         coordinates_value = text_rect.topleft
 
         ### instantiate positioned text object
 
-        text_obj = (
-
-          Object2D.from_surface(
+        text_obj = Object2D.from_surface(
             surface=render_text(
-
-                text = text,
-
+                text=text,
                 ## text settings
-
-                font_height      = FONT_HEIGHT,
-                foreground_color = NODE_LABELS,
-                background_color = node_light_bg_color,
-                max_width        = 170
-              ),
-
-            coordinates_name  = coordinates_name,
-            coordinates_value = coordinates_value
-
-          )
-
+                font_height=FONT_HEIGHT,
+                foreground_color=NODE_LABELS,
+                background_color=node_light_bg_color,
+                max_width=170,
+            ),
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
         )
 
         ### reposition the object relative to the
@@ -246,15 +211,12 @@ def create_body_surface(self):
         text_obj.rect.move_ip(offset)
         text_obj.draw_on_surf(body_surf)
 
-
     ### blit labels on the body surface, beside each output
     ### socket so the name of each output socket is visible
     ### on the node
 
     ## retrieve name of socket in the order they appear
-    ordered_socket_names = (
-      self.ordered_output_type_map.keys()
-    )
+    ordered_socket_names = self.ordered_output_type_map.keys()
 
     ## retrieve map wherein to find the output sockets
     osl_map = self.output_socket_live_map
@@ -267,14 +229,14 @@ def create_body_surface(self):
     ## also assign 'topright' as the name of
     ## the coordinates from where we'll position
     ## the text objects we'll be creating
-    coordinates_name = 'topright'
+    coordinates_name = "topright"
 
     ## iterate over names of output sockets, creating
     ## the text surface for each name and blitting it
     ## on the body surface
 
     for output_socket_name in ordered_socket_names:
-        
+
         ## grab the output socket
         output_socket = osl_map[output_socket_name]
 
@@ -300,30 +262,18 @@ def create_body_surface(self):
         ## instantiate the text object in the given position
 
         text_obj = Object2D.from_surface(
-
-                     surface=(
-
-                       render_text(
-
-                         text = output_socket_name,
-
-                         font_height = FONT_HEIGHT,
-
-                         foreground_color = NODE_LABELS,
-                         background_color = (
-                              node_light_bg_color
-                         ),
-
-                         max_width = 170
-
-                       )
-
-                     ),
-
-                     coordinates_name  = coordinates_name,
-                     coordinates_value = coordinates_value
-
-                   )
+            surface=(
+                render_text(
+                    text=output_socket_name,
+                    font_height=FONT_HEIGHT,
+                    foreground_color=NODE_LABELS,
+                    background_color=(node_light_bg_color),
+                    max_width=170,
+                )
+            ),
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+        )
 
         ## reposition the object relative to the
         ## surface's origin and blit the obj's surface
@@ -331,7 +281,6 @@ def create_body_surface(self):
 
         text_obj.rect.move_ip(offset)
         text_obj.draw_on_surf(body_surf)
-
 
     ### outline the sides of the body surface
 
@@ -355,36 +304,24 @@ def create_body_surface(self):
     # defining lines
 
     lines = (
-
-      # line on left side
-      ((0, 0), (0, body_height)),
-
-      # line on right side
-      ((offset_width, 0), (offset_width, body_height))
-
+        # line on left side
+        ((0, 0), (0, body_height)),
+        # line on right side
+        ((offset_width, 0), (offset_width, body_height)),
     )
 
     # drawing lines
 
     for point_a, point_b in lines:
 
-        draw_line(
-          body_surf, NODE_OUTLINE, point_a, point_b,
-          NODE_OUTLINE_THICKNESS
-        )
+        draw_line(body_surf, NODE_OUTLINE, point_a, point_b, NODE_OUTLINE_THICKNESS)
 
     ### separate body head from rest of the body by drawing
     ### a horizontal line between those areas
 
     line_y = BODY_HEAD_SURF.get_height()
 
-    draw_line(
-      body_surf,
-      NODE_OUTLINE,
-      (0, line_y),
-      (body_surf.get_width(), line_y),
-      2
-    )
+    draw_line(body_surf, NODE_OUTLINE, (0, line_y), (body_surf.get_width(), line_y), 2)
 
     ### if there's a keyword-variable parameter in the
     ### node, blit the keyword key icon beside each
@@ -397,25 +334,15 @@ def create_body_surface(self):
     ### widgets among other entry widgets the node might
     ### be using
 
-    if 'var_key' in self.var_kind_map.values():
-        
+    if "var_key" in self.var_kind_map.values():
+
         param_name = next(
-          key
-          for key, value in self.var_kind_map.items()
-          if value == 'var_key'
+            key for key, value in self.var_kind_map.items() if value == "var_key"
         )
 
         for obj in chain(
-
-          self.live_keyword_entries,
-
-          (
-            self
-            .subparam_unpacking_icon_flmap
-            [param_name]
-            .values()
-          ),
-
+            self.live_keyword_entries,
+            (self.subparam_unpacking_icon_flmap[param_name].values()),
         ):
 
             ## obtain the midleft coordinates of the
@@ -424,21 +351,16 @@ def create_body_surface(self):
             ## of the body surface
 
             x, y = (
-
-              # get object's rect
-              obj.rect
-
-              # get new rect moved a bit to the left
-              .move(-2, 0)
-
-              # and yet another one moved from there so its
-              # position is relative to the origin of the
-              # body surface
-              .move(offset)
-
-              # then grab its midleft coordinates
-              .midleft
-
+                # get object's rect
+                obj.rect
+                # get new rect moved a bit to the left
+                .move(-2, 0)
+                # and yet another one moved from there so its
+                # position is relative to the origin of the
+                # body surface
+                .move(offset)
+                # then grab its midleft coordinates
+                .midleft
             )
 
             ## assign the midleft coordinates calculated
@@ -449,8 +371,8 @@ def create_body_surface(self):
             KEYWORD_KEY_RECT.midright = x, y
 
             body_surf.blit(
-              KEYWORD_KEY_SURF,
-              KEYWORD_KEY_RECT,
+                KEYWORD_KEY_SURF,
+                KEYWORD_KEY_RECT,
             )
 
     ### finally return the body surface

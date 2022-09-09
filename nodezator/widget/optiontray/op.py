@@ -38,7 +38,8 @@ class OptionTrayLifetimeOperations(Object2D):
         ### if the value is already set, exit the method by
         ### returning, since choosing a value which is
         ### already chosen isn't considered a change at all
-        if self.value == value: return
+        if self.value == value:
+            return
 
         ### if value received isn't within allowed values
         ### (values inside list in "options" attribute),
@@ -60,11 +61,10 @@ class OptionTrayLifetimeOperations(Object2D):
         self.update_image()
 
         ## execute custom command if requested
-        if custom_command: self.command()
+        if custom_command:
+            self.command()
 
-    def reset_value_and_options(
-          self, value, options, custom_command=True
-        ):
+    def reset_value_and_options(self, value, options, custom_command=True):
         """Reset available options and set given value.
 
         Parameters
@@ -94,17 +94,18 @@ class OptionTrayLifetimeOperations(Object2D):
         if options == self.options:
 
             print(
-              "new options provided are the same as the"
-              " current ones and in the same order"
+                "new options provided are the same as the"
+                " current ones and in the same order"
             )
 
             return
 
         ## check whether the value and options are valid
 
-        try: self.validate_value_and_options(value, options)
+        try:
+            self.validate_value_and_options(value, options)
         except (ValueError, TypeError) as err:
-            
+
             print(err)
             return
 
@@ -118,7 +119,7 @@ class OptionTrayLifetimeOperations(Object2D):
 
         ## set the value and the options
 
-        self.value   = value
+        self.value = value
         self.options = options
 
         ## set the surface map and right coordinates;
@@ -131,7 +132,8 @@ class OptionTrayLifetimeOperations(Object2D):
         self.rect.topleft = topleft
 
         ## execute custom command if requested
-        if custom_command: self.command()
+        if custom_command:
+            self.command()
 
     def on_mouse_release(self, event):
         """Set the value under the mouse.
@@ -152,7 +154,7 @@ class OptionTrayLifetimeOperations(Object2D):
 
             we retrieve the position of the mouse from it,
             to find which value was pressed;
-              
+
             check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -178,10 +180,9 @@ class OptionTrayLifetimeOperations(Object2D):
         ### clicked (actually, the one over which we
         ### released the mouse)
 
-        for value, value_right in zip(
-          self.options, self.right_coordinates
-        ):
-            if relative_mouse_x < value_right: break
+        for value, value_right in zip(self.options, self.right_coordinates):
+            if relative_mouse_x < value_right:
+                break
 
         ### we finally pass the value to set(), which will
         ### set it as the new value for this widget, if it

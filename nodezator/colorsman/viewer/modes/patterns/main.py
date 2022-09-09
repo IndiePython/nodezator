@@ -7,15 +7,13 @@ from types import GeneratorType
 ### third-party imports
 
 from pygame import (
-
-              QUIT,
-
-              KEYUP,
-              K_ESCAPE, K_RETURN, K_KP_ENTER,
-
-              MOUSEBUTTONUP,
-
-            )
+    QUIT,
+    KEYUP,
+    K_ESCAPE,
+    K_RETURN,
+    K_KP_ENTER,
+    MOUSEBUTTONUP,
+)
 
 from pygame.event import get as get_events
 
@@ -27,9 +25,9 @@ from pygame.display import update
 from .....pygameconstants import blit_on_screen
 
 from .....ourstdlibs.behaviour import (
-                            empty_function,
-                            get_oblivious_callable,
-                          )
+    empty_function,
+    get_oblivious_callable,
+)
 
 from .....loopman.exception import QuitAppException
 
@@ -40,53 +38,42 @@ from .....classes2d.single import Object2D
 from .....textman.render import render_text
 from .....fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
 
-from ....colors import (
-                            BUTTON_FG, BUTTON_BG,
-                            WINDOW_FG, WINDOW_BG)
+from ....colors import BUTTON_FG, BUTTON_BG, WINDOW_FG, WINDOW_BG
 
 
 ## pattern drawing functions
 
 from .waves import draw_waves
-from .particles import(
-                                                draw_circles)
+from .particles import draw_circles
 
 
 ### names (strings) mapped to drawing operations they
 ### represent
 
-PATTERN_DRAWING_MAP = {
-  'waves'   : draw_waves,
-  'circles' : draw_circles
-}
+PATTERN_DRAWING_MAP = {"waves": draw_waves, "circles": draw_circles}
 
 
 ### class definition
 
+
 class PatternsMode:
     """Has operations to draw patterns from given colors."""
-    
+
     def __init__(self):
         """Create support objects for the patterns mode."""
         ### create a "Pattern:" label to indicate the
         ### option menu for choosing patterns
 
-        self.pattern_label = (
-
-          Object2D.from_surface(
-
-            surface= (
-              render_text(
-                text        = 'Pattern:',
-                font_height = ENC_SANS_BOLD_FONT_HEIGHT,
-                padding           = 5,
-                foreground_color  = WINDOW_FG,
-                background_color  = WINDOW_BG,
-              )
+        self.pattern_label = Object2D.from_surface(
+            surface=(
+                render_text(
+                    text="Pattern:",
+                    font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+                    padding=5,
+                    foreground_color=WINDOW_FG,
+                    background_color=WINDOW_BG,
+                )
             ),
-
-          )
-
         )
 
         ### create option menu from which to choose patterns
@@ -95,50 +82,29 @@ class PatternsMode:
 
         clamp_area = self.rect
 
-        self.pattern_options = (
-
-          OptionMenu(
-            loop_holder = self,
-            value       = pattern_names[0],
-            options     = pattern_names,
-            clamp_area  = clamp_area,
-            command     = self.redraw_pattern,
-
-            draw_on_window_resize = self.patterns_draw,
-
-          )
-
+        self.pattern_options = OptionMenu(
+            loop_holder=self,
+            value=pattern_names[0],
+            options=pattern_names,
+            clamp_area=clamp_area,
+            command=self.redraw_pattern,
+            draw_on_window_resize=self.patterns_draw,
         )
 
         ### create a button to redraw/change the pattern
 
-        self.redraw_pattern_button = (
-
-          Object2D.from_surface(
-
-            surface = (
-
-              render_text(
-
-                text        = "Redraw",
-                font_height = ENC_SANS_BOLD_FONT_HEIGHT,
-                padding     = 5,
-
-                foreground_color = BUTTON_FG,
-                background_color = BUTTON_BG,
-
-                depth_finish_thickness = 1,
-
-              )
-
+        self.redraw_pattern_button = Object2D.from_surface(
+            surface=(
+                render_text(
+                    text="Redraw",
+                    font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+                    padding=5,
+                    foreground_color=BUTTON_FG,
+                    background_color=BUTTON_BG,
+                    depth_finish_thickness=1,
+                )
             ),
-
-            on_mouse_release = (
-              get_oblivious_callable(self.redraw_pattern)
-            ),
-
-          )
-
+            on_mouse_release=(get_oblivious_callable(self.redraw_pattern)),
         )
 
         ### placeholder attribute for a generator closing
@@ -165,10 +131,12 @@ class PatternsMode:
 
             self.labels.append(self.pattern_label)
 
-            self.buttons.extend((
-                           self.pattern_options,
-                           self.redraw_pattern_button,
-                         ))
+            self.buttons.extend(
+                (
+                    self.pattern_options,
+                    self.redraw_pattern_button,
+                )
+            )
 
         ### get the name of the chosen pattern from the
         ### options menu
@@ -182,10 +150,7 @@ class PatternsMode:
         ### representing the canvas and the list of colors,
         ### catching the resulting return value
 
-        result = drawing_callable(
-                   self.canvas.image,
-                   self.colors
-                 )
+        result = drawing_callable(self.canvas.image, self.colors)
 
         ### set the 'update' and 'close_generator'
         ### attributes to specific objects depending on
@@ -198,7 +163,7 @@ class PatternsMode:
         ## and 'close' methods, respectively
 
         if isinstance(result, GeneratorType):
-            
+
             self.update = result.__next__
 
             self.close_generator = result.close
@@ -208,8 +173,7 @@ class PatternsMode:
 
         else:
 
-            self.update = \
-            self.close_generator = empty_function
+            self.update = self.close_generator = empty_function
 
     ### alias the redraw pattern as the preparation
     ### operation of the patterns mode
@@ -231,8 +195,8 @@ class PatternsMode:
             ## remove option menu and redraw button
 
             for obj in (
-              self.pattern_options,
-              self.redraw_pattern_button,
+                self.pattern_options,
+                self.redraw_pattern_button,
             ):
                 self.buttons.remove(obj)
 
@@ -252,10 +216,11 @@ class PatternsMode:
         Grab and process events from pygame.event.get.
         """
         for event in get_events():
-            
+
             ### raise a specific exception if the user
             ### tries to quit the app
-            if event.type == QUIT: raise QuitAppException
+            if event.type == QUIT:
+                raise QuitAppException
 
             ### if user releases one of following keys,
             ### trigger exiting the colors viewer by
@@ -263,9 +228,7 @@ class PatternsMode:
 
             elif event.type == KEYUP:
 
-                if event.key in (
-                  K_ESCAPE,K_RETURN, K_KP_ENTER
-                ):
+                if event.key in (K_ESCAPE, K_RETURN, K_KP_ENTER):
                     self.running = False
 
             ### if the left mouse button is released,
@@ -273,10 +236,10 @@ class PatternsMode:
             ### method
 
             elif event.type == MOUSEBUTTONUP:
-                
+
                 if event.button == 1:
                     self.color_list_on_mouse_release(event)
-    
+
     def patterns_on_mouse_release(self, event):
         """Trigger exiting colors viewer or invoke button.
 
@@ -311,15 +274,17 @@ class PatternsMode:
             ## if a button collides, execute its mouse
             ## release action if it has one, then break out
             ## of the "for loop"
-            
+
             if button.rect.collidepoint(mouse_pos):
-                
-                try: method = getattr(
-                                button, 'on_mouse_release')
 
-                except AttributeError: pass
+                try:
+                    method = getattr(button, "on_mouse_release")
 
-                else: method(event)
+                except AttributeError:
+                    pass
+
+                else:
+                    method(event)
 
                 break
 
@@ -338,4 +303,4 @@ class PatternsMode:
         self.canvas.draw()
 
         ### finally, update the screen
-        update() # pygame.display.update
+        update()  # pygame.display.update

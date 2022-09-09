@@ -38,18 +38,18 @@ and the user's preference/need.
 from ..ourstdlibs.mathutils import get_straight_distance
 
 from ..fontsman.constants import (
-                          ENC_SANS_BOLD_FONT_HEIGHT,
-                          ENC_SANS_BOLD_FONT_PATH,
-                        )
+    ENC_SANS_BOLD_FONT_HEIGHT,
+    ENC_SANS_BOLD_FONT_PATH,
+)
 
 from ..surfsman.icon import render_layered_icon
 
 from ..colorsman.colors import (
-                        MENU_FG,
-                        MENU_BG,
-                        MENU_HOVERED_FG,
-                        MENU_HOVERED_BG,
-                      )
+    MENU_FG,
+    MENU_BG,
+    MENU_HOVERED_FG,
+    MENU_HOVERED_BG,
+)
 
 
 ### common constants to render menu items' labels
@@ -63,31 +63,22 @@ from ..colorsman.colors import (
 # worry about changing other values elsewhere
 
 FONT_SIZE_KWARGS = {
-
-  # see module docstring about font height
-  'font_height' : ENC_SANS_BOLD_FONT_HEIGHT,
-
-  'font_path' : ENC_SANS_BOLD_FONT_PATH,
-  'padding'   : 5,
-
+    # see module docstring about font height
+    "font_height": ENC_SANS_BOLD_FONT_HEIGHT,
+    "font_path": ENC_SANS_BOLD_FONT_PATH,
+    "padding": 5,
 }
 
 NORMAL_LABEL_KWARGS = {
-
-  **FONT_SIZE_KWARGS,
-
-  'foreground_color' : MENU_FG,
-  'background_color' : MENU_BG,
-
+    **FONT_SIZE_KWARGS,
+    "foreground_color": MENU_FG,
+    "background_color": MENU_BG,
 }
 
 HOVERED_LABEL_KWARGS = {
-
-  **FONT_SIZE_KWARGS,
-
-  'foreground_color' : MENU_HOVERED_FG,
-  'background_color' : MENU_HOVERED_BG,
-
+    **FONT_SIZE_KWARGS,
+    "foreground_color": MENU_HOVERED_FG,
+    "background_color": MENU_HOVERED_BG,
 }
 
 
@@ -117,62 +108,36 @@ HOVERED_LABEL_KWARGS = {
 
 ## create the arrows
 
-(
-
-  LEFT_ARROW_SURF,
-  RIGHT_ARROW_SURF,
-  HOVERED_RIGHT_ARROW_SURF,
-
-) = (
-
-  render_layered_icon(
-
-    chars = [chr(82)],
-
-    dimension_name  = 'height',
-    dimension_value = 8,
-
-    padding = NORMAL_LABEL_KWARGS['padding'],
-
-    colors = [fg_color],
-
-    background_width  = NORMAL_LABEL_KWARGS['font_height'],
-    background_height = NORMAL_LABEL_KWARGS['font_height'],
-    background_color  = bg_color,
-
-    rotation_degrees = 90,
-    flip_x = flip_x,
-
-  )
-
-  for (
-
-    fg_color,
-    bg_color,
-    flip_x,
-
-  ) in (
-
-    (
-      MENU_FG,
-      MENU_BG,
-      False,
-    ),
-
-    (
-      MENU_FG,
-      MENU_BG,
-      True,
-    ),
-
-    (
-      MENU_HOVERED_FG,
-      MENU_HOVERED_BG,
-      True,
-    ),
-
-  )
-
+(LEFT_ARROW_SURF, RIGHT_ARROW_SURF, HOVERED_RIGHT_ARROW_SURF,) = (
+    render_layered_icon(
+        chars=[chr(82)],
+        dimension_name="height",
+        dimension_value=8,
+        padding=NORMAL_LABEL_KWARGS["padding"],
+        colors=[fg_color],
+        background_width=NORMAL_LABEL_KWARGS["font_height"],
+        background_height=NORMAL_LABEL_KWARGS["font_height"],
+        background_color=bg_color,
+        rotation_degrees=90,
+        flip_x=flip_x,
+    )
+    for (fg_color, bg_color, flip_x,) in (
+        (
+            MENU_FG,
+            MENU_BG,
+            False,
+        ),
+        (
+            MENU_FG,
+            MENU_BG,
+            True,
+        ),
+        (
+            MENU_HOVERED_FG,
+            MENU_HOVERED_BG,
+            True,
+        ),
+    )
 )
 
 
@@ -192,28 +157,17 @@ HOVERED_LABEL_KWARGS = {
 
 ## create the arrows
 
-(
-  UP_ARROW_SURF,
-  DOWN_ARROW_SURF
-) = (
-
-  render_layered_icon(
-
-    chars=[chr(82)],
-
-    dimension_name='height',
-    dimension_value=8,
-
-    padding=5,
-    colors=[MENU_FG],
-
-    background_color=MENU_BG,
-
-    flip_y=flip_y,
-  )
-
-  for flip_y in (False, True)
-
+(UP_ARROW_SURF, DOWN_ARROW_SURF) = (
+    render_layered_icon(
+        chars=[chr(82)],
+        dimension_name="height",
+        dimension_value=8,
+        padding=5,
+        colors=[MENU_FG],
+        background_color=MENU_BG,
+        flip_y=flip_y,
+    )
+    for flip_y in (False, True)
 )
 
 
@@ -227,7 +181,7 @@ HOVERED_LABEL_KWARGS = {
 ### defined, depending on the orientation of the scrolling;
 ### ponder;
 
-factor = 0.35 # arbitrary value
+factor = 0.35  # arbitrary value
 SCROLL_SPEED = round(LEFT_ARROW_SURF.get_height() * factor)
 
 
@@ -236,12 +190,19 @@ SCROLL_SPEED = round(LEFT_ARROW_SURF.get_height() * factor)
 ## rect attribute names representing points (2d positions)
 
 RECT_ATTR_NAMES = (
-  "center", "midtop", "topright", "midright",
-  "bottomright", "midbottom", "bottomleft",
-  "midleft", "topleft"
+    "center",
+    "midtop",
+    "topright",
+    "midright",
+    "bottomright",
+    "midbottom",
+    "bottomleft",
+    "midleft",
+    "topleft",
 )
 
 ## function definition
+
 
 def get_nearest_attr_name(pos, rect):
     """Return the rect's attribute name nearest to position.
@@ -277,9 +238,7 @@ def get_nearest_attr_name(pos, rect):
 
         ## get distance
 
-        distance = \
-            get_straight_distance(
-                getattr(rect, attr_name), pos)
+        distance = get_straight_distance(getattr(rect, attr_name), pos)
 
         ## create and append tuple with distance and
         ## attribute name

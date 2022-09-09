@@ -20,11 +20,11 @@ from pygame.math import Vector2
 from ...config import APP_REFS
 
 from ...pygameconstants import (
-                       SCREEN_RECT,
-                       maintain_fps,
-                       FPS,
-                       blit_on_screen,
-                     )
+    SCREEN_RECT,
+    maintain_fps,
+    FPS,
+    blit_on_screen,
+)
 
 from ...dialog import create_and_show_dialog
 
@@ -43,30 +43,32 @@ from ...surfsman.render import render_rect
 from ...surfsman.icon import render_layered_icon
 
 from ...colorsman.colors import (
-                        BLACK,
-                        WHITE,
-                        WINDOW_FG, WINDOW_BG,
-                        BUTTON_FG, BUTTON_BG,
-                        CONTRAST_LAYER_COLOR,
-                      )
+    BLACK,
+    WHITE,
+    WINDOW_FG,
+    WINDOW_BG,
+    BUTTON_FG,
+    BUTTON_BG,
+    CONTRAST_LAYER_COLOR,
+)
 
 from ..render import render_text
 
 from ...fontsman.constants import (
-                          ENC_SANS_BOLD_FONT_HEIGHT,
-                          ENC_SANS_BOLD_FONT_PATH,
-                          FIRA_MONO_BOLD_FONT_HEIGHT,
-                          FIRA_MONO_BOLD_FONT_PATH,
-                        )
+    ENC_SANS_BOLD_FONT_HEIGHT,
+    ENC_SANS_BOLD_FONT_PATH,
+    FIRA_MONO_BOLD_FONT_HEIGHT,
+    FIRA_MONO_BOLD_FONT_PATH,
+)
 
 from ..label.main import Label
 
 from .cursor.main import Cursor
 
 from .constants import (
-                                TEXT_EDITOR_RECT,
-                                EDITING_AREA_RECT,
-                              )
+    TEXT_EDITOR_RECT,
+    EDITING_AREA_RECT,
+)
 
 
 ### XXX
@@ -91,8 +93,7 @@ class TextEditor(Object2D):
 
         self.rect = TEXT_EDITOR_RECT
 
-        self.image = \
-             render_rect(*self.rect.size, WINDOW_BG)
+        self.image = render_rect(*self.rect.size, WINDOW_BG)
 
         ### draw black border around self.image
         draw_border(self.image, color=BLACK, thickness=1)
@@ -105,15 +106,11 @@ class TextEditor(Object2D):
 
         self.center_text_editor()
 
-        APP_REFS.window_resize_setups.append(
-          self.center_text_editor
-        )
+        APP_REFS.window_resize_setups.append(self.center_text_editor)
 
     def center_text_editor(self):
 
-        diff = (
-          Vector2(SCREEN_RECT.center) - self.rect.center
-        )
+        diff = Vector2(SCREEN_RECT.center) - self.rect.center
 
         self.rect.center = SCREEN_RECT.center
 
@@ -124,22 +121,16 @@ class TextEditor(Object2D):
         ## reference each button so we can position them
         ok_button, cancel_button = self.buttons
 
-        ok_button.rect.bottomright = (
-          self.rect.move(-10, -10).bottomright
-        )
+        ok_button.rect.bottomright = self.rect.move(-10, -10).bottomright
 
-        cancel_button.rect.bottomright = (
-          ok_button.rect.move(-10, 0).bottomleft
-        )
+        cancel_button.rect.bottomright = ok_button.rect.move(-10, 0).bottomleft
 
         ##
-        self.statusbar.rect.bottomleft = (
-          self.rect.move(10, -10).bottomleft
-        )
+        self.statusbar.rect.bottomleft = self.rect.move(10, -10).bottomleft
 
         ##
 
-        if hasattr(self, 'cursor'):
+        if hasattr(self, "cursor"):
 
             self.cursor.rect.move_ip(diff)
 
@@ -151,23 +142,18 @@ class TextEditor(Object2D):
         ### store semitransparent object the size of
         ### self.rect
 
-        self.rect_size_semitransp_obj = \
-          Object2D.from_surface(
+        self.rect_size_semitransp_obj = Object2D.from_surface(
             surface=render_rect(
-                   ## size and color of rect
-
-                   *self.rect.size,
-                   (*CONTRAST_LAYER_COLOR, 130),
-                 ),
-
+                ## size and color of rect
+                *self.rect.size,
+                (*CONTRAST_LAYER_COLOR, 130),
+            ),
             ## position info
-
-            coordinates_name='center',
-            coordinates_value=self.rect.center
-          )
+            coordinates_name="center",
+            coordinates_value=self.rect.center,
+        )
 
         ### create buttons
-
 
         ## create special list to store buttons
         self.buttons = List2D()
@@ -178,23 +164,16 @@ class TextEditor(Object2D):
 
             # instantiate
 
-            button = (
-
-              Object2D.from_surface(
-
+            button = Object2D.from_surface(
                 render_text(
-                  text,
-
-                  ## text settings
-
-                  font_height=ENC_SANS_BOLD_FONT_HEIGHT,
-                  padding=5,
-                  foreground_color=BUTTON_FG,
-                  background_color=BUTTON_BG,
-                  depth_finish_thickness=1
+                    text,
+                    ## text settings
+                    font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+                    padding=5,
+                    foreground_color=BUTTON_FG,
+                    background_color=BUTTON_BG,
+                    depth_finish_thickness=1,
                 )
-              )
-
             )
 
             # store
@@ -209,45 +188,32 @@ class TextEditor(Object2D):
 
         ## set cancel_button behaviour
 
-        cancel_button.invoke = \
-          CallList([
-            partial(setattr, self, "text", None),
-            partial(setattr, self, "running", False)
-          ])
+        cancel_button.invoke = CallList(
+            [
+                partial(setattr, self, "text", None),
+                partial(setattr, self, "running", False),
+            ]
+        )
 
         ### blit icon and title text on background
 
         ## icons
 
         text_icon = render_layered_icon(
-                      chars = [
-                        chr(ordinal) for ordinal in (37, 36)
-                      ],
-
-                      dimension_name  = 'height',
-                      dimension_value = 26,
-
-                      colors = [BLACK, WHITE]
-                    )
+            chars=[chr(ordinal) for ordinal in (37, 36)],
+            dimension_name="height",
+            dimension_value=26,
+            colors=[BLACK, WHITE],
+        )
 
         self.image.blit(text_icon, (10, 10))
 
         pencil_icon = render_layered_icon(
-                        chars = [
-                          chr(ordinal)
-                          for ordinal in range(115, 119)
-                        ],
-
-                        dimension_name  = 'height',
-                        dimension_value = 21,
-
-                        colors = [
-                          BLACK,
-                          (255, 225, 140),
-                          (255, 255, 0),
-                          (255, 170, 170)
-                        ]
-                      )
+            chars=[chr(ordinal) for ordinal in range(115, 119)],
+            dimension_name="height",
+            dimension_value=21,
+            colors=[BLACK, (255, 225, 140), (255, 255, 0), (255, 170, 170)],
+        )
 
         self.image.blit(pencil_icon, (20, 20))
 
@@ -255,28 +221,19 @@ class TextEditor(Object2D):
 
         midleft = (40, 22)
 
-        title_obj = (
-
-          Object2D.from_surface(
-
+        title_obj = Object2D.from_surface(
             surface=(
-              render_text(
-                "Text editor",
-
-                ## text settings
-
-                font_height=ENC_SANS_BOLD_FONT_HEIGHT,
-                foreground_color=WINDOW_FG,
-                padding=5
-              )
+                render_text(
+                    "Text editor",
+                    ## text settings
+                    font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+                    foreground_color=WINDOW_FG,
+                    padding=5,
+                )
             ),
-
             ## position info
-
-            coordinates_name='midleft',
-            coordinates_value=midleft
-
-          )
+            coordinates_name="midleft",
+            coordinates_value=midleft,
         )
 
         title_obj.draw_on_surf(self.image)
@@ -284,17 +241,14 @@ class TextEditor(Object2D):
         ### create a label object to use as a statusbar,
         ### displaying extra info about user' actions
 
-        self.statusbar = \
-          Label(
+        self.statusbar = Label(
             "Welcome to the text editor",
-
             ## text settings
-
             font_height=FIRA_MONO_BOLD_FONT_HEIGHT,
             font_path=FIRA_MONO_BOLD_FONT_PATH,
             foreground_color=WINDOW_FG,
             background_color=WINDOW_BG,
-          )
+        )
 
     def clean_editing_area(self):
         """Blit bg color over editing area to clean it."""
@@ -305,40 +259,32 @@ class TextEditor(Object2D):
         ### plus the lineno area
 
         area_to_clean = Rect(
-
-          ## left is the same as the text editor's, but
-          ## one pixel to the right
-          TEXT_EDITOR_RECT.left + 1,
-
-          ## top is same as editing area's, but one pixel
-          ## higher
-          EDITING_AREA_RECT.top - 1,
-
-          ## the width is the same as the text editor's,
-          ## but 2 pixels shorter
-          TEXT_EDITOR_RECT.width - 2,
-
-          ## height is same as editing area's, but 2 pixels
-          ## higher
-          EDITING_AREA_RECT.height + 2,
-
-        ## we move the resulting rect by the opposite of
-        ## the topleft of the self.rect.topleft (the
-        ## text editor rect), which makes it so the
-        ## rect position represents its position relative
-        ## to the text editor rect, rather than relative
-        ## to the screen)
+            ## left is the same as the text editor's, but
+            ## one pixel to the right
+            TEXT_EDITOR_RECT.left + 1,
+            ## top is same as editing area's, but one pixel
+            ## higher
+            EDITING_AREA_RECT.top - 1,
+            ## the width is the same as the text editor's,
+            ## but 2 pixels shorter
+            TEXT_EDITOR_RECT.width - 2,
+            ## height is same as editing area's, but 2 pixels
+            ## higher
+            EDITING_AREA_RECT.height + 2,
+            ## we move the resulting rect by the opposite of
+            ## the topleft of the self.rect.topleft (the
+            ## text editor rect), which makes it so the
+            ## rect position represents its position relative
+            ## to the text editor rect, rather than relative
+            ## to the screen)
         ).move(-x, -y)
 
         ### now finally use the rect to blit the background
         ### color over the blitting area in order to clean it
 
-        draw_rect(
-          self.image, WINDOW_BG, area_to_clean
-        )
+        draw_rect(self.image, WINDOW_BG, area_to_clean)
 
-    def paint_editing_and_lineno_areas(
-        self, area_bg_color, lineno_bg_color):
+    def paint_editing_and_lineno_areas(self, area_bg_color, lineno_bg_color):
         """Draw editing area on self.image.
 
         Parameters
@@ -365,15 +311,13 @@ class TextEditor(Object2D):
         # this area by changing the left coordinates and
         # width
 
-        offset_editing_area.left  += -5
-        offset_editing_area.width +=  5
+        offset_editing_area.left += -5
+        offset_editing_area.width += 5
 
         # fill the area with the color for the background
         # of the text editing area
 
-        draw_rect(
-          self.image, area_bg_color, offset_editing_area
-        )
+        draw_rect(self.image, area_bg_color, offset_editing_area)
 
         ## draw an outline for the editing area as well
 
@@ -383,30 +327,26 @@ class TextEditor(Object2D):
         # draw it
         draw_rect(self.image, BLACK, editing_outline, 1)
 
-
         ### paint lineno area
 
         ## define lineno area
 
         lineno_area = (
-          ## left is 10 pixels to the left of the text
-          ## editor
-          10,
-
-          ## top is the same as the top from the outline of
-          ## the editing area
-          editing_outline.top,
-
-          ## our width goes from the left of text editor
-          ## rect, which is zero, to the left of the outline
-          ## for the editing area, but since we added 10
-          ## to our left as can be seen above, we subtract
-          ## 10 here to compensate
-          editing_outline.left-10,
-
-          ## height is the same as the height from the
-          ## outline of the editing area
-          editing_outline.height
+            ## left is 10 pixels to the left of the text
+            ## editor
+            10,
+            ## top is the same as the top from the outline of
+            ## the editing area
+            editing_outline.top,
+            ## our width goes from the left of text editor
+            ## rect, which is zero, to the left of the outline
+            ## for the editing area, but since we added 10
+            ## to our left as can be seen above, we subtract
+            ## 10 here to compensate
+            editing_outline.left - 10,
+            ## height is the same as the height from the
+            ## outline of the editing area
+            editing_outline.height,
         )
 
         ## fill line number area
@@ -416,12 +356,12 @@ class TextEditor(Object2D):
         draw_rect(self.image, BLACK, lineno_area, 1)
 
     def edit_text(
-          self,
-          text="",
-          font_path=ENC_SANS_BOLD_FONT_PATH,
-          validation_command=None,
-          syntax_highlighting=''
-        ):
+        self,
+        text="",
+        font_path=ENC_SANS_BOLD_FONT_PATH,
+        validation_command=None,
+        syntax_highlighting="",
+    ):
         """Edit given text.
 
         Parameters
@@ -439,7 +379,7 @@ class TextEditor(Object2D):
         validation_command (None or callable)
             if it is None, the instance is set up so that
             no validation is done;
-            
+
             if it is a callable, it must accept a single
             argument and its return value is used to
             determined whether validation passed (when the
@@ -448,7 +388,7 @@ class TextEditor(Object2D):
         syntax_highlighting (string)
             represents the name of a syntax used to
             highlight the text (for instance, 'python');
-            if an empty string, which is the default value, 
+            if an empty string, which is the default value,
             or the name of an unsupported syntax is given,
             syntax highlighting is disabled;
             if, otherwise, the argument indicates a
@@ -468,22 +408,18 @@ class TextEditor(Object2D):
         ### blit a screen-size semitransparent surface in
         ### the canvas to increase constrast
 
-        blit_on_screen(
-          UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size],
-          (0, 0)
-        )
+        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
 
         ### instantiate and store cursor in its own attribute,
         ### also referencing it locally (the text is stored
         ### and handled in the cursor instance)
 
-        cursor = self.cursor = \
-          Cursor(
+        cursor = self.cursor = Cursor(
             text_editor=self,
             text=text,
             font_path=font_path,
-            syntax_highlighting=syntax_highlighting
-          )
+            syntax_highlighting=syntax_highlighting,
+        )
 
         ### set text attribute to None
         self.text = None
@@ -566,10 +502,7 @@ class TextEditor(Object2D):
 
         else:
 
-            raise ValueError(
-              "'validation_command' argument isn't"
-              " an allowed value."
-            )
+            raise ValueError("'validation_command' argument isn't" " an allowed value.")
 
         ### finally, check whether the text received
         ### is valid and store the command on the
@@ -581,7 +514,8 @@ class TextEditor(Object2D):
         ## check text
 
         # try validating
-        try: result = command(text)
+        try:
+            result = command(text)
 
         # if an exception occurred while validating,
         # catch the exception and raise a new exception
@@ -591,9 +525,9 @@ class TextEditor(Object2D):
         except Exception as err:
 
             raise RuntimeError(
-              "An exception was raised while using the"
-              " specified validation command on the"
-              " provided text"
+                "An exception was raised while using the"
+                " specified validation command on the"
+                " provided text"
             ) from err
 
         # if validation works and result is false,
@@ -604,8 +538,8 @@ class TextEditor(Object2D):
             if not result:
 
                 raise ValueError(
-                  "the 'validation_command' received"
-                  " doesn't validate the 'text' received."
+                    "the 'validation_command' received"
+                    " doesn't validate the 'text' received."
                 )
 
         ## finally, let's store the validation command
@@ -628,7 +562,7 @@ class TextEditor(Object2D):
 
         ### update screen (pygame.display.update)
         update()
-    
+
     def mouse_release_action(self, mouse_pos):
         """Invoke colliding button, if any.
 
@@ -657,23 +591,21 @@ class TextEditor(Object2D):
         text = self.cursor.get_text()
 
         ### try validating text
-        try: self.validation_command(text)
+        try:
+            self.validation_command(text)
 
         ### if text doesn't validate, user is notified
 
         except Exception as err:
 
             create_and_show_dialog(
-
-              (
-                 "Can't confirm edition cause text"
-                 " doesn't validate. Here's the error"
-                f" message >> {err.__class__.__name__}:"
-                f" {err}"
-              ),
-
-              level_name = 'error',
-
+                (
+                    "Can't confirm edition cause text"
+                    " doesn't validate. Here's the error"
+                    f" message >> {err.__class__.__name__}:"
+                    f" {err}"
+                ),
+                level_name="error",
             )
 
         ### otherwise, it is assigned to text
@@ -683,7 +615,8 @@ class TextEditor(Object2D):
 
         else:
 
-            self.text    = text
+            self.text = text
             self.running = False
+
 
 edit_text = TextEditor().edit_text

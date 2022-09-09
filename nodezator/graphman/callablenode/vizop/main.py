@@ -18,8 +18,8 @@ from ....pygameconstants import SCREEN
 
 ## function to extend class
 from .reposition import (
-                                   reposition_elements,
-                                 )
+    reposition_elements,
+)
 
 
 class VisualRelatedOperations:
@@ -47,7 +47,7 @@ class VisualRelatedOperations:
             position of the mouse click in order to
             know over which object the mouse button was
             clicked/released.
-              
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -61,20 +61,16 @@ class VisualRelatedOperations:
         ### object if available
 
         for obj in chain(
-
-          self.live_widgets,
-          self.live_keyword_entries,
-
-          self.placeholder_add_buttons,
-          self.widget_add_buttons,
-          self.widget_remove_buttons,
-          self.subparam_up_buttons,
-          self.subparam_down_buttons,
-
-          self.input_sockets,
-          self.output_sockets,
-          self.placeholder_sockets,
-
+            self.live_widgets,
+            self.live_keyword_entries,
+            self.placeholder_add_buttons,
+            self.widget_add_buttons,
+            self.widget_remove_buttons,
+            self.subparam_up_buttons,
+            self.subparam_down_buttons,
+            self.input_sockets,
+            self.output_sockets,
+            self.placeholder_sockets,
         ):
 
             if obj.rect.collidepoint(mouse_pos):
@@ -83,9 +79,12 @@ class VisualRelatedOperations:
                 ### we store it and execute it, otherwise
                 ### we just pass
 
-                try: method = getattr(obj, method_name)
-                except AttributeError: pass
-                else: method(event)
+                try:
+                    method = getattr(obj, method_name)
+                except AttributeError:
+                    pass
+                else:
+                    method(event)
 
                 ### we then break out of the loop, since
                 ### at this moment there will be no point
@@ -111,36 +110,26 @@ class VisualRelatedOperations:
 
         else:
 
-            if method_name == 'on_mouse_click':
+            if method_name == "on_mouse_click":
                 self.mouse_click_target = True
 
-            elif method_name == 'on_mouse_release':
+            elif method_name == "on_mouse_release":
 
                 self.mouse_click_target = False
                 APP_REFS.ea.change_selection_state(self)
 
-            elif method_name == 'on_right_mouse_release':
+            elif method_name == "on_right_mouse_release":
 
-                (
-                  APP_REFS
-                  .ea
-                  .callable_node_popup_menu
-                  .show(self, event.pos)
-                )
+                (APP_REFS.ea.callable_node_popup_menu.show(self, event.pos))
 
-    on_mouse_click = partialmethod(
-                       on_mouse_action, 'on_mouse_click'
-                     )
+    on_mouse_click = partialmethod(on_mouse_action, "on_mouse_click")
 
-    on_mouse_release = partialmethod(
-                         on_mouse_action,
-                         'on_mouse_release'
-                       )
+    on_mouse_release = partialmethod(on_mouse_action, "on_mouse_release")
 
     on_right_mouse_release = partialmethod(
-                               on_mouse_action,
-                               'on_right_mouse_release',
-                             )
+        on_mouse_action,
+        "on_right_mouse_release",
+    )
 
     def draw(self):
         """Draw node elements on screen."""
@@ -149,23 +138,18 @@ class VisualRelatedOperations:
         ### widgets, buttons and sockets
 
         for obj in chain(
-          
-          self.background_and_text_elements,
-
-          self.live_widgets,
-          self.live_keyword_entries,
-
-          self.placeholder_add_buttons,
-          self.widget_add_buttons,
-          self.widget_remove_buttons,
-          self.subparam_up_buttons,
-          self.subparam_down_buttons,
-          self.unpacking_icons,
-
-          self.input_sockets,
-          self.output_sockets,
-          self.placeholder_sockets,
-
+            self.background_and_text_elements,
+            self.live_widgets,
+            self.live_keyword_entries,
+            self.placeholder_add_buttons,
+            self.widget_add_buttons,
+            self.widget_remove_buttons,
+            self.subparam_up_buttons,
+            self.subparam_down_buttons,
+            self.unpacking_icons,
+            self.input_sockets,
+            self.output_sockets,
+            self.placeholder_sockets,
         ):
             obj.draw()
 
@@ -175,7 +159,7 @@ class VisualRelatedOperations:
 
     def check_sockets_for_segment_definition(self, event):
         """Check whether any socket collides w/ event.pos.
-        
+
         event.pos is the position of a mouse left button
         release event. Any colliding socket must then
         be sent for line segment definition.
@@ -188,14 +172,15 @@ class VisualRelatedOperations:
         ### iterate over all sockets
 
         for socket in chain(
-          self.input_sockets,
-          self.output_sockets,
-          self.placeholder_sockets,
+            self.input_sockets,
+            self.output_sockets,
+            self.placeholder_sockets,
         ):
 
             if socket.rect.collidepoint(mouse_pos):
                 break
 
-        else: APP_REFS.gm.cancel_defining_segment()
+        else:
+            APP_REFS.gm.cancel_defining_segment()
 
         APP_REFS.gm.resume_defining_segment(socket)

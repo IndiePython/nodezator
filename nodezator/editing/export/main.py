@@ -13,9 +13,9 @@ from itertools import chain
 from functools import partialmethod
 
 from xml.etree.ElementTree import (
-                             Element,
-                             tostring as element_to_string,
-                           )
+    Element,
+    tostring as element_to_string,
+)
 
 from xml.dom.minidom import parseString
 
@@ -47,13 +47,9 @@ from ...our3rdlibs.behaviour import set_status_message
 
 from ...rectsman.main import RectsManager
 
-from .form.image import (
-                           get_image_exporting_settings
-                         )
+from .form.image import get_image_exporting_settings
 
-from .form.python import (
-                           get_python_exporting_settings
-                         )
+from .form.python import get_python_exporting_settings
 
 from ...graphman.callablenode.export import CALLABLE_NODE_CSS
 from ...graphman.proxynode.export import PROXY_NODE_CSS
@@ -84,14 +80,11 @@ class Exporting:
         ### file, notify user via dialog and cancel
         ### operation by returning earlier
 
-        if (
-              not APP_REFS.gm.nodes
-          and not APP_REFS.gm.text_blocks
-        ):
+        if not APP_REFS.gm.nodes and not APP_REFS.gm.text_blocks:
 
             create_and_show_dialog(
-              "To export the loaded file as an image there"
-              " must exist at least one live object in it"
+                "To export the loaded file as an image there"
+                " must exist at least one live object in it"
             )
 
             return
@@ -104,24 +97,12 @@ class Exporting:
         ### called "rectsman";
 
         all_rects = list(
-
             chain(
-
                 # rects (rectsmans) from nodes
-
-                (
-                    node.rectsman
-                    for node in APP_REFS.gm.nodes
-                ),
-
+                (node.rectsman for node in APP_REFS.gm.nodes),
                 # rects from text blocks
-
-                (
-                    block.rect
-                    for block in APP_REFS.gm.text_blocks
-                )
+                (block.rect for block in APP_REFS.gm.text_blocks),
             )
-
         )
 
         ### using the list we created, instantiate a rects
@@ -141,7 +122,8 @@ class Exporting:
         ### if the settings received are actually None,
         ### it means the user cancelled the operation,
         ### so we exit the method by returning
-        if settings is None: return
+        if settings is None:
+            return
 
         ### otherwise we proceed with the image exporting
         ### operation...
@@ -156,12 +138,12 @@ class Exporting:
         ### move objects' topleft to the given margins
 
         all_rectsman.topleft = (
-          settings.pop('horizontal_margin'),
-          settings.pop('vertical_margin')
+            settings.pop("horizontal_margin"),
+            settings.pop("vertical_margin"),
         )
 
         ### obtain a pathlib.Path version of the image path
-        image_path = Path(settings['image_path'])
+        image_path = Path(settings["image_path"])
 
         ### retrieve the extension
         extension = image_path.suffix.lower()
@@ -169,18 +151,19 @@ class Exporting:
         ### pick image exporting method according to the
         ### file format
 
-        if extension == '.png':
+        if extension == ".png":
             export_method = self.export_file_as_png
 
-        elif extension == '.svg':
+        elif extension == ".svg":
             export_method = self.export_file_as_svg
 
-        elif extension == '.html':
+        elif extension == ".html":
             export_method = self.export_file_as_html
 
         ### try creating and saving image
 
-        try: export_method(**settings)
+        try:
+            export_method(**settings)
 
         except Exception as err:
 
@@ -188,9 +171,9 @@ class Exporting:
             ## log and and user log
 
             msg = (
-               "An unexpected error ocurred"
-               " while trying to export node"
-              f" layout as {extension}."
+                "An unexpected error ocurred"
+                " while trying to export node"
+                f" layout as {extension}."
             )
 
             logger.exception(msg)
@@ -198,7 +181,8 @@ class Exporting:
 
             error_str = str(err)
 
-        else: error_str = ''
+        else:
+            error_str = ""
 
         ### then restore the objects to their original
         ### positions
@@ -212,18 +196,18 @@ class Exporting:
         ### occured), show it to the user via a dialog
 
         if error_str:
-            
+
             dialog_message = (
-               "An error ocurred while trying to"
-               " export the layout. Check the user log"
-               " for more info (click <Ctrl+Shift+J> after"
-               " leaving the dialog). Here's the error"
-              f" message: {error_str}"
+                "An error ocurred while trying to"
+                " export the layout. Check the user log"
+                " for more info (click <Ctrl+Shift+J> after"
+                " leaving the dialog). Here's the error"
+                f" message: {error_str}"
             )
 
             create_and_show_dialog(
-              dialog_message,
-              level_name='error',
+                dialog_message,
+                level_name="error",
             )
 
         ### otherwise just display a message in the
@@ -232,12 +216,9 @@ class Exporting:
 
         else:
 
-            message = (
-              "File exported as '{}' image in {}"
-            ).format(
-                image_path.name,
-                friendly_delta_from_secs(total)
-              )
+            message = ("File exported as '{}' image in {}").format(
+                image_path.name, friendly_delta_from_secs(total)
+            )
 
             set_status_message(message)
 
@@ -247,14 +228,14 @@ class Exporting:
     ### probably via a temporary attribute on APP_REFS?
 
     def export_file_as_web_markup(
-          self,
-          width,
-          height,
-          background_color,
-          image_path,
-          raster_for_previews,
-          export_html,
-        ):
+        self,
+        width,
+        height,
+        background_color,
+        image_path,
+        raster_for_previews,
+        export_html,
+    ):
         """Export loaded file as a .svg image file.
 
         That is, the current state of the file is exported,
@@ -264,37 +245,37 @@ class Exporting:
         ### create svg element
 
         svg = Element(
-
-                'svg',
-
-                {
-                  'width'  : str(width),
-                  'height' : str(height),
-                  'xmlns'  : 'http://www.w3.org/2000/svg',
-                  'xmlns:xlink' : 'http://www.w3.org/1999/xlink',
-                }
-              )
+            "svg",
+            {
+                "width": str(width),
+                "height": str(height),
+                "xmlns": "http://www.w3.org/2000/svg",
+                "xmlns:xlink": "http://www.w3.org/1999/xlink",
+            },
+        )
 
         ## create style element
 
-        try: background_color[3]
+        try:
+            background_color[3]
 
         except IndexError:
 
-            bg_color_style = f'fill:rgb{background_color};'
+            bg_color_style = f"fill:rgb{background_color};"
 
         else:
 
             bg_color_style = (
-              f'fill:rgb{background_color[:3]};'
-               'fill-opacity:'
-              f'{round(background_color[3]/255, 3)};',
+                f"fill:rgb{background_color[:3]};"
+                "fill-opacity:"
+                f"{round(background_color[3]/255, 3)};",
             )
 
-        style = Element('style')
+        style = Element("style")
 
         style.text = (
-          dedent(f'''
+            dedent(
+                f"""
           rect.graph_bg {{{bg_color_style}}}
 
           .checker_a {{
@@ -304,16 +285,17 @@ class Exporting:
           .checker_b {{
             fill: rgb(20, 20, 20);
           }}
-          ''')
-          + CALLABLE_NODE_CSS
-          + PROXY_NODE_CSS
-          + STLIB_NODE_CSS
-          + BUILTIN_NODE_CSS
-          + CAPSULE_NODE_CSS
-          + OPERATOR_NODE_CSS
-          + SOCKET_AND_LINE_CSS
-          + TEXT_BLOCK_CSS
-          + WIDGET_CSS
+          """
+            )
+            + CALLABLE_NODE_CSS
+            + PROXY_NODE_CSS
+            + STLIB_NODE_CSS
+            + BUILTIN_NODE_CSS
+            + CAPSULE_NODE_CSS
+            + OPERATOR_NODE_CSS
+            + SOCKET_AND_LINE_CSS
+            + TEXT_BLOCK_CSS
+            + WIDGET_CSS
         )
 
         ### if we are to export an html page, create
@@ -322,91 +304,82 @@ class Exporting:
 
         if export_html:
 
-            html = Element('html')
-            head = Element('head')
-            body = Element('body')
+            html = Element("html")
+            head = Element("head")
+            body = Element("body")
 
             html.extend([head, body])
 
-            title = Element('title')
+            title = Element("title")
 
-            title.text = (
-              "Nodezator graph (python callables graph)"
-            )
+            title.text = "Nodezator graph (python callables graph)"
 
             head.extend([title, style])
 
             body.append(svg)
 
-
         ### otherwise...
-        else: svg.append(style)
-
+        else:
+            svg.append(style)
 
         ## append a rect representing the background
 
         svg.append(
-
-              Element(
-
-                'rect',
-
+            Element(
+                "rect",
                 {
-                  'x'     : '0',
-                  'y'     : '0',
-                  'width' : str(width),
-                  'height': str(height),
-                  'class': 'graph_bg',
-                }
-
-              )
-
+                    "x": "0",
+                    "y": "0",
+                    "width": str(width),
+                    "height": str(height),
+                    "class": "graph_bg",
+                },
             )
+        )
 
         ## create and append pattern
 
         pattern = Element(
-                    'pattern',
-                    {
-                      'x':'0',
-                      'y':'0',
-                      'width' : '10',
-                      'height': '10',
-
-                      'id': 'checker_pattern',
-                      'patternUnits': 'userSpaceOnUse',
-                    }
-                  )
+            "pattern",
+            {
+                "x": "0",
+                "y": "0",
+                "width": "10",
+                "height": "10",
+                "id": "checker_pattern",
+                "patternUnits": "userSpaceOnUse",
+            },
+        )
 
         for x, y in ((0, 0), (5, 5)):
 
             pattern.append(
-                      Element(
-                        'rect',
-                        {
-                          'x': str(x),
-                          'y': str(y),
-                          'width': '5',
-                          'height': '5',
-                          'class': 'checker_a'
-                        }
-                      )
-                    )
+                Element(
+                    "rect",
+                    {
+                        "x": str(x),
+                        "y": str(y),
+                        "width": "5",
+                        "height": "5",
+                        "class": "checker_a",
+                    },
+                )
+            )
 
         for x, y in ((0, 5), (5, 0)):
 
             pattern.append(
-                      Element(
-                        'rect',
-                        {
-                          'x': str(x),
-                          'y': str(y),
-                          'width': '5',
-                          'height': '5',
-                          'class': 'checker_b'
-                        }
-                      )
-                    )
+                Element(
+                    "rect",
+                    {
+                        "x": str(x),
+                        "y": str(y),
+                        "width": "5",
+                        "height": "5",
+                        "class": "checker_b",
+                    },
+                )
+            )
 
         svg.append(pattern)
 
@@ -419,28 +392,25 @@ class Exporting:
 
             path = Path(image_path)
 
-            parent = path.parent / (path.stem + '_files')
+            parent = path.parent / (path.stem + "_files")
 
             APP_REFS.preview_handling_kit = (
-
-              {}, {}, parent.name,
-
+                {},
+                {},
+                parent.name,
             )
 
         ## append nodes and text blocks
 
-        svg.extend([
-
-          obj.svg_repr()
-
-          for obj
-
-          in chain(
-               APP_REFS.gm.nodes,
-               APP_REFS.gm.text_blocks,
-             )
-
-        ])
+        svg.extend(
+            [
+                obj.svg_repr()
+                for obj in chain(
+                    APP_REFS.gm.nodes,
+                    APP_REFS.gm.text_blocks,
+                )
+            ]
+        )
 
         ### save raster previews
 
@@ -449,23 +419,19 @@ class Exporting:
             ### TODO implement missing blocks below
 
             if parent.is_file():
-                
+
                 raise RuntimeError(
-                         "Exporting can't proceed;"
-                        f" {parent} must not be a file"
-                         " (it must either be a directory"
-                         " or not exist at all, so that"
-                         " we can create/use it) to save"
-                         " the raster previews"
-                      )
+                    "Exporting can't proceed;"
+                    f" {parent} must not be a file"
+                    " (it must either be a directory"
+                    " or not exist at all, so that"
+                    " we can create/use it) to save"
+                    " the raster previews"
+                )
 
             ## save raster previews
 
-            preview_surf_map, preview_name_map = (
-
-              APP_REFS.preview_handling_kit[:2]
-
-            )
+            preview_surf_map, preview_name_map = APP_REFS.preview_handling_kit[:2]
 
             # if there are raster previews to be saved
             # and the parent folder to be used doesn't
@@ -475,12 +441,10 @@ class Exporting:
 
             # save
 
-            for (
-              previewed_path, surf
-            ) in preview_surf_map.items():
+            for (previewed_path, surf) in preview_surf_map.items():
 
                 name = preview_name_map[previewed_path]
-                save_image(surf, str(parent/name))
+                save_image(surf, str(parent / name))
 
             ## clear collections and delete preview
             ## handling kit
@@ -497,67 +461,50 @@ class Exporting:
         ### path
 
         with (
-
-          open(
-            image_path,
-            mode='w',
-            encoding='utf-8',
-          )
-
+            open(
+                image_path,
+                mode="w",
+                encoding="utf-8",
+            )
         ) as f:
 
             text = parseString(
-                     element_to_string(
-                       root, encoding='unicode'
-                     )
-                   ).toprettyxml()
+                element_to_string(root, encoding="unicode")
+            ).toprettyxml()
 
             if export_html:
 
-                text = linesep.join(
-                                 ['<!DOCTYPE html>']
-                                 + text.splitlines()[1:]
-                               )
-
+                text = linesep.join(["<!DOCTYPE html>"] + text.splitlines()[1:])
 
             ### unescape all css lines
 
             for index, line in enumerate(text.splitlines()):
-                
-                if line.strip() == '<style>':
+
+                if line.strip() == "<style>":
                     css_start = index + 1
 
-                elif line.strip() == '</style>':
+                elif line.strip() == "</style>":
                     css_end = index
 
             text = linesep.join(
-
-                             unescape(line)
-                             if css_start <= index <= css_end
-                             else line
-
-                             for index, line
-                             in enumerate(text.splitlines())
-
-                           )
+                unescape(line) if css_start <= index <= css_end else line
+                for index, line in enumerate(text.splitlines())
+            )
 
             ###
             f.write(text)
 
-
     export_file_as_html = partialmethod(
-                            export_file_as_web_markup,
-                            export_html=True,
-                          )
+        export_file_as_web_markup,
+        export_html=True,
+    )
 
     export_file_as_svg = partialmethod(
-                           export_file_as_web_markup,
-                           export_html=False,
-                         )
+        export_file_as_web_markup,
+        export_html=False,
+    )
 
-    def export_file_as_png(
-          self, width, height, background_color, image_path
-        ):
+    def export_file_as_png(self, width, height, background_color, image_path):
         """Export loaded file as an .png image file.
 
         That is, the current state of the file is exported,
@@ -570,7 +517,8 @@ class Exporting:
         ## pick surface conversion method according to
         ## whether the color has alpha (transparency)
 
-        try: alpha = background_color[3]
+        try:
+            alpha = background_color[3]
 
         except IndexError:
             conversion_method = Surface.convert
@@ -578,9 +526,7 @@ class Exporting:
         else:
 
             conversion_method = (
-              Surface.convert
-              if alpha == 255
-              else Surface.convert_alpha
+                Surface.convert if alpha == 255 else Surface.convert_alpha
             )
 
         ## create the surface using the appropriate
@@ -619,7 +565,8 @@ class Exporting:
         ### if the settings received are actually None,
         ### it means the user cancelled the operation,
         ### so we exit the method by returning
-        if settings is None: return
+        if settings is None:
+            return
 
         ### otherwise we proceed with the python exporting
         ### operation...
@@ -631,23 +578,19 @@ class Exporting:
         ### first of all, let's reference the individual
         ### settings
 
-        python_file_path  = settings['python_file_path']
-        additional_levels = settings['additional_levels']
+        python_file_path = settings["python_file_path"]
+        additional_levels = settings["additional_levels"]
 
         ### grab the python representation from the graph
         ### manager and save it
 
         with open(
-          python_file_path, mode='w', encoding='utf-8',
+            python_file_path,
+            mode="w",
+            encoding="utf-8",
         ) as f:
 
-            f.write(
-
-                APP_REFS.gm.python_repr(
-                              additional_levels
-                            )
-
-              )
+            f.write(APP_REFS.gm.python_repr(additional_levels))
 
         ### finally, compute and display the total time
         ### taken to export the image on the statusbar
@@ -655,10 +598,8 @@ class Exporting:
 
         total = time() - start
 
-        message = (
-          "File exported as python script in {}"
-        ).format(
+        message = ("File exported as python script in {}").format(
             friendly_delta_from_secs(total)
-          )
+        )
 
         set_status_message(message)

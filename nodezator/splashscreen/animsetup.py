@@ -51,24 +51,18 @@ for k in range(QUANTITY):
 # adjust quantity of points based on fps
 
 POINTS = sum(
-
-           # iterable with lists of points
-
-           [
-             [point]
-             for point in POINTS
-           ],
-
-           # initial value
-           []
-
-         )
+    # iterable with lists of points
+    [[point] for point in POINTS],
+    # initial value
+    [],
+)
 
 
 ## define a general offset for the nodes
 NODES_OFFSET = Vector2(-30, -15)
 
 ## node animation setting function
+
 
 def set_node_animation(index, node, parent):
     """Set objects and assign anim. behaviour to node."""
@@ -78,7 +72,7 @@ def set_node_animation(index, node, parent):
     d.rotate(index * MULTIPLICAND)
 
     parent_rect = parent.rect
-    node_rect   = node.rect
+    node_rect = node.rect
 
     ### define animation behaviour
 
@@ -86,13 +80,7 @@ def set_node_animation(index, node, parent):
 
         ## calculate and assign new center for node
 
-        node_rect.center = (
-
-          parent_rect.topright
-          + NODES_OFFSET
-          + d[0]
-
-        )
+        node_rect.center = parent_rect.topright + NODES_OFFSET + d[0]
 
         ## rotate points in deque
         d.rotate(1)
@@ -112,13 +100,7 @@ def set_node_animation(index, node, parent):
 initial_ys = list(range(-5, 0, 1))
 multipliers = [6, 5, 4, 3, 2]
 
-ys = sum(
-       [
-         [y]*multiplier
-         for y, multiplier in zip(initial_ys, multipliers)
-       ],
-       []
-     )
+ys = sum([[y] * multiplier for y, multiplier in zip(initial_ys, multipliers)], [])
 
 # now change the 'ys' list so it has the original values,
 # plus 0 and plus the original values in reversed order
@@ -132,23 +114,17 @@ ys = ys + list(reversed(ys))
 
 # adjust quantity of points based on fps
 
-multiplier = round(FPS/30) or 1
+multiplier = round(FPS / 30) or 1
 
 ys = sum(
-
-       # iterable with lists of points
-
-       [
-         [y]
-         for y in ys
-       ],
-
-       # initial value
-       []
-
-     )
+    # iterable with lists of points
+    [[y] for y in ys],
+    # initial value
+    [],
+)
 
 ## robot animation setting function
+
 
 def set_robot_animation(robot, parent):
     """Set objects and assign anim. behaviour to robot."""
@@ -156,16 +132,12 @@ def set_robot_animation(robot, parent):
 
     d = deque(ys)
 
-    robot_offset = Vector2([
-
-      a - b
-      for a, b
-      in zip(robot.rect.center, parent.rect.center)
-
-    ])
+    robot_offset = Vector2(
+        [a - b for a, b in zip(robot.rect.center, parent.rect.center)]
+    )
 
     parent_rect = parent.rect
-    robot_rect  = robot.rect
+    robot_rect = robot.rect
 
     ### define animation behaviour
 
@@ -173,13 +145,7 @@ def set_robot_animation(robot, parent):
 
         ## calculate and assign new center for robot
 
-        robot_rect.center = (
-
-          parent_rect.center
-          + robot_offset
-          + (0, d[0])
-
-        )
+        robot_rect.center = parent_rect.center + robot_offset + (0, d[0])
 
         ## rotate points in deque
         d.rotate(1)
@@ -192,6 +158,7 @@ def set_robot_animation(robot, parent):
 
 ## utility function to create callables that work
 ## as timers
+
 
 def get_timer(frames_no):
     """Return a frame-based timer callable.
@@ -213,26 +180,20 @@ def get_timer(frames_no):
     ### this is actually an instance of the
     ### itertools.cycle().__next__ method
 
-    return cycle(
-             (True,) * frames_no + (False,)
-           ).__next__
+    return cycle((True,) * frames_no + (False,)).__next__
+
 
 ## definition of timer callables
 
 # time during which animation is playing
 
 frames_in_robot_animation = len(ys)
-how_many_times_to_play    = 3
+how_many_times_to_play = 3
 
-keep_animation_playing = get_timer(
-                           frames_in_robot_animation
-                           * how_many_times_to_play
-                         )
+keep_animation_playing = get_timer(frames_in_robot_animation * how_many_times_to_play)
 
 # time during which animation is paused
 
 quantity_of_frames_in_10_secs = 10 * FPS
 
-keep_animation_paused = get_timer(
-                          quantity_of_frames_in_10_secs
-                        )
+keep_animation_paused = get_timer(quantity_of_frames_in_10_secs)

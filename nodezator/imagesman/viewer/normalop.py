@@ -10,22 +10,31 @@ from functools import partialmethod
 ### third-party imports
 
 from pygame import (
-
-              QUIT,
-
-              KEYDOWN,
-
-              K_ESCAPE, K_RETURN, K_KP_ENTER,
-              K_UP, K_DOWN, K_LEFT, K_RIGHT,
-              K_w, K_a, K_s, K_d,
-              K_k, K_h, K_j, K_l,
-              K_f,
-              K_PAGEUP, K_PAGEDOWN, K_HOME, K_END,
-
-              MOUSEBUTTONUP,
-              MOUSEMOTION,
-
-            )
+    QUIT,
+    KEYDOWN,
+    K_ESCAPE,
+    K_RETURN,
+    K_KP_ENTER,
+    K_UP,
+    K_DOWN,
+    K_LEFT,
+    K_RIGHT,
+    K_w,
+    K_a,
+    K_s,
+    K_d,
+    K_k,
+    K_h,
+    K_j,
+    K_l,
+    K_f,
+    K_PAGEUP,
+    K_PAGEDOWN,
+    K_HOME,
+    K_END,
+    MOUSEBUTTONUP,
+    MOUSEMOTION,
+)
 
 from pygame.display import update
 
@@ -39,9 +48,9 @@ from pygame.draw import rect as draw_rect
 ### local imports
 
 from ...surfsman.draw import (
-                     draw_border,
-                     draw_border_on_area,
-                   )
+    draw_border,
+    draw_border_on_area,
+)
 
 from ...surfsman.cache import draw_cached_screen_state
 
@@ -51,14 +60,10 @@ from ...loopman.exception import QuitAppException
 
 from ...colorsman.colors import IMAGES_VIEWER_BORDER
 
-from .constants import (
-                                     VIEWER_BORDER_THICKNESS,
-                                     LARGE_THUMB,
-                                     PATH_LABEL)
+from .constants import VIEWER_BORDER_THICKNESS, LARGE_THUMB, PATH_LABEL
 
 
 class NormalModeOperations(Object2D):
-
     def normal_prepare(self):
         """"""
         draw_cached_screen_state()
@@ -67,23 +72,20 @@ class NormalModeOperations(Object2D):
     def normal_handle_input(self):
 
         for event in get_events():
-            
-            if event.type == QUIT: raise QuitAppException()
+
+            if event.type == QUIT:
+                raise QuitAppException()
 
             elif event.type == KEYDOWN:
 
-                if event.key in (
-                  K_ESCAPE, K_RETURN, K_KP_ENTER
-                ):
+                if event.key in (K_ESCAPE, K_RETURN, K_KP_ENTER):
                     self.running = False
 
-                elif event.key in (
-                  K_UP, K_LEFT, K_h, K_k, K_w, K_a
-                ): self.go_left()
+                elif event.key in (K_UP, K_LEFT, K_h, K_k, K_w, K_a):
+                    self.go_left()
 
-                elif event.key in (
-                  K_DOWN, K_RIGHT, K_j, K_l, K_s, K_d
-                ): self.go_right()
+                elif event.key in (K_DOWN, K_RIGHT, K_j, K_l, K_s, K_d):
+                    self.go_right()
 
                 elif event.key == K_PAGEUP:
                     self.go_many_left()
@@ -99,7 +101,8 @@ class NormalModeOperations(Object2D):
 
                 elif event.key == K_f:
 
-                    try: self.enable_full_mode()
+                    try:
+                        self.enable_full_mode()
 
                     except FileNotFoundError:
                         print("Couldn't find image.")
@@ -115,12 +118,10 @@ class NormalModeOperations(Object2D):
         """"""
         last_index = len(self.image_paths) - 1
 
-        self.thumb_index = \
-        min(max(0, self.thumb_index + steps), last_index)
+        self.thumb_index = min(max(0, self.thumb_index + steps), last_index)
 
         ###
-        thumb_rect = \
-                self.thumb_objects[self.thumb_index].rect
+        thumb_rect = self.thumb_objects[self.thumb_index].rect
 
         clamped_rect = thumb_rect.clamp(self.rect)
 
@@ -132,14 +133,14 @@ class NormalModeOperations(Object2D):
         ###
         self.normal_response_draw()
 
-    go_right      = partialmethod(browse_thumbs,  1)
-    go_left       = partialmethod(browse_thumbs, -1)
+    go_right = partialmethod(browse_thumbs, 1)
+    go_left = partialmethod(browse_thumbs, -1)
 
-    go_many_right = partialmethod(browse_thumbs,  4)
-    go_many_left  = partialmethod(browse_thumbs, -4)
+    go_many_right = partialmethod(browse_thumbs, 4)
+    go_many_left = partialmethod(browse_thumbs, -4)
 
-    go_to_last    = partialmethod(browse_thumbs,  INFINITY)
-    go_to_first   = partialmethod(browse_thumbs, -INFINITY)
+    go_to_last = partialmethod(browse_thumbs, INFINITY)
+    go_to_first = partialmethod(browse_thumbs, -INFINITY)
 
     def normal_on_mouse_release(self, event):
         """"""
@@ -155,9 +156,9 @@ class NormalModeOperations(Object2D):
             thumb_rect = obj.rect
 
             if not (
-              thumb_rect.colliderect(rect)
-              and thumb_rect.collidepoint(mouse_pos)
-            ): continue
+                thumb_rect.colliderect(rect) and thumb_rect.collidepoint(mouse_pos)
+            ):
+                continue
 
             clamped_rect = thumb_rect.clamp(rect)
             x_difference = clamped_rect.x - thumb_rect.x
@@ -179,15 +180,16 @@ class NormalModeOperations(Object2D):
             thumb_rect = obj.rect
 
             if not (
-              thumb_rect.colliderect(rect)
-              and thumb_rect.collidepoint(mouse_pos)
-            ): continue
+                thumb_rect.colliderect(rect) and thumb_rect.collidepoint(mouse_pos)
+            ):
+                continue
 
             new_hovered_index = index
 
             break
 
-        else: new_hovered_index = None
+        else:
+            new_hovered_index = None
 
         if new_hovered_index != current_hovered_index:
 
@@ -197,7 +199,7 @@ class NormalModeOperations(Object2D):
     def normal_response_draw(self):
         """Redraw viewer in response to user action."""
         image = self.image
-        rect  = self.rect
+        rect = self.rect
 
         image_path = self.image_paths[self.thumb_index]
         ###
@@ -213,42 +215,26 @@ class NormalModeOperations(Object2D):
 
         negative_topleft = -Vector2(rect.topleft)
 
-        thumb_index   = self.thumb_index
+        thumb_index = self.thumb_index
         hovered_index = self.hovered_index
 
-        for (
-          index, thumb_obj
-        ) in enumerate(self.thumb_objects):
-            
+        for (index, thumb_obj) in enumerate(self.thumb_objects):
+
             thumb_rect = thumb_obj.rect
 
             if thumb_rect.colliderect(rect):
 
-                offset_rect = \
-                    thumb_rect.move(negative_topleft)
+                offset_rect = thumb_rect.move(negative_topleft)
 
-                image.blit(
-                        thumb_obj.image,
-                        offset_rect
-                      )
+                image.blit(thumb_obj.image, offset_rect)
 
                 if index == hovered_index:
 
-                    draw_border_on_area(
-                      image,
-                      (0, 0, 0),
-                      offset_rect,
-                      5
-                    )
+                    draw_border_on_area(image, (0, 0, 0), offset_rect, 5)
 
                 if index == thumb_index:
 
-                    draw_border_on_area(
-                      image,
-                      (145, 145, 255),
-                      offset_rect,
-                      5
-                    )
+                    draw_border_on_area(image, (145, 145, 255), offset_rect, 5)
 
         ###
 
@@ -258,9 +244,7 @@ class NormalModeOperations(Object2D):
         ###
 
         draw_border(
-          image,
-          color     = IMAGES_VIEWER_BORDER,
-          thickness = VIEWER_BORDER_THICKNESS
+            image, color=IMAGES_VIEWER_BORDER, thickness=VIEWER_BORDER_THICKNESS
         )
 
         super().draw()
@@ -269,4 +253,3 @@ class NormalModeOperations(Object2D):
         """Update screen."""
         ### pygame.display.update()
         update()
-

@@ -9,7 +9,6 @@ from ....classes2d.collections import List2D
 from ....our3rdlibs.scale import Scale
 
 
-
 def setup_scales(self):
     """Create and set up scale widgets.
 
@@ -31,11 +30,7 @@ def setup_scales(self):
 
     ### get an image whose subsurfaces represent scales
 
-    scales_surf = (
-                    IMAGE_SURFS_DB
-                    ['colors_editor_scale_images.png']
-                    [{'use_alpha': False}]
-                  )
+    scales_surf = IMAGE_SURFS_DB["colors_editor_scale_images.png"][{"use_alpha": False}]
 
     ### using the surface we just got, create a map whose
     ### keys are names of scales and the values are surfaces
@@ -53,62 +48,49 @@ def setup_scales(self):
     ### coordinate
 
     scale_name_to_surf = {
-
-      scale_name: scales_surf.subsurface(
-                                (0, top_index * 32, 370, 32)
-                              )
-
-      for scale_name, top_index in (
-
-         ("Hue",        0),
-         ("Lightness",  1),
-         ("Saturation", 2),
-         ("Value",      1),
-         ("Red",        3),
-         ("Green",      4),
-         ("Blue",       5),
-         ("Alpha",      6)
-
-      )
-
+        scale_name: scales_surf.subsurface((0, top_index * 32, 370, 32))
+        for scale_name, top_index in (
+            ("Hue", 0),
+            ("Lightness", 1),
+            ("Saturation", 2),
+            ("Value", 1),
+            ("Red", 3),
+            ("Green", 4),
+            ("Blue", 5),
+            ("Alpha", 6),
+        )
     }
 
     ### define data for each scale; we'll iterate over
     ### such data in the next block to create each scale
 
     scale_data = (
-
-      ("Hue",          0, 360, self.update_from_hls),
-      ("Lightness",   50, 100, self.update_from_hls),
-      ("Saturation", 100, 100, self.update_from_hls), 
-      ("Value",      100, 100, self.update_from_hsv),
-
-      ("Red",   255, 255, self.update_from_rgb),
-      ("Green",   0, 255, self.update_from_rgb),
-      ("Blue",    0, 255, self.update_from_rgb),
-
-      ("Alpha", 255, 255, self.update_from_alpha)
-
+        ("Hue", 0, 360, self.update_from_hls),
+        ("Lightness", 50, 100, self.update_from_hls),
+        ("Saturation", 100, 100, self.update_from_hls),
+        ("Value", 100, 100, self.update_from_hsv),
+        ("Red", 255, 255, self.update_from_rgb),
+        ("Green", 0, 255, self.update_from_rgb),
+        ("Blue", 0, 255, self.update_from_rgb),
+        ("Alpha", 255, 255, self.update_from_alpha),
     )
 
     ### iterate over the data defined previously to create
     ### and store scales
 
-    for name, initial_value, max_value, command \
-    in scale_data:
+    for name, initial_value, max_value, command in scale_data:
 
         ### instantiate scale (it is also positioned in
         ### this step)
 
-        scale = \
-          Scale(
-            value             = initial_value,
-            scale_surf        = scale_name_to_surf[name],
-            max_value         = max_value,
-            name              = name,
-            coordinates_value = (x, y),
-            command           = command
-          )
+        scale = Scale(
+            value=initial_value,
+            scale_surf=scale_name_to_surf[name],
+            max_value=max_value,
+            name=name,
+            coordinates_value=(x, y),
+            command=command,
+        )
 
         ### store scale
         scales.append(scale)
@@ -117,18 +99,13 @@ def setup_scales(self):
         ### the next scale
 
         y = (
-
-          ## the current value of y
-          y
-
-          ## plus the height of the scale
-          + scale.rect.height
-
-          ## plus the vertical padding
-          + vertical_padding
-
+            ## the current value of y
+            y
+            ## plus the height of the scale
+            + scale.rect.height
+            ## plus the vertical padding
+            + vertical_padding
         )
-
 
     ### create a map to store specific groupings of scales
     ### (notice the alpha scale isn't grouped with any
@@ -136,10 +113,8 @@ def setup_scales(self):
     ### from all the others)
 
     self.scale_map = {
-
-      'hls'   : scales[:3],
-      'hsv'   : [scales[i] for i in (0, 2, 3)],
-      'rgb'   : scales[4:7],
-      'alpha' : scales[7]
-
+        "hls": scales[:3],
+        "hsv": [scales[i] for i in (0, 2, 3)],
+        "rgb": scales[4:7],
+        "alpha": scales[7],
     }

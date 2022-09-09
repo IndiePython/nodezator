@@ -16,9 +16,12 @@ from ..surfsman.draw import blit_aligned
 from ..surfsman.render import render_rect
 
 from .common import (
-                        LEFT_ARROW_SURF, RIGHT_ARROW_SURF,
-                        UP_ARROW_SURF, DOWN_ARROW_SURF,
-                        SCROLL_SPEED)
+    LEFT_ARROW_SURF,
+    RIGHT_ARROW_SURF,
+    UP_ARROW_SURF,
+    DOWN_ARROW_SURF,
+    SCROLL_SPEED,
+)
 
 from ..colorsman.colors import MENU_BG
 
@@ -53,11 +56,10 @@ class Scrollability:
             ## child's left corner and the last child's right
             ## corner
 
-            first_child_left = self.children[ 0].rect.left
+            first_child_left = self.children[0].rect.left
             last_child_right = self.children[-1].rect.right
 
-            children_width = \
-                        last_child_right - first_child_left
+            children_width = last_child_right - first_child_left
 
             ## if the children width ends up surpassing
             ## the acceptable width for the menu manager,
@@ -73,10 +75,9 @@ class Scrollability:
             ## top corner
 
             last_child_bottom = self.children[-1].rect.bottom
-            first_child_top   = self.children[ 0].rect.top
+            first_child_top = self.children[0].rect.top
 
-            children_height = \
-                         last_child_bottom - first_child_top
+            children_height = last_child_bottom - first_child_top
 
             ## if the children height ends up surpassing
             ## the acceptable height for the menu manager,
@@ -105,39 +106,34 @@ class Scrollability:
             ### assigning appropriate surfaces and their
             ### rects to them
 
-            left_arrow = \
-              Object2D(
-                image = LEFT_ARROW_SURF,
-                rect  = LEFT_ARROW_SURF.get_rect()
-              )
+            left_arrow = Object2D(
+                image=LEFT_ARROW_SURF, rect=LEFT_ARROW_SURF.get_rect()
+            )
 
-            right_arrow = \
-              Object2D(
-                image = RIGHT_ARROW_SURF,
-                rect  = RIGHT_ARROW_SURF.get_rect()
-              )
+            right_arrow = Object2D(
+                image=RIGHT_ARROW_SURF, rect=RIGHT_ARROW_SURF.get_rect()
+            )
 
             ### get the their combined width
-            arrows_width = \
-             left_arrow.rect.width + right_arrow.rect.width
+            arrows_width = left_arrow.rect.width + right_arrow.rect.width
 
             ### calculate the dimensions for the scrollable
             ### area and create it
 
             scrollable_width = self.max_width - arrows_width
-            height           = self.children[0].rect.height
-            dimensions       = scrollable_width, height
+            height = self.children[0].rect.height
+            dimensions = scrollable_width, height
 
             self.scroll_area = Rect((0, 0), dimensions)
 
             ### reference scroll methods on the arrows
 
-            left_arrow.scroll  = self.scroll_left
+            left_arrow.scroll = self.scroll_left
             right_arrow.scroll = self.scroll_right
 
             ### store both arrows in attributes
 
-            self.left_arrow  =  left_arrow
+            self.left_arrow = left_arrow
             self.right_arrow = right_arrow
 
             ### also store them together in a container
@@ -149,26 +145,20 @@ class Scrollability:
             ### assigning appropriate surfaces and their
             ### rects to them
 
-            up_arrow = Object2D(
-                         image = UP_ARROW_SURF,
-                         rect  = UP_ARROW_SURF.get_rect()
-                       )
+            up_arrow = Object2D(image=UP_ARROW_SURF, rect=UP_ARROW_SURF.get_rect())
 
             down_arrow = Object2D(
-                           image = DOWN_ARROW_SURF,
-                           rect  = DOWN_ARROW_SURF.get_rect()
-                         )
+                image=DOWN_ARROW_SURF, rect=DOWN_ARROW_SURF.get_rect()
+            )
 
             ## get their combined height
-            arrows_height = \
-             up_arrow.rect.height + down_arrow.rect.height
+            arrows_height = up_arrow.rect.height + down_arrow.rect.height
 
             ## calculate the dimensions for the scrollable
             ## area and create it
 
-            scrollable_height = \
-                         self.max_height - arrows_height
-            width      = self.children[0].rect.width
+            scrollable_height = self.max_height - arrows_height
+            width = self.children[0].rect.width
             dimensions = width, scrollable_height
 
             self.scroll_area = Rect((0, 0), dimensions)
@@ -180,7 +170,7 @@ class Scrollability:
             ## define width and height of arrows (height
             ## is preserved as can be seen)
 
-            arrows_width  = self.scroll_area.width
+            arrows_width = self.scroll_area.width
             arrows_height = up_arrow.rect.height
 
             ## replace arrows surfaces by new ones,
@@ -194,19 +184,15 @@ class Scrollability:
 
                 ## replace by new one
 
-                arrow.image = render_rect(
-                                arrows_width,
-                                arrows_height,
-                                MENU_BG
-                              )
+                arrow.image = render_rect(arrows_width, arrows_height, MENU_BG)
 
                 ## blit original over the new one
 
                 blit_aligned(
-                  surface_to_blit      = original_surf,
-                  target_surface       = arrow.image,
-                  retrieve_pos_from = 'center',
-                  assign_pos_to     = 'center'
+                    surface_to_blit=original_surf,
+                    target_surface=arrow.image,
+                    retrieve_pos_from="center",
+                    assign_pos_to="center",
                 )
 
                 ## update size of arrow's rect
@@ -215,12 +201,12 @@ class Scrollability:
             ### reference scroll methods on the respective
             ### arrows
 
-            up_arrow.scroll   = self.scroll_up
+            up_arrow.scroll = self.scroll_up
             down_arrow.scroll = self.scroll_down
 
             ### store both arrows in attributes
 
-            self.up_arrow   =   up_arrow
+            self.up_arrow = up_arrow
             self.down_arrow = down_arrow
 
             ### also store them together in a container
@@ -238,8 +224,10 @@ class Scrollability:
         or None, if not). That is, the presence of a scroll
         area attribute implies the scrollability of the menu.
         """
-        try: return self.scroll_area
-        except AttributeError: pass
+        try:
+            return self.scroll_area
+        except AttributeError:
+            pass
 
     def manage_scrolling(self):
         """Scroll colliding arrow farthest from root.
@@ -307,10 +295,12 @@ class Scrollability:
         its existence, much less interact with it.
         """
         ### check whether the menu object has arrows
-        try: arrows = menu.arrows
+        try:
+            arrows = menu.arrows
 
         ### if it doesn't, just pass
-        except AttributeError: pass
+        except AttributeError:
+            pass
 
         ### otherwise, check preliminary conditions for the
         ### arrows to be taken into account
@@ -324,10 +314,11 @@ class Scrollability:
             ### 3) its top parent must the active menu and
             ###    it should be expanded
 
-            if menu is self \
-            or menu is self.active_menu \
-            or (self.top_menu_is_active(menu) \
-               and menu.is_expanded):
+            if (
+                menu is self
+                or menu is self.active_menu
+                or (self.top_menu_is_active(menu) and menu.is_expanded)
+            ):
 
                 ## since one of the preliminary conditions
                 ## was met, we are ready to append the
@@ -358,17 +349,17 @@ class Scrollability:
         ### also check the menu children for the presence of
         ### arrows
 
-        try: children = menu.children
+        try:
+            children = menu.children
 
-        except AttributeError: pass
+        except AttributeError:
+            pass
 
         else:
 
             for child in children:
 
-                all_arrows = \
-                    self.gather_arrows(
-                                  child, all_arrows)
+                all_arrows = self.gather_arrows(child, all_arrows)
 
         ### finally, return the arrows gathered
         return all_arrows
@@ -386,7 +377,7 @@ class Scrollability:
             normally, that is, when autoscrolling by hovering
             the scroll arrows, so the expanded child
             collapses (that is, the active menu).
-            
+
             If we don't collapse the body of the moving
             expanded child when autoscrolling the arrows we
             would have to add extra complexity to the code
@@ -400,7 +391,7 @@ class Scrollability:
             scroll. Thus, getting rid of the excess of what
             is visible (the body of the expanded child)
             shouldn't cause any problem.
-            
+
             There is, though, a scenario wherein we don't
             collapse the body of the expanded child (that
             is the parameter is set to False: only when
@@ -426,8 +417,8 @@ class Scrollability:
         """
         ### retrieve the last and first child rects
 
-        first_rect = self.children[ 0].rect
-        last_rect  = self.children[-1].rect
+        first_rect = self.children[0].rect
+        last_rect = self.children[-1].rect
 
         ### check need to scroll; look into the appropriate
         ### axis depending on the whether the menu manager
@@ -492,7 +483,8 @@ class Scrollability:
         ### the children follow the position of their
         ### scrolling parent, when the mouse is hovering
         ### the parent, an usability measure
-        else: self.reposition_children_bodies()
+        else:
+            self.reposition_children_bodies()
 
         ### collapse the active menu if there is one and it
         ### doesn't collide with the scroll area (this
@@ -503,20 +495,18 @@ class Scrollability:
         ### hoverable while invisible, causing confusion and
         ### preventing the user to use the menu properly
 
-        if self.active_menu \
-        and not self.scroll_area.colliderect(
-        self.active_menu.rect):
+        if self.active_menu and not self.scroll_area.colliderect(self.active_menu.rect):
 
             self.collapse_active_menu()
 
-    scroll_left  = partialmethod(scroll,  SCROLL_SPEED,  0)
-    scroll_right = partialmethod(scroll, -SCROLL_SPEED,  0)
-    scroll_up    = partialmethod(scroll,  0,  SCROLL_SPEED)
-    scroll_down  = partialmethod(scroll,  0, -SCROLL_SPEED)
+    scroll_left = partialmethod(scroll, SCROLL_SPEED, 0)
+    scroll_right = partialmethod(scroll, -SCROLL_SPEED, 0)
+    scroll_up = partialmethod(scroll, 0, SCROLL_SPEED)
+    scroll_down = partialmethod(scroll, 0, -SCROLL_SPEED)
 
     def fix_scrolling(self):
         """Eliminate excessive scrolling.
-        
+
         Closes gap between first child/first arrow or
         last child/last_arrow if it exists. Such gap is
         sometimes formed when scrolling the first or last
@@ -525,8 +515,8 @@ class Scrollability:
         """
         ### retrieve rects of first and last children
 
-        first_rect = self.children[ 0].rect
-        last_rect  = self.children[-1].rect
+        first_rect = self.children[0].rect
+        last_rect = self.children[-1].rect
 
         ### before starting to check if there's an gap we
         ### must check if at least one of the children
@@ -539,13 +529,14 @@ class Scrollability:
         ## scroll area
 
         first_inside = self.scroll_area.contains(first_rect)
-        last_inside  = self.scroll_area.contains( last_rect)
+        last_inside = self.scroll_area.contains(last_rect)
 
         ## if neither the first nor the last rect are
         ## completely inside the scroll area, cancel the
         ## execution of the rest of the method by returning
         ## earlier
-        if not first_inside and not last_inside: return
+        if not first_inside and not last_inside:
+            return
 
         ### now check the need for correction based on
         ### whether the menu manager is a menuar and
@@ -555,19 +546,17 @@ class Scrollability:
         ### the menu scrollable in the first place)
 
         if self.is_menubar:
-            
+
             ## if the first_rect is inside the scroll area
             ## and its left isn't aligned with the left
             ## arrow right it means there's a gap, so align
             ## them by moving the children by the difference
             ## between them
 
-            if first_inside and \
-            first_rect.left != self.left_arrow.rect.right:
+            if first_inside and first_rect.left != self.left_arrow.rect.right:
 
                 # calculate the difference
-                x_offset = \
-                self.left_arrow.rect.right - first_rect.left
+                x_offset = self.left_arrow.rect.right - first_rect.left
 
                 # move children
                 self.children.rect.move_ip(x_offset, 0)
@@ -578,12 +567,10 @@ class Scrollability:
             ## them by moving the children by the difference
             ## between them
 
-            elif last_inside and \
-            last_rect.right != self.right_arrow.rect.left:
+            elif last_inside and last_rect.right != self.right_arrow.rect.left:
 
                 # calculate the difference
-                x_offset = \
-                self.right_arrow.rect.left - last_rect.right
+                x_offset = self.right_arrow.rect.left - last_rect.right
 
                 # move children
                 self.children.rect.move_ip(x_offset, 0)
@@ -596,12 +583,10 @@ class Scrollability:
             ## moving the children by the difference between
             ## them
 
-            if first_inside and \
-            first_rect.top != self.up_arrow.rect.bottom:
+            if first_inside and first_rect.top != self.up_arrow.rect.bottom:
 
                 # calculate the difference
-                y_offset = \
-                self.up_arrow.rect.bottom - first_rect.top
+                y_offset = self.up_arrow.rect.bottom - first_rect.top
 
                 # move children
                 self.children.rect.move_ip(0, y_offset)
@@ -612,12 +597,10 @@ class Scrollability:
             ## them by moving the children by the difference
             ## between them
 
-            elif last_inside and \
-            last_rect.bottom != self.down_arrow.rect.top:
+            elif last_inside and last_rect.bottom != self.down_arrow.rect.top:
 
                 # calculate the difference
-                y_offset = \
-                self.down_arrow.rect.top - last_rect.bottom
+                y_offset = self.down_arrow.rect.top - last_rect.bottom
 
                 # move children
                 self.children.rect.move_ip(0, y_offset)
@@ -633,7 +616,8 @@ class Scrollability:
         """
         ### check if the parent of the hovered widget has
         ### an 'arrows' attribute
-        try: arrows = self.hovered_widget.parent.arrows
+        try:
+            arrows = self.hovered_widget.parent.arrows
 
         ### an attribute error may be raise though for
         ### either of those reasons (in which case you
@@ -644,7 +628,8 @@ class Scrollability:
         ### never has an 'arrows' attribute
         ### 3) the paretn attribute is a menu, but doesn't
         ### have an 'arrows' attribute
-        except AttributeError: pass
+        except AttributeError:
+            pass
 
         ### otherwise, in case there really are arrows make
         ### extra checks to guarantee one of the arrows
@@ -661,8 +646,7 @@ class Scrollability:
             # if there is a hovered arrow and it is not one
             # of the retrieved arrows, cancel the scrolling
             # by returning early
-            if self.hovered_arrow \
-            and self.hovered_arrow not in arrows:
+            if self.hovered_arrow and self.hovered_arrow not in arrows:
                 return
 
             # alias the parent of the hovered widget for
@@ -675,8 +659,7 @@ class Scrollability:
             # cancel the scrolling by returning early
 
             if hovered_parent is self:
-                if not hovered_parent.rect.collidepoint(
-                self.mouse_pos):
+                if not hovered_parent.rect.collidepoint(self.mouse_pos):
                     return
 
             # if the hovered_parent is a regular menu,
@@ -686,8 +669,7 @@ class Scrollability:
 
             else:
 
-                if not hovered_parent.body.rect.collidepoint(
-                self.mouse_pos):
+                if not hovered_parent.body.rect.collidepoint(self.mouse_pos):
                     return
 
             ## finally pick and scroll the proper arrow
@@ -696,12 +678,14 @@ class Scrollability:
             ## wheel up or 5 for scrolling down)
 
             # pick the arrow
-            if   button == 4: chosen_arrow = arrows[0]
-            elif button == 5: chosen_arrow = arrows[1]
+            if button == 4:
+                chosen_arrow = arrows[0]
+            elif button == 5:
+                chosen_arrow = arrows[1]
 
             # call the scroll method on the chosen arrow
             # with collapse_expanded_child argument set to
-            # False (for more information check the 
+            # False (for more information check the
             # 'scroll' method docstring in either the
             # menu/scroll.py or menu/submenu/scroll.py
             # module, where the collapse_expanded_child

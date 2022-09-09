@@ -1,4 +1,3 @@
-
 ### third-party import
 from pygame.image import load as load_image
 
@@ -18,6 +17,7 @@ from ..colorsman.colors import HTSL_CANVAS_BG
 
 HTSL_CACHE = {}
 
+
 def get_image_obj(resource_path, extension):
 
     if resource_path in HTSL_CACHE:
@@ -27,7 +27,7 @@ def get_image_obj(resource_path, extension):
 
     ######
 
-    if extension in ('.jpg', '.jpeg'):
+    if extension in (".jpg", ".jpeg"):
 
         image_surf = load_image(resource_path).convert()
 
@@ -35,16 +35,14 @@ def get_image_obj(resource_path, extension):
 
         return Object2D.from_surface(image_surf)
 
-    elif extension == '.png':
+    elif extension == ".png":
 
-        loaded_surf = (
-          load_image(resource_path).convert_alpha()
-        )
+        loaded_surf = load_image(resource_path).convert_alpha()
 
         image_surf = render_rect(
-                       *loaded_surf.get_size(),
-                       HTSL_CANVAS_BG,
-                     )
+            *loaded_surf.get_size(),
+            HTSL_CANVAS_BG,
+        )
 
         image_surf.blit(loaded_surf, (0, 0))
 

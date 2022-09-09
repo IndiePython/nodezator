@@ -18,6 +18,7 @@ icon in the topleft corner of the widget
 
 ### class definition
 
+
 class PathPreview(_BasePreview):
     """"""
 
@@ -25,22 +26,11 @@ class PathPreview(_BasePreview):
         """Preview paths."""
 
         formatted_value = (
-
-          repr(self.value)
-          if isinstance(self.value, str)
-
-          else (
-            '(\n'
-            + ',\n'.join(repr(item) for item in self.value)
-            + ')'
-          )
-
+            repr(self.value)
+            if isinstance(self.value, str)
+            else ("(\n" + ",\n".join(repr(item) for item in self.value) + ")")
         )
 
-        text = (
-          VALUE_DISPLAY_MESSAGE
-          + '\n\n'
-          + formatted_value
-        )
+        text = VALUE_DISPLAY_MESSAGE + "\n\n" + formatted_value
 
         view_text(text)

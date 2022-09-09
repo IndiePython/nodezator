@@ -1,10 +1,11 @@
 """Facility for debugging tools."""
 
 ### standard library import
-from itertools  import cycle
+from itertools import cycle
 
 
 ### scaffolding tools
+
 
 def print_and_return(obj):
     """Return any given object after printing it.
@@ -13,6 +14,7 @@ def print_and_return(obj):
     """
     print(obj)
     return obj
+
 
 def get_cyclic_countdown(steps, true_index=-1):
     """Get a countdown for delayed execution in if blocks.
@@ -40,7 +42,7 @@ def get_cyclic_countdown(steps, true_index=-1):
     >>> countdown = get_cyclic_countdown(10)
     >>> for i in range(20):
     ...     if countdown(): print(i, "hello")
-    ... 
+    ...
     9 hello
     19 hello
 
@@ -52,7 +54,7 @@ def get_cyclic_countdown(steps, true_index=-1):
     ...     # the if block bellow will execute after 10
     ...     # loops/frames (in the 11th loop)
     ...     if countdown(): print(i, "hello")
-    ... 
+    ...
     0 hello
     10 hello
     """

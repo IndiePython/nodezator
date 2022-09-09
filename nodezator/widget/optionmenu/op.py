@@ -3,21 +3,21 @@
 ### third-party imports
 
 from pygame import (
-
-              QUIT, KEYUP, K_ESCAPE,
-              K_RETURN, K_KP_ENTER,
-              MOUSEBUTTONUP, MOUSEMOTION,
-
-              VIDEORESIZE,
-
-              Rect,
-
-            )
+    QUIT,
+    KEYUP,
+    K_ESCAPE,
+    K_RETURN,
+    K_KP_ENTER,
+    MOUSEBUTTONUP,
+    MOUSEMOTION,
+    VIDEORESIZE,
+    Rect,
+)
 
 from pygame.display import update
 
-from pygame.event import get     as get_events
-from pygame.draw  import rect    as draw_rect
+from pygame.event import get as get_events
+from pygame.draw import rect as draw_rect
 from pygame.mouse import get_pos as get_mouse_pos
 
 from pygame.math import Vector2
@@ -30,9 +30,9 @@ from ...pygameconstants import SCREEN, blit_on_screen
 from ...classes2d.single import Object2D
 
 from ...loopman.exception import (
-                         QuitAppException,
-                         SwitchLoopException,
-                       )
+    QuitAppException,
+    SwitchLoopException,
+)
 
 from ...colorsman.colors import BLACK
 
@@ -71,10 +71,10 @@ class OptionMenuLifetimeOperations(Object2D):
         ### should never be reached
 
         raise RuntimeError(
-                "this block should never be executed, since"
-                " there must always be one option whose"
-                " value equals the current set value"
-              )
+            "this block should never be executed, since"
+            " there must always be one option whose"
+            " value equals the current set value"
+        )
 
     def get(self):
         """Return current value of OptionMenu instance."""
@@ -97,7 +97,8 @@ class OptionMenuLifetimeOperations(Object2D):
         ### if the value is already set, exit the method by
         ### returning, since choosing a value which is
         ### already chosen isn't considered a change at all
-        if self.value == value: return
+        if self.value == value:
+            return
 
         ### if value received isn't within allowed values
         ### (values inside "options" attribute), report and
@@ -115,11 +116,10 @@ class OptionMenuLifetimeOperations(Object2D):
         self.update_image()
 
         ### execute custom command if requested
-        if custom_command: self.command()
+        if custom_command:
+            self.command()
 
-    def reset_value_and_options(
-          self, value, options, custom_command=True
-        ):
+    def reset_value_and_options(self, value, options, custom_command=True):
         """Reset available options and set given value.
 
         Parameters
@@ -149,17 +149,18 @@ class OptionMenuLifetimeOperations(Object2D):
         if options == self.options:
 
             print(
-              "new options provided are the same as the"
-              " current ones and in the same order"
+                "new options provided are the same as the"
+                " current ones and in the same order"
             )
 
             return
 
         ## the value and options are not valid
 
-        try: self.validate_value_and_options(value, options)
+        try:
+            self.validate_value_and_options(value, options)
         except (ValueError, TypeError) as err:
-            
+
             print(err)
             return
 
@@ -172,7 +173,7 @@ class OptionMenuLifetimeOperations(Object2D):
 
         ## set the value and the options
 
-        self.value   = value
+        self.value = value
         self.options = options
 
         ## rebuild the widget structure
@@ -182,7 +183,8 @@ class OptionMenuLifetimeOperations(Object2D):
         self.rect.topleft = topleft
 
         ### execute custom command if requested
-        if custom_command: self.command()
+        if custom_command:
+            self.command()
 
     def get_focus(self, event):
         """Perform setups and get focus to itself.
@@ -196,7 +198,7 @@ class OptionMenuLifetimeOperations(Object2D):
             required in order to comply with mouse action
             protocol; we use its "pos" attribute to retrieve
             the mouse position;
-              
+
             check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -206,9 +208,7 @@ class OptionMenuLifetimeOperations(Object2D):
         self.draw = self.draw_expanded
         self.on_mouse_release = self.choose_option
 
-        self.handle_input = (
-          self.handle_events_and_mouse_pos
-        )
+        self.handle_input = self.handle_events_and_mouse_pos
 
         ### position options
         self.align_subobjects()
@@ -224,13 +224,10 @@ class OptionMenuLifetimeOperations(Object2D):
         ### exception with a reference to this widget
         raise SwitchLoopException(self)
 
-
     def align_options(self):
         self.option_widgets.rect.midtop = self.rect.midbottom
 
-        self.option_widgets.rect.clamp_ip(
-                                   self.clamp_area
-                                 )
+        self.option_widgets.rect.clamp_ip(self.clamp_area)
 
     def align_options_and_scroll_arrows(self):
         align_area = self.clamp_area
@@ -240,8 +237,7 @@ class OptionMenuLifetimeOperations(Object2D):
         self.option_widgets.rect.clamp_ip(align_area)
 
         self.option_widgets.rect.y = (
-          align_area.top
-          + self.upper_scroll_arrow.get_height()
+            align_area.top + self.upper_scroll_arrow.get_height()
         )
 
         x = self.option_widgets.rect.x
@@ -249,13 +245,9 @@ class OptionMenuLifetimeOperations(Object2D):
         self.upper_arrow_pos = (x, align_area.top)
 
         self.lower_arrow_pos = (
-          x,
-          (
-            align_area.bottom
-            - self.lower_scroll_arrow.get_height()
-          )
+            x,
+            (align_area.bottom - self.lower_scroll_arrow.get_height()),
         )
-
 
     def lose_focus(self):
         """Assign behaviours and focus loop manager."""
@@ -276,7 +268,8 @@ class OptionMenuLifetimeOperations(Object2D):
 
             ### raise special exception if user attempts
             ### to quit the application
-            if event.type == QUIT: raise QuitAppException
+            if event.type == QUIT:
+                raise QuitAppException
 
             ### lose focus if escape key is released
 
@@ -325,18 +318,13 @@ class OptionMenuLifetimeOperations(Object2D):
 
             elif event.type == VIDEORESIZE:
 
-                self.handle_input = (
-                  self.watch_out_for_movement
-                )
+                self.handle_input = self.watch_out_for_movement
 
     def watch_out_for_movement(self):
 
         if self.rect.topleft != self.last_topleft:
 
-            diff = (
-              Vector2(self.rect.topleft)
-              - self.last_topleft
-            )
+            diff = Vector2(self.rect.topleft) - self.last_topleft
 
             self.last_topleft = self.rect.topleft
 
@@ -349,9 +337,7 @@ class OptionMenuLifetimeOperations(Object2D):
             self.draw()
 
             ##
-            self.handle_input = (
-              self.handle_events_and_mouse_pos
-            )
+            self.handle_input = self.handle_events_and_mouse_pos
 
         self.handle_events_and_mouse_pos()
 
@@ -361,7 +347,7 @@ class OptionMenuLifetimeOperations(Object2D):
 
         options_rect = self.option_widgets.rect
 
-        left  = options_rect.left
+        left = options_rect.left
         right = options_rect.right
 
         clamp_area = self.clamp_area
@@ -369,19 +355,9 @@ class OptionMenuLifetimeOperations(Object2D):
         top = clamp_area.top + self.upper_scroll_arrow.get_height()
         bottom = clamp_area.bottom - self.lower_scroll_arrow.get_height()
 
-        if (
-          left < mouse_x < right
-          and not (top < mouse_y < bottom)
-        ):
-            
-            self.scroll_vertically(
+        if left < mouse_x < right and not (top < mouse_y < bottom):
 
-                   -10
-                   if mouse_y < top
-
-                   else 10
-
-                 )
+            self.scroll_vertically(-10 if mouse_y < top else 10)
 
     def handle_events_and_mouse_pos(self):
 
@@ -397,8 +373,7 @@ class OptionMenuLifetimeOperations(Object2D):
             x and y coordinates representing the mouse
             position on the screen.
         """
-        return \
-        not self.option_widgets.rect.collidepoint(position)
+        return not self.option_widgets.rect.collidepoint(position)
 
     def choose_option(self, event):
         """Choose option if it collides by executing method.
@@ -418,7 +393,7 @@ class OptionMenuLifetimeOperations(Object2D):
             mouse action protocol; it is also necessary in
             this method, since its "pos" attribute is used
             to retrieve the mouse position;
-              
+
             check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -467,9 +442,7 @@ class OptionMenuLifetimeOperations(Object2D):
         """"""
         if self.option_widgets.rect.collidepoint(event.pos):
 
-            self.scroll_vertically(
-                   10 if event.button == 4 else -10
-                 )
+            self.scroll_vertically(10 if event.button == 4 else -10)
 
     def scroll_vertically(self, dy):
         """"""
@@ -482,12 +455,14 @@ class OptionMenuLifetimeOperations(Object2D):
         if dy < 0:
 
             bottom_limit = scroll_area.bottom - self.lower_scroll_arrow.get_height()
-            if rect.bottom < bottom_limit:  rect.bottom = bottom_limit
+            if rect.bottom < bottom_limit:
+                rect.bottom = bottom_limit
 
         elif dy > 0:
 
             top_limit = scroll_area.top + self.upper_scroll_arrow.get_height()
-            if rect.top > top_limit:  rect.top = top_limit
+            if rect.top > top_limit:
+                rect.top = top_limit
 
     def on_mouse_motion(self, mouse_pos):
         """Highlight option widget if position collides.
@@ -509,7 +484,8 @@ class OptionMenuLifetimeOperations(Object2D):
             if widget.rect.collidepoint(mouse_pos):
                 widget.highlight()
 
-            else: widget.unhighlight()
+            else:
+                widget.unhighlight()
 
     def draw_collapsed(self):
         """Draw self.image on screen.
@@ -528,7 +504,7 @@ class OptionMenuLifetimeOperations(Object2D):
         self.draw_subobjects()
 
         ### finally, update the screen
-        update() # pygame.display.update
+        update()  # pygame.display.update
 
     def draw_options(self):
 
@@ -537,12 +513,7 @@ class OptionMenuLifetimeOperations(Object2D):
 
         ### draw an outline around the option widgets
 
-        draw_rect(
-          SCREEN,
-          BLACK,
-          self.option_widgets.rect.inflate(2, 2),
-          1
-        )
+        draw_rect(SCREEN, BLACK, self.option_widgets.rect.inflate(2, 2), 1)
 
     def draw_options_and_scroll_arrows(self):
         """"""
@@ -553,25 +524,18 @@ class OptionMenuLifetimeOperations(Object2D):
 
         ### draw scroll arrows
 
-        blit_on_screen(
-                 self.upper_scroll_arrow,
-                 self.upper_arrow_pos
-               )
+        blit_on_screen(self.upper_scroll_arrow, self.upper_arrow_pos)
 
-        blit_on_screen(
-                 self.lower_scroll_arrow,
-                 self.lower_arrow_pos
-               )
+        blit_on_screen(self.lower_scroll_arrow, self.lower_arrow_pos)
 
         ### draw an outline around the scroll arrows and
         ### visible options
 
         draw_rect(
-          SCREEN,
-          BLACK,
-          Rect(
-            *self.upper_arrow_pos,
-            self.option_widgets.rect.width, draw_area.height
-          ).inflate(2, 2),
-          1
+            SCREEN,
+            BLACK,
+            Rect(
+                *self.upper_arrow_pos, self.option_widgets.rect.width, draw_area.height
+            ).inflate(2, 2),
+            1,
         )

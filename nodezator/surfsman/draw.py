@@ -2,9 +2,9 @@
 
 ### standard library imports
 
-from colorsys  import rgb_to_hls, hls_to_rgb
+from colorsys import rgb_to_hls, hls_to_rgb
 from itertools import cycle
-from math      import sqrt
+from math import sqrt
 
 
 ### third-party imports
@@ -16,44 +16,40 @@ from pygame.math import Vector2
 from pygame.transform import rotate as rotate_surface
 
 from pygame.draw import (
-                        line    as draw_line,
-                        lines   as draw_lines,
-                        rect    as draw_rect,
-                        ellipse as draw_ellipse,
-                        polygon as draw_polygon)
+    line as draw_line,
+    lines as draw_lines,
+    rect as draw_rect,
+    ellipse as draw_ellipse,
+    polygon as draw_polygon,
+)
 
 
 ### local imports
 
-from ..colorsman.colors import (
-                             BLACK, WHITE,
-                             SHADOW_COLOR, HIGHLIGHT_COLOR)
+from ..colorsman.colors import BLACK, WHITE, SHADOW_COLOR, HIGHLIGHT_COLOR
 
 
-HIGHLIGHT_POINT_NAMES = (
-  'bottomleft', 'topleft', 'topright'
-)
+HIGHLIGHT_POINT_NAMES = ("bottomleft", "topleft", "topright")
 
-SHADOW_POINT_NAMES = (
-  'bottomleft', 'bottomright', 'topright'
-)
+SHADOW_POINT_NAMES = ("bottomleft", "bottomright", "topright")
+
 
 def draw_depth_finish(
-      surf,
-      thickness=1,
-      outset=True,
-      highlight_color=HIGHLIGHT_COLOR,
-      shadow_color=SHADOW_COLOR
-    ):
+    surf,
+    thickness=1,
+    outset=True,
+    highlight_color=HIGHLIGHT_COLOR,
+    shadow_color=SHADOW_COLOR,
+):
     """Give a finish which conveys depth.
 
     Such finish application consists of drawing polygons
     which work as borders of the surface to simulate
     highlights and shadows, giving depth to the surface.
-    
+
     Parameters
     ==========
-    
+
     surf (pygame.Surface instance)
         surface wherein to draw the lines.
     thickness (integer >= 1)
@@ -72,8 +68,7 @@ def draw_depth_finish(
 
     if not outset:
 
-        highlight_color, shadow_color = \
-        shadow_color, highlight_color
+        highlight_color, shadow_color = shadow_color, highlight_color
 
     ### retrieve a rect for the surface
     rect = surf.get_rect()
@@ -83,7 +78,7 @@ def draw_depth_finish(
     ### before we start blitting
 
     rect.move_ip(-1, -1)
-    rect.width  += 1
+    rect.width += 1
     rect.height += 1
 
     ### draw lines
@@ -97,15 +92,12 @@ def draw_depth_finish(
         ## draw the lines
 
         for color, point_names in (
-          (shadow_color,    SHADOW_POINT_NAMES),
-          (highlight_color, HIGHLIGHT_POINT_NAMES)
+            (shadow_color, SHADOW_POINT_NAMES),
+            (highlight_color, HIGHLIGHT_POINT_NAMES),
         ):
 
             ## obtain points
-            points = [
-              getattr(rect, point_name)
-              for point_name in point_names
-            ]
+            points = [getattr(rect, point_name) for point_name in point_names]
 
             ## blit lines
             draw_lines(surf, color, False, points)
@@ -116,7 +108,7 @@ def draw_border(surf, color=BLACK, thickness=1):
 
     It works by drawing a sequence of rects with thickness
     1, one inside the other.
-    
+
     Parameters
     ==========
     surf (pygame.Surface instance)
@@ -168,10 +160,7 @@ def draw_border(surf, color=BLACK, thickness=1):
 
         ## decrement dimensions by 2 units
 
-        rect.size = tuple(
-                      dimension - 2
-                      for dimension in rect.size
-                    )
+        rect.size = tuple(dimension - 2 for dimension in rect.size)
 
         ## move rect one unit down and to the right
         rect.move_ip(1, 1)
@@ -179,12 +168,13 @@ def draw_border(surf, color=BLACK, thickness=1):
 
 ### TODO refactor below
 
+
 def draw_border_on_area(surf, color, area_rect, thickness=1):
     """Draw a border on surf on given area.
 
     It works by drawing a sequence of rects with thickness
     1, one inside the other.
-    
+
     Parameters
     ==========
     surf (pygame.Surface instance)
@@ -203,26 +193,18 @@ def draw_border_on_area(surf, color, area_rect, thickness=1):
     ### from 0 to the double of the thickness, in increments
     ### of 2
 
-    for deflation in range(0, thickness*2, 2):
+    for deflation in range(0, thickness * 2, 2):
 
         ## for each amount of deflation, draw a deflated
         ## rect in that area on the given surface with
         ## thickness 1
 
-        draw_rect(
-          surf,
-          color,
-          area_rect.inflate(-deflation, -deflation),
-          1
-        )
+        draw_rect(surf, color, area_rect.inflate(-deflation, -deflation), 1)
+
 
 def draw_checker_pattern(
-      surf,
-      color_a=WHITE,
-      color_b=BLACK,
-      rect_width=10,
-      rect_height=10
-    ):
+    surf, color_a=WHITE, color_b=BLACK, rect_width=10, rect_height=10
+):
     """Draw checker pattern on given surf.
 
     Parameters
@@ -260,7 +242,7 @@ def draw_checker_pattern(
     ### the surface is covered by the checker pattern
 
     while True:
-        
+
         ## if the unit rect isn't touching the
         ## surface area, invert the x_offset,
         ## move it back using such new x_offset and
@@ -274,7 +256,8 @@ def draw_checker_pattern(
         ## if even after the previous "if block" the
         ## unit rect still doesn't touch the surface
         ## area, break out of the while loop
-        if not surf_rect.colliderect(unit_rect): break
+        if not surf_rect.colliderect(unit_rect):
+            break
 
         ## otherwise draw the unit rect...
         draw_rect(surf, next_color(), unit_rect)
@@ -284,14 +267,14 @@ def draw_checker_pattern(
 
 
 def draw_linear_gradient(
-      surf,
-      color,
-      start_percentage=0.125,
-      stop_percentage=1,
-      max_lightness_percentage=1.0,
-      min_lightness_percentage=0.2,
-      direction='left_to_right'
-    ):
+    surf,
+    color,
+    start_percentage=0.125,
+    stop_percentage=1,
+    max_lightness_percentage=1.0,
+    min_lightness_percentage=0.2,
+    direction="left_to_right",
+):
     """Draw linear gradient on given surface.
 
     Since operations are done in-place in the given surface,
@@ -327,7 +310,7 @@ def draw_linear_gradient(
     ### vice-versa), backup the original surf and obtain
     ### a new surf rotated 90 degrees
 
-    if direction in ('bottom_to_top', 'top_to_bottom'):
+    if direction in ("bottom_to_top", "top_to_bottom"):
 
         backup_surf = surf
         surf = rotate_surface(surf, 90)
@@ -337,7 +320,7 @@ def draw_linear_gradient(
     width, height = surf.get_size()
 
     start = round(width * start_percentage)
-    stop  = round(width * stop_percentage)
+    stop = round(width * stop_percentage)
     total = stop - start
 
     lightness_factor = 1.0 - min_lightness_percentage
@@ -345,23 +328,23 @@ def draw_linear_gradient(
     ### define the hue, lightness and saturation of the
     ### base color
 
-    hue, lightness, saturation = \
-            rgb_to_hls(*[v/255 for v in color[:3]])
+    hue, lightness, saturation = rgb_to_hls(*[v / 255 for v in color[:3]])
 
-
-    ### iterate over all vertical sections of the 
+    ### iterate over all vertical sections of the
     ### surface represented by all possible values of
     ### x within the width of the surface
 
     for x in range(width):
-        
+
         ## if x is before or at the start, the max
         ## lightness percentage is used as the percentage
-        if x <= start : percent = max_lightness_percentage
+        if x <= start:
+            percent = max_lightness_percentage
 
         ## if x is at or after the stop, the min
         ## lightness percentage is used as the percentage
-        elif x >= stop: percent = min_lightness_percentage
+        elif x >= stop:
+            percent = min_lightness_percentage
 
         ## if it is between the start and stop, though,
         ## we use the max lightness percentage minus
@@ -371,12 +354,7 @@ def draw_linear_gradient(
 
             progress = (x - start) / total
 
-            percent = (
-
-              max_lightness_percentage
-              - (progress * lightness_factor)
-
-            )
+            percent = max_lightness_percentage - (progress * lightness_factor)
 
         ## we then calculate the lightness
         current_lightness = lightness * percent
@@ -384,17 +362,12 @@ def draw_linear_gradient(
         ## obtain the resulting color
 
         color = [
-
-          round(value * 255)
-
-          for value in
-          hls_to_rgb(hue, current_lightness, saturation)
-
+            round(value * 255)
+            for value in hls_to_rgb(hue, current_lightness, saturation)
         ]
-        
+
         ## and use it to draw a line on the vertical section
         draw_line(surf, color, (x, 0), (x, height), 1)
-
 
     ### direction setups
 
@@ -404,7 +377,7 @@ def draw_linear_gradient(
     ## one (resulting in the current surface being overriden
     ## by the rotated one)
 
-    if direction == 'right_to_left':
+    if direction == "right_to_left":
 
         new_surf = rotate_surface(surf, 180)
         surf.blit(new_surf, (0, 0))
@@ -412,12 +385,11 @@ def draw_linear_gradient(
     ## if the direction is vertical, specific setups are
     ## needed
 
-    elif direction in ('bottom_to_top', 'top_to_bottom'):
-        
+    elif direction in ("bottom_to_top", "top_to_bottom"):
+
         # define the amount of rotation needed according
         # to the specific vertical direction
-        rotation_amount = \
-            90 if direction == 'bottom_to_top' else -90
+        rotation_amount = 90 if direction == "bottom_to_top" else -90
 
         # rotate the current surface by negative 90 degrees
         # and blit it over the backup surf (which is a
@@ -426,7 +398,6 @@ def draw_linear_gradient(
 
         new_surf = rotate_surface(surf, rotation_amount)
         backup_surf.blit(new_surf, (0, 0))
-
 
     ### for debugging: uncomment drawing command below to
     ### see line from where the gradient begin to shift
@@ -459,14 +430,7 @@ def draw_not_found_icon(surf, color):
 
     smaller_dimension = min(rect.size)
 
-    ellipse_thickness = (
-
-      smaller_dimension // 10
-      if smaller_dimension > 10
-
-      else 1
-
-    )
+    ellipse_thickness = smaller_dimension // 10 if smaller_dimension > 10 else 1
 
     ## draw
     draw_ellipse(surf, color, rect, ellipse_thickness)
@@ -478,48 +442,44 @@ def draw_not_found_icon(surf, color):
     v1 = Vector2(rect.bottomleft)
     v2 = Vector2(rect.topright)
 
-    d1 = v1.lerp(v2, .175)
-    d2 = v2.lerp(v1, .175)
+    d1 = v1.lerp(v2, 0.175)
+    d2 = v2.lerp(v1, 0.175)
 
     ## draw diagonal based on ellipse thickness
 
     if ellipse_thickness >= 3:
-        
+
         dimension_size = round(ellipse_thickness / sqrt(2))
 
-        small_rect = Rect(
-          0, 0,
-          dimension_size, dimension_size
-        )
+        small_rect = Rect(0, 0, dimension_size, dimension_size)
 
-        coordinate_names = ('topleft', 'bottomright')
+        coordinate_names = ("topleft", "bottomright")
 
         small_rect.center = d1
 
         p1, p2 = (
-          getattr(small_rect, coordinate_name)
-          for coordinate_name in coordinate_names
+            getattr(small_rect, coordinate_name) for coordinate_name in coordinate_names
         )
 
         small_rect.center = d2
 
         p3, p4 = (
-          getattr(small_rect, coordinate_name)
-          for coordinate_name in coordinate_names
+            getattr(small_rect, coordinate_name) for coordinate_name in coordinate_names
         )
 
         draw_polygon(surf, color, (p1, p3, p4, p2))
 
-    else: draw_line(surf, color, d1, d2, ellipse_thickness)
+    else:
+        draw_line(surf, color, d1, d2, ellipse_thickness)
 
 
 def blit_aligned(
-      surface_to_blit,
-      target_surface,
-      retrieve_pos_from='topleft',
-      assign_pos_to='topleft',
-      offset_pos_by=(0, 0)
-    ):
+    surface_to_blit,
+    target_surface,
+    retrieve_pos_from="topleft",
+    assign_pos_to="topleft",
+    offset_pos_by=(0, 0),
+):
     """Align and blit a surface into another.
 
     Works by aligning the position of the rects of two
@@ -548,7 +508,7 @@ def blit_aligned(
     ### get pygame.Rect instances for both surfaces
 
     rect_for_blitting = surface_to_blit.get_rect()
-    target_rect       = target_surface.get_rect()
+    target_rect = target_surface.get_rect()
 
     ### align the positions between the two rects
 

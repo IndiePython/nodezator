@@ -18,51 +18,39 @@ from .data import DataHandling
 ## more operations
 
 from .categorycolors import (
-                              rebuild_category_color_form,
-                              change_category_colors,
-                            )
+    rebuild_category_color_form,
+    change_category_colors,
+)
 
 ## classes for composition
 
 from .widgetpopups.creation import (
-                                WidgetCreationPopupMenu,
-                              )
+    WidgetCreationPopupMenu,
+)
 
-from .objpopups.callablenode import (
-                                   CallableNodePopupMenu
-                                 )
+from .objpopups.callablenode import CallableNodePopupMenu
 
 from .objpopups.proxynode import ProxyNodePopupMenu
 
-from .objpopups.operatornode import (
-                                   OperatorNodePopupMenu
-                                 )
+from .objpopups.operatornode import OperatorNodePopupMenu
 
 from .objpopups.textblock import TextBlockPopupMenu
 
-from .socketpopups.input import (
-                                  InputSocketPopupMenu
-                                )
+from .socketpopups.input import InputSocketPopupMenu
 
-from .socketpopups.proxy import (
-                                  ProxySocketPopupMenu
-                                )
+from .socketpopups.proxy import ProxySocketPopupMenu
 
-from .socketpopups.output import (
-                                   OutputSocketPopupMenu
-                                 )
+from .socketpopups.output import OutputSocketPopupMenu
 
 
 class EditingAssistant(
-
-      GridHandling,
-      ObjectInsertionRemoval,
-      SelectionHandling,
-      Repositioning,
-      Exporting,
-      DataHandling,
-
-    ):
+    GridHandling,
+    ObjectInsertionRemoval,
+    SelectionHandling,
+    Repositioning,
+    Exporting,
+    DataHandling,
+):
     """Assist objects operations like selection/positioning.
 
     This class was specifically designed so that its
@@ -86,49 +74,31 @@ class EditingAssistant(
 
         self.change_category_colors = change_category_colors
 
-        self.rebuild_category_color_form = (
-          rebuild_category_color_form
-        )
+        self.rebuild_category_color_form = rebuild_category_color_form
 
         ### create and store popup menus
 
         ## widget-related
 
-        self.widget_creation_popup_menu = (
-          WidgetCreationPopupMenu()
-        )
+        self.widget_creation_popup_menu = WidgetCreationPopupMenu()
 
         ## objects
 
-        self.callable_node_popup_menu = (
-          CallableNodePopupMenu()
-        )
+        self.callable_node_popup_menu = CallableNodePopupMenu()
 
-        self.proxy_node_popup_menu = (
-          ProxyNodePopupMenu()
-        )
+        self.proxy_node_popup_menu = ProxyNodePopupMenu()
 
-        self.operator_node_popup_menu = (
-          OperatorNodePopupMenu()
-        )
+        self.operator_node_popup_menu = OperatorNodePopupMenu()
 
-        self.text_block_popup_menu = (
-          TextBlockPopupMenu()
-        )
+        self.text_block_popup_menu = TextBlockPopupMenu()
 
         ## sockets
 
-        self.input_socket_popup_menu = (
-          InputSocketPopupMenu()
-        )
+        self.input_socket_popup_menu = InputSocketPopupMenu()
 
-        self.proxy_socket_popup_menu = (
-          ProxySocketPopupMenu()
-        )
+        self.proxy_socket_popup_menu = ProxySocketPopupMenu()
 
-        self.output_socket_popup_menu = (
-          OutputSocketPopupMenu()
-        )
+        self.output_socket_popup_menu = OutputSocketPopupMenu()
 
     def prepare_for_new_session(self):
         """Execute setups to assist in editing."""

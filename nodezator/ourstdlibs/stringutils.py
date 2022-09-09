@@ -2,10 +2,10 @@
 
 ### standard-library imports
 
-from ast         import literal_eval
-from json        import loads as load_json_string
+from ast import literal_eval
+from json import loads as load_json_string
 from collections import OrderedDict
-from itertools   import count
+from itertools import count
 
 
 ### local import
@@ -23,25 +23,19 @@ VALIDATION_COMMAND_MAP[None] = lambda value: True
 ## populate with boolean functions from str builtin
 
 VALIDATION_COMMAND_MAP.update(
-
-  (word, getattr(str, word))
-
-  for word in sorted(dir(str))
-  if word.startswith('is')
-
+    (word, getattr(str, word)) for word in sorted(dir(str)) if word.startswith("is")
 )
 
 
 ## populate with custom boolean funcs
 
-VALIDATION_COMMAND_MAP['json'] = \
-                     bool_func_from_raiser(load_json_string)
+VALIDATION_COMMAND_MAP["json"] = bool_func_from_raiser(load_json_string)
 # TODO log change: key name from 'pyl' to 'literal_eval'
-VALIDATION_COMMAND_MAP['literal_eval'] = \
-                      bool_func_from_raiser(literal_eval)
+VALIDATION_COMMAND_MAP["literal_eval"] = bool_func_from_raiser(literal_eval)
 
 
 ### functions
+
 
 def check_contains_non_whitespace(string):
     """If non-white space chars == 0, raise ValueError.
@@ -71,8 +65,9 @@ def check_contains_non_whitespace(string):
     if not string.strip():
 
         raise ValueError(
-          "string must have at least one character which is"
-          " not considered white space"
+            "string must have at least one character which is"
+            " not considered white space"
         )
+
 
 check_contains_non_whitespace.expected_exceptions = ValueError

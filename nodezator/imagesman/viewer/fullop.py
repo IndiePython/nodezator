@@ -10,18 +10,32 @@ from functools import partialmethod
 ### third-party imports
 
 from pygame import (
-              QUIT,
-
-              KEYDOWN, K_ESCAPE, KMOD_SHIFT,
-              K_UP, K_DOWN, K_LEFT, K_RIGHT,
-              K_w, K_a, K_s, K_d,
-              K_k, K_h, K_j, K_l,
-              K_PAGEUP, K_PAGEDOWN, K_HOME, K_END,
-              K_f, K_r,
-
-              MOUSEBUTTONUP, MOUSEMOTION,
-              MOUSEBUTTONDOWN,
-            )
+    QUIT,
+    KEYDOWN,
+    K_ESCAPE,
+    KMOD_SHIFT,
+    K_UP,
+    K_DOWN,
+    K_LEFT,
+    K_RIGHT,
+    K_w,
+    K_a,
+    K_s,
+    K_d,
+    K_k,
+    K_h,
+    K_j,
+    K_l,
+    K_PAGEUP,
+    K_PAGEDOWN,
+    K_HOME,
+    K_END,
+    K_f,
+    K_r,
+    MOUSEBUTTONUP,
+    MOUSEMOTION,
+    MOUSEBUTTONDOWN,
+)
 
 from pygame.display import update
 
@@ -35,10 +49,10 @@ from pygame.math import Vector2
 ### local imports
 
 from ...pygameconstants import (
-                       SCREEN,
-                       SCREEN_RECT,
-                       blit_on_screen,
-                     )
+    SCREEN,
+    SCREEN_RECT,
+    blit_on_screen,
+)
 
 from ...surfsman.draw import draw_border_on_area
 
@@ -47,9 +61,9 @@ from ...classes2d.single import Object2D
 from ...loopman.exception import QuitAppException
 
 from ...surfsman.cache import (
-                      UNHIGHLIGHT_SURF_MAP,
-                      draw_cached_screen_state,
-                    )
+    UNHIGHLIGHT_SURF_MAP,
+    draw_cached_screen_state,
+)
 
 from ...our3rdlibs.keyconst import KEYPAD_TO_COORDINATE_MAP
 
@@ -57,26 +71,18 @@ from ...colorsman.colors import IMAGES_VIEWER_BORDER
 
 from ..cache import IMAGE_SURFS_DB
 
-from .constants import (
-                                     VIEWER_BORDER_THICKNESS,
-                                     LARGE_THUMB,
-                                     PATH_LABEL)
+from .constants import VIEWER_BORDER_THICKNESS, LARGE_THUMB, PATH_LABEL
 
 
 MOVE_AREA = SCREEN_RECT.inflate(-100, -100)
 
 
 class FullModeOperations(Object2D):
-
     def full_prepare(self):
         """Redraw viewer in response to user action."""
         image_path = self.image_paths[self.thumb_index]
 
-        self.full_image = (
-                            IMAGE_SURFS_DB
-                            [image_path]
-                            [{'use_alpha': True}]
-                          )
+        self.full_image = IMAGE_SURFS_DB[image_path][{"use_alpha": True}]
 
         self.full_rect = self.full_image.get_rect()
         self.full_rect.center = MOVE_AREA.center
@@ -86,15 +92,16 @@ class FullModeOperations(Object2D):
     def full_handle_input(self):
 
         for event in get_events():
-            
+
             ### TODO this will cause cleaning/tear down to
             ### skipped; address it, including the same
             ### behaviour occurring in other state managers
 
-            if event.type == QUIT: raise QuitAppException()
+            if event.type == QUIT:
+                raise QuitAppException()
 
             elif event.type == KEYDOWN:
-                
+
                 if event.key in (K_ESCAPE, K_f):
                     self.enable_normal_mode()
 
@@ -103,43 +110,42 @@ class FullModeOperations(Object2D):
                     if event.mod & KMOD_SHIFT:
                         self.move_to_left_edge()
 
-                    else: self.move_to_top()
+                    else:
+                        self.move_to_top()
 
                 elif event.key == K_END:
 
                     if event.mod & KMOD_SHIFT:
                         self.move_to_right_edge()
 
-                    else: self.move_to_bottom()
+                    else:
+                        self.move_to_bottom()
 
                 elif event.key == K_PAGEUP:
 
                     if event.mod & KMOD_SHIFT:
                         self.move_right_a_lot()
 
-                    else: self.move_down_a_lot()
+                    else:
+                        self.move_down_a_lot()
 
                 elif event.key == K_PAGEDOWN:
 
                     if event.mod & KMOD_SHIFT:
                         self.move_left_a_lot()
 
-                    else: self.move_up_a_lot()
+                    else:
+                        self.move_up_a_lot()
 
                 ###
 
                 elif event.key in KEYPAD_TO_COORDINATE_MAP:
 
-                    self.snap_image(
-                           KEYPAD_TO_COORDINATE_MAP
-                           [event.key]
-                         )
+                    self.snap_image(KEYPAD_TO_COORDINATE_MAP[event.key])
 
                 elif event.key == K_r:
 
-                    self.should_draw_full_rect = (
-                      not self.should_draw_full_rect
-                    )
+                    self.should_draw_full_rect = not self.should_draw_full_rect
 
                     self.full_response_draw()
 
@@ -159,10 +165,10 @@ class FullModeOperations(Object2D):
         dx = dy = 0
 
         for keys, (x_amount, y_amount) in (
-          ((K_UP,    K_k, K_w), (  0,  10)),
-          ((K_DOWN,  K_j, K_s), (  0, -10)),
-          ((K_LEFT,  K_h, K_a), ( 10,   0)),
-          ((K_RIGHT, K_l, K_d), (-10,   0))
+            ((K_UP, K_k, K_w), (0, 10)),
+            ((K_DOWN, K_j, K_s), (0, -10)),
+            ((K_LEFT, K_h, K_a), (10, 0)),
+            ((K_RIGHT, K_l, K_d), (-10, 0)),
         ):
 
             for key in keys:
@@ -180,7 +186,8 @@ class FullModeOperations(Object2D):
         """Move image."""
         rect = self.full_rect
 
-        if rect.width <= MOVE_AREA.width : dx = 0
+        if rect.width <= MOVE_AREA.width:
+            dx = 0
 
         else:
 
@@ -190,7 +197,8 @@ class FullModeOperations(Object2D):
             elif dx > 0:
                 dx = min(dx, MOVE_AREA.left - rect.left)
 
-        if rect.height <= MOVE_AREA.height: dy = 0
+        if rect.height <= MOVE_AREA.height:
+            dy = 0
 
         else:
 
@@ -200,34 +208,29 @@ class FullModeOperations(Object2D):
             elif dy > 0:
                 dy = min(dy, MOVE_AREA.top - rect.top)
 
-        if dx or dy: rect.move_ip(dx, dy)
-        else: return
+        if dx or dy:
+            rect.move_ip(dx, dy)
+        else:
+            return
 
         self.full_response_draw()
 
+    move_up = partialmethod(move_image, 0, -10)
+    move_down = partialmethod(move_image, 0, 10)
+    move_left = partialmethod(move_image, -10, 0)
+    move_right = partialmethod(move_image, 10, 0)
 
-    move_up    = partialmethod(move_image,   0, -10)
-    move_down  = partialmethod(move_image,   0,  10)
-    move_left  = partialmethod(move_image, -10,   0)
-    move_right = partialmethod(move_image,  10,   0)
+    move_up_a_lot = partialmethod(move_image, 0, -MOVE_AREA.height)
+    move_down_a_lot = partialmethod(move_image, 0, MOVE_AREA.height)
+    move_left_a_lot = partialmethod(move_image, -MOVE_AREA.width, 0)
+    move_right_a_lot = partialmethod(move_image, MOVE_AREA.width, 0)
 
-    move_up_a_lot = \
-        partialmethod(move_image, 0, -MOVE_AREA.height)
-    move_down_a_lot  = \
-        partialmethod(move_image,   0,  MOVE_AREA.height)
-    move_left_a_lot  = \
-        partialmethod(move_image, -MOVE_AREA.width,   0)
-    move_right_a_lot = \
-        partialmethod(move_image,  MOVE_AREA.width,   0)
-
-    move_to_top    = partialmethod(move_image, 0,  INFINITY)
+    move_to_top = partialmethod(move_image, 0, INFINITY)
     move_to_bottom = partialmethod(move_image, 0, -INFINITY)
 
-    move_to_left_edge  = partialmethod(
-                           move_image, -INFINITY, 0)
+    move_to_left_edge = partialmethod(move_image, -INFINITY, 0)
 
-    move_to_right_edge = partialmethod(
-                           move_image,  INFINITY, 0)
+    move_to_right_edge = partialmethod(move_image, INFINITY, 0)
 
     def snap_image(self, coordinate_name):
         """Snap image by align it with the moving area."""
@@ -239,7 +242,8 @@ class FullModeOperations(Object2D):
 
         dx, dy = pos - Vector2(current_pos)
 
-        if rect.width <= MOVE_AREA.width : dx = 0
+        if rect.width <= MOVE_AREA.width:
+            dx = 0
 
         else:
 
@@ -249,7 +253,8 @@ class FullModeOperations(Object2D):
             elif dx > 0:
                 dx = min(dx, MOVE_AREA.left - rect.left)
 
-        if rect.height <= MOVE_AREA.height: dy = 0
+        if rect.height <= MOVE_AREA.height:
+            dy = 0
 
         else:
 
@@ -259,8 +264,10 @@ class FullModeOperations(Object2D):
             elif dy > 0:
                 dy = min(dy, MOVE_AREA.top - rect.top)
 
-        if dx or dy: rect.move_ip(dx, dy)
-        else: return
+        if dx or dy:
+            rect.move_ip(dx, dy)
+        else:
+            return
 
         self.full_response_draw()
 
@@ -290,21 +297,13 @@ class FullModeOperations(Object2D):
         """Draw in response to change/movement of image."""
         draw_cached_screen_state()
 
-        blit_on_screen(
-          UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size],
-          (0, 0)
-        )
+        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
 
         blit_on_screen(self.full_image, self.full_rect)
 
         if self.should_draw_full_rect:
 
-            draw_border_on_area(
-              SCREEN,
-              (0, 0, 0),
-              self.full_rect.inflate(8, 8),
-              4
-            )
+            draw_border_on_area(SCREEN, (0, 0, 0), self.full_rect.inflate(8, 8), 4)
 
     def full_draw(self):
         """Update screen."""

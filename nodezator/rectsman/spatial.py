@@ -11,6 +11,7 @@ set values representing positions or dimensions in 2d space.
 ### third-party import
 from pygame.math import Vector2
 
+
 class SpatialProperties:
     """Definitions of 2d space properties as in pygame.Rect.
 
@@ -62,7 +63,7 @@ class SpatialProperties:
 
         self.move_ip(self._sample_rect.x - self.x, 0)
 
-    left = x # alias x to left
+    left = x  # alias x to left
 
     @property
     def y(self):
@@ -76,7 +77,7 @@ class SpatialProperties:
 
         self.move_ip(0, self._sample_rect.y - self.y)
 
-    top = y # alias y to top
+    top = y  # alias y to top
 
     @property
     def bottom(self):
@@ -88,8 +89,7 @@ class SpatialProperties:
         """Move rects uniformly so 'bottom == value'."""
         self._sample_rect.bottom = value
 
-        self.move_ip(
-        0, self._sample_rect.bottom - self.bottom)
+        self.move_ip(0, self._sample_rect.bottom - self.bottom)
 
     @property
     def left(self):
@@ -125,8 +125,7 @@ class SpatialProperties:
         """Move rects uniformly so 'centerx == value'."""
         self._sample_rect.centerx = value
 
-        self.move_ip(
-        self._sample_rect.centerx - self.centerx, 0)
+        self.move_ip(self._sample_rect.centerx - self.centerx, 0)
 
     @property
     def centery(self):
@@ -138,8 +137,7 @@ class SpatialProperties:
         """Move rects uniformly so 'centery == value'."""
         self._sample_rect.centery = value
 
-        self.move_ip(
-        0, self._sample_rect.centery - self.centery)
+        self.move_ip(0, self._sample_rect.centery - self.centery)
 
     ### double coordinate positions
 
@@ -155,9 +153,7 @@ class SpatialProperties:
         """Move rects uniformly so 'center == value'."""
         self._sample_rect.center = value
 
-        self.move_ip(self._sample_rect.center \
-                     - Vector2(self.center))
-
+        self.move_ip(self._sample_rect.center - Vector2(self.center))
 
     ## corners
 
@@ -171,8 +167,7 @@ class SpatialProperties:
         """Move rects uniformly so 'topleft == value'."""
         self._sample_rect.topleft = value
 
-        self.move_ip(self._sample_rect.topleft \
-                     - Vector2(self.topleft))
+        self.move_ip(self._sample_rect.topleft - Vector2(self.topleft))
 
     @property
     def bottomleft(self):
@@ -184,8 +179,7 @@ class SpatialProperties:
         """Move rects uniformly so 'bottomleft == value'."""
         self._sample_rect.bottomleft = value
 
-        self.move_ip(self._sample_rect.bottomleft \
-                     - Vector2(self.bottomleft))
+        self.move_ip(self._sample_rect.bottomleft - Vector2(self.bottomleft))
 
     @property
     def topright(self):
@@ -197,8 +191,7 @@ class SpatialProperties:
         """Move rects uniformly so 'topright == value'."""
         self._sample_rect.topright = value
 
-        self.move_ip(self._sample_rect.topright \
-                     - Vector2(self.topright))
+        self.move_ip(self._sample_rect.topright - Vector2(self.topright))
 
     @property
     def bottomright(self):
@@ -210,8 +203,7 @@ class SpatialProperties:
         """Move rects uniformly so 'bottomright == value'."""
         self._sample_rect.bottomright = value
 
-        self.move_ip(self._sample_rect.bottomright \
-                     - Vector2(self.bottomright))
+        self.move_ip(self._sample_rect.bottomright - Vector2(self.bottomright))
 
     ## midpositions
 
@@ -225,8 +217,7 @@ class SpatialProperties:
         """Move rects uniformly so 'midtop == value'."""
         self._sample_rect.midtop = value
 
-        self.move_ip(
-        self._sample_rect.midtop - Vector2(self.midtop))
+        self.move_ip(self._sample_rect.midtop - Vector2(self.midtop))
 
     @property
     def midbottom(self):
@@ -238,8 +229,7 @@ class SpatialProperties:
         """Move rects uniformly so 'midbottom == value'."""
         self._sample_rect.midbottom = value
 
-        self.move_ip(self._sample_rect.midbottom \
-                     - Vector2(self.midbottom))
+        self.move_ip(self._sample_rect.midbottom - Vector2(self.midbottom))
 
     @property
     def midleft(self):
@@ -251,8 +241,7 @@ class SpatialProperties:
         """Move rects uniformly so 'midleft == value'."""
         self._sample_rect.midleft = value
 
-        self.move_ip(
-        self._sample_rect.midleft - Vector2(self.midleft))
+        self.move_ip(self._sample_rect.midleft - Vector2(self.midleft))
 
     @property
     def midright(self):
@@ -264,8 +253,7 @@ class SpatialProperties:
         """Move rects uniformly so 'midright == value'."""
         self._sample_rect.midright = value
 
-        self.move_ip(
-        self._sample_rect.midright - Vector2(self.midright))
+        self.move_ip(self._sample_rect.midright - Vector2(self.midright))
 
     ### dimensions
 
@@ -292,8 +280,7 @@ class SpatialProperties:
         ### difference
 
         ## calculate size difference
-        size_difference = \
-            self._sample_rect.size - Vector2(union.size)
+        size_difference = self._sample_rect.size - Vector2(union.size)
 
         ## use inflate_ip with size difference
         self.inflate_ip(size_difference)
@@ -315,7 +302,7 @@ class SpatialProperties:
         new_size = (self._sample_rect.width, self.height)
         self.size = new_size
 
-    width = w # alias w to width
+    width = w  # alias w to width
 
     @property
     def h(self):
@@ -330,5 +317,4 @@ class SpatialProperties:
         new_size = (self.width, self._sample_rect.height)
         self.size = new_size
 
-    height = h # alias h to height
-
+    height = h  # alias h to height

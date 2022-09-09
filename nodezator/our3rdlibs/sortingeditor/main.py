@@ -19,10 +19,10 @@ from pygame.draw import rect as draw_rect
 from ...config import APP_REFS
 
 from ...pygameconstants import (
-                       SCREEN_RECT,
-                       FPS,
-                       maintain_fps,
-                     )
+    SCREEN_RECT,
+    FPS,
+    maintain_fps,
+)
 
 from ...ourstdlibs.behaviour import get_oblivious_callable
 
@@ -41,23 +41,23 @@ from ...surfsman.icon import render_layered_icon
 from ...textman.render import render_text
 
 from ...fontsman.constants import (
-                          ENC_SANS_BOLD_FONT_HEIGHT,
-                          ENC_SANS_BOLD_FONT_PATH,
-                        )
+    ENC_SANS_BOLD_FONT_HEIGHT,
+    ENC_SANS_BOLD_FONT_PATH,
+)
 
 from ...colorsman.colors import (
-                        BLACK,
-                        BUTTON_FG, BUTTON_BG,
-                        WINDOW_FG, WINDOW_BG,
-                        AREA_LABEL,
-                        SORTED_ITEMS_AREA,
-                        ITEM_POOL_AREA,
-                      )
+    BLACK,
+    BUTTON_FG,
+    BUTTON_BG,
+    WINDOW_FG,
+    WINDOW_BG,
+    AREA_LABEL,
+    SORTED_ITEMS_AREA,
+    ITEM_POOL_AREA,
+)
 
 ## class extension
-from .modes import (
-                                      SortingEditorModes
-                                    )
+from .modes import SortingEditorModes
 
 
 ### TODO make sure items from available items are
@@ -70,12 +70,14 @@ from .modes import (
 
 ### utility function
 
+
 def sort_by_value(a_list):
     """Sort list with the "value" attribute of its items."""
     a_list.sort(key=lambda item: item.value)
 
 
 ### class definition
+
 
 class SortingEditor(SortingEditorModes):
     """loop holder for assisting in sorting sequences."""
@@ -89,43 +91,32 @@ class SortingEditor(SortingEditorModes):
         ### the image
 
         icon = render_layered_icon(
-
-                 chars = [
-                   chr(ordinal) for ordinal in (104, 105)
-                 ],
-
-                 dimension_name  = 'height',
-                 dimension_value = 30,
-
-                 colors = [BLACK, (30, 130, 70)],
-
-                 background_width  = 32,
-                 background_height = 32
-
-               )
+            chars=[chr(ordinal) for ordinal in (104, 105)],
+            dimension_name="height",
+            dimension_value=30,
+            colors=[BLACK, (30, 130, 70)],
+            background_width=32,
+            background_height=32,
+        )
 
         title = render_text(
-                  text="List Sorting Editor",
-                  font_height=ENC_SANS_BOLD_FONT_HEIGHT,
-                  foreground_color=WINDOW_FG,
-                  background_color=WINDOW_BG
-                )
-        
+            text="List Sorting Editor",
+            font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+            foreground_color=WINDOW_FG,
+            background_color=WINDOW_BG,
+        )
+
         for surf, surf_offset in (
-
-          (icon,  (10, 10)),
-          (title, (50, 15)),
-
+            (icon, (10, 10)),
+            (title, (50, 15)),
         ):
 
             blit_aligned(
-
-              surface_to_blit   = surf,
-              target_surface    = image,
-              retrieve_pos_from = 'topleft',
-              assign_pos_to     = 'topleft',
-              offset_pos_by     = surf_offset
-
+                surface_to_blit=surf,
+                target_surface=image,
+                retrieve_pos_from="topleft",
+                assign_pos_to="topleft",
+                offset_pos_by=surf_offset,
             )
 
         ### define a rect for the widget
@@ -140,58 +131,42 @@ class SortingEditor(SortingEditorModes):
         self.items_area.top = rect.top + 90
 
         self.available_items_area = self.items_area.copy()
-        self.available_items_area.top = (
+        self.available_items_area.top = self.items_area.bottom
 
-          self.items_area.bottom
+        draw_rect(image, SORTED_ITEMS_AREA, self.items_area)
 
-        )
-
-        draw_rect(
-          image, SORTED_ITEMS_AREA, self.items_area
-        )
-
-        draw_rect(
-          image, ITEM_POOL_AREA, self.available_items_area
-        )
+        draw_rect(image, ITEM_POOL_AREA, self.available_items_area)
 
         ### blitting text surfaces into the image marking
         ### the meaning of each area
 
         for label_text, area in (
-          ("Sorted items", self.items_area),
-          ("Available items", self.available_items_area)
+            ("Sorted items", self.items_area),
+            ("Available items", self.available_items_area),
         ):
 
-            label = (
-
-              Object2D.from_surface(
-
+            label = Object2D.from_surface(
                 surface=(
-                  render_text(
-                    text=label_text,
-                    font_height=ENC_SANS_BOLD_FONT_HEIGHT,
-                    font_path=ENC_SANS_BOLD_FONT_PATH,
-                    padding=5,
-                    foreground_color=AREA_LABEL,
-                  )
+                    render_text(
+                        text=label_text,
+                        font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+                        font_path=ENC_SANS_BOLD_FONT_PATH,
+                        padding=5,
+                        foreground_color=AREA_LABEL,
+                    )
                 ),
-
-                coordinates_name='topleft',
+                coordinates_name="topleft",
                 coordinates_value=area.topleft,
-
-              )
-
             )
 
             image.blit(label.image, label.rect)
-
 
         ### store the image on its own attribute and
         ### as well as a copy which we'll use to clean
         ### the widget surface to redraw on top of it
         ### each loop
 
-        self.image    = image
+        self.image = image
         self.clean_bg = image.copy()
 
         ### create the buttons used by this widget
@@ -202,19 +177,15 @@ class SortingEditor(SortingEditorModes):
 
         self.center_sorting_editor()
 
-        APP_REFS.window_resize_setups.append(
-          self.center_sorting_editor
-        )
+        APP_REFS.window_resize_setups.append(self.center_sorting_editor)
 
         ### finally enable normal behaviour
         self.enable_normal_mode()
 
     def center_sorting_editor(self):
         rect = self.rect
-        
-        diff = (
-          Vector2(SCREEN_RECT.center) - rect.center
-        )
+
+        diff = Vector2(SCREEN_RECT.center) - rect.center
 
         ###
 
@@ -230,21 +201,19 @@ class SortingEditor(SortingEditorModes):
 
         ###
 
-        self.sorting_buttons.rect.topleft = (
-          rect.move(5, 50).topleft
-        )
+        self.sorting_buttons.rect.topleft = rect.move(5, 50).topleft
 
-        self.session_buttons.rect.bottomright = (
-          rect.move(-5, -5).bottomright
-        )
+        self.session_buttons.rect.bottomright = rect.move(-5, -5).bottomright
 
         ###
 
-        try: self.items
-        except AttributeError: pass
+        try:
+            self.items
+        except AttributeError:
+            pass
 
         else:
-            
+
             if self.items:
                 self.items.rect.move_ip(diff)
 
@@ -254,15 +223,13 @@ class SortingEditor(SortingEditorModes):
         """Create button objects."""
         ### define behaviours for buttons
 
-        confirm = partial(setattr, self, 'running', False)
+        confirm = partial(setattr, self, "running", False)
 
-        cancel = (
-
-          CallList([
-            partial(setattr, self, 'cancel', True),
-            confirm,
-          ])
-
+        cancel = CallList(
+            [
+                partial(setattr, self, "cancel", True),
+                confirm,
+            ]
         )
 
         ### create buttons using pairs of strings/callables
@@ -276,33 +243,28 @@ class SortingEditor(SortingEditorModes):
         ### own attribute as well as being referenced locally
 
         buttons = self.buttons = List2D(
-
             Object2D.from_surface(
-              surface=render_text(
-                     text=text,
-                     font_height=ENC_SANS_BOLD_FONT_HEIGHT,
-                     padding=5,
-                     depth_finish_thickness=1,
-                     foreground_color=BUTTON_FG,
-                     background_color=BUTTON_BG
-                   ),
-              # note that we pass the command through
-              # the get_oblivious_callable function
-              # so the resulting callable ignores any
-              # given argument when executing
-              on_mouse_release= get_oblivious_callable(
-                                  command
-                                )
+                surface=render_text(
+                    text=text,
+                    font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+                    padding=5,
+                    depth_finish_thickness=1,
+                    foreground_color=BUTTON_FG,
+                    background_color=BUTTON_BG,
+                ),
+                # note that we pass the command through
+                # the get_oblivious_callable function
+                # so the resulting callable ignores any
+                # given argument when executing
+                on_mouse_release=get_oblivious_callable(command),
             )
-
             for text, command in (
-              ('Value Sort', self.sort_items_by_value),
-              ('Reverse',    self.reverse_items),
-              ('Shuffle',    self.shuffle_items),
-              ('Cancel',     cancel),
-              ('Ok',         confirm)
+                ("Value Sort", self.sort_items_by_value),
+                ("Reverse", self.reverse_items),
+                ("Shuffle", self.shuffle_items),
+                ("Cancel", cancel),
+                ("Ok", confirm),
             )
-
         )
 
         ### now divide the buttons in two different
@@ -312,21 +274,16 @@ class SortingEditor(SortingEditorModes):
 
         self.sorting_buttons = List2D(buttons[:3])
         self.sorting_buttons.rect.snap_rects_ip(
-                               retrieve_pos_from='topright',
-                               assign_pos_to='topleft',
-                               offset_pos_by=(5, 0)
-                             )
-
+            retrieve_pos_from="topright", assign_pos_to="topleft", offset_pos_by=(5, 0)
+        )
 
         ## second group
 
         self.session_buttons = List2D(buttons[3:])
 
         self.session_buttons.rect.snap_rects_ip(
-                               retrieve_pos_from='topright',
-                               assign_pos_to='topleft',
-                               offset_pos_by=(5, 0)
-                             )
+            retrieve_pos_from="topright", assign_pos_to="topleft", offset_pos_by=(5, 0)
+        )
 
     def sort_items(self, sorting_callable):
         """Sort items w/ callable and reposition them.
@@ -338,7 +295,8 @@ class SortingEditor(SortingEditorModes):
         """
         ### sorting makes no sense when there aren't any
         ### items, so we return early
-        if not self.items: return
+        if not self.items:
+            return
 
         ### otherwise we proceed realigning and repositioning
         ### the items
@@ -352,20 +310,16 @@ class SortingEditor(SortingEditorModes):
         ## reposition items relative to each other
 
         self.items.rect.snap_rects_ip(
-                          retrieve_pos_from='topright',
-                          assign_pos_to='topleft',
-                          offset_pos_by=(5, 0)
-                        )
+            retrieve_pos_from="topright", assign_pos_to="topleft", offset_pos_by=(5, 0)
+        )
 
         ## restore topleft
         self.items.rect.topleft = topleft
 
+    sort_items_by_value = partialmethod(sort_items, sort_by_value)
 
-    sort_items_by_value = partialmethod(
-                            sort_items, sort_by_value)
-
-    reverse_items  = partialmethod(sort_items, list.reverse)
-    shuffle_items  = partialmethod(sort_items, shuffle)
+    reverse_items = partialmethod(sort_items, list.reverse)
+    shuffle_items = partialmethod(sort_items, shuffle)
 
     def sort_sequence(self, sorted_items, available_items):
         """Prepare objects for edition and start loop.
@@ -387,13 +341,13 @@ class SortingEditor(SortingEditorModes):
 
         ### create flags
 
-        self.cancel  = False
+        self.cancel = False
         self.running = True
 
         ### start the widget loop
 
         while self.running:
-            
+
             ## maintain a constant framerate
             maintain_fps(FPS)
 
@@ -413,17 +367,13 @@ class SortingEditor(SortingEditorModes):
         ### flag is set or not
 
         return (
-
-          ## if the flag is on, return None, indicating
-          ## the edition was cancelled
-
-          None
-          if self.cancel
-
-          ## otherwise return a sequence with the sorted
-          ## values in the type they were received
-          else _type(item.value for item in self.items)
-
+            ## if the flag is on, return None, indicating
+            ## the edition was cancelled
+            None
+            if self.cancel
+            ## otherwise return a sequence with the sorted
+            ## values in the type they were received
+            else _type(item.value for item in self.items)
         )
 
     def prepare_objs(self, sorted_items, available_items):
@@ -439,48 +389,29 @@ class SortingEditor(SortingEditorModes):
         ### attribute
 
         for class_, collection, attr_name, area in (
-
-          (
-            List2D,
-            sorted_items,
-            'items',
-            self.items_area
-          ),
-
-          (
-            Set2D,
-            available_items,
-            'available_items',
-            self.available_items_area
-          )
-
+            (List2D, sorted_items, "items", self.items_area),
+            (Set2D, available_items, "available_items", self.available_items_area),
         ):
 
             ## instantiate collection
 
             items = class_(
-
                 Object2D.from_surface(
-
-                  surface=(
-                    render_text(
-                      text=repr(item),
-                      font_height=ENC_SANS_BOLD_FONT_HEIGHT,
-                      padding=5,
-                      depth_finish_thickness=1,
-                      foreground_color=(0, 0, 190),
-                      background_color=(255,)*3,
-                      border_color=(0, 0, 190),
-                      border_thickness=2,
-                    )
-                  ),
-
-                  value = item,
-
+                    surface=(
+                        render_text(
+                            text=repr(item),
+                            font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+                            padding=5,
+                            depth_finish_thickness=1,
+                            foreground_color=(0, 0, 190),
+                            background_color=(255,) * 3,
+                            border_color=(0, 0, 190),
+                            border_thickness=2,
+                        )
+                    ),
+                    value=item,
                 )
-
                 for item in collection
-
             )
 
             ## align its items and position the instance
@@ -489,10 +420,10 @@ class SortingEditor(SortingEditorModes):
             if items:
 
                 items.rect.snap_rects_ip(
-                             retrieve_pos_from='topright',
-                             assign_pos_to='topleft',
-                             offset_pos_by=(5, 0)
-                           )
+                    retrieve_pos_from="topright",
+                    assign_pos_to="topleft",
+                    offset_pos_by=(5, 0),
+                )
 
                 items.rect.midleft = area.move(30, 7).midleft
 
@@ -520,10 +451,8 @@ class SortingEditor(SortingEditorModes):
         ### another (one beside the other)
 
         rect.snap_rects_ip(
-               retrieve_pos_from='topright',
-               assign_pos_to='topleft',
-               offset_pos_by=(5, 0)
-             )
+            retrieve_pos_from="topright", assign_pos_to="topleft", offset_pos_by=(5, 0)
+        )
 
         ### set the center y coordinate of the list
         ### to the center y coordinate of the area
@@ -531,17 +460,14 @@ class SortingEditor(SortingEditorModes):
         ### bit of vertical offset
 
         rect.centery = (
-
-          ## pick the center y of the items area if the
-          ## list is the list of items
-          self.items_area.centery
-          if a_list is self.items
-
-          ## otherwise pick the center y of the pool area
-          ## (list refers to the pool of available items)
-          else self.available_items_area.centery
-
-        ) + 7 # vertical offset
+            ## pick the center y of the items area if the
+            ## list is the list of items
+            self.items_area.centery
+            if a_list is self.items
+            ## otherwise pick the center y of the pool area
+            ## (list refers to the pool of available items)
+            else self.available_items_area.centery
+        ) + 7  # vertical offset
 
         ### move the list by the horizontal difference
         ### between the original and current center x
@@ -569,5 +495,6 @@ class SortingEditor(SortingEditorModes):
 
             x_difference = clamped_obj.x - obj.rect.x
             a_list.rect.move_ip(x_difference, 0)
+
 
 sort_sequence = SortingEditor().sort_sequence

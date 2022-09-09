@@ -1,4 +1,3 @@
-
 from ...our3rdlibs.behaviour import indicate_unsaved
 
 
@@ -19,11 +18,12 @@ def update_with_widget(data, key, widget):
     ## get current and new value
 
     current = data[key]
-    new     = widget.get()
+    new = widget.get()
 
     ## if the new value is equal to the current one,
     ## return earlier
-    if new == current: return
+    if new == current:
+        return
 
     ### otherwise update the value in the data and indicate
     ### that the data was changed

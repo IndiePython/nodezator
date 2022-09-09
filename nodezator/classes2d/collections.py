@@ -11,17 +11,18 @@ from pygame.math import Vector2
 ### local imports
 
 from ..pygameconstants import (
-                       blit_on_screen,
-                       SCREEN_RECT,
-                     )
+    blit_on_screen,
+    SCREEN_RECT,
+)
 
 from ..rectsman.main import (
-                     rect_property,
-                     RectsManager,
-                   )
+    rect_property,
+    RectsManager,
+)
 
 
 ### main collection base class
+
 
 class Collection2D:
     """Mixin class for custom 2D-handling collections.
@@ -45,30 +46,21 @@ class Collection2D:
 
         Objects on screen are those which collide with it.
         """
-        return (
-          obj for obj in self
-          if SCREEN_RECT.colliderect(obj.rect)
-        )
+        return (obj for obj in self if SCREEN_RECT.colliderect(obj.rect))
 
     def get_colliding(self, rect):
         """Return iterator of objects colliding w/ rect.
-        
+
         rect (instance of pygame.Rect)
         """
-        return (
-          obj for obj in self if rect.colliderect(obj.rect)
-        )
+        return (obj for obj in self if rect.colliderect(obj.rect))
 
     def get_contained(self, rect):
         """Return iterator of objects contained in given rect.
 
         rect (instance of pygame.Rect)
         """
-        return (
-          obj for obj in self
-          if rect.contains(obj.rect)
-        )
-
+        return (obj for obj in self if rect.contains(obj.rect))
 
     ### clustering method
 
@@ -86,24 +78,15 @@ class Collection2D:
         ### define map associating the id of a rect to the
         ### object to which it belongs
 
-        rect_id_to_obj = {
-
-          id(obj.rect): obj
-          for obj in self
-
-        }
+        rect_id_to_obj = {id(obj.rect): obj for obj in self}
 
         ### for each cluster yielded (list of rects), yield
         ### a new list containing the objects associated with
         ### the rects in the cluster
 
         for cluster in self.rect.get_clusters(*inflation):
-            
-            yield [
-                    rect_id_to_obj[id(rect)]
-                    for rect in cluster
-                  ]
 
+            yield [rect_id_to_obj[id(rect)] for rect in cluster]
 
     ## method to update
 
@@ -114,7 +97,8 @@ class Collection2D:
         'update' instead would cause name clashes with
         methods from some built-in classes like set.
         """
-        for obj in self: obj.update()
+        for obj in self:
+            obj.update()
 
     ## mouse related methods
 
@@ -132,7 +116,7 @@ class Collection2D:
             mouse interaction protocol used; here we
             use it to retrieve the position of the
             mouse when the first button was released.
-              
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -149,31 +133,34 @@ class Collection2D:
                 colliding_obj = obj
                 break
 
-        else: return
+        else:
+            return
 
         ### if you manage to find a colliding obj, execute
         ### the requested method on it, passing along the
         ### received event, if it has such method
 
-        try: method = getattr(colliding_obj, method_name)
-        except AttributeError: pass
-        else: method(event)
+        try:
+            method = getattr(colliding_obj, method_name)
+        except AttributeError:
+            pass
+        else:
+            method(event)
 
     on_mouse_click = partialmethod(
-                       mouse_method_on_collision,
-                       'on_mouse_click',
-                     )
+        mouse_method_on_collision,
+        "on_mouse_click",
+    )
 
     on_right_mouse_release = partialmethod(
-                               mouse_method_on_collision,
-                               'on_right_mouse_release',
-                             )
+        mouse_method_on_collision,
+        "on_right_mouse_release",
+    )
 
     on_mouse_release = partialmethod(
-                         mouse_method_on_collision,
-                         'on_mouse_release',
-                       )
-
+        mouse_method_on_collision,
+        "on_mouse_release",
+    )
 
     ## methods related to drawing
 
@@ -209,7 +196,8 @@ class Collection2D:
             to use the self.draw or self.draw_on_screen
             method instead.
         """
-        for obj in self: surf.blit(obj.image, obj.rect)
+        for obj in self:
+            surf.blit(obj.image, obj.rect)
 
     def draw_contained(self, rect):
         """Draw obj on screen if contained in rect.
@@ -236,18 +224,17 @@ class Collection2D:
 
         for current_obj in self:
 
-            obj.image.blit(
-              current_obj.image,
-              current_obj.rect.move(negative_topleft)
-            )
+            obj.image.blit(current_obj.image, current_obj.rect.move(negative_topleft))
 
     def call_draw(self):
         """Call the draw method on all objects."""
-        for obj in self: obj.draw()
+        for obj in self:
+            obj.draw()
 
     def call_draw_on_screen(self):
         """Call draw method of all objects on screen."""
-        for obj in self.get_on_screen(): obj.draw()
+        for obj in self.get_on_screen():
+            obj.draw()
 
     ## property and method to complement the usage of the
     ## RectsManager class from the rectsman subpackage
@@ -256,16 +243,18 @@ class Collection2D:
 
     def get_all_rects(self):
         """Yield rect of each object."""
-        for obj in self: yield obj.rect
-
+        for obj in self:
+            yield obj.rect
 
 
 ### definition of custom collections
 
 ## classes' definitions
 
+
 class Set2D(Collection2D, set):
     """Set object w/ 2D handling capabilities."""
+
 
 class List2D(Collection2D, list):
     """List object w/ 2D handling capabilities.
@@ -286,6 +275,7 @@ class List2D(Collection2D, list):
     whenever needed, explicitly converting the resulting
     slice is pretty straightforward;
     """
+
 
 class Iterable2D(Collection2D):
     """General iterable object w/ 2D handling capabilities.
@@ -338,7 +328,8 @@ class Iterable2D(Collection2D):
         count = 0
 
         ### increment the count as you iterate
-        for _ in self.callable_obj(): count += 1
+        for _ in self.callable_obj():
+            count += 1
 
         ### return the count
         return count
@@ -346,7 +337,8 @@ class Iterable2D(Collection2D):
     def __bool__(self):
         """Return True if there's at least one item."""
         ### if iteration is performed, return True
-        for _ in self.callable_obj(): return True
+        for _ in self.callable_obj():
+            return True
 
         ### if no iteration was performed, though, it means
         ### there are no items, so we return False

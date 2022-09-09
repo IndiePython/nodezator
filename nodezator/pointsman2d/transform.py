@@ -6,7 +6,8 @@ from math import sin, cos
 def translate_points(points, delta):
 
     dx, dy = delta
-    for x, y in points: yield (x + dx, y + dy)
+    for x, y in points:
+        yield (x + dx, y + dy)
 
 
 def rotate_points(points, degrees=0, pivot=(0, 0)):
@@ -17,8 +18,8 @@ def rotate_points(points, degrees=0, pivot=(0, 0)):
     cos_value = cos(degrees)
 
     for x, y in points:
-        
+
         yield (
-          ((x-xc) * cos_value) - ((y-yc) * sin_value) + xc,
-          ((x-xc) * sin_value) + ((y-yc) * cos_value) + yc,
+            ((x - xc) * cos_value) - ((y - yc) * sin_value) + xc,
+            ((x - xc) * sin_value) + ((y - yc) * cos_value) + yc,
         )

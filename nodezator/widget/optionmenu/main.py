@@ -15,9 +15,9 @@ from xml.etree.ElementTree import Element
 from ...pygameconstants import SCREEN_RECT
 
 from ...ourstdlibs.behaviour import (
-                            empty_function,
-                            empty_oblivious_function,
-                          )
+    empty_function,
+    empty_oblivious_function,
+)
 
 from ...ourstdlibs.dictutils import settings_to_hashable_repr
 
@@ -25,47 +25,49 @@ from ...classes2d.single import Object2D
 from ...classes2d.collections import List2D
 
 from ...fontsman.constants import (
-                          ENC_SANS_BOLD_FONT_HEIGHT,
-                          ENC_SANS_BOLD_FONT_PATH,
-                        )
+    ENC_SANS_BOLD_FONT_HEIGHT,
+    ENC_SANS_BOLD_FONT_PATH,
+)
 
 
 from ...colorsman.colors import (
-                        OPTION_MENU_FG,
-                        OPTION_MENU_BG,
-                        OPTION_MENU_HOVERED_FG,
-                        OPTION_MENU_HOVERED_BG,
-                        OPTION_MENU_UNHOVERED_FG,
-                        OPTION_MENU_UNHOVERED_BG,
-                      )
+    OPTION_MENU_FG,
+    OPTION_MENU_BG,
+    OPTION_MENU_HOVERED_FG,
+    OPTION_MENU_HOVERED_BG,
+    OPTION_MENU_UNHOVERED_FG,
+    OPTION_MENU_UNHOVERED_BG,
+)
 
 ## creation operations and objects
 
 from .creation import (
-                                  STYLE_TO_ARROW_SURFS,
-                                  get_arrow_surf,
-                                  get_scroll_arrow_surfs,
-                                  create_chosen_surfs,
-                                  create_other_surfs,
-                                )
+    STYLE_TO_ARROW_SURFS,
+    get_arrow_surf,
+    get_scroll_arrow_surfs,
+    create_chosen_surfs,
+    create_other_surfs,
+)
 
 ## class extension
-from .op import (
-                            OptionMenuLifetimeOperations
-                          )
+from .op import OptionMenuLifetimeOperations
 
 
 ### constants
 
 ## support function
 
+
 def isliteral(value):
 
-    try: literal_eval(repr(value))
+    try:
+        literal_eval(repr(value))
 
-    except Exception: return False
+    except Exception:
+        return False
 
     return True
+
 
 ## nested dictionary that associates data in many
 ## different nesting levels;
@@ -106,7 +108,7 @@ def isliteral(value):
 ##          'option3' : option3_surf
 ##
 ##      },
-##     
+##
 ##      (
 ##
 ##        'True',            # antialiased
@@ -132,6 +134,7 @@ OPTIONS_TO_STYLE_DATA = {}
 
 ### class definition
 
+
 class OptionMenu(OptionMenuLifetimeOperations):
     """Widget similar to a tkinter.OptionMenu.
 
@@ -140,42 +143,27 @@ class OptionMenu(OptionMenuLifetimeOperations):
     """
 
     def __init__(
-
-          self,
-          value   = '',
-          options = ('',),
-
-          loop_holder=None,
-
-          clamp_area=SCREEN_RECT,
-
-          max_width=155,
-
-          font_path    = ENC_SANS_BOLD_FONT_PATH,
-          font_height = ENC_SANS_BOLD_FONT_HEIGHT,
-          antialiased = True,
-
-          foreground_color = OPTION_MENU_FG,
-          background_color = OPTION_MENU_BG,
-
-          hovered_foreground_color = OPTION_MENU_HOVERED_FG,
-          hovered_background_color = OPTION_MENU_HOVERED_BG,
-
-          unhovered_foreground_color = (
-            OPTION_MENU_UNHOVERED_FG
-          ),
-          unhovered_background_color = (
-            OPTION_MENU_UNHOVERED_BG
-          ),
-
-          draw_on_window_resize = empty_function,
-
-          name='option_menu',
-          coordinates_name='topleft',
-          coordinates_value=(0, 0),
-          command=empty_function
-
-        ):
+        self,
+        value="",
+        options=("",),
+        loop_holder=None,
+        clamp_area=SCREEN_RECT,
+        max_width=155,
+        font_path=ENC_SANS_BOLD_FONT_PATH,
+        font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+        antialiased=True,
+        foreground_color=OPTION_MENU_FG,
+        background_color=OPTION_MENU_BG,
+        hovered_foreground_color=OPTION_MENU_HOVERED_FG,
+        hovered_background_color=OPTION_MENU_HOVERED_BG,
+        unhovered_foreground_color=(OPTION_MENU_UNHOVERED_FG),
+        unhovered_background_color=(OPTION_MENU_UNHOVERED_BG),
+        draw_on_window_resize=empty_function,
+        name="option_menu",
+        coordinates_name="topleft",
+        coordinates_value=(0, 0),
+        command=empty_function,
+    ):
         """Store data and perform setups.
 
         Parameters
@@ -247,15 +235,15 @@ class OptionMenu(OptionMenuLifetimeOperations):
 
         ### store value and options
 
-        self.value      = value
-        self.options    = options
+        self.value = value
+        self.options = options
         self.clamp_area = clamp_area
 
         ### store other attributes
 
-        self.command     = command
+        self.command = command
         self.loop_holder = loop_holder
-        self.name        = name
+        self.name = name
 
         self.draw_on_window_resize = draw_on_window_resize
 
@@ -264,21 +252,11 @@ class OptionMenu(OptionMenuLifetimeOperations):
 
         ## obtain the arrow's width
 
-        arrow_width = get_arrow_surf(
-                        foreground_color,
-                        font_height
-                      ).get_width()
+        arrow_width = get_arrow_surf(foreground_color, font_height).get_width()
 
         ## calculate the max text width
 
-        max_text_width = (
-
-          max_width
-          if not max_width
-
-          else max_width - arrow_width
-
-        )
+        max_text_width = max_width if not max_width else max_width - arrow_width
 
         ### gather text style data for each kind of text
         ### surfaces to be created;
@@ -305,28 +283,28 @@ class OptionMenu(OptionMenuLifetimeOperations):
         ### value is does the trick;
 
         self.chosen_text_settings = {
-          'font_path'         : font_path,
-          'font_height'      : font_height,
-          'antialiased'      : antialiased,
-          'max_width'        : max_text_width,
-          'foreground_color' : foreground_color,
-          'background_color' : background_color
+            "font_path": font_path,
+            "font_height": font_height,
+            "antialiased": antialiased,
+            "max_width": max_text_width,
+            "foreground_color": foreground_color,
+            "background_color": background_color,
         }
 
         self.hovered_text_settings = {
-          'font_path'         : font_path,
-          'font_height'      : font_height,
-          'antialiased'      : antialiased,
-          'foreground_color' : hovered_foreground_color,
-          'background_color' : hovered_background_color
+            "font_path": font_path,
+            "font_height": font_height,
+            "antialiased": antialiased,
+            "foreground_color": hovered_foreground_color,
+            "background_color": hovered_background_color,
         }
 
         self.unhovered_text_settings = {
-          'font_path'         : font_path,
-          'font_height'      : font_height,
-          'antialiased'      : antialiased,
-          'foreground_color' : unhovered_foreground_color,
-          'background_color' : unhovered_background_color
+            "font_path": font_path,
+            "font_height": font_height,
+            "antialiased": antialiased,
+            "foreground_color": unhovered_foreground_color,
+            "background_color": unhovered_background_color,
         }
 
         ### build widgets that form the OptionMenu instance
@@ -334,9 +312,7 @@ class OptionMenu(OptionMenuLifetimeOperations):
 
         ### position rect
 
-        setattr(
-          self.rect, coordinates_name, coordinates_value
-        )
+        setattr(self.rect, coordinates_name, coordinates_value)
 
         ### define behaviours for used protocols
 
@@ -350,9 +326,7 @@ class OptionMenu(OptionMenuLifetimeOperations):
         self.draw = self.draw_collapsed
 
         ## input handling
-        self.handle_input = (
-          self.handle_events_and_mouse_pos
-        )
+        self.handle_input = self.handle_events_and_mouse_pos
 
     def validate_value_and_options(self, value, options):
         """Check whether value and options are valid.
@@ -366,31 +340,24 @@ class OptionMenu(OptionMenuLifetimeOperations):
         ### within the possible values
 
         if value not in options:
-            raise ValueError(
-                    "'value' must be listed in 'options'")
+            raise ValueError("'value' must be listed in 'options'")
 
         ### raise type error if values aren't python
         ### literals
 
         if any(not isliteral(item) for item in options):
 
-            raise TypeError(
-                    "each item in 'options' must be a"
-                    " python literal"
-                  )
+            raise TypeError("each item in 'options' must be a" " python literal")
 
         ### raise value error if any value is the same/equal
         ### as any other existing value
 
-        if any(
-          a is b or a == b
-          for a, b in combinations(options, 2)
-        ):
+        if any(a is b or a == b for a, b in combinations(options, 2)):
 
             raise ValueError(
-                    "'options' can't have items which are"
-                    " identical or equal to one another"
-                  )
+                "'options' can't have items which are"
+                " identical or equal to one another"
+            )
 
     def build_widget_structure(self):
         """Build widgets for the OptionMenu."""
@@ -402,16 +369,15 @@ class OptionMenu(OptionMenuLifetimeOperations):
         ### which associates text styles (settings) to
         ### data about options
 
-        try: styles_to_option_data = \
-             OPTIONS_TO_STYLE_DATA[options_fset]
+        try:
+            styles_to_option_data = OPTIONS_TO_STYLE_DATA[options_fset]
 
         ### if such dict doesn't exist, create and store
         ### a new one, also referencing it locally
 
         except KeyError:
 
-            styles_to_option_data = \
-            OPTIONS_TO_STYLE_DATA[options_fset] = {}
+            styles_to_option_data = OPTIONS_TO_STYLE_DATA[options_fset] = {}
 
         ### obtain dictionaries which associate the option
         ### as strings to their respective text surface,
@@ -425,33 +391,14 @@ class OptionMenu(OptionMenuLifetimeOperations):
         ## iterate over given data below
 
         for role_name, text_settings, creation_op in (
-
-          (
-            'chosen',
-            self.chosen_text_settings,
-            create_chosen_surfs
-          ),
-
-          (
-            'hovered',
-            self.hovered_text_settings,
-            create_other_surfs
-          ),
-
-          (
-            'unhovered',
-            self.unhovered_text_settings,
-            create_other_surfs
-          )
-
+            ("chosen", self.chosen_text_settings, create_chosen_surfs),
+            ("hovered", self.hovered_text_settings, create_other_surfs),
+            ("unhovered", self.unhovered_text_settings, create_other_surfs),
         ):
 
             ## obtain a key from the given text settings
 
-            key_chosen_style = \
-              settings_to_hashable_repr(
-                text_settings
-              )
+            key_chosen_style = settings_to_hashable_repr(text_settings)
 
             ## try retrieving the dictionary associating
             ## options converted to strings to their
@@ -459,17 +406,16 @@ class OptionMenu(OptionMenuLifetimeOperations):
 
             try:
 
-                option_name_to_surf = \
-                styles_to_option_data[key_chosen_style]
+                option_name_to_surf = styles_to_option_data[key_chosen_style]
 
             ## if such dictionary doesn't exist, create
             ## and store it, also referencing it locally
 
             except KeyError:
 
-                option_name_to_surf = \
-                styles_to_option_data[key_chosen_style] = \
-                    creation_op(self.options, text_settings)
+                option_name_to_surf = styles_to_option_data[
+                    key_chosen_style
+                ] = creation_op(self.options, text_settings)
 
             ## then store such dictionary in the other one
             ## we create specifically to store maps,
@@ -483,27 +429,19 @@ class OptionMenu(OptionMenuLifetimeOperations):
         ### the option widgets inside a custom list
         ### class
 
-        self.option_widgets = \
-          List2D(
-
+        self.option_widgets = List2D(
             build_option_widget(
-
-              option,       # option
-              role_to_maps, # surface maps
-              self.set      # method to set new value
-
+                option,  # option
+                role_to_maps,  # surface maps
+                self.set,  # method to set new value
             )
-
             for option in self.options
-
-          )
+        )
 
         ### align the option widgets one on top of the
         ### other
 
-        self.option_widgets.rect.snap_rects_ip(
-                                   'bottomleft', 'topleft'
-                                 )
+        self.option_widgets.rect.snap_rects_ip("bottomleft", "topleft")
 
         ### get image surf
         self.update_image()
@@ -520,104 +458,71 @@ class OptionMenu(OptionMenuLifetimeOperations):
         ### create other dependencies as needed in order to
         ### make the options to scroll
 
-        if (
-         self.option_widgets.rect.height
-         > self.clamp_area.height
-        ):
-            (
-              self.upper_scroll_arrow,
-              self.lower_scroll_arrow
-            ) = get_scroll_arrow_surfs(
+        if self.option_widgets.rect.height > self.clamp_area.height:
+            (self.upper_scroll_arrow, self.lower_scroll_arrow) = get_scroll_arrow_surfs(
+                self.option_widgets.rect.width,
+                (self.unhovered_text_settings["foreground_color"]),
+                (self.unhovered_text_settings["background_color"]),
+            )
 
-                  self.option_widgets.rect.width,
-                  (
-                    self
-                    .unhovered_text_settings
-                    ['foreground_color']
-                  ),
-                  (
-                    self
-                    .unhovered_text_settings
-                    ['background_color']
-                  ),
-                )
-
-            self.align_subobjects = (
-              self.align_options_and_scroll_arrows
-            )
-            self.draw_subobjects  = (
-              self.draw_options_and_scroll_arrows
-            )
-            self.handle_mouse_pos = (
-              self.scroll_when_hovering_scroll_arrow
-            )
+            self.align_subobjects = self.align_options_and_scroll_arrows
+            self.draw_subobjects = self.draw_options_and_scroll_arrows
+            self.handle_mouse_pos = self.scroll_when_hovering_scroll_arrow
 
             self.on_mousewheel = self.scroll_with_mousewheel
 
         else:
 
             self.align_subobjects = self.align_options
-            self.draw_subobjects  = self.draw_options
+            self.draw_subobjects = self.draw_options
             self.handle_mouse_pos = empty_oblivious_function
-            self.on_mousewheel    = empty_oblivious_function
+            self.on_mousewheel = empty_oblivious_function
 
     def get_expected_type(self):
 
         classes = set(map(type, self.options))
 
-        return (
-
-          classes.pop()
-          if len(classes) == 1
-          else tuple(classes)
-
-        )
+        return classes.pop() if len(classes) == 1 else tuple(classes)
 
     def svg_repr(self):
 
-        g = Element('g', {'class': 'option_menu'})
+        g = Element("g", {"class": "option_menu"})
 
         g.append(super().svg_repr())
 
         path_rect = self.rect.inflate(-2, -2)
         path_rect.width = 12
-        path_rect.bottomright = \
-                        self.rect.inflate(-2, -2).bottomright
+        path_rect.bottomright = self.rect.inflate(-2, -2).bottomright
 
         path_rect.inflate_ip(-3, -3)
         path_rect.move_ip(0, -2)
 
         points = (
-          path_rect.midleft,
-          path_rect.midright,
-          path_rect.midbottom,
+            path_rect.midleft,
+            path_rect.midright,
+            path_rect.midbottom,
         )
 
-        path_directives = 'M'
+        path_directives = "M"
         for x, y in points:
-            path_directives += f'{x} {y} L'
-        path_directives = path_directives[:-1] + ' Z'
+            path_directives += f"{x} {y} L"
+        path_directives = path_directives[:-1] + " Z"
 
-        g.append(
-            Element(
-              'path',
-              {'d': path_directives}
-            )
-          )
+        g.append(Element("path", {"d": path_directives}))
 
         (
-          text_x_str,
-          text_y_str,
+            text_x_str,
+            text_y_str,
         ) = map(str, self.rect.move(1, -4).bottomleft)
 
         text_element = Element(
-                         'text',
-                         {
-                           'x': text_x_str,
-                           'y': text_y_str,
-                           'text-anchor': 'start',
-                         }
-                       )
+            "text",
+            {
+                "x": text_x_str,
+                "y": text_y_str,
+                "text-anchor": "start",
+            },
+        )
 
         text_element.text = str(self.value)
 
@@ -652,6 +557,7 @@ class OptionMenu(OptionMenuLifetimeOperations):
 
 ### utility function
 
+
 def build_option_widget(option, role_to_maps, set_method):
     """Build a option widget from given arguments.
 
@@ -680,22 +586,20 @@ def build_option_widget(option, role_to_maps, set_method):
 
     option_text = str(option)
 
-    chosen_surf    = role_to_maps['chosen'][option_text]
-    hovered_surf   = role_to_maps['hovered'][option_text]
-    unhovered_surf = role_to_maps['unhovered'][option_text]
+    chosen_surf = role_to_maps["chosen"][option_text]
+    hovered_surf = role_to_maps["hovered"][option_text]
+    unhovered_surf = role_to_maps["unhovered"][option_text]
 
     ### define surface switching behaviours
 
-    obj.unhighlight = \
-        partial(setattr, obj, 'image', unhovered_surf)
+    obj.unhighlight = partial(setattr, obj, "image", unhovered_surf)
 
-    obj.highlight = \
-        partial(setattr, obj, 'image', hovered_surf)
+    obj.highlight = partial(setattr, obj, "image", hovered_surf)
 
     ### define image and rect attributes for the object
 
     obj.image = unhovered_surf
-    obj.rect  = unhovered_surf.get_rect()
+    obj.rect = unhovered_surf.get_rect()
 
     ### reference the chosen_surf in the instance attribute
     ### of the obj using the same name as the variable
@@ -719,7 +623,7 @@ def build_option_widget(option, role_to_maps, set_method):
 
             although not used, it is required in order to
             comply with protocol used;
-          
+
             check pygame.event module documentation on
             pygame website for more info about this event
             object.

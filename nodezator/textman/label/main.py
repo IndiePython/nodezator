@@ -31,31 +31,22 @@ class Label(Object2D):
     """
 
     def __init__(
-
-          self,
-
-          text="",
-
-          *,
-
-          name='label',
-
-          font_height=22,
-          font_path=ENC_SANS_BOLD_FONT_PATH,
-          foreground_color=BLACK,
-          background_color=(*BLACK, 0),
-          padding=5,
-
-          min_width=0,
-          max_width=None,
-
-          ellipsis_at_end=True,
-          update_pos_on_change=False,
-
-          coordinates_name='topleft',
-          coordinates_value=(0, 0),
-
-        ):
+        self,
+        text="",
+        *,
+        name="label",
+        font_height=22,
+        font_path=ENC_SANS_BOLD_FONT_PATH,
+        foreground_color=BLACK,
+        background_color=(*BLACK, 0),
+        padding=5,
+        min_width=0,
+        max_width=None,
+        ellipsis_at_end=True,
+        update_pos_on_change=False,
+        coordinates_name="topleft",
+        coordinates_value=(0, 0),
+    ):
         """Perform setups and assign data for reuse.
 
         text
@@ -115,9 +106,9 @@ class Label(Object2D):
         ### previous step)
 
         render_settings = {
-          "font_height"      : font_height,
-          "font_path"       : font_path,
-          "foreground_color" : foreground_color
+            "font_height": font_height,
+            "font_path": font_path,
+            "foreground_color": foreground_color,
         }
 
         ### get char map for render settings then store
@@ -125,8 +116,8 @@ class Label(Object2D):
 
         text_map = TEXT_SURFS_DB[render_settings]
 
-        self.surf_map  = text_map['surf_map']
-        self.width_map = text_map['width_map']
+        self.surf_map = text_map["surf_map"]
+        self.width_map = text_map["width_map"]
 
         ### store the padding
         self.padding = padding
@@ -134,14 +125,12 @@ class Label(Object2D):
         ### store a height taking the padding into account
 
         self.height = (
-
-          ## get the height from a surface of a space
-          ## character
-          self.surf_map[' '].get_height()
-
-          ## add the padding two times, to account for
-          ## the padding on top and bottom
-          + (self.padding * 2)
+            ## get the height from a surface of a space
+            ## character
+            self.surf_map[" "].get_height()
+            ## add the padding two times, to account for
+            ## the padding on top and bottom
+            + (self.padding * 2)
         )
 
         ### store the name
@@ -160,7 +149,7 @@ class Label(Object2D):
 
             self.ellipsis_at_end = ellipsis_at_end
 
-            self.ellipsis_width = self.width_map['.'] * 3
+            self.ellipsis_width = self.width_map["."] * 3
 
         ### create an attribute with a string to store the
         ### text of the label
@@ -176,14 +165,13 @@ class Label(Object2D):
         self.add_text(text)
 
         ### position rect
-        setattr(
-            self.rect, coordinates_name, coordinates_value)
+        setattr(self.rect, coordinates_name, coordinates_value)
 
         ### if update_pos_on_change flag is on, store
         ### the position related arguments
 
         if update_pos_on_change:
-            self.coordinates_name  = coordinates_name
+            self.coordinates_name = coordinates_name
             self.coordinates_value = coordinates_value
 
     def get(self):
@@ -197,7 +185,8 @@ class Label(Object2D):
             value to be used as label text.
         """
         ### return earlier if text is already set
-        if text == self.contents: return
+        if text == self.contents:
+            return
 
         ### otherwise "clear" contents and add text
 
@@ -221,15 +210,15 @@ class Label(Object2D):
         ### of the rect too
 
         try:
-            coordinates_name  = self.coordinates_name
+            coordinates_name = self.coordinates_name
             coordinates_value = self.coordinates_value
 
-        except AttributeError: pass
+        except AttributeError:
+            pass
 
         else:
-            setattr(
-            self.rect, coordinates_name, coordinates_value)
-                
+            setattr(self.rect, coordinates_name, coordinates_value)
+
     def update_image(self):
         """Update image surface attribute."""
         ### reference the width map locally
@@ -241,10 +230,7 @@ class Label(Object2D):
         ## (if there are no contents, width might even be
         ## zero at this point)
 
-        width = sum(
-                  width_map[char]
-                  for char in self.contents
-                )
+        width = sum(width_map[char] for char in self.contents)
 
         ## add padding to width (multiplied by 2 to account
         ## for both left and right padding)
@@ -254,7 +240,8 @@ class Label(Object2D):
         ## used in the label surface, according to
         ## the max_width setting or lack thereof
 
-        try: max_width = self.max_width
+        try:
+            max_width = self.max_width
 
         except AttributeError:
             chars = self.contents
@@ -266,14 +253,14 @@ class Label(Object2D):
                 width = max_width
                 chars = self.get_chars_within_width()
 
-            else: chars = self.contents
+            else:
+                chars = self.contents
 
         ## use minimum width to boost the actual width
         width = max(width, self.min_width)
 
         ## generate and store surface
-        self.image = render_rect(
-                        width, self.height, self.bg_color)
+        self.image = render_rect(width, self.height, self.bg_color)
 
         ### iterate over contents blitting surfaces
 
@@ -348,7 +335,8 @@ class Label(Object2D):
                 # if the resulting width surpasses the
                 # available width, we break out of the
                 # loop
-                if resulting_width > available_width: break
+                if resulting_width > available_width:
+                    break
 
                 # otherwise it is ok to add the character
                 # to the text; we also update the
@@ -360,7 +348,7 @@ class Label(Object2D):
             chars = chars + ellipsis
 
         else:
-            
+
             for char in self.contents[::-1]:
 
                 # calculate the resulting width from
@@ -372,7 +360,8 @@ class Label(Object2D):
                 # if the resulting width surpasses the
                 # available width, we break out of the
                 # loop
-                if resulting_width > available_width: break
+                if resulting_width > available_width:
+                    break
 
                 # otherwise it is ok to add the character
                 # to the text; we also update the

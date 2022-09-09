@@ -51,7 +51,7 @@ from .utils import is_top_menu, get_boundaries
 
 class Menu(Object2D, MenuScrolling):
     """Menu object for the menu.main.MenuManager class.
-    
+
     It can have other menus (instances of its own class and/
     or commands as children. A menu always has a 'parent'
     attribute, which is either other menu or the
@@ -60,13 +60,13 @@ class Menu(Object2D, MenuScrolling):
     """
 
     def __init__(
-          self,
-          parent,
-          data,
-          surface_map,
-        ):
+        self,
+        parent,
+        data,
+        surface_map,
+    ):
         """Store variables and perform setups.
-        
+
         parent (instance of menu.main.MenuManager class or
                 this Menu class)
             object regarded as the parent of this Menu
@@ -79,8 +79,8 @@ class Menu(Object2D, MenuScrolling):
         """
         ### store variables
 
-        self.parent      = parent
-        self.label_text  = data['label']
+        self.parent = parent
+        self.label_text = data["label"]
         self.surface_map = surface_map
 
         ### reference the normal surface as the 'image'
@@ -88,44 +88,44 @@ class Menu(Object2D, MenuScrolling):
         ### obtain a rect from it
         ### create 'image' and 'rect' attributes
 
-        self.image = self.surface_map['normal']
-        self.rect  = self.image.get_rect()
+        self.image = self.surface_map["normal"]
+        self.rect = self.image.get_rect()
 
         ### assign default expanded state
         self.is_expanded = False
 
         ###
-        surface_maps = create_equal_surfaces(data['children'])
+        surface_maps = create_equal_surfaces(data["children"])
 
         ### instantiate children recursively
 
         self.instantiate_children(
-               data['children'],
-               surface_maps,
-             )
+            data["children"],
+            surface_maps,
+        )
 
         ### create and position 'body' object
 
         body_rect = self.children.rect.inflate(2, 2)
 
-        self.body = (
-          Object2D.from_surface(
-                     surface=(
-                       render_rect(
-                         *body_rect.size,
-                         MENU_BG,
-                       )
-                     ),
-                     coordinates_name='topleft',
-                     coordinates_value=body_rect.topleft,
-                   )
+        self.body = Object2D.from_surface(
+            surface=(
+                render_rect(
+                    *body_rect.size,
+                    MENU_BG,
+                )
+            ),
+            coordinates_name="topleft",
+            coordinates_value=body_rect.topleft,
         )
 
         draw_depth_finish(self.body.image)
 
     def instantiate_children(
-          self, children_data, surface_maps,
-        ):
+        self,
+        children_data,
+        surface_maps,
+    ):
         """Instantiate each child using children data.
 
         children_data (list of dicts)
@@ -134,12 +134,12 @@ class Menu(Object2D, MenuScrolling):
         """
         children = self.children = List2D()
 
-        for child_data, surface_map \
-        in zip(children_data, surface_maps):
+        for child_data, surface_map in zip(children_data, surface_maps):
 
             ### check existence of children data inside
             ### the child data
-            try: child_data['children']
+            try:
+                child_data["children"]
 
             ### if there's no grandchildren, then the data
             ### describes a command, so instantiate a
@@ -149,8 +149,10 @@ class Menu(Object2D, MenuScrolling):
 
                 ## instantiate command widget
                 widget = Command(
-                           self, child_data, surface_map,
-                         )
+                    self,
+                    child_data,
+                    surface_map,
+                )
 
             ### if otherwise, there is children referenced in
             ### the data, then we are dealing with a menu,
@@ -160,7 +162,11 @@ class Menu(Object2D, MenuScrolling):
             else:
 
                 ## instantiate menu widget
-                widget = Menu(self, child_data, surface_map,)
+                widget = Menu(
+                    self,
+                    child_data,
+                    surface_map,
+                )
 
             ### append the widget
             children.append(widget)
@@ -171,28 +177,24 @@ class Menu(Object2D, MenuScrolling):
         ## assign topleft
 
         children.rect.topleft = (
-
-          # if parent is menu.MenuManager, laid
-          # horizontally, align the topleft of the new
-          # child with the bottomleft of the pygame.Rect
-          # instance in the 'rect' attribute
-
-          self.rect.bottomleft
-          if is_top_menu(self) and self.parent.is_menubar
-
-          # all other scenarios demand that the topleft of
-          # the new child should be aligned with the
-          # topright of the pygame.Rect instance in the
-          # 'rect' attribute
-          else self.rect.topright
+            # if parent is menu.MenuManager, laid
+            # horizontally, align the topleft of the new
+            # child with the bottomleft of the pygame.Rect
+            # instance in the 'rect' attribute
+            self.rect.bottomleft
+            if is_top_menu(self) and self.parent.is_menubar
+            # all other scenarios demand that the topleft of
+            # the new child should be aligned with the
+            # topright of the pygame.Rect instance in the
+            # 'rect' attribute
+            else self.rect.topright
         )
 
         ## position relative to each other
 
         children.rect.snap_rects_ip(
-                        retrieve_pos_from='bottomleft',
-                        assign_pos_to='topleft'
-                      )
+            retrieve_pos_from="bottomleft", assign_pos_to="topleft"
+        )
 
     def perform_extra_setups(self):
         """Perform specific checks/setups recursively.
@@ -220,9 +222,12 @@ class Menu(Object2D, MenuScrolling):
 
         for child in self.children:
 
-            try: method = child.perform_extra_setups
-            except AttributeError: pass
-            else: method()
+            try:
+                method = child.perform_extra_setups
+            except AttributeError:
+                pass
+            else:
+                method()
 
     def define_behaviours(self):
         """Define behaviours depending on scrollability."""
@@ -234,26 +239,22 @@ class Menu(Object2D, MenuScrolling):
 
             ## assign a body and children drawing method
             ## with a scrollable interface
-            self.draw_body_and_its_contents = \
-                              self.draw_scrollable_contents
+            self.draw_body_and_its_contents = self.draw_scrollable_contents
 
             ## assign a body contents repositioning method
             ## with a scrollable interface
-            self.reposition_body_contents = \
-                        self.reposition_scrollable_contents
+            self.reposition_body_contents = self.reposition_scrollable_contents
 
         else:
 
             ## assign a body and children drawing method
             ## without a scrollable interface
-            self.draw_body_and_its_contents = \
-                                self.draw_body_and_children
+            self.draw_body_and_its_contents = self.draw_body_and_children
 
             ## assign a body contents repositioning method
             ## without a scrollable interface (only the
             ## children need repositioning)
-            self.reposition_body_contents = \
-                                   self.reposition_children
+            self.reposition_body_contents = self.reposition_children
 
     def draw_body_and_children(self):
         """Draw body and children.
@@ -284,12 +285,14 @@ class Menu(Object2D, MenuScrolling):
 
             try:
 
-                if child.is_expanded: expanded_child = child
+                if child.is_expanded:
+                    expanded_child = child
 
             ## it might be however, that it doesn't even
             ## have an 'is_expanded' attribute (if it is a
             ## command), in which case just pass
-            except AttributeError: pass
+            except AttributeError:
+                pass
 
         ### now we check if we stored an expanded child;
         ### if so, we call its draw_body_and_its_contents
@@ -304,12 +307,12 @@ class Menu(Object2D, MenuScrolling):
 
     def highlight(self):
         """Change image to highlighted surface and expand."""
-        self.image = self.surface_map['highlighted']
+        self.image = self.surface_map["highlighted"]
         self.expand()
 
     def unhighlight(self):
         """Change image to normal surface and collapse."""
-        self.image = self.surface_map['normal']
+        self.image = self.surface_map["normal"]
         self.collapse_self_and_children()
 
     def expand(self):
@@ -323,13 +326,16 @@ class Menu(Object2D, MenuScrolling):
         ### menu, which means it mustn't expand at all
 
         try:
-            if not self.parent.active_menu: return
-        except AttributeError: pass
+            if not self.parent.active_menu:
+                return
+        except AttributeError:
+            pass
 
         ### admin task: if the 'is_expanded' attribute is
         ### set to False, reposition the body to ensure it
         ### is properly positioned within the boundaries
-        if not self.is_expanded: self.reposition_body()
+        if not self.is_expanded:
+            self.reposition_body()
 
         ### collapse every sibling menu and self
 
@@ -344,7 +350,8 @@ class Menu(Object2D, MenuScrolling):
     def collapse_self_and_children(self):
         """Collapse self and children menus."""
         self.is_expanded = False
-        for child in self.children: child.unhighlight()
+        for child in self.children:
+            child.unhighlight()
 
     def reposition_body(self):
         """Position body near self.rect."""
@@ -362,18 +369,15 @@ class Menu(Object2D, MenuScrolling):
         ## body rect, making it so the body is positioned
         ## below the self.rect;
 
-        if (
-          is_top_menu(self)
-          and self.parent.is_menubar
-          and self.body_fits_below()
-        ):
+        if is_top_menu(self) and self.parent.is_menubar and self.body_fits_below():
             topleft = self.rect.move(0, -1).bottomleft
 
         ## otherwise assign the slightly offset self.rect
         ## topright coordinates to be used as the new topleft
         ## of the body rect, making it so the body is
         ## positioned to the right of the self.rect;
-        else: topleft = self.rect.move(-1, 0).topright
+        else:
+            topleft = self.rect.move(-1, 0).topright
 
         ### reposition the body using the coordinates
         ### retrieved
@@ -397,7 +401,7 @@ class Menu(Object2D, MenuScrolling):
 
         To be able to fit the body below the self.rect, two
         conditions must be met:
-        
+
         1) the body must fit in the space between the bottom
            of the pygame.Rect in the 'rect' attribute and the
            bottom of the boundaries rect; that is, if the
@@ -422,33 +426,31 @@ class Menu(Object2D, MenuScrolling):
         ### menu 'rect' as an usability measure
 
         rect_bottom = self.rect.bottom
-        rect_left   = self.rect.left
+        rect_left = self.rect.left
 
         body_height = self.body.rect.height - 1
-        body_width  = self.body.rect.width
+        body_width = self.body.rect.width
 
         ### fetch boundaries rect from menu manager and
         ### retrieve needed coordinates from it
 
-        boundaries_rect   = get_boundaries(self)
+        boundaries_rect = get_boundaries(self)
 
         boundaries_bottom = boundaries_rect.bottom
-        boundaries_right  = boundaries_rect.right
+        boundaries_right = boundaries_rect.right
 
         ### calculate conditions
 
         ## calculate whether the difference between the
         ## bottom of 'rect' and the bottom of the boundaries
         ## rect is equal or greater than the body height
-        condition_a = \
-            boundaries_bottom - rect_bottom >= body_height
+        condition_a = boundaries_bottom - rect_bottom >= body_height
 
         ## calculate whether there's enough space between
         ## the left side of the rect in the 'rect' attribute
         ## and the right side of the boundaries rect to fit
         ## the body.
-        condition_b = \
-            boundaries_right - rect_left >= body_width
+        condition_b = boundaries_right - rect_left >= body_width
 
         ### return whether both conditions are met or not
         return condition_a and condition_b
@@ -460,16 +462,11 @@ class Menu(Object2D, MenuScrolling):
         when the only contents are the children themselves
         (there are no arrows nor a scroll area).
         """
-        self.children.rect.topleft = (
-          self.body
-          .rect.move(1, 1).topleft
-        )
+        self.children.rect.topleft = self.body.rect.move(1, 1).topleft
 
         self.children.rect.snap_rects_ip(
-                             retrieve_pos_from='bottomleft',
-                             assign_pos_to='topleft'
-                           )
-
+            retrieve_pos_from="bottomleft", assign_pos_to="topleft"
+        )
 
     def clamp_body(self):
         """Clamp body to the boundaries rect.
@@ -507,7 +504,8 @@ class Menu(Object2D, MenuScrolling):
         ### if the body's position didn't change, cancel the
         ### execution of the rest of the method by returning
         ### early since no extra adjustments are needed
-        if self.body.rect.topleft == topleft: return
+        if self.body.rect.topleft == topleft:
+            return
 
         ### if the body is to the left of its original
         ### position, though, perform extra adjustements
@@ -551,12 +549,12 @@ class Menu(Object2D, MenuScrolling):
         base_text = 'Menu "{}"'
 
         ### add the number of direct children
-        base_text += \
-          " ({} direct children)".format(len(self.children))
+        base_text += " ({} direct children)".format(len(self.children))
 
         ### change the base text to indicate the menu is
         ### scrollable if it is the case
-        if self.is_scrollable(): base_text += " (scrollable)"
+        if self.is_scrollable():
+            base_text += " (scrollable)"
 
         ### finally return the base text plus each children
         ### string representation, separated by a new line
@@ -573,9 +571,11 @@ class Menu(Object2D, MenuScrolling):
 
         while True:
 
-            try: parent = widget.parent
+            try:
+                parent = widget.parent
 
-            except AttributeError: break
+            except AttributeError:
+                break
 
             else:
 
@@ -586,7 +586,4 @@ class Menu(Object2D, MenuScrolling):
         sep = "\n" + "--" * height
 
         ## return the string representation
-        return sep.join([
-          base_text.format(self.label_text),
-          *map(repr, self.children)
-        ])
+        return sep.join([base_text.format(self.label_text), *map(repr, self.children)])

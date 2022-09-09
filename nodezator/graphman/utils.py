@@ -6,24 +6,23 @@
 
 # obtain a string formatter callable which simulates
 # a call
-format_as_call = 'callable_obj({})'.format
+format_as_call = "callable_obj({})".format
 
 ## main function
 
-def lay_arguments_and_execute(
-      callable_obj, argument_map, signature_obj
-    ):
+
+def lay_arguments_and_execute(callable_obj, argument_map, signature_obj):
     """Lay arguments, execute callable and return result.
 
     Works by building a string representing a call to the
     received callable with all its arguments laid out
     properly according to the kind of the corresponding
     parameters.
-    
+
     Such string is then, executed with the builtin function
     eval() and its return value is returned from this
     function.
-    
+
     Such kinds of parameters refer to whether a parameter
     is positional-only, keyword-only, both positional
     and keyword compatible, etc., for instance. They are
@@ -35,7 +34,7 @@ def lay_arguments_and_execute(
     '_KEYWORD_ONLY',
     '_VAR_POSITIONAL'
     '_VAR_KEYWORD'.
-    
+
     If a parameter is of kind inspect._KEYWORD_ONLY, for
     instance, the string will be built so that its
     argument is passed as a keyword in the call.
@@ -135,28 +134,25 @@ def lay_arguments_and_execute(
     """
     ### start a string to be built representing the
     ### laid out arguments
-    layout_string = ''
+    layout_string = ""
 
     ### iterate over each parameter filling the layout
     ### string with more content representing each argument
     ### being properly laid out in it according to the
     ### kind of its corresponding parameter
 
-    for param_name, param_obj in (
-      signature_obj.parameters.items()
-    ):
+    for param_name, param_obj in signature_obj.parameters.items():
 
         ## if the argument for the parameter wasn't provided,
         ## that is, isn't present on the argument map, skip
         ## this iteration by using the 'continue' statement
-        if param_name not in argument_map: continue
+        if param_name not in argument_map:
+            continue
 
         ## create a base text from the parameter name,
         ## representing the retrieval of the value for
         ## the parameter from the argument map
-        param_value_retrieval = (
-          f"argument_map['{param_name}'],"
-        )
+        param_value_retrieval = f"argument_map['{param_name}'],"
 
         ## alter the value retrieval text according to the
         ## kind of the parameter
@@ -164,8 +160,8 @@ def lay_arguments_and_execute(
         # parameters before '*'
 
         if param_obj.kind in (
-          param_obj.POSITIONAL_ONLY,
-          param_obj.POSITIONAL_OR_KEYWORD
+            param_obj.POSITIONAL_ONLY,
+            param_obj.POSITIONAL_OR_KEYWORD,
         ):
             layout_string += param_value_retrieval
 
@@ -178,9 +174,7 @@ def lay_arguments_and_execute(
 
         elif param_obj.kind == param_obj.KEYWORD_ONLY:
 
-            layout_string += (
-              param_name + "=" + param_value_retrieval
-            )
+            layout_string += param_name + "=" + param_value_retrieval
 
         # a parameter with double stars: **kwargs
 
@@ -192,11 +186,12 @@ def lay_arguments_and_execute(
     ### represents a valid call using variables present
     ### in this function's name space, perform the call
     ### using eval(), returning the call's return value
-    return eval(f'callable_obj({layout_string})')
+    return eval(f"callable_obj({layout_string})")
 
 
 ### generator function to yield nodes in a subgraph and
 ### all subgraphs in the file
+
 
 def yield_subgraph_nodes(node, visited_nodes=None):
     """Yield all nodes in subgraph.
@@ -215,8 +210,8 @@ def yield_subgraph_nodes(node, visited_nodes=None):
     """
     ### create a "visited nodes" set if it doesn't exist
     ### already
-    if visited_nodes is None: visited_nodes = set()
-
+    if visited_nodes is None:
+        visited_nodes = set()
 
     ### since we are visiting the given node, mark it
     ### as visited by adding it to the corresponding set
@@ -225,21 +220,22 @@ def yield_subgraph_nodes(node, visited_nodes=None):
     ### let's start the visit by yielding the node
     yield node
 
-
     ### now let's visit each upstream node recursively,
     ### that is, the ones we didn't visit yet
 
     for input_socket in node.input_sockets:
-        
+
         ## try retrieving the value of the socket's
         ## 'parent' attribute, which, if exists,
         ## should contain a reference to an output
         ## socket which is the parent of the socket
         ## (the output socket is from another node)
-        try: parent_output_socket = input_socket.parent
+        try:
+            parent_output_socket = input_socket.parent
 
         ## if such attribute doesn't exits, just pass
-        except AttributeError: pass
+        except AttributeError:
+            pass
 
         ## otherwise, reference the node of such
         ## parent socket and visit it if not visited
@@ -251,34 +247,33 @@ def yield_subgraph_nodes(node, visited_nodes=None):
         ## a node has already been visited or not
 
         else:
-            
+
             parent_node = parent_output_socket.node
 
             if parent_node not in visited_nodes:
 
-                yield from yield_subgraph_nodes(
-                             parent_node, visited_nodes
-                           )
-
+                yield from yield_subgraph_nodes(parent_node, visited_nodes)
 
     ### now let's visit each downstream node recursively,
     ### that is, the ones we didn't visit yet
 
     for output_socket in node.output_sockets:
-        
+
         ## try retrieving the value of the socket's
         ## 'children' attribute, which, if exists, should
         ## contain a reference to a list which contains
         ## references to input sockets considered
         ## children of this socket (the input sockets are
         ## from other nodes)
-        try: children = output_socket.children
+        try:
+            children = output_socket.children
 
         ## if such attribute doesn't exits, just pass
-        except AttributeError: pass
+        except AttributeError:
+            pass
 
         ## otherwise, iterate over each input socket
-        ## reference, referencing its node and visiting 
+        ## reference, referencing its node and visiting
         ## such node, if not visited already, by passing
         ## it to this same function and yielding from it
         ##
@@ -287,18 +282,19 @@ def yield_subgraph_nodes(node, visited_nodes=None):
         ## node has already been visited or not
 
         else:
-            
+
             for child_input_socket in children:
-                
+
                 child_node = child_input_socket.node
 
                 if child_node not in visited_nodes:
 
                     yield from yield_subgraph_nodes(
-                                 child_node,
-                                 visited_nodes,
-                               )
-                
+                        child_node,
+                        visited_nodes,
+                    )
+
+
 def yield_subgraphs(nodes):
     """Yield node lists representing subgraphs of given nodes.
 
@@ -327,7 +323,7 @@ def yield_subgraphs(nodes):
     ### be checked
 
     while nodes_to_check:
-        
+
         ## pop and reference a node from the set
         node = nodes_to_check.pop()
 

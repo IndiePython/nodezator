@@ -6,7 +6,7 @@ from functools import partialmethod
 
 ### third-party imports
 
-from pygame.draw  import line    as draw_line
+from pygame.draw import line as draw_line
 from pygame.mouse import get_pos as get_mouse_pos
 
 
@@ -15,16 +15,13 @@ from pygame.mouse import get_pos as get_mouse_pos
 from ..config import APP_REFS
 
 from ..pygameconstants import (
-                       SCREEN,
-                       SCREEN_RECT,
-                     )
+    SCREEN,
+    SCREEN_RECT,
+)
 
 from ..ourstdlibs.mathutils import offset_point
 
-from ..our3rdlibs.behaviour import (
-                            indicate_unsaved,
-                            saved_or_unsaved_state_kept
-                          )
+from ..our3rdlibs.behaviour import indicate_unsaved, saved_or_unsaved_state_kept
 
 from ..loopman.exception import ContinueLoopException
 
@@ -47,7 +44,8 @@ class Repositioning:
     def start_moving(self):
         """Start moving selected objs."""
         ### return earlier if no obj is selected
-        if not self.selected_objs: return
+        if not self.selected_objs:
+            return
 
         ### otherwise perform operations to support moving
 
@@ -55,22 +53,15 @@ class Repositioning:
         ## moving origin
 
         self.relative_pos_map = {
-
-          obj : (
-
-            obj.rectsman.midtop
-            if hasattr(obj, 'rectsman')
-            else obj.rect.midtop
-          )
-
-          for obj in self.selected_objs
+            obj: (obj.rectsman.midtop if hasattr(obj, "rectsman") else obj.rect.midtop)
+            for obj in self.selected_objs
         }
 
         ## backup mouse position
         self.mouse_pos_backup = get_mouse_pos()
 
         ## set window manager state
-        APP_REFS.window_manager.set_state('moving_object')
+        APP_REFS.window_manager.set_state("moving_object")
 
         ### restart the loop
         raise ContinueLoopException
@@ -78,7 +69,7 @@ class Repositioning:
     def track_mouse(self):
         """Transfer mouse relative pos to selected objs."""
         current_x, current_y = get_mouse_pos()
-        start_x, start_y     = self.mouse_pos_backup
+        start_x, start_y = self.mouse_pos_backup
 
         delta_x = current_x - start_x
         delta_y = current_y - start_y
@@ -100,10 +91,10 @@ class Repositioning:
 
             rel_pos = self.relative_pos_map[obj]
 
-            final_deltas = offset_point(rel_pos,
-                                        (delta_x, delta_y))
+            final_deltas = offset_point(rel_pos, (delta_x, delta_y))
 
-            try: obj.rectsman.midtop = final_deltas
+            try:
+                obj.rectsman.midtop = final_deltas
             except AttributeError:
                 obj.rect.midtop = final_deltas
 
@@ -124,19 +115,27 @@ class Repositioning:
 
         if relative_to_x:
 
-            if       x and     y: self.y_axis_factor = 0
-            elif     x and not y: self.y_axis_factor = 1
-            elif not x and     y:
-                self.x_axis_factor, self.y_axis_factor = \
-                self.y_axis_factor, self.x_axis_factor
+            if x and y:
+                self.y_axis_factor = 0
+            elif x and not y:
+                self.y_axis_factor = 1
+            elif not x and y:
+                self.x_axis_factor, self.y_axis_factor = (
+                    self.y_axis_factor,
+                    self.x_axis_factor,
+                )
 
         else:
 
-            if       y and     x: self.x_axis_factor = 0
-            elif     y and not x: self.x_axis_factor = 1
-            elif not y and     x:
-                self.x_axis_factor, self.y_axis_factor = \
-                self.y_axis_factor, self.x_axis_factor
+            if y and x:
+                self.x_axis_factor = 0
+            elif y and not x:
+                self.x_axis_factor = 1
+            elif not y and x:
+                self.x_axis_factor, self.y_axis_factor = (
+                    self.y_axis_factor,
+                    self.x_axis_factor,
+                )
 
     constrain_to_x = partialmethod(constrain_axes, True)
     constrain_to_y = partialmethod(constrain_axes, False)
@@ -176,14 +175,12 @@ class Repositioning:
 
         for obj in self.selected_objs:
 
-            relative_midtop = obj.data['midtop']
+            relative_midtop = obj.data["midtop"]
 
-            absolute_midtop = tuple(
-                                relative_midtop
-                                + self.scrolling_amount
-                              )
+            absolute_midtop = tuple(relative_midtop + self.scrolling_amount)
 
-            try: obj.rectsman.midtop = absolute_midtop
+            try:
+                obj.rectsman.midtop = absolute_midtop
             except AttributeError:
                 obj.rect.midtop = absolute_midtop
 
@@ -195,7 +192,7 @@ class Repositioning:
         self.translation_factor = 1
 
         ## set window manager state
-        APP_REFS.window_manager.set_state('loaded_file')
+        APP_REFS.window_manager.set_state("loaded_file")
 
         ### if the moving_from_duplication flag is on,
         ### it means the objects where duplicate objects
@@ -226,21 +223,14 @@ class Repositioning:
         ### 'midtop' field of their data
 
         for obj in self.selected_objs:
-            
+
             absolute_midtop = (
-              obj.rectsman.midtop
-              if hasattr(obj, 'rectsman')
-              else obj.rect.midtop
+                obj.rectsman.midtop if hasattr(obj, "rectsman") else obj.rect.midtop
             )
 
-            relative_midtop = tuple(
-                                absolute_midtop
-                                - self.scrolling_amount
-                              )
+            relative_midtop = tuple(absolute_midtop - self.scrolling_amount)
 
-            obj.data['midtop'] = relative_midtop
-
-
+            obj.data["midtop"] = relative_midtop
 
         ### indicate new changes in the data
         indicate_unsaved()
@@ -253,7 +243,7 @@ class Repositioning:
         self.translation_factor = 1
 
         ## set window manager state
-        APP_REFS.window_manager.set_state('loaded_file')
+        APP_REFS.window_manager.set_state("loaded_file")
 
         ### if the moving_from_duplication flag is on,
         ### it means the objects where duplicate objects
@@ -280,15 +270,15 @@ class Repositioning:
     ### current active features;
 
     def move_objs(
-          self,
-          obj_pos_pairs,
-          update_pos_on_screen=False,
-          change_caption=True,
-          undo_redo_admin=True,
-        ):
+        self,
+        obj_pos_pairs,
+        update_pos_on_screen=False,
+        change_caption=True,
+        undo_redo_admin=True,
+    ):
         """Move objs.
 
-        obj_pos_pairs (iterable) 
+        obj_pos_pairs (iterable)
             Contains pairs referencing an obj and the new
             position value to be assigned respectively.
         update_pos_on_screen (boolean)
@@ -315,7 +305,8 @@ class Repositioning:
 
         ### if requested, indicate in the window caption
         ### that a change has been made
-        if change_caption: indicate_unsaved()
+        if change_caption:
+            indicate_unsaved()
 
         ### if requested, perform undo/redo administration
         ### tasks
@@ -325,15 +316,17 @@ class Repositioning:
             ## gather data
 
             anim_name = APP_REFS.gm.anim_name
-            frame_no  = APP_REFS.gm.get_current_frame()
+            frame_no = APP_REFS.gm.get_current_frame()
 
             ## record change
 
-            self.change_stack.append({
-              "operation" : "movement",
-              "from"      : self.relative_pos_map.items(),
-              "to"        : obj_pos_pairs
-            })
+            self.change_stack.append(
+                {
+                    "operation": "movement",
+                    "from": self.relative_pos_map.items(),
+                    "to": obj_pos_pairs,
+                }
+            )
 
             ## clear redo_stack
             self.redo_stack.clear()

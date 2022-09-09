@@ -36,11 +36,11 @@ from .panel.main import ColorsPanel
 
 
 class ColorsEditor(
-      LoopOperations,
-      WidgetOperations,
-    ):
+    LoopOperations,
+    WidgetOperations,
+):
     """loop holder to pick/edit color(s).
-    
+
     This class is instantiated only once and its
     edit_colors() method is aliased to be used wherever
     needed in the entire package (look at the last lines
@@ -50,11 +50,10 @@ class ColorsEditor(
     ### these injected functions create and set up widgets
     ### when instantiating this colors editor
 
-    setup_scales  = setup_scales
+    setup_scales = setup_scales
     setup_buttons = setup_buttons
     setup_entries = setup_entries
-    setup_labels  = setup_labels
-
+    setup_labels = setup_labels
 
     ### constructor
 
@@ -66,9 +65,7 @@ class ColorsEditor(
 
         ## create and surface in the 'image' attribute,
         ## also referencing it locally for further changes
-        image = self.image = render_rect(
-                               820, 660, WINDOW_BG
-                             )
+        image = self.image = render_rect(820, 660, WINDOW_BG)
 
         ## draw a border on the image
         draw_border(image, thickness=2)
@@ -83,8 +80,7 @@ class ColorsEditor(
         controls_area_surf = render_rect(785, 400, WINDOW_BG)
 
         # add a finish around it to convey depth
-        draw_depth_finish(
-            controls_area_surf, outset=False, thickness=5)
+        draw_depth_finish(controls_area_surf, outset=False, thickness=5)
 
         # blit the area over the 'image' surface
         image.blit(controls_area_surf, (20, 215))
@@ -97,13 +93,9 @@ class ColorsEditor(
         ### editing; it also highlights which color is
         ### currently selected for edition
 
-        self.colors_panel = (
-
-          ColorsPanel(
+        self.colors_panel = ColorsPanel(
             self,
-            no_of_visible_colors = 7,
-          )
-
+            no_of_visible_colors=7,
         )
 
         ### create widget structure to support the
@@ -118,59 +110,43 @@ class ColorsEditor(
         ### groups to use whenever repositioning the
         ### editor when the window is resized
 
-        self.scales_offset = (
-          Vector2(self.scales.rect.topleft)
-        )
+        self.scales_offset = Vector2(self.scales.rect.topleft)
 
-        self.buttons_offset = (
-          Vector2(self.buttons.rect.topleft)
-        )
+        self.buttons_offset = Vector2(self.buttons.rect.topleft)
 
-        self.labels_offset = (
-          Vector2(self.labels.rect.topleft)
-        )
+        self.labels_offset = Vector2(self.labels.rect.topleft)
 
         ### center editor on screen and append centering
         ### method used as a window resize setup
 
         self.center_colors_editor()
 
-        APP_REFS.window_resize_setups.append(
-          self.center_colors_editor
-        )
+        APP_REFS.window_resize_setups.append(self.center_colors_editor)
 
     def center_colors_editor(self):
 
         self.rect.center = SCREEN_RECT.center
 
-        (
-          self.colors_panel
-          .reposition_and_define_objects_and_values()
-        )
+        (self.colors_panel.reposition_and_define_objects_and_values())
 
         rect_topleft = self.rect.topleft
 
         ###
 
-        self.scales.rect.topleft = (
-          rect_topleft + self.scales_offset
-        )
+        self.scales.rect.topleft = rect_topleft + self.scales_offset
 
         for scale in self.scales:
             scale.define_selection_area()
             scale.place_handle()
 
-        ### 
+        ###
 
-        self.buttons.rect.topleft = (
-          rect_topleft + self.buttons_offset
-        )
+        self.buttons.rect.topleft = rect_topleft + self.buttons_offset
 
         ###
 
-        self.labels.rect.topleft = (
-          rect_topleft + self.labels_offset
-        )
+        self.labels.rect.topleft = rect_topleft + self.labels_offset
+
 
 ### instantiate the colors editor, referencing its
 ### 'edit_colors' method in the module so it can be

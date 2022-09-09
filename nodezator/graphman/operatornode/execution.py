@@ -1,10 +1,10 @@
-
 ### local imports
 
 from ..exception import (
-                          MissingInputError,
-                          WaitingInputException,
-                        )
+    MissingInputError,
+    WaitingInputException,
+)
+
 
 class Execution:
     """Operations related to node execution."""
@@ -35,13 +35,10 @@ class Execution:
         ### update the pending parameter names set with the
         ### name of all existing parameters
 
-        self.pending_param_names.update(
-          self.signature_obj.parameters.keys()
-        )
+        self.pending_param_names.update(self.signature_obj.parameters.keys())
 
         ### clear the argument map
         self.argument_map.clear()
-
 
         ### setup the expects input map
 
@@ -57,12 +54,12 @@ class Execution:
             ### in the map
 
             self.expects_input_map[key] = hasattr(
-                                            input_socket,
-                                            'parent',
-                                          )
+                input_socket,
+                "parent",
+            )
 
         ### set a state as 'ready
-        self.state = 'ready'
+        self.state = "ready"
 
     def __call__(self):
         """Return objects needed to execute node's callable.
@@ -92,16 +89,16 @@ class Execution:
         ### return all elements needed
 
         return (
-          self.main_callable,
-          self.argument_map,
-          self.signature_obj,
+            self.main_callable,
+            self.argument_map,
+            self.signature_obj,
         )
 
     def check_pending_parameters(self):
         """Perform checks on pending parameters.
 
         Here we check pending parameters to see whether we
-        
+
         1. should raise a WaitingInputException, meaning the
         node must wait for inputs from other nodes before
         executing.
@@ -134,7 +131,6 @@ class Execution:
 
         for param_name in self.pending_param_names:
 
-
             ## if the parameter is present in the
             ## argument map, we deem it ready
 
@@ -153,8 +149,8 @@ class Execution:
             ## inexecutable due to lack of input sources;
             ## we store its name on the
             ## 'lacking_data_source' list
-            else: lacking_data_source.append(param_name)
-
+            else:
+                lacking_data_source.append(param_name)
 
         ### remove ready parameter names from pending set
         self.pending_param_names -= ready_param_names
@@ -165,25 +161,23 @@ class Execution:
         if lacking_data_source:
 
             raise MissingInputError(
-                    self,
-                    lacking_data_source,
-                  )
+                self,
+                lacking_data_source,
+            )
 
         ### if there are parameters waiting for input,
         ### raise the WaitingInputException
 
         if waiting_input:
 
-            raise WaitingInputException(
-              "node has parameters waiting for input"
-            )
+            raise WaitingInputException("node has parameters waiting for input")
 
     def receive_input(
-          self,
-          data,
-          param_name,
-          subparameter_index,
-        ):
+        self,
+        data,
+        param_name,
+        subparameter_index,
+    ):
         """Store given data
 
         Parameters

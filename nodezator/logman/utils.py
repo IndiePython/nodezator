@@ -47,9 +47,6 @@ def get_logging_wrapper(logging_method):
             callable to be called just after the logging
             call is performed.
         """
-        return CallList((
-                 partial(logging_method, message),
-                 callable_obj
-               ))
+        return CallList((partial(logging_method, message), callable_obj))
 
     return log_wrap_callable

@@ -3,14 +3,15 @@
 ### third-party imports
 
 from pygame import (
-
-              QUIT, KEYUP, K_ESCAPE,
-
-              K_w, K_a, K_s, K_d,
-
-              MOUSEBUTTONUP,
-
-            )
+    QUIT,
+    KEYUP,
+    K_ESCAPE,
+    K_w,
+    K_a,
+    K_s,
+    K_d,
+    MOUSEBUTTONUP,
+)
 
 from pygame.event import get as get_events
 
@@ -34,8 +35,8 @@ class SegmentDefinitionState:
         for event in get_events():
 
             ### QUIT
-            if event.type == QUIT: raise QuitAppException
-
+            if event.type == QUIT:
+                raise QuitAppException
 
             ### MOUSEBUTTONUP
 
@@ -43,19 +44,14 @@ class SegmentDefinitionState:
 
                 if event.button == 1:
 
-                    (
-                      self
-                      .segment_definition_on_mouse_release
-                      (event)
-                    )
+                    (self.segment_definition_on_mouse_release(event))
 
             ### KEYUP
 
             elif event.type == KEYUP:
-                
+
                 if event.key == K_ESCAPE:
                     APP_REFS.gm.cancel_defining_segment()
-
 
     def segment_definition_keyboard_input_handling(self):
         """Handle keyboard specific input."""
@@ -71,7 +67,7 @@ class SegmentDefinitionState:
 
         ## vertical scrolling
 
-        if  w_key and not s_key:
+        if w_key and not s_key:
             APP_REFS.ea.scroll_up()
 
         elif s_key and not w_key:
@@ -105,7 +101,8 @@ class SegmentDefinitionState:
         ### automatically triggers the restart of the
         ### loop, so there's the execution flow of this
         ### method won't go past this point
-        else: APP_REFS.gm.cancel_defining_segment()
+        else:
+            APP_REFS.gm.cancel_defining_segment()
 
         ### otherwise, it means there's a colliding node
         ### in the 'node' variable; trigger its operation
@@ -117,8 +114,10 @@ class SegmentDefinitionState:
 
     def segment_definition_update(self):
         """Update method for 'segment_definition' state."""
-        for item in self.labels_update_methods: item()
-        for item in self.switches_update_methods: item()
+        for item in self.labels_update_methods:
+            item()
+        for item in self.switches_update_methods:
+            item()
 
     ### draw
 
@@ -131,10 +130,12 @@ class SegmentDefinitionState:
         APP_REFS.gm.draw()
         APP_REFS.gm.draw_temp_segment()
 
-        for item in self.labels_drawing_methods: item()
-        for item in self.switches_drawing_methods: item()
+        for item in self.labels_drawing_methods:
+            item()
+        for item in self.switches_drawing_methods:
+            item()
 
         self.separator.draw()
         self.menubar.draw_top_items()
 
-        update() # pygame.display.update
+        update()  # pygame.display.update

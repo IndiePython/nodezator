@@ -9,18 +9,18 @@ from pygame import Rect
 from ...classes2d.collections import List2D
 
 from ...syntaxman.utils import (
-                       AVAILABLE_SYNTAXES,
-                       get_ready_theme,
-                     )
+    AVAILABLE_SYNTAXES,
+    get_ready_theme,
+)
 
 from ...fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
 
 from ..cache import CachedTextObject
 
 from .constants import (
-                                SANS_FONT_SETTINGS,
-                                MONO_FONT_SETTINGS,
-                              )
+    SANS_FONT_SETTINGS,
+    MONO_FONT_SETTINGS,
+)
 
 
 class Line(List2D):
@@ -56,14 +56,11 @@ class Line(List2D):
 
         else:
 
-            raise TypeError(
-                    "'contents' must be of type 'str'"
-                    " or 'list'"
-                  )
+            raise TypeError("'contents' must be of type 'str'" " or 'list'")
 
     def get_all_rects(self):
         """Return rects from this line.
-        
+
         This includes the line rect plus the rects of each
         item of this list.
 
@@ -89,9 +86,7 @@ class Line(List2D):
     ### for users;
 
     @classmethod
-    def set_normal_render_settings(
-          cls, font_path, syntax_highlighting
-        ):
+    def set_normal_render_settings(cls, font_path, syntax_highlighting):
         """Reference the render settings for normal text.
 
         Normal text is either text rendered with default
@@ -115,31 +110,24 @@ class Line(List2D):
         ### value of the 'font_path' argument
 
         default_render_settings = (
-
-          MONO_FONT_SETTINGS
-          if font_path == FIRA_MONO_BOLD_FONT_PATH
-
-          else SANS_FONT_SETTINGS
-
+            MONO_FONT_SETTINGS
+            if font_path == FIRA_MONO_BOLD_FONT_PATH
+            else SANS_FONT_SETTINGS
         )
 
         ### pick render settings to use based on the value
         ### of the 'syntax_highlighting' argument
 
         render_settings = (
-
-          ## if an available syntax is given, use the
-          ## normal text settings from a theme representing
-          ## the syntax
-
-          get_ready_theme(
-            syntax_highlighting, default_render_settings
-          )['text_settings']['normal']
-          if syntax_highlighting in AVAILABLE_SYNTAXES
-
-          ## otherwise, just use the default render settings
-          else default_render_settings
-
+            ## if an available syntax is given, use the
+            ## normal text settings from a theme representing
+            ## the syntax
+            get_ready_theme(syntax_highlighting, default_render_settings)[
+                "text_settings"
+            ]["normal"]
+            if syntax_highlighting in AVAILABLE_SYNTAXES
+            ## otherwise, just use the default render settings
+            else default_render_settings
         )
 
         ### finally store references to the render settings
@@ -147,7 +135,7 @@ class Line(List2D):
         ### class attributes
 
         cls.render_settings = render_settings
-        cls.char_height     = render_settings['font_height']
+        cls.char_height = render_settings["font_height"]
 
     def extend_from_string(self, text):
         """Extend list w/ objs created from given text.
@@ -165,10 +153,7 @@ class Line(List2D):
         ### extend list with the objects as you create them
         ### from each character in the text
 
-        self.extend(
-          CachedTextObject(char, self.render_settings)
-          for char in text
-        )
+        self.extend(CachedTextObject(char, self.render_settings) for char in text)
 
         ### then reposition the objects
         self.reposition_chars()
@@ -181,20 +166,12 @@ class Line(List2D):
             the instantiated objects.
         text (string)
             characters to be inserted in the line.
-        
+
         Rearrange positions at the end.
         """
         for next_index, char in enumerate(text, start=index):
 
-            self.insert(
-
-                   next_index,
-
-                   CachedTextObject(
-                     char, self.render_settings
-                   )
-
-                 )
+            self.insert(next_index, CachedTextObject(char, self.render_settings))
 
         self.reposition_chars()
 
@@ -223,9 +200,9 @@ class Line(List2D):
         attribute.
         """
         self.rect.snap_rects_ip(
-                    'topright', # retrieve_pos_from argument
-                    'topleft'   # assign_pos_to argument
-                  )
+            "topright",  # retrieve_pos_from argument
+            "topleft",  # assign_pos_to argument
+        )
 
     def get(self):
         """Return line contents as string."""

@@ -13,30 +13,30 @@ from ..userprefsman.main import USER_PREFS
 from ..appinfo import NATIVE_FILE_EXTENSION
 
 from ..dialog import (
-              create_and_show_dialog,
-              show_dialog_from_key,
-            )
+    create_and_show_dialog,
+    show_dialog_from_key,
+)
 
 from ..fileman.main import (
-                    select_path,
-                    create_path,
-                  )
+    select_path,
+    create_path,
+)
 
 from ..ourstdlibs.path import (
-                       get_swap_path,
-                       get_custom_path_repr,
-                       save_timestamped_backup,
-                     )
+    get_swap_path,
+    get_custom_path_repr,
+    save_timestamped_backup,
+)
 
 from ..ourstdlibs.pyl import load_pyl, save_pyl
 
 from ..our3rdlibs.userlogger import USER_LOGGER
 
 from ..our3rdlibs.behaviour import (
-                            are_changes_saved,
-                            indicate_saved,
-                            set_status_message,
-                          )
+    are_changes_saved,
+    indicate_saved,
+    set_status_message,
+)
 
 from ..loopman.exception import SwitchLoopException
 
@@ -53,29 +53,21 @@ logger = get_new_logger(__name__)
 
 ## different captions for when invoking the file manager
 
-NEW_FILE_CAPTION = (
-   "Type path wherein to save new"
-  f" '{NATIVE_FILE_EXTENSION}' file"
-)
+NEW_FILE_CAPTION = "Type path wherein to save new" f" '{NATIVE_FILE_EXTENSION}' file"
 
 
 # when requesting file to be opened
 
-OPEN_FILE_CAPTION = (
-  f"Select '{NATIVE_FILE_EXTENSION}' file to open"
-)
+OPEN_FILE_CAPTION = f"Select '{NATIVE_FILE_EXTENSION}' file to open"
 
 
 # when requesting file to be opened
 
-SAVE_AS_CAPTION = (
-   "Create new path wherein to save"
-  f" '{NATIVE_FILE_EXTENSION}' file"
-)
-
+SAVE_AS_CAPTION = "Create new path wherein to save" f" '{NATIVE_FILE_EXTENSION}' file"
 
 
 ### class definition
+
 
 class FileOperations:
     """Contains methods related to files."""
@@ -89,50 +81,47 @@ class FileOperations:
 
         ## if paths were given, it is a single one, we
         ## should assign it to 'filepath' variable
-        if paths: filepath = paths[0]
+        if paths:
+            filepath = paths[0]
 
         ## if the user didn't provide paths, though,
         ## return earlier
-        else: return
+        else:
+            return
 
         ### if the path don't have the right extension,
         ### ask user if we should add it ourselves or
         ### cancel the operation (in which case we return)
 
         if filepath.suffix != NATIVE_FILE_EXTENSION:
-            
+
             message = (
-               "Path provided must have a "
-              f"{NATIVE_FILE_EXTENSION} extension."
-               " Want us to add it for you?"
+                "Path provided must have a "
+                f"{NATIVE_FILE_EXTENSION} extension."
+                " Want us to add it for you?"
             )
 
-            buttons = [
-              ("Yes", True),
-              ("No, cancel creating new file", False)
-            ]
+            buttons = [("Yes", True), ("No, cancel creating new file", False)]
 
             answer = create_and_show_dialog(message, buttons)
 
-            if not answer: return
+            if not answer:
+                return
 
-            else: filepath = (
-                    filepath
-                    .with_suffix
-                    (NATIVE_FILE_EXTENSION)
-                  )
+            else:
+                filepath = filepath.with_suffix(NATIVE_FILE_EXTENSION)
 
         ### if filepath already exists, prompt user about
         ### what to do
 
         if filepath.is_file():
 
-            answer = show_dialog_from_key(
-                       'replace_existing_file_dialog'
-                     )
+            answer = show_dialog_from_key("replace_existing_file_dialog")
 
-            if   answer == 'replace': pass
-            elif answer ==   'abort': return
+            if answer == "replace":
+                pass
+            elif answer == "abort":
+                return
 
         ### prompt user for action in case the data for a
         ### new file is provided but there are unsaved
@@ -143,11 +132,9 @@ class FileOperations:
             ## XXX review comments inside this
             ## "if not are_changes_saved():" block
 
-            answer = show_dialog_from_key(
-                       'create_new_while_unsaved_dialog'
-                     )
+            answer = show_dialog_from_key("create_new_while_unsaved_dialog")
 
-            if answer == 'open_new':
+            if answer == "open_new":
 
                 ### make it appear as if there are no
                 ### unsaved changes; this will cause the
@@ -156,16 +143,20 @@ class FileOperations:
                 ### file is opened
                 indicate_saved()
 
-            elif answer == 'save_first': self.save()
+            elif answer == "save_first":
+                self.save()
 
-            elif answer == 'abort': return
+            elif answer == "abort":
+                return
 
         ## if a swap file exists, remove it
 
         swap_path = get_swap_path(filepath)
 
-        try: swap_path.unlink()
-        except FileNotFoundError: pass
+        try:
+            swap_path.unlink()
+        except FileNotFoundError:
+            pass
 
         ### save file
         save_pyl({}, filepath)
@@ -186,9 +177,7 @@ class FileOperations:
 
             ## pick path
 
-            paths = select_path(
-                      caption=OPEN_FILE_CAPTION
-                    )
+            paths = select_path(caption=OPEN_FILE_CAPTION)
 
             ## respond according to number of paths given
 
@@ -199,31 +188,31 @@ class FileOperations:
 
             elif length > 1:
 
-                show_dialog_from_key(
-                  'expected_single_path_dialog'
-                )
+                show_dialog_from_key("expected_single_path_dialog")
 
                 return
 
-            else: filepath = None
+            else:
+                filepath = None
 
         ### if even so the user didn't provide a filepath,
         ### return earlier
-        if not filepath: return
+        if not filepath:
+            return
 
         ### prompt user for action in case a file is provided
         ### but there are unsaved changes in the current one
 
         if filepath and not are_changes_saved():
 
-            answer = show_dialog_from_key(
-                       'open_new_while_unsaved_dialog'
-                     )
+            answer = show_dialog_from_key("open_new_while_unsaved_dialog")
 
-            if   answer == "open new": pass
-            elif answer == "save first": self.save()
-            elif answer == "abort": return
-
+            if answer == "open new":
+                pass
+            elif answer == "save first":
+                self.save()
+            elif answer == "abort":
+                return
 
         ### TODO checks below should be made before the
         ### beginning of the "if" block, so that you
@@ -244,10 +233,7 @@ class FileOperations:
         ### file with the right extension, we start
         ### processing it for usage
 
-        if (
-               filepath.is_file()
-           and filepath.suffix == NATIVE_FILE_EXTENSION
-        ):
+        if filepath.is_file() and filepath.suffix == NATIVE_FILE_EXTENSION:
 
             ### before loading the file, let's check the
             ### preexistence of a swap file in the
@@ -266,9 +252,7 @@ class FileOperations:
 
             if swap_path.is_file():
 
-                answer = show_dialog_from_key(
-                           "swap_exists_dialog"
-                         )
+                answer = show_dialog_from_key("swap_exists_dialog")
 
                 # load original file (ignore swap)
 
@@ -276,14 +260,12 @@ class FileOperations:
 
                     swap_path.unlink()
 
-                    source_contents = (
-                      filepath.read_text(encoding='utf-8')
-                    )
+                    source_contents = filepath.read_text(encoding="utf-8")
 
                     swap_path.write_text(
-                                source_contents,
-                                encoding='utf-8',
-                              )
+                        source_contents,
+                        encoding="utf-8",
+                    )
 
                 # load swap file (ignore original)
 
@@ -299,26 +281,26 @@ class FileOperations:
                     # save backup for the filepath
 
                     save_timestamped_backup(
-                      filepath,
-                      USER_PREFS['NUMBER_OF_BACKUPS'],
+                        filepath,
+                        USER_PREFS["NUMBER_OF_BACKUPS"],
                     )
 
                     # copy swap file contents into
                     # source file
 
-                    swap_contents = (
-                      swap_path.read_text(encoding='utf-8')
-                    )
+                    swap_contents = swap_path.read_text(encoding="utf-8")
 
                     filepath.write_text(
-                               swap_contents,
-                               encoding='utf-8',
-                             )
+                        swap_contents,
+                        encoding="utf-8",
+                    )
 
-                else: return
+                else:
+                    return
 
             ### try loading the file, storing its data
-            try: loaded_data = load_pyl(filepath)
+            try:
+                loaded_data = load_pyl(filepath)
 
             ### if loading fails abort opening the file by
             ### leaving this method after notifying the
@@ -326,25 +308,19 @@ class FileOperations:
 
             except Exception as err:
 
-                message = (
-                  "An error occurred while trying to"
-                  " open a file."
-                )
+                message = "An error occurred while trying to" " open a file."
 
                 logger.exception(message)
 
                 USER_LOGGER.exception(message)
 
                 create_and_show_dialog(
-
-                   (
-                      "An error ocurred while trying to"
-                     f" open {filepath}. Check the user"
-                      " log (<Ctrl+Shift+j>) for details."
-                   ),
-
-                   level_name = 'error',
-
+                    (
+                        "An error ocurred while trying to"
+                        f" open {filepath}. Check the user"
+                        " log (<Ctrl+Shift+j>) for details."
+                    ),
+                    level_name="error",
                 )
 
                 return
@@ -354,14 +330,12 @@ class FileOperations:
 
             if not swap_path.is_file():
 
-                source_contents = (
-                  filepath.read_text(encoding='utf-8')
-                )
+                source_contents = filepath.read_text(encoding="utf-8")
 
                 swap_path.write_text(
-                            source_contents,
-                            encoding='utf-8',
-                          )
+                    source_contents,
+                    encoding="utf-8",
+                )
 
             ### store both paths for access throughout the
             ### system
@@ -376,9 +350,11 @@ class FileOperations:
             # (this will happen when loading a file when
             # there is another one already loaded)
 
-            try: current_swap = APP_REFS.swap_path
+            try:
+                current_swap = APP_REFS.swap_path
 
-            except AttributeError: pass
+            except AttributeError:
+                pass
 
             else:
 
@@ -455,7 +431,8 @@ class FileOperations:
         if filepath is not None:
 
             ### try opening the filepath
-            try: self.open(filepath)
+            try:
+                self.open(filepath)
 
             ### when the operation succeeds, a manager
             ### switch exception is raised to indicate
@@ -470,7 +447,8 @@ class FileOperations:
             ### instead, we return a reference to this
             ### window manager, which will be used as
             ### the loop holder
-            except SwitchLoopException: return self
+            except SwitchLoopException:
+                return self
 
         ### if the filepath is None, or the operation to
         ### load it fails, the execution flow of this
@@ -500,9 +478,7 @@ class FileOperations:
 
         if are_changes_saved():
 
-            message = (
-              "Didn't save because changes are already saved."
-            )
+            message = "Didn't save because changes are already saved."
 
             set_status_message(message)
 
@@ -510,10 +486,7 @@ class FileOperations:
 
         ### pass content from source to backup file
 
-        save_timestamped_backup(
-          APP_REFS.source_path,
-          USER_PREFS['NUMBER_OF_BACKUPS']
-        )
+        save_timestamped_backup(APP_REFS.source_path, USER_PREFS["NUMBER_OF_BACKUPS"])
 
         ### save changes on source path
         self.save_data()
@@ -521,8 +494,7 @@ class FileOperations:
         ### store changes from source on the swap file
 
         APP_REFS.swap_path.write_text(
-          APP_REFS.source_path.read_text(encoding='utf-8'),
-          encoding='utf-8'
+            APP_REFS.source_path.read_text(encoding="utf-8"), encoding="utf-8"
         )
 
         ### perform other administrative tasks
@@ -531,16 +503,14 @@ class FileOperations:
         # the undo/redo feature is implemented
 
         ## clear undo/redo buffers
-        #APP_REFS.ea.clear_buffers()
+        # APP_REFS.ea.clear_buffers()
 
         ## indicate that changes were saved
         indicate_saved()
 
         ### notify success via statusbar
 
-        set_status_message(
-          "Changes were successfully saved."
-        )
+        set_status_message("Changes were successfully saved.")
 
     def save_as(self):
         """Save data in new file and keep using new file.
@@ -549,7 +519,7 @@ class FileOperations:
         provided by the user via the file manager
         session we start and using that new location from
         then on.
-        
+
         Other admin taks are also performed like deleting
         the swap file for the original file.
         """
@@ -565,7 +535,8 @@ class FileOperations:
 
         ## if the user didn't provide paths, though,
         ## return earlier
-        else: return
+        else:
+            return
 
         ### perform tasks to save current file in the
         ### provided path, using it from now on
@@ -575,13 +546,13 @@ class FileOperations:
         ### cancel the operation (in which case we return)
 
         if filepath.suffix != NATIVE_FILE_EXTENSION:
-            
+
             ## build custom message
 
             message = (
-               "Path provided must have a"
-              f" {NATIVE_FILE_EXTENSION} extension."
-               " Want us to add it for you?"
+                "Path provided must have a"
+                f" {NATIVE_FILE_EXTENSION} extension."
+                " Want us to add it for you?"
             )
 
             ## each button is represented by a pair
@@ -589,22 +560,20 @@ class FileOperations:
             ## the value the dialog returns when we
             ## click it
 
-            buttons = [
-              ("Yes", True),
-              ("No, cancel saving new file", False)
-            ]
+            buttons = [("Yes", True), ("No, cancel saving new file", False)]
 
             ## display the dialog and store the answer
             ## provided by the user when clicking
             answer = create_and_show_dialog(message, buttons)
 
             ## if the answer is False, then cancel operation
-            if not answer: return
+            if not answer:
+                return
 
             ## otherwise apply the correct extension
 
-            else: filepath = \
-                  filepath.with_suffix(NATIVE_FILE_EXTENSION)
+            else:
+                filepath = filepath.with_suffix(NATIVE_FILE_EXTENSION)
 
         ### if path already exists, prompt user to confirm
         ### whether we should override it
@@ -614,8 +583,8 @@ class FileOperations:
             ## build custom message
 
             message = (
-              f"The path provided ({filepath}) already exists."
-               " Should we override it?"
+                f"The path provided ({filepath}) already exists."
+                " Should we override it?"
             )
 
             ## each button is represented by a pair
@@ -623,10 +592,7 @@ class FileOperations:
             ## the value the dialog returns when we
             ## click it
 
-            buttons = [
-              ('Ok', True),
-              ('Cancel', False)
-            ]
+            buttons = [("Ok", True), ("Cancel", False)]
 
             ## display the dialog and store the answer
             ## provided by the user when clicking
@@ -635,7 +601,8 @@ class FileOperations:
             ### if the answer is False, then we shouldn't
             ### override, so we cancel the operation by
             ### returning
-            if not answer: return
+            if not answer:
+                return
 
         ### otherwise we proceed
 
@@ -647,22 +614,23 @@ class FileOperations:
         APP_REFS.source_path = filepath
 
         ### try saving current data on the new path
-        try: self.save_data()
+        try:
+            self.save_data()
 
         ### if something goes wrong, restore the original
         ### source, notify user and cancel the operation
         ### by returning
 
         except Exception as err:
-            
+
             ## restore source
             APP_REFS.source_path = original_source
-            
+
             ## build and display error message
 
             error_message = (
-               "Something went wrong while trying to save"
-              f" the new file. The error message: {err}"
+                "Something went wrong while trying to save"
+                f" the new file. The error message: {err}"
             )
 
             create_and_show_dialog(error_message)
@@ -678,16 +646,14 @@ class FileOperations:
         ### create a swap path for the new source and store
         ### it
 
-        swap_path          = get_swap_path(filepath)
+        swap_path = get_swap_path(filepath)
         APP_REFS.swap_path = swap_path
 
         ### save contents of source in the swap path
 
-        source_contents = \
-                filepath.read_text(encoding='utf-8')
+        source_contents = filepath.read_text(encoding="utf-8")
 
-        swap_path.write_text(
-                  source_contents, encoding='utf-8')
+        swap_path.write_text(source_contents, encoding="utf-8")
 
         ### get a custom string representation for the source
         path_str = get_custom_path_repr(filepath)
@@ -698,9 +664,7 @@ class FileOperations:
         ### notify user by displaying message in the
         ### statusbar
 
-        set_status_message(
-          f"Using new file from now on {path_str}"
-        )
+        set_status_message(f"Using new file from now on {path_str}")
 
     def save_data(self):
         """Save data on filepath.
@@ -717,9 +681,7 @@ class FileOperations:
 
         if not are_changes_saved():
 
-            answer = show_dialog_from_key(
-                       "reload_unsaved_dialog"
-                     )
+            answer = show_dialog_from_key("reload_unsaved_dialog")
 
             if answer == "reload":
 
@@ -730,7 +692,8 @@ class FileOperations:
                 ### (opened again)
                 indicate_saved()
 
-            elif answer == "abort": return
+            elif answer == "abort":
+                return
 
         ### remove swap file
         APP_REFS.swap_path.unlink()

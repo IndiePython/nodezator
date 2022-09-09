@@ -7,17 +7,17 @@ from functools import partialmethod
 ### local imports
 
 from ...ourstdlibs.color.largemaps import (
-                                  HTML_COLOR_MAP,
-                                  PYGAME_COLOR_MAP,
-                                )
+    HTML_COLOR_MAP,
+    PYGAME_COLOR_MAP,
+)
 
 from ...ourstdlibs.color.conversion import (
-                                   COLOR_CONVERSION_MAP,
-                                   hex_string_to_full_rgb,
-                                   full_rgb_to_html_name,
-                                   full_rgb_to_pygame_name,
-                                   full_rgb_to_hex_string,
-                                 )
+    COLOR_CONVERSION_MAP,
+    hex_string_to_full_rgb,
+    full_rgb_to_html_name,
+    full_rgb_to_pygame_name,
+    full_rgb_to_hex_string,
+)
 
 
 class WidgetOperations:
@@ -26,14 +26,16 @@ class WidgetOperations:
     def set_color_on_controls(self, color):
         """Set current color to given one."""
         ### reference the rgb entries
-        entries = self.entry_map['rgb']
+        entries = self.entry_map["rgb"]
 
         ### check whether an alpha value was provided
-        try: color[3]
+        try:
+            color[3]
 
         ### if it was not, set an 'include_alpha'
         ### variable to False
-        except IndexError: include_alpha = False
+        except IndexError:
+            include_alpha = False
 
         ### otherwise, update the entry references to
         ### include the alpha entry and set an
@@ -42,7 +44,7 @@ class WidgetOperations:
         else:
 
             include_alpha = True
-            entries = entries + [self.entry_map['alpha']]
+            entries = entries + [self.entry_map["alpha"]]
 
         ### set each entry with its respective value
 
@@ -60,15 +62,13 @@ class WidgetOperations:
         alpha_value = value if include_alpha else 255
 
         ## set the scale widget to the converted alpha value
-        self.scale_map['alpha'].set(alpha_value, False)
+        self.scale_map["alpha"].set(alpha_value, False)
 
         ### finally update the resulting color value
         ### and perform additional tasks
         self.update_from_rgb_entry()
 
-    def update_from_scale(
-          self, group_name, update_group_entry=True
-        ):
+    def update_from_scale(self, group_name, update_group_entry=True):
         """Update color value from scales and store it.
 
         This method grabs the color values from an specific
@@ -94,27 +94,22 @@ class WidgetOperations:
         for scale in self.scale_map[group_name]:
 
             retrieved_values.append(scale.get())
-            retrieved_names .append(scale.name)
+            retrieved_names.append(scale.name)
 
         ### if requested, update corresponding entry group
 
         if update_group_entry:
 
-            for entry, value in \
-            zip(self.entry_map[group_name], retrieved_values):
+            for entry, value in zip(self.entry_map[group_name], retrieved_values):
 
                 entry.set(value, False)
 
         ### update remaining scale and entry groups
 
-        for key, conversion_operation \
-        in COLOR_CONVERSION_MAP[group_name].items():
-
+        for key, conversion_operation in COLOR_CONVERSION_MAP[group_name].items():
 
             ## convert retrieved values
-            converted_values = \
-                conversion_operation(retrieved_values)
-
+            converted_values = conversion_operation(retrieved_values)
 
             ## update widget groups
 
@@ -123,11 +118,8 @@ class WidgetOperations:
             # updated (we check if the names are present
             # in the retrieved_names list)
 
-            for scale, entry, value in \
-            zip(
-              self.scale_map[key],
-              self.entry_map[key],
-              converted_values
+            for scale, entry, value in zip(
+                self.scale_map[key], self.entry_map[key], converted_values
             ):
 
                 # if the scale name isn't among the ones
@@ -147,13 +139,10 @@ class WidgetOperations:
 
         ## get color as a tuple of rgb values
 
-        rgb_color = tuple(
-          entry.get()
-          for entry in self.entry_map['rgb']
-        )
+        rgb_color = tuple(entry.get() for entry in self.entry_map["rgb"])
 
         if self.alpha_checkbutton.get():
-            rgb_color += (self.entry_map['alpha'].get(),)
+            rgb_color += (self.entry_map["alpha"].get(),)
 
         ## update hex entry
 
@@ -162,7 +151,7 @@ class WidgetOperations:
 
         ## update name entries
 
-        html_name   = full_rgb_to_html_name(rgb_color)
+        html_name = full_rgb_to_html_name(rgb_color)
         pygame_name = full_rgb_to_pygame_name(rgb_color)
 
         self.html_name_entry.set(html_name, False)
@@ -172,9 +161,9 @@ class WidgetOperations:
         ### and perform additional tasks
         self.update_color_value()
 
-    update_from_hls = partialmethod(update_from_scale, 'hls')
-    update_from_hsv = partialmethod(update_from_scale, 'hsv')
-    update_from_rgb = partialmethod(update_from_scale, 'rgb')
+    update_from_hls = partialmethod(update_from_scale, "hls")
+    update_from_hsv = partialmethod(update_from_scale, "hsv")
+    update_from_rgb = partialmethod(update_from_scale, "rgb")
 
     def update_from_entry(self, group_name):
         """Update color value from entry group.
@@ -194,11 +183,7 @@ class WidgetOperations:
         ### iterate over corresponding scale group updating
         ### each scale with value of respective entry
 
-        for scale, entry in \
-        zip(
-          self.scale_map[group_name],
-          self.entry_map[group_name]
-        ):
+        for scale, entry in zip(self.scale_map[group_name], self.entry_map[group_name]):
             scale.set(entry.get(), False)
 
         ### then update remaining scales and entries
@@ -208,14 +193,11 @@ class WidgetOperations:
         ### updating the color unit surface
         self.update_from_scale(group_name, False)
 
-    update_from_hls_entry = \
-                    partialmethod(update_from_entry, 'hls')
+    update_from_hls_entry = partialmethod(update_from_entry, "hls")
 
-    update_from_hsv_entry = \
-                    partialmethod(update_from_entry, 'hsv')
+    update_from_hsv_entry = partialmethod(update_from_entry, "hsv")
 
-    update_from_rgb_entry = \
-                    partialmethod(update_from_entry, 'rgb')
+    update_from_rgb_entry = partialmethod(update_from_entry, "rgb")
 
     def update_from_hex_entry(self):
         """Update color value from hex entry."""
@@ -230,10 +212,10 @@ class WidgetOperations:
         self.set_color_on_controls(color)
 
     def update_from_name_entry(
-          self,
-          entry_attr_name,
-          color_map,
-        ):
+        self,
+        entry_attr_name,
+        color_map,
+    ):
         """Update color value from name entry.
 
         Or, if the name in the entry is 'unamed', set
@@ -255,18 +237,17 @@ class WidgetOperations:
         ### 'unamed' in the entry when the current color
         ### actually has a name
 
-        if color_name == 'unamed':
+        if color_name == "unamed":
 
             ## obtain a tuple with the 3 first values of
             ## the current color
 
-            current_color = \
-            tuple(self.colors_panel.get_current_color()[:3])
+            current_color = tuple(self.colors_panel.get_current_color()[:3])
 
             ## iterate over each item of the color map
 
             for name, color in color_map.items():
-                
+
                 ## if the current color has the same value
                 ## as one of the color from the map, then
                 ## the color actually has a name, which is
@@ -295,23 +276,21 @@ class WidgetOperations:
         ### if the alpha is supposed to be used, retrieve
         ### it from the entry and append it to the color
         if self.alpha_checkbutton.get():
-            color.append(self.entry_map['alpha'].get())
+            color.append(self.entry_map["alpha"].get())
 
         ### finally, set the color on the controls
         self.set_color_on_controls(color)
 
     update_from_html_name_entry = partialmethod(
-                                    update_from_name_entry,
-                                    'html_name_entry',
-                                    HTML_COLOR_MAP,
-                                  )
-
-    update_from_pygame_name_entry = (
-      partialmethod(
         update_from_name_entry,
-        'pygame_name_entry',
+        "html_name_entry",
+        HTML_COLOR_MAP,
+    )
+
+    update_from_pygame_name_entry = partialmethod(
+        update_from_name_entry,
+        "pygame_name_entry",
         PYGAME_COLOR_MAP,
-      )
     )
 
     def update_from_alpha(self):
@@ -320,11 +299,11 @@ class WidgetOperations:
         ### update entry with scale value
 
         ## get alpha value from scale
-        alpha_value = self.scale_map['alpha'].get()
+        alpha_value = self.scale_map["alpha"].get()
 
         ## update the alpha entry with the alpha value we
         ## just retrieved
-        self.entry_map['alpha'].set(alpha_value, False)
+        self.entry_map["alpha"].set(alpha_value, False)
 
         ### set the alpha checkbutton to True (that is,
         ### since the user is editing the alpha, we assume
@@ -332,10 +311,7 @@ class WidgetOperations:
         ### it so the alpha is updated in the preview rect
         ### in real time, which is useful)
 
-        self.alpha_checkbutton.set(
-                                 True,
-                                 execute_command=False
-                               )
+        self.alpha_checkbutton.set(True, execute_command=False)
 
         ### finally update the color value from the
         ### rgb entry (also has side-effects of interest)
@@ -346,8 +322,8 @@ class WidgetOperations:
         ### update scale with the alpha value from
         ### entry
 
-        alpha = self.entry_map['alpha'].get()
-        self.scale_map['alpha'].set(alpha, False)
+        alpha = self.entry_map["alpha"].get()
+        self.scale_map["alpha"].set(alpha, False)
 
         ### then update the color using the value on
         ### the scale
@@ -363,16 +339,13 @@ class WidgetOperations:
         """
         ### store the rgb color
 
-        color = tuple(
-          scale.get()
-          for scale in self.scale_map['rgb']
-        )
+        color = tuple(scale.get() for scale in self.scale_map["rgb"])
 
         ### include alpha value in the stored color if
         ### the alpha checkbutton is checked
 
         if self.alpha_checkbutton.get():
-            color += (self.scale_map['alpha'].get(),)
+            color += (self.scale_map["alpha"].get(),)
 
         ### set color in current color widget from the
         ### colors panel

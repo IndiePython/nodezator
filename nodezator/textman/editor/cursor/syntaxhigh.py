@@ -13,17 +13,17 @@ from ....ourstdlibs.color.creation import get_contrasting_bw
 from ....syntaxman.exception import SyntaxMappingError
 
 from ....syntaxman.utils import (
-                       AVAILABLE_SYNTAXES,
-                       SYNTAX_TO_MAPPING_FUNCTION,
-                       get_ready_theme,
-                     )
+    AVAILABLE_SYNTAXES,
+    SYNTAX_TO_MAPPING_FUNCTION,
+    get_ready_theme,
+)
 
 from ....fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
 
 from ..constants import (
-                                SANS_FONT_SETTINGS,
-                                MONO_FONT_SETTINGS,
-                              )
+    SANS_FONT_SETTINGS,
+    MONO_FONT_SETTINGS,
+)
 
 
 ### number of milliseconds to wait after last text edition
@@ -34,12 +34,11 @@ MSECS_TO_UPDATE_SYNTAX = 500
 
 ### class definition
 
+
 class SyntaxHighlighting:
     """Operations/setups for syntax highlighting support."""
-    
-    def set_syntax_highlighting(
-          self, font_path, syntax_highlighting
-        ):
+
+    def set_syntax_highlighting(self, font_path, syntax_highlighting):
         """Perform syntax highlighting setups.
 
         Depends on the requested syntax highlighting,
@@ -88,42 +87,32 @@ class SyntaxHighlighting:
         ### if a valid syntax is requested...
 
         if syntax_highlighting in AVAILABLE_SYNTAXES:
-            
+
             ## define the default settings depending on the
             ## font style
 
             default_text_settings = (
-
-              MONO_FONT_SETTINGS
-              if font_path == FIRA_MONO_BOLD_FONT_PATH
-
-              else SANS_FONT_SETTINGS
-
+                MONO_FONT_SETTINGS
+                if font_path == FIRA_MONO_BOLD_FONT_PATH
+                else SANS_FONT_SETTINGS
             )
 
             ## store a theme map ready for usage with the
             ## syntax name and default settings
 
-            self.theme_map = get_ready_theme(
-                               syntax_highlighting,
-                               default_text_settings
-                             )
-
+            self.theme_map = get_ready_theme(syntax_highlighting, default_text_settings)
 
             ## store specific syntax mapping behaviour
-            self.get_syntax_map = \
-            SYNTAX_TO_MAPPING_FUNCTION[syntax_highlighting]
+            self.get_syntax_map = SYNTAX_TO_MAPPING_FUNCTION[syntax_highlighting]
 
             ## set routines so syntax highlighting is
             ## enabled
 
-            self.syntax_highlighting_routine = \
-                              self.check_syntax_highlighting
+            self.syntax_highlighting_routine = self.check_syntax_highlighting
 
             self.edition_routine = self.mark_edition_time
 
-            self.visible_lines_routine = \
-                        self.syntax_highlight_visible_lines
+            self.visible_lines_routine = self.syntax_highlight_visible_lines
 
             ### create a control variable to keep track of
             ### the time when the text was last edited
@@ -141,34 +130,28 @@ class SyntaxHighlighting:
             ## define text settings for the line numbers
 
             # reference the theme text settings locally
-            theme_text_settings = \
-                            self.theme_map['text_settings']
+            theme_text_settings = self.theme_map["text_settings"]
 
             # if the line number settings from the theme
             # are available, use them
-            try: lineno_settings = \
-                     theme_text_settings['line_number']
+            try:
+                lineno_settings = theme_text_settings["line_number"]
 
             # otherwise use the settings for normal text of
             # the theme for the line number settings
 
             except KeyError:
 
-                lineno_settings = \
-                              theme_text_settings['normal']
+                lineno_settings = theme_text_settings["normal"]
 
             ## store the colors
 
-            self.lineno_fg = \
-                lineno_settings['foreground_color']
+            self.lineno_fg = lineno_settings["foreground_color"]
 
-            self.lineno_bg = \
-                lineno_settings['background_color']
+            self.lineno_bg = lineno_settings["background_color"]
 
             ### define the background color for the text
-            self.background_color = \
-                         self.theme_map['background_color']
-
+            self.background_color = self.theme_map["background_color"]
 
         ### otherwise, no syntax highlighting is applied,
         ### but other setups are needed
@@ -178,37 +161,31 @@ class SyntaxHighlighting:
             ### we set routines so that no syntax
             ### highlighting is ever performed
 
-            self.syntax_highlighting_routine = \
-            self.edition_routine             = \
-            self.visible_lines_routine       = empty_function
+            self.syntax_highlighting_routine = (
+                self.edition_routine
+            ) = self.visible_lines_routine = empty_function
 
             ### we define line number settings from the
             ### default text settings for monospaced text
 
-            self.lineno_fg = \
-                MONO_FONT_SETTINGS['foreground_color']
+            self.lineno_fg = MONO_FONT_SETTINGS["foreground_color"]
 
-            self.lineno_bg = \
-                MONO_FONT_SETTINGS['background_color']
+            self.lineno_bg = MONO_FONT_SETTINGS["background_color"]
 
             ### and also define the background color for
             ### the editing area
 
             self.background_color = (
-
-              MONO_FONT_SETTINGS
-              if font_path == FIRA_MONO_BOLD_FONT_PATH
-
-              else SANS_FONT_SETTINGS
-
-            )['background_color']
+                MONO_FONT_SETTINGS
+                if font_path == FIRA_MONO_BOLD_FONT_PATH
+                else SANS_FONT_SETTINGS
+            )["background_color"]
 
         ### finally, define either black or white as the
         ### color for the cursor, whichever contrasts more
         ### with the current background color used
-        self.cursor_color = \
-            get_contrasting_bw(self.background_color)
-            
+        self.cursor_color = get_contrasting_bw(self.background_color)
+
     def check_syntax_highlighting(self):
         """Trigger syntax highlighting update, if suitable."""
         ### if the last time when an edition was performed
@@ -216,8 +193,9 @@ class SyntaxHighlighting:
         ### that no changes were performed, so there is no
         ### point in updating the syntax highlighting data;
         ### therefore, we cancel the operation by returning
-        if not self.last_edition_msecs: return
-            
+        if not self.last_edition_msecs:
+            return
+
         ### otherwise, there were changes, so we check
         ### wether the pre-defined delay between the last
         ### change and the present time has elapsed;
@@ -226,8 +204,7 @@ class SyntaxHighlighting:
         ### last_edition_msecs to 0, then update the syntax
         ### highlighting and apply it in the visible lines
 
-        if get_pygame_msecs() - self.last_edition_msecs \
-        > MSECS_TO_UPDATE_SYNTAX:
+        if get_pygame_msecs() - self.last_edition_msecs > MSECS_TO_UPDATE_SYNTAX:
 
             self.last_edition_msecs = 0
 
@@ -245,8 +222,8 @@ class SyntaxHighlighting:
         """Map and store syntax highlight data for text."""
         ### try mapping the syntax, generating data to help
         ### identify different parts of the text
-        try: self.highlight_data = \
-                        self.get_syntax_map(self.get_text())
+        try:
+            self.highlight_data = self.get_syntax_map(self.get_text())
 
         ### if the syntax mapping fails, for instance, due
         ### to a syntax error, create data that maps all
@@ -264,28 +241,21 @@ class SyntaxHighlighting:
         except SyntaxMappingError:
 
             self.highlight_data = {
-              
-              ## store a dict item where the line index is
-              ## the key and another dict is the value
-
-              line_index : {
-
-                ## in this dict, an interval representing
-                ## the indices of all items of the line
-                ## (character objects) is used as the
-                ## key, while the 'normal' string is used
-                ## as value, indicating that all content
-                ## must be considered normal text
-                (0, len(line)): 'normal'
-
-              }
-              
-              ## for each line_index and respective line
-              for line_index, line in enumerate(self.lines)
-
-              ## but only if the line isn't empty
-              if line
-
+                ## store a dict item where the line index is
+                ## the key and another dict is the value
+                line_index: {
+                    ## in this dict, an interval representing
+                    ## the indices of all items of the line
+                    ## (character objects) is used as the
+                    ## key, while the 'normal' string is used
+                    ## as value, indicating that all content
+                    ## must be considered normal text
+                    (0, len(line)): "normal"
+                }
+                ## for each line_index and respective line
+                for line_index, line in enumerate(self.lines)
+                ## but only if the line isn't empty
+                if line
             }
 
     def syntax_highlight_visible_lines(self):
@@ -297,7 +267,8 @@ class SyntaxHighlighting:
         ###
         ### in such case,  we abort the execution of
         ### the rest of this method by returning earlier
-        if self.last_edition_msecs: return
+        if self.last_edition_msecs:
+            return
 
         ### otherwise we go on and apply the syntax
         ### highlighting to the visible lines
@@ -306,27 +277,27 @@ class SyntaxHighlighting:
         ## highlight data locally, for quicker and easier
         ## access
 
-        theme_text_settings = self.theme_map['text_settings']
-        highlight_data      = self.highlight_data
+        theme_text_settings = self.theme_map["text_settings"]
+        highlight_data = self.highlight_data
 
         ## iterate over the visible lines and their indices,
         ## highlighting their text according to the
         ## highlighting data present
 
         for line_index, line in enumerate(
-          self.visible_lines,
-          start=self.top_visible_line_index
+            self.visible_lines, start=self.top_visible_line_index
         ):
 
             ## try popping out the interval data from the
             ## highlight data dict with the line index
 
-            try: interval_data = \
-                            highlight_data.pop(line_index)
+            try:
+                interval_data = highlight_data.pop(line_index)
 
             ## if there is no such data, skip iteration
             ## of this item
-            except KeyError: continue
+            except KeyError:
+                continue
 
             ## otherwise, we take needed measures so the
             ## interval data is used to highlight the
@@ -338,14 +309,13 @@ class SyntaxHighlighting:
             # start and ending indices
 
             for (
-              (including_start, excluding_end),
-              category_name
+                (including_start, excluding_end),
+                category_name,
             ) in interval_data.items():
-                
+
                 # retrieve the text settings for the
                 # category
-                category_text_settings = \
-                    theme_text_settings[category_name]
+                category_text_settings = theme_text_settings[category_name]
 
                 # each index in the interval represents
                 # the index of a character object;
@@ -354,9 +324,6 @@ class SyntaxHighlighting:
                 # text settings corresponding to the syntax
                 # category to the character in each index
 
-                for char_index in \
-                range(including_start, excluding_end):
+                for char_index in range(including_start, excluding_end):
 
-                    line[char_index].change_text_settings(
-                                       category_text_settings
-                                     )
+                    line[char_index].change_text_settings(category_text_settings)

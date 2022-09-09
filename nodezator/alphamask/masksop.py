@@ -42,10 +42,10 @@ from operator import sub, mul
 ### local imports
 
 from .utils import (
-                       size_from_alpha_values,
-                       unit_from_full_alpha_values,
-                       full_from_unit_alpha_values,
-                     )
+    size_from_alpha_values,
+    unit_from_full_alpha_values,
+    full_from_unit_alpha_values,
+)
 
 
 ### support operations (there are more after class
@@ -53,12 +53,11 @@ from .utils import (
 ### they are needed in the class definition just below)
 
 multiply_values = lambda values: reduce(mul, values)
-subtract_values = lambda values: max(
-                                   reduce(sub, values), 0
-                                 )
+subtract_values = lambda values: max(reduce(sub, values), 0)
 
 
 ### class definition
+
 
 class AlphaMaskOperationsBetweenMasks:
     """Provides operations between AlphaMask instances."""
@@ -107,42 +106,25 @@ class AlphaMaskOperationsBetweenMasks:
             the given operation.
         """
         return (
-
-          ### return new AlphaMask instance from the full
-          ### alpha values obtained
-
-          self.__class__.from_full_alpha_values(
-
-                           ## get full alpha values from
-                           ## this function
-                           map_alpha_at_same_positions(
-
-                             ## which, receives an operation
-                             operation,
-
-                             ## and also the full alpha
-                             ## values from this mask as
-                             ## well as from the given ones
-
-                             *(
-
-                               mask.full_alpha_values
-
-                               for mask
-                               in (self, *alpha_masks)
-
-                             )
-
-                           )
-
-                         )
+            ### return new AlphaMask instance from the full
+            ### alpha values obtained
+            self.__class__.from_full_alpha_values(
+                ## get full alpha values from
+                ## this function
+                map_alpha_at_same_positions(
+                    ## which, receives an operation
+                    operation,
+                    ## and also the full alpha
+                    ## values from this mask as
+                    ## well as from the given ones
+                    *(mask.full_alpha_values for mask in (self, *alpha_masks))
+                )
+            )
         )
 
-    maximum  = partialmethod(operate_on_full, max)
-    minimum  = partialmethod(operate_on_full, min)
-    subtract = partialmethod(
-                 operate_on_full, subtract_values
-               )
+    maximum = partialmethod(operate_on_full, max)
+    minimum = partialmethod(operate_on_full, min)
+    subtract = partialmethod(operate_on_full, subtract_values)
 
     def operate_on_full_ip(self, operation, *alpha_masks):
         """In-place equivalent of operate_on_full().
@@ -162,19 +144,8 @@ class AlphaMaskOperationsBetweenMasks:
         ### from the given one(s)
 
         full_alpha_values = map_alpha_at_same_positions(
-
-                              operation,
-
-                              *(
-
-                                mask.full_alpha_values
-
-                                for mask
-                                in (self, *alpha_masks)
-
-                              )
-
-                            )
+            operation, *(mask.full_alpha_values for mask in (self, *alpha_masks))
+        )
 
         ### obtain size of full alpha values
         size = size_from_alpha_values(full_alpha_values)
@@ -188,24 +159,21 @@ class AlphaMaskOperationsBetweenMasks:
         if size != self.size:
 
             raise ValueError(
-                    "the width and height of the given"
-                    " mask(s) must not be smaller that the"
-                    " width and height of this one"
-                  )
+                "the width and height of the given"
+                " mask(s) must not be smaller that the"
+                " width and height of this one"
+            )
 
         ### store full alpha values
         self.full_alpha_values = full_alpha_values
 
         ### store unit alpha values obtained by converting
         ### the full values
-        self.unit_alpha_values = \
-              unit_from_full_alpha_values(full_alpha_values)
+        self.unit_alpha_values = unit_from_full_alpha_values(full_alpha_values)
 
-    maximum_ip  = partialmethod(operate_on_full_ip, max)
-    minimum_ip  = partialmethod(operate_on_full_ip, min)
-    subtract_ip = partialmethod(
-                    operate_on_full_ip, subtract_values
-                  )
+    maximum_ip = partialmethod(operate_on_full_ip, max)
+    minimum_ip = partialmethod(operate_on_full_ip, min)
+    subtract_ip = partialmethod(operate_on_full_ip, subtract_values)
 
     def operate_on_unit(self, operation, *alpha_masks):
         """Same as operate_on_full(), but w/ unit values.
@@ -217,41 +185,23 @@ class AlphaMaskOperationsBetweenMasks:
         is applied in unit alpha values from the masks.
         """
         return (
-
-          ### return new AlphaMask instance from the unit
-          ### alpha values obtained
-
-          self.__class__.from_unit_alpha_values(
-
-                           ## get unit alpha values from
-                           ## this function
-                           map_alpha_at_same_positions(
-
-                             ## which, receives an operation
-                             operation,
-
-                             ## and also the full alpha
-                             ## values from this mask as
-                             ## well as from the given ones
-
-                             *(
-
-                               mask.full_alpha_values
-
-                               for mask
-                               in (self, *alpha_masks)
-
-                             )
-
-                           )
-
-                         )
-
+            ### return new AlphaMask instance from the unit
+            ### alpha values obtained
+            self.__class__.from_unit_alpha_values(
+                ## get unit alpha values from
+                ## this function
+                map_alpha_at_same_positions(
+                    ## which, receives an operation
+                    operation,
+                    ## and also the full alpha
+                    ## values from this mask as
+                    ## well as from the given ones
+                    *(mask.full_alpha_values for mask in (self, *alpha_masks))
+                )
+            )
         )
 
-    multiply = partialmethod(
-                 operate_on_unit, multiply_values
-               )
+    multiply = partialmethod(operate_on_unit, multiply_values)
 
     def operate_on_unit_ip(self, operation, *alpha_masks):
         """In-place equivalent of operate_on_unit().
@@ -271,19 +221,8 @@ class AlphaMaskOperationsBetweenMasks:
         ### from the given one(s)
 
         unit_alpha_values = map_alpha_at_same_positions(
-
-                              operation,
-
-                              *(
-
-                                mask.unit_alpha_values
-
-                                for mask
-                                in (self, *alpha_masks)
-
-                              )
-
-                            )
+            operation, *(mask.unit_alpha_values for mask in (self, *alpha_masks))
+        )
 
         ### obtain size of unit alpha values
         size = size_from_alpha_values(unit_alpha_values)
@@ -297,10 +236,10 @@ class AlphaMaskOperationsBetweenMasks:
         if size != self.size:
 
             raise ValueError(
-                    "the width and height of the given"
-                    " mask(s) must not be smaller that the"
-                    " width and height of this one"
-                  )
+                "the width and height of the given"
+                " mask(s) must not be smaller that the"
+                " width and height of this one"
+            )
 
         ### store unit alpha values
         self.unit_alpha_values = unit_alpha_values
@@ -308,17 +247,12 @@ class AlphaMaskOperationsBetweenMasks:
         ### store full alpha values obtained by converting
         ### the unit values
 
-        self.full_alpha_values = \
-            full_from_unit_alpha_values(unit_alpha_values)
+        self.full_alpha_values = full_from_unit_alpha_values(unit_alpha_values)
 
-    multiply_ip = partialmethod(
-                    operate_on_unit_ip, multiply_values
-                  )
+    multiply_ip = partialmethod(operate_on_unit_ip, multiply_values)
 
 
-def map_alpha_at_same_positions(
-      callable_obj, *alpha_values_from_multiple_masks
-    ):
+def map_alpha_at_same_positions(callable_obj, *alpha_values_from_multiple_masks):
     """Return values by operating on multiple alpha values.
 
     That is, we take the alpha values of multiple masks
@@ -348,26 +282,19 @@ def map_alpha_at_same_positions(
     ### alpha values
 
     return [
-
-      ## inner list represents the alpha values (either in
-      ## full or unit format) for a column of pixels
-
-      [
-
-        ## each item in this inner list is an alpha value
-        ## resulting from a call to the given callable
-        ## with a tuple containing all alpha values in that
-        ## position from each mask
-
-        callable_obj(values)
-        for values in zip(*columns)
-
-      ]
-
-      ## the columns of pixels are retrieved from the
-      ## collections representing alpha values from
-      ## multiple masks, zipped together so columns in
-      ## the same position are processed together
-      for columns in zip(*alpha_values_from_multiple_masks)
-
+        ## inner list represents the alpha values (either in
+        ## full or unit format) for a column of pixels
+        [
+            ## each item in this inner list is an alpha value
+            ## resulting from a call to the given callable
+            ## with a tuple containing all alpha values in that
+            ## position from each mask
+            callable_obj(values)
+            for values in zip(*columns)
+        ]
+        ## the columns of pixels are retrieved from the
+        ## collections representing alpha values from
+        ## multiple masks, zipped together so columns in
+        ## the same position are processed together
+        for columns in zip(*alpha_values_from_multiple_masks)
     ]

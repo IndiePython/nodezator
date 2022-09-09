@@ -27,8 +27,7 @@ from ..line import Line
 from .op import GeneralOperations
 
 from .navigation import Navigation
-from .syntaxhigh import \
-                                        SyntaxHighlighting
+from .syntaxhigh import SyntaxHighlighting
 
 from .modes.normal import NormalMode
 from .modes.insert import InsertMode
@@ -48,19 +47,14 @@ from ..constants import EDITING_AREA_RECT
 
 
 class Cursor(
-
-      ## general operations
-
-      GeneralOperations,
-      Navigation,
-      SyntaxHighlighting,
-
-      ## mode related operations
-
-      NormalMode,
-      InsertMode
-
-    ):
+    ## general operations
+    GeneralOperations,
+    Navigation,
+    SyntaxHighlighting,
+    ## mode related operations
+    NormalMode,
+    InsertMode,
+):
     """Vim-like text cursor.
 
     Contains controls and behaviour to support operations
@@ -82,7 +76,7 @@ class Cursor(
     ## mapped to an empty surface; such character is needed
     ## cause we right-justify the line number strings with
     ## space characters when blitting them
-    DIGIT_SURF_MAP  = {' ': EMPTY_SURF}
+    DIGIT_SURF_MAP = {" ": EMPTY_SURF}
 
     ## also create a class attribute which, once updated,
     ## will represent the width of the digit surfaces;
@@ -90,16 +84,9 @@ class Cursor(
     ## monospaced font, so they'll all have the same width;
     DIGIT_SURF_WIDTH = 0
 
-
     ### methods
 
-    def __init__(
-          self,
-          text_editor,
-          text,
-          font_path,
-          syntax_highlighting
-        ):
+    def __init__(self, text_editor, text, font_path, syntax_highlighting):
         """Store variables and perform setups.
 
         Parameters
@@ -151,14 +138,11 @@ class Cursor(
         ### set normal render settings based on the
         ### font style and syntax highlighting used
 
-        Line.set_normal_render_settings(
-               font_path, syntax_highlighting
-             )
+        Line.set_normal_render_settings(font_path, syntax_highlighting)
 
         ### store the attribute char_height of the Line
         ### class locally
         char_height = Line.char_height
-
 
         ### create a rect for the cursor
 
@@ -167,33 +151,23 @@ class Cursor(
         ## good, but this is arbitrary; the cursor assumes
         ## the width of characters under it, so it's width
         ## changes multiple times over the editing session)
-        arbitrary_width = char_height//3
+        arbitrary_width = char_height // 3
 
         ## instantiate and store rect
 
-        self.rect = Rect(
-                      EDITING_AREA_RECT.topleft,
-                      (arbitrary_width, char_height)
-                    )
+        self.rect = Rect(EDITING_AREA_RECT.topleft, (arbitrary_width, char_height))
 
         ### create list containing custom objects
         ### representing the lines of text
 
         self.lines = (
-
-          ## if text is not empty, create a Line object
-          ## for the text in each line
-
-          [
-            Line(line_text)
-            for line_text in text.splitlines()
-          ]
-          if text
-
-          ## otherwise just create a list with a single
-          ## empty line
-          else [Line('')]
-
+            ## if text is not empty, create a Line object
+            ## for the text in each line
+            [Line(line_text) for line_text in text.splitlines()]
+            if text
+            ## otherwise just create a list with a single
+            ## empty line
+            else [Line("")]
         )
 
         ### create collections/structures to manage
@@ -202,21 +176,14 @@ class Cursor(
         ## create a special list subclass to hold visible
         ## lines
 
-        self.visible_lines = \
-          List2D(
-            self.lines[:NUMBER_OF_VISIBLE_LINES]
-          )
+        self.visible_lines = List2D(self.lines[:NUMBER_OF_VISIBLE_LINES])
 
         ## define and store fixed y values for the visible
         ## lines
 
         y = EDITING_AREA_RECT.y
 
-        self.y_values = [
-                           y + (char_height * i)
-                           for i in
-                           range(NUMBER_OF_VISIBLE_LINES)
-                        ]
+        self.y_values = [y + (char_height * i) for i in range(NUMBER_OF_VISIBLE_LINES)]
 
         ## define the index of the line among self.lines
         ## which is the first visible line
@@ -244,8 +211,7 @@ class Cursor(
         ## set syntax highlighting; this may enable or
         ## disable syntax highlighting, depending on the
         ## given arguments
-        self.set_syntax_highlighting(
-                            font_path, syntax_highlighting)
+        self.set_syntax_highlighting(font_path, syntax_highlighting)
 
         ## create and store surfaces to show line number
         self.create_line_number_surfaces()
@@ -271,7 +237,7 @@ class Cursor(
         ## textarea-like text editor, instead of using the
         ## vim keybindings;
 
-        if USER_PREFS['TEXT_EDITOR_BEHAVIOR'] == 'default':
+        if USER_PREFS["TEXT_EDITOR_BEHAVIOR"] == "default":
 
             ## start the insert text mode
             self.insert_before()
@@ -290,29 +256,21 @@ class Cursor(
         ### the existing digits surf map
 
         self.DIGIT_SURF_MAP.update(
-
-          ## key-value pair
-
-          (
-
-            ## the digit (a string)
-            digit,
-
-            ## its surface
-
-            render_text(
-              digit,
-              font_height=Line.char_height,
-              font_path=FIRA_MONO_BOLD_FONT_PATH,
-              foreground_color=self.lineno_fg,
-              background_color=self.lineno_bg
+            ## key-value pair
+            (
+                ## the digit (a string)
+                digit,
+                ## its surface
+                render_text(
+                    digit,
+                    font_height=Line.char_height,
+                    font_path=FIRA_MONO_BOLD_FONT_PATH,
+                    foreground_color=self.lineno_fg,
+                    background_color=self.lineno_bg,
+                ),
             )
-
-          )
-
-          ## use each digit
-          for digit in digits
-
+            ## use each digit
+            for digit in digits
         )
 
         ### also store the width of an arbitrary digit
@@ -321,5 +279,4 @@ class Cursor(
         ### the digit surfaces beside each visible line
         ### in the text editing area;
 
-        self.__class__.DIGIT_SURF_WIDTH = \
-                    self.DIGIT_SURF_MAP['0'].get_width()
+        self.__class__.DIGIT_SURF_WIDTH = self.DIGIT_SURF_MAP["0"].get_width()

@@ -16,9 +16,9 @@ from ..config import APP_REFS
 from ..userprefsman.main import USER_PREFS
 
 from ..dialog import (
-              create_and_show_dialog,
-              show_dialog_from_key,
-            )
+    create_and_show_dialog,
+    show_dialog_from_key,
+)
 
 from ..pygameconstants import SCREEN_RECT, blit_on_screen
 
@@ -61,9 +61,9 @@ from ..editing.main import EditingAssistant
 from ..graphman.main import GraphManager
 
 from ..graphman.nodepacksissues import (
-                         get_formatted_current_node_packs,
-                         check_node_packs,
-                       )
+    get_formatted_current_node_packs,
+    check_node_packs,
+)
 
 from ..graphman.exception import NODE_PACK_ERRORS
 
@@ -94,42 +94,38 @@ logger = get_new_logger(__name__)
 ### constants
 
 STATE_NAMES = (
-  'no_file',
-  'loaded_file',
-  'moving_object',
-  'segment_definition',
-  'segment_severance',
-  'box_selection'
+    "no_file",
+    "loaded_file",
+    "moving_object",
+    "segment_definition",
+    "segment_severance",
+    "box_selection",
 )
 
 BEHAVIOUR_NAMES = (
-  'event_handling',
-  'keyboard_input_handling',
-  'update',
-  'draw',
+    "event_handling",
+    "keyboard_input_handling",
+    "update",
+    "draw",
 )
 
 
 ### class definition
 
+
 class WindowManager(
-
-      ### state-related operations
-
-      NoFileState,
-      LoadedFileState,
-      SegmentDefinitionState,
-      SegmentSeveranceState,
-      MovingObjectState,
-      BoxSelectionState,
-
-      ### support operations
-
-      MenuSetup,
-      MonitorLabelSetup,
-      FileOperations,
-
-    ):
+    ### state-related operations
+    NoFileState,
+    LoadedFileState,
+    SegmentDefinitionState,
+    SegmentSeveranceState,
+    MovingObjectState,
+    BoxSelectionState,
+    ### support operations
+    MenuSetup,
+    MonitorLabelSetup,
+    FileOperations,
+):
     """Instantiates widgets and other managers."""
 
     setup_switches = setup_switches
@@ -167,21 +163,15 @@ class WindowManager(
 
         ### create background obj
 
-        self.background = Object2D(
-                            rect=Rect(0, 0, 0, 0)
-                          )
+        self.background = Object2D(rect=Rect(0, 0, 0, 0))
 
         ### create separator obj
 
-        self.separator = Object2D(
-                           rect=Rect(0, 0, 0, 0)
-                         )
+        self.separator = Object2D(rect=Rect(0, 0, 0, 0))
 
         ### append window resize setup method
 
-        APP_REFS.window_resize_setups.append( 
-          self.resize_setups
-        )
+        APP_REFS.window_resize_setups.append(self.resize_setups)
 
     def resize_setups(self):
 
@@ -205,10 +195,12 @@ class WindowManager(
         ### check if a valid filepath sits on 'source_path'
         ### attribute of the APP_REFS object (it means a
         ### file is loaded)
-        try: APP_REFS.source_path
+        try:
+            APP_REFS.source_path
 
         ### if not, pick 'no_file' state name
-        except AttributeError: state_name = 'no_file'
+        except AttributeError:
+            state_name = "no_file"
 
         ### otherwise perform setups and add the update
         ### viz widgets to the methods to be executed when
@@ -225,45 +217,40 @@ class WindowManager(
             ### performing additional checks and
             ### setups
 
-            original_node_packs = current_node_packs = (
-
-              get_formatted_current_node_packs()
-
-            )
+            original_node_packs = (
+                current_node_packs
+            ) = get_formatted_current_node_packs()
 
             must_try_loading_file = True
 
             while True:
 
-                try: check_node_packs(current_node_packs)
+                try:
+                    check_node_packs(current_node_packs)
 
                 except NODE_PACK_ERRORS as err:
 
                     message = (
-                       "One of the provided node packs"
-                       " presented the following issue:"
-                      f" {err}; what would you like to do?"
+                        "One of the provided node packs"
+                        " presented the following issue:"
+                        f" {err}; what would you like to do?"
                     )
 
                     options = (
-                      ("Select new node packs", 'select'),
-                      ("Cancel loading file",   'cancel'),
+                        ("Select new node packs", "select"),
+                        ("Cancel loading file", "cancel"),
                     )
-                    
+
                     answer = create_and_show_dialog(
-                               message,
-                               options,
-                               level_name='warning',
-                             )
+                        message,
+                        options,
+                        level_name="warning",
+                    )
 
-                    if answer == 'select':
+                    if answer == "select":
 
-                        current_node_packs = (
-
-                          select_path(
+                        current_node_packs = select_path(
                             caption="Select new node paths"
-                          )
-
                         )
 
                     else:
@@ -271,7 +258,8 @@ class WindowManager(
                         must_try_loading_file = False
                         break
 
-                else: break
+                else:
+                    break
 
             if must_try_loading_file:
 
@@ -280,17 +268,11 @@ class WindowManager(
                 ### as if we changed the file, so we save
                 ### its current contents before assigning
                 ### the new node packs
-                
-                if (
-                     set(current_node_packs)
-                  != set(original_node_packs)
-                ):
 
-                    APP_REFS.data['node_packs'] = [
+                if set(current_node_packs) != set(original_node_packs):
 
-                      str(path) 
-                      for path in current_node_packs
-
+                    APP_REFS.data["node_packs"] = [
+                        str(path) for path in current_node_packs
                     ]
 
                     ## pass content from source to backup
@@ -298,31 +280,26 @@ class WindowManager(
                     ## between log files in Python
 
                     save_timestamped_backup(
-                      APP_REFS.source_path,
-                      USER_PREFS['NUMBER_OF_BACKUPS']
+                        APP_REFS.source_path, USER_PREFS["NUMBER_OF_BACKUPS"]
                     )
 
                     ## save the data in the source,
                     ## since it now have different node
                     ## packs
-                    save_pyl(
-                      APP_REFS.data, APP_REFS.source_path
-                    )
+                    save_pyl(APP_REFS.data, APP_REFS.source_path)
 
                     ## finally, copy the contents of the
                     ## source to the swap file
 
                     APP_REFS.swap_path.write_text(
-                      APP_REFS.source_path.read_text(
-                        encoding='utf-8'
-                      ),
-                      encoding='utf-8'
+                        APP_REFS.source_path.read_text(encoding="utf-8"),
+                        encoding="utf-8",
                     )
 
-            
                 ### try preparing graph manager for
                 ### edition
-                try: APP_REFS.gm.prepare_for_new_session()
+                try:
+                    APP_REFS.gm.prepare_for_new_session()
 
                 ### if it fails, report the problem to
                 ### user and pick the 'no_file' state name
@@ -336,26 +313,20 @@ class WindowManager(
                     ## report problem to user
 
                     create_and_show_dialog(
-
-                       (
-                         "Error while trying to prepare"
-                         " for new session (check user log"
-                         " on Help menu for more info)"
-                        f": {err}"
-                       ),
-
-                       level_name = 'error',
-
+                        (
+                            "Error while trying to prepare"
+                            " for new session (check user log"
+                            " on Help menu for more info)"
+                            f": {err}"
+                        ),
+                        level_name="error",
                     )
 
-                    state_name = 'no_file'
+                    state_name = "no_file"
 
                     ## also log it
 
-                    msg = (
-                      "Unexpected error while trying"
-                      " to prepare for new session"
-                    )
+                    msg = "Unexpected error while trying" " to prepare for new session"
 
                     logger.exception(msg)
                     USER_LOGGER.exception(msg)
@@ -369,21 +340,18 @@ class WindowManager(
                     store_recent_file(APP_REFS.source_path)
                     self.build_app_widgets()
 
-                    state_name = 'loaded_file'
+                    state_name = "loaded_file"
 
             ### otherwise, trigger cancellation of file
             ### loading and pick the 'no_file' state name
 
             else:
 
-                show_dialog_from_key(
-                  'cancelled_file_loading_dialog'
-                )
+                show_dialog_from_key("cancelled_file_loading_dialog")
 
                 set_file_loading_cancellation()
 
-                state_name = 'no_file'
-
+                state_name = "no_file"
 
         ### set the state picked
         self.set_state(state_name)
@@ -395,13 +363,16 @@ class WindowManager(
         ### 'source_path'
         ### attribute of the APP_REFS object (it means a
         ### file is loaded)
-        try: APP_REFS.source_path
+        try:
+            APP_REFS.source_path
 
         ### if not, just pass
-        except AttributeError: pass
+        except AttributeError:
+            pass
 
         ### otherwise, create the popup menu
-        else: self.create_canvas_popup_menu()
+        else:
+            self.create_canvas_popup_menu()
 
     def build_state_behaviour_map(self):
         """Build map with behaviours for each state."""
@@ -424,20 +395,16 @@ class WindowManager(
 
                 ## build the behaviour name for this
                 ## state
-                full_behaviour_name = \
-                    '_'.join((state_name, behaviour_name))
+                full_behaviour_name = "_".join((state_name, behaviour_name))
 
                 ## retrieve and store the behaviour using
                 ## the name you put together; if the
                 ## behaviour doesn't exist, an empty
                 ## function is used instead
 
-                behaviour_map[behaviour_name] = \
-                                      getattr(
-                                        self,
-                                        full_behaviour_name,
-                                        empty_function
-                                      )
+                behaviour_map[behaviour_name] = getattr(
+                    self, full_behaviour_name, empty_function
+                )
 
     def set_state(self, state_name):
         """Assign behaviours according to given state.
@@ -453,7 +420,7 @@ class WindowManager(
         ### assign behaviours to corresponding attributes
 
         for behaviour_name in BEHAVIOUR_NAMES:
-            
+
             behaviour = behaviour_map[behaviour_name]
             setattr(self, behaviour_name, behaviour)
 
@@ -461,10 +428,9 @@ class WindowManager(
         ### attribute containing a callable which calls
         ### the gathered behaviours whenever called
 
-        self.handle_input = CallList((
-          self.event_handling,
-          self.keyboard_input_handling
-        ))
+        self.handle_input = CallList(
+            (self.event_handling, self.keyboard_input_handling)
+        )
 
     def build_support_widgets(self):
         """Build widgets which support operations."""
@@ -476,9 +442,12 @@ class WindowManager(
 
         ### instantiate hide/show switches
 
-        try: APP_REFS.source_path
-        except AttributeError: pass
-        else: self.setup_switches()
+        try:
+            APP_REFS.source_path
+        except AttributeError:
+            pass
+        else:
+            self.setup_switches()
 
         ### separator for aesthetics (placed below
         ### menubar)
@@ -488,19 +457,16 @@ class WindowManager(
 
         ### background surface
 
-        try: APP_REFS.source_path
-        except AttributeError: bg_color = WINDOW_BG
-        else: bg_color = GRAPH_BG
+        try:
+            APP_REFS.source_path
+        except AttributeError:
+            bg_color = WINDOW_BG
+        else:
+            bg_color = GRAPH_BG
 
-        self.background.image = (
-          render_rect(*SCREEN_RECT.size, bg_color)
-        )
+        self.background.image = render_rect(*SCREEN_RECT.size, bg_color)
 
-        self.background.rect.size = (
-
-          self.background.image.get_size()
-
-        )
+        self.background.rect.size = self.background.image.get_size()
 
     def fix_menubar_size(self):
 
@@ -508,9 +474,7 @@ class WindowManager(
 
         width = SCREEN_RECT.width
 
-        self.menubar.image = render_rect(
-                               width, height, MENU_BG
-                             )
+        self.menubar.image = render_rect(width, height, MENU_BG)
 
         self.menubar.rect.width = width
 
@@ -520,19 +484,11 @@ class WindowManager(
 
         separator = self.separator
 
-        separator.image = render_separator(
-                            SCREEN_RECT.width
-                          )
+        separator.image = render_separator(SCREEN_RECT.width)
 
-        separator.rect.size = (
+        separator.rect.size = self.separator.image.get_size()
 
-          self.separator.image.get_size()
-
-        )
-
-        separator.rect.topleft = (
-          self.menubar.rect.bottomleft
-        )
+        separator.rect.topleft = self.menubar.rect.bottomleft
 
     def build_app_widgets(self):
         """Build graph management related widgets."""
@@ -563,10 +519,7 @@ class WindowManager(
         unhighlighted, so the next loop holder appears
         highlighted.
         """
-        blit_on_screen(
-          UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size],
-          (0, 0)
-        )
+        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
 
     def __repr__(self):
         """Return unambiguous string representation."""
@@ -574,6 +527,7 @@ class WindowManager(
 
 
 ### utility
+
 
 def set_file_loading_cancellation():
     """Perform setups to cancel loading file.
@@ -589,7 +543,7 @@ def set_file_loading_cancellation():
     ### delete attributes holding paths whose existence
     ### indicate the need to load a file
 
-    for attr_name in ('source_path', 'swap_path'):
+    for attr_name in ("source_path", "swap_path"):
         delattr(APP_REFS, attr_name)
 
     ### also clean up data from a possible previous
@@ -597,6 +551,4 @@ def set_file_loading_cancellation():
     APP_REFS.data.clear()
 
 
-perform_startup_preparations = (
-  WindowManager().perform_startup_preparations
-)
+perform_startup_preparations = WindowManager().perform_startup_preparations

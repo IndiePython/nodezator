@@ -6,6 +6,7 @@ from collections.abc import Mapping
 ### function to merge dicts representing trees
 ### (dicts are nested or not)
 
+
 def merge_nested_dicts(*dicts):
     """Return new dict from given ones.
 
@@ -52,6 +53,7 @@ def merge_nested_dicts(*dicts):
     ### finally return the resulting tree/dict
     return tree
 
+
 def _yield_branch_objects(branch, node):
     """Yield each subbranch for each given branch.
 
@@ -75,19 +77,18 @@ def _yield_branch_objects(branch, node):
 
         if isinstance(value, Mapping):
 
-            yield from _yield_branch_objects(
-                         branch[:] + [key],
-                         value
-                       )
+            yield from _yield_branch_objects(branch[:] + [key], value)
 
         ## otherwise the value is a leaf; we can finally
         ## yield it along with its stem, both inside a
         ## dict representing the branch
 
-        else: yield {
-                'stem': branch[:] + [key],
-                'leaf': value,
-              }
+        else:
+            yield {
+                "stem": branch[:] + [key],
+                "leaf": value,
+            }
+
 
 def _implant_nodes(tree, branch):
     """Implant nodes of branch in the given tree.
@@ -108,8 +109,8 @@ def _implant_nodes(tree, branch):
     """
     ### retreive stem and leaf of branch
 
-    stem = branch['stem']
-    leaf = branch['leaf']
+    stem = branch["stem"]
+    leaf = branch["leaf"]
 
     ### since we'll use list.pop() to obtain
     ### each node of the stem, we reverse its
@@ -120,7 +121,7 @@ def _implant_nodes(tree, branch):
     ### while not reaching the break point...
 
     while True:
-        
+
         ### pop a node from the stem
         node = stem.pop()
 
@@ -153,10 +154,12 @@ def _implant_nodes(tree, branch):
                 tree[node] = {}
                 tree = tree[node]
 
-            else: tree = tree[node]
+            else:
+                tree = tree[node]
 
 
 ### function to yield attributes from tree leaves
+
 
 def yield_tree_attrs(tree, attr_name, children_attr_name):
     """Yield specific attributes in objects in a tree.
@@ -174,21 +177,24 @@ def yield_tree_attrs(tree, attr_name, children_attr_name):
     ### yield attributes from each children, if there are
     ### children
 
-    try: children = getattr(tree, children_attr_name)
+    try:
+        children = getattr(tree, children_attr_name)
 
-    except AttributeError: pass
+    except AttributeError:
+        pass
 
     else:
 
         for child in children:
 
-            yield from yield_tree_attrs(
-                         child, attr_name, children_attr_name
-                       )
+            yield from yield_tree_attrs(child, attr_name, children_attr_name)
 
     ### yield attribute from the object itself, if it has
     ### such attribute
 
-    try: value = getattr(tree, attr_name)
-    except AttributeError: pass
-    else: yield value 
+    try:
+        value = getattr(tree, attr_name)
+    except AttributeError:
+        pass
+    else:
+        yield value

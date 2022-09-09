@@ -119,8 +119,8 @@ class SizePositionMethods:
             ### dimension relative to each union rect
             ### dimension
 
-            w_ratio = infl_w / union.w 
-            h_ratio = infl_h / union.h 
+            w_ratio = infl_w / union.w
+            h_ratio = infl_h / union.h
 
             ### obtain a vector from the center of the union
             union_center_v = Vector2(union.center)
@@ -134,8 +134,7 @@ class SizePositionMethods:
 
                 ### get distances x and y from center of
                 ### this rect to union center
-                center_dx, center_dy = \
-                             rect.center - union_center_v
+                center_dx, center_dy = rect.center - union_center_v
 
                 ### multiply each distance by the
                 ### corresponding ratio to obtain the
@@ -154,7 +153,6 @@ class SizePositionMethods:
                 rect.centerx = union.centerx + center_dx
                 rect.centery = union.centery + center_dy
 
-
             ### break out of the loop earlier if the
             ### size difference is too small
 
@@ -167,15 +165,16 @@ class SizePositionMethods:
             ## if the length of the difference is 1 or less,
             ## it is accurate enough, so we exit the loop
 
-            if size_difference.length() <= 1: break
+            if size_difference.length() <= 1:
+                break
 
             ### otherwise, get a union rect to use in the
             ### next iteration; this union rect is
             ### already updated considering any changes
             ### in the underlying rects positions made
             ### in this loop
-            else: union = self.union_rect
-
+            else:
+                union = self.union_rect
 
     def clamp(self, *args):
         """Return the union rect clamped using *args.
@@ -256,7 +255,7 @@ class SizePositionMethods:
         ### use the topleft and size values of this updated
         ### union as our own by assigning them to ours
 
-        self.size    = union.size
+        self.size = union.size
         self.topleft = union.topleft
 
     def unionall(self, *args):
@@ -297,7 +296,7 @@ class SizePositionMethods:
         ### use the topleft and size values of this updated
         ### union as our own by assigning them to ours
 
-        self.size    = union.size
+        self.size = union.size
         self.topleft = union.topleft
 
     def fit(self, *args):
@@ -306,7 +305,7 @@ class SizePositionMethods:
         *args is usually a single pygame.Rect instance or
         integers representing such instance (either
         isolated or in a sequence like a tuple or list).
-        
+
         The aspect ratio of the union rect used is
         preserved, so the new rectangle may be smaller
         than the target in either width or height.

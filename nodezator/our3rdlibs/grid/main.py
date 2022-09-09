@@ -2,7 +2,7 @@
 
 ### third-party imports
 
-from pygame      import Rect
+from pygame import Rect
 from pygame.math import Vector2
 
 
@@ -47,23 +47,20 @@ def enforce_multiple(unit_rect, area_rect):
 
     if area_width % unit_width or area_height % unit_height:
 
-        new_width  = get_reaching_multiple(
-                            unit_width, area_width)
-        new_height = get_reaching_multiple(
-                            unit_height, area_height)
+        new_width = get_reaching_multiple(unit_width, area_width)
+        new_height = get_reaching_multiple(unit_height, area_height)
 
-        area_rect = Rect(*area_rect.topleft,
-                         new_width, new_height)
+        area_rect = Rect(*area_rect.topleft, new_width, new_height)
 
     return unit_rect, area_rect
 
 
 def generate_grid_lines(
-      unit_rect,
-      area_rect,
-      use_vectors=False,
-      separate_orientation=False,
-    ):
+    unit_rect,
+    area_rect,
+    use_vectors=False,
+    separate_orientation=False,
+):
     """Generate and return a list of grid-like lines.
 
     The list items are tuples containing two points each,
@@ -88,15 +85,13 @@ def generate_grid_lines(
     """
     unit_width, unit_height = unit_rect.size
 
-    if (area_rect.width  < unit_width) \
-    or (area_rect.height < unit_height):
-        raise ValueError(
-              "area_rect mustn't be smaller than unit_rect.")
+    if (area_rect.width < unit_width) or (area_rect.height < unit_height):
+        raise ValueError("area_rect mustn't be smaller than unit_rect.")
 
     ### get rect edges
 
-    top,  bottom = area_rect.top,  area_rect.bottom
-    left, right  = area_rect.left, area_rect.right
+    top, bottom = area_rect.top, area_rect.bottom
+    left, right = area_rect.left, area_rect.right
 
     ### get value for cross sections in x and y axes
 
@@ -105,44 +100,39 @@ def generate_grid_lines(
 
     ### store start and end point pairs for each orientation
 
-    vert_start_points = [(x,    top) for x in x_sections]
-    vert_end_points   = [(x, bottom) for x in x_sections]
+    vert_start_points = [(x, top) for x in x_sections]
+    vert_end_points = [(x, bottom) for x in x_sections]
 
-    horiz_start_points = [(left,  y) for y in y_sections]
-    horiz_end_points   = [(right, y) for y in y_sections]
+    horiz_start_points = [(left, y) for y in y_sections]
+    horiz_end_points = [(right, y) for y in y_sections]
 
     ### if requested, convert points into vectors
 
     if use_vectors:
-        vert_start_points  = list(map(
-                                Vector2, vert_start_points))
-        vert_end_points    = list(map(
-                                Vector2, vert_end_points))
-        horiz_start_points = list(map(
-                                Vector2, horiz_start_points))
-        horiz_end_points   = list(map(
-                                Vector2, horiz_end_points))
+        vert_start_points = list(map(Vector2, vert_start_points))
+        vert_end_points = list(map(Vector2, vert_end_points))
+        horiz_start_points = list(map(Vector2, horiz_start_points))
+        horiz_end_points = list(map(Vector2, horiz_end_points))
 
     ### pair start and end points in each orientation;
     ### the paired points represent straight lines,
     ### so that's how they're called;
 
-    vert_lines = \
-        list(zip(vert_start_points, vert_end_points))
+    vert_lines = list(zip(vert_start_points, vert_end_points))
 
-    horiz_lines = \
-        list(zip(horiz_start_points, horiz_end_points))
+    horiz_lines = list(zip(horiz_start_points, horiz_end_points))
 
     ### if requested, return both horizontal and vertical
     ### lines as they are, separated by orientation
-    if separate_orientation: return horiz_lines, vert_lines
+    if separate_orientation:
+        return horiz_lines, vert_lines
 
     ### otherwise, return a concatenated single list
-    else: return horiz_lines + vert_lines 
+    else:
+        return horiz_lines + vert_lines
 
-def move_grid_lines_along_axis(
-      lines, axis_name, delta, unit_rect, area_rect
-    ):
+
+def move_grid_lines_along_axis(lines, axis_name, delta, unit_rect, area_rect):
     """Move vectors so they are always inside grid area.
 
     lines
@@ -165,7 +155,7 @@ def move_grid_lines_along_axis(
     moved by the exact amount, but rather by the remainder
     of such amount in relation to the respective unit rect
     dimension (width for x axis and height for y axis).
-    
+
     This is because lines which go out of the grid area
     are 'warped' to the opposite side of the grid area as to
     appear that the grid is moving indefinitely, thus
@@ -185,7 +175,7 @@ def move_grid_lines_along_axis(
     5, 50 or 500 units (try using the rotate method of
     the deque), the integer 1 always end up in the
     same position.
-    
+
     Also try rotating it by 1 unit and then by 6 units.
     It always end up only "walking" one position, right?
     Thus, in the end, if you use the remainder of the
@@ -201,29 +191,34 @@ def move_grid_lines_along_axis(
     """
     ### based on axis_name, define attributes or raise error
 
-    if    axis_name == 'x': length_attr = 'width'
-    elif  axis_name == 'y': length_attr = 'height'
-    else: raise ValueError("axis_name must be 'x' or 'y'.")
+    if axis_name == "x":
+        length_attr = "width"
+    elif axis_name == "y":
+        length_attr = "height"
+    else:
+        raise ValueError("axis_name must be 'x' or 'y'.")
 
     ### store variables/alias
 
-    t = getattr(area_rect, length_attr) # total_length
-    u = getattr(unit_rect, length_attr) # unit_length
+    t = getattr(area_rect, length_attr)  # total_length
+    u = getattr(unit_rect, length_attr)  # unit_length
     d = delta
 
     ### if movement is greater or equal to an unit length,
     ### decrease movement to remainder; otherwise
     ### just use movement as is.
 
-    if d > 0: amount = d %  u if  d >= u else d
-    else:     amount = d % -u if -d >= u else d
+    if d > 0:
+        amount = d % u if d >= u else d
+    else:
+        amount = d % -u if -d >= u else d
 
     ### for each in each line, perform movement;
     ### also perform offsets if needed.
     for line in lines:
         for vector in line:
             ## perform movement
-            v = getattr(vector, axis_name) # v 'means' value
+            v = getattr(vector, axis_name)  # v 'means' value
             setattr(vector, axis_name, v + amount)
 
             ## perform offset if needed
@@ -233,12 +228,15 @@ def move_grid_lines_along_axis(
             # if vector reaches or surpasses the edge of
             # the total length, move it back by one total
             # length
-            if v >= t: setattr(vector, axis_name, v + -t)
+            if v >= t:
+                setattr(vector, axis_name, v + -t)
 
             # if, on the contrary, vector goes back beyond
             # the origin, move it forward by one total
             # length
-            elif v < 0: setattr(vector, axis_name, v + t)
+            elif v < 0:
+                setattr(vector, axis_name, v + t)
+
 
 def get_grid_rects(pos, scroll_x, scroll_y, unit_rect):
     """Return screen and level grid rects.
@@ -275,10 +273,10 @@ def get_grid_rects(pos, scroll_x, scroll_y, unit_rect):
     ### we store it in a vector object
 
     horizontal_rest = scroll_x % unit_width
-    vertical_rest   = scroll_y % unit_height
+    vertical_rest = scroll_y % unit_height
 
     x_rest = (x - horizontal_rest) % unit_width
-    y_rest = (y -   vertical_rest) % unit_height
+    y_rest = (y - vertical_rest) % unit_height
 
     grid_x = x - x_rest
     grid_y = y - y_rest
@@ -289,6 +287,6 @@ def get_grid_rects(pos, scroll_x, scroll_y, unit_rect):
 
     screen_rect = Rect(topleft, unit_size)
 
-    level_rect  = screen_rect.move(-scroll_x, -scroll_y)
+    level_rect = screen_rect.move(-scroll_x, -scroll_y)
 
     return screen_rect, level_rect

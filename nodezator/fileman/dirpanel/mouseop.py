@@ -4,7 +4,7 @@
 
 from pygame import KMOD_CTRL, KMOD_SHIFT
 
-from pygame.key  import get_mods  as get_mods_bitmask
+from pygame.key import get_mods as get_mods_bitmask
 from pygame.time import get_ticks as get_milliseconds
 
 
@@ -32,8 +32,8 @@ class MouseOperations:
         ### retrieve pressed state of ctrl and shift keys
 
         mods_bitmask = get_mods_bitmask()
-        ctrl         = mods_bitmask & KMOD_CTRL
-        shift        = mods_bitmask & KMOD_SHIFT
+        ctrl = mods_bitmask & KMOD_CTRL
+        shift = mods_bitmask & KMOD_SHIFT
 
         ### check whether any path obj was the target of
         ### the mouse release action
@@ -50,10 +50,7 @@ class MouseOperations:
                 ## use it to obtain the interval in
                 ## milliseconds since the last mouse release
 
-                msecs_since_last = (
-                  current_release_msecs
-                  - self.last_release_msecs
-                )
+                msecs_since_last = current_release_msecs - self.last_release_msecs
 
                 ## if such time is less than or equal the
                 ## maximum time defined for a second mouse
@@ -64,8 +61,7 @@ class MouseOperations:
                 ## this operation only makes a difference
                 ## if the path is an existing directory
 
-                if msecs_since_last <= \
-                MAX_MSECS_TO_2ND_MOUSE_EVENT:
+                if msecs_since_last <= MAX_MSECS_TO_2ND_MOUSE_EVENT:
                     path_obj.load()
 
                 ## otherwise, we consider as if the path
@@ -82,8 +78,7 @@ class MouseOperations:
                         self.select_single_path(path_obj)
 
                     elif ctrl and not shift:
-                        self.revert_selection_state(
-                                              path_obj)
+                        self.revert_selection_state(path_obj)
                     elif shift and not ctrl:
                         self.extend_selection(path_obj)
 
@@ -91,8 +86,7 @@ class MouseOperations:
                 ## we store the measured milliseconds as
                 ## the more recent time measurement of a
                 ## mouse release event
-                self.last_release_msecs = \
-                                      current_release_msecs
+                self.last_release_msecs = current_release_msecs
 
                 ## finally since you found the colliding
                 ## path obj, you know the others didn't
@@ -112,8 +106,7 @@ class MouseOperations:
             path object targeted by the mouse.
         """
         ### deselect all paths
-        self.selection_states[:] = \
-                        [False] * len(self.selection_states)
+        self.selection_states[:] = [False] * len(self.selection_states)
 
         ### reference the path
         path = path_obj.path
@@ -130,7 +123,8 @@ class MouseOperations:
 
         ### otherwise, just assign None to the
         ### last selected index
-        else: self.last_selected_index = None
+        else:
+            self.last_selected_index = None
 
         ### update appearance of all paths
         self.update_path_objs_appearance()
@@ -154,7 +148,8 @@ class MouseOperations:
         path = path_obj.path
 
         ### if it isn't selectable, exit method by returning
-        if path not in self.selectable_paths: return
+        if path not in self.selectable_paths:
+            return
 
         ### otherwise, perform task to make it so the
         ### selection state of the path obj is reversed
@@ -165,17 +160,16 @@ class MouseOperations:
 
         index = self.selectable_paths.index(path)
 
-        new_selection_state          = \
-        self.selection_states[index] = \
-                            not self.selection_states[index]
+        new_selection_state = self.selection_states[index] = not self.selection_states[
+            index
+        ]
 
         ## mark the index as the last selected one
         self.last_selected_index = index
 
         ## change appearance of path object to reflect the
         ## new selection state
-        path_obj.change_selection_appearance(
-                                        new_selection_state)
+        path_obj.change_selection_appearance(new_selection_state)
 
         ### since the selection changed, make it so the file
         ### manager updates its path selection
@@ -193,7 +187,8 @@ class MouseOperations:
         path = path_obj.path
 
         ### if it isn't selectable, exit method by returning
-        if path not in self.selectable_paths: return
+        if path not in self.selectable_paths:
+            return
 
         ### if there's no selected path, select the given
         ### one only
@@ -205,7 +200,7 @@ class MouseOperations:
         ### selection among all the selected paths
 
         else:
-            
+
             ## make it so the path of the given path obj
             ## is marked as selected
 

@@ -68,11 +68,8 @@ def create_parameter_objs(self, param_obj):
     ### instantiate socket
 
     input_socket = InputSocket(
-                     node           = self,
-                     type_codename  = type_codename,
-                     parameter_name = param_name,
-                     center         = center
-                   )
+        node=self, type_codename=type_codename, parameter_name=param_name, center=center
+    )
 
     ### store the input socket instance in the
     ### live instance map for input sockets
@@ -87,11 +84,13 @@ def create_parameter_objs(self, param_obj):
 
     ### try retrieving the widget meta map for the
     ### parameter
-    try: param_widget_meta = self.widget_meta[param_name]
+    try:
+        param_widget_meta = self.widget_meta[param_name]
 
     ### if widget metadata for the parameter doesn't
     ### exists, we just pass: no widget will be created
-    except KeyError: pass
+    except KeyError:
+        pass
 
     ### otwerwise, we use the retrieved metadata to
     ### properly instantiate and set a widget
@@ -101,12 +100,12 @@ def create_parameter_objs(self, param_obj):
         ## retrieve widget class using the widget name
         ## from the parameter widget metadata
 
-        widget_name = param_widget_meta['widget_name']
-        widget_cls  = WIDGET_CLASS_MAP[widget_name]
+        widget_name = param_widget_meta["widget_name"]
+        widget_cls = WIDGET_CLASS_MAP[widget_name]
 
         ## retrieve keyword arguments to use when
         ## instantiating the widget
-        kwargs = param_widget_meta['widget_kwargs']
+        kwargs = param_widget_meta["widget_kwargs"]
 
         ## put together position data for the widget
         ## (widget topleft is positioned relative to the
@@ -114,39 +113,32 @@ def create_parameter_objs(self, param_obj):
 
         topleft_pos = input_socket.rect.move(8, -1).topright
 
-        pos_data = {
-          "coordinates_name"  : "topleft",
-          "coordinates_value" : topleft_pos
-        }
+        pos_data = {"coordinates_name": "topleft", "coordinates_value": topleft_pos}
 
         ## instantiate the widget using the keyword arguments
         ## as well as the position data
 
-        try: widget = widget_cls(
-                        name=param_name, **kwargs, **pos_data
-                      )
+        try:
+            widget = widget_cls(name=param_name, **kwargs, **pos_data)
 
         except Exception as err:
 
             raise RuntimeError(
-
-                     "Error while trying to instantiate"
-                    f" widget for '{param_name}' parameter"
-                    f" of '{self.title_text}' node"
-                    f" of id #{self.id} with data from"
-                     " the parameter widget metadata map"
-
-                  ) from err
+                "Error while trying to instantiate"
+                f" widget for '{param_name}' parameter"
+                f" of '{self.title_text}' node"
+                f" of id #{self.id} with data from"
+                " the parameter widget metadata map"
+            ) from err
 
         ## if available, set widget value as defined
         ## by the user in its last editing session
 
-        param_widget_value_map = (
-          self.data["param_widget_value_map"]
-        )
+        param_widget_value_map = self.data["param_widget_value_map"]
 
         # check existence of value
-        try: value = param_widget_value_map[param_name]
+        try:
+            value = param_widget_value_map[param_name]
 
         # if not available, use the current value of
         # the widget to fill it (unless it is a
@@ -167,14 +159,12 @@ def create_parameter_objs(self, param_obj):
                 # which the users must be made aware
                 # anyway)
 
-                (
-                  param_widget_value_map
-                  [param_name]
-                ) = widget.get()
+                (param_widget_value_map[param_name]) = widget.get()
 
         # otherwise, do the opposite: set the value
         # on the widget
-        else: widget.set(value)
+        else:
+            widget.set(value)
 
         ## also define a command to update the
         ## widget value in the node data and
@@ -182,11 +172,8 @@ def create_parameter_objs(self, param_obj):
         ## the widget
 
         command = partial(
-                    update_with_widget,
-                    param_widget_value_map,
-                    param_name,
-                    widget
-                  )
+            update_with_widget, param_widget_value_map, param_name, widget
+        )
 
         widget.command = command
 

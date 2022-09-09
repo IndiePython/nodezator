@@ -16,31 +16,26 @@ from ..ourstdlibs.timeutils import get_friendly_time
 ### constants
 
 ### log level words
-LOG_LEVELS = 'INFO', 'WARNING', 'ERROR', 'CRITICAL'
+LOG_LEVELS = "INFO", "WARNING", "ERROR", "CRITICAL"
 
 ### log level error message
-LEVEL_ERROR_MESSAGE = (
-  "'level' argument must be one of {}".format(LOG_LEVELS)
-)
+LEVEL_ERROR_MESSAGE = "'level' argument must be one of {}".format(LOG_LEVELS)
 
 ### custom formatter for the header of logged messages
 HEADER_FORMATTER = "--- [{} message logged at {}] ---".format
 
 ### formatter for message with a single line
 
-ONE_LINE  = linesep
+ONE_LINE = linesep
 TWO_LINES = linesep * 2
 
-SINGLE_LINE_FORMATTER = (
-  "{}" + TWO_LINES + "{}" + TWO_LINES
-).format
+SINGLE_LINE_FORMATTER = ("{}" + TWO_LINES + "{}" + TWO_LINES).format
 
-MULTILINE_FORMATTER = (
-  "{}" + ONE_LINE + "{}" + TWO_LINES
-).format
+MULTILINE_FORMATTER = ("{}" + ONE_LINE + "{}" + TWO_LINES).format
 
 
 ### class definition
+
 
 class UserLogger:
     """Log to communicate with user in the application.
@@ -88,10 +83,7 @@ class UserLogger:
         ### create a header with a friendly representation
         ### of the current time
 
-        header = HEADER_FORMATTER(
-                   level,
-                   get_friendly_time()
-                 )
+        header = HEADER_FORMATTER(level, get_friendly_time())
 
         ### choose a message formatter depending on whether
         ### or not the message has more than one line
@@ -104,12 +96,7 @@ class UserLogger:
         ## choose formatter
 
         message_formatter = (
-
-          MULTILINE_FORMATTER
-          if message_line_count > 1
-
-          else SINGLE_LINE_FORMATTER
-
+            MULTILINE_FORMATTER if message_line_count > 1 else SINGLE_LINE_FORMATTER
         )
 
         ## obtain full message by formatting
@@ -123,21 +110,14 @@ class UserLogger:
 
         self.contents += full_message + TWO_LINES
 
-        self.contents = (
-
-          linesep.join(
-                    self.contents.splitlines()[
-                      -self.max_lines :
-                    ]
-                  )
-        )
+        self.contents = linesep.join(self.contents.splitlines()[-self.max_lines :])
 
     ### partial implementation of the log method
 
-    info      = partialmethod(log,     'INFO')
-    warning   = partialmethod(log,  'WARNING')
-    error     = partialmethod(log,    'ERROR')
-    critical  = partialmethod(log, 'CRITICAL')
+    info = partialmethod(log, "INFO")
+    warning = partialmethod(log, "WARNING")
+    error = partialmethod(log, "ERROR")
+    critical = partialmethod(log, "CRITICAL")
 
     def exception(self, message):
         """Log given message plus traceback w/ level 'ERROR'.
@@ -152,10 +132,7 @@ class UserLogger:
         ### create a header with a friendly representation
         ### of the current time
 
-        header = HEADER_FORMATTER(
-                   'ERROR',
-                   get_friendly_time()
-                 )
+        header = HEADER_FORMATTER("ERROR", get_friendly_time())
 
         ### obtain full message by formatting
         ### header and message
@@ -175,14 +152,8 @@ class UserLogger:
 
         self.contents += full_message + TWO_LINES
 
-        self.contents = (
+        self.contents = "\n".join(self.contents.splitlines()[-self.max_lines :])
 
-          "\n".join(
-                 self.contents.splitlines()[
-                   -self.max_lines :
-                 ]
-               )
-        )
 
 ### instantiate the user logger, referencing it as a
 ### module variable so it can be imported anywhere else

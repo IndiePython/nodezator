@@ -7,40 +7,50 @@ from math import inf as INFINITY
 ### third-party imports
 
 from pygame import (
-
-              QUIT,
-
-              KEYUP,
-              K_ESCAPE, K_RETURN, K_KP_ENTER,
-              K_UP, K_DOWN, K_LEFT, K_RIGHT,
-              K_w, K_a, K_s, K_d,
-              K_k, K_h, K_j, K_l,
-              K_PAGEUP, K_PAGEDOWN, K_HOME, K_END,
-              KMOD_SHIFT,
-
-              MOUSEBUTTONUP,
-              MOUSEMOTION,
-
-            )
+    QUIT,
+    KEYUP,
+    K_ESCAPE,
+    K_RETURN,
+    K_KP_ENTER,
+    K_UP,
+    K_DOWN,
+    K_LEFT,
+    K_RIGHT,
+    K_w,
+    K_a,
+    K_s,
+    K_d,
+    K_k,
+    K_h,
+    K_j,
+    K_l,
+    K_PAGEUP,
+    K_PAGEDOWN,
+    K_HOME,
+    K_END,
+    KMOD_SHIFT,
+    MOUSEBUTTONUP,
+    MOUSEMOTION,
+)
 
 from pygame.display import update
 
 from pygame.event import get as get_events
 
 from pygame.key import (
-                  get_pressed as get_pressed_keys,
-                  get_mods    as get_modifier_keys,
-                )
+    get_pressed as get_pressed_keys,
+    get_mods as get_modifier_keys,
+)
 
 
 ### local imports
 
 from ...pygameconstants import (
-                       SCREEN_RECT,
-                       FPS,
-                       blit_on_screen,
-                       maintain_fps,
-                     )
+    SCREEN_RECT,
+    FPS,
+    blit_on_screen,
+    maintain_fps,
+)
 
 from ...our3rdlibs.behaviour import watch_window_size
 
@@ -56,23 +66,22 @@ from ...loopman.exception import QuitAppException
 
 ## keys with the same purpose
 
-UP_KEYS    = K_UP, K_w, K_k
-DOWN_KEYS  = K_DOWN, K_s, K_j
-LEFT_KEYS  = K_LEFT, K_a, K_h
+UP_KEYS = K_UP, K_w, K_k
+DOWN_KEYS = K_DOWN, K_s, K_j
+LEFT_KEYS = K_LEFT, K_a, K_h
 RIGHT_KEYS = K_RIGHT, K_d, K_l
 
 
 ### utility function
 
+
 def within_height(rect_a, rect_b):
     """Return whether rect_a is within height of rect_b."""
-    return (
-      rect_a.top >= rect_b.top
-      and rect_a.bottom <= rect_b.bottom
-    )
+    return rect_a.top >= rect_b.top and rect_a.bottom <= rect_b.bottom
 
 
 ### class definition
+
 
 class Operations(Object2D):
     """Provides common methods to control and display text.
@@ -87,10 +96,7 @@ class Operations(Object2D):
         ### to increase constrast between the dialog and
         ### whatever is behind it
 
-        blit_on_screen(
-          UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size],
-          (0, 0)
-        )
+        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
 
         ### loop until self.running is changed
 
@@ -111,19 +117,19 @@ class Operations(Object2D):
         ## over self.rect
 
         blit_on_screen(
-          UNHIGHLIGHT_SURF_MAP[self.rect.size],
-          self.rect.topleft,
+            UNHIGHLIGHT_SURF_MAP[self.rect.size],
+            self.rect.topleft,
         )
 
         ## over lineno panel if line numbers were shown
 
         if self.draw_lines == self.draw_lines_and_lineno:
-            
+
             panel_rect = self.lineno_panel.rect
 
             blit_on_screen(
-              UNHIGHLIGHT_SURF_MAP[panel_rect.size],
-              panel_rect.topleft,
+                UNHIGHLIGHT_SURF_MAP[panel_rect.size],
+                panel_rect.topleft,
             )
 
         ### free memory from objects you won't use anymore
@@ -135,17 +141,15 @@ class Operations(Object2D):
 
             ### exit app by clicking the close button
             ### in the window
-            if event.type == QUIT: raise QuitAppException
-
+            if event.type == QUIT:
+                raise QuitAppException
 
             elif event.type == KEYUP:
 
                 ## exit the text viewer by releasing
                 ## any of the following keys
 
-                if event.key in (
-                  K_ESCAPE, K_RETURN, K_KP_ENTER
-                ):
+                if event.key in (K_ESCAPE, K_RETURN, K_KP_ENTER):
                     self.running = False
 
                 ## jump large amounts of pixels up or down
@@ -157,14 +161,16 @@ class Operations(Object2D):
                     if event.mod & KMOD_SHIFT:
                         self.scroll(0, INFINITY)
 
-                    else: self.scroll(0, self.page_height)
+                    else:
+                        self.scroll(0, self.page_height)
 
                 elif event.key == K_PAGEDOWN:
 
                     if event.mod & KMOD_SHIFT:
                         self.scroll(0, -INFINITY)
 
-                    else: self.scroll(0, -self.page_height)
+                    else:
+                        self.scroll(0, -self.page_height)
 
                 ## scroll to different edges of the text
 
@@ -173,14 +179,16 @@ class Operations(Object2D):
                     if event.mod & KMOD_SHIFT:
                         self.scroll(0, INFINITY)
 
-                    else: self.scroll(INFINITY, 0)
+                    else:
+                        self.scroll(INFINITY, 0)
 
                 elif event.key == K_END:
 
                     if event.mod & KMOD_SHIFT:
                         self.scroll(0, -INFINITY)
 
-                    else: self.scroll(-INFINITY, 0)
+                    else:
+                        self.scroll(-INFINITY, 0)
 
             ### mouse button release/mousewheel
 
@@ -191,11 +199,7 @@ class Operations(Object2D):
 
                 if event.button in (1, 3):
 
-                    if not (
-                      self
-                      .scroll_area
-                      .collidepoint(event.pos)
-                    ):
+                    if not (self.scroll_area.collidepoint(event.pos)):
                         self.running = False
 
                 ## scrolling with mousewheel
@@ -205,21 +209,22 @@ class Operations(Object2D):
                     if get_modifier_keys() & KMOD_SHIFT:
                         self.scroll(self.line_height, 0)
 
-                    else: self.scroll(0, self.line_height)
+                    else:
+                        self.scroll(0, self.line_height)
 
                 elif event.button == 5:
 
                     if get_modifier_keys() & KMOD_SHIFT:
                         self.scroll(-self.line_height, 0)
 
-                    else: self.scroll(0, -self.line_height)
+                    else:
+                        self.scroll(0, -self.line_height)
 
             ## mouse movement
 
             elif event.type == MOUSEMOTION:
 
-                self.hovering_help_icon = \
-                self.help_icon.rect.collidepoint(event.pos)
+                self.hovering_help_icon = self.help_icon.rect.collidepoint(event.pos)
 
     def handle_key_input(self):
         """Respond to inputs from keys."""
@@ -230,14 +235,11 @@ class Operations(Object2D):
 
         scroll_up = any(map(input_list.__getitem__, UP_KEYS))
 
-        scroll_down = \
-            any(map(input_list.__getitem__, DOWN_KEYS))
+        scroll_down = any(map(input_list.__getitem__, DOWN_KEYS))
 
-        scroll_left = \
-            any(map(input_list.__getitem__, LEFT_KEYS))
+        scroll_left = any(map(input_list.__getitem__, LEFT_KEYS))
 
-        scroll_right = \
-            any(map(input_list.__getitem__, RIGHT_KEYS))
+        scroll_right = any(map(input_list.__getitem__, RIGHT_KEYS))
 
         ### act according to the states of the actions
 
@@ -291,18 +293,16 @@ class Operations(Object2D):
         """Draw the lines, without the line number."""
         ### reference attributes in local variables
 
-        image  = self.image
+        image = self.image
         offset = self.offset
         scroll_area = self.scroll_area
 
         ### for lines colliding with the scroll area,
         ### draw them on self.image
 
-        for line \
-        in self.lines.get_colliding(scroll_area):
+        for line in self.lines.get_colliding(scroll_area):
 
-            image.blit(
-              line.image, line.rect.topleft + offset)
+            image.blit(line.image, line.rect.topleft + offset)
 
     def draw_lines_and_lineno(self):
         """Draw lines on scroll area with line numbers."""
@@ -311,7 +311,7 @@ class Operations(Object2D):
 
         ### reference attributes in local variables
 
-        image  = self.image
+        image = self.image
         offset = self.offset
         scroll_area = self.scroll_area
 
@@ -348,8 +348,7 @@ class Operations(Object2D):
             if within_height(line_rect, scroll_area):
 
                 ## draw line with offset topleft
-                image.blit(
-                    line.image, line.rect.topleft + offset)
+                image.blit(line.image, line.rect.topleft + offset)
 
                 ## draw line number
                 self.draw_lineno(str(lineno), line_rect.y)
@@ -411,7 +410,7 @@ class Operations(Object2D):
         First, we must check whether there is more text
         beyond the scrolling area in the direction we
         want to peek (the opposite we want to scroll).
-        
+
         This is important because if there isn't, we
         shouldn't scroll at all, so we set the delta to
         0.
@@ -430,7 +429,6 @@ class Operations(Object2D):
         ### representing the text
         text_rect = self.lines.rect.union_rect
 
-
         ### perform check depending on the direction the
         ### text will scroll
 
@@ -441,15 +439,9 @@ class Operations(Object2D):
             if text_rect.right < self.scroll_area.right:
                 dx = 0
 
-            elif (
-                text_rect.right + dx
-              < self.scroll_area.right
-            ):
+            elif text_rect.right + dx < self.scroll_area.right:
 
-                dx = (
-                       self.scroll_area.right
-                       - text_rect.right
-                     )
+                dx = self.scroll_area.right - text_rect.right
 
         ## text will go right, so we check the left side
 
@@ -458,10 +450,7 @@ class Operations(Object2D):
             if text_rect.left > self.scroll_area.left:
                 dx = 0
 
-            elif (
-                text_rect.left + dx
-              > self.scroll_area.left
-            ):
+            elif text_rect.left + dx > self.scroll_area.left:
                 dx = self.scroll_area.left - text_rect.left
 
         ## text will go up, so we check the bottom
@@ -471,15 +460,9 @@ class Operations(Object2D):
             if text_rect.bottom < self.scroll_area.bottom:
                 dy = 0
 
-            elif (
-                text_rect.bottom + dy 
-              < self.scroll_area.bottom
-            ):
+            elif text_rect.bottom + dy < self.scroll_area.bottom:
 
-                dy = (
-                       self.scroll_area.bottom
-                       - text_rect.bottom
-                     )
+                dy = self.scroll_area.bottom - text_rect.bottom
 
         ## text will go down, so we check the top
 
@@ -499,4 +482,3 @@ class Operations(Object2D):
         ### clear self.lines to free the memory taken by
         ### the line objects (specially their surfaces)
         self.lines.clear()
-

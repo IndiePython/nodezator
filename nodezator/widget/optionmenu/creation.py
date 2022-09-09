@@ -29,8 +29,8 @@ STYLE_TO_ARROW_SURFS = {}
 STYLE_TO_SCROLL_ARROW_SURFS = {}
 
 
-
 ### functions to create surfaces
+
 
 def get_arrow_surf(foreground_color, height):
     """Return arrow surface w/ given color and height.
@@ -56,37 +56,31 @@ def get_arrow_surf(foreground_color, height):
     ### create a custom-formatted tuple from the received
     ### foreground color and height, to use as a key
 
-    key = tuple(
-            map(str, (foreground_color, height))
-          )
+    key = tuple(map(str, (foreground_color, height)))
 
     ### try retrieving a reference to the arrow surf from
     ### a special dict dedicated to store them
-    try: arrow_surf = STYLE_TO_ARROW_SURFS[key]
+    try:
+        arrow_surf = STYLE_TO_ARROW_SURFS[key]
 
     ### if such arrow doesn't exist, we create and store it,
     ### in the dictionary, and also reference it locally
 
     except KeyError:
 
-        arrow_surf = \
-        STYLE_TO_ARROW_SURFS[key] = \
-          render_layered_icon(
-            chars = [chr(82)],
-
-            colors = [foreground_color],
-
-            dimension_name   = 'height',
-            dimension_value  = height-8,
-            padding = 4,
-
-            background_height = height,
-
-            flip_y = True,
-          )
+        arrow_surf = STYLE_TO_ARROW_SURFS[key] = render_layered_icon(
+            chars=[chr(82)],
+            colors=[foreground_color],
+            dimension_name="height",
+            dimension_value=height - 8,
+            padding=4,
+            background_height=height,
+            flip_y=True,
+        )
 
     ### we then return the arrow
     return arrow_surf
+
 
 def create_chosen_surfs(options, chosen_text_settings):
     """Create surfaces to display the chosen values.
@@ -102,25 +96,20 @@ def create_chosen_surfs(options, chosen_text_settings):
 
     ## prepare arguments used to retrieve the arrow
 
-    arrow_foreground_color = \
-                chosen_text_settings['foreground_color']
+    arrow_foreground_color = chosen_text_settings["foreground_color"]
 
-    arrow_surf_height = chosen_text_settings['font_height']
+    arrow_surf_height = chosen_text_settings["font_height"]
 
     ## retrieve it
 
-    arrow_surf = get_arrow_surf(
-                   arrow_foreground_color,
-                   arrow_surf_height
-                 )
+    arrow_surf = get_arrow_surf(arrow_foreground_color, arrow_surf_height)
 
     ### using the options and the text settings, create
     ### a list of surfaces representing the options
     ### rendered as text surfaces
 
     chosen_surfs = [
-      render_text(str(option), **chosen_text_settings)
-      for option in options
+        render_text(str(option), **chosen_text_settings) for option in options
     ]
 
     ### now calculate a new width for the surfaces, which
@@ -128,13 +117,10 @@ def create_chosen_surfs(options, chosen_text_settings):
     ### surfaces plus the width of the arrow surface
 
     new_width = (
-
-      ## largest width among existing surfaces
-      max(surf.get_width() for surf in chosen_surfs)
-
-      ## arrow width
-      + arrow_surf.get_width()
-
+        ## largest width among existing surfaces
+        max(surf.get_width() for surf in chosen_surfs)
+        ## arrow width
+        + arrow_surf.get_width()
     )
 
     ### now iterate over each surface, blitting it over
@@ -149,8 +135,8 @@ def create_chosen_surfs(options, chosen_text_settings):
     ## in the new surface when we blit the original
     ## surface over it
 
-    height   = chosen_surfs[0].get_height() + 2
-    bg_color = chosen_text_settings['background_color']
+    height = chosen_surfs[0].get_height() + 2
+    bg_color = chosen_text_settings["background_color"]
 
     ## iterate over the index of each surface, creating
     ## the a new one and replacing the existing one with
@@ -180,11 +166,11 @@ def create_chosen_surfs(options, chosen_text_settings):
         ## surface below
 
         blit_aligned(
-          text_surf,
-          new_surf,
-          retrieve_pos_from = 'midleft',
-          assign_pos_to     = 'midleft',
-          offset_pos_by     = (2, 0)
+            text_surf,
+            new_surf,
+            retrieve_pos_from="midleft",
+            assign_pos_to="midleft",
+            offset_pos_by=(2, 0),
         )
 
         ## now blit the arrow over the new surface,
@@ -192,10 +178,10 @@ def create_chosen_surfs(options, chosen_text_settings):
         ## midright
 
         blit_aligned(
-          arrow_surf,
-          new_surf,
-          retrieve_pos_from = 'midright',
-          assign_pos_to     = 'midright',
+            arrow_surf,
+            new_surf,
+            retrieve_pos_from="midright",
+            assign_pos_to="midright",
         )
 
         ## draw a border around the surface
@@ -210,10 +196,7 @@ def create_chosen_surfs(options, chosen_text_settings):
     ### text for each option (the options converted to
     ### strings) as the keys
 
-    return {
-      str(option): surf
-      for option, surf in zip(options, chosen_surfs)
-    }
+    return {str(option): surf for option, surf in zip(options, chosen_surfs)}
 
 
 def create_other_surfs(options, text_settings):
@@ -233,10 +216,7 @@ def create_other_surfs(options, text_settings):
     ### a list of surfaces representing the options
     ### rendered as text surfaces
 
-    surfs = [
-      render_text(str(option), **text_settings)
-      for option in options
-    ]
+    surfs = [render_text(str(option), **text_settings) for option in options]
 
     ### now calculate a new width for the surfaces, which
     ### is equal to the largest width among the existing
@@ -246,13 +226,10 @@ def create_other_surfs(options, text_settings):
     ### based on what looked good
 
     new_width = (
-
-      ## largest width among existing surfaces
-      max(surf.get_width() for surf in surfs)
-
-      ## plus 4 pixels for extra horizontal padding
-      + 4
-
+        ## largest width among existing surfaces
+        max(surf.get_width() for surf in surfs)
+        ## plus 4 pixels for extra horizontal padding
+        + 4
     )
 
     ### now iterate over each surface, blitting it over
@@ -267,8 +244,8 @@ def create_other_surfs(options, text_settings):
     ## in the new surface when we blit the original
     ## surface over it
 
-    height   = surfs[0].get_height() + 4
-    bg_color = text_settings['background_color']
+    height = surfs[0].get_height() + 4
+    bg_color = text_settings["background_color"]
 
     ## iterate over the index of each surface, creating
     ## the a new one and replacing the existing one with
@@ -292,11 +269,11 @@ def create_other_surfs(options, text_settings):
         ## previous steps
 
         blit_aligned(
-          text_surf,
-          new_surf,
-          retrieve_pos_from = 'topleft',
-          assign_pos_to     = 'topleft',
-          offset_pos_by     = (2, 2)
+            text_surf,
+            new_surf,
+            retrieve_pos_from="topleft",
+            assign_pos_to="topleft",
+            offset_pos_by=(2, 2),
         )
 
         ## then replace the original surface with the
@@ -308,14 +285,10 @@ def create_other_surfs(options, text_settings):
     ### text for each option (the options converted to
     ### strings) as the keys
 
-    return {
-      str(option): surf
-      for option, surf in zip(options, surfs)
-    }
+    return {str(option): surf for option, surf in zip(options, surfs)}
 
-def get_scroll_arrow_surfs(
-      width, foreground_color, background_color
-    ):
+
+def get_scroll_arrow_surfs(width, foreground_color, background_color):
     """Return scroll arrow surfaces w/ given settings.
 
     If an arrow for the given arguments doesn't exist
@@ -332,42 +305,28 @@ def get_scroll_arrow_surfs(
     ### width, foreground color and background color, to use
     ### as a key
 
-    key = tuple(
-            map(str,
-                 (width, foreground_color, background_color)
-               )
-          )
+    key = tuple(map(str, (width, foreground_color, background_color)))
 
-    try: upper_arrow, lower_arrow = \
-                STYLE_TO_SCROLL_ARROW_SURFS[key]
-
+    try:
+        upper_arrow, lower_arrow = STYLE_TO_SCROLL_ARROW_SURFS[key]
 
     except KeyError:
 
         upper_arrow, lower_arrow = (
-
-          render_layered_icon(
-
-            chars = [chr(82)],
-
-            dimension_name   = 'height',
-            dimension_value  = 10,
-
-            colors = [foreground_color],
-
-            background_width  = width,
-            background_height = 16,
-            background_color  = background_color,
-
-            flip_y = flip_y,
-          )
-
-          for flip_y in (False, True)
+            render_layered_icon(
+                chars=[chr(82)],
+                dimension_name="height",
+                dimension_value=10,
+                colors=[foreground_color],
+                background_width=width,
+                background_height=16,
+                background_color=background_color,
+                flip_y=flip_y,
+            )
+            for flip_y in (False, True)
         )
 
-        STYLE_TO_SCROLL_ARROW_SURFS[key] = (
-          upper_arrow, lower_arrow
-        )
+        STYLE_TO_SCROLL_ARROW_SURFS[key] = (upper_arrow, lower_arrow)
 
     ### we then return the surfs
     return upper_arrow, lower_arrow

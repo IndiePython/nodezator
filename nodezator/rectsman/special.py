@@ -40,8 +40,7 @@ class SpecialMethods:
         ### advantage of pygame.Rect type coercion)
 
         property_name = self._index_to_property[index]
-        setattr(
-            self, property_name, self._sample_rect[index])
+        setattr(self, property_name, self._sample_rect[index])
 
     def __delitem__(self, index):
         """Set new value change corresponding property."""
@@ -98,10 +97,10 @@ class SpecialMethods:
         """Return whether the union rect equals other.
 
         Also, since we didn't implement a custom __ne__
-        (the '!=' operation), Python automatically uses the 
+        (the '!=' operation), Python automatically uses the
         invert return value of this method instead when
         '!=' is used.
-        
+
         Profiling tests shows that, at least in the
         machine tested, not implementing a custom __ne__
         (and thereby using the inverse of this method)

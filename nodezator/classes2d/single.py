@@ -11,9 +11,10 @@ from pygame.math import Vector2
 ### local imports
 
 from ..pygameconstants import (
-                       SCREEN_RECT,
-                       blit_on_screen,
-                     )
+    SCREEN_RECT,
+    blit_on_screen,
+)
+
 
 class SingleObjectBase:
     """Basic methods for single objects."""
@@ -58,45 +59,35 @@ class SingleObjectBase:
         of this object's rect relative to the rect of the
         given object.
         """
-        obj.image.blit(
-          self.image,
-          self.rect.move(-Vector2(obj.rect.topleft))
-        )
+        obj.image.blit(self.image, self.rect.move(-Vector2(obj.rect.topleft)))
 
     def svg_repr(self):
         """Return svg rect element representing object."""
         rect = self.rect.inflate(-2, -2)
 
         return Element(
+            "rect",
+            {
+                attr_name: str(getattr(rect, attr_name))
+                for attr_name in (
+                    "x",
+                    "y",
+                    "width",
+                    "height",
+                )
+            },
+        )
 
-                 'rect',
-
-                 {
-
-                   attr_name : str(getattr(rect, attr_name))
-
-                   for attr_name in (
-                     'x', 'y', 'width', 'height',
-                   )
-
-                 }
-
-               )
 
 class Object2D(SingleObjectBase):
-
     def __init__(self, **kwargs):
         """Assign keyword arguments to instance dict."""
         self.__dict__.update(kwargs)
 
     @classmethod
     def from_surface(
-          cls,
-          surface,
-          coordinates_name  = 'topleft',
-          coordinates_value = (0, 0),
-          **kwargs
-        ):
+        cls, surface, coordinates_name="topleft", coordinates_value=(0, 0), **kwargs
+    ):
         """Store surface and its rect, positioning it.
 
         Parameters
@@ -123,8 +114,6 @@ class Object2D(SingleObjectBase):
 
         obj.rect = surface.get_rect()
 
-        setattr(
-          obj.rect, coordinates_name, coordinates_value
-        )
+        setattr(obj.rect, coordinates_name, coordinates_value)
 
         return obj

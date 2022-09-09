@@ -7,16 +7,14 @@ from itertools import takewhile
 ### local imports
 
 from .constants import (
-                     STLIB_IDS_TO_CALLABLES_MAP,
-                     STLIB_IDS_TO_SIGNATURES_MAP,
-                     STLIB_IDS_TO_SIGNATURE_CALLABLES_MAP,
-                     STLIB_IDS_TO_STLIB_IMPORT_TEXTS,
-                     STLIB_IDS_TO_SOURCE_VIEW_TEXT,
-                   )
+    STLIB_IDS_TO_CALLABLES_MAP,
+    STLIB_IDS_TO_SIGNATURES_MAP,
+    STLIB_IDS_TO_SIGNATURE_CALLABLES_MAP,
+    STLIB_IDS_TO_STLIB_IMPORT_TEXTS,
+    STLIB_IDS_TO_SOURCE_VIEW_TEXT,
+)
 
-from ...colorsman.colors import (
-                        STANDARD_LIB_NODES_CATEGORY_COLOR
-                      )
+from ...colorsman.colors import STANDARD_LIB_NODES_CATEGORY_COLOR
 
 ## superclass
 from ..callablenode.main import CallableNode
@@ -26,7 +24,7 @@ class StandardLibNode(CallableNode):
     """Handles callables from Python standard library."""
 
     category_color = STANDARD_LIB_NODES_CATEGORY_COLOR
-    available_ids  = STLIB_IDS_TO_CALLABLES_MAP.keys()
+    available_ids = STLIB_IDS_TO_CALLABLES_MAP.keys()
 
     def __init__(self, data, midtop=None):
         """Setup attributes for storage and control.
@@ -44,31 +42,26 @@ class StandardLibNode(CallableNode):
         """
         ### retrieve and store the main callable obj in
         ### its own attribute
-        self.main_callable = (
-          STLIB_IDS_TO_CALLABLES_MAP[data['stlib_id']] 
-        )
+        self.main_callable = STLIB_IDS_TO_CALLABLES_MAP[data["stlib_id"]]
 
         ### also retrieve and store the callable used to
         ### obtain the signature
 
-        signature_callable = self.signature_callable = (
-          STLIB_IDS_TO_SIGNATURE_CALLABLES_MAP
-          [data['stlib_id']]
-        )
+        signature_callable = (
+            self.signature_callable
+        ) = STLIB_IDS_TO_SIGNATURE_CALLABLES_MAP[data["stlib_id"]]
 
         ### store import statement text
-        self.stlib_import_text = (
-          STLIB_IDS_TO_STLIB_IMPORT_TEXTS[data['stlib_id']]
-        )
+        self.stlib_import_text = STLIB_IDS_TO_STLIB_IMPORT_TEXTS[data["stlib_id"]]
 
         ### set title text
 
         self.title_text = "".join(
-                               takewhile(
-                                 lambda c: c != '(',
-                                 data['stlib_id'],
-                               )
-                             )
+            takewhile(
+                lambda c: c != "(",
+                data["stlib_id"],
+            )
+        )
 
         ### store the instance data argument in its own
         ### attribute
@@ -84,15 +77,8 @@ class StandardLibNode(CallableNode):
         ## callable, it will use the already created data,
         ## shared through class attributes
 
-        if (
-
-          signature_callable
-          not in self.__class__.preprocessed_callables
-
-        ):
-            self.inspect_callable_object(
-                   signature_callable
-                 )
+        if signature_callable not in self.__class__.preprocessed_callables:
+            self.inspect_callable_object(signature_callable)
 
         ### reference maps from class attributes in
         ### instance; maps are related to the signature
@@ -107,18 +93,11 @@ class StandardLibNode(CallableNode):
 
         ### store the id in its own attribute for easy
         ### access
-        self.id = self.data['id']
+        self.id = self.data["id"]
 
         ### store the midtop position
 
-        self.midtop = (
-
-          midtop
-          if midtop is not None 
-
-          else self.data['midtop']
-
-        )
+        self.midtop = midtop if midtop is not None else self.data["midtop"]
 
         ### create control to indicate when the node was
         ### subject to mouse click
@@ -135,17 +114,14 @@ class StandardLibNode(CallableNode):
 
         Overrides super().get_signature().
         """
-        return (
-          STLIB_IDS_TO_SIGNATURES_MAP
-          [self.data['stlib_id']]
-        )
+        return STLIB_IDS_TO_SIGNATURES_MAP[self.data["stlib_id"]]
 
     def get_color_identifier(self):
         """Return specific color identifier.
 
         Overrides super().get_color_identifier().
         """
-        return 'stlib_node'
+        return "stlib_node"
 
     def store_category_color_data(self):
         """Do nothing.
@@ -160,10 +136,4 @@ class StandardLibNode(CallableNode):
     def get_source_info(self):
         """Return information about node source."""
 
-        return (
-
-          STLIB_IDS_TO_SOURCE_VIEW_TEXT[
-            self.data['stlib_id']
-          ]
-
-        )
+        return STLIB_IDS_TO_SOURCE_VIEW_TEXT[self.data["stlib_id"]]

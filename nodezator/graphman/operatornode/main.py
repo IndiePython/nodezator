@@ -8,32 +8,31 @@ from ...ourstdlibs.meta import initialize_bases
 ### class extensions
 
 from .vizprep import (
-                                VisualRelatedPreparations,
-                              )
+    VisualRelatedPreparations,
+)
 
 from .vizop import (
-                                 VisualRelatedOperations,
-                               )
+    VisualRelatedOperations,
+)
 
 from .execution import Execution
 
 from .export import Exporting
 
 from .constants import (
-
-                 OPERATIONS_MAP,
-                 OPERATIONS_SIGNATURE_MAP,
-                 OPERATION_ID_TO_SUBSTITUTION_CALLABLE_MAP,
-                 OPERATION_ID_TO_SOURCE_VIEW_TEXT,
-              )
+    OPERATIONS_MAP,
+    OPERATIONS_SIGNATURE_MAP,
+    OPERATION_ID_TO_SUBSTITUTION_CALLABLE_MAP,
+    OPERATION_ID_TO_SOURCE_VIEW_TEXT,
+)
 
 
 class OperatorNode(
-      VisualRelatedPreparations,
-      VisualRelatedOperations,
-      Execution,
-      Exporting,
-    ):
+    VisualRelatedPreparations,
+    VisualRelatedOperations,
+    Execution,
+    Exporting,
+):
     """A node representing a variable within a script."""
 
     ###
@@ -57,27 +56,21 @@ class OperatorNode(
         ### its own attribute, also aliasing it as the
         ### signature callable
 
-        self.signature_callable = \
-        self.main_callable = (
-               OPERATIONS_MAP[data['operation_id']] 
-             )
+        self.signature_callable = self.main_callable = OPERATIONS_MAP[
+            data["operation_id"]
+        ]
 
         ### retrieve and store the signature object
-        self.signature_obj = (
-          OPERATIONS_SIGNATURE_MAP[data['operation_id']]
-        )
+        self.signature_obj = OPERATIONS_SIGNATURE_MAP[data["operation_id"]]
 
         ### retrieve and store the substitution callable
 
-        self.substitution_callable = (
-
-          OPERATION_ID_TO_SUBSTITUTION_CALLABLE_MAP
-          [data['operation_id']]
-
-        )
+        self.substitution_callable = OPERATION_ID_TO_SUBSTITUTION_CALLABLE_MAP[
+            data["operation_id"]
+        ]
 
         ### use the operation_id as the title text
-        self.title_text = data['operation_id']
+        self.title_text = data["operation_id"]
 
         ### store the instance data argument in its own
         ### attribute
@@ -85,18 +78,11 @@ class OperatorNode(
 
         ### store node id in its own attribute for easy
         ### access
-        self.id = data['id']
+        self.id = data["id"]
 
         ### store the midtop position
 
-        self.midtop = (
-
-          midtop
-          if midtop is not None 
-
-          else data['midtop']
-
-        )
+        self.midtop = midtop if midtop is not None else data["midtop"]
 
         ### create control to indicate when the node was
         ### subject to mouse click
@@ -112,10 +98,4 @@ class OperatorNode(
     def get_source_info(self):
         """Return information about node source."""
 
-        return (
-
-          OPERATION_ID_TO_SOURCE_VIEW_TEXT[
-            self.data['operation_id']
-          ]
-
-        )
+        return OPERATION_ID_TO_SOURCE_VIEW_TEXT[self.data["operation_id"]]

@@ -27,26 +27,26 @@ from ..classes2d.collections import List2D
 from ..surfsman.draw import blit_aligned
 
 from ..surfsman.render import (
-                       combine_surfaces,
-                       unite_surfaces,
-                       render_rect,
-                     )
+    combine_surfaces,
+    unite_surfaces,
+    render_rect,
+)
 
 from ..surfsman.icon import render_layered_icon
 
 from ..imagesman.cache import IMAGE_SURFS_DB
 
 from ..textman.render import (
-                      render_text,
-                      render_multiline_text,
-                    )
+    render_text,
+    render_multiline_text,
+)
 
 from ..colorsman.colors import (
-                        BLACK,
-                        WHITE,
-                        SPLASH_BG,
-                        NODE_BODY_BG,
-                      )
+    BLACK,
+    WHITE,
+    SPLASH_BG,
+    NODE_BODY_BG,
+)
 
 from .constants import TEXT_SETTINGS
 
@@ -58,132 +58,93 @@ logger = get_new_logger(__name__)
 ### surfs
 
 NATIVE_FILE_ICON = render_layered_icon(
-
-                     chars = [
-                       chr(ordinal)
-                       for ordinal in (183, 184, 185)
-                     ],
-
-                     dimension_name  = 'width',
-                     dimension_value = 22,
-
-                     colors = [BLACK, WHITE, (77, 77, 105)],
-
-                     background_width  = 24,
-                     background_height = 24,
-                   )
+    chars=[chr(ordinal) for ordinal in (183, 184, 185)],
+    dimension_name="width",
+    dimension_value=22,
+    colors=[BLACK, WHITE, (77, 77, 105)],
+    background_width=24,
+    background_height=24,
+)
 
 NEW_NATIVE_FILE_ICON = render_layered_icon(
-
-                         chars = [
-                           chr(ordinal)
-                           for ordinal in (183, 184, 185)
-                         ],
-
-                         dimension_name  = 'width',
-                         dimension_value = 18,
-
-                         colors = [
-                           BLACK, WHITE, (77, 77, 105)
-                         ],
-
-                         background_width  = 19,
-                         background_height = 19,
-                       )
+    chars=[chr(ordinal) for ordinal in (183, 184, 185)],
+    dimension_name="width",
+    dimension_value=18,
+    colors=[BLACK, WHITE, (77, 77, 105)],
+    background_width=19,
+    background_height=19,
+)
 
 PLUS_MINI_SURF = render_layered_icon(
-                   chars = [
-                     chr(ordinal) for ordinal in (79, 80)
-                   ],
-
-                   dimension_name  = 'height',
-                   dimension_value = 14,
-
-                   colors = [BLACK, (80, 220, 120)]
-                 )
+    chars=[chr(ordinal) for ordinal in (79, 80)],
+    dimension_name="height",
+    dimension_value=14,
+    colors=[BLACK, (80, 220, 120)],
+)
 
 NEW_NATIVE_FILE_ICON = combine_surfaces(
-                         [
-                           NEW_NATIVE_FILE_ICON,
-                           PLUS_MINI_SURF,
-                         ],
-                         retrieve_pos_from = 'bottomright',
-                         assign_pos_to     = 'bottomright',
-                         offset_pos_by     = (5, 5)
-                       )
+    [
+        NEW_NATIVE_FILE_ICON,
+        PLUS_MINI_SURF,
+    ],
+    retrieve_pos_from="bottomright",
+    assign_pos_to="bottomright",
+    offset_pos_by=(5, 5),
+)
 
 WEB_ICON = render_layered_icon(
-             chars=[chr(ordinal) for ordinal in (90, 91)],
-
-             dimension_name  = 'height',
-             dimension_value = 24,
-
-             colors = [BLACK, (0, 100, 255)],
-
-             background_width  = 24,
-             background_height = 24,
-           )
+    chars=[chr(ordinal) for ordinal in (90, 91)],
+    dimension_name="height",
+    dimension_value=24,
+    colors=[BLACK, (0, 100, 255)],
+    background_width=24,
+    background_height=24,
+)
 
 AWW_ICON = render_layered_icon(
-             chars=[chr(ordinal) for ordinal in (90, 91)],
-
-             dimension_name  = 'height',
-             dimension_value = 20,
-
-             colors = [BLACK, (30, 150, 80)],
-
-             background_width  = 24,
-             background_height = 24,
-           )
+    chars=[chr(ordinal) for ordinal in (90, 91)],
+    dimension_name="height",
+    dimension_value=20,
+    colors=[BLACK, (30, 150, 80)],
+    background_width=24,
+    background_height=24,
+)
 
 FOLDER_ICON = render_layered_icon(
-                chars=[chr(ordinal) for ordinal in (33, 34)],
-
-                dimension_name  = 'height',
-                dimension_value = 20,
-
-                colors = [BLACK, (30, 130, 70)],
-
-                background_width  = 24,
-                background_height = 24,
-              )
+    chars=[chr(ordinal) for ordinal in (33, 34)],
+    dimension_name="height",
+    dimension_value=20,
+    colors=[BLACK, (30, 130, 70)],
+    background_width=24,
+    background_height=24,
+)
 
 node_icons = [
-
-  render_layered_icon(
-
-    chars=[
-      chr(ordinal) for ordinal in (177, 178, 179)
-    ],
-
-    dimension_name  = 'height',
-    dimension_value = 18,
-
-    colors = [
-      BLACK,
-      color,
-      NODE_BODY_BG,
-    ],
-
-    background_width  = 18,
-    background_height = 18,
-
-  )
-
-  for color in (
-    (185, 0, 100),
-    (0, 155, 185),
-    (0, 185, 100),
-  )
-
+    render_layered_icon(
+        chars=[chr(ordinal) for ordinal in (177, 178, 179)],
+        dimension_name="height",
+        dimension_value=18,
+        colors=[
+            BLACK,
+            color,
+            NODE_BODY_BG,
+        ],
+        background_width=18,
+        background_height=18,
+    )
+    for color in (
+        (185, 0, 100),
+        (0, 155, 185),
+        (0, 185, 100),
+    )
 ]
 
 NODES_GALLERY_ICON = combine_surfaces(
-                       node_icons,
-                       retrieve_pos_from = 'topleft',
-                       assign_pos_to     = 'topleft',
-                       offset_pos_by     = (5, 5)
-                     )
+    node_icons,
+    retrieve_pos_from="topleft",
+    assign_pos_to="topleft",
+    offset_pos_by=(5, 5),
+)
 
 
 ### main functions
@@ -199,70 +160,25 @@ def get_project_link_objs():
     ### create list of icon surfaces
 
     surfaces = [
-
-      (
-        render_layered_icon(
-
-          chars = [
-            chr(ordinal) for ordinal in (183, 184, 185)
-          ],
-
-          dimension_name  = 'width',
-          dimension_value = 28,
-
-          colors = [BLACK, WHITE, (77, 77, 105)],
-
-          background_width  = 30,
-          background_height = 30,
-        )
-      ),
-
-      (
-        IMAGE_SURFS_DB
-        ['github_mark.png']
-        [{'use_alpha': True}]
-      ),
-
-      (
-        IMAGE_SURFS_DB
-        ['github_mark.png']
-        [{'use_alpha': True}]
-      ),
-
-      NODES_GALLERY_ICON,
-
-      (
-        IMAGE_SURFS_DB
-        ['indie_python_logo.png']
-        [{'use_alpha': True}]
-      ),
-
-      (
-        IMAGE_SURFS_DB
-        ['kennedy_logo.png']
-        [{'use_alpha': True}]
-      ),
-
-      (
-        IMAGE_SURFS_DB
-        ['twitter_logo.png']
-        [{'use_alpha': True}]
-      ),
-
-      (
-        IMAGE_SURFS_DB
-        ['discord_logo.png']
-        [{'use_alpha': True}]
-      ),
-
-      (
-        IMAGE_SURFS_DB
-        ['patreon_logo.png']
-        [{'use_alpha': True}]
-      ),
-
-      WEB_ICON,
-
+        (
+            render_layered_icon(
+                chars=[chr(ordinal) for ordinal in (183, 184, 185)],
+                dimension_name="width",
+                dimension_value=28,
+                colors=[BLACK, WHITE, (77, 77, 105)],
+                background_width=30,
+                background_height=30,
+            )
+        ),
+        (IMAGE_SURFS_DB["github_mark.png"][{"use_alpha": True}]),
+        (IMAGE_SURFS_DB["github_mark.png"][{"use_alpha": True}]),
+        NODES_GALLERY_ICON,
+        (IMAGE_SURFS_DB["indie_python_logo.png"][{"use_alpha": True}]),
+        (IMAGE_SURFS_DB["kennedy_logo.png"][{"use_alpha": True}]),
+        (IMAGE_SURFS_DB["twitter_logo.png"][{"use_alpha": True}]),
+        (IMAGE_SURFS_DB["discord_logo.png"][{"use_alpha": True}]),
+        (IMAGE_SURFS_DB["patreon_logo.png"][{"use_alpha": True}]),
+        WEB_ICON,
     ]
 
     ### obtain a list with their rects
@@ -274,10 +190,10 @@ def get_project_link_objs():
     rectsman = RectsManager(rects.__iter__)
 
     rectsman.snap_rects_ip(
-               retrieve_pos_from = 'bottomleft',
-               assign_pos_to     = 'topleft',
-               offset_pos_by     = (0, 5),
-             )
+        retrieve_pos_from="bottomleft",
+        assign_pos_to="topleft",
+        offset_pos_by=(0, 5),
+    )
 
     ### store the rectsman right, slightly offset to the
     ### right
@@ -287,71 +203,56 @@ def get_project_link_objs():
     ### that is, icon, label text and url for each link
 
     project_links_data = (
-
-      (
-        t.splash_screen.application_website,
-        t.splash_screen.application_website_url,
-      ),
-
-      (
-        "Source code",
-        "https://github.com/IndiePython/nodezator",
-      ),
-
-      (
-        "Discussions/forum",
-        "https://github.com/IndiePython/nodezator/discussions",
-      ),
-
-      (
-        "Find, download, publish nodes",
-        "https://gallery.nodezator.com",
-      ),
-
-      (
-        t.splash_screen.project_website,
-        t.splash_screen.project_website_url,
-      ),
-
-      (
-        t.splash_screen.developer_website,
-        t.splash_screen.developer_website_url,
-      ),
-
-      (
-        t.splash_screen.developer_twitter,
-        'https://twitter.com/KennedyRichard',
-      ),
-
-      (
-        "Join us on discord",
-        'https://indiepython.com/discord',
-      ),
-
-      (
-        "Support us on patreon",
-        'https://patreon.com/KennedyRichard',
-      ),
-
-      (
-        "Other support options",
-        'https://indiepython.com/donate',
-      ),
+        (
+            t.splash_screen.application_website,
+            t.splash_screen.application_website_url,
+        ),
+        (
+            "Source code",
+            "https://github.com/IndiePython/nodezator",
+        ),
+        (
+            "Discussions/forum",
+            "https://github.com/IndiePython/nodezator/discussions",
+        ),
+        (
+            "Find, download, publish nodes",
+            "https://gallery.nodezator.com",
+        ),
+        (
+            t.splash_screen.project_website,
+            t.splash_screen.project_website_url,
+        ),
+        (
+            t.splash_screen.developer_website,
+            t.splash_screen.developer_website_url,
+        ),
+        (
+            t.splash_screen.developer_twitter,
+            "https://twitter.com/KennedyRichard",
+        ),
+        (
+            "Join us on discord",
+            "https://indiepython.com/discord",
+        ),
+        (
+            "Support us on patreon",
+            "https://patreon.com/KennedyRichard",
+        ),
+        (
+            "Other support options",
+            "https://indiepython.com/donate",
+        ),
     )
-
 
     ### iterate over the surfaces, recs and link data,
     ### creating the link objects
 
-    for icon, rect, (text, url) \
-    in zip(surfaces, rects, project_links_data):
-        
+    for icon, rect, (text, url) in zip(surfaces, rects, project_links_data):
+
         ### create text surface
 
-        text_surf = render_text(
-                      text = text,
-                      **TEXT_SETTINGS
-                    )
+        text_surf = render_text(text=text, **TEXT_SETTINGS)
 
         ### obtain a rect for the text surface and position
         ### it relative to icon rect and the rectsman right
@@ -364,25 +265,18 @@ def get_project_link_objs():
         ### surfaces
 
         final_surf = unite_surfaces(
-                       [
-                         (icon, rect),
-                         (text_surf, text_rect)
-                       ],
-                       padding=3,
-                       background_color=SPLASH_BG,
-                     )
+            [(icon, rect), (text_surf, text_rect)],
+            padding=3,
+            background_color=SPLASH_BG,
+        )
 
         ### create object
 
         link_obj = Object2D.from_surface(
-                              surface=final_surf,
-                              on_mouse_release=(
-                                get_oblivious_callable(
-                                  partial(open_url, url)
-                                )
-                              ),
-                              href = url,
-                            )
+            surface=final_surf,
+            on_mouse_release=(get_oblivious_callable(partial(open_url, url))),
+            href=url,
+        )
 
         ### store the link object
         project_link_objs.append(link_obj)
@@ -390,36 +284,26 @@ def get_project_link_objs():
     ### position link objects relative to each other
 
     project_link_objs.rect.snap_rects_ip(
-                             retrieve_pos_from = 'bottomleft',
-                             assign_pos_to     = 'topleft',
-                             offset_pos_by     = (0, 3),
-                           )
+        retrieve_pos_from="bottomleft",
+        assign_pos_to="topleft",
+        offset_pos_by=(0, 3),
+    )
 
     ### instantiate special label and position it relative
     ### to the links
 
-    project_links_caption = (
-
-      Object2D.from_surface(
-                 surface=(
-                   render_text(
-                     text = t.splash_screen.links,
-                     **TEXT_SETTINGS
-                   )
-                 )
-               )
-
+    project_links_caption = Object2D.from_surface(
+        surface=(render_text(text=t.splash_screen.links, **TEXT_SETTINGS))
     )
 
-    project_links_caption.rect.bottomleft = (
-      project_link_objs.rect.move(-10, -5).topleft
-    )
+    project_links_caption.rect.bottomleft = project_link_objs.rect.move(-10, -5).topleft
 
     ### then add the label to the list of objects
     project_link_objs.insert(0, project_links_caption)
 
     ### finally return the list of objects
     return project_link_objs
+
 
 def get_powered_link_objs():
     """Return custom list with link objects.
@@ -432,64 +316,45 @@ def get_powered_link_objs():
     ### that is, icon, label text and url for each link
 
     powered_links_data = (
-
-      (
         (
-          IMAGE_SURFS_DB
-          ['python_splashscreen_icon.png']
-          [{'use_alpha': True}]
+            (IMAGE_SURFS_DB["python_splashscreen_icon.png"][{"use_alpha": True}]),
+            "Python",
+            "https://python.org",
         ),
-        'Python',
-        'https://python.org'
-      ),
-
-      (
         (
-          IMAGE_SURFS_DB
-          ['pygame_logo.png']
-          [{'use_alpha': True}]
+            (IMAGE_SURFS_DB["pygame_logo.png"][{"use_alpha": True}]),
+            "pygame",
+            "https://pygame.org/",
         ),
-        'pygame',
-        'https://pygame.org/'
-      ),
-
     )
 
     ### iterate over the data, creating the link objects
 
-    for icon, text, url \
-    in powered_links_data:
-        
-        text_surf = render_text(
-                      text = text,
-                      **TEXT_SETTINGS
-                    )
+    for icon, text, url in powered_links_data:
+
+        text_surf = render_text(text=text, **TEXT_SETTINGS)
 
         ### combine surfaces
 
         final_surf = combine_surfaces(
-                       [
-                         icon,
-                         text_surf,
-                       ],
-                       retrieve_pos_from='midright',
-                       assign_pos_to='midleft',
-                       offset_pos_by=(8, 0),
-                       padding=3,
-                       background_color=SPLASH_BG,
-                     )
+            [
+                icon,
+                text_surf,
+            ],
+            retrieve_pos_from="midright",
+            assign_pos_to="midleft",
+            offset_pos_by=(8, 0),
+            padding=3,
+            background_color=SPLASH_BG,
+        )
 
         ### create object
 
         link_obj = Object2D.from_surface(
-                              surface=final_surf,
-                              on_mouse_release=(
-                                get_oblivious_callable(
-                                  partial(open_url, url)
-                                )
-                              ),
-                              href = url,
-                            )
+            surface=final_surf,
+            on_mouse_release=(get_oblivious_callable(partial(open_url, url))),
+            href=url,
+        )
 
         ### store the link object
         powered_link_objs.append(link_obj)
@@ -497,36 +362,26 @@ def get_powered_link_objs():
     ### position link objects relative to each other
 
     powered_link_objs.rect.snap_rects_ip(
-                             retrieve_pos_from = 'topright',
-                             assign_pos_to     = 'topleft',
-                             offset_pos_by     = (15, 0),
-                           )
+        retrieve_pos_from="topright",
+        assign_pos_to="topleft",
+        offset_pos_by=(15, 0),
+    )
 
     ### instantiate special label and position it relative
     ### to the links
 
-    powered_links_caption = (
-
-      Object2D.from_surface(
-                 surface=(
-                   render_text(
-                     text = t.splash_screen.powered_by,
-                     **TEXT_SETTINGS
-                   )
-                 )
-               )
-
+    powered_links_caption = Object2D.from_surface(
+        surface=(render_text(text=t.splash_screen.powered_by, **TEXT_SETTINGS))
     )
 
-    powered_links_caption.rect.midbottom = (
-      powered_link_objs.rect.move(0, -5).midtop
-    )
+    powered_links_caption.rect.midbottom = powered_link_objs.rect.move(0, -5).midtop
 
     ### then add the label to the list of objects
     powered_link_objs.insert(0, powered_links_caption)
 
     ### finally return the list of objects
     return powered_link_objs
+
 
 def get_action_objs():
     """Return custom list with action objects.
@@ -541,11 +396,8 @@ def get_action_objs():
     ### its text
 
     actions_label = Object2D.from_surface(
-                      render_text(
-                        text = t.splash_screen.actions,
-                        **TEXT_SETTINGS
-                      )
-                    )
+        render_text(text=t.splash_screen.actions, **TEXT_SETTINGS)
+    )
 
     objs.append(actions_label)
 
@@ -557,28 +409,13 @@ def get_action_objs():
     ### by the object, respectively
 
     actions_data = (
-
-      (
-        NEW_NATIVE_FILE_ICON,
-        t.splash_screen.new_file,
-        APP_REFS.window_manager.new
-      ),
-
-      (
-        FOLDER_ICON,
-        t.splash_screen.open_file,
-        APP_REFS.window_manager.open
-      ),
-
-      (
-        AWW_ICON,
-        "Read manual",
-        partial(
-          open_htsl_link,
-          'htap://manual.nodezator.pysite'
-        )
-      ),
-
+        (NEW_NATIVE_FILE_ICON, t.splash_screen.new_file, APP_REFS.window_manager.new),
+        (FOLDER_ICON, t.splash_screen.open_file, APP_REFS.window_manager.open),
+        (
+            AWW_ICON,
+            "Read manual",
+            partial(open_htsl_link, "htap://manual.nodezator.pysite"),
+        ),
     )
 
     ### iterate over it, creating and positioning action
@@ -590,32 +427,30 @@ def get_action_objs():
     ## iterate
 
     for surf, text, command in actions_data:
-        
+
         ## text surface
 
         text_surf = render_text(
-                      text=text,
-                      **TEXT_SETTINGS,
-                    )
+            text=text,
+            **TEXT_SETTINGS,
+        )
 
         ## instantiate
 
-        action_obj = \
-          Object2D.from_surface(
-                     surface=(
-                       combine_surfaces(
-                         [surf, text_surf],
-                         retrieve_pos_from='midright',
-                         assign_pos_to='midleft',
-                         offset_pos_by=(3, 0),
-                       )
-                     )
-                   )
+        action_obj = Object2D.from_surface(
+            surface=(
+                combine_surfaces(
+                    [surf, text_surf],
+                    retrieve_pos_from="midright",
+                    assign_pos_to="midleft",
+                    offset_pos_by=(3, 0),
+                )
+            )
+        )
 
         ## set 'on_mouse_release' command to perform the
         ## action
-        action_obj.on_mouse_release = \
-                            get_oblivious_callable(command)
+        action_obj.on_mouse_release = get_oblivious_callable(command)
 
         ## position the object
         action_obj.rect.topleft = topleft
@@ -629,6 +464,7 @@ def get_action_objs():
 
     ### finally return the list of objects
     return objs
+
 
 def get_recent_file_objs(recent_files):
     """Return custom "recent file" objects.
@@ -647,7 +483,8 @@ def get_recent_file_objs(recent_files):
 
     ### if there are no paths listed, return the empty list,
     ### exiting the function
-    if not recent_files: return objs
+    if not recent_files:
+        return objs
 
     ### otherwise, create objects representing the first
     ### files in the list
@@ -655,17 +492,8 @@ def get_recent_file_objs(recent_files):
     ## instantiate and store a label with
     ## 'Open recent files..' as its text
 
-    recent_files_label = (
-
-      Object2D.from_surface(
-
-        render_text(
-          text = t.splash_screen.open_recent_files,
-          **TEXT_SETTINGS
-        )
-
-      )
-
+    recent_files_label = Object2D.from_surface(
+        render_text(text=t.splash_screen.open_recent_files, **TEXT_SETTINGS)
     )
 
     objs.append(recent_files_label)
@@ -687,34 +515,29 @@ def get_recent_file_objs(recent_files):
         ## obtain text
 
         text_surf = render_text(
-                      text=filepath.name,
-                      **{
-                        **TEXT_SETTINGS,
-                        'max_width': 300,
-                      },
-                    )
+            text=filepath.name,
+            **{
+                **TEXT_SETTINGS,
+                "max_width": 300,
+            },
+        )
 
         ## instantiate
 
-        recent_file_obj = \
-          Object2D.from_surface(
-                     combine_surfaces(
-                       [NATIVE_FILE_ICON, text_surf],
-                       retrieve_pos_from='midright',
-                       assign_pos_to='midleft',
-                       offset_pos_by = (3, 0),
-                     )
-                   )
+        recent_file_obj = Object2D.from_surface(
+            combine_surfaces(
+                [NATIVE_FILE_ICON, text_surf],
+                retrieve_pos_from="midright",
+                assign_pos_to="midleft",
+                offset_pos_by=(3, 0),
+            )
+        )
 
         ## set 'on_mouse_release' command to load the file
 
-        recent_file_obj.on_mouse_release = \
-                          get_oblivious_callable(
-                            partial(
-                              window_manager_open,
-                              filepath
-                            )
-                          )
+        recent_file_obj.on_mouse_release = get_oblivious_callable(
+            partial(window_manager_open, filepath)
+        )
 
         ## position the object
         recent_file_obj.rect.topleft = topleft
@@ -729,72 +552,43 @@ def get_recent_file_objs(recent_files):
     ### finally return the list of objects
     return objs
 
+
 def get_license_declaration_obj():
     """Return object representing license declaration."""
-    unlicense_obj = (
-
-      Object2D.from_surface(
-                 (
-                   IMAGE_SURFS_DB
-                   ['unlicense_logo.png']
-                   [{'use_alpha': True}]
-                 ),
-               )
-
+    unlicense_obj = Object2D.from_surface(
+        (IMAGE_SURFS_DB["unlicense_logo.png"][{"use_alpha": True}]),
     )
 
-    badge_obj = (
-
-      Object2D.from_surface(
-                 render_layered_icon(
-
-                   chars=[
-                     chr(ordinal)
-                     for ordinal in (56, 57, 58)
-                   ],
-
-                   dimension_name  = 'width',
-                   dimension_value = 19,
-
-                   colors = [
-                     BLACK,
-                     (215, 215, 25),
-                     (200, 30, 30),
-                   ],
-
-                   background_width  = 22,
-                   background_height = 22,
-                 )
-               )
-
+    badge_obj = Object2D.from_surface(
+        render_layered_icon(
+            chars=[chr(ordinal) for ordinal in (56, 57, 58)],
+            dimension_name="width",
+            dimension_value=19,
+            colors=[
+                BLACK,
+                (215, 215, 25),
+                (200, 30, 30),
+            ],
+            background_width=22,
+            background_height=22,
+        )
     )
 
-
-    text_obj = (
-
-      Object2D.from_surface(
-                 render_multiline_text(
-                   text = (
-                     t
-                     .splash_screen
-                     .license_declaration_text
-                   ),
-                   max_character_no = 40,
-                   retrieve_pos_from='bottomleft',
-                   assign_pos_to='topleft',
-                   **TEXT_SETTINGS
-                 )
-               )
-
+    text_obj = Object2D.from_surface(
+        render_multiline_text(
+            text=(t.splash_screen.license_declaration_text),
+            max_character_no=40,
+            retrieve_pos_from="bottomleft",
+            assign_pos_to="topleft",
+            **TEXT_SETTINGS,
+        )
     )
 
     objs = List2D()
 
     objs.append(unlicense_obj)
 
-    badge_obj.rect.topleft = (
-      unlicense_obj.rect.move(-17, -11).bottomright
-    )
+    badge_obj.rect.topleft = unlicense_obj.rect.move(-17, -11).bottomright
     objs.append(badge_obj)
 
     text_obj.rect.midleft = objs.rect.move(10, 0).midright
@@ -802,30 +596,16 @@ def get_license_declaration_obj():
 
     objs.rect.topleft = (0, 0)
 
-    url ='https://unlicense.org'
+    url = "https://unlicense.org"
 
-    return (
-
-      Object2D.from_surface(
-
-                 surface=(
-                   unite_surfaces(
-                     [
-                       (obj.image, obj.rect)
-                       for obj in objs
-                     ],
-                     padding=3,
-                     background_color=SPLASH_BG,
-                   )
-                 ),
-
-                 on_mouse_release=(
-                   get_oblivious_callable(
-                     partial(open_url, url)
-                   )
-                 ),
-
-                 href = url,
-
-               )
+    return Object2D.from_surface(
+        surface=(
+            unite_surfaces(
+                [(obj.image, obj.rect) for obj in objs],
+                padding=3,
+                background_color=SPLASH_BG,
+            )
+        ),
+        on_mouse_release=(get_oblivious_callable(partial(open_url, url))),
+        href=url,
     )

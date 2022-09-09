@@ -15,9 +15,9 @@ from pygame import Surface
 from ..fontsman.cache import FONTS_DB
 
 from ..fontsman.constants import (
-                          ENC_SANS_BOLD_FONT_PATH,
-                          ENC_SANS_BOLD_FONT_HEIGHT,
-                        )
+    ENC_SANS_BOLD_FONT_PATH,
+    ENC_SANS_BOLD_FONT_HEIGHT,
+)
 
 from ..surfsman.draw import draw_border, draw_depth_finish
 
@@ -27,13 +27,13 @@ from ..colorsman.colors import BLACK
 
 
 def get_text_size(
-      text,
-      font_height=ENC_SANS_BOLD_FONT_HEIGHT,
-      font_path=ENC_SANS_BOLD_FONT_PATH,
-      padding=0,
-    ):
+    text,
+    font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+    font_path=ENC_SANS_BOLD_FONT_PATH,
+    padding=0,
+):
     """Return surf size of text as if it were rendered.
-    
+
     text
         Any string.
     font_height
@@ -44,10 +44,7 @@ def get_text_size(
     """
     font = FONTS_DB[font_path][font_height]
 
-    width, height = (
-      dimension + (padding * 2)
-      for dimension in font.size(text)
-    )
+    width, height = (dimension + (padding * 2) for dimension in font.size(text))
 
     return width, height
 
@@ -55,14 +52,15 @@ def get_text_size(
 ### XXX refactor: list and explain parameters, review
 ### docstring and comments
 
+
 def fit_text(
-      text,
-      max_width,
-      ommit_direction,
-      font_height=ENC_SANS_BOLD_FONT_HEIGHT,
-      font_path=ENC_SANS_BOLD_FONT_PATH,
-      padding=0
-    ):
+    text,
+    max_width,
+    ommit_direction,
+    font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+    font_path=ENC_SANS_BOLD_FONT_PATH,
+    padding=0,
+):
     """Return optimal text to fit max_width passed."""
     ### get font
     font = FONTS_DB[font_path][font_height]
@@ -71,10 +69,11 @@ def fit_text(
     max_width += -padding * 2
 
     ### if text as it is fits width, then return earlier
-    if not font.size(text)[0] > max_width: return text
+    if not font.size(text)[0] > max_width:
+        return text
 
     ### define the ellipsis text
-    ellipsis = '\N{horizontal ellipsis}'
+    ellipsis = "\N{horizontal ellipsis}"
 
     ### if not even the ellipsis text fits the max width,
     ### we raise an error to indicate such.
@@ -86,19 +85,17 @@ def fit_text(
     ### from which we will repeatedly remove characters
     ### when making the text shorter
 
-    if ommit_direction == 'left':
+    if ommit_direction == "left":
         text = ellipsis + text
         pop_index = 1
 
-    elif ommit_direction == 'right':
+    elif ommit_direction == "right":
         text = text + ellipsis
         pop_index = -2
 
     else:
 
-        raise RuntimeError(
-                "This 'else' clause should never be reached"
-              )
+        raise RuntimeError("This 'else' clause should never be reached")
 
     ### define a list of the characters
     char_list = list(text)
@@ -119,7 +116,8 @@ def fit_text(
 
         ## if font width of the resulting text fits the
         ## max_width, we can leave the for loop
-        if font.size(text)[0] <= max_width: break
+        if font.size(text)[0] <= max_width:
+            break
 
     ### we finally return the text
     return text
@@ -136,30 +134,24 @@ def fit_text(
 ### would end up making it useless for usage in
 ### other objects;
 
+
 def render_text(
-
-      text,
-
-      font_height = ENC_SANS_BOLD_FONT_HEIGHT,
-      font_path   = ENC_SANS_BOLD_FONT_PATH,
-      antialiased = True,
-      padding     = 0,
-
-      foreground_color = BLACK,
-      background_color = (*BLACK, 0),
-
-      depth_finish_thickness =  False,
-      depth_finish_outset    =  True,
-
-      border_thickness = 0,
-      border_color     = BLACK,
-
-      max_width       = 0,
-      ommit_direction = 'right',
-
-    ):
+    text,
+    font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+    font_path=ENC_SANS_BOLD_FONT_PATH,
+    antialiased=True,
+    padding=0,
+    foreground_color=BLACK,
+    background_color=(*BLACK, 0),
+    depth_finish_thickness=False,
+    depth_finish_outset=True,
+    border_thickness=0,
+    border_color=BLACK,
+    max_width=0,
+    ommit_direction="right",
+):
     """Return surface or object representing rendered text.
-    
+
     Parameters
     ==========
 
@@ -222,18 +214,14 @@ def render_text(
 
     if max_width:
 
-        text = fit_text(
-                 text,
-                 max_width,
-                 ommit_direction,
-                 font_height,
-                 font_path
-               )
+        text = fit_text(text, max_width, ommit_direction, font_height, font_path)
 
     ### define whether the background has transparency
 
-    try: has_transparency = background_color[3] < 255
-    except IndexError: has_transparency = False
+    try:
+        has_transparency = background_color[3] < 255
+    except IndexError:
+        has_transparency = False
 
     ### if no padding was requested nor there's transparency
     ### in the background, just render the surf right away
@@ -241,21 +229,14 @@ def render_text(
     if not padding and not has_transparency:
 
         surf = font.render(
-                      text,
-                      antialiased,
-                      foreground_color,
-                      background_color
-                    ).convert()
+            text, antialiased, foreground_color, background_color
+        ).convert()
 
     else:
 
         ### render the text surface without background
 
-        text_surf = font.render(
-                            text,
-                            antialiased,
-                            foreground_color
-                         ).convert_alpha()
+        text_surf = font.render(text, antialiased, foreground_color).convert_alpha()
 
         ### if padding was requested
 
@@ -264,20 +245,16 @@ def render_text(
             ## calculate new width and height
 
             width, height = (
-              dimension + (padding * 2)
-              for dimension in text_surf.get_size()
+                dimension + (padding * 2) for dimension in text_surf.get_size()
             )
 
             ## create new background surface with appropriate
             ## color according to presence of transparency
 
             surf = (
-
-              Surface((width, height)).convert_alpha()
-              if has_transparency
-
-              else Surface((width, height)).convert()
-
+                Surface((width, height)).convert_alpha()
+                if has_transparency
+                else Surface((width, height)).convert()
             )
 
             surf.fill(background_color)
@@ -292,10 +269,7 @@ def render_text(
 
         else:
 
-            surf = (
-              Surface(text_surf.get_size())
-              .convert_alpha()
-            )
+            surf = Surface(text_surf.get_size()).convert_alpha()
 
             surf.fill(background_color)
             surf.blit(text_surf, (0, 0))
@@ -306,11 +280,7 @@ def render_text(
 
     if depth_finish_thickness:
 
-        draw_depth_finish(
-          surf,
-          depth_finish_thickness,
-          depth_finish_outset
-        )
+        draw_depth_finish(surf, depth_finish_thickness, depth_finish_outset)
 
     ## if a border was requested...
     if border_thickness:
@@ -322,54 +292,42 @@ def render_text(
 
 ### TODO refactor
 
+
 def render_multiline_text(
-
-      text,
-
-      ## same parameters as render_text()
-
-      font_height = ENC_SANS_BOLD_FONT_HEIGHT,
-      font_path   = ENC_SANS_BOLD_FONT_PATH,
-      antialiased = True,
-      padding     = 0,
-
-      foreground_color = BLACK,
-      background_color = (*BLACK, 0),
-
-      depth_finish_thickness =  False,
-      depth_finish_outset    =  True,
-
-      border_thickness = 0,
-      border_color     = BLACK,
-
-      ## multiline-related parameters
-
-      max_character_no = 0, # number of characters,
-
-      retrieve_pos_from = 'bottomleft',
-      assign_pos_to     = 'topleft',
-      offset_pos_by     = (0, 0),
-
-      ## extra styles
-      text_padding = 0,
-
-    ):
+    text,
+    ## same parameters as render_text()
+    font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+    font_path=ENC_SANS_BOLD_FONT_PATH,
+    antialiased=True,
+    padding=0,
+    foreground_color=BLACK,
+    background_color=(*BLACK, 0),
+    depth_finish_thickness=False,
+    depth_finish_outset=True,
+    border_thickness=0,
+    border_color=BLACK,
+    ## multiline-related parameters
+    max_character_no=0,  # number of characters,
+    retrieve_pos_from="bottomleft",
+    assign_pos_to="topleft",
+    offset_pos_by=(0, 0),
+    ## extra styles
+    text_padding=0,
+):
     ### retrieve the suitable font according to the desired
     ### height and style
     font = FONTS_DB[font_path][font_height]
 
     ### split the text into multiple lines
 
-    lines = (
-      wrap(text, max_character_no)
-      if max_character_no
-      else text.splitlines()
-    )
+    lines = wrap(text, max_character_no) if max_character_no else text.splitlines()
 
     ### define whether the background has transparency
 
-    try: has_transparency = background_color[3] < 255
-    except IndexError: has_transparency = False
+    try:
+        has_transparency = background_color[3] < 255
+    except IndexError:
+        has_transparency = False
 
     ### if no padding was requested nor there's transparency
     ### in the background, just render the surfaces right
@@ -378,16 +336,10 @@ def render_multiline_text(
     if not padding and not has_transparency:
 
         text_surfaces = [
-
-          font.render(
-            line_text,
-            antialiased,
-            foreground_color,
-            background_color
-          ).convert()
-
-          for line_text in lines
-
+            font.render(
+                line_text, antialiased, foreground_color, background_color
+            ).convert()
+            for line_text in lines
         ]
 
     else:
@@ -395,59 +347,41 @@ def render_multiline_text(
         ### render the text surface without background
 
         text_surfaces = [
-
-          font.render(
-                 line_text,
-                 antialiased,
-                 foreground_color
-               ).convert_alpha()
-
-          for line_text in lines
-
+            font.render(line_text, antialiased, foreground_color).convert_alpha()
+            for line_text in lines
         ]
 
         ### if padding was requested
 
         if padding:
-            
+
             ### pick surface converting method according to
             ### presence of transparence
 
             converting_method = (
-
-              Surface.convert_alpha
-              if has_transparency
-
-              else Surface.convert
-
+                Surface.convert_alpha if has_transparency else Surface.convert
             )
 
             ### iterate over items within a copy of the
             ### text_surfaces list
 
-            for index, text_surface \
-            in enumerate(text_surfaces[:]):
+            for index, text_surface in enumerate(text_surfaces[:]):
 
                 ## calculate new width and height
 
                 width, height = (
-                  dimension + (padding * 2)
-                  for dimension in text_surface.get_size()
+                    dimension + (padding * 2) for dimension in text_surface.get_size()
                 )
 
                 ## create new background surface with
                 ## appropriate method and color
                 ## of transparency
 
-                surf = converting_method(
-                         Surface(
-                           (width, height)
-                         )
-                       )
+                surf = converting_method(Surface((width, height)))
 
                 surf.fill(background_color)
 
-                ## blit text surf on new surf taking the 
+                ## blit text surf on new surf taking the
                 ## text padding into account
                 surf.blit(text_surface, (padding, padding))
 
@@ -461,24 +395,13 @@ def render_multiline_text(
         else:
 
             text_surfaces = [
-
-              font.render(
-                     line_text,
-                     antialiased,
-                     foreground_color
-                   ).convert_alpha()
-
-              for line_text in lines
-
+                font.render(line_text, antialiased, foreground_color).convert_alpha()
+                for line_text in lines
             ]
 
-            for index, text_surf \
-            in enumerate(text_surfaces[:]):
+            for index, text_surf in enumerate(text_surfaces[:]):
 
-                surf = (
-                  Surface(text_surf.get_size())
-                  .convert_alpha()
-                )
+                surf = Surface(text_surf.get_size()).convert_alpha()
 
                 surf.fill(background_color)
                 surf.blit(text_surf, (0, 0))
@@ -489,40 +412,35 @@ def render_multiline_text(
     ### them relative to each other, apply text padding as
     ### requested and unite them into a single surface
 
-    rects = [
-      text_surf.get_rect() for text_surf in text_surfaces
-    ]
+    rects = [text_surf.get_rect() for text_surf in text_surfaces]
 
     rectsman = RectsManager.from_iterable(rects)
 
     rectsman.snap_rects_ip(
-               retrieve_pos_from = retrieve_pos_from,
-               assign_pos_to     = assign_pos_to,
-               offset_pos_by     = offset_pos_by,
-             )
+        retrieve_pos_from=retrieve_pos_from,
+        assign_pos_to=assign_pos_to,
+        offset_pos_by=offset_pos_by,
+    )
 
     rectsman.move_ip(text_padding, text_padding)
 
     inflation_amount = text_padding * 2
 
     inflated_rect = rectsman.inflate(
-                               inflation_amount,
-                               inflation_amount,
-                             )
+        inflation_amount,
+        inflation_amount,
+    )
 
     surf = (
-
-      Surface(inflated_rect.size).convert_alpha()
-      if has_transparency
-
-      else Surface(inflated_rect.size).convert()
-
+        Surface(inflated_rect.size).convert_alpha()
+        if has_transparency
+        else Surface(inflated_rect.size).convert()
     )
 
     surf.fill(background_color)
 
     for text_surf, rect in zip(text_surfaces, rects):
-        
+
         surf.blit(text_surf, rect)
 
     ### add other effects as requested
@@ -531,11 +449,7 @@ def render_multiline_text(
 
     if depth_finish_thickness:
 
-        draw_depth_finish(
-          surf,
-          depth_finish_thickness,
-          depth_finish_outset
-        )
+        draw_depth_finish(surf, depth_finish_thickness, depth_finish_outset)
 
     ## if a border was requested...
     if border_thickness:

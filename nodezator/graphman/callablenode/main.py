@@ -8,17 +8,11 @@ from ...config import APP_REFS
 
 from .preproc import Preprocessing
 
-from .vizprep.main import (
-                                  VisualRelatedPreparations
-                                )
+from .vizprep.main import VisualRelatedPreparations
 
-from .vizop.main import (
-                                   VisualRelatedOperations
-                                 )
+from .vizop.main import VisualRelatedOperations
 
-from .subparam.main import (
-                                      SubparameterHandling
-                                    )
+from .subparam.main import SubparameterHandling
 
 from .execution import Execution
 
@@ -26,15 +20,13 @@ from .export import Exporting
 
 
 class CallableNode(
-
-      Preprocessing,
-      VisualRelatedPreparations,
-      VisualRelatedOperations,
-      SubparameterHandling,
-      Execution,
-      Exporting,
-
-    ):
+    Preprocessing,
+    VisualRelatedPreparations,
+    VisualRelatedOperations,
+    SubparameterHandling,
+    Execution,
+    Exporting,
+):
     """Stores and manages a callable state.
 
     This object is used to manage gathering, storage and
@@ -60,11 +52,11 @@ class CallableNode(
     ### input from the user
 
     def __init__(
-          self,
-          node_defining_object,
-          data,
-          midtop=None,
-        ):
+        self,
+        node_defining_object,
+        data,
+        midtop=None,
+    ):
         """Setup attributes for storage and control.
 
         Parameters
@@ -89,68 +81,61 @@ class CallableNode(
 
         self.node_defining_object = node_defining_object
 
-        main_callable = self.main_callable = (
-          node_defining_object['main_callable']
-        )
+        main_callable = self.main_callable = node_defining_object["main_callable"]
 
-        signature_callable = self.signature_callable = (
-          node_defining_object['signature_callable']
-        )
+        signature_callable = self.signature_callable = node_defining_object[
+            "signature_callable"
+        ]
 
         ##
 
-        try: substitution_callable = (
-               node_defining_object[
-                 'substitution_callable'
-               ]
-             )
+        try:
+            substitution_callable = node_defining_object["substitution_callable"]
 
-        except KeyError: pass
+        except KeyError:
+            pass
 
-        else: self.substitution_callable = (
-                     substitution_callable
-                   )
+        else:
+            self.substitution_callable = substitution_callable
 
         ### unless a call format text is given, set
         ### the main callable name as the text for the
         ### nodes title
 
-        try: call_format = (
-               node_defining_object['call_format']
-             )
+        try:
+            call_format = node_defining_object["call_format"]
 
         except KeyError:
             self.title_text = main_callable.__name__
 
-        else: self.title_text = call_format
+        else:
+            self.title_text = call_format
 
         ### store import statements from node defining
         ### object, if present
 
         for key in (
-          'stlib_import_text',
-          'third_party_import_text',
+            "stlib_import_text",
+            "third_party_import_text",
         ):
 
-            try: text = node_defining_object[key]
-            except KeyError: pass
-            else: setattr(self, key, text)
+            try:
+                text = node_defining_object[key]
+            except KeyError:
+                pass
+            else:
+                setattr(self, key, text)
 
         ### perform inspections/setups related to the
         ### signature callable and its metadata as needed
 
         ## the inspection is performed only once for each
         ## different signature callable. Thus, if another
-        ## node instance is created with the same 
+        ## node instance is created with the same
         ## signature callable, it will use the already
         ## created data, shared through class attributes
 
-        if (
-
-          signature_callable
-          not in self.__class__.preprocessed_callables
-
-        ):
+        if signature_callable not in self.__class__.preprocessed_callables:
             self.inspect_callable_object(signature_callable)
 
         ### reference maps from class attributes in
@@ -168,24 +153,15 @@ class CallableNode(
 
         ### store script id on node's data
 
-        data['script_id'] = (
-          node_defining_object['script_id']
-        )
+        data["script_id"] = node_defining_object["script_id"]
 
         ### store the id in its own attribute for easy
         ### access
-        self.id = self.data['id']
+        self.id = self.data["id"]
 
         ### store the midtop position
 
-        self.midtop = (
-
-          midtop
-          if midtop is not None 
-
-          else self.data['midtop']
-
-        )
+        self.midtop = midtop if midtop is not None else self.data["midtop"]
 
         ### create control to indicate when the node was
         ### subject to mouse click

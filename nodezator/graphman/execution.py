@@ -22,9 +22,9 @@ from ..userprefsman.main import USER_PREFS
 from ..logman.main import get_new_logger
 
 from ..dialog import (
-              create_and_show_dialog,
-              show_formatted_dialog,
-            )
+    create_and_show_dialog,
+    show_formatted_dialog,
+)
 
 from ..ourstdlibs.timeutils import friendly_delta_from_secs
 
@@ -35,16 +35,14 @@ from ..our3rdlibs.behaviour import set_status_message
 from ..textman.viewer.main import view_text
 
 from .exception import (
-
-                     MissingInputError,
-                     WaitingInputException,
-                     NodeCallableError,
-                     MissingOutputError,
-                     PositionalSubparameterUnpackingError,
-                     KeywordSubparameterUnpackingError,
-                     ProxyNodesLackingDataError,
-
-                   )
+    MissingInputError,
+    WaitingInputException,
+    NodeCallableError,
+    MissingOutputError,
+    PositionalSubparameterUnpackingError,
+    KeywordSubparameterUnpackingError,
+    ProxyNodesLackingDataError,
+)
 
 from .utils import lay_arguments_and_execute
 
@@ -61,21 +59,20 @@ class Execution:
         ### create set to hold references to specific
         ### subsets of the existing nodes
 
-        self.nodes_to_visit       = set()
-        self.nodes_to_execute     = set()
+        self.nodes_to_visit = set()
+        self.nodes_to_execute = set()
         self.nodes_to_direct_data = set()
-        self.executed_nodes       = set()
+        self.executed_nodes = set()
 
         ### create map to track node execution time
         self.node_exec_time_map = {}
-
 
     def execute_graph(self):
         """Travel the graph, executing each node.
 
         Works by executing node by node until all of them
         are finished.
-        
+
         Once a node is finished, it's outputs are sent to
         the inputs of other linked nodes, if any.
         """
@@ -86,8 +83,7 @@ class Execution:
         if not self.nodes:
 
             create_and_show_dialog(
-              "In order to execute the graph, it must have"
-              " at least one node."
+                "In order to execute the graph, it must have" " at least one node."
             )
 
             return
@@ -100,12 +96,7 @@ class Execution:
         nodes_to_visit.clear()
 
         nodes_to_visit.update(
-
-          node
-          for node in self.nodes
-
-          if not node.data.get('commented_out', False)
-
+            node for node in self.nodes if not node.data.get("commented_out", False)
         )
 
         ### if there's no nodes to visit in the graph,
@@ -117,10 +108,10 @@ class Execution:
         if not nodes_to_visit:
 
             create_and_show_dialog(
-              "Can't execute graph because all nodes are"
-              " commented out. We must have at least one"
-              " node not commented out in order to execute"
-              " the graph."
+                "Can't execute graph because all nodes are"
+                " commented out. We must have at least one"
+                " node not commented out in order to execute"
+                " the graph."
             )
 
             return
@@ -133,12 +124,8 @@ class Execution:
         nodes_to_execute.clear()
 
         nodes_to_execute.update(
-
-                           node
-                           for node in nodes_to_visit
-                           if hasattr(node, 'main_callable')
-
-                         )
+            node for node in nodes_to_visit if hasattr(node, "main_callable")
+        )
 
         for node in nodes_to_execute:
             node.perform_execution_setup()
@@ -150,16 +137,13 @@ class Execution:
         nodes_to_direct_data.clear()
 
         nodes_to_direct_data.update(
-
-                              node
-                              for node in nodes_to_visit
-
-                              if not hasattr(
-                                       node,
-                                       'main_callable',
-                                     )
-
-                            )
+            node
+            for node in nodes_to_visit
+            if not hasattr(
+                node,
+                "main_callable",
+            )
+        )
 
         ### reference and clear set to store references of
         ### executed nodes
@@ -176,9 +160,8 @@ class Execution:
         ### perform checks and setups related to nodes
         ### used to direct data
 
-        try: self.check_and_setup_data_redirection(
-                    nodes_to_direct_data
-                  )
+        try:
+            self.check_and_setup_data_redirection(nodes_to_direct_data)
 
         except ProxyNodesLackingDataError as err:
 
@@ -205,20 +188,18 @@ class Execution:
                     ## obtain the elements needed to
                     ## execute its callable
 
-                    try: (
-                           main_callable,
-                           argument_map,
-                           callable_signature
-                         ) = node()
+                    try:
+                        (main_callable, argument_map, callable_signature) = node()
 
                     ## if a node is just waiting input
                     ## from another one, just pass
-                    except WaitingInputException: pass
+                    except WaitingInputException:
+                        pass
 
                     ## if node execution succeeds...
 
                     else:
-                        
+
                         ### now try executing the node's
                         ### callable by passing the needed
                         ### arguments to a function that
@@ -229,17 +210,11 @@ class Execution:
 
                             node_exec_start = time()
 
-                            return_value = (
-                              lay_arguments_and_execute(
-                                main_callable,
-                                argument_map,
-                                callable_signature
-                              )
+                            return_value = lay_arguments_and_execute(
+                                main_callable, argument_map, callable_signature
                             )
 
-                            node_exec_time_map[node.id] = (
-                              time() - node_exec_start
-                            )
+                            node_exec_time_map[node.id] = time() - node_exec_start
 
                         ### if an unexpected error occurs,
                         ### raise a custom error from the
@@ -247,16 +222,15 @@ class Execution:
 
                         except Exception as err:
 
-                            raise NodeCallableError(
-                                    node
-                                  ) from err
+                            raise NodeCallableError(node) from err
 
                         # send its return value to
                         # other nodes as needed
 
                         self.send_output_from_executed(
-                               node, return_value,
-                             )
+                            node,
+                            return_value,
+                        )
 
                         # TODO should we perform exec
                         # setup as well if the node has
@@ -273,13 +247,14 @@ class Execution:
 
                 ## if iteration went ok, remove executed
                 ## nodes from remaining ones
-                else: nodes_to_execute -= executed_nodes
+                else:
+                    nodes_to_execute -= executed_nodes
 
             ### if an error is thrown, act according to its
             ### class
 
             except Exception as err:
-                
+
                 ## regardless of the kind of error...
 
                 # remove executed_nodes from the
@@ -298,23 +273,19 @@ class Execution:
                 ## as the error message
 
                 if isinstance(
-
-                  err,
-
-                  (
-                    MissingInputError,
-                    MissingOutputError,
-                    PositionalSubparameterUnpackingError,
-                    KeywordSubparameterUnpackingError,
-                  )
-
+                    err,
+                    (
+                        MissingInputError,
+                        MissingOutputError,
+                        PositionalSubparameterUnpackingError,
+                        KeywordSubparameterUnpackingError,
+                    ),
                 ):
 
                     create_and_show_dialog(
-                      str(err),
-                      level_name='error',
+                        str(err),
+                        level_name="error",
                     )
-
 
                 ## any other kind of error is unexpected,
                 ## so we take further measures
@@ -324,16 +295,15 @@ class Execution:
                     ## log traceback in the user log
 
                     USER_LOGGER.exception(
-                                  "An error occurred"
-                                  " during graph execution."
-                                )
+                        "An error occurred" " during graph execution."
+                    )
 
                     ## if the error was caused during call
                     ## or execution of a node's callable,
                     ## display a custom error message
 
                     if isinstance(err, NodeCallableError):
-                        
+
                         # grab the node wherein the
                         # error bubbled up
                         error_node = err.node
@@ -342,11 +312,11 @@ class Execution:
                         original_error = err.__cause__
 
                         show_formatted_dialog(
-                          'node_callable_error_dialog',
-                          error_node.title_text,
-                          error_node.id,
-                          original_error.__class__.__name__,
-                          str(original_error)
+                            "node_callable_error_dialog",
+                            error_node.title_text,
+                            error_node.id,
+                            original_error.__class__.__name__,
+                            str(original_error),
                         )
 
                     ## otherwise we just notify the user
@@ -355,19 +325,16 @@ class Execution:
                     else:
 
                         error_msg = (
-                          "node layout execution failed"
-                          " with an unexpected error. The"
-                          " following message was issued"
-                          " >> {}: {}"
-                        ).format(
-                            err.__class__.__name__, str(err)
-                        )
+                            "node layout execution failed"
+                            " with an unexpected error. The"
+                            " following message was issued"
+                            " >> {}: {}"
+                        ).format(err.__class__.__name__, str(err))
 
                         create_and_show_dialog(
-                          error_msg,
-                          level_name='error',
+                            error_msg,
+                            level_name="error",
                         )
-
 
                 ## break out of the "while loop"
                 break
@@ -385,48 +352,30 @@ class Execution:
             layout_exec_time = time() - layout_exec_start
 
             tracked_nodes_total = sum(
-
-              node_exec_time_map[node.id]
-
-              for node in executed_nodes
-
-              if not getattr(
-                       node.signature_callable,
-                       'dismiss_exec_time_tracking',
-                       False
-                     )
-
+                node_exec_time_map[node.id]
+                for node in executed_nodes
+                if not getattr(
+                    node.signature_callable, "dismiss_exec_time_tracking", False
+                )
             )
 
-            time_for_humans = friendly_delta_from_secs(
-                                tracked_nodes_total
-                              )
+            time_for_humans = friendly_delta_from_secs(tracked_nodes_total)
 
-            set_status_message(
-              f"Total execution time was {time_for_humans}"
-            )
+            set_status_message(f"Total execution time was {time_for_humans}")
 
     def check_and_setup_data_redirection(
-          self,
-          nodes_to_direct_data,
-        ):
+        self,
+        nodes_to_direct_data,
+    ):
 
         data_sources = set()
         lacking_data = set()
 
         for node in nodes_to_direct_data:
-            
-            if 'source_name' not in node.data:
 
-                (
+            if "source_name" not in node.data:
 
-                  data_sources
-                  if hasattr(node, 'widget')
-
-                  else lacking_data
-
-
-                ).add(node)
+                (data_sources if hasattr(node, "widget") else lacking_data).add(node)
 
         if lacking_data:
             raise ProxyNodesLackingDataError(lacking_data)
@@ -439,8 +388,10 @@ class Execution:
             ### send the output retrieved to the output
             ### socket children, if it has children
 
-            try: children = node.output_socket.children
-            except AttributeError: pass
+            try:
+                children = node.output_socket.children
+            except AttributeError:
+                pass
             else:
 
                 for child in children:
@@ -473,19 +424,19 @@ class Execution:
             ## specific value to be sent to them
 
             for socket in output_sockets:
-                
-                try: children = socket.children
 
-                except AttributeError: pass
+                try:
+                    children = socket.children
+
+                except AttributeError:
+                    pass
 
                 else:
 
                     ## try retrieving value to be sent
 
-                    try: value_to_be_sent = output[
-                                              socket
-                                              .output_name
-                                            ]
+                    try:
+                        value_to_be_sent = output[socket.output_name]
 
                     ## if not possible, raise a missing
                     ## output error to notify user of
@@ -497,8 +448,7 @@ class Execution:
                         ## names of output sockets
 
                         expected_outputs = (
-                          socket.output_name
-                          for socket in output_sockets
+                            socket.output_name for socket in output_sockets
                         )
 
                         ## pass relevant data to the
@@ -507,22 +457,17 @@ class Execution:
                         ## exception
 
                         raise MissingOutputError(
-                                node, expected_outputs,
-                              ) from err
+                            node,
+                            expected_outputs,
+                        ) from err
 
                     ## send value to each child
 
                     else:
 
-
                         for child in children:
 
-                            (
-                              child
-                              .receive_input(
-                                 value_to_be_sent
-                               )
-                            )
+                            (child.receive_input(value_to_be_sent))
 
         ### otherwise, the output received is itself the
         ### value to be sent to the output socket children,
@@ -531,10 +476,12 @@ class Execution:
         else:
 
             for socket in output_sockets:
-                
-                try: children = socket.children
 
-                except AttributeError: pass
+                try:
+                    children = socket.children
+
+                except AttributeError:
+                    pass
 
                 else:
 
@@ -542,17 +489,14 @@ class Execution:
                         child.receive_input(output)
 
     def execute_with_custom_stdout(self):
-        
+
         with StringIO() as custom_stdout:
 
             ###
 
             with redirect_stdout(custom_stdout):
-                
-                print(
-                   "Graph execution triggered at UTC:"
-                  f" {datetime.utcnow()}"
-                )
+
+                print("Graph execution triggered at UTC:" f" {datetime.utcnow()}")
 
                 self.execute_graph()
 
@@ -562,26 +506,16 @@ class Execution:
 
             stdout_lines = APP_REFS.custom_stdout_lines
 
-            stdout_lines.extend(
-                           custom_stdout
-                           .getvalue()
-                           .splitlines()
-                         )
+            stdout_lines.extend(custom_stdout.getvalue().splitlines())
 
-            max_lines = (
-              USER_PREFS['CUSTOM_STDOUT_MAX_LINES']
-            )
+            max_lines = USER_PREFS["CUSTOM_STDOUT_MAX_LINES"]
 
             stdout_lines[:] = stdout_lines[-max_lines:]
 
             view_text(
-
-              text = linesep.join(stdout_lines),
-
-              header_text = "Text from custom stdout",
-
-              general_text_settings = 'custom_stdout',
-              text_viewer_rect      = 'custom_stdout',
-              index_to_jump_to      = -1,
-
+                text=linesep.join(stdout_lines),
+                header_text="Text from custom stdout",
+                general_text_settings="custom_stdout",
+                text_viewer_rect="custom_stdout",
+                index_to_jump_to=-1,
             )

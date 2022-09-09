@@ -3,11 +3,17 @@
 ### third-party imports
 
 from pygame import (
-              QUIT,
-              KEYUP, K_ESCAPE, K_RETURN, K_KP_ENTER,
-              K_w, K_UP, K_s, K_DOWN,
-              MOUSEBUTTONUP,
-            )
+    QUIT,
+    KEYUP,
+    K_ESCAPE,
+    K_RETURN,
+    K_KP_ENTER,
+    K_w,
+    K_UP,
+    K_s,
+    K_DOWN,
+    MOUSEBUTTONUP,
+)
 
 from pygame.event import get as get_events
 
@@ -23,9 +29,9 @@ from pygame.key import get_pressed as get_pressed_keys
 from ....pygameconstants import blit_on_screen
 
 from ....ourstdlibs.color.conversion import (
-                                   full_rgb_to_html_name,
-                                   full_rgb_to_hex_string,
-                                 )
+    full_rgb_to_html_name,
+    full_rgb_to_hex_string,
+)
 
 from ....classes2d.single import Object2D
 from ....classes2d.collections import List2D
@@ -40,9 +46,9 @@ from ....textman.render import render_text
 from ....fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
 
 from ...colors import (
-                               COLOR_VIEWER_COLOR_LIST_FG,
-                               COLOR_VIEWER_COLOR_LIST_BG,
-                            )
+    COLOR_VIEWER_COLOR_LIST_FG,
+    COLOR_VIEWER_COLOR_LIST_BG,
+)
 
 from ...color2d import Color2D
 
@@ -52,6 +58,7 @@ COLOR_SIZE = (120, 84)
 
 
 ### class definition (class extension)
+
 
 class ColorListMode:
     """Has operations to show colors in a list.
@@ -67,12 +74,14 @@ class ColorListMode:
         """Setups to execute before starting the mode."""
         ### check the existence of a 'color_list_colors'
         ### attribute
-        try: self.color_list_colors
+        try:
+            self.color_list_colors
 
         ### if such attribute doesn't exist, execute a
         ### method to create such list and the related
         ### color widgets
-        except AttributeError: self.create_color_list()
+        except AttributeError:
+            self.create_color_list()
 
         ### the same method should be used in case the
         ### attribute exists but it is different from the
@@ -95,8 +104,7 @@ class ColorListMode:
         ### create a new custom list for color widgets,
         ### storing it in its own attribute but also
         ### referencing it locally
-        color_list_objs = \
-        self.color_list_objs = List2D()
+        color_list_objs = self.color_list_objs = List2D()
 
         ### define a topleft next to the topleft of self.rect,
         ### but way to the right and a bit lower
@@ -125,40 +133,32 @@ class ColorListMode:
             # iterate over color representations
 
             for text in (
-              # integers in range(256) representing values
-              # of the RGB(A) channels
-              repr(color),
-
-              # a hex string (string starting with '#'
-              # followed by substrings representing the
-              # values of RGB(A) channels in range(256),
-              # but representing in hexadecimal numbers;
-              # for instance: #ffffff for white color)
-              full_rgb_to_hex_string(color),
-
-              # the name of the color used by HTML or
-              # 'unamed' if it doesn't have a name
-              full_rgb_to_html_name(color)
-
+                # integers in range(256) representing values
+                # of the RGB(A) channels
+                repr(color),
+                # a hex string (string starting with '#'
+                # followed by substrings representing the
+                # values of RGB(A) channels in range(256),
+                # but representing in hexadecimal numbers;
+                # for instance: #ffffff for white color)
+                full_rgb_to_hex_string(color),
+                # the name of the color used by HTML or
+                # 'unamed' if it doesn't have a name
+                full_rgb_to_html_name(color),
             ):
-                
+
                 # create and append the text object
 
-                text_obj = \
-                  Object2D.from_surface(
+                text_obj = Object2D.from_surface(
                     surface=render_text(
-                           text=text,
-                           font_height=ENC_SANS_BOLD_FONT_HEIGHT,
-                           foreground_color=(
-                             COLOR_VIEWER_COLOR_LIST_FG
-                           ),
-                           background_color=(
-                             COLOR_VIEWER_COLOR_LIST_BG
-                           ),
-                         ),
-                    coordinates_name='topleft',
+                        text=text,
+                        font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+                        foreground_color=(COLOR_VIEWER_COLOR_LIST_FG),
+                        background_color=(COLOR_VIEWER_COLOR_LIST_BG),
+                    ),
+                    coordinates_name="topleft",
                     coordinates_value=topleft,
-                  )
+                )
 
                 color_list_objs.append(text_obj)
 
@@ -188,8 +188,7 @@ class ColorListMode:
 
         ## align the widgets midtop with the midtop of the
         ## display area, slightly moving them down
-        color_list_rect.midtop = \
-                            display_area.move(0, 10).midtop
+        color_list_rect.midtop = display_area.move(0, 10).midtop
 
         ## redefine the height of the display area if the
         ## bottom of the widgets, if they were lowered 10
@@ -200,35 +199,28 @@ class ColorListMode:
         # and widgets, considering the widgets as if they
         # were 10 pixels below the current position
 
-        highest_bottom = \
-          min(
-            display_area.bottom,
-            color_list_rect.bottom + 10
-          )
+        highest_bottom = min(display_area.bottom, color_list_rect.bottom + 10)
 
         # update the display area's height to the difference
         # between the highest bottom previously calculated
         # and its top
-        display_area.height = \
-                          highest_bottom - display_area.top
+        display_area.height = highest_bottom - display_area.top
 
         ## finally create an object representing the display
         ## area defined previously and copy its surface
         ## from its 'image' attribute so we can use it to
         ## clean the surface when scroling the objects
 
-        self.color_list_bg = \
-          Object2D.from_surface(
+        self.color_list_bg = Object2D.from_surface(
             surface=render_rect(
-                   *display_area.size,
-                   COLOR_VIEWER_COLOR_LIST_BG,
-                 ),
-            coordinates_name='topleft',
-            coordinates_value=display_area.topleft
-          )
-        
-        self.color_list_clean = \
-                            self.color_list_bg.image.copy()
+                *display_area.size,
+                COLOR_VIEWER_COLOR_LIST_BG,
+            ),
+            coordinates_name="topleft",
+            coordinates_value=display_area.topleft,
+        )
+
+        self.color_list_clean = self.color_list_bg.image.copy()
 
     def color_list_event_handling(self):
         """Event handling for the color list mode."""
@@ -244,23 +236,20 @@ class ColorListMode:
             ### keys is released
 
             elif event.type == KEYUP:
-                
-                if event.key in (
-                  K_ESCAPE, K_RETURN, K_KP_ENTER
-                ):
+
+                if event.key in (K_ESCAPE, K_RETURN, K_KP_ENTER):
                     self.running = False
 
             ### if a mouse button is released...
 
             elif event.type == MOUSEBUTTONUP:
-                
+
                 ## if it is the left button, execute
                 ## specific mouse action method
 
                 if event.button == 1:
                     self.color_list_on_mouse_release(event)
 
-    
                 ## if it is the mouse wheel being
                 ## scrolled, scroll the list up or down
 
@@ -280,13 +269,10 @@ class ColorListMode:
         ### state of specific buttons
 
         should_scroll = (
-
-          ## whether a key to go up was pressed
-          any(pressed_keys[i] for i in (K_w,   K_UP))
-
-          ## minus whether a key to go down was pressed
-          - any(pressed_keys[i] for i in (K_s, K_DOWN))
-
+            ## whether a key to go up was pressed
+            any(pressed_keys[i] for i in (K_w, K_UP))
+            ## minus whether a key to go down was pressed
+            - any(pressed_keys[i] for i in (K_s, K_DOWN))
         )
 
         ### if should_scroll is truthy (different than 0),
@@ -377,19 +363,21 @@ class ColorListMode:
         ### the mouse
 
         for button in self.buttons:
-            
+
             ## if a button collides, execute its mouse
             ## release action if it has one, then break out
             ## of the "for loop"
 
             if button.rect.collidepoint(mouse_pos):
-                
-                try: method = getattr(
-                                button, 'on_mouse_release')
 
-                except AttributeError: pass
+                try:
+                    method = getattr(button, "on_mouse_release")
 
-                else: method(event)
+                except AttributeError:
+                    pass
+
+                else:
+                    method(event)
 
                 break
 
@@ -409,7 +397,7 @@ class ColorListMode:
         ## the surface and rect of the color list background
 
         bg_image = self.color_list_bg.image
-        bg_rect  = self.color_list_bg.rect
+        bg_rect = self.color_list_bg.rect
 
         ## an offset equivalent to the opposite of the
         ## topleft coordinate of the background rect
@@ -427,11 +415,7 @@ class ColorListMode:
         ### of their rects obtained from pygame.Rect.move
         ### with the offset as the sole argument)
 
-        for obj in (
-
-          self.color_list_objs.get_colliding(bg_rect)
-
-        ):
+        for obj in self.color_list_objs.get_colliding(bg_rect):
 
             bg_image.blit(obj.image, obj.rect.move(offset))
 
@@ -444,7 +428,7 @@ class ColorListMode:
         self.color_list_bg.draw()
 
         ### and finally update the screen
-        update() # pygame.display.update
+        update()  # pygame.display.update
 
     def color_list_free_up_memory(self):
         """Clear objects/delete references to free memory."""
@@ -461,8 +445,10 @@ class ColorListMode:
         ### so we wrap it in a try/except clause to guard
         ### against AttributeErrors
 
-        try: self.color_list_objs.clear()
-        except AttributeError: pass
+        try:
+            self.color_list_objs.clear()
+        except AttributeError:
+            pass
 
         ### also delete the attribute referencing the
         ### list of colors being displayed
@@ -482,6 +468,7 @@ class ColorListMode:
         ### raise an AttributeError since the attribute
         ### wouldn't exist
 
-        try: del self.color_list_colors
-        except AttributeError: pass
-
+        try:
+            del self.color_list_colors
+        except AttributeError:
+            pass

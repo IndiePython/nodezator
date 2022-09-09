@@ -14,34 +14,28 @@ from pygame.math import Vector2
 ### local imports
 
 from .constants import (
-                                  OP_CHARS_HEIGHT,
-                                  AB_CHARS_HEIGHT,
-                                  NODE_OUTLINE_THICKNESS,
-                                  FONT_HEIGHT,
-                                  CHAR_FILTERING_MAP,
-                                )
+    OP_CHARS_HEIGHT,
+    AB_CHARS_HEIGHT,
+    NODE_OUTLINE_THICKNESS,
+    FONT_HEIGHT,
+    CHAR_FILTERING_MAP,
+)
 
 from .surfs import CHAR_CENTERXS_MAP
 
 from ...colorsman.colors import (
-
-                     BLACK,
-
-                     PROXY_NODE_NORMAL_FG,
-                     PROXY_NODE_NORMAL_BG,
-                     PROXY_NODE_NORMAL_OUTLINE,
-
-                     OPERATION_NODE_NORMAL_AB_CHARS,
-                     OPERATION_NODE_NORMAL_OP_CHARS,
-
-                     PROXY_NODE_COMMENTED_OUT_FG,
-                     PROXY_NODE_COMMENTED_OUT_BG,
-                     PROXY_NODE_COMMENTED_OUT_OUTLINE,
-
-                     OPERATION_NODE_COMMENTED_OUT_AB_CHARS,
-                     OPERATION_NODE_COMMENTED_OUT_OP_CHARS,
-
-                   )
+    BLACK,
+    PROXY_NODE_NORMAL_FG,
+    PROXY_NODE_NORMAL_BG,
+    PROXY_NODE_NORMAL_OUTLINE,
+    OPERATION_NODE_NORMAL_AB_CHARS,
+    OPERATION_NODE_NORMAL_OP_CHARS,
+    PROXY_NODE_COMMENTED_OUT_FG,
+    PROXY_NODE_COMMENTED_OUT_BG,
+    PROXY_NODE_COMMENTED_OUT_OUTLINE,
+    OPERATION_NODE_COMMENTED_OUT_AB_CHARS,
+    OPERATION_NODE_COMMENTED_OUT_OP_CHARS,
+)
 
 
 ### constants
@@ -52,7 +46,7 @@ BIG_AB_HEIGHT = AB_CHARS_HEIGHT + -10
 BIG_OP_HEIGHT = OP_CHARS_HEIGHT + -10
 
 
-OPERATOR_NODE_CSS = f'''
+OPERATOR_NODE_CSS = f"""
 
 g.operator_node > rect.normal_body
 {{
@@ -103,7 +97,8 @@ g.operator_node > text.commented_out_big_op_text
   font: bold {BIG_OP_HEIGHT}px sans-serif;
   fill: rgb{OPERATION_NODE_COMMENTED_OUT_OP_CHARS};
 }}
-'''
+"""
+
 
 class Exporting:
     """Manages export operations on node."""
@@ -115,107 +110,70 @@ class Exporting:
         exporting the node graph to a .svg file.
         """
         ### group containing node subelements
-        node_g = Element('g', {'class': 'node operator_node'})
+        node_g = Element("g", {"class": "node operator_node"})
 
         ###
 
         outline_deflation = NODE_OUTLINE_THICKNESS * 2
 
         body_rect = self.body.rect.inflate(
-
-                                      -outline_deflation,
-                                      -outline_deflation,
-
-                                    )
+            -outline_deflation,
+            -outline_deflation,
+        )
 
         x, y, width, height = body_rect
 
         ###
 
-        is_commented_out = self.data.get(
-                                       'commented_out',
-                                       False
-                                     )
+        is_commented_out = self.data.get("commented_out", False)
 
         ### body
 
         node_g.append(
-
-                Element(
-
-                  'rect',
-
-                  {
-
-                    'x': str(x),
-                    'y': str(y),
-
-                    'width': str(width),
-                    'height': str(height),
-
-                    'class': (
-
-                      'commented_out_body'
-                      if is_commented_out
-
-                      else 'normal_body'
-
+            Element(
+                "rect",
+                {
+                    "x": str(x),
+                    "y": str(y),
+                    "width": str(width),
+                    "height": str(height),
+                    "class": (
+                        "commented_out_body" if is_commented_out else "normal_body"
                     ),
-                  },
-
-                )
-
-              )
+                },
+            )
+        )
 
         ### big chars
 
-        string   = self.data['operation_id']
+        string = self.data["operation_id"]
         centerxs = CHAR_CENTERXS_MAP[string]
-        flags    = CHAR_FILTERING_MAP[string]
+        flags = CHAR_FILTERING_MAP[string]
 
         char_flag_pairs = [
-          (char, flag)
-          for char, flag
-          in zip(string, flags)
-          if char != ' '
+            (char, flag) for char, flag in zip(string, flags) if char != " "
         ]
 
         x_offset = self.rect.left + 20
         bottom = self.rect.bottom - 22
 
-        state = (
-          'commented_out_big_'
-          if is_commented_out
+        state = "commented_out_big_" if is_commented_out else "normal_big_"
 
-          else 'normal_big_'
-        )
+        for ((char, flag), centerx) in zip(char_flag_pairs, centerxs):
 
+            class_name = state + ("ab_text" if flag else "op_text")
 
-        for (
-          (char, flag), centerx
-        ) in zip(char_flag_pairs, centerxs):
-            
-            class_name = state + (
-              'ab_text' if flag else 'op_text'
-            )
-
-            tx_str, ty_str = map(
-                               str,
-                               (centerx + x_offset, bottom)
-                             )
+            tx_str, ty_str = map(str, (centerx + x_offset, bottom))
 
             char_text = Element(
-
-                          'text',
-
-                          {
-                            'x' : tx_str,
-                            'y' : ty_str,
-                            'text-anchor': 'middle',
-                            'class': class_name,
-                          },
-
-                        )
+                "text",
+                {
+                    "x": tx_str,
+                    "y": ty_str,
+                    "text-anchor": "middle",
+                    "class": class_name,
+                },
+            )
 
             char_text.text = char
 
@@ -224,31 +182,25 @@ class Exporting:
         ### node's label
 
         tx_str, ty_str = map(
-          str,
-          self.label.rect.move(0, -6).midbottom,
+            str,
+            self.label.rect.move(0, -6).midbottom,
         )
 
         label = Element(
+            "text",
+            {
+                "x": tx_str,
+                "y": ty_str,
+                "text-anchor": "middle",
+                "class": (
+                    "commented_out_small_text"
+                    if is_commented_out
+                    else "normal_small_text"
+                ),
+            },
+        )
 
-                  'text',
-
-                  {
-                    'x' : tx_str,
-                    'y' : ty_str,
-                    'text-anchor': 'middle',
-                    'class': (
-
-                      'commented_out_small_text'
-                      if is_commented_out
-
-                      else 'normal_small_text'
-
-                    ),
-                  },
-
-                )
-
-        label.text = f'{self.id}'
+        label.text = f"{self.id}"
 
         node_g.append(label)
 
@@ -259,29 +211,22 @@ class Exporting:
             node_g.append(socket.svg_repr())
 
             tx_str, ty_str = map(
-              str,
-              socket.rect.move(0, -3).bottomright,
+                str,
+                socket.rect.move(0, -3).bottomright,
             )
 
             param_text = Element(
-
-                           'text',
-
-                           {
-                             'x' : tx_str,
-                             'y' : ty_str,
-
-                             'class': (
-
-                               'commented_out_small_text'
-                               if is_commented_out
-
-                               else 'normal_small_text'
-
-                             ),
-                           },
-
-                         )
+                "text",
+                {
+                    "x": tx_str,
+                    "y": ty_str,
+                    "class": (
+                        "commented_out_small_text"
+                        if is_commented_out
+                        else "normal_small_text"
+                    ),
+                },
+            )
 
             param_text.text = socket.parameter_name
 

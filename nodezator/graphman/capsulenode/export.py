@@ -1,15 +1,10 @@
-
-from ..callablenode.constants import (
-                               NODE_OUTLINE_THICKNESS
-                             )
+from ..callablenode.constants import NODE_OUTLINE_THICKNESS
 
 from ...colorsman.colors import (
-
-                        BLACK,
-                        NODE_OUTLINE,
-                        CAPSULE_NODES_CATEGORY_COLOR,
-
-                      )
+    BLACK,
+    NODE_OUTLINE,
+    CAPSULE_NODES_CATEGORY_COLOR,
+)
 
 CAPSULE_NODE_CSS = f"""
 g.callable_node > path.header_fill_capsule_node

@@ -43,8 +43,8 @@ from ...widget.optiontray.main import OptionTray
 
 from ...widget.pathpreview.path import PathPreview
 from ...widget.pathpreview.text import TextPreview
-from ...widget.pathpreview.image import ImagePreview 
-from ...widget.pathpreview.audio import AudioPreview 
+from ...widget.pathpreview.image import ImagePreview
+from ...widget.pathpreview.audio import AudioPreview
 from ...widget.pathpreview.video import VideoPreview
 from ...widget.pathpreview.font import FontPreview
 
@@ -58,6 +58,7 @@ FONT_HEIGHT = ENC_SANS_BOLD_FONT_HEIGHT
 
 ### utility function
 
+
 def get_text_obj(reference_rect, offset, text):
     """Create and return customized text object."""
     ### define text
@@ -65,28 +66,27 @@ def get_text_obj(reference_rect, offset, text):
 
     ### define position data
 
-    coordinates_name  = 'topleft'
+    coordinates_name = "topleft"
     coordinates_value = reference_rect.move(offset).topleft
 
     ### create and return text obj
 
     text_obj = Object2D.from_surface(
-                 surface=render_text(
-                        text=text,
-                        font_height=FONT_HEIGHT,
-                        padding=5,
-                        foreground_color=WINDOW_FG,
-                        background_color=WINDOW_BG
-                      ),
-                  coordinates_name  = coordinates_name,
-                  coordinates_value = coordinates_value
-                )
+        surface=render_text(
+            text=text,
+            font_height=FONT_HEIGHT,
+            padding=5,
+            foreground_color=WINDOW_FG,
+            background_color=WINDOW_BG,
+        ),
+        coordinates_name=coordinates_name,
+        coordinates_value=coordinates_value,
+    )
 
     return text_obj
 
 
 class SubformCreation:
-
     def create_checkbutton_subform(self):
         """Create form for checkbutton arguments."""
         ### define an starting offset
@@ -102,11 +102,7 @@ class SubformCreation:
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         checkbutton_subform.append(text_obj)
 
@@ -119,24 +115,23 @@ class SubformCreation:
         # define position data
 
         offset = 60, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         # instantiate and store
 
         value_check = CheckButton(
-                        value=False,
-                        name=widget_name,
-                        coordinates_name=coordinates_name,
-                        coordinates_value=coordinates_value,
-                      )
+            value=False,
+            name=widget_name,
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+        )
 
         checkbutton_subform.append(value_check)
 
         ### finally store the subform list in the
         ### subform map
-        self.subform_map["check_button"] = \
-                                       checkbutton_subform
+        self.subform_map["check_button"] = checkbutton_subform
 
     def create_string_entry_subform(self):
         """Create form for string entry arguments."""
@@ -153,11 +148,7 @@ class SubformCreation:
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         string_entry_subform.append(text_obj)
 
@@ -170,18 +161,18 @@ class SubformCreation:
         ## define position data
 
         offset = 65, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         ## instantiate and store
 
         value_entry = StringEntry(
-                        loop_holder=self,
-                        name=widget_name,
-                        draw_on_window_resize = self.draw,
-                        coordinates_name=coordinates_name,
-                        coordinates_value=coordinates_value,
-                      )
+            loop_holder=self,
+            name=widget_name,
+            draw_on_window_resize=self.draw,
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+        )
 
         string_entry_subform.append(value_entry)
 
@@ -195,11 +186,7 @@ class SubformCreation:
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         string_entry_subform.append(text_obj)
 
@@ -213,7 +200,7 @@ class SubformCreation:
         ## define position data
 
         offset = 170, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         ## define options
@@ -221,25 +208,24 @@ class SubformCreation:
 
         ## instantiate and store
 
-        validation_command_option_menu = \
-            OptionMenu(
-              name=widget_name,
-              loop_holder=self,
-              value=options[0],
-              options=options,
-              draw_on_window_resize = self.draw,
-              coordinates_name=coordinates_name,
-              coordinates_value=coordinates_value,
-            )
+        validation_command_option_menu = OptionMenu(
+            name=widget_name,
+            loop_holder=self,
+            value=options[0],
+            options=options,
+            draw_on_window_resize=self.draw,
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+        )
 
-        string_entry_subform.append(
-                            validation_command_option_menu)
+        string_entry_subform.append(validation_command_option_menu)
 
         def update_value_entry_validation():
             """Update validation command of string entry."""
             value = validation_command_option_menu.get()
 
-            try: value_entry.validation_command = value
+            try:
+                value_entry.validation_command = value
 
             except Exception as err:
 
@@ -249,20 +235,18 @@ class SubformCreation:
                 ### communicate the problem to the user
 
                 msg = (
-                  'The validation could not be set because'
-                  " the value doesn't comply. The following"
-                  ' error message was given: {}'
+                    "The validation could not be set because"
+                    " the value doesn't comply. The following"
+                    " error message was given: {}"
                 ).format(str(err))
 
                 create_and_show_dialog(msg)
 
-        validation_command_option_menu.command = \
-                             update_value_entry_validation
+        validation_command_option_menu.command = update_value_entry_validation
 
         ### finally store the subform list in the
         ### subform map
-        self.subform_map["string_entry"] = \
-                                       string_entry_subform
+        self.subform_map["string_entry"] = string_entry_subform
 
     def create_literal_entry_subform(self):
         """Create form for literal entry arguments."""
@@ -279,11 +263,7 @@ class SubformCreation:
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         literal_entry_subform.append(text_obj)
 
@@ -296,26 +276,24 @@ class SubformCreation:
         ## define position data
 
         offset = 65, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         ## instantiate and store
 
         value_entry = LiteralEntry(
-                        loop_holder=self,
-                        name=widget_name,
-                        draw_on_window_resize = self.draw,
-                        coordinates_name=coordinates_name,
-                        coordinates_value=coordinates_value,
-                      )
+            loop_holder=self,
+            name=widget_name,
+            draw_on_window_resize=self.draw,
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+        )
 
         literal_entry_subform.append(value_entry)
 
         ### finally store the subform list in the
         ### subform map
-        self.subform_map["literal_entry"] = (
-                                    literal_entry_subform
-                                  )
+        self.subform_map["literal_entry"] = literal_entry_subform
 
     def create_text_display_subform(self):
         """Create form for text display arguments."""
@@ -332,11 +310,7 @@ class SubformCreation:
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         text_display_subform.append(text_obj)
 
@@ -349,31 +323,28 @@ class SubformCreation:
         ## define position data
 
         offset = 100, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         ## define options
-        options = ['sans_bold', 'mono_bold']
+        options = ["sans_bold", "mono_bold"]
 
         ## instantiate and store
 
-        font_path_option_menu = \
-            OptionMenu(
-              name=widget_name,
-              value=options[0],
-              loop_holder=self,
-              options=options,
-              draw_on_window_resize = self.draw,
-              coordinates_name=coordinates_name,
-              coordinates_value=coordinates_value,
-            )
+        font_path_option_menu = OptionMenu(
+            name=widget_name,
+            value=options[0],
+            loop_holder=self,
+            options=options,
+            draw_on_window_resize=self.draw,
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+        )
 
         text_display_subform.append(font_path_option_menu)
 
         def change_font_path():
-            value_text_display.reset_font_path(
-                               font_path_option_menu.get()
-                             )
+            value_text_display.reset_font_path(font_path_option_menu.get())
 
         font_path_option_menu.command = change_font_path
 
@@ -387,11 +358,7 @@ class SubformCreation:
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         text_display_subform.append(text_obj)
 
@@ -405,35 +372,32 @@ class SubformCreation:
         ## define position data
 
         offset = 165, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         ## define options
-        options = ['', 'python']
+        options = ["", "python"]
 
         ## instantiate and store
 
-        syntax_highlighting_option_menu = \
-            OptionMenu(
-              name=widget_name,
-              loop_holder=self,
-              value=options[0],
-              options=options,
-              draw_on_window_resize = self.draw,
-              coordinates_name=coordinates_name,
-              coordinates_value=coordinates_value,
-            )
+        syntax_highlighting_option_menu = OptionMenu(
+            name=widget_name,
+            loop_holder=self,
+            value=options[0],
+            options=options,
+            draw_on_window_resize=self.draw,
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+        )
 
-        text_display_subform.append(
-                           syntax_highlighting_option_menu)
+        text_display_subform.append(syntax_highlighting_option_menu)
 
         def change_syntax_highlighting():
             value_text_display.reset_syntax_highlighting(
-                      syntax_highlighting_option_menu.get()
-                      )
+                syntax_highlighting_option_menu.get()
+            )
 
-        syntax_highlighting_option_menu.command = \
-                                 change_syntax_highlighting
+        syntax_highlighting_option_menu.command = change_syntax_highlighting
 
         ### instantiate show_line_number argument widgets
 
@@ -445,11 +409,7 @@ class SubformCreation:
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         text_display_subform.append(text_obj)
 
@@ -463,29 +423,26 @@ class SubformCreation:
         ## define position data
 
         offset = 150, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         ## instantiate and store
 
-        show_line_number_checkbutton = \
-            CheckButton(
-              value=False,
-              name=widget_name,
-              coordinates_name=coordinates_name,
-              coordinates_value=coordinates_value,
-            )
+        show_line_number_checkbutton = CheckButton(
+            value=False,
+            name=widget_name,
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+        )
 
-        text_display_subform.append(
-                             show_line_number_checkbutton)
+        text_display_subform.append(show_line_number_checkbutton)
 
         def change_show_line_number():
             value_text_display.reset_show_line_number(
-                      show_line_number_checkbutton.get()
-                    )
+                show_line_number_checkbutton.get()
+            )
 
-        show_line_number_checkbutton.command = \
-                                 change_show_line_number
+        show_line_number_checkbutton.command = change_show_line_number
 
         ### instantiate value argument widgets
 
@@ -497,11 +454,7 @@ class SubformCreation:
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         text_display_subform.append(text_obj)
 
@@ -514,24 +467,22 @@ class SubformCreation:
         ## define position data
 
         offset = 65, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         ## instantiate and store
 
-        value_text_display = \
-          TextDisplay(
+        value_text_display = TextDisplay(
             name=widget_name,
-            value='',
+            value="",
             coordinates_name=coordinates_name,
-            coordinates_value=coordinates_value
-          )
+            coordinates_value=coordinates_value,
+        )
 
         text_display_subform.append(value_text_display)
 
         ### finally store the subform list in the subform map
-        self.subform_map["text_display"] = \
-                                       text_display_subform
+        self.subform_map["text_display"] = text_display_subform
 
     def create_literal_display_subform(self):
         """Create form for literal display arguments."""
@@ -551,11 +502,7 @@ class SubformCreation:
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         literal_display_subform.append(text_obj)
 
@@ -569,33 +516,26 @@ class SubformCreation:
         ## define position data
 
         offset = 150, offset[1] + 5
-        coordinates_name  = 'topleft'
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         ## instantiate and store
 
-        show_line_number_checkbutton = (
-
-          CheckButton(
+        show_line_number_checkbutton = CheckButton(
             value=False,
             name=widget_name,
             coordinates_name=coordinates_name,
             coordinates_value=coordinates_value,
-          )
-
         )
 
-        literal_display_subform.append(
-                             show_line_number_checkbutton
-                           )
+        literal_display_subform.append(show_line_number_checkbutton)
 
         def change_show_line_number():
             value_literal_display.reset_show_line_number(
-                      show_line_number_checkbutton.get()
-                    )
+                show_line_number_checkbutton.get()
+            )
 
-        show_line_number_checkbutton.command = \
-                                 change_show_line_number
+        show_line_number_checkbutton.command = change_show_line_number
 
         ### instantiate value argument widgets
 
@@ -607,11 +547,7 @@ class SubformCreation:
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         literal_display_subform.append(text_obj)
 
@@ -624,25 +560,22 @@ class SubformCreation:
         ## define position data
 
         offset = 65, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         ## instantiate and store
 
-        value_literal_display = \
-          LiteralDisplay(
+        value_literal_display = LiteralDisplay(
             name=widget_name,
             value=None,
             coordinates_name=coordinates_name,
-            coordinates_value=coordinates_value
-          )
+            coordinates_value=coordinates_value,
+        )
 
         literal_display_subform.append(value_literal_display)
 
         ### finally store the subform list in the subform map
-        self.subform_map["literal_display"] = (
-                                  literal_display_subform
-                                )
+        self.subform_map["literal_display"] = literal_display_subform
 
     def create_fontpreview_subform(self):
         """Create form for font display arguments."""
@@ -659,11 +592,7 @@ class SubformCreation:
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         fontpreview_subform.append(text_obj)
 
@@ -676,26 +605,24 @@ class SubformCreation:
         # define position data
 
         offset = 65, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         # instantiate and store
 
-        value_fontpreview = \
-            FontPreview(
-               name=widget_name,
-               loop_holder = self,
-               draw_on_window_resize = self.draw,
-               coordinates_name=coordinates_name,
-               coordinates_value=coordinates_value
-            )
+        value_fontpreview = FontPreview(
+            name=widget_name,
+            loop_holder=self,
+            draw_on_window_resize=self.draw,
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+        )
 
         fontpreview_subform.append(value_fontpreview)
 
         ### finally store the subform list in the
         ### subform map
-        self.subform_map["font_preview"] = \
-                                    fontpreview_subform
+        self.subform_map["font_preview"] = fontpreview_subform
 
     def create_int_float_entry_subform(self):
         """Create form for int float entry arguments."""
@@ -712,11 +639,7 @@ class SubformCreation:
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         int_float_entry_subform.append(text_obj)
 
@@ -729,28 +652,23 @@ class SubformCreation:
         # define position data
 
         offset = 190, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         # instantiate and store
 
-        value_int_float_entry = (
-
-          IntFloatEntry(
+        value_int_float_entry = IntFloatEntry(
             loop_holder=self,
             value=0,
             numeric_classes_hint="int_float",
             allow_none=True,
-            draw_on_window_resize = self.draw,
+            draw_on_window_resize=self.draw,
             name=widget_name,
             coordinates_name=coordinates_name,
             coordinates_value=coordinates_value,
-          )
-
         )
 
-        int_float_entry_subform.append(
-                                    value_int_float_entry)
+        int_float_entry_subform.append(value_int_float_entry)
 
         ### instantiate numeric_classes_hint argument
         ### widgets
@@ -763,11 +681,7 @@ class SubformCreation:
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         int_float_entry_subform.append(text_obj)
 
@@ -781,7 +695,7 @@ class SubformCreation:
         ## define position data
 
         offset = 190, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         ## define options
@@ -789,27 +703,25 @@ class SubformCreation:
 
         ## instantiate and store
 
-        numeric_classes_hint_option_tray = \
-            OptionTray(
-              name=widget_name,
-              value=options[0],
-              options=options,
-              coordinates_name=coordinates_name,
-              coordinates_value=coordinates_value,
-            )
+        numeric_classes_hint_option_tray = OptionTray(
+            name=widget_name,
+            value=options[0],
+            options=options,
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+        )
 
-        int_float_entry_subform.append(
-                        numeric_classes_hint_option_tray)
+        int_float_entry_subform.append(numeric_classes_hint_option_tray)
 
         ### instantiate multiple argument widgets:
 
         for arg_name in (
-          'normal_drag_increment',
-          'preciser_drag_increment',
-          'normal_click_increment',
-          'preciser_click_increment',
-          'min_value',
-          'max_value'
+            "normal_drag_increment",
+            "preciser_drag_increment",
+            "normal_click_increment",
+            "preciser_click_increment",
+            "min_value",
+            "max_value",
         ):
             ## update offset
             offset = 5, offset[1] + 25
@@ -817,10 +729,8 @@ class SubformCreation:
             ## instantiate and store text object
 
             text_obj = get_text_obj(
-                         reference_rect=self.rect,
-                         offset=offset,
-                         text=arg_name
-                       )
+                reference_rect=self.rect, offset=offset, text=arg_name
+            )
 
             int_float_entry_subform.append(text_obj)
 
@@ -832,24 +742,22 @@ class SubformCreation:
 
             ## define position data
 
-            coordinates_value = \
-                            self.rect.move(offset).topleft
+            coordinates_value = self.rect.move(offset).topleft
 
             ## instantiate and store
 
-            arg_int_float_entry = \
-                IntFloatEntry(
-                   loop_holder=self,
-                   name=widget_name,
-                   value=None,
-                   numeric_classes_hint="int_float",
-                   allow_none=True,
-                   draw_on_window_resize = self.draw,
-                   coordinates_name="topleft",
-                   coordinates_value=coordinates_value)
+            arg_int_float_entry = IntFloatEntry(
+                loop_holder=self,
+                name=widget_name,
+                value=None,
+                numeric_classes_hint="int_float",
+                allow_none=True,
+                draw_on_window_resize=self.draw,
+                coordinates_name="topleft",
+                coordinates_value=coordinates_value,
+            )
 
-            int_float_entry_subform.append(
-                                     arg_int_float_entry)
+            int_float_entry_subform.append(arg_int_float_entry)
 
         ### instantiate allow_none argument widgets
 
@@ -861,11 +769,7 @@ class SubformCreation:
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         int_float_entry_subform.append(text_obj)
 
@@ -879,25 +783,23 @@ class SubformCreation:
         # define position data
 
         offset = 190, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         # instantiate and store
 
-        allow_none_check = \
-            CheckButton(
-              value=False,
-              name=widget_name,
-              coordinates_name=coordinates_name,
-              coordinates_value=coordinates_value,
-            )
+        allow_none_check = CheckButton(
+            value=False,
+            name=widget_name,
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+        )
 
         int_float_entry_subform.append(allow_none_check)
 
         ### finally store the subform list in the
         ### subform map
-        self.subform_map["int_float_entry"] = \
-                                    int_float_entry_subform
+        self.subform_map["int_float_entry"] = int_float_entry_subform
 
     def create_pathpreview_subform(self):
         """Create form for path preview arguments."""
@@ -914,11 +816,7 @@ class SubformCreation:
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         pathpreview_subform.append(text_obj)
 
@@ -931,25 +829,24 @@ class SubformCreation:
         # define position data
 
         offset = 65, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         # instantiate and store
 
-        value_pathpreview = \
-            PathPreview(
-               name=widget_name,
-               loop_holder = self,
-               draw_on_window_resize = self.draw,
-               coordinates_name=coordinates_name,
-               coordinates_value=coordinates_value)
+        value_pathpreview = PathPreview(
+            name=widget_name,
+            loop_holder=self,
+            draw_on_window_resize=self.draw,
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+        )
 
         pathpreview_subform.append(value_pathpreview)
 
         ### finally store the subform list in the
         ### subform map
-        self.subform_map["path_preview"] = \
-                                    pathpreview_subform
+        self.subform_map["path_preview"] = pathpreview_subform
 
     def create_textpreview_subform(self):
         """Create form for text preview arguments."""
@@ -966,11 +863,7 @@ class SubformCreation:
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         textpreview_subform.append(text_obj)
 
@@ -983,25 +876,24 @@ class SubformCreation:
         # define position data
 
         offset = 65, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         # instantiate and store
 
-        value_textpreview = \
-            TextPreview(
-               name=widget_name,
-               loop_holder = self,
-               draw_on_window_resize = self.draw,
-               coordinates_name=coordinates_name,
-               coordinates_value=coordinates_value)
+        value_textpreview = TextPreview(
+            name=widget_name,
+            loop_holder=self,
+            draw_on_window_resize=self.draw,
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+        )
 
         textpreview_subform.append(value_textpreview)
 
         ### finally store the subform list in the
         ### subform map
-        self.subform_map["text_preview"] = \
-                                    textpreview_subform
+        self.subform_map["text_preview"] = textpreview_subform
 
     def create_imagepreview_subform(self):
         """Create form for image display arguments."""
@@ -1018,11 +910,7 @@ class SubformCreation:
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         imagepreview_subform.append(text_obj)
 
@@ -1035,26 +923,24 @@ class SubformCreation:
         # define position data
 
         offset = 65, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         # instantiate and store
 
-        value_imagepreview = \
-            ImagePreview(
-               name=widget_name,
-               loop_holder = self,
-               draw_on_window_resize = self.draw,
-               coordinates_name=coordinates_name,
-               coordinates_value=coordinates_value
-            )
+        value_imagepreview = ImagePreview(
+            name=widget_name,
+            loop_holder=self,
+            draw_on_window_resize=self.draw,
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+        )
 
         imagepreview_subform.append(value_imagepreview)
 
         ### finally store the subform list in the
         ### subform map
-        self.subform_map["image_preview"] = \
-                                    imagepreview_subform
+        self.subform_map["image_preview"] = imagepreview_subform
 
     def create_audiopreview_subform(self):
         """Create form for audiopreview arguments."""
@@ -1071,11 +957,7 @@ class SubformCreation:
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         audiopreview_subform.append(text_obj)
 
@@ -1088,26 +970,24 @@ class SubformCreation:
         # define position data
 
         offset = 65, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         # instantiate and store
 
-        value_audiopreview = \
-          AudioPreview(
+        value_audiopreview = AudioPreview(
             name=widget_name,
-            loop_holder = self,
-            draw_on_window_resize = self.draw,
+            loop_holder=self,
+            draw_on_window_resize=self.draw,
             coordinates_name=coordinates_name,
-            coordinates_value=coordinates_value
-          )
+            coordinates_value=coordinates_value,
+        )
 
         audiopreview_subform.append(value_audiopreview)
 
         ### finally store the subform list in the
         ### subform map
-        self.subform_map["audio_preview"] = \
-                                    audiopreview_subform
+        self.subform_map["audio_preview"] = audiopreview_subform
 
     def create_videopreview_display_subform(self):
         """Create form for video preview display."""
@@ -1124,11 +1004,7 @@ class SubformCreation:
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         videopreview_display_subform.append(text_obj)
 
@@ -1141,28 +1017,24 @@ class SubformCreation:
         # define position data
 
         offset = 65, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         # instantiate and store
 
-        value_videopreview_display = \
-          VideoPreview(
+        value_videopreview_display = VideoPreview(
             name=widget_name,
-            loop_holder = self,
-            draw_on_window_resize = self.draw,
+            loop_holder=self,
+            draw_on_window_resize=self.draw,
             coordinates_name=coordinates_name,
-            coordinates_value=coordinates_value
-          )
-
-        videopreview_display_subform.append(
-          value_videopreview_display
+            coordinates_value=coordinates_value,
         )
+
+        videopreview_display_subform.append(value_videopreview_display)
 
         ### finally store the subform list in the
         ### subform map
-        self.subform_map["video_preview"] = \
-                            videopreview_display_subform
+        self.subform_map["video_preview"] = videopreview_display_subform
 
     def create_colorbutton_subform(self):
         """Create form for color button arguments."""
@@ -1179,11 +1051,7 @@ class SubformCreation:
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         colorbutton_subform.append(text_obj)
 
@@ -1196,17 +1064,16 @@ class SubformCreation:
         # define position data
 
         offset = 55, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         # instantiate and store
 
-        value_colorbutton = \
-          ColorButton(
+        value_colorbutton = ColorButton(
             name=widget_name,
             coordinates_name=coordinates_name,
-            coordinates_value=coordinates_value
-          )
+            coordinates_value=coordinates_value,
+        )
 
         colorbutton_subform.append(value_colorbutton)
 
@@ -1220,11 +1087,7 @@ class SubformCreation:
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         colorbutton_subform.append(text_obj)
 
@@ -1237,23 +1100,22 @@ class SubformCreation:
         # define position data
 
         offset = 160, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         # define options
         options = ["rgb_ints", "hex_string"]
 
         # instantiate and store
-        color_format_option_menu = \
-            OptionMenu(
-              name=widget_name,
-              loop_holder=self,
-              value=options[0],
-              options=options,
-              draw_on_window_resize = self.draw,
-              coordinates_name=coordinates_name,
-              coordinates_value=coordinates_value,
-            )
+        color_format_option_menu = OptionMenu(
+            name=widget_name,
+            loop_holder=self,
+            value=options[0],
+            options=options,
+            draw_on_window_resize=self.draw,
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+        )
 
         colorbutton_subform.append(color_format_option_menu)
 
@@ -1267,11 +1129,7 @@ class SubformCreation:
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         colorbutton_subform.append(text_obj)
 
@@ -1284,21 +1142,19 @@ class SubformCreation:
         # define position data
 
         offset = 160, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         # instantiate and store
 
-        alone_when_single_checkbutton = \
-            CheckButton(
-              value=True,
-              name=widget_name,
-              coordinates_name=coordinates_name,
-              coordinates_value=coordinates_value,
-            )
+        alone_when_single_checkbutton = CheckButton(
+            value=True,
+            name=widget_name,
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+        )
 
-        colorbutton_subform.append(
-                             alone_when_single_checkbutton)
+        colorbutton_subform.append(alone_when_single_checkbutton)
 
         ### create command for both option menus to
         ### update format of color button's value
@@ -1308,22 +1164,17 @@ class SubformCreation:
             """Update format of color button value."""
             color_format = color_format_option_menu.get()
 
-            alone_when_single = \
-                alone_when_single_checkbutton.get()
+            alone_when_single = alone_when_single_checkbutton.get()
 
-            value_colorbutton.set_format(
-              color_format,
-              alone_when_single
-            )
+            value_colorbutton.set_format(color_format, alone_when_single)
 
-        color_format_option_menu.command = \
-        alone_when_single_checkbutton.command = \
-        update_format
+        color_format_option_menu.command = (
+            alone_when_single_checkbutton.command
+        ) = update_format
 
         ### finally store the subform list in the
         ### subform map
-        self.subform_map["color_button"] = \
-                                    colorbutton_subform
+        self.subform_map["color_button"] = colorbutton_subform
 
     def create_option_menu_subform(self, kind_of_content):
         """Create option menu subform for given kind.
@@ -1338,7 +1189,7 @@ class SubformCreation:
         """
         ### ensure the value of kind_of_content is within
         ### the allowed ones
-        assert kind_of_content in ('strings', 'intfloats')
+        assert kind_of_content in ("strings", "intfloats")
 
         ### depending on the kind of content, define
         ### available default options; the first value
@@ -1346,16 +1197,13 @@ class SubformCreation:
         ### and the whole list is used as the default
         ### options in the list widget;
 
-        if kind_of_content == 'strings':
+        if kind_of_content == "strings":
 
-            available_options = [
-              'option_a', 'option_b', 'option_c'
-            ]
+            available_options = ["option_a", "option_b", "option_c"]
 
-            default_factory = \
-                        lambda: choice(ascii_lowercase)
+            default_factory = lambda: choice(ascii_lowercase)
 
-        elif kind_of_content == 'intfloats':
+        elif kind_of_content == "intfloats":
 
             available_options = [0, 1, 2]
             default_factory = lambda: choice(range(100))
@@ -1369,15 +1217,11 @@ class SubformCreation:
         ### instantiate 'value' argument widgets
 
         ## define argument name
-        arg_name = 'value'
+        arg_name = "value"
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         option_menu_subform.append(text_obj)
 
@@ -1388,37 +1232,32 @@ class SubformCreation:
         widget_name = arg_name
 
         offset = 80, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
-        value_option_menu = \
-            OptionMenu(
-              name=widget_name,
-              loop_holder=self,
-              value=available_options[0],
-              options=available_options,
-              draw_on_window_resize = self.draw,
-              coordinates_name=coordinates_name,
-              coordinates_value=coordinates_value,
-            )
+        value_option_menu = OptionMenu(
+            name=widget_name,
+            loop_holder=self,
+            value=available_options[0],
+            options=available_options,
+            draw_on_window_resize=self.draw,
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+        )
 
         option_menu_subform.append(value_option_menu)
 
         ### instantiate 'options' argument widgets
 
         ## define argument name
-        arg_name = 'options'
+        arg_name = "options"
 
         ## update offset
         offset = 5, offset[1] + 25
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         option_menu_subform.append(text_obj)
 
@@ -1431,43 +1270,33 @@ class SubformCreation:
         # define position data
 
         offset = 80, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         # define widget factory
 
         if kind_of_content == "strings":
 
-            widget_factory = (
-
-              partial(
+            widget_factory = partial(
                 StringEntry,
                 loop_holder=self,
-                draw_on_window_resize = self.draw,
-                name="option_item"
-              )
-
+                draw_on_window_resize=self.draw,
+                name="option_item",
             )
-
 
         elif kind_of_content == "intfloats":
 
-            widget_factory = (
-
-              partial(
+            widget_factory = partial(
                 IntFloatEntry,
                 loop_holder=self,
-                draw_on_window_resize = self.draw,
+                draw_on_window_resize=self.draw,
                 name="option_item",
                 allow_none=True,
-              )
-
             )
 
         # instantiate and store widget list
 
-        options_list_widget = \
-          ListWidget(
+        options_list_widget = ListWidget(
             name=widget_name,
             value=available_options,
             min_len=1,
@@ -1475,7 +1304,8 @@ class SubformCreation:
             default_factory=default_factory,
             quantity_command=self.reposition_form_elements,
             coordinates_name=coordinates_name,
-            coordinates_value=coordinates_value)
+            coordinates_value=coordinates_value,
+        )
 
         option_menu_subform.append(options_list_widget)
 
@@ -1491,7 +1321,7 @@ class SubformCreation:
             """
             ### retrieve values
 
-            list_widget_values  = options_list_widget.get()
+            list_widget_values = options_list_widget.get()
             option_menu_options = value_option_menu.options
 
             ### if options in the list widget are different
@@ -1504,38 +1334,32 @@ class SubformCreation:
                 option_menu_value = value_option_menu.get()
 
                 value = (
-
-                  option_menu_value
-                  if option_menu_value in list_widget_values
-
-                  else list_widget_values[0]
-
+                    option_menu_value
+                    if option_menu_value in list_widget_values
+                    else list_widget_values[0]
                 )
 
                 value_option_menu.reset_value_and_options(
-                                    value=value,
-                                    options=(
-                                      list_widget_values
-                                    )
-                                  )
+                    value=value, options=(list_widget_values)
+                )
 
         options_list_widget.command = command
-            
 
         ### format the subform key according to the kind
         ### of content used
 
-        subform_key = \
-            "option_menu_with_{}".format(kind_of_content)
+        subform_key = "option_menu_with_{}".format(kind_of_content)
 
         ### finally store the subform list in the map
         self.subform_map[subform_key] = option_menu_subform
 
-    create_option_menu_subform_with_strings = \
-    partialmethod(create_option_menu_subform, "strings")
+    create_option_menu_subform_with_strings = partialmethod(
+        create_option_menu_subform, "strings"
+    )
 
-    create_option_menu_subform_with_intfloats = \
-    partialmethod(create_option_menu_subform, "intfloats")
+    create_option_menu_subform_with_intfloats = partialmethod(
+        create_option_menu_subform, "intfloats"
+    )
 
     def create_option_tray_subform(self, kind_of_content):
         """Create option tray subform for given kind.
@@ -1550,7 +1374,7 @@ class SubformCreation:
         """
         ### ensure the value of kind_of_content is within
         ### the allowed ones
-        assert kind_of_content in ('strings', 'intfloats')
+        assert kind_of_content in ("strings", "intfloats")
 
         ### depending on the kind of content, define
         ### available default options; the first value
@@ -1558,13 +1382,12 @@ class SubformCreation:
         ### and the whole list is used as the default
         ### options in the list widget;
 
-        if kind_of_content == 'strings':
+        if kind_of_content == "strings":
 
-            available_options = ['word1', 'word2', 'word3']
-            default_factory = \
-                        lambda: choice(ascii_lowercase)
+            available_options = ["word1", "word2", "word3"]
+            default_factory = lambda: choice(ascii_lowercase)
 
-        elif kind_of_content == 'intfloats':
+        elif kind_of_content == "intfloats":
 
             available_options = [0, 1, 2]
             default_factory = lambda: choice(range(100))
@@ -1582,11 +1405,7 @@ class SubformCreation:
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         option_tray_subform.append(text_obj)
 
@@ -1597,35 +1416,30 @@ class SubformCreation:
         widget_name = arg_name
 
         offset = 80, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
-        value_option_tray = \
-            OptionTray(
-              name=widget_name,
-              value=available_options[0],
-              options=available_options,
-              coordinates_name=coordinates_name,
-              coordinates_value=coordinates_value,
-            )
+        value_option_tray = OptionTray(
+            name=widget_name,
+            value=available_options[0],
+            options=available_options,
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+        )
 
         option_tray_subform.append(value_option_tray)
 
         ### instantiate 'options' argument widgets
 
         ## define argument name
-        arg_name = 'options'
+        arg_name = "options"
 
         ## update offset
         offset = 5, offset[1] + 25
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         option_tray_subform.append(text_obj)
 
@@ -1638,56 +1452,42 @@ class SubformCreation:
         # define position data
 
         offset = 80, offset[1] + 5
-        coordinates_name  = "topleft"
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         # define widget factory
 
         if kind_of_content == "strings":
 
-            widget_factory = (
-
-              partial(
+            widget_factory = partial(
                 StringEntry,
                 loop_holder=self,
-                draw_on_window_resize = self.draw,
-                name="option_item"
-              )
-
+                draw_on_window_resize=self.draw,
+                name="option_item",
             )
-
 
         elif kind_of_content == "intfloats":
 
-            widget_factory = (
-
-              partial(
+            widget_factory = partial(
                 IntFloatEntry,
                 loop_holder=self,
-                draw_on_window_resize = self.draw,
+                draw_on_window_resize=self.draw,
                 name="option_item",
                 allow_none=True,
-              )
-
             )
 
         # instantiate and store widget list
 
-        options_list_widget = \
-          ListWidget(
-            name           = widget_name,
-            value          = available_options,
-            min_len        = 1,
-            widget_factory = widget_factory,
-            default_factory = default_factory,
-
-            quantity_command = (
-              self.reposition_form_elements
-            ),
-
-            coordinates_name  = coordinates_name,
-            coordinates_value = coordinates_value
-         )
+        options_list_widget = ListWidget(
+            name=widget_name,
+            value=available_options,
+            min_len=1,
+            widget_factory=widget_factory,
+            default_factory=default_factory,
+            quantity_command=(self.reposition_form_elements),
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+        )
 
         option_tray_subform.append(options_list_widget)
 
@@ -1703,7 +1503,7 @@ class SubformCreation:
             """
             ### retrieve values
 
-            list_widget_values  = options_list_widget.get()
+            list_widget_values = options_list_widget.get()
             option_tray_options = value_option_tray.options
 
             ### if options in the list widget are different
@@ -1716,38 +1516,32 @@ class SubformCreation:
                 option_tray_value = value_option_tray.get()
 
                 value = (
-
-                  option_tray_value
-                  if option_tray_value in list_widget_values
-
-                  else list_widget_values[0]
-
+                    option_tray_value
+                    if option_tray_value in list_widget_values
+                    else list_widget_values[0]
                 )
 
                 value_option_tray.reset_value_and_options(
-                                    value=value,
-                                    options=(
-                                      list_widget_values
-                                    )
-                                  )
+                    value=value, options=(list_widget_values)
+                )
 
         options_list_widget.command = command
-            
 
         ### format the subform key according to the kind
         ### of content used
 
-        subform_key = \
-            "option_tray_with_{}".format(kind_of_content)
+        subform_key = "option_tray_with_{}".format(kind_of_content)
 
         ### finally store the subform list in the map
         self.subform_map[subform_key] = option_tray_subform
 
-    create_option_tray_subform_with_strings = \
-    partialmethod(create_option_tray_subform, "strings")
+    create_option_tray_subform_with_strings = partialmethod(
+        create_option_tray_subform, "strings"
+    )
 
-    create_option_tray_subform_with_intfloats = \
-    partialmethod(create_option_tray_subform, "intfloats")
+    create_option_tray_subform_with_intfloats = partialmethod(
+        create_option_tray_subform, "intfloats"
+    )
 
     def create_sorting_button_subform(self, kind_of_content):
         """Create sorting button subform for given kind.
@@ -1760,20 +1554,19 @@ class SubformCreation:
         """
         ### ensure the value of kind_of_content is within
         ### the allowed ones
-        assert kind_of_content in ('strings', 'intfloats')
+        assert kind_of_content in ("strings", "intfloats")
 
         ### depending on the kind of content, define
         ### value, available items and default factory
 
-        if kind_of_content == 'strings':
+        if kind_of_content == "strings":
 
-            value = ('a',)
-            available_items = {'a', 'b', 'c'}
+            value = ("a",)
+            available_items = {"a", "b", "c"}
 
-            default_factory = \
-                        lambda: choice(ascii_lowercase)
+            default_factory = lambda: choice(ascii_lowercase)
 
-        elif kind_of_content == 'intfloats':
+        elif kind_of_content == "intfloats":
 
             value = (0,)
             available_items = {0, 1, 2}
@@ -1788,15 +1581,11 @@ class SubformCreation:
         ### instantiate 'value' argument widgets
 
         ## define argument name
-        arg_name = 'value'
+        arg_name = "value"
 
         ## instantiate and store text object
 
-        text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name
-                   )
+        text_obj = get_text_obj(reference_rect=self.rect, offset=offset, text=arg_name)
 
         sorting_button_subform.append(text_obj)
 
@@ -1808,24 +1597,23 @@ class SubformCreation:
         widget_name = arg_name
 
         offset = 60, offset[1] + 5
-        coordinates_name  = 'topleft'
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
-        value_sorting_button = \
-            SortingButton(
-              name=widget_name,
-              value=value,
-              available_items=available_items,
-              coordinates_name=coordinates_name,
-              coordinates_value=coordinates_value,
-            )
+        value_sorting_button = SortingButton(
+            name=widget_name,
+            value=value,
+            available_items=available_items,
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+        )
 
         sorting_button_subform.append(value_sorting_button)
 
         ### instantiate 'available items' argument widgets
 
         ## define argument name
-        arg_name = 'available_items'
+        arg_name = "available_items"
 
         ## update offset
         offset = 5, offset[1] + 25
@@ -1833,10 +1621,10 @@ class SubformCreation:
         ## instantiate and store text object
 
         text_obj = get_text_obj(
-                     reference_rect=self.rect,
-                     offset=offset,
-                     text=arg_name,
-                   )
+            reference_rect=self.rect,
+            offset=offset,
+            text=arg_name,
+        )
 
         sorting_button_subform.append(text_obj)
 
@@ -1848,58 +1636,44 @@ class SubformCreation:
 
         # define position data
 
-        offset = 80, offset[1] + 5 + 20 # 20 added
-        coordinates_name  = 'topleft'
+        offset = 80, offset[1] + 5 + 20  # 20 added
+        coordinates_name = "topleft"
         coordinates_value = self.rect.move(offset).topleft
 
         # define widget factory
 
-        if kind_of_content == 'strings':
+        if kind_of_content == "strings":
 
-            widget_factory = (
-
-              partial(
+            widget_factory = partial(
                 StringEntry,
                 loop_holder=self,
-                draw_on_window_resize = self.draw,
-                name='available_item',
-              )
-
+                draw_on_window_resize=self.draw,
+                name="available_item",
             )
 
+        elif kind_of_content == "intfloats":
 
-        elif kind_of_content == 'intfloats':
-
-            widget_factory = (
-
-              partial(
+            widget_factory = partial(
                 IntFloatEntry,
                 value=0,
                 loop_holder=self,
-                draw_on_window_resize = self.draw,
-                name='available_item',
+                draw_on_window_resize=self.draw,
+                name="available_item",
                 allow_none=False,
-              )
-
             )
 
         # instantiate and store widget list
 
-        items_set_widget = \
-          SetWidget(
-            name           = widget_name,
-            value          = list(available_items),
-            min_len        = 1,
-            widget_factory = widget_factory,
-            default_factory = default_factory,
-
-            quantity_command = (
-              self.reposition_form_elements
-            ),
-
-            coordinates_name  = coordinates_name,
-            coordinates_value = coordinates_value
-         )
+        items_set_widget = SetWidget(
+            name=widget_name,
+            value=list(available_items),
+            min_len=1,
+            widget_factory=widget_factory,
+            default_factory=default_factory,
+            quantity_command=(self.reposition_form_elements),
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+        )
 
         sorting_button_subform.append(items_set_widget)
 
@@ -1917,58 +1691,43 @@ class SubformCreation:
 
             set_widget_values = items_set_widget.get()
 
-            available_items = \
-            value_sorting_button.available_items
+            available_items = value_sorting_button.available_items
 
             ### if items in the list widget are different
             ### than those on the sorting button, update
             ### the available items on the sorting button
 
-            if set_widget_values \
-            and set_widget_values != available_items:
+            if set_widget_values and set_widget_values != available_items:
 
-                sorting_button_value = \
-                value_sorting_button.get()
+                sorting_button_value = value_sorting_button.get()
 
                 value = (
-
-                  sorting_button_value
-                  if set(sorting_button_value).issubset(
-                                          set_widget_values
-                                        )
-
-                  else tuple(set_widget_values)[:1]
-
+                    sorting_button_value
+                    if set(sorting_button_value).issubset(set_widget_values)
+                    else tuple(set_widget_values)[:1]
                 )
 
                 (
-                  value_sorting_button
-                  .reset_value_and_available_items(
-
-                                  value=value,
-
-                                  available_items=(
-                                    set_widget_values
-                                  ),
-
-                                )
+                    value_sorting_button.reset_value_and_available_items(
+                        value=value,
+                        available_items=(set_widget_values),
+                    )
                 )
 
         items_set_widget.command = command
 
-
         ### format the subform key according to the kind
         ### of content used
 
-        subform_key = \
-        'sorting_button_with_{}'.format(kind_of_content)
+        subform_key = "sorting_button_with_{}".format(kind_of_content)
 
         ### finally store the subform list in the map
-        self.subform_map[subform_key] = \
-                                    sorting_button_subform
+        self.subform_map[subform_key] = sorting_button_subform
 
-    create_sorting_button_subform_with_strings = \
-    partialmethod(create_sorting_button_subform, "strings")
+    create_sorting_button_subform_with_strings = partialmethod(
+        create_sorting_button_subform, "strings"
+    )
 
-    create_sorting_button_subform_with_intfloats = \
-    partialmethod(create_sorting_button_subform, "intfloats")
+    create_sorting_button_subform_with_intfloats = partialmethod(
+        create_sorting_button_subform, "intfloats"
+    )

@@ -15,14 +15,15 @@ from ..surfsman.icon import render_layered_icon
 from ..surfsman.draw import draw_border
 
 from ..colorsman.colors import (
-                        CHECKBUTTON_FG,
-                        CHECKBUTTON_BG,
-                        CHECKBUTTON_OUTLINE,
-                      )
+    CHECKBUTTON_FG,
+    CHECKBUTTON_BG,
+    CHECKBUTTON_OUTLINE,
+)
 
 
 ### XXX docstring/comments regarding creation of surface
 ### map might need reviewing;
+
 
 class CheckButton(Object2D):
     """A checkbutton for general usage."""
@@ -32,17 +33,17 @@ class CheckButton(Object2D):
     styles_to_surface_map = {}
 
     def __init__(
-          self,
-          value=False,
-          name="check_button",
-          size=16,
-          foreground_color=CHECKBUTTON_FG,
-          background_color=CHECKBUTTON_BG,
-          outline_color=CHECKBUTTON_OUTLINE,
-          command=empty_function,
-          coordinates_name="topleft",
-          coordinates_value=(0, 0)
-        ):
+        self,
+        value=False,
+        name="check_button",
+        size=16,
+        foreground_color=CHECKBUTTON_FG,
+        background_color=CHECKBUTTON_BG,
+        outline_color=CHECKBUTTON_OUTLINE,
+        command=empty_function,
+        coordinates_name="topleft",
+        coordinates_value=(0, 0),
+    ):
         """Store arguments and perform setups.
 
         Parameters
@@ -71,15 +72,13 @@ class CheckButton(Object2D):
 
         if not isinstance(value, bool):
 
-            raise TypeError(
-                    "'value' argument must be of type 'bool'"
-                  )
+            raise TypeError("'value' argument must be of type 'bool'")
 
         ### store value, command and name arguments
 
-        self.value   = value
+        self.value = value
         self.command = command
-        self.name    = name
+        self.name = name
 
         ### try retrieving a surface for specific styles
         ### used
@@ -87,17 +86,12 @@ class CheckButton(Object2D):
         ## define a string to use as a key from the styles
         ## used
 
-        key = str((
-          size,
-          foreground_color,
-          background_color,
-          outline_color
-        ))
+        key = str((size, foreground_color, background_color, outline_color))
 
         ## try retrieving a surface map for the specific
         ## styles used
-        try: self.surface_map = \
-             self.styles_to_surface_map[key]
+        try:
+            self.surface_map = self.styles_to_surface_map[key]
 
         ### if there isn't one, create it yourself
 
@@ -106,20 +100,15 @@ class CheckButton(Object2D):
             ### create the surface map with the given styles
 
             surface_map = self.get_surface_map(
-                                 size,
-                                 foreground_color,
-                                 background_color,
-                                 outline_color
-                               )
+                size, foreground_color, background_color, outline_color
+            )
 
             ### store the surface map in its own attribute
             ### and also in the "size to surface map" dict
             ### in the class attribute, using the original
             ### size (not the corrected one) as the key
 
-            self.surface_map = \
-            self.__class__.styles_to_surface_map[key] = \
-                                                surface_map
+            self.surface_map = self.__class__.styles_to_surface_map[key] = surface_map
 
         ### create image attribute
         self.update_image()
@@ -128,16 +117,9 @@ class CheckButton(Object2D):
         ### and position it
 
         self.rect = self.image.get_rect()
-        setattr(
-            self.rect, coordinates_name, coordinates_value)
+        setattr(self.rect, coordinates_name, coordinates_value)
 
-    def get_surface_map(
-          self,
-          size,
-          foreground_color,
-          background_color,
-          outline_color
-        ):
+    def get_surface_map(self, size, foreground_color, background_color, outline_color):
         """Return dict w/ surfaces of given styles.
 
         Parameters
@@ -159,26 +141,19 @@ class CheckButton(Object2D):
         ### checkbutton is set to True; we do so by
         ### rendering a surface which represents the heavy
         ### check mark icon, with padding and a border;
-          
+
         true_surf = render_layered_icon(
-
-                      chars=[chr(124)],
-
-                      dimension_name  = 'height',
-                      dimension_value = padded_size,
-
-                      padding = padding,
-
-                      colors = [foreground_color],
-
-                      background_width  = size,
-                      background_height = size,
-                      background_color = background_color,
-
-                      border_thickness = 2,
-                      border_color     = outline_color,
-
-                    )
+            chars=[chr(124)],
+            dimension_name="height",
+            dimension_value=padded_size,
+            padding=padding,
+            colors=[foreground_color],
+            background_width=size,
+            background_height=size,
+            background_color=background_color,
+            border_thickness=2,
+            border_color=outline_color,
+        )
 
         ### now create a surface for when the checkbutton
         ### is set to False
@@ -191,17 +166,12 @@ class CheckButton(Object2D):
 
         ## then draw a border around it
 
-        draw_border(
-          false_surf, color=outline_color, thickness=2
-        )
+        draw_border(false_surf, color=outline_color, thickness=2)
 
         ### create and return dict mapping each boolean value
         ### to its corresponding surface
 
-        return {
-          False: false_surf,
-          True : true_surf
-        }
+        return {False: false_surf, True: true_surf}
 
     def update_image(self):
         """Set image attribute according to value."""
@@ -228,9 +198,7 @@ class CheckButton(Object2D):
 
         if not isinstance(value, bool):
 
-            raise TypeError(
-                    "'value' argument must be of type 'bool'"
-                  )
+            raise TypeError("'value' argument must be of type 'bool'")
 
         ### store value and update the image, if the value
         ### is different than the current one;
@@ -243,7 +211,8 @@ class CheckButton(Object2D):
             self.value = value
             self.update_image()
 
-            if execute_command: self.command()
+            if execute_command:
+                self.command()
 
     def toggle_value(self, event):
         """Set the opposite of the current value.
@@ -256,7 +225,7 @@ class CheckButton(Object2D):
 
             although we don't use it here, it is required in
             order to comply with the mouse action protocol;
-              
+
             check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -273,38 +242,33 @@ class CheckButton(Object2D):
 
     def svg_repr(self):
 
-        g = Element('g', {'class': 'check_button'})
+        g = Element("g", {"class": "check_button"})
 
         rect = self.rect.inflate(-4, -4)
 
         g.append(
             Element(
-              'rect',
-
-              {
-
-                attr_name : str(getattr(rect, attr_name))
-
-                for attr_name in (
-                  'x', 'y', 'width', 'height',
-                )
-
-              },
+                "rect",
+                {
+                    attr_name: str(getattr(rect, attr_name))
+                    for attr_name in (
+                        "x",
+                        "y",
+                        "width",
+                        "height",
+                    )
+                },
             )
-          )
+        )
 
         if self.value:
-            
+
             r = self.rect.inflate(-12, -12)
 
             points = (
-              f'{r.left},{r.centery}'
-              f' {r.centerx},{r.bottom}'
-              f' {r.right},{r.top}'
+                f"{r.left},{r.centery}" f" {r.centerx},{r.bottom}" f" {r.right},{r.top}"
             )
 
-            g.append(
-                Element('polyline', {'points': points})
-              )
+            g.append(Element("polyline", {"points": points}))
 
         return g

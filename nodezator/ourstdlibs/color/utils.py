@@ -14,16 +14,16 @@ from functools import partial
 from ..iterutils import get_type_yielder
 
 from .largemaps import (
-                                  HTML_COLOR_MAP,
-                                  PYGAME_COLOR_MAP,
-                                )
+    HTML_COLOR_MAP,
+    PYGAME_COLOR_MAP,
+)
 
 from .constants import HUE_SETS_MAP
 
 from .property import (
-                                 PROPERTY_GETTER_MAP,
-                                 get_hue,
-                               )
+    PROPERTY_GETTER_MAP,
+    get_hue,
+)
 
 
 def validate_hex_color_string(hex_string):
@@ -39,10 +39,12 @@ def validate_hex_color_string(hex_string):
         the value of a channel of a RGB(A) color.
     """
     ### string can't be empty
-    if not hex_string: return False
+    if not hex_string:
+        return False
 
     ### first character must be '#'
-    if hex_string[0] != '#': return False
+    if hex_string[0] != "#":
+        return False
 
     ### remove '#' before continuing
     hex_string = hex_string[1:]
@@ -50,57 +52,63 @@ def validate_hex_color_string(hex_string):
     ### remaining characters must count 6 or 8 (that is,
     ### there must be 2 characters for each channel,
     ### red, green, blue and, in some cases, alpha too)
-    if not len(hex_string) in (6, 8): return False
+    if not len(hex_string) in (6, 8):
+        return False
 
     ### before continuing, make string all lowercase
     hex_string = hex_string.lower()
-    
+
     ### characters must all be characters used in
     ### hexadecimal representations
 
-    if any(
-      char not in hexdigits for char in hex_string
-    ): return False
+    if any(char not in hexdigits for char in hex_string):
+        return False
 
     ### if every test above passed (none of them returned),
     ### it means the string is valid, so return True
     return True
 
+
 def validate_color_name(valid_names, color_name):
     """Return True if string is a valid color name."""
     ### remove spaces and make string all lowercase
-    color_name = color_name.replace(' ', '').lower()
+    color_name = color_name.replace(" ", "").lower()
 
     ### if name of color is a key in our collection of
     ### valid names then we have a valid color name,
     ### so we return True
-    if color_name in valid_names: return True
+    if color_name in valid_names:
+        return True
 
     ### even though 'unamed' doesn't represent an existing
     ### color, we consider it a valid name, so we return True
     ### as well
-    elif color_name == 'unamed': return True
+    elif color_name == "unamed":
+        return True
 
     ### otherwise the name is not valid, so False is returned
-    else: return False
+    else:
+        return False
 
 
 validate_html_color_name = partial(
-                             validate_color_name,
-                             HTML_COLOR_MAP.keys(),
-                           )
+    validate_color_name,
+    HTML_COLOR_MAP.keys(),
+)
 
 validate_pygame_color_name = partial(
-                               validate_color_name,
-                               PYGAME_COLOR_MAP.keys(),
-                             )
+    validate_color_name,
+    PYGAME_COLOR_MAP.keys(),
+)
+
 
 def format_color_name(color_name):
     """Remove spaces, make lowercase and return string."""
-    return color_name.replace(' ', '').lower()
+    return color_name.replace(" ", "").lower()
 
 
 ### utility function to custom display full color values
+
 
 def get_int_sequence_repr(values):
     """Return custom string representing integer sequence.
@@ -123,25 +131,20 @@ def get_int_sequence_repr(values):
     values (iterable of integers)
     """
     return (
-
-      ### opening square bracket
-      '['
-
-      ### comma separated values (with a space after each
-      ### comma), right-justified to always occupy 03 spaces
-
-      + ', '.join(
-          str(value).rjust(3, ' ') for value in values
-        ) 
-
-      ### closing square bracket
-      + ']'
-
+        ### opening square bracket
+        "["
+        ### comma separated values (with a space after each
+        ### comma), right-justified to always occupy 03 spaces
+        + ", ".join(str(value).rjust(3, " ") for value in values)
+        ### closing square bracket
+        + "]"
     )
+
 
 ### color sorting
 
 string_yielder = get_type_yielder(types_to_yield=(str))
+
 
 def get_color_sorter_by_properties(*property_names):
     """Return color sorter function which uses properties.
@@ -164,7 +167,6 @@ def get_color_sorter_by_properties(*property_names):
     ### you provide strings, we find them
     property_names = tuple(string_yielder(property_names))
 
-
     ### define the function to process each given color
 
     def color_sorter(rgba_color):
@@ -183,15 +185,12 @@ def get_color_sorter_by_properties(*property_names):
         ### property
 
         return tuple(
-
-          ## using the name of the property, get a function
-          ## to retrieve such property from the color, passing
-          ## the color to the function...
-          PROPERTY_GETTER_MAP[property_name](rgba_color)
-
-          ## ...for each listed property
-          for property_name in property_names
-
+            ## using the name of the property, get a function
+            ## to retrieve such property from the color, passing
+            ## the color to the function...
+            PROPERTY_GETTER_MAP[property_name](rgba_color)
+            ## ...for each listed property
+            for property_name in property_names
         )
 
     ### finally return the defined function
@@ -199,10 +198,11 @@ def get_color_sorter_by_properties(*property_names):
 
 
 ## function to sort colors by their luma
-sort_colors_by_luma = get_color_sorter_by_properties('luma')
+sort_colors_by_luma = get_color_sorter_by_properties("luma")
 
 
 ### color mapping
+
 
 def get_color_mapper_by_range(range_map, property_getter):
     """Return function to map colors into specific ranges.
@@ -260,7 +260,8 @@ def get_color_mapper_by_range(range_map, property_getter):
         ### empty lists as values
 
         name_to_list = OrderedDict()
-        for name in range_map: name_to_list[name] = []
+        for name in range_map:
+            name_to_list[name] = []
 
         ### iterate over the given colors, appending them to
         ### the appropriate lists depending on the value of
@@ -278,7 +279,8 @@ def get_color_mapper_by_range(range_map, property_getter):
             ### value we retrieved from the property
 
             for name, range_obj in range_map.items():
-                if property_value in range_obj: break
+                if property_value in range_obj:
+                    break
 
             ### now that we found the range in which our
             ### property value fits, we append the color
@@ -295,6 +297,4 @@ def get_color_mapper_by_range(range_map, property_getter):
 
 ## function to map colors by their hue
 
-map_colors_by_hue = get_color_mapper_by_range(
-                      HUE_SETS_MAP, get_hue
-                    )
+map_colors_by_hue = get_color_mapper_by_range(HUE_SETS_MAP, get_hue)

@@ -9,7 +9,7 @@ Definitions for doctests:
 
 from functools import partial, reduce, wraps
 
-from collections     import deque
+from collections import deque
 from collections.abc import Mapping
 
 from contextlib import suppress
@@ -17,7 +17,7 @@ from contextlib import suppress
 
 def empty_function():
     """Do nothing. An empty function.
-    
+
     Replaces 'lambda:None' solution.
 
     Some respected members in the pygame community don't
@@ -41,7 +41,7 @@ def empty_function():
     Doctest of my life
 
     >>> empty_function()
-    >>> 
+    >>>
 
     Disclaimer: for a function which does nothing, I know
     it has quite the docstring (including its doctest),
@@ -52,6 +52,7 @@ def empty_function():
     analytical thinking.
     """
 
+
 def empty_oblivious_function(*args, **kwargs):
     """Ignore arguments and do nothing.
 
@@ -59,6 +60,7 @@ def empty_oblivious_function(*args, **kwargs):
     accepts arguments, even though nothing is done with
     them.
     """
+
 
 def return_untouched(arg):
     """Return the received argument.
@@ -72,11 +74,13 @@ def return_untouched(arg):
     """
     return arg
 
+
 ## nesting related utilities
+
 
 def get_nested_value(d, *strings):
     """Return inner value from nested dict.
-    
+
     d (dict)
         Dictionary containing other nested dictionaries.
     strings (string arguments)
@@ -115,6 +119,7 @@ def get_nested_value(d, *strings):
     """
     return reduce(dict.__getitem__, strings, d)
 
+
 def flatten_mapping_values(mapping_obj):
     """Return all values from map, including nested ones.
 
@@ -130,7 +135,7 @@ def flatten_mapping_values(mapping_obj):
     generator depends on the specific mapping
     implementation there's no way to predict the order in
     which the values are returned.
-    
+
     Even more so considering the execution flow goes
     through many different mappings in different nesting
     levels. Thus, such mappings may or not have different
@@ -153,7 +158,8 @@ def flatten_mapping_values(mapping_obj):
     for value in mapping_obj.values():
 
         ## if the value isn't a mapping just yield it
-        if not isinstance(value, Mapping): yield value
+        if not isinstance(value, Mapping):
+            yield value
 
         ## otherwise, pass the value through this function
         ## again recursively, yielding each nested item
@@ -163,11 +169,12 @@ def flatten_mapping_values(mapping_obj):
 
         else:
 
-            for nested_value \
-            in flatten_mapping_values(value):
+            for nested_value in flatten_mapping_values(value):
                 yield nested_value
 
+
 ## attribute utilities
+
 
 def get_attrs(obj, attr_names):
     """Yield attributes from given object.
@@ -179,12 +186,11 @@ def get_attrs(obj, attr_names):
     attr_names (iterable of strings)
         provide the names of the attributes to be retrieved.
     """
-    return (
-      getattr(obj, attr_name)
-      for attr_name in attr_names
-    )
+    return (getattr(obj, attr_name) for attr_name in attr_names)
+
 
 # toggling utilities
+
 
 def get_attribute_rotator(obj, attr_name, values):
     """Return a function to rotate obj attribute values.
@@ -208,9 +214,8 @@ def get_attribute_rotator(obj, attr_name, values):
 
     setattr(obj, attr_name, values_deque[0])
 
-    return partial(rotate_attribute,
-                   obj, attr_name, values_deque)
-    
+    return partial(rotate_attribute, obj, attr_name, values_deque)
+
 
 def rotate_attribute(obj, attr_name, values_deque):
     """Rotate attribute value between those provided.
@@ -230,7 +235,7 @@ def rotate_attribute(obj, attr_name, values_deque):
         values between which to toggle.
 
     >>> class Obj: pass
-    ... 
+    ...
     >>> obj = Obj()
     >>> d = deque(["a", "b", "c"])
     >>> rotate = partial(rotate_attribute, obj, "char", d)
@@ -262,8 +267,8 @@ def rotate_attribute(obj, attr_name, values_deque):
 
 
 def get_attribute_toggler(
-    obj, attr_name, starting_value, mapping_or_value,
-    default=None):
+    obj, attr_name, starting_value, mapping_or_value, default=None
+):
     """Return function to toggle obj atribute values.
 
     Creates a partial from the provided arguments using
@@ -309,7 +314,7 @@ def get_attribute_toggler(
         Value to use only in case no key is found.
 
     >>> class Obj: pass
-    ... 
+    ...
     >>> obj = Obj()
     >>> toggle_char = get_attribute_toggler(
     ...                   obj, 'char', 'a', 'b')
@@ -321,7 +326,7 @@ def get_attribute_toggler(
     >>> obj.char = 'c'
     >>> toggle_char()
     >>> obj.char # without default it returns None
-    >>> 
+    >>>
 
     >>> obj.char = 'a'
     >>> toggle_char()
@@ -360,17 +365,15 @@ def get_attribute_toggler(
         another_value = mapping_or_value
 
         cross_mapped_values = {
-          starting_value : another_value,
-          another_value  : starting_value
+            starting_value: another_value,
+            another_value: starting_value,
         }
 
     ### return function
-    return partial(
-             toggle_attribute,
-             obj, attr_name, cross_mapped_values, default)
+    return partial(toggle_attribute, obj, attr_name, cross_mapped_values, default)
 
-def toggle_attribute(
-    obj, attr_name, cross_mapped_values, default=None):
+
+def toggle_attribute(obj, attr_name, cross_mapped_values, default=None):
     """Toggle attribute between values a and b.
 
     This function is meant to be turned into partials
@@ -394,7 +397,7 @@ def toggle_attribute(
         Value to use only in case no key is found.
 
     >>> class Obj: pass
-    ... 
+    ...
     >>> obj = Obj()
     >>> d = {"a":"b", "b":"a"}
     >>> toggler = partial(toggle_attribute, obj, "char", d)
@@ -419,6 +422,7 @@ def toggle_attribute(
 
 
 ## other utilities
+
 
 def remove_by_identity(item_for_removal, a_list):
     """Remove item from list using an identity check.
@@ -453,7 +457,9 @@ def remove_by_identity(item_for_removal, a_list):
     ### if the loop resumes normally, without we breaking
     ### out of it though, it means we didn't find the item
     ### for removal, so raise a ValueError to indicate it
-    else: raise ValueError("'item_for_removal' not in list")
+    else:
+        raise ValueError("'item_for_removal' not in list")
+
 
 def had_to_set_new_value(obj, attr_name, new_value):
     """Return whether had to set new value for attr.
@@ -468,19 +474,22 @@ def had_to_set_new_value(obj, attr_name, new_value):
     """
     ### check whether the attribute existed previously,
     ### considering the value as the current one
-    try: current_value = getattr(obj, attr_name)
+    try:
+        current_value = getattr(obj, attr_name)
 
     ### if there's no current value, we just pass, since
     ### we'll be creating the attribute in the next step
-    except AttributeError: pass
+    except AttributeError:
+        pass
 
     ### if there is a current value, though, we check
     ### whether such value is equal to the new one,
     ### in which case we just return False to indicate
     ### we didn't need to set the attribute ourselves
 
-    else: 
-        if current_value == new_value: return False
+    else:
+        if current_value == new_value:
+            return False
 
     ### if we get to this point in the function, than
     ### the attribute either didn't exist or it's value
@@ -494,6 +503,7 @@ def had_to_set_new_value(obj, attr_name, new_value):
 
 
 ## wrapping utilities
+
 
 def get_decorator_from_wrapper(wrapper_func):
     """Return decorator function from a wrapper function.
@@ -510,6 +520,7 @@ def get_decorator_from_wrapper(wrapper_func):
     # def func_b(...):
     # ...
     """
+
     def get_decorator(*args, **kwargs):
         """Return decorator function.
 
@@ -527,6 +538,7 @@ def get_decorator_from_wrapper(wrapper_func):
 
     return get_decorator
 
+
 def get_oblivious_callable(func):
     """Return callable which executes func ignoring args.
 
@@ -543,7 +555,7 @@ def get_oblivious_callable(func):
     had to use it in a scenario where it was required to
     conform to an arbitrary protocol (it had to receive a
     single argument).
-    
+
     We didn't want to add a parameter to it just for that
     specific scenario and risk turning it unnecessarily
     confusing for people analysing from the point of view

@@ -433,6 +433,7 @@ True
 
 from doctest import DocTestSuite
 
+
 def load_tests(loader, tests, pattern):
     """Return a test suite.
 

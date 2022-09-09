@@ -9,9 +9,9 @@ from xml.etree.ElementTree import Element
 from ...config import APP_REFS
 
 from .surfs import (
-                             HOLLOW_SOCKET_CIRCLE_SURF,
-                             CODENAME_TO_STYLE_MAP,
-                           )
+    HOLLOW_SOCKET_CIRCLE_SURF,
+    CODENAME_TO_STYLE_MAP,
+)
 
 from .base import Socket
 
@@ -22,11 +22,11 @@ class ProxySocket(Socket):
     """Represents empty spot for incomming data."""
 
     def __init__(
-          self,
-          node,
-          type_codename = None,
-          center=(0, 0),
-        ):
+        self,
+        node,
+        type_codename=None,
+        center=(0, 0),
+    ):
         """Store arguments.
 
         Parameters
@@ -39,14 +39,14 @@ class ProxySocket(Socket):
         ## node instance
         self.node = node
 
-        ## store type codename and perform related setups 
+        ## store type codename and perform related setups
         self.update_type_codename(type_codename)
 
         ### obtain rect from image and position it using
         ### the given center
 
         self.rect = self.image.get_rect()
-        setattr(self.rect, 'center', center)
+        setattr(self.rect, "center", center)
 
     def update_type_codename(self, type_codename):
         ###
@@ -54,7 +54,7 @@ class ProxySocket(Socket):
 
         if type_codename is None:
 
-            self.image      = HOLLOW_SOCKET_CIRCLE_SURF
+            self.image = HOLLOW_SOCKET_CIRCLE_SURF
             self.line_color = HOLLOW_SOCKET_OUTLINE
 
         else:
@@ -64,12 +64,10 @@ class ProxySocket(Socket):
             ### svg class name and surfaces)
 
             (
-
-              self.outline_color,
-              self.fill_color,
-              self.svg_class_name,
-              self.circle_surf,
-
+                self.outline_color,
+                self.fill_color,
+                self.svg_class_name,
+                self.circle_surf,
             ) = CODENAME_TO_STYLE_MAP[type_codename]
 
             self.line_color = self.fill_color
@@ -80,17 +78,14 @@ class ProxySocket(Socket):
     def get_id(self):
 
         return (
-          self.node.id,
-          self.node.title,
+            self.node.id,
+            self.node.title,
         )
-
 
     def signal_connection(self):
         ## change style as needed
 
-        self.update_type_codename(
-               self.parent.type_codename
-             )
+        self.update_type_codename(self.parent.type_codename)
 
         ## signal node
         self.node.signal_connection()
@@ -116,8 +111,10 @@ class ProxySocket(Socket):
             data sent by the graph manager, retrieved from
             another node.
         """
-        try: children = self.node.output_socket.children
-        except AttributeError: pass
+        try:
+            children = self.node.output_socket.children
+        except AttributeError:
+            pass
         else:
             for child in children:
                 child.receive_input(data)
@@ -139,9 +136,9 @@ class ProxySocket(Socket):
             object.
         """
         APP_REFS.ea.proxy_socket_popup_menu.show(
-                                              self,
-                                              event.pos,
-                                            )
+            self,
+            event.pos,
+        )
 
     def svg_repr(self):
 
@@ -150,22 +147,17 @@ class ProxySocket(Socket):
         cx_str, cy_str = map(str, self.rect.center)
 
         svg_class_name = (
-
-          'hollow_socket'
-          if self.image is HOLLOW_SOCKET_CIRCLE_SURF
-          else self.svg_class_name
-
+            "hollow_socket"
+            if self.image is HOLLOW_SOCKET_CIRCLE_SURF
+            else self.svg_class_name
         )
 
         return Element(
-
-                  'circle',
-
-                  {
-                    'cx': cx_str,
-                    'cy': cy_str,
-                    'r' : socket_radius_str,
-                    'class': svg_class_name,
-                  }
-
-                )
+            "circle",
+            {
+                "cx": cx_str,
+                "cy": cy_str,
+                "r": socket_radius_str,
+                "class": svg_class_name,
+            },
+        )

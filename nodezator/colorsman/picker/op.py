@@ -7,13 +7,14 @@ from functools import partialmethod
 ### third-party imports
 
 from pygame import (
-
-              QUIT,
-              KEYUP, K_ESCAPE, K_RETURN, K_KP_ENTER,
-
-              MOUSEBUTTONUP, MOUSEMOTION,
-
-            )
+    QUIT,
+    KEYUP,
+    K_ESCAPE,
+    K_RETURN,
+    K_KP_ENTER,
+    MOUSEBUTTONUP,
+    MOUSEMOTION,
+)
 
 from pygame.event import get as get_events
 
@@ -23,29 +24,29 @@ from pygame.draw import rect as draw_rect
 ### local imports
 
 from ...pygameconstants import (
-                       SCREEN,
-                       SCREEN_RECT,
-                       blit_on_screen,
-                     )
+    SCREEN,
+    SCREEN_RECT,
+    blit_on_screen,
+)
 
 from ...ourstdlibs.color.largemaps import (
-                                  HTML_COLOR_MAP,
-                                  PYGAME_COLOR_MAP,
-                                )
+    HTML_COLOR_MAP,
+    PYGAME_COLOR_MAP,
+)
 
 from ...ourstdlibs.color.custom import (
-                               custom_format_color,
-                               get_custom_sorted_colors,
-                             )
+    custom_format_color,
+    get_custom_sorted_colors,
+)
 
 from ...surfsman.icon import render_layered_icon
 
 from ...surfsman.cache import (
-                      UNHIGHLIGHT_SURF_MAP,
-                      RECT_SURF_MAP,
-                      cache_screen_state,
-                      draw_cached_screen_state,
-                    )
+    UNHIGHLIGHT_SURF_MAP,
+    RECT_SURF_MAP,
+    cache_screen_state,
+    draw_cached_screen_state,
+)
 
 from ...loopman.main import LoopHolder
 
@@ -54,29 +55,29 @@ from ..colors import BLACK, WHITE, WINDOW_BG
 from ..color2d import Color2D
 
 from .constants import (
-                                  DEFAULT_LABEL_MESSAGE,
-                                )
+    DEFAULT_LABEL_MESSAGE,
+)
 
 ### constants
 
 COLOR_INFO_TITLES = (
-  'HTML',
-  'pygame',
-  'Luma',
-  'HEX',
-  'RGB',
-  'HLS',
+    "HTML",
+    "pygame",
+    "Luma",
+    "HEX",
+    "RGB",
+    "HLS",
 )
 
 MAX_CHAR_NO = max(len(item) for item in COLOR_INFO_TITLES)
 
 COLOR_INFO_KEYS = (
-  'html',
-  'pygame',
-  'luma',
-  'hex',
-  'rgb',
-  'hls',
+    "html",
+    "pygame",
+    "luma",
+    "hex",
+    "rgb",
+    "hls",
 )
 
 
@@ -84,25 +85,17 @@ class Operations(LoopHolder):
     """Extra operations for the colors picker class."""
 
     def pick_colors(
-
-          self,
-          color_value,
-          widget_width = 36,
-          icon_width = 32,
-
-          position_method_name = (
-            'snap_rects_intermittently_ip'
-          ),
-
-          position_method_kwargs = {
-
-            'dimension_name' : 'width',
-            'dimension_unit' : 'rects',
-            'max_dimension_value' : 15,
-
-          },
-
-        ):
+        self,
+        color_value,
+        widget_width=36,
+        icon_width=32,
+        position_method_name=("snap_rects_intermittently_ip"),
+        position_method_kwargs={
+            "dimension_name": "width",
+            "dimension_unit": "rects",
+            "max_dimension_value": 15,
+        },
+    ):
         """Execute the picker loop.
 
         Presents given colors for the user to pick.
@@ -112,10 +105,8 @@ class Operations(LoopHolder):
 
         ## convert color value to a tuple of rgb colors
 
-        try: colors = \
-               custom_format_color(
-                 color_value, 'rgb_tuple', False
-               )
+        try:
+            colors = custom_format_color(color_value, "rgb_tuple", False)
 
         ## XXX maybe show a dialog with the
         ## error message here? or just print on the
@@ -125,17 +116,18 @@ class Operations(LoopHolder):
         ## if a value error is raised, though,
         ## it means  there's something wrong with
         ## the given value, so we return earlier
-        except ValueError: return None
+        except ValueError:
+            return None
 
         ### create/set widgets for color picking
 
         self.prepare_color_widgets(
-               colors,
-               widget_width,
-               icon_width,
-               position_method_name,
-               position_method_kwargs,
-             )
+            colors,
+            widget_width,
+            icon_width,
+            position_method_name,
+            position_method_kwargs,
+        )
 
         ### center color picker
         self.center_color_picker()
@@ -163,106 +155,70 @@ class Operations(LoopHolder):
         ### is on or off
 
         return (
-
-          ## return an empty list if the cancel flag is on
-
-          ()
-          if self.cancel
-
-          ## otherwise return a tuple with each picked color
-
-          else tuple(
-
-            color_widget.color
-
-            for color_widget in self.color_widgets
-            if color_widget.chosen
-
-          )
-
+            ## return an empty list if the cancel flag is on
+            ()
+            if self.cancel
+            ## otherwise return a tuple with each picked color
+            else tuple(
+                color_widget.color
+                for color_widget in self.color_widgets
+                if color_widget.chosen
+            )
         )
 
     pick_html_colors = partialmethod(
-
-                         pick_colors,
-
-                         ## note that before turning the
-                         ## values into a tuple, we turn
-                         ## them into a set in order to
-                         ## eliminate duplicate values,
-                         ## since there are colors with
-                         ## different names, but same value
-                         tuple(
-                           set(
-                             HTML_COLOR_MAP.values()
-                           )
-                         )
-
-                       )
+        pick_colors,
+        ## note that before turning the
+        ## values into a tuple, we turn
+        ## them into a set in order to
+        ## eliminate duplicate values,
+        ## since there are colors with
+        ## different names, but same value
+        tuple(set(HTML_COLOR_MAP.values())),
+    )
 
     pick_pygame_colors = partialmethod(
-
-                           pick_colors,
-
-                           ## note that before turning the
-                           ## values into a tuple, we turn
-                           ## them into a set in order to
-                           ## eliminate duplicate values,
-                           ## since there are colors with
-                           ## different names, but same
-                           ## value
-                           tuple(
-                             set(
-                               PYGAME_COLOR_MAP.values()
-                             )
-                           ),
-
-                           widget_width = 24,
-                           icon_width   = 20,
-
-                           position_method_name = (
-                             'snap_rects_intermittently_ip'
-                           ),
-
-                           position_method_kwargs = {
-
-                             'dimension_name' : 'width',
-                             'dimension_unit' : 'rects',
-                             'max_dimension_value' : 28,
-
-                           },
-                         )
+        pick_colors,
+        ## note that before turning the
+        ## values into a tuple, we turn
+        ## them into a set in order to
+        ## eliminate duplicate values,
+        ## since there are colors with
+        ## different names, but same
+        ## value
+        tuple(set(PYGAME_COLOR_MAP.values())),
+        widget_width=24,
+        icon_width=20,
+        position_method_name=("snap_rects_intermittently_ip"),
+        position_method_kwargs={
+            "dimension_name": "width",
+            "dimension_unit": "rects",
+            "max_dimension_value": 28,
+        },
+    )
 
     def prepare_color_widgets(
-          self,
-          colors,
-          widget_width,
-          icon_width,
-          position_method_name,
-          position_method_kwargs,
-        ):
+        self,
+        colors,
+        widget_width,
+        icon_width,
+        position_method_name,
+        position_method_kwargs,
+    ):
         """Set/create widgets to hold and display colors."""
         ## iterate over the black and white colors, creating
         ## a heavy check mark of each color
 
         black_tick, white_tick = (
-
             render_layered_icon(
-
-              chars = [chr(124)],
-
-              dimension_name   = 'width',
-              dimension_value  = icon_width,
-
-              colors = [color],
-
-              background_width  = widget_width,
-              background_height = widget_width,
-
+                chars=[chr(124)],
+                dimension_name="width",
+                dimension_value=icon_width,
+                colors=[color],
+                background_width=widget_width,
+                background_height=widget_width,
             )
-
             for color in (BLACK, WHITE)
-
         )
 
         ### we must sort the colors in a pleasing, logical
@@ -289,17 +245,12 @@ class Operations(LoopHolder):
 
         ## create more color objects if needed
 
-        no_of_needed = (
-          no_of_colors - len(existing_color2d_objs) 
-        )
+        no_of_needed = no_of_colors - len(existing_color2d_objs)
 
         if no_of_needed > 0:
 
             existing_color2d_objs.extend(
-
-              Color2D(widget_width, widget_width, BLACK)
-              for _ in range(no_of_needed)
-
+                Color2D(widget_width, widget_width, BLACK) for _ in range(no_of_needed)
             )
 
         ## reference list of color widgets to be used
@@ -310,17 +261,14 @@ class Operations(LoopHolder):
         ## color widgets equivalent to the number of colors
 
         color_widgets.clear()
-        color_widgets.extend(
-                        existing_color2d_objs[:no_of_colors]
-                      )
+        color_widgets.extend(existing_color2d_objs[:no_of_colors])
 
         ## iterate over the color widgets and colors, setting
         ## each color in its respective widget and
         ## performing other setups
 
-        for color_widget, color \
-        in zip(color_widgets, sorted_colors):
-            
+        for color_widget, color in zip(color_widgets, sorted_colors):
+
             ## set the color and size
 
             color_widget.set_color(color)
@@ -337,21 +285,18 @@ class Operations(LoopHolder):
             ## its color
 
             color_widget.tick_surf = (
-
-              black_tick
-              if color_widget.contrasting_color == (0, 0, 0)
-
-              else white_tick
-
+                black_tick
+                if color_widget.contrasting_color == (0, 0, 0)
+                else white_tick
             )
 
         ### now position all color widgets relative to
         ### each other
 
         method = getattr(
-                   color_widgets.rect,
-                   position_method_name,
-                 )
+            color_widgets.rect,
+            position_method_name,
+        )
 
         method(**position_method_kwargs)
 
@@ -364,17 +309,16 @@ class Operations(LoopHolder):
         for event in get_events():
 
             ### quit the application
-            if event.type == QUIT: self.quit()
+            if event.type == QUIT:
+                self.quit()
 
             ### if one of the following keys is released,
             ### turn on the the 'cancel' flag and trigger
             ### the exit of the loop
 
             elif event.type == KEYUP:
-                
-                if event.key in (
-                  K_ESCAPE, K_RETURN, K_KP_ENTER
-                ):
+
+                if event.key in (K_ESCAPE, K_RETURN, K_KP_ENTER):
 
                     self.cancel = True
                     self.exit_loop()
@@ -393,7 +337,6 @@ class Operations(LoopHolder):
 
             elif event.type == MOUSEMOTION:
                 self.on_mouse_motion(event)
-                
 
     ### alias the event handling operation as the
     ### "gud operation" named 'handle_input'
@@ -427,7 +370,7 @@ class Operations(LoopHolder):
         ### if there is one
 
         for color_widget in self.color_widgets:
-            
+
             ## if color widget collides, toggle the
             ## 'chosen' flag, redraw respective surfaces
             ## and the widget outline and break out of
@@ -441,18 +384,15 @@ class Operations(LoopHolder):
 
                 if color_widget.chosen:
 
-                    blit_on_screen(
-                      color_widget.tick_surf,
-                      color_widget.rect
-                    )
+                    blit_on_screen(color_widget.tick_surf, color_widget.rect)
 
                 ## draw outline around color widget
 
                 draw_rect(
-                  SCREEN,
-                  color_widget.contrasting_color,
-                  color_widget.rect,
-                  2,
+                    SCREEN,
+                    color_widget.contrasting_color,
+                    color_widget.rect,
+                    2,
                 )
 
                 break
@@ -463,7 +403,7 @@ class Operations(LoopHolder):
         ### one
 
         else:
-            
+
             ## if a button collides, execute its mouse
             ## release action if it has one (passing the
             ## event object along) and break out of the
@@ -472,10 +412,13 @@ class Operations(LoopHolder):
             for button in self.buttons:
 
                 if button.rect.collidepoint(mouse_pos):
-                    
-                    try: method = button.on_mouse_release
-                    except AttributeError: pass
-                    else: method(event)
+
+                    try:
+                        method = button.on_mouse_release
+                    except AttributeError:
+                        pass
+                    else:
+                        method(event)
 
                     break
 
@@ -511,7 +454,7 @@ class Operations(LoopHolder):
             ## of the "for loop"
 
             if color_widget.rect.collidepoint(mouse_pos):
-                
+
                 ## set text of labels
 
                 # retrieve color info
@@ -522,18 +465,11 @@ class Operations(LoopHolder):
                 # label
 
                 for label, title, key in zip(
-
-                  self.labels,
-                  COLOR_INFO_TITLES,
-                  COLOR_INFO_KEYS,
-
+                    self.labels,
+                    COLOR_INFO_TITLES,
+                    COLOR_INFO_KEYS,
                 ):
-                    label.set(
-
-                        f'{title.ljust(MAX_CHAR_NO, " ")}:'
-                      + f' {info[key]}'
-
-                    )
+                    label.set(f'{title.ljust(MAX_CHAR_NO, " ")}:' + f" {info[key]}")
 
                 ##
                 self.draw_once()
@@ -541,10 +477,10 @@ class Operations(LoopHolder):
                 ## draw outline around color widget
 
                 draw_rect(
-                  SCREEN,
-                  color_widget.contrasting_color,
-                  color_widget.rect,
-                  2,
+                    SCREEN,
+                    color_widget.contrasting_color,
+                    color_widget.rect,
+                    2,
                 )
 
                 ## then return
@@ -555,7 +491,8 @@ class Operations(LoopHolder):
         ### text of the labels to their default values
 
         ## set all labels to '' (no text)
-        for label in self.labels: label.set('')
+        for label in self.labels:
+            label.set("")
 
         ## set the last label to display the default
         ## message
@@ -573,23 +510,16 @@ class Operations(LoopHolder):
         ### an inflated union of the areas occupied
         ### by the caption, color widgets and buttons
 
-        inflated_union = (
-
-          self.caption.rect.unionall([
-                              self.color_widgets.rect,
-                              self.buttons.rect,
-                            ]).inflate(16, 16)
-
-        )
+        inflated_union = self.caption.rect.unionall(
+            [
+                self.color_widgets.rect,
+                self.buttons.rect,
+            ]
+        ).inflate(16, 16)
 
         blit_on_screen(
-
-          RECT_SURF_MAP[
-            (*inflated_union.size, (30, 30, 30, 200))
-          ],
-
-          inflated_union,
-
+            RECT_SURF_MAP[(*inflated_union.size, (30, 30, 30, 200))],
+            inflated_union,
         )
 
         ### draw the caption
@@ -609,10 +539,7 @@ class Operations(LoopHolder):
 
             if color_widget.chosen:
 
-                blit_on_screen(
-                  color_widget.tick_surf,
-                  color_widget.rect
-                )
+                blit_on_screen(color_widget.tick_surf, color_widget.rect)
 
         ### draw the buttons
         self.buttons.draw()
@@ -621,10 +548,7 @@ class Operations(LoopHolder):
         ### labels and the labels themselves
 
         blit_on_screen(
-          RECT_SURF_MAP[
-            (*self.labels.rect.size, WINDOW_BG)
-          ],
-          self.labels.rect
+            RECT_SURF_MAP[(*self.labels.rect.size, WINDOW_BG)], self.labels.rect
         )
 
         self.labels.draw()

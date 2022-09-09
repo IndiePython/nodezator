@@ -20,6 +20,7 @@ from ..syntaxman.utils import SYNTAX_TO_MAPPING_FUNCTION
 
 ### functions
 
+
 def get_normal_lines(text, text_settings):
     """Return list of text objs as lines of text.
 
@@ -34,49 +35,28 @@ def get_normal_lines(text, text_settings):
         keyword arguments for rendering text.
     """
     ### retrieve list of lines
-    text_lines = text.splitlines() or ['']
+    text_lines = text.splitlines() or [""]
 
     ### get height of text surfaces from text settings
-    height = text_settings['font_height']
+    height = text_settings["font_height"]
 
     ### create and return special list of text objects
     ### representing lines
 
     return List2D(
-
-      ## a text object is either an empty line or
-      ## a text object rendered with the text settings
-
-      (
-
-        Object2D.from_surface(
-
-          render_text(
-            text=line_string,
-            **text_settings
-          )
-
+        ## a text object is either an empty line or
+        ## a text object rendered with the text settings
+        (
+            Object2D.from_surface(render_text(text=line_string, **text_settings))
+            if line_string
+            else Object2D(image=EMPTY_SURF, rect=Rect(0, 0, 0, height))
         )
-
-        if line_string
-
-        else Object2D(
-               image = EMPTY_SURF,
-               rect  = Rect(0, 0, 0, height)
-             )
-
-      )
-
-      ## iterate over each line of text
-      for line_string in text_lines
-
+        ## iterate over each line of text
+        for line_string in text_lines
     )
 
-def get_highlighted_lines(
-      syntax_name,
-      text,
-      syntax_settings_map
-    ):
+
+def get_highlighted_lines(syntax_name, text, syntax_settings_map):
     """Return list of text objs as lines of python source.
 
     Parameters
@@ -96,55 +76,41 @@ def get_highlighted_lines(
         data.
     """
     ### retrieve syntax mapping function
-    syntax_mapping_func = \
-                      SYNTAX_TO_MAPPING_FUNCTION[syntax_name]
+    syntax_mapping_func = SYNTAX_TO_MAPPING_FUNCTION[syntax_name]
 
     ### get mapped syntax
     mapped_syntax_data = syntax_mapping_func(text)
 
     ### retrieve list of lines
-    text_lines = text.splitlines() or ['']
+    text_lines = text.splitlines() or [""]
 
     ### get height of text surfaces from text settings
-    height = syntax_settings_map['normal']['font_height']
+    height = syntax_settings_map["normal"]["font_height"]
 
     ### create and return special list of text objects
     ### representing lines
 
     return List2D(
-
-      ## a text object is either an empty line or
-      ## a text object rendered with the text settings
-
-      (
-
-        render_highlighted_line(
-          line_text=line_string,
-          mapped_syntax_data=mapped_syntax_data[line_index],
-          syntax_settings_map=syntax_settings_map,
-          join_objects=True
+        ## a text object is either an empty line or
+        ## a text object rendered with the text settings
+        (
+            render_highlighted_line(
+                line_text=line_string,
+                mapped_syntax_data=mapped_syntax_data[line_index],
+                syntax_settings_map=syntax_settings_map,
+                join_objects=True,
+            )
+            if line_string
+            else Object2D(image=EMPTY_SURF, rect=Rect(0, 0, 0, height))
         )
-
-        if line_string
-
-        else Object2D(
-               image = EMPTY_SURF,
-               rect  = Rect(0, 0, 0, height)
-             )
-
-      )
-
-      ## iterate over each line index and line content
-      for line_index, line_string in enumerate(text_lines)
-
+        ## iterate over each line index and line content
+        for line_index, line_string in enumerate(text_lines)
     )
 
+
 def render_highlighted_line(
-      line_text,
-      mapped_syntax_data,
-      syntax_settings_map,
-      join_objects=False
-    ):
+    line_text, mapped_syntax_data, syntax_settings_map, join_objects=False
+):
     """Return highlighted text object(s) from the line.
 
     Parameters
@@ -168,56 +134,39 @@ def render_highlighted_line(
         or not.
     """
     string_kwargs_pairs = (
-
-      ### grab a pair containing the slice of the line text
-      ### and the text settings corresponding to the kind
-      ### of highlight to be applied
-
-      (
-        line_text[including_start : excluding_end],
-        syntax_settings_map[kind]
-      )
-
-      ### from each interval/kind pair in
-      ### mapped_syntax_data sorted by the interval,
-      ###
-      ### the interval is further decomposed into its
-      ### first and second elements, including_start and
-      ### excluding_end, respectively
-
-      for (including_start, excluding_end), kind in sorted(
-        mapped_syntax_data.items(),
-        key=lambda item: item[0]
-      )
-
+        ### grab a pair containing the slice of the line text
+        ### and the text settings corresponding to the kind
+        ### of highlight to be applied
+        (line_text[including_start:excluding_end], syntax_settings_map[kind])
+        ### from each interval/kind pair in
+        ### mapped_syntax_data sorted by the interval,
+        ###
+        ### the interval is further decomposed into its
+        ### first and second elements, including_start and
+        ### excluding_end, respectively
+        for (including_start, excluding_end), kind in sorted(
+            mapped_syntax_data.items(), key=lambda item: item[0]
+        )
     )
-
 
     ### create a special list containing text objects
     ### instantiated from each item in the pairs
     ### from the string_kwargs_pairs iterator
 
     text_objs = List2D(
-
         Object2D.from_surface(
-                      surface=render_text(
-
-                             text=string,
-
-                             ### text settings
-                             **text_settings
-                           )
-                    )
-
+            surface=render_text(
+                text=string,
+                ### text settings
+                **text_settings
+            )
+        )
         for string, text_settings in string_kwargs_pairs
-
     )
-
 
     ### align objects in the list one beside the other
     ### from left to right
     text_objs.rect.snap_rects_ip()
-
 
     ### return text objects (or single one) depending on
     ### quantity of text objects and special argument
@@ -233,10 +182,7 @@ def render_highlighted_line(
 
             image = Surface(text_objs.rect.size).convert()
 
-            image.fill(
-              syntax_settings_map
-              ['normal']['background_color']
-            )
+            image.fill(syntax_settings_map["normal"]["background_color"])
 
             text_objs.draw_on_surf(image)
 
@@ -244,8 +190,10 @@ def render_highlighted_line(
 
             return Object2D(image=image, rect=rect)
 
-        else: return text_objs
+        else:
+            return text_objs
 
     ### otherwise we assume there's only a single
     ### text object, so we return it
-    else: return text_objs.pop()
+    else:
+        return text_objs.pop()

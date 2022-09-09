@@ -23,7 +23,7 @@ from ..constants import NUMBER_OF_VISIBLE_LINES
 ###    injecting in the cursor class, but without losing
 ###    the benefit of setting extra partial methods with
 ###    functools.partialmethod?
-### 
+###
 ###    I mean, this must be done in a way that isn't
 ###    cumbersome and everything could be set up here
 ###    and just be injected once, in a single line in the
@@ -61,7 +61,7 @@ class Navigation:
         """Jump number of rows and columns provided.
 
         Use in normal mode.
-        
+
         Parameters
         ==========
         rows, cols (integers)
@@ -74,16 +74,13 @@ class Navigation:
         current_row = self.row
         current_col = self.col
 
-
         ### clamp final row value so it is within existing
         ### lines indices (since row number represents index
         ### of current line)
 
         max_row_index = len(self.lines) - 1
 
-        self.row = new_row = \
-             max(min(max_row_index, current_row + rows), 0)
-
+        self.row = new_row = max(min(max_row_index, current_row + rows), 0)
 
         ### calculate how many rows we will move
         no_of_rows_to_move = new_row - current_row
@@ -95,13 +92,10 @@ class Navigation:
         ### if cursor...
 
         if (
-
-          ### will move rows up
-          no_of_rows_to_move < 0
-
-          ### and end up in a line above the visible ones
-          and self.visible_row < 0
-
+            ### will move rows up
+            no_of_rows_to_move < 0
+            ### and end up in a line above the visible ones
+            and self.visible_row < 0
         ):
 
             ## adjust the visible row index to 0, so the
@@ -119,13 +113,10 @@ class Navigation:
         ### otherwise, if cursor...
 
         elif (
-
-          ### will move moved rows down
-          no_of_rows_to_move > 0
-
-          ### and end up in a line below the visible ones
-          and self.visible_row >= NUMBER_OF_VISIBLE_LINES
-
+            ### will move moved rows down
+            no_of_rows_to_move > 0
+            ### and end up in a line below the visible ones
+            and self.visible_row >= NUMBER_OF_VISIBLE_LINES
         ):
 
             ## adjust the visible row index to the number
@@ -136,13 +127,11 @@ class Navigation:
             ## make it so the new top visible line is the
             ## one 'x' rows behind the new row, where x equals
             ## the number of visible lines plus 1
-            self.top_visible_line_index = \
-                     new_row - NUMBER_OF_VISIBLE_LINES + 1
+            self.top_visible_line_index = new_row - NUMBER_OF_VISIBLE_LINES + 1
 
             ## now that you have a new top visible line
             ## set, update the visible lines
             self.update_visible_lines()
-
 
         ### clamp final colum value so it's within
         ### existing characters indices (since column number
@@ -150,9 +139,7 @@ class Navigation:
 
         max_col_index = len(self.lines[new_row]) - 1
 
-        self.col = \
-              max(min(max_col_index, current_col + cols), 0)
-
+        self.col = max(min(max_col_index, current_col + cols), 0)
 
         ### admin task: snap cursor to new row and column
         ### defined, also making it assume the size of the
@@ -161,53 +148,46 @@ class Navigation:
         ## try retrieving character sitting at the visible
         ## row and column we just defined
 
-        try: char_obj = (
-               self.visible_lines
-               [self.visible_row][self.col]
-             )
+        try:
+            char_obj = self.visible_lines[self.visible_row][self.col]
 
         ## if an IndexError occurs, it means that there is
         ## no character where the cursor sits, which we
         ## assume it is so because the line is empty, so we
         ## just place the cursor at the beginning of the line
 
-        except IndexError: self.rect.topleft = (
-                             self.visible_lines
-                             [self.visible_row]
-                             .rect.topleft
-                           )
+        except IndexError:
+            self.rect.topleft = self.visible_lines[self.visible_row].rect.topleft
 
         ## if we otherwise succeed in retrieving the char
         ## in the current column, we move the cursor to the
         ## position of that character object;
-        ## 
+        ##
         ## we also update the cursor size to that of the
         ## character obj
 
         else:
 
             self.rect.topleft = char_obj.rect.topleft
-            self.rect.size    = char_obj.rect.size
+            self.rect.size = char_obj.rect.size
 
-    go_up   = partialmethod(navigate, -1,  0)
-    go_down = partialmethod(navigate,  1,  0)
+    go_up = partialmethod(navigate, -1, 0)
+    go_down = partialmethod(navigate, 1, 0)
 
-    go_many_up   = partialmethod(navigate, -4,  0)
-    go_many_down = partialmethod(navigate,  4,  0)
+    go_many_up = partialmethod(navigate, -4, 0)
+    go_many_down = partialmethod(navigate, 4, 0)
 
-    jump_page_up   = \
-              partialmethod(navigate, -LINES_IN_A_JUMP, 0)
-    jump_page_down = \
-              partialmethod(navigate,  LINES_IN_A_JUMP, 0)
+    jump_page_up = partialmethod(navigate, -LINES_IN_A_JUMP, 0)
+    jump_page_down = partialmethod(navigate, LINES_IN_A_JUMP, 0)
 
-    go_left  = partialmethod(navigate,  0, -1)
-    go_right = partialmethod(navigate,  0,  1)
+    go_left = partialmethod(navigate, 0, -1)
+    go_right = partialmethod(navigate, 0, 1)
 
     go_to_line_start = partialmethod(navigate, 0, -INFINITY)
-    go_to_line_end   = partialmethod(navigate, 0,  INFINITY)
+    go_to_line_end = partialmethod(navigate, 0, INFINITY)
 
-    go_to_top    = partialmethod(navigate, -INFINITY, 0)
-    go_to_bottom = partialmethod(navigate,  INFINITY, 0)
+    go_to_top = partialmethod(navigate, -INFINITY, 0)
+    go_to_bottom = partialmethod(navigate, INFINITY, 0)
 
     reposition = partialmethod(navigate, 0, 0)
 
@@ -215,7 +195,7 @@ class Navigation:
         """Jump number of rows and columns provided.
 
         Use in insert mode.
-        
+
         Parameters
         ==========
         rows, cols (integers)
@@ -228,16 +208,13 @@ class Navigation:
         current_row = self.row
         current_col = self.col
 
-
         ### clamp final row value so it is within existing
         ### lines indices (since row number represents index
         ### of current line)
 
         max_row_index = len(self.lines) - 1
 
-        self.row = new_row = \
-             max(min(max_row_index, current_row + rows), 0)
-
+        self.row = new_row = max(min(max_row_index, current_row + rows), 0)
 
         ### calculate how many rows we will move
         no_of_rows_to_move = new_row - current_row
@@ -249,13 +226,10 @@ class Navigation:
         ### if cursor...
 
         if (
-
-          ### will move rows up
-          no_of_rows_to_move < 0
-
-          ### and end up in a line above the visible ones
-          and self.visible_row < 0
-
+            ### will move rows up
+            no_of_rows_to_move < 0
+            ### and end up in a line above the visible ones
+            and self.visible_row < 0
         ):
 
             ## adjust the visible row index to 0, so the
@@ -273,13 +247,10 @@ class Navigation:
         ### otherwise, if cursor...
 
         elif (
-
-          ### will move moved rows down
-          no_of_rows_to_move > 0
-
-          ### and end up in a line below the visible ones
-          and self.visible_row >= NUMBER_OF_VISIBLE_LINES
-
+            ### will move moved rows down
+            no_of_rows_to_move > 0
+            ### and end up in a line below the visible ones
+            and self.visible_row >= NUMBER_OF_VISIBLE_LINES
         ):
 
             ## adjust the visible row index to the number
@@ -290,13 +261,11 @@ class Navigation:
             ## make it so the new top visible line is the
             ## one 'x' rows behind the new row, where x equals
             ## the number of visible lines plus 1
-            self.top_visible_line_index = \
-                     new_row - NUMBER_OF_VISIBLE_LINES + 1
+            self.top_visible_line_index = new_row - NUMBER_OF_VISIBLE_LINES + 1
 
             ## now that you have a new top visible line
             ## set, update the visible lines
             self.update_visible_lines()
-
 
         ### clamp final colum value so it's within
         ### existing characters indices (since column number
@@ -304,9 +273,7 @@ class Navigation:
 
         max_col_index = len(self.lines[new_row])
 
-        self.col = \
-              max(min(max_col_index, current_col + cols), 0)
-
+        self.col = max(min(max_col_index, current_col + cols), 0)
 
         ### admin task: snap cursor to new row and column
         ### defined, also making it assume the size of the
@@ -315,10 +282,8 @@ class Navigation:
         ## try retrieving character sitting at the visible
         ## row and column we just defined
 
-        try: char_obj = (
-               self.visible_lines
-               [self.visible_row][self.col]
-             )
+        try:
+            char_obj = self.visible_lines[self.visible_row][self.col]
 
         ## if an IndexError occurs, it means that there is
         ## no character where the cursor sits, so we check
@@ -335,20 +300,13 @@ class Navigation:
             ## sitting at the column before the current one)
 
             if (
-
-              # line is not empty
-              max_col_index
-
-              # and index is an unit after the last index
-              and self.col == max_col_index
-
+                # line is not empty
+                max_col_index
+                # and index is an unit after the last index
+                and self.col == max_col_index
             ):
 
-                char_obj = (
-                  self.visible_lines
-                  [self.visible_row]
-                  [self.col-1]
-                )
+                char_obj = self.visible_lines[self.visible_row][self.col - 1]
 
                 self.rect.topleft = char_obj.rect.topright
 
@@ -358,48 +316,37 @@ class Navigation:
 
             else:
 
-                self.rect.topleft = (
-                  self.visible_lines
-                  [self.visible_row]
-                  .rect.topleft
-                )
+                self.rect.topleft = self.visible_lines[self.visible_row].rect.topleft
 
         ## if we otherwise succeed in retrieving the char
         ## in the current column, we move the cursor to the
         ## position of that character object;
-        ## 
+        ##
         ## we also update the cursor size to that of the
         ## character obj
 
         else:
 
             self.rect.topleft = char_obj.rect.topleft
-            self.rect.size    = char_obj.rect.size
+            self.rect.size = char_obj.rect.size
 
+    go_up_ins = partialmethod(navigate_ins, -1, 0)
+    go_down_ins = partialmethod(navigate_ins, 1, 0)
 
-    go_up_ins   = partialmethod(navigate_ins, -1,  0)
-    go_down_ins = partialmethod(navigate_ins,  1,  0)
+    go_many_up_ins = partialmethod(navigate_ins, -4, 0)
+    go_many_down_ins = partialmethod(navigate_ins, 4, 0)
 
-    go_many_up_ins   = partialmethod(navigate_ins, -4,  0)
-    go_many_down_ins = partialmethod(navigate_ins,  4,  0)
+    jump_page_up_ins = partialmethod(navigate_ins, -LINES_IN_A_JUMP, 0)
+    jump_page_down_ins = partialmethod(navigate_ins, LINES_IN_A_JUMP, 0)
 
-    jump_page_up_ins = \
-          partialmethod(navigate_ins, -LINES_IN_A_JUMP, 0)
-    jump_page_down_ins = \
-          partialmethod(navigate_ins,  LINES_IN_A_JUMP, 0)
+    go_left_ins = partialmethod(navigate_ins, 0, -1)
+    go_right_ins = partialmethod(navigate_ins, 0, 1)
 
-    go_left_ins  = partialmethod(navigate_ins,  0, -1)
-    go_right_ins = partialmethod(navigate_ins,  0,  1)
+    go_to_line_start_ins = partialmethod(navigate_ins, 0, -INFINITY)
+    go_to_line_end_ins = partialmethod(navigate_ins, 0, INFINITY)
 
-    go_to_line_start_ins = \
-                   partialmethod(navigate_ins, 0, -INFINITY)
-    go_to_line_end_ins = \
-                   partialmethod(navigate_ins, 0,  INFINITY)
-
-    go_to_top_ins = \
-                partialmethod(navigate_ins, -INFINITY, 0)
-    go_to_bottom_ins = \
-                partialmethod(navigate_ins,  INFINITY, 0)
+    go_to_top_ins = partialmethod(navigate_ins, -INFINITY, 0)
+    go_to_bottom_ins = partialmethod(navigate_ins, INFINITY, 0)
 
     reposition_ins = partialmethod(navigate_ins, 0, 0)
 
@@ -417,7 +364,7 @@ class Navigation:
         ### of lines which contains the visible lines
 
         start = self.top_visible_line_index
-        end   = start + NUMBER_OF_VISIBLE_LINES
+        end = start + NUMBER_OF_VISIBLE_LINES
 
         ### update the visible_lines list
         self.visible_lines[:] = self.lines[start:end]

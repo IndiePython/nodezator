@@ -7,9 +7,9 @@ from xml.etree.ElementTree import Element
 ### local imports
 
 from ..fontsman.constants import (
-                               ENC_SANS_BOLD_FONT_HEIGHT,
-                               ENC_SANS_BOLD_FONT_PATH,
-                             )
+    ENC_SANS_BOLD_FONT_HEIGHT,
+    ENC_SANS_BOLD_FONT_PATH,
+)
 
 from ..textman.label.main import Label
 
@@ -33,45 +33,38 @@ from ..textman.render import fit_text
 
 ### class definition
 
+
 class DefaultHolder(Label):
     """A label used to represent a default value.
 
     Used to hold default values that are not supposed
     to be edited in a widget.
-    
+
     When a parameter holds a default value editable by
     widget, then a custom widget is used, and the value
     can be both seen and edited in the widget. However,
     when the default value can't be edited in a widget,
     then this label serves as a displaying widget so that
     the user at least can know what is the default value.
-    
+
     This widget displays a repr() version of the value
     it holds, so it is advised that you make sure the
     value used have a meaningful __repr__ method.
     """
 
     def __init__(
-
-          self,
-
-          value,
-
-          name = 'default_holder',
-
-          font_height = ENC_SANS_BOLD_FONT_HEIGHT,
-          font_path   = ENC_SANS_BOLD_FONT_PATH,
-
-          max_width=155,
-          padding=1,
-
-          foreground_color = ( 40,  40,  40),
-          background_color = (190, 190, 190),
-
-          coordinates_name  = 'topleft',
-          coordinates_value = (0, 0),
-
-        ):
+        self,
+        value,
+        name="default_holder",
+        font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+        font_path=ENC_SANS_BOLD_FONT_PATH,
+        max_width=155,
+        padding=1,
+        foreground_color=(40, 40, 40),
+        background_color=(190, 190, 190),
+        coordinates_name="topleft",
+        coordinates_value=(0, 0),
+    ):
         """Perform setups and assign data for reuse.
 
         Extends appcommon.text.label.main.Label.__init__
@@ -119,31 +112,30 @@ class DefaultHolder(Label):
         ### store value and name
 
         self.value = value
-        self.name  = name
+        self.name = name
 
         ### gather text style related arguments in a
         ### single dictionary
 
         text_kwargs = {
-          "font_height"      : font_height,
-          "font_path"        : font_path,
-          "padding"          : padding,
-          "max_width"        : max_width,
-          "foreground_color" : foreground_color,
+            "font_height": font_height,
+            "font_path": font_path,
+            "padding": padding,
+            "max_width": max_width,
+            "foreground_color": foreground_color,
         }
 
         if background_color:
-            text_kwargs["background_color"] = \
-                                          background_color
+            text_kwargs["background_color"] = background_color
 
         ### initialize superclass
 
         super().__init__(
-                  text=repr(self.value),
-                  coordinates_name=coordinates_name,
-                  coordinates_value=coordinates_value,
-                  **text_kwargs,
-                )
+            text=repr(self.value),
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+            **text_kwargs,
+        )
 
     def get(self):
         """Return the widget's value.
@@ -159,7 +151,7 @@ class DefaultHolder(Label):
         instantiating a CallableNode in order to replace
         the default value of each widget with the last value
         set by the user.
-        
+
         Since this widget cannot be edited, but it was
         designed to just display the value it holds, the
         value attempted to be set is the same which is
@@ -173,12 +165,9 @@ class DefaultHolder(Label):
         """
         if value != self.value:
 
-            msg = (
-              "there shouldn't be an attempt to set"
-              " a different value on this"
-            )
+            msg = "there shouldn't be an attempt to set" " a different value on this"
 
-            print(msg, self.__class__.__name__, 'widget')
+            print(msg, self.__class__.__name__, "widget")
 
     def svg_repr(self):
         """Return svg group element representing widget.
@@ -189,52 +178,42 @@ class DefaultHolder(Label):
         x_str, y_str, width_str, height_str = map(str, rect)
 
         ###
-        group = Element('g', {'class': 'default_holder'})
+        group = Element("g", {"class": "default_holder"})
 
         group.append(
-
-                Element(
-
-                  'rect',
-
-                  {
-                    'x'      : x_str,
-                    'y'      : y_str,
-                    'width'  : width_str,
-                    'height' : height_str,
-                  }
-                )
-
-              )
+            Element(
+                "rect",
+                {
+                    "x": x_str,
+                    "y": y_str,
+                    "width": width_str,
+                    "height": height_str,
+                },
+            )
+        )
 
         (
-          text_x_str,
-          text_y_str,
+            text_x_str,
+            text_y_str,
         ) = map(str, rect.move(0, -5).bottomleft)
 
         text_element = Element(
+            "text",
+            {
+                "x": text_x_str,
+                "y": text_y_str,
+                "text-anchor": "start",
+            },
+        )
 
-                         'text',
-
-                         {
-
-                           'x' : text_x_str,
-                           'y' : text_y_str,
-
-                           'text-anchor': 'start',
-
-                         }
-                       )
-
-        text_element.text = \
-          fit_text(
+        text_element.text = fit_text(
             text=repr(self.value),
             max_width=145,
-            ommit_direction='right',
+            ommit_direction="right",
             font_height=ENC_SANS_BOLD_FONT_HEIGHT,
             font_path=ENC_SANS_BOLD_FONT_PATH,
             padding=1,
-          )
+        )
 
         group.append(text_element)
 

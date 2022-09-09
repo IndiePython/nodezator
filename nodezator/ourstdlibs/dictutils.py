@@ -5,13 +5,14 @@ from ast import literal_eval
 
 
 def flatten_keys(mutable_mapping):
-    
+
     for key in list(mutable_mapping):
 
         value = mutable_mapping.pop(key)
-        
+
         for subkey in key:
             mutable_mapping[subkey] = value
+
 
 def settings_to_hashable_repr(settings_dict):
     """Return custom hashable representation of settings.
@@ -56,7 +57,7 @@ def settings_to_hashable_repr(settings_dict):
     That is why we use a tuple instead, with just the
     values. You may also want to know why we turn the
     values into repr() strings, though.
-    
+
     We do so because this tuple is meant to be used as
     a key in a dictionary, so it would raise an error
     if the value used as an item in the tuple was
@@ -70,16 +71,13 @@ def settings_to_hashable_repr(settings_dict):
     """
     ### return a tuple...
     return tuple(
-
-      ### ...wherein each item is a 2-tuple representing a
-      ### key-value pair from the dict, with the value
-      ### turned into a repr() string...
-      (key, repr(settings_dict[key]))
-
-      ### ..and such pairs are ordered by the name of the
-      ### keys
-      for key in sorted(settings_dict.keys())
-
+        ### ...wherein each item is a 2-tuple representing a
+        ### key-value pair from the dict, with the value
+        ### turned into a repr() string...
+        (key, repr(settings_dict[key]))
+        ### ..and such pairs are ordered by the name of the
+        ### keys
+        for key in sorted(settings_dict.keys())
     )
 
 
@@ -91,7 +89,4 @@ def hashable_repr_to_settings(a_tuple):
     """
     ### return a dict...
 
-    return {
-      key: literal_eval(value)
-      for key, value in a_tuple
-    }
+    return {key: literal_eval(value) for key, value in a_tuple}

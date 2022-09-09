@@ -16,9 +16,9 @@ from pygame.math import Vector2
 from pygame.draw import rect as draw_rect
 
 from pygame.mouse import (
-                    get_pos     as get_mouse_pos,
-                    get_pressed as get_mouse_pressed,
-                  )
+    get_pos as get_mouse_pos,
+    get_pressed as get_mouse_pressed,
+)
 
 
 ### local imports
@@ -35,41 +35,34 @@ from ....surfsman.icon import render_layered_icon
 
 from ...colors import BLACK, WINDOW_BG
 
-from .constants import (
-                                        COLOR_WIDGET_SIZE
-                                      )
+from .constants import COLOR_WIDGET_SIZE
 
-from .data import (
-                                   ImportExportOperations
-                                 )
+from .data import ImportExportOperations
 
-from .colorsop import (
-                                        ColorsOperations
-                                      )
+from .colorsop import ColorsOperations
 
 
 ### module constants
 
-SCROLL_SPEED_PX     = 20
+SCROLL_SPEED_PX = 20
 SCROLL_BUTTON_WIDTH = 20
 
 
 ### class definition
 
+
 class ColorsPanel(
-
-      ColorsOperations,
-      ImportExportOperations,
-      Object2D,
-
-    ):
+    ColorsOperations,
+    ImportExportOperations,
+    Object2D,
+):
     """A panel to hold and display multiple colors."""
-    
+
     def __init__(
-          self,
-          colors_editor,
-          no_of_visible_colors,
-        ):
+        self,
+        colors_editor,
+        no_of_visible_colors,
+    ):
         """Store editor and set image, rect and buttons.
 
         Parameters
@@ -94,21 +87,16 @@ class ColorsPanel(
         ### calculate the width of the panel
 
         width = (
-
-          ## space for the color widgets
-
-          (
-            ## width of color widgets
-            COLOR_WIDGET_SIZE[0]
-
-            ## times the number of visible colors
-            * no_of_visible_colors
-          )
-
-          ## plus space for the scroll buttons (number of
-          ## pixels for 02 scroll buttons)
-          + (2 * SCROLL_BUTTON_WIDTH)
-
+            ## space for the color widgets
+            (
+                ## width of color widgets
+                COLOR_WIDGET_SIZE[0]
+                ## times the number of visible colors
+                * no_of_visible_colors
+            )
+            ## plus space for the scroll buttons (number of
+            ## pixels for 02 scroll buttons)
+            + (2 * SCROLL_BUTTON_WIDTH)
         )
 
         ### the height is the same height as a color widget
@@ -119,9 +107,7 @@ class ColorsPanel(
         ### you'll store so you can use to clean the
         ### original when needed
 
-        self.image = (
-          render_rect(width, height, WINDOW_BG)
-        )
+        self.image = render_rect(width, height, WINDOW_BG)
 
         self.clean_bg = self.image.copy()
 
@@ -130,18 +116,14 @@ class ColorsPanel(
 
         self.rect = self.image.get_rect()
 
-        self.rect.midtop = (
-          self.colors_editor.rect.move(0, 45).midtop
-        )
+        self.rect.midtop = self.colors_editor.rect.move(0, 45).midtop
 
         ### finally create the scroll buttons
         self.create_scroll_buttons()
 
     def reposition_and_define_objects_and_values(self):
 
-        self.rect.midtop = (
-          self.colors_editor.rect.move(0, 45).midtop
-        )
+        self.rect.midtop = self.colors_editor.rect.move(0, 45).midtop
 
         ### store an offset whose value is the inverse of
         ### the topleft
@@ -161,22 +143,17 @@ class ColorsPanel(
         x_deflation = (SCROLL_BUTTON_WIDTH * 2) * -1
         scroll_area = self.rect.inflate(x_deflation, 0)
 
-        if hasattr(self, 'widgets'):
-            
-            delta = (
-              Vector2(scroll_area.topleft)
-              - self.scroll_area.topleft
-            )
+        if hasattr(self, "widgets"):
+
+            delta = Vector2(scroll_area.topleft) - self.scroll_area.topleft
 
             self.widgets.rect.move_ip(delta)
 
         self.scroll_area = scroll_area
 
-        attr_names = ('topleft', 'topright')
+        attr_names = ("topleft", "topright")
 
-        for attr_name, button in (
-          zip(attr_names, self.buttons)
-        ):
+        for attr_name, button in zip(attr_names, self.buttons):
 
             ## align the given coordinates of self.rect and
             ## the button's rect
@@ -188,62 +165,42 @@ class ColorsPanel(
         """Create buttons to scroll the color widgets."""
         ### define width and height of scroll buttons
 
-        button_width  = self.rect.height
+        button_width = self.rect.height
         button_height = SCROLL_BUTTON_WIDTH
-
 
         ### iterate over the buttons creation data
         ### instantiating and setting up the buttons
 
         self.buttons = List2D(
-
-          Object2D.from_surface(
-
-            render_layered_icon(
-
-              chars = [chr(82)],
-
-              dimension_name  = 'height',
-              dimension_value = button_height - 8,
-
-              colors = [BLACK],
-
-              background_width  = button_width,
-              background_height = button_height,
-              background_color = WINDOW_BG,
-
-              rotation_degrees = 90,
-              flip_x = flip_x,
-              depth_finish_thickness = 1,
-
-            ),
-
-            command = command,
-
-          )
-
-          for flip_x, command in (
-
-            (False, self.scroll_left),
-            ( True, self.scroll_right)
-
-          )
-
+            Object2D.from_surface(
+                render_layered_icon(
+                    chars=[chr(82)],
+                    dimension_name="height",
+                    dimension_value=button_height - 8,
+                    colors=[BLACK],
+                    background_width=button_width,
+                    background_height=button_height,
+                    background_color=WINDOW_BG,
+                    rotation_degrees=90,
+                    flip_x=flip_x,
+                    depth_finish_thickness=1,
+                ),
+                command=command,
+            )
+            for flip_x, command in (
+                (False, self.scroll_left),
+                (True, self.scroll_right),
+            )
         )
-            
 
         ## store buttons on their own attribute
 
         attr_names = (
-          'left_scroll_button',
-          'right_scroll_button',
+            "left_scroll_button",
+            "right_scroll_button",
         )
 
-        for attr_name, button in (
-
-          zip(attr_names, self.buttons)
-
-        ):
+        for attr_name, button in zip(attr_names, self.buttons):
             setattr(self, attr_name, button)
 
     def scroll(self, amount):
@@ -271,7 +228,7 @@ class ColorsPanel(
             ### and the widget's rect locally
 
             current_left = widgets_rect.left
-            area_left    = self.scroll_area.left
+            area_left = self.scroll_area.left
 
             ### only rotate right if the current left
             ### position of the widget is at the left of
@@ -283,8 +240,7 @@ class ColorsPanel(
                 ## mustn't surpass the left of the scroll
                 ## area
 
-                widgets_rect.left = \
-                    min(current_left + amount, area_left)
+                widgets_rect.left = min(current_left + amount, area_left)
 
         ### rotate right
         ###
@@ -298,7 +254,7 @@ class ColorsPanel(
             ### and the widget's rect locally
 
             current_right = widgets_rect.right
-            area_right    = self.scroll_area.right
+            area_right = self.scroll_area.right
 
             ### only rotate left if the current right
             ### position of the widget is at the right of
@@ -312,10 +268,9 @@ class ColorsPanel(
                 ## edge of the widgets must never be to the
                 ## right of the scroll area's right edge)
 
-                widgets_rect.right = \
-                    max(current_right + amount, area_right)
+                widgets_rect.right = max(current_right + amount, area_right)
 
-    scroll_left  = partialmethod(scroll,  SCROLL_SPEED_PX)
+    scroll_left = partialmethod(scroll, SCROLL_SPEED_PX)
     scroll_right = partialmethod(scroll, -SCROLL_SPEED_PX)
 
     def store_current_widget(self):
@@ -344,13 +299,12 @@ class ColorsPanel(
 
         new_index = index + amount
 
-        new_index = \
-            min(max(0, new_index), len(self.widgets)-1)
+        new_index = min(max(0, new_index), len(self.widgets) - 1)
 
         ### if indices are the same, there's no point in
         ### moving the current widget
-        if new_index == index: return
-
+        if new_index == index:
+            return
 
         ### from this point on, perform operations to move
         ### index
@@ -362,33 +316,30 @@ class ColorsPanel(
         ## of the rotation amount)
 
         elif index < new_index:
-            
-            slice_obj = slice(index, new_index+1)
+
+            slice_obj = slice(index, new_index + 1)
             rotation_amount = -1
 
         elif index > new_index:
 
-            slice_obj = slice(new_index, index+1)
+            slice_obj = slice(new_index, index + 1)
             rotation_amount = 1
 
         ## this else clause should never be reached (at
         ## least given that both index and new_index are
         ## integer), so raise an error if such ever happens
 
-        else: raise RuntimeError(
-                      "given the logic adopted, this block"
-                      " should never execute"
-                    )
+        else:
+            raise RuntimeError(
+                "given the logic adopted, this block" " should never execute"
+            )
 
         ## obtain a deque from that slice and store
         ## the positions of each widget in the slice
 
         slice_deque = deque(self.widgets[slice_obj])
 
-        positions = [
-          widget.rect.topleft
-          for widget in slice_deque
-        ]
+        positions = [widget.rect.topleft for widget in slice_deque]
 
         ## rotate the slice in the desired direction,
         ## then update the position of each widget to
@@ -409,8 +360,8 @@ class ColorsPanel(
         self.colors_editor.current_color_index = new_index
         self.store_current_widget()
 
-    widget_to_left  = partialmethod(move_widget, -1)
-    widget_to_right = partialmethod(move_widget,  1)
+    widget_to_left = partialmethod(move_widget, -1)
+    widget_to_right = partialmethod(move_widget, 1)
 
     def go_to_widget(self, steps):
         """Change current color widget to another.
@@ -426,13 +377,11 @@ class ColorsPanel(
         """
         ### define index of new current widget by adding the
         ### index of the current widget with the given steps
-        new_index = \
-            self.colors_editor.current_color_index + steps
+        new_index = self.colors_editor.current_color_index + steps
 
         ### clamp the new index to the interval of existing
         ### indices
-        clamped_index = \
-            max(min(new_index, len(self.widgets)-1), 0)
+        clamped_index = max(min(new_index, len(self.widgets) - 1), 0)
 
         ### assign the clamped index as the current index
         self.colors_editor.current_color_index = clamped_index
@@ -443,18 +392,17 @@ class ColorsPanel(
         ### set the color of the new color widget in the
         ### controls so the user can edit the fields from
         ### its actual values, if desired
-        self.colors_editor.set_color_on_controls(
-                                 self.current_widget.color)
+        self.colors_editor.set_color_on_controls(self.current_widget.color)
 
         ### finally, if not already, bring color widget to
         ### visible area
         self.color_widget_to_visible_area()
 
-    go_left  = partialmethod(go_to_widget, -1)
-    go_right = partialmethod(go_to_widget,  1)
+    go_left = partialmethod(go_to_widget, -1)
+    go_right = partialmethod(go_to_widget, 1)
 
     go_to_start = partialmethod(go_to_widget, -INFINITY)
-    go_to_end   = partialmethod(go_to_widget,  INFINITY)
+    go_to_end = partialmethod(go_to_widget, INFINITY)
 
     def on_mouse_release(self, event):
         """Choose new color widget as current one if hovered.
@@ -476,14 +424,15 @@ class ColorsPanel(
 
         ### return earlier if mouse isn't even inside the
         ### scroll area
-        if not scroll_area.collidepoint(mouse_pos): return
+        if not scroll_area.collidepoint(mouse_pos):
+            return
 
         ### otherwise, check each color widget colliding with
         ### the scroll area, looking for the one hovered by
         ### the mouse (if there is one)
 
         for widget in self.widgets.get_colliding(scroll_area):
-            
+
             ### if you find a color widget which collides
             ### with the mouse, make it the current color
             ### widget and break out of the "for loop"
@@ -495,8 +444,7 @@ class ColorsPanel(
 
                 ## define it as the index for the current
                 ## color
-                self.colors_editor.current_color_index = \
-                                                      index
+                self.colors_editor.current_color_index = index
 
                 ## store a reference to the
                 ## new current widget (this one)
@@ -505,8 +453,7 @@ class ColorsPanel(
                 ## set the color of the new color widget in
                 ## the controls so the user can edit the
                 ## fields from its actual values, if desired
-                self.colors_editor.set_color_on_controls(
-                                               widget.color)
+                self.colors_editor.set_color_on_controls(widget.color)
 
                 break
 
@@ -514,7 +461,8 @@ class ColorsPanel(
         """Check whether scroll buttons are being pressed."""
         ### if left mouse button is not pressed, exit method
         ### by returning earlier
-        if not get_mouse_pressed()[0]: return
+        if not get_mouse_pressed()[0]:
+            return
 
         ### otherwise retrieve the position of the mouse
         ### and execute the command of one of the scroll
@@ -536,7 +484,7 @@ class ColorsPanel(
         ### easy and quick access
 
         image = self.image
-        scroll_area  = self.scroll_area
+        scroll_area = self.scroll_area
         offset = self.offset
         current_widget = self.current_widget
 
@@ -553,40 +501,30 @@ class ColorsPanel(
             ## right positions relative to the colors panel
             ## position
 
-            image.blit(
-                    widget.image, widget.rect.move(offset)
-                  )
+            image.blit(widget.image, widget.rect.move(offset))
 
         ### if the current widget collides with the scroll
         ### area, draw an outline on the colors panel image
         ### where the widget sits
 
         if current_widget.rect.colliderect(scroll_area):
-            
+
             draw_border_on_area(
-              image,
-              current_widget.contrasting_color,
-              current_widget.rect.move(offset),
-              5,
+                image,
+                current_widget.contrasting_color,
+                current_widget.rect.move(offset),
+                5,
             )
 
         ## draw each scroll button on the colors panel image
 
         for button in self.buttons:
 
-            image.blit(
-                    button.image, button.rect.move(offset)
-                  )
+            image.blit(button.image, button.rect.move(offset))
 
         ## finally, draw the colors panel image on the screen
         ## and draw a black outline around it
 
         super().draw()
 
-        draw_rect(
-          SCREEN,
-          BLACK,
-          self.rect.inflate(2, 2),
-          1
-        )
-
+        draw_rect(SCREEN, BLACK, self.rect.inflate(2, 2), 1)

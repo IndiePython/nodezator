@@ -25,18 +25,15 @@ class ExportOperations:
                 x2, y2 = child.rect.center
 
                 yield Element(
-
-                        'line',
-
-                        {
-                          'x1'    : x1_str,
-                          'y1'    : y1_str,
-                          'x2'    : str(x2),
-                          'y2'    : str(y2),
-                          'class' : parent.svg_class_name,
-                        },
-
-                      )
+                    "line",
+                    {
+                        "x1": x1_str,
+                        "y1": y1_str,
+                        "x2": str(x2),
+                        "y2": str(y2),
+                        "class": parent.svg_class_name,
+                    },
+                )
 
     def draw_lines_on_surf(self, surf):
         """Draw lines on provided surf.
@@ -51,14 +48,12 @@ class ExportOperations:
 
             for child in parent.children:
 
-                start, end = (
-                  parent_center, child.rect.center
-                )
+                start, end = (parent_center, child.rect.center)
 
                 draw_line(
-                  surf,
-                  segment_color,
-                  parent_center,     # start
-                  child.rect.center, # end
-                  4,                 # width
+                    surf,
+                    segment_color,
+                    parent_center,  # start
+                    child.rect.center,  # end
+                    4,  # width
                 )

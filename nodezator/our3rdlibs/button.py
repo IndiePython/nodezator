@@ -10,9 +10,7 @@ from ..imagesman.cache import IMAGE_SURFS_DB
 
 from ..textman.render import render_text
 
-from ..fontsman.constants import (
-                               ENC_SANS_BOLD_FONT_HEIGHT,
-                               ENC_SANS_BOLD_FONT_PATH)
+from ..fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT, ENC_SANS_BOLD_FONT_PATH
 
 from ..colorsman.colors import BUTTON_FG, BUTTON_BG
 
@@ -48,7 +46,8 @@ class Button(Object2D):
         surface,
         command=empty_function,
         coordinates_name="topleft",
-        coordinates_value=(0, 0)):
+        coordinates_value=(0, 0),
+    ):
         """
         surface (pygame.Surface instance)
             surface representing button.
@@ -70,11 +69,10 @@ class Button(Object2D):
         ### instantiate image and rect attributes
 
         self.image = surface
-        self.rect  = self.image.get_rect()
+        self.rect = self.image.get_rect()
 
         ### position rect
-        setattr(
-          self.rect, coordinates_name, coordinates_value)
+        setattr(self.rect, coordinates_name, coordinates_value)
 
     def on_mouse_release(self, event):
         """Execute button command when mouse is released.
@@ -88,7 +86,7 @@ class Button(Object2D):
               used; can be used to retrieve the mouse
               position when release, for instance, if the
               information is needed.
-              
+
               Check pygame.event module documentation on
               pygame website for more info about this event
               object.
@@ -112,24 +110,24 @@ class Button(Object2D):
 
     @classmethod
     def from_text(
-          cls,
-          text,
-          font_height            = ENC_SANS_BOLD_FONT_HEIGHT,
-          font_path             = ENC_SANS_BOLD_FONT_PATH,
-          foreground_color       = BUTTON_FG,
-          background_color       = BUTTON_BG,
-          antialiased            = True,
-          padding                = 0,
-          depth_finish_thickness = 0,
-          depth_finish_outset    = True,
-          border_thickness       = 0,
-          border_color           = BUTTON_FG,
-          max_width              = 0,
-          ommit_direction        = "right",
-          command                = empty_function,
-          coordinates_name       = "topleft",
-          coordinates_value      = (0, 0)
-        ):
+        cls,
+        text,
+        font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+        font_path=ENC_SANS_BOLD_FONT_PATH,
+        foreground_color=BUTTON_FG,
+        background_color=BUTTON_BG,
+        antialiased=True,
+        padding=0,
+        depth_finish_thickness=0,
+        depth_finish_outset=True,
+        border_thickness=0,
+        border_color=BUTTON_FG,
+        max_width=0,
+        ommit_direction="right",
+        command=empty_function,
+        coordinates_name="topleft",
+        coordinates_value=(0, 0),
+    ):
         """Create surface from text args and pass to class.
 
         text (string)
@@ -147,43 +145,38 @@ class Button(Object2D):
         For definitions of the remaining parameters,
         please check the __init__ method.
         """
-        surface = \
-          render_text(
-            text                   = text,
-            font_height            = font_height,
-            font_path               = font_path,
-            foreground_color       = foreground_color,
-            background_color       = background_color,
-            antialiased            = antialiased,
-            padding                = padding,
-            depth_finish_thickness = depth_finish_thickness,
-            depth_finish_outset    = depth_finish_outset,
-            border_thickness       = border_thickness,
-            border_color           = border_color,
-            max_width              = max_width,
-            ommit_direction        = ommit_direction
-          )
+        surface = render_text(
+            text=text,
+            font_height=font_height,
+            font_path=font_path,
+            foreground_color=foreground_color,
+            background_color=background_color,
+            antialiased=antialiased,
+            padding=padding,
+            depth_finish_thickness=depth_finish_thickness,
+            depth_finish_outset=depth_finish_outset,
+            border_thickness=border_thickness,
+            border_color=border_color,
+            max_width=max_width,
+            ommit_direction=ommit_direction,
+        )
 
         return cls(
-                 surface,
-
-                 command = command,
-
-                 coordinates_name  = coordinates_name,
-                 coordinates_value = coordinates_value
-               )
+            surface,
+            command=command,
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+        )
 
     @classmethod
     def from_image(
-          cls,
-          image_name,
-          use_alpha,
-
-          command = empty_function,
-
-          coordinates_name  = 'topleft',
-          coordinates_value = (0, 0)
-        ):
+        cls,
+        image_name,
+        use_alpha,
+        command=empty_function,
+        coordinates_name="topleft",
+        coordinates_value=(0, 0),
+    ):
         """Create surface from image args and pass to class.
 
         image_name (string)
@@ -196,17 +189,11 @@ class Button(Object2D):
         For definitions of the remaining parameters,
         please check the __init__ method.
         """
-        surface = (
-          IMAGE_SURFS_DB
-          [image_name]
-          [{'use_alpha': use_alpha}]
-        )
+        surface = IMAGE_SURFS_DB[image_name][{"use_alpha": use_alpha}]
 
         return cls(
-                 surface,
-
-                 command = command,
-
-                 coordinates_name  = coordinates_name,
-                 coordinates_value = coordinates_value
-               )
+            surface,
+            command=command,
+            coordinates_name=coordinates_name,
+            coordinates_value=coordinates_value,
+        )

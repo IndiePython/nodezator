@@ -1,5 +1,6 @@
 """Custom exception for errors when mapping syntax."""
 
+
 class SyntaxMappingError(Exception):
     """To raise when an error occurs while mapping syntax.
 

@@ -29,9 +29,7 @@ class TextBlock(Object2D):
     ### inject function to work as method
     svg_repr = svg_repr
 
-
     ### method definitions
-
 
     def __init__(self, data, midtop=None):
         """Setup attributes for storage and control.
@@ -52,17 +50,14 @@ class TextBlock(Object2D):
 
         ### check whether text of text block is valid,
         ### raising exception if not;
-        check_text_block_text(self.data['text'])
+        check_text_block_text(self.data["text"])
 
         ### store the midtop position
 
-        self.midtop = (
-          midtop if midtop is not None 
-          else self.data['midtop']
-        )
+        self.midtop = midtop if midtop is not None else self.data["midtop"]
 
         ### create surface for image attribute
-        self.image = get_text_block_surf(self.data['text'])
+        self.image = get_text_block_surf(self.data["text"])
 
         ### create and position rect
 
@@ -98,41 +93,28 @@ class TextBlock(Object2D):
 
             though we don't use it in this method, it is
             required in order to comply with protocol used;
-          
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.
         """
-        if method_name == 'on_mouse_click':
+        if method_name == "on_mouse_click":
             self.mouse_click_target = True
 
-        elif method_name == 'on_mouse_release':
+        elif method_name == "on_mouse_release":
 
             self.mouse_click_target = False
             APP_REFS.ea.change_selection_state(self)
 
-        elif method_name == 'on_right_mouse_release':
+        elif method_name == "on_right_mouse_release":
 
-            (
-              APP_REFS
-              .ea
-              .text_block_popup_menu
-              .show(self, event.pos)
-            )
+            (APP_REFS.ea.text_block_popup_menu.show(self, event.pos))
 
-    on_mouse_click = partialmethod(
-                       on_mouse_action, 'on_mouse_click'
-                     )
+    on_mouse_click = partialmethod(on_mouse_action, "on_mouse_click")
 
-    on_mouse_release = partialmethod(
-                         on_mouse_action,
-                         'on_mouse_release'
-                       )
+    on_mouse_release = partialmethod(on_mouse_action, "on_mouse_release")
 
-    on_right_mouse_release = partialmethod(
-                               on_mouse_action,
-                               'on_right_mouse_release'
-                             )
+    on_right_mouse_release = partialmethod(on_mouse_action, "on_right_mouse_release")
 
     def draw_selection_outline(self, color):
         """Draw outline around to indicate it is selected."""
@@ -145,7 +127,7 @@ class TextBlock(Object2D):
 
         ### recreate surface for image attribute from
         ### the text in self.data['text']
-        self.image = get_text_block_surf(self.data['text'])
+        self.image = get_text_block_surf(self.data["text"])
 
         ### update size of rect
         self.rect.size = self.image.get_size()

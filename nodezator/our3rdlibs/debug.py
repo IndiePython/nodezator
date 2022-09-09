@@ -3,14 +3,13 @@
 ### third-party imports
 
 from pygame import (
-
-              QUIT,
-
-              KEYUP, K_ESCAPE, K_RETURN, K_KP_ENTER,
-
-              Surface,
-
-            )
+    QUIT,
+    KEYUP,
+    K_ESCAPE,
+    K_RETURN,
+    K_KP_ENTER,
+    Surface,
+)
 
 from pygame.display import update
 
@@ -22,12 +21,12 @@ from pygame.draw import rect as draw_rect
 ### local imports
 
 from ..pygameconstants import (
-                       FPS,
-                       SCREEN,
-                       SCREEN_RECT,
-                       maintain_fps,
-                       blit_on_screen,
-                     )
+    FPS,
+    SCREEN,
+    SCREEN_RECT,
+    maintain_fps,
+    blit_on_screen,
+)
 
 from ..classes2d.single import Object2D
 
@@ -41,19 +40,18 @@ from ..colorsman.colors import WHITE, BLACK, GREY
 ## text obj with exit information
 
 EXIT_TEXT_OBJ = Object2D.from_surface(
-                  render_text(
-                    "press <ESCAPE> to leave surface view",
-                    font_height=17,
-                    foreground_color=WHITE,
-                    background_color=BLACK,
-                  )
-                )
+    render_text(
+        "press <ESCAPE> to leave surface view",
+        font_height=17,
+        foreground_color=WHITE,
+        background_color=BLACK,
+    )
+)
 
 ## function definition
 
-def show_surface(
-      surf, background_color=GREY, should_draw_rect=False
-    ):
+
+def show_surface(surf, background_color=GREY, should_draw_rect=False):
     """Display a surface in center of screen.
 
     After the user exits, the surface is returned.
@@ -98,13 +96,12 @@ def show_surface(
 
         for event in get_events():
 
-            if event.type == QUIT: running = False
+            if event.type == QUIT:
+                running = False
 
             elif event.type == KEYUP:
 
-                if event.key in (
-                  K_ESCAPE, K_RETURN, K_KP_ENTER
-                ):
+                if event.key in (K_ESCAPE, K_RETURN, K_KP_ENTER):
                     running = False
 
         ## blit in this order: background, text, surface,

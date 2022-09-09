@@ -9,15 +9,13 @@ from keyword import kwlist as python_reserved_keywords
 from io import BytesIO
 
 from tokenize import (
-
-                ### tokens for analysis
-                OP, NAME,
-
-                ### tool to tokenize string with
-                ### Python code
-                tokenize,
-
-              )
+    ### tokens for analysis
+    OP,
+    NAME,
+    ### tool to tokenize string with
+    ### Python code
+    tokenize,
+)
 
 
 ### constants
@@ -25,78 +23,88 @@ from tokenize import (
 ## formatter for error messages when finding forbidden
 ## tokens
 
-FORBIDDEN_OPERATION_FORMATTER = (
-  "forbidden operator used: {}"
-).format
+FORBIDDEN_OPERATION_FORMATTER = ("forbidden operator used: {}").format
 
-FORBIDDEN_NAME_FORMATTER = (
-  "forbidden name used: {}"
-).format
+FORBIDDEN_NAME_FORMATTER = ("forbidden name used: {}").format
 
 ## forbidden operators
 
 FORBIDDEN_OPERATORS = {
-  '=', ':', ';', '@',
-  '+=', '-=', '*=', '/=', '//=', '%=', '@=',
-  '&=', '|=', '^=', '>>=', '<<=', '**='
+    "=",
+    ":",
+    ";",
+    "@",
+    "+=",
+    "-=",
+    "*=",
+    "/=",
+    "//=",
+    "%=",
+    "@=",
+    "&=",
+    "|=",
+    "^=",
+    ">>=",
+    "<<=",
+    "**=",
 }
 
 ## allowed builtins
 
 ALLOWED_BUILTINS = {
-
-  ## keywords
-  'True', 'False',
-
-  ## builtins functions
-  'abs', 'all', 'min', 'any', 'slice', 'divmod',
-  'bool', 'int', 'sum', 'pow', 'float', 'range',
-  'zip', 'map', 'max', 'round',
-
+    ## keywords
+    "True",
+    "False",
+    ## builtins functions
+    "abs",
+    "all",
+    "min",
+    "any",
+    "slice",
+    "divmod",
+    "bool",
+    "int",
+    "sum",
+    "pow",
+    "float",
+    "range",
+    "zip",
+    "map",
+    "max",
+    "round",
 }
 
 ## allowed names
 
 ALLOWED_NAMES = set.union(
-
-  ## keywords that we allow
-  {'and', 'else', 'for', 'if', 'in', 'is', 'not', 'or'},
-
-  ## allowed builtins
-  ALLOWED_BUILTINS
-
+    ## keywords that we allow
+    {"and", "else", "for", "if", "in", "is", "not", "or"},
+    ## allowed builtins
+    ALLOWED_BUILTINS,
 )
 
 ## forbidden names
 
-FORBIDDEN_NAMES = set.union(
-
-  ## all python reserved keywords
-  set(python_reserved_keywords),
-
-  ## all builtin functions
-
-  set(
-    builtin_name
-    for builtin_name in dir(builtins)
-
-    if builtin_name.islower()
-    if not builtin_name.startswith('_')
-  ),
-
-  ## all builtin exceptions plus True, False, None and
-  ## Ellipsis;
-  ##
-  ## that is, all builtins starting with an uppercase letter
-
-  set(
-    builtin_name
-    for builtin_name in dir(builtins)
-    if builtin_name[0].isupper()
-  )
-
-## minus all the names we allowed
-) - ALLOWED_NAMES
+FORBIDDEN_NAMES = (
+    set.union(
+        ## all python reserved keywords
+        set(python_reserved_keywords),
+        ## all builtin functions
+        set(
+            builtin_name
+            for builtin_name in dir(builtins)
+            if builtin_name.islower()
+            if not builtin_name.startswith("_")
+        ),
+        ## all builtin exceptions plus True, False, None and
+        ## Ellipsis;
+        ##
+        ## that is, all builtins starting with an uppercase letter
+        set(builtin_name for builtin_name in dir(builtins) if builtin_name[0].isupper())
+        ## minus all the names we allowed
+    )
+    - ALLOWED_NAMES
+)
 
 
 ## attributes from imported modules
@@ -107,71 +115,111 @@ FORBIDDEN_NAMES = set.union(
 # from 'math' library
 
 ATTRS_FROM_MATH = {
-
-  # from python 3.5+
-
-  'acos', 'acosh', 'asin', 'asinh', 'atan', 'atanh',
-  'atan2', 'cos', 'ceil', 'degrees', 'hypot',
-  'exp', 'expm1',
-  'e', 'erf', 'erfc',
-  'fabs', 'factorial', 'floor', 'fmod', 'frexp', 'fsum',
-  'gamma', 'gcd', 'inf', 'lgamma', 'ldexp',
-  'log', 'log1p', 'log2', 'log10', 'modf', 'nan', 'pi',
-  'pow as math_pow',
-  'radians', 'sin', 'sinh', 'sqrt', 'tan', 'tanh', 'trunc',
-
-  # from python 3.6+
-  'tau',
-
-  # from python 3.7+
-  'remainder',
-
-  # from python 3.8+
-  'comb', 'dist', 'isqrt', 'perm', 'prod'
-
-  # from python 3.9+
-  'lcm', 'nextafter', 'ulp',
-
+    # from python 3.5+
+    "acos",
+    "acosh",
+    "asin",
+    "asinh",
+    "atan",
+    "atanh",
+    "atan2",
+    "cos",
+    "ceil",
+    "degrees",
+    "hypot",
+    "exp",
+    "expm1",
+    "e",
+    "erf",
+    "erfc",
+    "fabs",
+    "factorial",
+    "floor",
+    "fmod",
+    "frexp",
+    "fsum",
+    "gamma",
+    "gcd",
+    "inf",
+    "lgamma",
+    "ldexp",
+    "log",
+    "log1p",
+    "log2",
+    "log10",
+    "modf",
+    "nan",
+    "pi",
+    "pow as math_pow",
+    "radians",
+    "sin",
+    "sinh",
+    "sqrt",
+    "tan",
+    "tanh",
+    "trunc",
+    # from python 3.6+
+    "tau",
+    # from python 3.7+
+    "remainder",
+    # from python 3.8+
+    "comb",
+    "dist",
+    "isqrt",
+    "perm",
+    "prod"
+    # from python 3.9+
+    "lcm",
+    "nextafter",
+    "ulp",
 }
 
 # from 'random' library
 
 ATTRS_FROM_RANDOM = {
-
-  # from python 3.5+
-
-  'betavariate', 'choice', 'expovariate',
-  'gammavariate', 'gauss', 'getrandbits',
-  'lognormvariate',
-  'randint', 'random', 'randrange',
-  'normalvariate',
-  'paretovariate',
-  'triangular', 'uniform',
-  'vonmisesvariate', 'weibullvariate'
-
+    # from python 3.5+
+    "betavariate",
+    "choice",
+    "expovariate",
+    "gammavariate",
+    "gauss",
+    "getrandbits",
+    "lognormvariate",
+    "randint",
+    "random",
+    "randrange",
+    "normalvariate",
+    "paretovariate",
+    "triangular",
+    "uniform",
+    "vonmisesvariate",
+    "weibullvariate",
 }
 
 # from 'statistics' library
 
 ATTRS_FROM_STATISTICS = {
-
-  # from python 3.5+
-
-  'mean',
-  'median', 'median_low', 'median_high', 'median_grouped',
-  'mode',
-  'stdev', 'variance',
-  'pstdev', 'pvariance',
-
-  # from python 3.6+
-  'harmonic_mean',
-
-  # from python 3.8+
-  'fmean', 'geometric_mean', 'multimode', 'quantiles',
-
-  # from python 3.10+
-  'covariance', 'correlation',
-
+    # from python 3.5+
+    "mean",
+    "median",
+    "median_low",
+    "median_high",
+    "median_grouped",
+    "mode",
+    "stdev",
+    "variance",
+    "pstdev",
+    "pvariance",
+    # from python 3.6+
+    "harmonic_mean",
+    # from python 3.8+
+    "fmean",
+    "geometric_mean",
+    "multimode",
+    "quantiles",
+    # from python 3.10+
+    "covariance",
+    "correlation",
 }
 
 
@@ -188,11 +236,9 @@ CUSTOM_GLOBALS_DICT = {}
 ## with such objects
 
 for module, attr_names in (
-
-  (math,       ATTRS_FROM_MATH      ),
-  (statistics, ATTRS_FROM_STATISTICS),
-  (random,     ATTRS_FROM_RANDOM    )
-
+    (math, ATTRS_FROM_MATH),
+    (statistics, ATTRS_FROM_STATISTICS),
+    (random, ATTRS_FROM_RANDOM),
 ):
 
     ## iterate over each attribute name, preprocessing it,
@@ -212,26 +258,29 @@ for module, attr_names in (
         ## the name to use as a keyword in the custom
         ## globals dict
 
-        attr_name, is_pair_of_names, new_name = \
-                                attr_name.partition(' as ')
+        attr_name, is_pair_of_names, new_name = attr_name.partition(" as ")
 
         keyword = new_name if is_pair_of_names else attr_name
 
         ## try retrieving object from module's attribute
-        try: obj = getattr(module, attr_name)
+        try:
+            obj = getattr(module, attr_name)
 
         ## attribute errors should be considered the result
         ## of trying to retrieve from the module an object
         ## not existent/available in the Python version used;
         ## in such case we just pass
-        except AttributeError: pass
+        except AttributeError:
+            pass
 
         ## if otherwise we succeed, store the retrieved
         ## attribute in our custom global dictionary
-        else: CUSTOM_GLOBALS_DICT[keyword] = obj
+        else:
+            CUSTOM_GLOBALS_DICT[keyword] = obj
 
 
 ### main function
+
 
 def numeric_evaluation(string):
     """Evaluate string representing numeric value/expression.
@@ -248,6 +297,7 @@ def numeric_evaluation(string):
 
 
 ### utility function
+
 
 def check_string_safety(string):
     """Raise ValueError if string isn't safe for evaluation.
@@ -310,11 +360,7 @@ def check_string_safety(string):
     ### representing tokens (data from each token) when we
     ### iterate over it
 
-    raw_tokens = tokenize(
-                   BytesIO(
-                     string.encode('utf-8')
-                   ).readline
-                 )
+    raw_tokens = tokenize(BytesIO(string.encode("utf-8")).readline)
 
     ### iterate over the tokens, raising a ValueError
     ### if an invalid token appears;
@@ -327,19 +373,18 @@ def check_string_safety(string):
         ### will be used in the 'raise' statement at the
         ### end of this "for loop"'s body
 
-        if token_type == OP \
-        and token_string in FORBIDDEN_OPERATORS:
+        if token_type == OP and token_string in FORBIDDEN_OPERATORS:
             formatter = FORBIDDEN_OPERATION_FORMATTER
 
-        elif token_type == NAME \
-        and token_string in FORBIDDEN_NAMES:
+        elif token_type == NAME and token_string in FORBIDDEN_NAMES:
             formatter = FORBIDDEN_NAME_FORMATTER
 
         ### if no forbidden scenario was found, just skip
         ### to next token using the 'continue' statement,
         ### therefore avoiding the error raising statement
         ### further below
-        else: continue
+        else:
+            continue
 
         ### if one of the forbidden scenarios above happened,
         ### raise a ValueError explaining the problem using

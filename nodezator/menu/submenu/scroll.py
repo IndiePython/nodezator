@@ -16,9 +16,7 @@ from ...colorsman.colors import MENU_BG
 
 ## common constants/tools
 
-from ..common import (
-                        UP_ARROW_SURF, DOWN_ARROW_SURF,
-                        SCROLL_SPEED)
+from ..common import UP_ARROW_SURF, DOWN_ARROW_SURF, SCROLL_SPEED
 
 ## utilities
 from .utils import get_boundaries
@@ -45,13 +43,16 @@ class MenuScrolling:
         for child in self.children:
 
             ## store method if it exists
-            try: method = child.check_clean_bg
+            try:
+                method = child.check_clean_bg
 
             ## if it doesn't, just pass
-            except AttributeError: pass
+            except AttributeError:
+                pass
 
             ## otherwise, execute it
-            else: method()
+            else:
+                method()
 
     def draw_scrollable_contents(self):
         """Draw body, children and scrolling objects.
@@ -85,8 +86,7 @@ class MenuScrolling:
         ## retrieve children on scroll_area
 
         visible_children = (
-          child for child in self.children
-          if self.scroll_area.colliderect(child.rect)
+            child for child in self.children if self.scroll_area.colliderect(child.rect)
         )
 
         ## iterate over children looking for the expanded
@@ -96,12 +96,14 @@ class MenuScrolling:
 
             # check the existence of an 'is_expanded'
             # attribute
-            try: is_expanded = child.is_expanded
+            try:
+                is_expanded = child.is_expanded
 
             # it might be however, that it doesn't
             # have an is_expanded attribute, in which
             # case it is a command; just pass, then;
-            except AttributeError: pass
+            except AttributeError:
+                pass
 
             # if 'is_expanded' attribute is True, call its
             # draw_body_and_its_contents method; in this
@@ -131,8 +133,7 @@ class MenuScrolling:
         ### the scroll_area
 
         children_to_draw = (
-          child for child in self.children
-          if self.scroll_area.colliderect(child.rect)
+            child for child in self.children if self.scroll_area.colliderect(child.rect)
         )
 
         ### calculate the offset between the body rect
@@ -147,8 +148,7 @@ class MenuScrolling:
         ### in the appropriate position in the body surface
 
         for child in children_to_draw:
-            self.body.image.blit(
-                    child.image, child.rect.move(offset))
+            self.body.image.blit(child.image, child.rect.move(offset))
 
     def draw_arrows(self):
         """Draw arrows on the body surface."""
@@ -164,8 +164,7 @@ class MenuScrolling:
         ### in the appropriate position in the body surface
 
         for arrow in self.arrows:
-            self.body.image.blit(
-                      arrow.image, arrow.rect.move(offset))
+            self.body.image.blit(arrow.image, arrow.rect.move(offset))
 
     def check_scrollability(self):
         """Check need to turn menu scrollable.
@@ -195,31 +194,28 @@ class MenuScrolling:
         ### instantiate new surface for body with the new
         ### dimensions of its rect and the depth finish
 
-        self.body.image = \
-        render_rect(*self.body.rect.size, MENU_BG)
+        self.body.image = render_rect(*self.body.rect.size, MENU_BG)
 
         draw_depth_finish(self.body.image)
 
         ### create arrow objects and assign surfaces and
         ### rects to them
 
-        up_arrow       = Object2D()
+        up_arrow = Object2D()
         up_arrow.image = UP_ARROW_SURF
-        up_arrow.rect  = up_arrow.image.get_rect()
+        up_arrow.rect = up_arrow.image.get_rect()
 
-        down_arrow       = Object2D()
+        down_arrow = Object2D()
         down_arrow.image = DOWN_ARROW_SURF
-        down_arrow.rect  = down_arrow.image.get_rect()
+        down_arrow.rect = down_arrow.image.get_rect()
 
         ### get the combined height of the arrows
-        arrows_height = \
-         up_arrow.rect.height + down_arrow.rect.height
+        arrows_height = up_arrow.rect.height + down_arrow.rect.height
 
         ### calculate the dimensions for the scrollable area
         ### and create it
 
-        scrollable_height = \
-                      self.body.rect.height - arrows_height
+        scrollable_height = self.body.rect.height - arrows_height
 
         dimensions = self.body.rect.width, scrollable_height
 
@@ -232,7 +228,7 @@ class MenuScrolling:
         ## define width and height of arrows (height
         ## is preserved as can be seen)
 
-        arrows_width  = self.children[0].rect.width
+        arrows_width = self.children[0].rect.width
         arrows_height = up_arrow.rect.height
 
         ## replace arrows surfaces by new ones,
@@ -247,18 +243,18 @@ class MenuScrolling:
             ## replace by new one
 
             arrow.image = render_rect(
-                            arrows_width,
-                            arrows_height,
-                            MENU_BG,
-                          )
+                arrows_width,
+                arrows_height,
+                MENU_BG,
+            )
 
             ## blit original over the new one
 
             blit_aligned(
-              surface_to_blit      = original_surf,
-              target_surface       = arrow.image,
-              retrieve_pos_from = 'center',
-              assign_pos_to     = 'center'
+                surface_to_blit=original_surf,
+                target_surface=arrow.image,
+                retrieve_pos_from="center",
+                assign_pos_to="center",
             )
 
             ## update size of arrow's rect
@@ -266,12 +262,12 @@ class MenuScrolling:
 
         ### reference scroll methods on the arrows
 
-        up_arrow.scroll   = self.scroll_up
+        up_arrow.scroll = self.scroll_up
         down_arrow.scroll = self.scroll_down
 
         ### store both arrows in attributes
 
-        self.up_arrow   =   up_arrow
+        self.up_arrow = up_arrow
         self.down_arrow = down_arrow
 
         ### also reference them together in a container
@@ -295,7 +291,7 @@ class MenuScrolling:
             normally, that is, when autoscrolling by hovering
             the scroll arrows, so the expanded child
             collapses.
-            
+
             If we don't collapse the body of the moving
             expanded child when autoscrolling the arrows we
             would have to add extra complexity to the code
@@ -309,7 +305,7 @@ class MenuScrolling:
             scroll. Thus, getting rid of the excess of what
             is visible (the body of the expanded child)
             shouldn't cause any problem.
-            
+
             There is, though, a scenario wherein we don't
             collapse the body of the expanded child (that
             is the parameter is set to False: only when
@@ -337,8 +333,8 @@ class MenuScrolling:
         ### presence/absence of first or last child
         ### in the scroll area
 
-        first_rect = self.children[ 0].rect
-        last_rect  = self.children[-1].rect
+        first_rect = self.children[0].rect
+        last_rect = self.children[-1].rect
 
         ## if scrolling children into the positive y
         ## direction (children are being moved down), but
@@ -381,10 +377,12 @@ class MenuScrolling:
             for child in self.children:
 
                 # try storing the value of the attribute
-                try: is_expanded = child.is_expanded
+                try:
+                    is_expanded = child.is_expanded
 
                 # if it doesn't exist, just pass
-                except AttributeError: pass
+                except AttributeError:
+                    pass
 
                 # if the attribute exists and its value is
                 # True, collapse the child using the proper
@@ -412,13 +410,16 @@ class MenuScrolling:
             for child in self.children:
 
                 # store method if it exists
-                try: method = child.reposition_body
+                try:
+                    method = child.reposition_body
 
                 # if method doesn't exist, just pass
-                except AttributeError: pass
+                except AttributeError:
+                    pass
 
                 # otherwise execute the stored method
-                else: method()
+                else:
+                    method()
 
         ### collapse the expanded child if there is one and
         ### it doesn't collide with the scroll area (this
@@ -434,10 +435,12 @@ class MenuScrolling:
 
             ## try retrieving the value of the 'is_expanded'
             ## attribute
-            try: is_expanded = child.is_expanded
+            try:
+                is_expanded = child.is_expanded
 
             ## if it doesn't even exist, just pass
-            except AttributeError: pass
+            except AttributeError:
+                pass
 
             ## otherwise, if it exists and is True and the
             ## expanded child don't collide with the scroll
@@ -446,22 +449,20 @@ class MenuScrolling:
             else:
 
                 # evaluate condition
-                child_touches_scroll_area = \
-                    self.scroll_area.colliderect(child.rect)
+                child_touches_scroll_area = self.scroll_area.colliderect(child.rect)
 
                 # check if conditions are met and execute
                 # the collapsing method
 
-                if is_expanded \
-                and not child_touches_scroll_area:
+                if is_expanded and not child_touches_scroll_area:
                     child.collapse_self_and_children()
 
-    scroll_up   = partialmethod(scroll,  SCROLL_SPEED)
+    scroll_up = partialmethod(scroll, SCROLL_SPEED)
     scroll_down = partialmethod(scroll, -SCROLL_SPEED)
 
     def fix_scrolling(self):
         """Eliminate excessive scrolling.
-        
+
         Closes gap between first child/first arrow or
         last child/last_arrow if it exists. Such gap is
         sometimes formed when scrolling the first or last
@@ -470,8 +471,8 @@ class MenuScrolling:
         """
         ### retrieve rects of first and last children
 
-        first_rect = self.children[ 0].rect
-        last_rect  = self.children[-1].rect
+        first_rect = self.children[0].rect
+        last_rect = self.children[-1].rect
 
         ### before starting to check if there's an gap we
         ### must check if at least one of the children
@@ -484,13 +485,14 @@ class MenuScrolling:
         ## scroll area
 
         first_inside = self.scroll_area.contains(first_rect)
-        last_inside  = self.scroll_area.contains( last_rect)
+        last_inside = self.scroll_area.contains(last_rect)
 
         ## if neither the first nor the last rect are
         ## completely inside the scroll area, cancel the
         ## execution of the rest of the method by returning
         ## earlier
-        if not first_inside and not last_inside: return
+        if not first_inside and not last_inside:
+            return
 
         ### now determine which of the children is the one
         ### inside the the scroll area (they can't be both
@@ -505,12 +507,10 @@ class MenuScrolling:
         ## moving the children by the difference between
         ## them
 
-        if first_inside and \
-        first_rect.top != self.up_arrow.rect.bottom:
+        if first_inside and first_rect.top != self.up_arrow.rect.bottom:
 
             # calculate the difference
-            y_offset = \
-                self.up_arrow.rect.bottom - first_rect.top
+            y_offset = self.up_arrow.rect.bottom - first_rect.top
 
             # move children
             self.children.rect.move_ip(0, y_offset)
@@ -521,12 +521,10 @@ class MenuScrolling:
         ## them by moving the children by the difference
         ## between them
 
-        elif last_inside and \
-        last_rect.bottom != self.down_arrow.rect.top:
+        elif last_inside and last_rect.bottom != self.down_arrow.rect.top:
 
             # calculate the difference
-            y_offset = \
-                self.down_arrow.rect.top - last_rect.bottom
+            y_offset = self.down_arrow.rect.top - last_rect.bottom
 
             # move children
             self.children.rect.move_ip(0, y_offset)
@@ -538,8 +536,10 @@ class MenuScrolling:
         attribute, which implies the scrollability of the
         menu.
         """
-        try: return self.scroll_area
-        except AttributeError: pass
+        try:
+            return self.scroll_area
+        except AttributeError:
+            pass
 
     def reposition_scrollable_contents(self):
         """Reposition contents inside the body.
@@ -555,7 +555,7 @@ class MenuScrolling:
         ### get topleft coordinates of the body rect,
         ### with a small offset
 
-        offset  = 1, 1
+        offset = 1, 1
         topleft = self.body.rect.move(offset).topleft
 
         ### position arrows and scroll area relative to
@@ -563,24 +563,18 @@ class MenuScrolling:
 
         self.up_arrow.rect.topleft = topleft
 
-        self.scroll_area.topleft = \
-                        self.up_arrow.rect.bottomleft
+        self.scroll_area.topleft = self.up_arrow.rect.bottomleft
 
-        self.down_arrow.rect.topleft = \
-                        self.scroll_area.bottomleft
+        self.down_arrow.rect.topleft = self.scroll_area.bottomleft
 
         ### position children relative to the scroll area
         ### topleft coordinates
 
-        self.children.rect.topleft = (
-          self.scroll_area.topleft
-        )
+        self.children.rect.topleft = self.scroll_area.topleft
 
         ## position children one on top of the other
 
         self.children.rect.snap_rects_ip(
-
-          retrieve_pos_from='bottomleft',
-          assign_pos_to='topleft',
-
+            retrieve_pos_from="bottomleft",
+            assign_pos_to="topleft",
         )

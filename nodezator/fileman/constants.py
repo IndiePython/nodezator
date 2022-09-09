@@ -3,7 +3,7 @@
 from ..fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
 
 
-FONT_HEIGHT = ENC_SANS_BOLD_FONT_HEIGHT # height of font in pixels
+FONT_HEIGHT = ENC_SANS_BOLD_FONT_HEIGHT  # height of font in pixels
 
 
 ### sizes

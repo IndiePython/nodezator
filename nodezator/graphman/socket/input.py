@@ -9,9 +9,9 @@ from xml.etree.ElementTree import Element
 from ...config import APP_REFS
 
 from ...our3rdlibs.behaviour import (
-                            indicate_unsaved,
-                            set_status_message,
-                          )
+    indicate_unsaved,
+    set_status_message,
+)
 
 from .base import Socket
 
@@ -22,13 +22,13 @@ class InputSocket(Socket):
     """Socket representing (sub)parameter from a callable."""
 
     def __init__(
-          self,
-          node,
-          type_codename,
-          parameter_name,
-          subparameter_index=None,
-          center=(0, 0),
-        ):
+        self,
+        node,
+        type_codename,
+        parameter_name,
+        subparameter_index=None,
+        center=(0, 0),
+    ):
         """Store arguments, setup image, rect and position.
 
         Parameters
@@ -58,10 +58,10 @@ class InputSocket(Socket):
 
         ## store parameter name and subparameter index
 
-        self.parameter_name     = parameter_name
+        self.parameter_name = parameter_name
         self.subparameter_index = subparameter_index
 
-        ## store type codename and perform related setups 
+        ## store type codename and perform related setups
         self.update_type_codename(type_codename)
 
         ### obtain rect from image and position it using
@@ -79,12 +79,10 @@ class InputSocket(Socket):
         ### svg class name and surface)
 
         (
-
-          self.outline_color,
-          self.fill_color,
-          self.svg_class_name,
-          self.circle_surf,
-
+            self.outline_color,
+            self.fill_color,
+            self.svg_class_name,
+            self.circle_surf,
         ) = CODENAME_TO_STYLE_MAP[type_codename]
 
         self.line_color = self.fill_color
@@ -107,40 +105,25 @@ class InputSocket(Socket):
             object.
         """
         APP_REFS.ea.input_socket_popup_menu.show(
-                                              self,
-                                              event.pos,
-                                            )
-
+            self,
+            event.pos,
+        )
 
     def mark_for_unpacking(self):
-        
+
         if self.subparameter_index in (
-
-          self
-          .node
-          .data
-          ['subparam_unpacking_map']
-          [self.parameter_name]
-
+            self.node.data["subparam_unpacking_map"][self.parameter_name]
         ):
 
             ## create status message
 
-            status_message = (
-              "Didn't need to unpack: input"
-              " unpacked already."
-            )
+            status_message = "Didn't need to unpack: input" " unpacked already."
 
         else:
 
             ## mark subparameter for unpacking
 
-            (
-              self
-              .node
-              .mark_subparameter_for_unpacking
-              (self)
-            )
+            (self.node.mark_subparameter_for_unpacking(self))
 
             ## create status message
             status_message = "Marked input for unpacking"
@@ -155,23 +138,12 @@ class InputSocket(Socket):
     def unmark_for_unpacking(self):
 
         if self.subparameter_index in (
-
-          self
-          .node
-          .data
-          ['subparam_unpacking_map']
-          [self.parameter_name]
-
+            self.node.data["subparam_unpacking_map"][self.parameter_name]
         ):
 
             ## unmark subparameter for unpacking
 
-            (
-              self
-              .node
-              .unmark_subparameter_for_unpacking
-              (self)
-            )
+            (self.node.unmark_subparameter_for_unpacking(self))
 
             ## create status message
             status_message = "Undid unpacking"
@@ -185,8 +157,7 @@ class InputSocket(Socket):
             ## create status message
 
             status_message = (
-              "Didn't need to undo unpacking: input"
-              " already not unpacked"
+                "Didn't need to undo unpacking: input" " already not unpacked"
             )
 
         ## inform user of change in statusbar
@@ -196,23 +167,16 @@ class InputSocket(Socket):
         """Return a custom id from gathered data."""
 
         return (
-
-          (
-            self.node.id,
-            self.parameter_name,
-          )
-
-          if self.subparameter_index is None
-
-
-          else
-
-          (
-            self.node.id,
-            self.parameter_name,
-            self.subparameter_index,
-          )
-
+            (
+                self.node.id,
+                self.parameter_name,
+            )
+            if self.subparameter_index is None
+            else (
+                self.node.id,
+                self.parameter_name,
+                self.subparameter_index,
+            )
         )
 
     def signal_severance(self):
@@ -238,9 +202,9 @@ class InputSocket(Socket):
             another node.
         """
         self.node.receive_input(
-          data,
-          self.parameter_name,
-          self.subparameter_index,
+            data,
+            self.parameter_name,
+            self.subparameter_index,
         )
 
     def svg_repr(self):
@@ -250,14 +214,11 @@ class InputSocket(Socket):
         cx_str, cy_str = map(str, self.rect.center)
 
         return Element(
-
-                  'circle',
-
-                  {
-                    'cx': cx_str,
-                    'cy': cy_str,
-                    'r' : socket_radius_str,
-                    'class': self.svg_class_name,
-                  }
-
-                )
+            "circle",
+            {
+                "cx": cx_str,
+                "cy": cy_str,
+                "r": socket_radius_str,
+                "class": self.svg_class_name,
+            },
+        )

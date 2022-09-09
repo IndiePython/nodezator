@@ -7,12 +7,22 @@ from functools import partialmethod
 ### third-party imports
 
 from pygame import (
-              QUIT,
-              MOUSEBUTTONDOWN, MOUSEBUTTONUP,
-              KEYDOWN, K_LEFT, K_a, K_RIGHT, K_d,
-              K_HOME, K_END, K_DELETE,
-              KEYUP, K_ESCAPE, K_RETURN, K_KP_ENTER,
-            )
+    QUIT,
+    MOUSEBUTTONDOWN,
+    MOUSEBUTTONUP,
+    KEYDOWN,
+    K_LEFT,
+    K_a,
+    K_RIGHT,
+    K_d,
+    K_HOME,
+    K_END,
+    K_DELETE,
+    KEYUP,
+    K_ESCAPE,
+    K_RETURN,
+    K_KP_ENTER,
+)
 
 from pygame.event import get as get_events
 
@@ -36,14 +46,11 @@ class LoopOperations(Object2D, LoopHolder):
     """Loop-related operations for the ColorsEditor."""
 
     def edit_colors(
-          self,
-
-          color_value=((255, 0, 0),),
-
-          color_format='rgb_tuple',
-          alone_when_single=True,
-
-        ):
+        self,
+        color_value=((255, 0, 0),),
+        color_format="rgb_tuple",
+        alone_when_single=True,
+    ):
         """Display dialog to edit/pick colors.
 
         Note that, during the editing session, the color
@@ -53,7 +60,7 @@ class LoopOperations(Object2D, LoopHolder):
         provided by the user.
 
         The values provided by the user for those parameters
-        are relevant, though. Such actual values received 
+        are relevant, though. Such actual values received
         are used when returning the value back at the end
         of the editing session, if the user doesn't cancel
         the editing session.
@@ -114,10 +121,8 @@ class LoopOperations(Object2D, LoopHolder):
 
         ## convert color value to a tuple of rgb colors
 
-        try: colors = \
-               custom_format_color(
-                 color_value, 'rgb_tuple', False
-               )
+        try:
+            colors = custom_format_color(color_value, "rgb_tuple", False)
 
         ## XXX maybe show a dialog with the
         ## error message here? or just print on the
@@ -127,7 +132,8 @@ class LoopOperations(Object2D, LoopHolder):
         ## if a value error is raised, though,
         ## it means  there's something wrong with
         ## the given value, so we return earlier
-        except ValueError: return None
+        except ValueError:
+            return None
 
         ### set the full rgb colors into the colors panel
         self.colors_panel.set_colors(colors)
@@ -150,24 +156,17 @@ class LoopOperations(Object2D, LoopHolder):
         ### to the value of the "cancel edition flag"
 
         to_return = (
-
-          ## if the "cancel edition flag" is turned on,
-          ## the value is None
-
-          None
-          if self.cancel_edition
-
-          ## otherwise, it is the edited color(s) from
-          ## the colors panel, converted according to
-          ## the settings given as the 'color_format'
-          ## and 'alone_when_single' arguments
-
-          else custom_format_color(
-                 self.colors_panel.get_colors(),
-                 color_format,
-                 alone_when_single
-               )
-
+            ## if the "cancel edition flag" is turned on,
+            ## the value is None
+            None
+            if self.cancel_edition
+            ## otherwise, it is the edited color(s) from
+            ## the colors panel, converted according to
+            ## the settings given as the 'color_format'
+            ## and 'alone_when_single' arguments
+            else custom_format_color(
+                self.colors_panel.get_colors(), color_format, alone_when_single
+            )
         )
 
         ### finally, return the value after freeing up
@@ -186,7 +185,8 @@ class LoopOperations(Object2D, LoopHolder):
         for event in get_events():
 
             ### quit the application
-            if event.type == QUIT: self.quit()
+            if event.type == QUIT:
+                self.quit()
 
             ### perform the corresponding action if the user
             ### presses the left mouse button, passing the
@@ -217,7 +217,8 @@ class LoopOperations(Object2D, LoopHolder):
                 ## 'continue' statement, since we are
                 ## not interested in the other buttons
                 ## here
-                if event.button not in (1, 3): continue
+                if event.button not in (1, 3):
+                    continue
 
                 ## if the left or right mouse buttons are
                 ## released outside the colors editor
@@ -243,7 +244,7 @@ class LoopOperations(Object2D, LoopHolder):
             ### pressed
 
             elif event.type == KEYDOWN:
-                
+
                 if event.key in (K_LEFT, K_a):
                     self.colors_panel.go_left()
 
@@ -280,7 +281,7 @@ class LoopOperations(Object2D, LoopHolder):
 
             required in order to comply with mouse
             action protocol;
-              
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object;
@@ -302,18 +303,21 @@ class LoopOperations(Object2D, LoopHolder):
                 ## object has an attribute named according
                 ## to the value in the 'method_name'
                 ## argument
-                try: method = getattr(obj, method_name)
+                try:
+                    method = getattr(obj, method_name)
 
                 ## if it hasn't, then we just pass
-                except AttributeError: pass
+                except AttributeError:
+                    pass
 
                 ## otherwise we execute the method contained
                 ## in such attribute, passing the event
                 ## object as an argument
-                else: method(event)
+                else:
+                    method(event)
 
                 ## regardless of whether or not the object
-                ## had an operation retrieved and executed 
+                ## had an operation retrieved and executed
                 ## in the last clauses, break out of the
                 ## "for loop"
                 break
@@ -322,11 +326,9 @@ class LoopOperations(Object2D, LoopHolder):
     ## method, named to comply with the mouse action
     ## protocol
 
-    on_mouse_click = \
-        partialmethod(on_mouse_action, 'on_mouse_click')
+    on_mouse_click = partialmethod(on_mouse_action, "on_mouse_click")
 
-    on_mouse_release = \
-        partialmethod(on_mouse_action, 'on_mouse_release')
+    on_mouse_release = partialmethod(on_mouse_action, "on_mouse_release")
 
     def update(self):
         """Update colors panel and scales."""
@@ -351,10 +353,10 @@ class LoopOperations(Object2D, LoopHolder):
         ### draw buttons (which include entries) and labels
 
         self.buttons.draw()
-        self.labels .draw()
+        self.labels.draw()
 
         ### finally, update the screen
-        update() # pygame.display.update
+        update()  # pygame.display.update
 
     def unhighlight(self):
         """Draw semitransparent surface on self.rect area.
@@ -363,7 +365,4 @@ class LoopOperations(Object2D, LoopHolder):
         unhighlighted, so the next loop holder appears
         highlighted.
         """
-        blit_on_screen(
-          UNHIGHLIGHT_SURF_MAP[self.rect.size],
-          self.rect
-        )
+        blit_on_screen(UNHIGHLIGHT_SURF_MAP[self.rect.size], self.rect)

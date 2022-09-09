@@ -20,21 +20,21 @@ from pygame.math import Vector2
 from ...surfsman.render import render_rect
 
 from ...fontsman.constants import (
-                          ENC_SANS_BOLD_FONT_HEIGHT,
-                          ENC_SANS_BOLD_FONT_PATH,
-                        )
+    ENC_SANS_BOLD_FONT_HEIGHT,
+    ENC_SANS_BOLD_FONT_PATH,
+)
 
 from ...ourstdlibs.behaviour import (
-                            empty_function,
-                            return_untouched,
-                          )
+    empty_function,
+    return_untouched,
+)
 
 from ...ourstdlibs.color.creation import get_contrasting_bw
 
 from ...colorsman.colors import (
-                        INT_FLOAT_ENTRY_FG,
-                        INT_FLOAT_ENTRY_BG,
-                      )
+    INT_FLOAT_ENTRY_FG,
+    INT_FLOAT_ENTRY_BG,
+)
 
 from ...textman.cache import TEXT_SURFS_DB
 
@@ -49,6 +49,7 @@ from .modes import IntFloatModes
 
 ### utility function
 
+
 def ensure_int_float(value):
     """Return value if type(value) is int or float.
 
@@ -60,9 +61,7 @@ def ensure_int_float(value):
     """
     if type(value) not in (int, float):
 
-        msg = (
-          "Value must be {!r} or {!r}.".format(int, float)
-        )
+        msg = "Value must be {!r} or {!r}.".format(int, float)
 
         raise TypeError(msg)
 
@@ -72,19 +71,20 @@ def ensure_int_float(value):
 ### constants
 
 ALLOWED_NUM_CLASSES = {
-  "int"       : (int,),
-  "float"     : (float,),
-  "int_float" : (float, int),
+    "int": (int,),
+    "float": (float,),
+    "int_float": (float, int),
 }
 
 NUM_TYPE_ENSURING_OPERATIONS = {
-  (int,)       : round,
-  (float,)     : float,
-  (float, int) : ensure_int_float,
+    (int,): round,
+    (float,): float,
+    (float, int): ensure_int_float,
 }
 
 
 ### class definition
+
 
 class IntFloatEntry(IntFloatOperations, IntFloatModes):
     """Specialized entry class for integer/float input.
@@ -93,49 +93,31 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
     """
 
     def __init__(
-
-          self,
-
-          value=None,
-
-          loop_holder = None,
-
-          numeric_classes_hint = 'int',
-
-          min_value = None,
-          max_value = None,
-
-          normal_drag_increment   = None,
-          preciser_drag_increment = None,
-
-          normal_click_increment   = None,
-          preciser_click_increment = None,
-
-          allow_none = False,
-
-          name = 'int_float_entry',
-
-          command = empty_function,
-
-          update_behind = empty_function,
-          draw_behind   = empty_function,
-
-          draw_on_window_resize = empty_function,
-
-          position_reference_getter = None,
-
-          width = 155,
-
-          font_height = ENC_SANS_BOLD_FONT_HEIGHT,
-          font_path   = ENC_SANS_BOLD_FONT_PATH,
-
-          foreground_color = INT_FLOAT_ENTRY_FG,
-          background_color = INT_FLOAT_ENTRY_BG,
-
-          coordinates_name  = 'topleft',
-          coordinates_value = (0, 0),
-
-        ):
+        self,
+        value=None,
+        loop_holder=None,
+        numeric_classes_hint="int",
+        min_value=None,
+        max_value=None,
+        normal_drag_increment=None,
+        preciser_drag_increment=None,
+        normal_click_increment=None,
+        preciser_click_increment=None,
+        allow_none=False,
+        name="int_float_entry",
+        command=empty_function,
+        update_behind=empty_function,
+        draw_behind=empty_function,
+        draw_on_window_resize=empty_function,
+        position_reference_getter=None,
+        width=155,
+        font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+        font_path=ENC_SANS_BOLD_FONT_PATH,
+        foreground_color=INT_FLOAT_ENTRY_FG,
+        background_color=INT_FLOAT_ENTRY_BG,
+        coordinates_name="topleft",
+        coordinates_value=(0, 0),
+    ):
         """Perform setups and assign data for reuse.
 
         Parameters
@@ -242,8 +224,8 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
         ### the numeric_classes_hint argument received
 
         # try retrieving the classes
-        try: self.num_classes = \
-             ALLOWED_NUM_CLASSES[numeric_classes_hint]
+        try:
+            self.num_classes = ALLOWED_NUM_CLASSES[numeric_classes_hint]
 
         # if not present, then raise an error explaining
         # the issue
@@ -259,11 +241,7 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
         ### the allowed numeric types (this callable is used
         ### only when the value is not None)
 
-        self.ensure_num_type = (
-
-          NUM_TYPE_ENSURING_OPERATIONS[self.num_classes]
-
-        )
+        self.ensure_num_type = NUM_TYPE_ENSURING_OPERATIONS[self.num_classes]
 
         ### process the normal and precision drag increment
         ### arguments (they contain the amount to be added
@@ -276,47 +254,27 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
         ## provided
 
         if normal_drag_increment is None:
-            normal_drag_increment = (
-              self.ensure_num_type(10)
-            )
+            normal_drag_increment = self.ensure_num_type(10)
 
         if preciser_drag_increment is None:
-            preciser_drag_increment = (
-              self.ensure_num_type(1)
-            )
+            preciser_drag_increment = self.ensure_num_type(1)
 
         ## check the arguments typing
 
         msg = (
-          "{} must be of type hinted by the"
-          " 'numeric_classes_hint' argument, which is"
-          " one of the following: {}"
+            "{} must be of type hinted by the"
+            " 'numeric_classes_hint' argument, which is"
+            " one of the following: {}"
         )
 
-        if (
-          type(normal_drag_increment)
-          not in self.num_classes
-        ):
+        if type(normal_drag_increment) not in self.num_classes:
 
-            raise TypeError(
-                    msg.format(
-                      "normal_drag_increment",
-                      self.num_classes
-                    )
-                  )
+            raise TypeError(msg.format("normal_drag_increment", self.num_classes))
 
-        if (
-          type(preciser_drag_increment)
-          not in self.num_classes
-        ):
+        if type(preciser_drag_increment) not in self.num_classes:
 
-            raise TypeError(
-                    msg.format(
-                      "preciser_drag_increment",
-                      self.num_classes
-                    )
-                  )
-        
+            raise TypeError(msg.format("preciser_drag_increment", self.num_classes))
+
         ## to guarantee the proper functioning of the
         ## feature, the arguments must always be positive
 
@@ -324,15 +282,11 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
 
         if normal_drag_increment < 0:
 
-            raise ValueError(
-                    msg.format("normal_drag_increment")
-                  )
+            raise ValueError(msg.format("normal_drag_increment"))
 
         if preciser_drag_increment < 0:
 
-            raise ValueError(
-                    msg.format("preciser_drag_increment")
-                  )
+            raise ValueError(msg.format("preciser_drag_increment"))
 
         ## as an usability measure to guarantee the feature
         ## always works as intended, we decided to enforce
@@ -342,17 +296,13 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
 
         if normal_drag_increment < preciser_drag_increment:
 
-            msg = (
-              "normal_drag_increment must be"
-              " >= preciser_drag_increment."
-            )
+            msg = "normal_drag_increment must be" " >= preciser_drag_increment."
             raise ValueError(msg)
 
         ## finally store them
 
-        self.normal_drag_increment   = normal_drag_increment
+        self.normal_drag_increment = normal_drag_increment
         self.preciser_drag_increment = preciser_drag_increment
-
 
         ### process the normal and precision click
         ### increment arguments (they contain the amount to
@@ -364,48 +314,28 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
 
         if normal_click_increment is None:
 
-            normal_click_increment = (
-              self.ensure_num_type(10)
-            )
+            normal_click_increment = self.ensure_num_type(10)
 
         if preciser_click_increment is None:
 
-            preciser_click_increment = (
-              self.ensure_num_type(1)
-            )
+            preciser_click_increment = self.ensure_num_type(1)
 
         ## check the arguments typing
 
         msg = (
-          "{} must be of type hinted by the"
-          " 'numeric_classes_hint' argument, which is"
-          " one of the following: {}"
+            "{} must be of type hinted by the"
+            " 'numeric_classes_hint' argument, which is"
+            " one of the following: {}"
         )
 
-        if (
-          type(normal_click_increment)
-          not in self.num_classes
-        ):
+        if type(normal_click_increment) not in self.num_classes:
 
-            raise TypeError(
-                    msg.format(
-                      "normal_click_increment",
-                      self.num_classes
-                    )
-                  )
+            raise TypeError(msg.format("normal_click_increment", self.num_classes))
 
-        if (
-          type(preciser_click_increment)
-          not in self.num_classes
-        ):
+        if type(preciser_click_increment) not in self.num_classes:
 
-            raise TypeError(
-                    msg.format(
-                      "preciser_click_increment",
-                      self.num_classes
-                    )
-                  )
-        
+            raise TypeError(msg.format("preciser_click_increment", self.num_classes))
+
         ## to guarantee the proper functioning of the
         ## feature, the arguments must always be positive
 
@@ -413,15 +343,11 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
 
         if normal_click_increment < 0:
 
-            raise ValueError(
-                    msg.format("normal_click_increment")
-                  )
+            raise ValueError(msg.format("normal_click_increment"))
 
         if preciser_click_increment < 0:
 
-            raise ValueError(
-                    msg.format("preciser_click_increment")
-                  )
+            raise ValueError(msg.format("preciser_click_increment"))
 
         ## as an usability measure to guarantee the feature
         ## always works as intended, we decided to enforce
@@ -431,17 +357,13 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
 
         if normal_click_increment < preciser_click_increment:
 
-            msg = (
-              "normal_click_increment must be"
-              " >= preciser_click_increment."
-            )
+            msg = "normal_click_increment must be" " >= preciser_click_increment."
             raise ValueError(msg)
 
         ## finally store them
 
-        self.normal_click_increment   = normal_click_increment
+        self.normal_click_increment = normal_click_increment
         self.preciser_click_increment = preciser_click_increment
-
 
         ### set the allow_none flag based on the
         ### "allow_none" argument and the "value" argument
@@ -453,7 +375,8 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
         ## however, if the "value" argument is None,
         ## the flag is set to True regardless of the
         ## argument
-        if value is None: self.allow_none = True
+        if value is None:
+            self.allow_none = True
 
         ### check whether value is of allowed type, raising
         ### error if it is not
@@ -475,9 +398,9 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
         ### store some of the arguments in their own
         ### attributes
 
-        self.name             = name
-        self.command          = command
-        self.loop_holder      = loop_holder
+        self.name = name
+        self.command = command
+        self.loop_holder = loop_holder
         self.background_color = background_color
 
         ### create and position a rect for this entry
@@ -485,18 +408,14 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
         self.rect = Rect(0, 0, width, font_height)
 
         setattr(
-          self.rect,
-          coordinates_name,
-          coordinates_value,
+            self.rect,
+            coordinates_name,
+            coordinates_value,
         )
 
         ### create a background surface for the widget
 
-        self.background = render_rect(
-                            width,
-                            font_height,
-                            background_color
-                          )
+        self.background = render_rect(width, font_height, background_color)
 
         ### also store a copy of it as the image
         ### representing this widget
@@ -506,23 +425,19 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
         ### in a dictionary inside its own attribute
 
         render_settings = {
-          'font_height'      : font_height,
-          'font_path'        : font_path,
-          'foreground_color' : foreground_color,
+            "font_height": font_height,
+            "font_path": font_path,
+            "foreground_color": foreground_color,
         }
 
         ### instantiate the entry cursor class, which
         ### will hold the value of the entry as an string
 
-        self.cursor = (
-
-          EntryCursor(
+        self.cursor = EntryCursor(
             str(value),
             render_settings,
             self,
             get_contrasting_bw(background_color),
-          )
-
         )
 
         ### also create and store objects/values to help
@@ -533,102 +448,76 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
         arrow_rect = Rect(0, 0, 10, arrow_height)
 
         drawing_points = (
-          arrow_rect.move( 2,  4).midtop,
-          arrow_rect.move(-2,  0).center,
-          arrow_rect.move( 2, -5).midbottom,
+            arrow_rect.move(2, 4).midtop,
+            arrow_rect.move(-2, 0).center,
+            arrow_rect.move(2, -5).midbottom,
         )
 
         arrow_surfs = []
 
         for flip_x, arrows in (
-
-          (False, 2),
-          (False, 1),
-          (True,  1),
-          (True,  2),
-
+            (False, 2),
+            (False, 1),
+            (True, 1),
+            (True, 2),
         ):
 
-            arrow_surf = render_rect(
-                           10, arrow_height, (0, 0, 0, 0)
-                         )
+            arrow_surf = render_rect(10, arrow_height, (0, 0, 0, 0))
 
             if arrows == 1:
 
                 for offset in (
-                  (-1, 0),
-                  ( 0, 0),
+                    (-1, 0),
+                    (0, 0),
                 ):
 
                     draw_aalines(
-
-                      arrow_surf,
-                      foreground_color,
-                      False,
-
-                      tuple(
-                        point + Vector2(offset)
-                        for point in drawing_points
-                      ),
+                        arrow_surf,
+                        foreground_color,
+                        False,
+                        tuple(point + Vector2(offset) for point in drawing_points),
                     )
 
             else:
 
                 for offset in (
-                  (-3, 0),
-                  (-2, 0),
-                  ( 1, 0),
-                  ( 2, 0),
+                    (-3, 0),
+                    (-2, 0),
+                    (1, 0),
+                    (2, 0),
                 ):
 
                     draw_aalines(
-
-                      arrow_surf,
-                      foreground_color,
-                      False,
-
-                      tuple(
-                        point + Vector2(offset)
-                        for point in drawing_points
-                      ),
+                        arrow_surf,
+                        foreground_color,
+                        False,
+                        tuple(point + Vector2(offset) for point in drawing_points),
                     )
 
             if flip_x:
 
-                arrow_surf = (
-                  flip_surface(arrow_surf, True, False)
-                )
+                arrow_surf = flip_surface(arrow_surf, True, False)
 
             arrow_surfs.append(arrow_surf)
 
         ###
 
         (
-          self.dla_surf,
-          self.sla_surf,
-          self.sra_surf,
-          self.dra_surf,
+            self.dla_surf,
+            self.sla_surf,
+            self.sra_surf,
+            self.dra_surf,
         ) = arrow_surfs
 
-        self.dla_right = (
-          self.dla_surf.get_width()
-        )
+        self.dla_right = self.dla_surf.get_width()
 
-        self.sla_right = (
-          self.dla_right + self.sla_surf.get_width()
-        )
+        self.sla_right = self.dla_right + self.sla_surf.get_width()
 
-        self.dra_left = (
-          width - self.dra_surf.get_width()
-        )
+        self.dra_left = width - self.dra_surf.get_width()
 
-        self.sra_left = (
-          self.dra_left - self.sra_surf.get_width()
-        )
+        self.sra_left = self.dra_left - self.sra_surf.get_width()
 
-        self.arrow_y_offset = (
-               (font_height - arrow_height) // 2
-             )
+        self.arrow_y_offset = (font_height - arrow_height) // 2
 
         ### update the surface of the widget
         self.update_image()
@@ -636,7 +525,7 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
         ### store behaviours
 
         self.update_behind = update_behind
-        self.draw_behind   = draw_behind
+        self.draw_behind = draw_behind
 
         self.draw_on_window_resize = draw_on_window_resize
 
@@ -644,17 +533,14 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
         ### store it if it exists
 
         self.get_reference_pos = (
-
-          position_reference_getter
-          if position_reference_getter is not None
-
-          else self.get_topleft
-
+            position_reference_getter
+            if position_reference_getter is not None
+            else self.get_topleft
         )
 
         ### define behaviours
 
-        self.draw   = super().draw
+        self.draw = super().draw
         self.update = empty_function
 
         ### special routine
@@ -662,21 +548,9 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
 
     def get_expected_type(self):
 
-        classes = self.num_classes + (
+        classes = self.num_classes + ((type(None),) if self.allow_none else ())
 
-                    (type(None),)
-                    if self.allow_none
-                    else ()
-
-                  )
-
-        return (
-
-          classes[0]
-          if len(classes) == 1
-          else classes
-
-        )
+        return classes[0] if len(classes) == 1 else classes
 
     def get_topleft(self):
         return self.rect.topleft
@@ -689,13 +563,8 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
         line = self.cursor.line
         line.rect.topleft = self.rect.topleft
 
-        text = (
-          '<< <'
-          + ''.join(
-                 obj.text
-                 for obj in
-                 self.cursor.line.get_colliding(self.rect)
-               )
+        text = "<< <" + "".join(
+            obj.text for obj in self.cursor.line.get_colliding(self.rect)
         )
 
         rect = self.rect.copy()
@@ -703,82 +572,67 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
 
         ###
 
-        group = Element('g', {'class': 'int_float_entry'})
+        group = Element("g", {"class": "int_float_entry"})
 
         group.append(
-
-                Element(
-
-                  'rect',
-
-                  {
-                    'x'      : x_str,
-                    'y'      : y_str,
-                    'width'  : width_str,
-                    'height' : height_str,
-                    'class'  : 'bg',
-                  }
-                )
-
-              )
+            Element(
+                "rect",
+                {
+                    "x": x_str,
+                    "y": y_str,
+                    "width": width_str,
+                    "height": height_str,
+                    "class": "bg",
+                },
+            )
+        )
 
         ##
 
         if (
-
-              self.clamp_min is not return_untouched
-          and self.clamp_max is not return_untouched
-          and self.value     is not None
-
+            self.clamp_min is not return_untouched
+            and self.clamp_max is not return_untouched
+            and self.value is not None
         ):
 
-            try: factor = self.value / self.difference
-            except ZeroDivisionError: factor = 1
+            try:
+                factor = self.value / self.difference
+            except ZeroDivisionError:
+                factor = 1
 
             range_rect = self.rect.copy()
             range_rect.w *= factor
 
-            x_str, y_str, width_str, height_str = (
-              map(str, range_rect)
-            )
+            x_str, y_str, width_str, height_str = map(str, range_rect)
 
             group.append(
-
-                    Element(
-
-                      'rect',
-
-                      {
-                        'x'      : x_str,
-                        'y'      : y_str,
-                        'width'  : width_str,
-                        'height' : height_str,
-                        'class'  : 'range_bg',
-                      }
-                    )
-
-                  )
+                Element(
+                    "rect",
+                    {
+                        "x": x_str,
+                        "y": y_str,
+                        "width": width_str,
+                        "height": height_str,
+                        "class": "range_bg",
+                    },
+                )
+            )
 
         ##
 
         (
-          text_x_str,
-          text_y_str,
+            text_x_str,
+            text_y_str,
         ) = map(str, rect.move(0, -3).bottomleft)
 
         text_element1 = Element(
-
-                          'text',
-
-                          {
-
-                            'x' : text_x_str,
-                            'y' : text_y_str,
-
-                            'text-anchor': 'start',
-
-                          }
-                        )
+            "text",
+            {
+                "x": text_x_str,
+                "y": text_y_str,
+                "text-anchor": "start",
+            },
+        )
 
         text_element1.text = text
 
@@ -787,25 +641,20 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
         ##
 
         (
-          text_x_str,
-          text_y_str,
+            text_x_str,
+            text_y_str,
         ) = map(str, rect.move(0, -3).bottomright)
 
         text_element2 = Element(
+            "text",
+            {
+                "x": text_x_str,
+                "y": text_y_str,
+                "text-anchor": "end",
+            },
+        )
 
-                          'text',
-
-                          {
-
-                            'x' : text_x_str,
-                            'y' : text_y_str,
-
-                            'text-anchor': 'end',
-
-                          }
-                        )
-
-        text_element2.text = '> >>'
+        text_element2.text = "> >>"
         group.append(text_element2)
 
         ##

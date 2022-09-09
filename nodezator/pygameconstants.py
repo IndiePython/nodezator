@@ -7,13 +7,13 @@ from pathlib import Path
 ### third-party imports
 
 from pygame import (
-              RESIZABLE,
-              init as init_pygame,
-            )
+    RESIZABLE,
+    init as init_pygame,
+)
 
-from pygame.key     import set_repeat
-from pygame.time    import Clock
-from pygame.image   import load as load_image
+from pygame.key import set_repeat
+from pygame.time import Clock
+from pygame.image import load as load_image
 from pygame.display import set_mode, set_icon, set_caption
 
 from pygame.mixer import pre_init as pre_init_mixer
@@ -31,7 +31,7 @@ init_pygame()
 
 ### framerate-related constants/behaviour
 
-_CLOCK       = Clock()
+_CLOCK = Clock()
 maintain_fps = _CLOCK.tick
 
 FPS = 24
@@ -40,14 +40,12 @@ FPS = 24
 
 set_caption(FULL_TITLE, ABBREVIATED_TITLE)
 
-image_path = (
-  str(Path(__file__).parent / 'data' / 'app_icon.png')
-)
+image_path = str(Path(__file__).parent / "data" / "app_icon.png")
 
 set_icon(load_image(image_path))
 
 ### set key repeating (unit: milliseconds)
-set_repeat(500, 30) # set_repeat(delay, interval)
+set_repeat(500, 30)  # set_repeat(delay, interval)
 
 
 ### screen setup/constants

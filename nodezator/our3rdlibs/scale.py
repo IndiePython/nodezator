@@ -3,9 +3,9 @@
 ### third-party imports
 
 from pygame.mouse import (
-                    get_pos     as get_mouse_pos,
-                    get_pressed as get_mouse_pressed,
-                  )
+    get_pos as get_mouse_pos,
+    get_pressed as get_mouse_pressed,
+)
 
 from pygame.transform import flip as flip_surface
 
@@ -22,44 +22,36 @@ from ..surfsman.icon import render_layered_icon
 ### constant definition
 
 HANDLE_SURF = flip_surface(
-
-                render_layered_icon(
-
-                  chars = [
-                    chr(ordinal) for ordinal in (81, 82)
-                  ],
-
-                  colors = [(18, 18, 18), (30, 130, 70)], 
-
-                  dimension_name  = 'height',
-                  dimension_value = 15,
-
-                  background_width  = 15,
-                  background_height = 15
-
-                ),
-
-                False,
-                True
-              )
+    render_layered_icon(
+        chars=[chr(ordinal) for ordinal in (81, 82)],
+        colors=[(18, 18, 18), (30, 130, 70)],
+        dimension_name="height",
+        dimension_value=15,
+        background_width=15,
+        background_height=15,
+    ),
+    False,
+    True,
+)
 
 
 ### class definition
+
 
 class Scale(Object2D):
     """A custom scale."""
 
     def __init__(
-          self,
-          value,
-          scale_surf,
-          max_value,
-          padding_x=10,
-          name='scale',
-          coordinates_name="topleft",
-          coordinates_value=(0, 0),
-          command=empty_function
-        ):
+        self,
+        value,
+        scale_surf,
+        max_value,
+        padding_x=10,
+        name="scale",
+        coordinates_name="topleft",
+        coordinates_value=(0, 0),
+        command=empty_function,
+    ):
         """Assign variables and perform setups.
 
         Parameters
@@ -91,25 +83,21 @@ class Scale(Object2D):
         """
         ### store arguments
 
-        self.value     = value
-        self.name      = name
-        self.command   = command
+        self.value = value
+        self.name = name
+        self.command = command
         self.max_value = max_value
         self.padding_x = padding_x
 
         ### set image and rect for widget
 
         self.image = scale_surf
-        self.rect  = self.image.get_rect()
-        setattr(
-            self.rect, coordinates_name, coordinates_value)
+        self.rect = self.image.get_rect()
+        setattr(self.rect, coordinates_name, coordinates_value)
 
         ### set handle object
 
-        self.handle = Object2D(
-                        image = HANDLE_SURF,
-                        rect  = HANDLE_SURF.get_rect()
-                      )
+        self.handle = Object2D(image=HANDLE_SURF, rect=HANDLE_SURF.get_rect())
 
         ### define a selection area excluding the padding
         self.define_selection_area()
@@ -118,9 +106,7 @@ class Scale(Object2D):
         self.place_handle()
 
     def define_selection_area(self):
-        self.selection_area = (
-          self.rect.inflate(-self.padding_x, 0)
-        )
+        self.selection_area = self.rect.inflate(-self.padding_x, 0)
 
     def place_handle(self):
         """Place handle according to current value."""
@@ -131,11 +117,7 @@ class Scale(Object2D):
 
         ## calculate x increment based on value
 
-        increment = round(
-                      self.value
-                      / self.max_value
-                      * self.selection_area.width
-                    )
+        increment = round(self.value / self.max_value * self.selection_area.width)
 
         ## increment x
         x += increment
@@ -166,7 +148,8 @@ class Scale(Object2D):
         self.place_handle()
 
         ### if requested, give feedback
-        if custom_command: self.command()
+        if custom_command:
+            self.command()
 
     def draw(self):
         """Draw self and handle.
@@ -181,7 +164,8 @@ class Scale(Object2D):
         x, y = get_mouse_pos()
 
         ## if mouse cursor is outside widget, return earlier
-        if not self.rect.collidepoint(x, y): return
+        if not self.rect.collidepoint(x, y):
+            return
 
         ### if mouse button 1 is pressed, position handle
         ### and update value
@@ -207,7 +191,7 @@ class Scale(Object2D):
 
         ## retrieve selection area horizontal edges
 
-        left  = self.selection_area.left
+        left = self.selection_area.left
         right = self.selection_area.right
 
         ## clamp
@@ -223,7 +207,7 @@ class Scale(Object2D):
 
         ### retrieve selection area starting x and width
 
-        x     = self.selection_area.x
+        x = self.selection_area.x
         width = self.selection_area.width
 
         ### calculate value based on
@@ -231,7 +215,7 @@ class Scale(Object2D):
         ###   to the width of selection area
         ### - maximum possible value
 
-        distance   = handle_centerx - x
+        distance = handle_centerx - x
         percentage = distance / width
 
         self.value = round(percentage * self.max_value)

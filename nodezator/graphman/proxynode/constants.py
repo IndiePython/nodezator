@@ -1,4 +1,3 @@
-
 ### local imports
 
 from ...fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT

@@ -12,16 +12,16 @@ from pygame.transform import rotate as rotate_surface
 ### local imports
 
 from ..colorsman.colors import (
-                        BLACK,
-                        WINDOW_BG,
-                        SHADOW_COLOR,
-                        HIGHLIGHT_COLOR,
-                      )
+    BLACK,
+    WINDOW_BG,
+    SHADOW_COLOR,
+    HIGHLIGHT_COLOR,
+)
 
 from .draw import (
-                     draw_border,
-                     draw_depth_finish,
-                   )
+    draw_border,
+    draw_depth_finish,
+)
 
 from ..rectsman.main import RectsManager
 
@@ -48,37 +48,34 @@ def render_rect(width, height, color=BLACK):
     """
     ### instantiate surface taking transparency into account
 
-    try: has_transparency = color[3] < 255
+    try:
+        has_transparency = color[3] < 255
 
-    except IndexError: has_transparency = False
+    except IndexError:
+        has_transparency = False
 
     finally:
 
         if has_transparency:
             surf = Surface((width, height)).convert_alpha()
 
-        else: surf = Surface((width, height)).convert()
+        else:
+            surf = Surface((width, height)).convert()
 
     surf.fill(color)
-
-
 
     ### finally return the surf
     return surf
 
+
 def combine_surfaces(
-
-      surfaces,
-
-      retrieve_pos_from = 'midright',
-      assign_pos_to     = 'midleft',
-      offset_pos_by     = (0, 0),
-
-      padding = 0,
-
-      background_color = (*BLACK, 0),
-
-    ):
+    surfaces,
+    retrieve_pos_from="midright",
+    assign_pos_to="midleft",
+    offset_pos_by=(0, 0),
+    padding=0,
+    background_color=(*BLACK, 0),
+):
     """Return new surf from given ones."""
     ### obtain rects from given surfaces
     rects = [surf.get_rect() for surf in surfaces]
@@ -89,20 +86,16 @@ def combine_surfaces(
     ### position rects
 
     rectsman.snap_rects_ip(
-               retrieve_pos_from = retrieve_pos_from,
-               assign_pos_to     = assign_pos_to,
-               offset_pos_by     = offset_pos_by
-             )
+        retrieve_pos_from=retrieve_pos_from,
+        assign_pos_to=assign_pos_to,
+        offset_pos_by=offset_pos_by,
+    )
 
     ### get an inflated copy of the rectsman
 
     inflation_amount = padding * 2
 
-    inflated_rect = rectsman.inflate(
-                               inflation_amount,
-                               inflation_amount
-                             )
-
+    inflated_rect = rectsman.inflate(inflation_amount, inflation_amount)
 
     ### position inflated copy in origin and center
     ### the rectsman on it
@@ -112,10 +105,7 @@ def combine_surfaces(
 
     ### create new surface and blit surfaces on it
 
-    new_surf = render_rect(
-                 *inflated_rect.size,
-                 color=background_color
-               )
+    new_surf = render_rect(*inflated_rect.size, color=background_color)
 
     for surf, rect in zip(surfaces, rects):
         new_surf.blit(surf, rect)
@@ -125,10 +115,10 @@ def combine_surfaces(
 
 
 def unite_surfaces(
-      surface_rect_pairs,
-      padding = 0,
-      background_color = (*BLACK, 0),
-    ):
+    surface_rect_pairs,
+    padding=0,
+    background_color=(*BLACK, 0),
+):
     """Return a surface from surfaces' union."""
     ### separate surfaces and rects into different lists
 
@@ -136,7 +126,7 @@ def unite_surfaces(
     rects = []
 
     for surf, rect in surface_rect_pairs:
-        
+
         surfaces.append(surf)
         rects.append(rect)
 
@@ -147,10 +137,7 @@ def unite_surfaces(
 
     inflation_amount = padding * 2
 
-    inflated_rect = rectsman.inflate(
-                               inflation_amount,
-                               inflation_amount
-                             )
+    inflated_rect = rectsman.inflate(inflation_amount, inflation_amount)
 
     ### obtain an offset from the inverted topleft of the
     ### inflated rect; we'll use this to obtain offset
@@ -160,35 +147,28 @@ def unite_surfaces(
 
     ### create new surface and blit surfaces on it
 
-    new_surf = render_rect(
-                 *inflated_rect.size,
-                 color=background_color
-               )
+    new_surf = render_rect(*inflated_rect.size, color=background_color)
 
     for surf, rect in zip(surfaces, rects):
 
         new_surf.blit(
-                   surf,
-                   rect.move(offset),
-                 )
+            surf,
+            rect.move(offset),
+        )
 
     ### finally return the surf
     return new_surf
 
+
 def render_separator(
-      length,
-
-      is_horizontal=True,
-
-      padding=5,
-
-      thickness=5,
-
-      background_color = WINDOW_BG,
-      foreground_color = SHADOW_COLOR,
-      highlight_color  = HIGHLIGHT_COLOR,
-
-    ):
+    length,
+    is_horizontal=True,
+    padding=5,
+    thickness=5,
+    background_color=WINDOW_BG,
+    foreground_color=SHADOW_COLOR,
+    highlight_color=HIGHLIGHT_COLOR,
+):
     """Return a tkinter.Separator-like surface.
 
     Parameters
@@ -225,24 +205,21 @@ def render_separator(
     start_y = end_y = (thickness // 2) - 1
 
     start_x = 0 + padding
-    end_x   = length - padding
+    end_x = length - padding
 
     ### draw separator
 
     start = start_x, start_y
-    end   = end_x, end_y
+    end = end_x, end_y
 
     draw_line(surf, foreground_color, start, end, 1)
 
     ### draw depth highlight
 
     highlight_start = start_x, start_y + 1
-    highlight_end   = end_x, end_y   + 1
+    highlight_end = end_x, end_y + 1
 
-    draw_line(
-      surf, highlight_color,
-      highlight_start, highlight_end, 1
-    )
+    draw_line(surf, highlight_color, highlight_start, highlight_end, 1)
 
     ### if requested, put surface in vertical position
 

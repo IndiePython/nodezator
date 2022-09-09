@@ -19,8 +19,8 @@ from ....rectsman.main import RectsManager
 from ..constants import FONT_HEIGHT
 
 from ..surfs import (
-                                 UNPACKING_ICON_SURFS_MAP, 
-                               )
+    UNPACKING_ICON_SURFS_MAP,
+)
 
 
 class UnpackingOps:
@@ -35,16 +35,14 @@ class UnpackingOps:
             it represents the socket of an existing
             subparameter.
         """
-        param_name     = input_socket.parameter_name
+        param_name = input_socket.parameter_name
         subparam_index = input_socket.subparameter_index
 
         kind = self.var_kind_map[param_name]
 
         ### reference the list of subparameters for
         ### unpacking locally for easier access
-        subparams_for_unpacking = (
-          self.data['subparam_unpacking_map'][param_name]
-        )
+        subparams_for_unpacking = self.data["subparam_unpacking_map"][param_name]
 
         ### reference the subparam unpacking icon map
         ### locally for easier and quicker access
@@ -53,16 +51,9 @@ class UnpackingOps:
         ## retrieve the list of rects from the
         ## subrectsman
 
-        subrectsman = (
-          self
-          .subparam_rectsman_map
-          [param_name]
-          [subparam_index]
-        )
+        subrectsman = self.subparam_rectsman_map[param_name][subparam_index]
 
-        subrectsman_rects = (
-          subrectsman._get_all_rects.__self__
-        )
+        subrectsman_rects = subrectsman._get_all_rects.__self__
 
         ### if variable is of keyword-variable kind, we'll
         ### need to remove the keyword entry from the
@@ -70,24 +61,16 @@ class UnpackingOps:
         ### as well as the rect of the entry from
         ### the subrectsman rects
 
-        if kind == 'var_key':
+        if kind == "var_key":
 
-            keyword_entry = (
-              self
-              .subparam_keyword_entry_live_map
-              .pop(subparam_index)
-            )
+            keyword_entry = self.subparam_keyword_entry_live_map.pop(subparam_index)
 
             remove_by_identity(
-              keyword_entry.rect,
-              subrectsman_rects,
+                keyword_entry.rect,
+                subrectsman_rects,
             )
 
-            (
-              self.data
-              ['subparam_keyword_map']
-              .pop(subparam_index)
-            )
+            (self.data["subparam_keyword_map"].pop(subparam_index))
 
         # put together a bottomleft coordinate for the
         # unpacking icon;
@@ -95,43 +78,23 @@ class UnpackingOps:
         # for the bottom use the top of the subrectsman
         # (3 pixels higher, by subtracting the amount)
 
-        bottomleft = (
-
-          input_socket.rect.right + 15,
-          subrectsman.top - 3
-
-        )
+        bottomleft = (input_socket.rect.right + 15, subrectsman.top - 3)
 
         icon_surf = UNPACKING_ICON_SURFS_MAP[
+            (
+                kind,
+                self.data.get("commented_out", False),
+            )
+        ]
 
-                      (
-
-                        kind,
-
-                        self.data.get(
-                          'commented_out', False
-                        ),
-
-                      )
-
-                    ]
-
-        unpacking_icon = (
-
-          Object2D.from_surface(
-
+        unpacking_icon = Object2D.from_surface(
             surface=icon_surf,
-            coordinates_name  = 'bottomleft',
-            coordinates_value = bottomleft,
-
-          )
-
+            coordinates_name="bottomleft",
+            coordinates_value=bottomleft,
         )
 
         # store the subparam keyword entry
-        sui_flmap[param_name][subparam_index] = (
-          unpacking_icon
-        )
+        sui_flmap[param_name][subparam_index] = unpacking_icon
 
         # this dict subclass instance must be updated
         # every time it is changed
@@ -164,14 +127,12 @@ class UnpackingOps:
             it represents the socket of an existing
             subparameter.
         """
-        param_name     = input_socket.parameter_name
+        param_name = input_socket.parameter_name
         subparam_index = input_socket.subparameter_index
 
         ### reference the list of subparameters for
         ### unpacking locally for easier access
-        subparams_for_unpacking = (
-          self.data['subparam_unpacking_map'][param_name]
-        )
+        subparams_for_unpacking = self.data["subparam_unpacking_map"][param_name]
 
         ### reference the subparam unpacking icon map
         ### locally for easier and quicker access
@@ -180,21 +141,12 @@ class UnpackingOps:
         ## retrieve the list of rects from the
         ## subrectsman
 
-        subrectsman = (
-          self
-          .subparam_rectsman_map
-          [param_name]
-          [subparam_index]
-        )
+        subrectsman = self.subparam_rectsman_map[param_name][subparam_index]
 
-        subrectsman_rects = (
-          subrectsman._get_all_rects.__self__
-        )
+        subrectsman_rects = subrectsman._get_all_rects.__self__
 
         ### remove unpacking icon
-        unpacking_icon = (
-          sui_flmap[param_name].pop(subparam_index)
-        )
+        unpacking_icon = sui_flmap[param_name].pop(subparam_index)
 
         # this dict subclass instance must be updated
         # every time it is changed
@@ -202,8 +154,8 @@ class UnpackingOps:
 
         ### remove its rect from subrectsman
         remove_by_identity(
-          unpacking_icon.rect,
-          subrectsman_rects,
+            unpacking_icon.rect,
+            subrectsman_rects,
         )
 
         # unmark as subparam for unpacking by removing it
@@ -216,7 +168,7 @@ class UnpackingOps:
         ### for it, as well as add the entry's rect to
         ### the list of subrectsman's rects
 
-        if self.var_kind_map[param_name] == 'var_key':
+        if self.var_kind_map[param_name] == "var_key":
 
             ## use the left of the widget and the top
             ## of the subrectsman (3 pixels higher by
@@ -224,10 +176,7 @@ class UnpackingOps:
             ## bottomleft coordinate for the keyword
             ## entry widget
 
-            bottomleft = (
-              input_socket.rect.right + 15,
-              subrectsman.top - 3
-            )
+            bottomleft = (input_socket.rect.right + 15, subrectsman.top - 3)
 
             ## define a name for the keyword
             keyword_name = self.get_new_keyword_name()
@@ -236,58 +185,38 @@ class UnpackingOps:
             ## measures when updating the keyword name
 
             command = partial(
-                        self.update_keyword,
-                        input_socket,
-                      )
+                self.update_keyword,
+                input_socket,
+            )
 
             ## instantiate the keyword entry and take
             ## additional measures
 
             # instantiate
 
-            subparam_keyword_entry = (
-
-              StringEntry(
-
-                value = keyword_name,
-
-                font_height = FONT_HEIGHT,
-
-                width = 155,
-
-                command = command,
-
-                coordinates_name  = 'bottomleft',
-                coordinates_value = bottomleft
-
-              )
-
+            subparam_keyword_entry = StringEntry(
+                value=keyword_name,
+                font_height=FONT_HEIGHT,
+                width=155,
+                command=command,
+                coordinates_name="bottomleft",
+                coordinates_value=bottomleft,
             )
 
             # store the subparam keyword entry
 
             (
-              self
-              .subparam_keyword_entry_live_map
-              [subparam_index]
+                self.subparam_keyword_entry_live_map[subparam_index]
             ) = subparam_keyword_entry
 
             # gather the subparam keyword rect
 
-            subrectsman_rects.append(
-                                subparam_keyword_entry
-                                .rect
-                              )
+            subrectsman_rects.append(subparam_keyword_entry.rect)
 
             # also store the name of the keyword created
             # in the dedicated map for keyword names
 
-            (
-              self
-              .data
-              ['subparam_keyword_map']
-              [subparam_index]
-            ) = keyword_name
+            (self.data["subparam_keyword_map"][subparam_index]) = keyword_name
 
         ### reposition all objects within the node
         self.reposition_elements()

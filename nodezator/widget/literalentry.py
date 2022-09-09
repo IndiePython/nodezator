@@ -16,24 +16,27 @@ from xml.etree.ElementTree import Element
 ### third-party imports
 
 from pygame import (
-
-              ## event types
-
-              QUIT, KEYUP, KEYDOWN, MOUSEBUTTONUP,
-
-              VIDEORESIZE,
-
-              ## keys
-
-              K_BACKSPACE, K_DELETE, KMOD_CTRL,
-              K_LEFT, K_RIGHT, K_HOME, K_END,
-              K_ESCAPE, K_RETURN, K_KP_ENTER,
-              K_t,
-
-              ## rect class
-              Rect,
-
-            )
+    ## event types
+    QUIT,
+    KEYUP,
+    KEYDOWN,
+    MOUSEBUTTONUP,
+    VIDEORESIZE,
+    ## keys
+    K_BACKSPACE,
+    K_DELETE,
+    KMOD_CTRL,
+    K_LEFT,
+    K_RIGHT,
+    K_HOME,
+    K_END,
+    K_ESCAPE,
+    K_RETURN,
+    K_KP_ENTER,
+    K_t,
+    ## rect class
+    Rect,
+)
 
 from pygame.display import update
 
@@ -42,12 +45,11 @@ from pygame.event import get as get_events
 from pygame.math import Vector2
 
 
-
 ### local imports
 
 from ..ourstdlibs.behaviour import (
-                            empty_function,
-                          )
+    empty_function,
+)
 
 from ..ourstdlibs.color.creation import get_contrasting_bw
 
@@ -56,21 +58,21 @@ from ..classes2d.single import Object2D
 from ..surfsman.render import render_rect
 
 from ..fontsman.constants import (
-                          FIRA_MONO_BOLD_FONT_HEIGHT,
-                          FIRA_MONO_BOLD_FONT_PATH,
-                        )
+    FIRA_MONO_BOLD_FONT_HEIGHT,
+    FIRA_MONO_BOLD_FONT_PATH,
+)
 
 from ..textman.editor.main import edit_text
 
 from ..loopman.exception import (
-                         QuitAppException,
-                         SwitchLoopException,
-                       )
+    QuitAppException,
+    SwitchLoopException,
+)
 
 from ..colorsman.colors import (
-                        LITERAL_ENTRY_FG,
-                        LITERAL_ENTRY_BG,
-                      )
+    LITERAL_ENTRY_FG,
+    LITERAL_ENTRY_BG,
+)
 
 from ..textman.entryedition.cursor import EntryCursor
 
@@ -79,34 +81,22 @@ class LiteralEntry(Object2D):
     """Entry widget to hold a python literal."""
 
     def __init__(
-
-          self,
-
-          value = None,
-
-          loop_holder = None,
-
-          font_height = FIRA_MONO_BOLD_FONT_HEIGHT,
-          font_path   = FIRA_MONO_BOLD_FONT_PATH,
-
-          width = 155,
-
-          name = 'literal_entry',
-
-          command = empty_function,
-
-          update_behind = empty_function,
-          draw_behind   = empty_function,
-
-          draw_on_window_resize = empty_function,
-
-          coordinates_name  = 'topleft',
-          coordinates_value = (0, 0),
-
-          foreground_color = LITERAL_ENTRY_FG,
-          background_color = LITERAL_ENTRY_BG
-
-        ):
+        self,
+        value=None,
+        loop_holder=None,
+        font_height=FIRA_MONO_BOLD_FONT_HEIGHT,
+        font_path=FIRA_MONO_BOLD_FONT_PATH,
+        width=155,
+        name="literal_entry",
+        command=empty_function,
+        update_behind=empty_function,
+        draw_behind=empty_function,
+        draw_on_window_resize=empty_function,
+        coordinates_name="topleft",
+        coordinates_value=(0, 0),
+        foreground_color=LITERAL_ENTRY_FG,
+        background_color=LITERAL_ENTRY_BG,
+    ):
         """Perform setups and assign data for reuse.
 
         Parameters
@@ -166,9 +156,7 @@ class LiteralEntry(Object2D):
 
         if not self.validate(value):
 
-            raise TypeError(
-              "'value' received must be a python literal"
-            )
+            raise TypeError("'value' received must be a python literal")
 
         ### convert the colors passed into tuples for
         ### simplicity (since colors can be given as
@@ -181,25 +169,20 @@ class LiteralEntry(Object2D):
         ### store some of the arguments in their own
         ### attributes
 
-        self.name        = name
-        self.value       = value
-        self.command     = command
+        self.name = name
+        self.value = value
+        self.command = command
         self.loop_holder = loop_holder
 
         ### create and position a rect for this entry
 
         self.rect = Rect(0, 0, width, font_height)
 
-        setattr(
-          self.rect, coordinates_name, coordinates_value)
+        setattr(self.rect, coordinates_name, coordinates_value)
 
         ### create a background surface for the widget
 
-        self.background = render_rect(
-                            width,
-                            font_height,
-                            background_color
-                          )
+        self.background = render_rect(width, font_height, background_color)
 
         ### also store a copy of it as the image
         ### representing this widget
@@ -209,10 +192,10 @@ class LiteralEntry(Object2D):
         ### dictionary
 
         render_settings = {
-          "font_height"      : font_height,
-          "font_path"        : font_path,
-          "foreground_color" : foreground_color,
-          "background_color" : background_color
+            "font_height": font_height,
+            "font_path": font_path,
+            "foreground_color": foreground_color,
+            "background_color": background_color,
         }
 
         ### instantiate the entry cursor class, which is
@@ -222,15 +205,11 @@ class LiteralEntry(Object2D):
         ### until the edition in the entry is confirmed
         ### or the value is set with self.set())
 
-        self.cursor = (
-
-          EntryCursor(
+        self.cursor = EntryCursor(
             repr(value),
             render_settings,
             self,
             get_contrasting_bw(background_color),
-          )
-
         )
 
         ### update the surface of the widget
@@ -239,21 +218,24 @@ class LiteralEntry(Object2D):
         ### store behaviours
 
         self.update_behind = update_behind
-        self.draw_behind   = draw_behind
+        self.draw_behind = draw_behind
 
         self.draw_on_window_resize = draw_on_window_resize
 
         ### define behaviours
 
-        self.draw         = super().draw
-        self.update       = empty_function
+        self.draw = super().draw
+        self.update = empty_function
         self.handle_input = self.handle_events
 
     def validate(self, value):
 
-        try: literal_eval(repr(value))
-        except: return False
-        else: return True
+        try:
+            literal_eval(repr(value))
+        except:
+            return False
+        else:
+            return True
 
     def get(self):
         """Return text content of widget."""
@@ -268,8 +250,8 @@ class LiteralEntry(Object2D):
         ### return earlier if value is already set or
         ### doesn't validate
 
-        if value == self.value \
-        or not self.validate(value): return
+        if value == self.value or not self.validate(value):
+            return
 
         ### otherwise set the value
 
@@ -283,14 +265,15 @@ class LiteralEntry(Object2D):
         self.update_image()
 
         ### also, if requested, execute the custom command
-        if custom_command: self.command()
+        if custom_command:
+            self.command()
 
     def update_image(self):
         """Update image surface attribute."""
         ### reference objects locally
 
-        image   = self.image
-        line    = self.cursor.line
+        image = self.image
+        line = self.cursor.line
         topleft = self.rect.topleft
 
         ### clean image using the background
@@ -315,8 +298,9 @@ class LiteralEntry(Object2D):
     def handle_events(self):
         """Iterate over event queue processing events."""
         for event in get_events():
-            
-            if event.type == QUIT: raise QuitAppException
+
+            if event.type == QUIT:
+                raise QuitAppException
 
             elif event.type == KEYUP:
 
@@ -324,16 +308,15 @@ class LiteralEntry(Object2D):
                 ### escape or enter/numpad enter resumes
                 ### the edition
 
-                if event.key in (
-                K_ESCAPE, K_RETURN, K_KP_ENTER):
+                if event.key in (K_ESCAPE, K_RETURN, K_KP_ENTER):
                     self.resume_editing()
 
             elif event.type == KEYDOWN:
-                
+
                 ### ignore keys below
 
-                if event.key in (
-                K_ESCAPE, K_RETURN, K_KP_ENTER): pass
+                if event.key in (K_ESCAPE, K_RETURN, K_KP_ENTER):
+                    pass
 
                 ### move cursor
 
@@ -376,7 +359,8 @@ class LiteralEntry(Object2D):
                     ### keys doesn't produce characters
                     ### of our interest (only strings like
                     ### '\x08', etc.)
-                    else: pass
+                    else:
+                        pass
 
                 ### if the keydown event has a non-empty
                 ### string as its unicode attribute, add
@@ -403,18 +387,13 @@ class LiteralEntry(Object2D):
 
             elif event.type == VIDEORESIZE:
 
-                self.handle_input = (
-                  self.watch_out_for_movement
-                )
+                self.handle_input = self.watch_out_for_movement
 
     def watch_out_for_movement(self):
 
         if self.rect.topleft != self.last_topleft:
 
-            diff = (
-              Vector2(self.rect.topleft)
-              - self.last_topleft
-            )
+            diff = Vector2(self.rect.topleft) - self.last_topleft
 
             self.last_topleft = self.rect.topleft
 
@@ -475,15 +454,15 @@ class LiteralEntry(Object2D):
             required in order to comply with protocol
             used; when needed it can be used to retrieve
             the position of the mouse click, for instance.
-              
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.
         """
         ### assign behaviours
 
-        self.update       = self.update_focused
-        self.draw         = self.draw_focused
+        self.update = self.update_focused
+        self.draw = self.draw_focused
         self.handle_input = self.handle_events
 
         ### align line topleft with self.rect.topleft and
@@ -512,7 +491,7 @@ class LiteralEntry(Object2D):
         ### restore default behaviours for update and
         ### drawing operations
 
-        self.draw   = super().draw
+        self.draw = super().draw
         self.update = empty_function
 
         ### switch to the stored loop holder (if
@@ -535,7 +514,8 @@ class LiteralEntry(Object2D):
         ### retrieve the entry text
         entry_text = self.cursor.get()
 
-        try: value = literal_eval(entry_text)
+        try:
+            value = literal_eval(entry_text)
         except:
 
             self.cursor.set(repr(self.value))
@@ -598,58 +578,41 @@ class LiteralEntry(Object2D):
         line = self.cursor.line
         line.rect.topleft = self.rect.topleft
 
-        text = ''.join(
-                    obj.text
-                    for obj in
-                    line.get_colliding(self.rect)
-                  )
+        text = "".join(obj.text for obj in line.get_colliding(self.rect))
 
         rect = self.rect
 
-        x_str, y_str, width_str, height_str = (
-
-          map(str, rect)
-
-        )
+        x_str, y_str, width_str, height_str = map(str, rect)
 
         ###
 
-        group = Element('g', {'class': 'literal_entry'})
+        group = Element("g", {"class": "literal_entry"})
 
         group.append(
-
-                Element(
-
-                  'rect',
-
-                  {
-                    'x'      : x_str,
-                    'y'      : y_str,
-                    'width'  : width_str,
-                    'height' : height_str,
-                  }
-                )
-
-              )
+            Element(
+                "rect",
+                {
+                    "x": x_str,
+                    "y": y_str,
+                    "width": width_str,
+                    "height": height_str,
+                },
+            )
+        )
 
         (
-          text_x_str,
-          text_y_str,
+            text_x_str,
+            text_y_str,
         ) = map(str, rect.move(0, -3).bottomleft)
 
         text_element = Element(
-
-                         'text',
-
-                         {
-
-                           'x' : text_x_str,
-                           'y' : text_y_str,
-
-                           'text-anchor': 'start',
-
-                         }
-                       )
+            "text",
+            {
+                "x": text_x_str,
+                "y": text_y_str,
+                "text-anchor": "start",
+            },
+        )
 
         text_element.text = text
 

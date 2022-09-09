@@ -1,8 +1,8 @@
 """Utilities for time related operations."""
 
-from math        import floor
+from math import floor
 from collections import OrderedDict
-from datetime    import datetime
+from datetime import datetime
 
 
 ### constants definitions
@@ -14,26 +14,22 @@ SECOND = 1
 # multiples
 
 MINUTE = SECOND * 60
-HOUR   = MINUTE * 60
-DAY    = HOUR   * 24
+HOUR = MINUTE * 60
+DAY = HOUR * 24
 
 # submultiples
 
-MILLISECOND = SECOND/1000
-MICROSECOND = MILLISECOND/1000
+MILLISECOND = SECOND / 1000
+MICROSECOND = MILLISECOND / 1000
 
 ## create a map with each (sub)multiple of a second
 ## define above, except for the microseconds as
 ## values mapped to a string representing a name
 ## for the value
 
-second_multiples_map = OrderedDict((
-  ('day',           DAY),
-  ('hr',           HOUR),
-  ('min',        MINUTE),
-  ('s',          SECOND),
-  ('msecs', MILLISECOND)
-))
+second_multiples_map = OrderedDict(
+    (("day", DAY), ("hr", HOUR), ("min", MINUTE), ("s", SECOND), ("msecs", MILLISECOND))
+)
 
 
 ### function definitions
@@ -42,6 +38,7 @@ second_multiples_map = OrderedDict((
 ### of time measurements slightly depending on whether the
 ### quantity has a single unit or more: for instance,
 ### 1min/10mins.
+
 
 def friendly_delta_from_secs(delta_in_seconds):
     """Return human-friendly str for time interval.
@@ -77,7 +74,8 @@ def friendly_delta_from_secs(delta_in_seconds):
     '12.030usecs'
     """
     ### if zero seconds were given, return a custom string
-    if not delta_in_seconds: return '0 secs'
+    if not delta_in_seconds:
+        return "0 secs"
 
     ### if delta is negative, obtain its absolute value;
     ### also set a flag depending on whether the signal
@@ -89,7 +87,8 @@ def friendly_delta_from_secs(delta_in_seconds):
         delta_in_seconds = abs(delta_in_seconds)
         was_negative = True
 
-    else: was_negative = False
+    else:
+        was_negative = False
 
     ### alias seconds to quantity
     quantity = delta_in_seconds
@@ -104,7 +103,8 @@ def friendly_delta_from_secs(delta_in_seconds):
 
         ### if a quantity is not given, break out of
         ### the loop
-        if not quantity: break
+        if not quantity:
+            break
 
         units_reached = floor(quantity / value)
 
@@ -169,7 +169,8 @@ def friendly_delta_from_secs(delta_in_seconds):
 
     ### if delta was negative, add a '-' at the beginning
     ### of the string
-    if was_negative: string = '-' + string
+    if was_negative:
+        string = "-" + string
 
     ### finally return the string
     return string
@@ -177,4 +178,4 @@ def friendly_delta_from_secs(delta_in_seconds):
 
 def get_friendly_time():
     """Return current time in a human friendly format."""
-    return datetime.now().strftime('%H:%M:%S')
+    return datetime.now().strftime("%H:%M:%S")

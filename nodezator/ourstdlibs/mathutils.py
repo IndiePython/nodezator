@@ -11,11 +11,7 @@ from string import digits
 
 ### constant
 
-MATH_EXPRESSION_CHARS = set((
-                          digits
-                          + '+-*/'
-                          + ' .'
-                        ))
+MATH_EXPRESSION_CHARS = set((digits + "+-*/" + " ."))
 
 ### functions
 
@@ -24,21 +20,21 @@ def get_straight_distance(point_a, point_b):
     """Calculate the straight distance between two points.
 
     get_straight_distance(point_a, point_b) -> float
-    
+
     point_a, point_b
         Each is represented by a list or tuple with two
         values: x and y respectively. For instance: (x, y).
 
     Illustration:
-                 ._ _ 
+                 ._ _
         (point a)|\   |
-                 | \s | 
+                 | \s |
                  |  \ |
                  |   \|
                  |_ _ .(point b)
 
         where s is the straight distance
-    
+
     >>> a, b = (10, 10), (20, 20)
     >>> round(get_straight_distance(a, b), 2)
     14.14
@@ -65,7 +61,7 @@ def offset_point(point, offset):
     offset
         A list or tuple containing two integers representing
         amounts to be added to each point coordinate.
-    
+
     >>> offset_point((10, 10), (5, 5))
     (15, 15)
     >>> offset_point((10, 10), (-5, 5))
@@ -81,6 +77,7 @@ def offset_point(point, offset):
     offset_point = x + x_offset, y + y_offset
 
     return offset_point
+
 
 def invert_point(point, invert_x, invert_y):
     """Return point with inverted coordinates as requested.
@@ -111,6 +108,7 @@ def invert_point(point, invert_x, invert_y):
 
     return inverted_point
 
+
 def get_reaching_multiple(step_length, target_length):
     """Return first multiple to reach or surpass distance.
 
@@ -136,58 +134,44 @@ def get_reaching_multiple(step_length, target_length):
     >>> get_reaching_multiple(10, 9)
     10
     """
-    if step_length >= target_length: return step_length
+    if step_length >= target_length:
+        return step_length
 
     else:
 
         steps_no, rest = divmod(target_length, step_length)
 
-        return (
-
-          step_length * (steps_no + 1)
-          if rest
-
-          else step_length * steps_no
-        )
+        return step_length * (steps_no + 1) if rest else step_length * steps_no
 
 
 ### TODO review docstrings of functions below
 
-def get_remaining_intervals(
-    all_indices, intervals_to_subtract):
+
+def get_remaining_intervals(all_indices, intervals_to_subtract):
     """Yield intervals as 2-tuples from remaining indices."""
     ### start by grabbing all remaining indices (those which
     ### don't belong to the intervals to subtract)
 
     remaining_indices = set(
-
-      ## make a set out of the indices
-      set(all_indices)
-
-      ## then remove indices from each interval gathered
-      ## in a set
-
-      - set(
-
-          ## chain all the ranges together, so their
-          ## indices are all gathered
-          chain.from_iterable(
-
-            ## get the ranges of all the intervals
-
-            range(including_start, excluding_end)
-
-            for including_start, excluding_end
-            in intervals_to_subtract
-
-          )
+        ## make a set out of the indices
+        set(all_indices)
+        ## then remove indices from each interval gathered
+        ## in a set
+        - set(
+            ## chain all the ranges together, so their
+            ## indices are all gathered
+            chain.from_iterable(
+                ## get the ranges of all the intervals
+                range(including_start, excluding_end)
+                for including_start, excluding_end in intervals_to_subtract
+            )
         )
-
     )
 
     ## then retrieve and return the intervals formed by
     ## the remaining indices
     return get_intervals(remaining_indices)
+
 
 def get_intervals(indices):
     """Yield intervals between gaps in indices as 2-tuples.
@@ -222,7 +206,7 @@ def get_intervals(indices):
     The tuples represent, in math notation, [a, b[
     intervals, that is, intervals where a <= x < b,
     also called left-closed, right-open intervals.
-    
+
     Those intevals are useful, for instance, to create
     range() or slice() objects.
     """
@@ -285,6 +269,7 @@ def get_intervals(indices):
     ### right boundary, yielding the last interval
     yield (including_left_boundary, expected_index)
 
+
 def get_rect_from_points(point_a, point_b):
     """Return rect-like tuple from given points.
 
@@ -309,6 +294,7 @@ def get_rect_from_points(point_a, point_b):
 
     ### finally return the tuple
     return (left, top, width, height)
+
 
 def math_eval(expression_str):
     """Safe evaluation of math expression."""

@@ -4,30 +4,31 @@
 
 
 ## log level words
-LOG_LEVELS = 'INFO', 'WARNING', 'ERROR', 'CRITICAL'
+LOG_LEVELS = "INFO", "WARNING", "ERROR", "CRITICAL"
 
 
 ## map associating level names to category names
 
 # utility function
 
+
 def level_name_to_category_name(level_name):
     """Return level name turned into a category name.
 
     Does so by applying a custom arbitrary format.
     """
-    return '{}_header'.format(level_name.lower())
+    return "{}_header".format(level_name.lower())
+
 
 # map
 
 CATEGORY_NAME_MAP = {
-  level_name: level_name_to_category_name(level_name)
-  for level_name in LOG_LEVELS
+    level_name: level_name_to_category_name(level_name) for level_name in LOG_LEVELS
 }
 
 
 ## substrings surrounding the log header
-HEADER_START, HEADER_END = '--- [', '] ---'
+HEADER_START, HEADER_END = "--- [", "] ---"
 
 
 ### main function definition
@@ -35,6 +36,7 @@ HEADER_START, HEADER_END = '--- [', '] ---'
 ## Check the "No syntax errors" section in the docstring
 ## of the function below to know why it isn't expected
 ## to raise SyntaxMappingError
+
 
 def get_user_log_syntax_map(log_text):
     """Return dict mapping portions to respective categories.
@@ -119,31 +121,23 @@ def get_user_log_syntax_map(log_text):
     ### return dict
 
     return {
-      
-      ### each item in such dict is composed by the index of
-      ### a line to which a dict is mapped
-
-      line_index : {
-
-        ## this other dict associates the interval
-        ## representing the whole line to the category
-        ## to which its content belongs
-        (0, len(line_text)): get_log_category(line_text)
-
-      }
-
-      ### we grab pairs of line index/ line text from lines
-      ### which are not empty
-
-      for line_index, line_text \
-      in enumerate(log_text.splitlines())
-
-      if line_text
-
+        ### each item in such dict is composed by the index of
+        ### a line to which a dict is mapped
+        line_index: {
+            ## this other dict associates the interval
+            ## representing the whole line to the category
+            ## to which its content belongs
+            (0, len(line_text)): get_log_category(line_text)
+        }
+        ### we grab pairs of line index/ line text from lines
+        ### which are not empty
+        for line_index, line_text in enumerate(log_text.splitlines())
+        if line_text
     }
 
 
 ### utility functions
+
 
 def get_log_category(line_text):
     """Return category name of content the line text holds."""
@@ -153,76 +147,74 @@ def get_log_category(line_text):
     ## substring at the beginning of the string
 
     if line_text.startswith(HEADER_START):
-        line_text = line_text[len(HEADER_START):]
+        line_text = line_text[len(HEADER_START) :]
 
-    else: return 'normal'
+    else:
+        return "normal"
 
     ## substring at the end of the string
 
     if line_text.endswith(HEADER_END):
-        line_text = line_text[:-len(HEADER_END)]
+        line_text = line_text[: -len(HEADER_END)]
 
-    else: return 'normal'
-
+    else:
+        return "normal"
 
     ### try separating the text into a head and tail
     ### portions using a known excerpt of text used in
     ### headers
-    level_name, sep, time_str = \
-                  line_text.partition(' message logged at ')
+    level_name, sep, time_str = line_text.partition(" message logged at ")
 
     ### the line text can't be a header in the following
     ### cases, so return 'normal'...
 
     if (
-
-      ## if there is not separator, it means the separation
-      ## didn't succeed, so the text can't be a user log
-      ## header...
-      not sep
-
-      ## or if the level name captured isn't allowed
-      or level_name not in LOG_LEVELS
-
-      ## or yet if the time string captured doesn't validate
-      or not validate_time_str(time_str)
-    
+        ## if there is not separator, it means the separation
+        ## didn't succeed, so the text can't be a user log
+        ## header...
+        not sep
+        ## or if the level name captured isn't allowed
+        or level_name not in LOG_LEVELS
+        ## or yet if the time string captured doesn't validate
+        or not validate_time_str(time_str)
     ):
-        return 'normal'
+        return "normal"
 
     ### otherwise we have a header, so we return its
     ### respective category name according to its level
     ### name
-    else: return CATEGORY_NAME_MAP[level_name]
+    else:
+        return CATEGORY_NAME_MAP[level_name]
 
 
 def validate_time_str(time_str):
     """Return True if time string is valid."""
     ### try splitting the time string into substrings
     ### representing the hour, minutes and seconds
-    try: hour, minutes, seconds = time_str.split(':')
+    try:
+        hour, minutes, seconds = time_str.split(":")
 
     ### if the splitting fails, it means we don't have
     ### a valid time string, so we return False
-    except ValueError: return False
+    except ValueError:
+        return False
 
     ### otherwise, all substring retrieved must be entirely
     ### numeric, otherwise the time string isn't valid
 
-    if not \
-    all(
-      str.isnumeric(string)
-      for string in (hour, minutes, seconds)
-    ):
+    if not all(str.isnumeric(string) for string in (hour, minutes, seconds)):
         return False
 
     ### and each substring must represent an integer
     ### within a specific range according to the substring
     ### meaning, otherwise the time string isn't valid
 
-    if  int(hour)    in range(24) \
-    and int(minutes) in range(60) \
-    and int(seconds) in range(60):
+    if (
+        int(hour) in range(24)
+        and int(minutes) in range(60)
+        and int(seconds) in range(60)
+    ):
         return True
 
-    else: return False
+    else:
+        return False

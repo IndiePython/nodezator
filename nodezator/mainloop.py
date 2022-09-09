@@ -14,10 +14,10 @@ from pygame.display import update
 from .config import APP_REFS
 
 from .pygameconstants import (
-                       SCREEN,
-                       FPS,
-                       maintain_fps,
-                     )
+    SCREEN,
+    FPS,
+    maintain_fps,
+)
 
 from .colorsman.colors import WINDOW_BG
 
@@ -39,15 +39,15 @@ update()
 from .logman.main import get_new_logger
 
 from .our3rdlibs.behaviour import (
-                            are_changes_saved,
-                            remove_buffer,
-                          )
+    are_changes_saved,
+    remove_buffer,
+)
 
 from .loopman.exception import (
-                         ContinueLoopException,
-                         SwitchLoopException,
-                         QuitAppException,
-                       )
+    ContinueLoopException,
+    SwitchLoopException,
+    QuitAppException,
+)
 
 from .dialog import show_dialog_from_key
 
@@ -76,7 +76,6 @@ def run_app(filepath=None):
     ### or the splash screen
     loop_holder = perform_startup_preparations(filepath)
 
-
     ### start running the application loop
 
     logger.info("Entering the application loop.")
@@ -104,7 +103,8 @@ def run_app(filepath=None):
         ## the execution flow of the try block and restart
         ## again at the top of the 'while' block, so we
         ## just pass, since this is exactly what happens
-        except ContinueLoopException: pass
+        except ContinueLoopException:
+            pass
 
         ## this exceptions sets a new object to become the
         ## loop holder; the new object is obtained from
@@ -119,9 +119,12 @@ def run_app(filepath=None):
             ## if loop holder has an enter method,
             ## execute it
 
-            try: method = loop_holder.enter
-            except AttributeError: pass
-            else: method()
+            try:
+                method = loop_holder.enter
+            except AttributeError:
+                pass
+            else:
+                method()
 
         ## this exception exits means the user tried closing
         ## the application, which we do so here, unless
@@ -132,16 +135,14 @@ def run_app(filepath=None):
 
             logger.info("User tried closing the app.")
 
-
-            ## if changes are not saved, ask user what to do 
+            ## if changes are not saved, ask user what to do
 
             if not are_changes_saved():
 
                 ## ask user
 
-                try: answer = show_dialog_from_key(
-                                'close_app_dialog'
-                              )
+                try:
+                    answer = show_dialog_from_key("close_app_dialog")
 
                 ## if a QuitAppException is raised here,
                 ## it means the user tried closing the
@@ -152,8 +153,7 @@ def run_app(filepath=None):
                 except QuitAppException:
 
                     logger.info(
-                      "User ignored the quit dialog,"
-                      " trying to close the app again"
+                        "User ignored the quit dialog," " trying to close the app again"
                     )
 
                     break
@@ -164,14 +164,14 @@ def run_app(filepath=None):
                 ## the "break" statement which will throw
                 ## us out of the application loop
 
-                if answer == 'quit':
+                if answer == "quit":
 
                     logger.info(
                         "User confirmed closing app even"
                         " when there are unsaved changes."
-                      )
+                    )
 
-                elif answer == 'save_and_quit':
+                elif answer == "save_and_quit":
                     APP_REFS.window_manager.save()
 
                 ## if user does not confirm exiting,
@@ -182,12 +182,11 @@ def run_app(filepath=None):
                 else:
 
                     logger.info(
-                      "User cancelled closing app due to"
-                      " existence of unsaved changes."
+                        "User cancelled closing app due to"
+                        " existence of unsaved changes."
                     )
 
                     continue
-
 
             ## break out of the application loop
             break
@@ -198,9 +197,9 @@ def run_app(filepath=None):
         except Exception as err:
 
             logger.exception(
-              "While running the application an unexpected"
-              " exception ocurred. Doing clean up and"
-              " reraising now."
+                "While running the application an unexpected"
+                " exception ocurred. Doing clean up and"
+                " reraising now."
             )
 
             quit_pygame()

@@ -1,4 +1,3 @@
-
 ### standard library import
 from os import linesep
 
@@ -16,9 +15,9 @@ from ..surfsman.render import render_rect
 from ..textman.render import render_text, get_text_size
 
 from ..textman.text import (
-                    get_normal_lines,
-                    get_highlighted_lines,
-                  )
+    get_normal_lines,
+    get_highlighted_lines,
+)
 
 from ..syntaxman.exception import SyntaxMappingError
 
@@ -30,24 +29,19 @@ from .constants import GENERAL_CODE_TEXT_SETTINGS
 ###
 
 THEME_MAP = get_ready_theme(
-              'python',
-              GENERAL_CODE_TEXT_SETTINGS,
-            )
+    "python",
+    GENERAL_CODE_TEXT_SETTINGS,
+)
 
-DIGIT_WIDTH, _ = (
-
-  get_text_size(
-    '0',
-    font_height = (
-      GENERAL_CODE_TEXT_SETTINGS['font_height']
-    ),
-    font_path = GENERAL_CODE_TEXT_SETTINGS['font_path'],
-  )
-
+DIGIT_WIDTH, _ = get_text_size(
+    "0",
+    font_height=(GENERAL_CODE_TEXT_SETTINGS["font_height"]),
+    font_path=GENERAL_CODE_TEXT_SETTINGS["font_path"],
 )
 
 ### TODO ponder: should the code block surfaces be cached
 ### accross different .htsl pages? they probably should.
+
 
 def get_python_codeblock(python_code_element):
 
@@ -67,67 +61,48 @@ def get_python_codeblock(python_code_element):
     try:
 
         lines = get_highlighted_lines(
-                  'python',
-                  text,
-                  syntax_settings_map=(
-                    THEME_MAP['text_settings']
-                  )
-                )
+            "python", text, syntax_settings_map=(THEME_MAP["text_settings"])
+        )
 
     ## if a syntax mapping error occurs...
     except SyntaxMappingError:
 
-        background_color = GENERAL_CODE_TEXT_SETTINGS[
-                             'background_color'
-                           ]
+        background_color = GENERAL_CODE_TEXT_SETTINGS["background_color"]
 
         lines = get_normal_lines(
-                  text,
-                  GENERAL_CODE_TEXT_SETTINGS,
-                  GENERAL_CODE_TEXT_SETTINGS,
-                )
+            text,
+            GENERAL_CODE_TEXT_SETTINGS,
+            GENERAL_CODE_TEXT_SETTINGS,
+        )
 
         lineno_settings = GENERAL_CODE_TEXT_SETTINGS
 
     else:
 
-        background_color = THEME_MAP['background_color']
+        background_color = THEME_MAP["background_color"]
 
         ##
 
-        text_settings = THEME_MAP['text_settings']
+        text_settings = THEME_MAP["text_settings"]
 
-        try: lineno_settings = (
-               text_settings['line_number']
-             )
+        try:
+            lineno_settings = text_settings["line_number"]
 
         except KeyError:
-            lineno_settings = text_settings['normal']
-
-
+            lineno_settings = text_settings["normal"]
 
     ### position text objects representing lines one
     ### below the other
 
-    lines.rect.snap_rects_ip(
-      retrieve_pos_from = 'bottomleft',
-      assign_pos_to     = 'topleft'
-    )
-
+    lines.rect.snap_rects_ip(retrieve_pos_from="bottomleft", assign_pos_to="topleft")
 
     ### lineno
 
-    first_lineno = (
-
-      int(
-        python_code_element.getAttribute('linenofrom') or '1'
-      )
-
-    )
+    first_lineno = int(python_code_element.getAttribute("linenofrom") or "1")
 
     ## calculate the number of digits needed to
     ## display the number of the last line
-    max_chars = len(str((first_lineno-1) + len(lines)))
+    max_chars = len(str((first_lineno - 1) + len(lines)))
 
     ## width of panel is total width occupied
     ## by max_chars plus 2 additional characters
@@ -151,17 +126,14 @@ def get_python_codeblock(python_code_element):
     surf = render_rect(*total_area.size)
 
     for bg_color, area in (
-
-      (
-        lineno_settings['background_color'],
-        lineno_area,
-      ),
-
-      (
-        background_color,
-        code_area,
-      ),
-
+        (
+            lineno_settings["background_color"],
+            lineno_area,
+        ),
+        (
+            background_color,
+            code_area,
+        ),
     ):
 
         draw_rect(surf, bg_color, area)
@@ -176,9 +148,9 @@ def get_python_codeblock(python_code_element):
         surf.blit(line.image, line.rect)
 
         lineno_surf = render_text(
-                        str(lineno).rjust(max_chars, '0'),
-                        **lineno_settings,
-                      )
+            str(lineno).rjust(max_chars, "0"),
+            **lineno_settings,
+        )
 
         surf.blit(lineno_surf, (DIGIT_WIDTH, line.rect.top))
 

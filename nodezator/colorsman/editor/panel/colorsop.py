@@ -2,7 +2,7 @@
 
 ### standard library imports
 
-from random    import shuffle
+from random import shuffle
 from functools import partial, partialmethod
 
 
@@ -11,12 +11,12 @@ from functools import partial, partialmethod
 from ....classes2d.collections import List2D
 
 from ....ourstdlibs.color.utils import (
-                          get_color_sorter_by_properties,
-                        )
+    get_color_sorter_by_properties,
+)
 
 from ....ourstdlibs.color.creation import (
-                              random_color_from_existing,
-                            )
+    random_color_from_existing,
+)
 
 from ....dialog import create_and_show_dialog
 
@@ -25,18 +25,16 @@ from ...color2d import Color2D
 from ...viewer.main import view_colors
 
 from ...picker.main import (
-                             pick_html_colors,
-                             pick_pygame_colors,
-                           )
+    pick_html_colors,
+    pick_pygame_colors,
+)
 
-from .constants import (
-                                        COLOR_WIDGET_SIZE
-                                      )
+from .constants import COLOR_WIDGET_SIZE
 
 
 class ColorsOperations:
     """Colors-related operations for the colors panel."""
-    
+
     def set_colors(self, colors):
         """(Re)build list of color widgets from given colors.
 
@@ -53,21 +51,11 @@ class ColorsOperations:
         ### create a special list containing a color widget
         ### for each given color
 
-        self.widgets = List2D(
-
-                         Color2D(
-                           *COLOR_WIDGET_SIZE, color
-                         )
-
-                         for color in colors
-
-                       )
+        self.widgets = List2D(Color2D(*COLOR_WIDGET_SIZE, color) for color in colors)
 
         ### align the rects of each color widget one beside
         ### the other
-        self.widgets.rect.snap_rects_ip(
-                            'topright', 'topleft'
-                          )
+        self.widgets.rect.snap_rects_ip("topright", "topleft")
 
         ### align the topleft of the color widgets
         ### collectively to the topleft of the scroll area
@@ -86,9 +74,7 @@ class ColorsOperations:
         ### and finally, since we picked a widget and its
         ### color as the current one, let's display that
         ### color in the controls so it can be seen/edited
-        self.colors_editor.set_color_on_controls(
-                             self.current_widget.color
-                           )
+        self.colors_editor.set_color_on_controls(self.current_widget.color)
 
     def update_colors(self, colors):
         """Update colors on each widget to the given ones.
@@ -114,8 +100,7 @@ class ColorsOperations:
         ### this also has the side-effect of bring the
         ### current widget to the visible area if it isn't
         ### already there
-        self.colors_editor.set_color_on_controls(
-                                  self.current_widget.color)
+        self.colors_editor.set_color_on_controls(self.current_widget.color)
 
     def perform_widget_quantity_setups(self):
         """Perform setups after changing number of widgets.
@@ -130,7 +115,7 @@ class ColorsOperations:
 
         ### align the rects of the remaining color widgets
         ### one beside the other
-        widgets.rect.snap_rects_ip('topright', 'topleft')
+        widgets.rect.snap_rects_ip("topright", "topleft")
 
         ### align the topleft of the color widgets
         ### collectively to the topleft of the scroll area
@@ -139,16 +124,13 @@ class ColorsOperations:
         ### retrieve the current index and clamp it to the
         ### available remaining indices
 
-        current_index = \
-            self.colors_editor.current_color_index
+        current_index = self.colors_editor.current_color_index
 
-        clamped_index = \
-            min(max(0, current_index), len(widgets)-1)
+        clamped_index = min(max(0, current_index), len(widgets) - 1)
 
         ### store the clamped index (which may or not be the
         ### same as the original) as the current index
-        self.colors_editor.current_color_index = \
-                                                clamped_index
+        self.colors_editor.current_color_index = clamped_index
 
         ### store a reference to the widget in that
         ### position, which we call the current widget
@@ -162,8 +144,7 @@ class ColorsOperations:
         ### widgets so the current one is visible in the
         ### scroll area (though I'm not sure this side-effect
         ### is necessary here; it is ok, though)
-        self.colors_editor.set_color_on_controls(
-                                  self.current_widget.color)
+        self.colors_editor.set_color_on_controls(self.current_widget.color)
 
     def set_current_color(self, color):
         """Update color on current color widget."""
@@ -174,16 +155,15 @@ class ColorsOperations:
         ### if current color widget's color is equal to the
         ### given color, there's no need to update it,
         ### so we return early
-        if self.current_widget.color == color: return
+        if self.current_widget.color == color:
+            return
 
         ### otherwise set color on the widget
         self.current_widget.set_color(color)
 
     def get_colors(self):
         """Return tuple of colors represented by widgets."""
-        return tuple(
-                 widget.color for widget in self.widgets
-               )
+        return tuple(widget.color for widget in self.widgets)
 
     def get_current_color(self):
         """Return color of current widget."""
@@ -221,12 +201,7 @@ class ColorsOperations:
         ### well as the available properties are listed
         ### in the properties sorting button
 
-        property_names = (
-          self
-          .colors_editor
-          .color_sorting_holder
-          .value
-        )
+        property_names = self.colors_editor.color_sorting_holder.value
 
         ### if no property names are listed, we can't
         ### proceed, let the user know and return earlier
@@ -234,10 +209,10 @@ class ColorsOperations:
         if not property_names:
 
             create_and_show_dialog(
-              "Can't sort colors because no properties are"
-              " listed in the list sorting button with the"
-              " property names (the one to the right of the"
-              " 'Sort' button)"
+                "Can't sort colors because no properties are"
+                " listed in the list sorting button with the"
+                " property names (the one to the right of the"
+                " 'Sort' button)"
             )
 
             return
@@ -245,13 +220,9 @@ class ColorsOperations:
         ### otherwise, obtain a new list with the colors
         ### sorted by the named properties
 
-        sorter_function = \
-            get_color_sorter_by_properties(property_names)
+        sorter_function = get_color_sorter_by_properties(property_names)
 
-        sorted_colors = sorted(
-                          self.get_colors(),
-                          key=sorter_function
-                        )
+        sorted_colors = sorted(self.get_colors(), key=sorter_function)
 
         ### then update the color of the widgets with such
         ### colors
@@ -259,15 +230,15 @@ class ColorsOperations:
 
     def remove_duplicated_colors(self):
         """Remove widgets so each color appears only once."""
-        ### reference widget list locally, for quick and 
+        ### reference widget list locally, for quick and
         ### easier access
         widgets = self.widgets
-        
+
         ### create two sets to keep track of colors we have
         ### already seen and widgets to be removed
 
         colors_already_seen = set()
-        widgets_to_remove   = set()
+        widgets_to_remove = set()
 
         ### iterate over color widgets, separating for
         ### removal those widgets whose colors have already
@@ -299,36 +270,22 @@ class ColorsOperations:
         ### retrieve the name of a color property from
         ### the option menu
 
-        property_ = (
-          self
-          .colors_editor
-          .color_add_option_menu
-          .value
-        )
+        property_ = self.colors_editor.color_add_option_menu.value
 
         ### obtain a new color from the current one by
         ### randomizing the property whose name we just
         ### retrieved
-        new_color = random_color_from_existing(
-                      current_color, property_
-                    )
+        new_color = random_color_from_existing(current_color, property_)
 
         ### instantiate and insert the new widget
 
         ## instantiate
-        new_widget = Color2D(
-                       *COLOR_WIDGET_SIZE, new_color
-                     )
+        new_widget = Color2D(*COLOR_WIDGET_SIZE, new_color)
 
         ## insert the new widget after the current color
         ## widget
 
-        self.widgets.insert(
-
-          self.colors_editor.current_color_index + 1,
-          new_widget
-
-        )
+        self.widgets.insert(self.colors_editor.current_color_index + 1, new_widget)
 
         ### finally, perform setups needed when changing
         ### the number of existing widgets
@@ -352,7 +309,7 @@ class ColorsOperations:
         ### reference the existing color widgets locally
         ### for quicker and easier access
         widgets = self.widgets
-        
+
         ### if the iterable with widgets to remove is empty,
         ### use a list with a reference to the current widget
         ### instead
@@ -398,18 +355,15 @@ class ColorsOperations:
         ### if the original and clamped rects are the same,
         ### it means the current widget is already in the
         ### visible area, so we can return already
-        if clamped_copy == widget_rect: return
+        if clamped_copy == widget_rect:
+            return
 
         ### otherwise we obtain the difference between the
         ### positions of the clamped and original rects
         ### move all the widgets by that difference, so that
         ### the current widget ends up in the visible area
 
-        offset = [
-          a - b
-          for a, b in
-          zip(clamped_copy.topleft, widget_rect.topleft)
-        ]
+        offset = [a - b for a, b in zip(clamped_copy.topleft, widget_rect.topleft)]
 
         self.widgets.rect.move_ip(offset)
 
@@ -423,9 +377,9 @@ class ColorsOperations:
         view_colors(self.get_colors())
 
     def pick_colors_from_collection(
-          self,
-          color_picking_operation,
-        ):
+        self,
+        color_picking_operation,
+    ):
         """Display specific colors for the user to pick.
 
         If the user picks one or more colors, a new color
@@ -441,8 +395,8 @@ class ColorsOperations:
 
         ### if no picked colors were received, we leave the
         ### method earlier by returning
-        if not picked_colors: return
-
+        if not picked_colors:
+            return
 
         ### otherwise we create new color widgets from the
         ### given colors, insert them and perform needed
@@ -457,8 +411,7 @@ class ColorsOperations:
         ## widget
         ##
         ## we'll insert colors from that position
-        index_wherein_to_insert = \
-                self.colors_editor.current_color_index + 1
+        index_wherein_to_insert = self.colors_editor.current_color_index + 1
 
         ## create and insert a color widget for each
         ## picked color in the index we defined,
@@ -469,24 +422,21 @@ class ColorsOperations:
 
         for color in reversed(picked_colors):
 
-            insert_widget(
-              index_wherein_to_insert,
-              Color2D(*COLOR_WIDGET_SIZE, color)
-            )
+            insert_widget(index_wherein_to_insert, Color2D(*COLOR_WIDGET_SIZE, color))
 
         ## finally, perform setups needed when changing
         ## the number of existing widgets
         self.perform_widget_quantity_setups()
 
     pick_html_colors = partialmethod(
-                         pick_colors_from_collection,
-                         pick_html_colors,
-                       )
+        pick_colors_from_collection,
+        pick_html_colors,
+    )
 
     pick_pygame_colors = partialmethod(
-                           pick_colors_from_collection,
-                           pick_pygame_colors,
-                         )
+        pick_colors_from_collection,
+        pick_pygame_colors,
+    )
 
     def free_up_memory(self):
         """Free memory by getting rid of widgets."""

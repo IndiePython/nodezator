@@ -9,10 +9,10 @@ from pygame import Rect
 from ..config import APP_REFS
 
 from ..appinfo import (
-               NODES_KEY,
-               PARENT_SOCKETS_KEY,
-               TEXT_BLOCKS_KEY,
-             )
+    NODES_KEY,
+    PARENT_SOCKETS_KEY,
+    TEXT_BLOCKS_KEY,
+)
 
 from ..logman.main import get_new_logger
 
@@ -21,14 +21,14 @@ from ..ourstdlibs.meta import initialize_bases
 from ..classes2d.single import Object2D
 
 from ..classes2d.collections import (
-                             Iterable2D,
-                             List2D,
-                           )
+    Iterable2D,
+    List2D,
+)
 
 from .exception import (
-                          NodeScriptsError,
-                          MissingNodeScriptsError,
-                        )
+    NodeScriptsError,
+    MissingNodeScriptsError,
+)
 
 ## function
 from .scriptloading import load_scripts
@@ -65,10 +65,10 @@ logger = get_new_logger(__name__)
 
 
 class GraphManager(
-      DataEdition,
-      SocketParenthood,
-      Execution,
-    ):
+    DataEdition,
+    SocketParenthood,
+    Execution,
+):
     """Manages native file json data presentation/edition.
 
     The data is retrieved from a json file, which is
@@ -102,7 +102,7 @@ class GraphManager(
 
         ### load scripts to use callables provided by
         ### them as specifications for nodes
-        load_scripts(data['node_packs'])
+        load_scripts(data["node_packs"])
 
         ### instantiate nodes
         self.instantiate_nodes()
@@ -111,18 +111,14 @@ class GraphManager(
         ### key from the native data and pass it to related
         ### method to perform needed setups
 
-        parent_sockets_data = data.setdefault(
-                                PARENT_SOCKETS_KEY, []
-                              )
-        
+        parent_sockets_data = data.setdefault(PARENT_SOCKETS_KEY, [])
+
         self.setup_parent_sockets_data(parent_sockets_data)
 
         ### retrieve the value in the TEXT_BLOCKS_KEY key
         ### from the file data and store in an attribute
 
-        self.text_blocks_data = data.setdefault(
-                                       TEXT_BLOCKS_KEY, []
-                                     )
+        self.text_blocks_data = data.setdefault(TEXT_BLOCKS_KEY, [])
 
         ### instantiate text blocks
         self.instantiate_text_blocks()
@@ -147,16 +143,15 @@ class GraphManager(
 
         for node_data in self.nodes_data.values():
 
-            if 'script_id' in node_data:
-                
-                script_id = node_data['script_id']
+            if "script_id" in node_data:
+
+                script_id = node_data["script_id"]
 
                 ## try retrieving the node defining object
                 ## from the corresponding map
 
-                try: node_def_obj = (
-                       node_def_map[script_id]
-                     )
+                try:
+                    node_def_obj = node_def_map[script_id]
 
                 ## if a KeyError is raised, store the missing
                 ## id and skip the processing of this item
@@ -173,39 +168,27 @@ class GraphManager(
                 ## defining object successfully,
                 ## instantiate and store the node
 
-                else: node_map[node_data['id']] = (
+                else:
+                    node_map[node_data["id"]] = CallableNode(
+                        node_def_obj,
+                        node_data,
+                    )
 
-                        CallableNode(
-                          node_def_obj,
-                          node_data,
-                        )
+            elif "operation_id" in node_data:
 
-                      )
+                node_map[node_data["id"]] = OperatorNode(node_data)
 
-            elif 'operation_id' in node_data:
+            elif "builtin_id" in node_data:
+                node_map[node_data["id"]] = BuiltinNode(node_data)
 
-                node_map[node_data['id']] = (
-                  OperatorNode(node_data)
-                )
+            elif "stlib_id" in node_data:
+                node_map[node_data["id"]] = StandardLibNode(node_data)
 
-            elif 'builtin_id' in node_data:
-                node_map[node_data['id']] = (
-                  BuiltinNode(node_data)
-                )
+            elif "capsule_id" in node_data:
+                node_map[node_data["id"]] = CapsuleNode(node_data)
 
-            elif 'stlib_id' in node_data:
-                node_map[node_data['id']] = (
-                  StandardLibNode(node_data)
-                )
-
-            elif 'capsule_id' in node_data:
-                node_map[node_data['id']] = (
-                  CapsuleNode(node_data)
-                )
-
-            else: node_map[node_data['id']] = (
-                    ProxyNode(node_data)
-                  )
+            else:
+                node_map[node_data["id"]] = ProxyNode(node_data)
 
         ### TODO
         ### this should be dealt with in the GUI to help
@@ -232,19 +215,14 @@ class GraphManager(
         ### extra functionality, including blitting
         ### operations;
 
-        self.nodes = Iterable2D(
-                       node_map.values().__iter__
-                     )
+        self.nodes = Iterable2D(node_map.values().__iter__)
 
     def instantiate_text_blocks(self):
         """Instantiate text blocks."""
         ### create list to storing text block objects
 
         self.text_blocks = List2D(
-
-          TextBlock(text_data)
-          for text_data in self.text_blocks_data
-
+            TextBlock(text_data) for text_data in self.text_blocks_data
         )
 
     def draw(self):
@@ -279,14 +257,11 @@ class GraphManager(
         ### clear collections containing native file data,
         ### node instances and text block instances
 
-        for attr_name in (
-          'nodes_data',
-          'text_blocks_data',
-          'node_map',
-          'text_blocks'
-        ):
+        for attr_name in ("nodes_data", "text_blocks_data", "node_map", "text_blocks"):
 
-            try: obj = getattr(self, attr_name)
-            except AttributeError: pass
-            else: obj.clear()
-
+            try:
+                obj = getattr(self, attr_name)
+            except AttributeError:
+                pass
+            else:
+                obj.clear()

@@ -11,9 +11,9 @@ from ...config import APP_REFS
 from .base import Socket
 
 from .surfs import (
-                             HOLLOW_SOCKET_CIRCLE_SURF,
-                             CODENAME_TO_STYLE_MAP,
-                           )
+    HOLLOW_SOCKET_CIRCLE_SURF,
+    CODENAME_TO_STYLE_MAP,
+)
 
 from ...colorsman.colors import HOLLOW_SOCKET_OUTLINE
 
@@ -29,12 +29,12 @@ class OutputSocket(Socket):
     """
 
     def __init__(
-          self,
-          node,
-          type_codename,
-          output_name = 'output',
-          center = (0, 0),
-        ):
+        self,
+        node,
+        type_codename,
+        output_name="output",
+        center=(0, 0),
+    ):
         """Store arguments, setup image, rect and position.
 
         node (graphman.calnode.main.CallableNode object)
@@ -63,7 +63,7 @@ class OutputSocket(Socket):
         ## store output name argument
         self.output_name = output_name
 
-        ## store type codename and perform related setups 
+        ## store type codename and perform related setups
         self.update_type_codename(type_codename)
 
         ### obtain rect from image and position it using
@@ -78,10 +78,10 @@ class OutputSocket(Socket):
 
         if type_codename is None:
 
-            self.image      = HOLLOW_SOCKET_CIRCLE_SURF
+            self.image = HOLLOW_SOCKET_CIRCLE_SURF
             self.line_color = HOLLOW_SOCKET_OUTLINE
 
-            self.svg_class_name = 'hollow_socket'
+            self.svg_class_name = "hollow_socket"
 
         else:
 
@@ -90,12 +90,10 @@ class OutputSocket(Socket):
             ### svg class name and surface)
 
             (
-
-              self.outline_color,
-              self.fill_color,
-              self.svg_class_name,
-              self.circle_surf,
-
+                self.outline_color,
+                self.fill_color,
+                self.svg_class_name,
+                self.circle_surf,
             ) = CODENAME_TO_STYLE_MAP[type_codename]
 
             self.line_color = self.fill_color
@@ -124,9 +122,9 @@ class OutputSocket(Socket):
             object.
         """
         APP_REFS.ea.output_socket_popup_menu.show(
-                                               self,
-                                               event.pos,
-                                             )
+            self,
+            event.pos,
+        )
 
     def svg_repr(self):
         """"""
@@ -136,14 +134,11 @@ class OutputSocket(Socket):
         cx, cy = self.rect.center
 
         return Element(
-
-                 'circle',
-
-                 {
-                   'cx': str(cx),
-                   'cy': str(cy),
-                   'r' : socket_radius_str,
-                   'class': self.svg_class_name,
-                 }
-
-               )
+            "circle",
+            {
+                "cx": str(cx),
+                "cy": str(cy),
+                "r": socket_radius_str,
+                "class": self.svg_class_name,
+            },
+        )

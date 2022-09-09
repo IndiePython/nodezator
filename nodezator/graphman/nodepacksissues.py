@@ -11,20 +11,18 @@ from ..config import APP_REFS
 from ..appinfo import NODE_SCRIPT_NAME
 
 from .exception import (
-                        NodePackNotFoundError,
-                        NodePackNotADirectoryError,
-                        NodePackLackingCategoryError,
-                        CategoryLackingScriptDirectoryError,
-                        ScriptDirectoryLackingScriptError,
-                      )
+    NodePackNotFoundError,
+    NodePackNotADirectoryError,
+    NodePackLackingCategoryError,
+    CategoryLackingScriptDirectoryError,
+    ScriptDirectoryLackingScriptError,
+)
 
 
 def get_formatted_current_node_packs():
     ### retrieve the contents of the node_packs field
 
-    node_packs_paths = (
-      APP_REFS.data.setdefault('node_packs', [])
-    )
+    node_packs_paths = APP_REFS.data.setdefault("node_packs", [])
 
     ### guarantee node packs paths is a list
     if not isinstance(node_packs_paths, list):
@@ -32,9 +30,7 @@ def get_formatted_current_node_packs():
 
     ### we turn it into a pathlib.Path object
 
-    return [
-      Path(path) for path in node_packs_paths
-    ]
+    return [Path(path) for path in node_packs_paths]
 
 
 def check_node_packs(node_packs):
@@ -45,22 +41,18 @@ def check_node_packs(node_packs):
     for path in node_packs:
 
         if not path.exists():
-            
-            raise NodePackNotFoundError(
-                    f"the '{path}' node pack path"
-                     " wasn't found"
-                  )
+
+            raise NodePackNotFoundError(f"the '{path}' node pack path" " wasn't found")
 
     ### check whether node packs are directories
 
     for path in node_packs:
-        
+
         if not path.is_dir():
 
             raise NodePackNotADirectoryError(
-                    f"the '{path}' node pack isn't a"
-                     " directory"
-                  )
+                f"the '{path}' node pack isn't a" " directory"
+            )
 
     ### check whether each node pack has at least
     ### one script
@@ -68,58 +60,43 @@ def check_node_packs(node_packs):
     for node_pack in node_packs:
 
         category_folders = [
-
-          path
-
-          for path in node_pack.iterdir()
-
-          if not path.name.startswith('.')
-          if path.is_dir()
-
+            path
+            for path in node_pack.iterdir()
+            if not path.name.startswith(".")
+            if path.is_dir()
         ]
 
         if not category_folders:
 
             raise NodePackLackingCategoryError(
-                    f"node pack '{node_pack}' must"
-                     " have at least 1 category"
-                  )
+                f"node pack '{node_pack}' must" " have at least 1 category"
+            )
 
         for category_folder in category_folders:
-            
+
             script_dirs = [
-
-              path
-              for path in category_folder.iterdir()
-
-              if (
-                not path.name.startswith('.')
-                and path.is_dir()
-              )
-
+                path
+                for path in category_folder.iterdir()
+                if (not path.name.startswith(".") and path.is_dir())
             ]
 
             if not script_dirs:
 
                 raise CategoryLackingScriptDirectoryError(
-
-                        f"category dir '{category_folder}'"
-                         " must have at least 1 script"
-                         " directory"
-
-                      )
+                    f"category dir '{category_folder}'"
+                    " must have at least 1 script"
+                    " directory"
+                )
 
             for script_dir in script_dirs:
-                
-                script_file = (
-                  script_dir / NODE_SCRIPT_NAME
-                )
+
+                script_file = script_dir / NODE_SCRIPT_NAME
 
                 if not script_file.is_file():
 
                     raise ScriptDirectoryLackingScriptError(
-                            node_pack,
-                            category_folder,
-                            script_dir,
-                            script_file,
-                          )
+                        node_pack,
+                        category_folder,
+                        script_dir,
+                        script_file,
+                    )

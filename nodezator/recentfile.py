@@ -15,14 +15,16 @@ def get_recent_files():
     """Return recent files list as path objects."""
     filter_recent_files()
 
-    try: data = load_pyl(RECENT_FILES)
+    try:
+        data = load_pyl(RECENT_FILES)
 
     except FileNotFoundError:
 
         data = []
         save_pyl(data, RECENT_FILES)
 
-    else: data = list(map(Path, data))
+    else:
+        data = list(map(Path, data))
 
     return data
 
@@ -32,9 +34,11 @@ def get_recent_files():
 ### it would be better to merge the function below with
 ### the get_recent_files() function above;
 
+
 def filter_recent_files():
     """Filter out unexistent files."""
-    try: data = load_pyl(RECENT_FILES)
+    try:
+        data = load_pyl(RECENT_FILES)
 
     except FileNotFoundError:
 
@@ -54,9 +58,11 @@ def filter_recent_files():
 
         for filepath in data:
 
-            if Path(filepath).is_file(): pass
+            if Path(filepath).is_file():
+                pass
 
-            else: removal_list.append(filepath)
+            else:
+                removal_list.append(filepath)
 
         ### remove them from filepath
 
@@ -66,6 +72,7 @@ def filter_recent_files():
                 data.remove(item)
 
             save_pyl(data, RECENT_FILES)
+
 
 def store_recent_file(path):
     """Verify if path is on recent files and add it.
@@ -78,16 +85,20 @@ def store_recent_file(path):
     ### if file with list of recent files don't exist,
     ### create the list yourself
 
-    try: recent_paths = load_pyl(RECENT_FILES)
-    except FileNotFoundError: recent_paths = []
+    try:
+        recent_paths = load_pyl(RECENT_FILES)
+    except FileNotFoundError:
+        recent_paths = []
 
     ### turn path into string
     str_path = str(path)
 
     ### remove path from list if it is already present
 
-    try: recent_paths.remove(str_path)
-    except ValueError: pass
+    try:
+        recent_paths.remove(str_path)
+    except ValueError:
+        pass
 
     ### finally, insert path at the beginning of the list
     ### and save the list back in the path dedicated to

@@ -7,15 +7,26 @@ from functools import partialmethod
 ### third-party imports
 
 from pygame import (
-              QUIT, KEYDOWN, KEYUP,
-              K_UP, K_DOWN,
-              K_RETURN, K_KP_ENTER,
-              K_a, KMOD_ALT, KMOD_CTRL, KMOD_SHIFT,
-              K_HOME, K_END, K_PAGEUP, K_PAGEDOWN,
-              MOUSEBUTTONDOWN, MOUSEBUTTONUP,
-            )
+    QUIT,
+    KEYDOWN,
+    KEYUP,
+    K_UP,
+    K_DOWN,
+    K_RETURN,
+    K_KP_ENTER,
+    K_a,
+    KMOD_ALT,
+    KMOD_CTRL,
+    KMOD_SHIFT,
+    K_HOME,
+    K_END,
+    K_PAGEUP,
+    K_PAGEDOWN,
+    MOUSEBUTTONDOWN,
+    MOUSEBUTTONUP,
+)
 
-from pygame.event   import get as get_events
+from pygame.event import get as get_events
 from pygame.display import update
 
 
@@ -24,25 +35,25 @@ from pygame.display import update
 from ..translation import TRANSLATION_HOLDER as t
 
 from ..pygameconstants import (
-                       SCREEN_RECT,
-                       FPS,
-                       maintain_fps,
-                       blit_on_screen,
-                     )
+    SCREEN_RECT,
+    FPS,
+    maintain_fps,
+    blit_on_screen,
+)
 
 from ..dialog import create_and_show_dialog
 
 from ..ourstdlibs.behaviour import (
-                            empty_function,
-                            get_oblivious_callable,
-                          )
+    empty_function,
+    get_oblivious_callable,
+)
 
 from ..our3rdlibs.behaviour import watch_window_size
 
 from ..loopman.exception import (
-                         SwitchLoopException,
-                         QuitAppException,
-                       )
+    SwitchLoopException,
+    QuitAppException,
+)
 
 from ..surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
@@ -53,18 +64,18 @@ class FileManagerOperations(Object2D):
     """Operations for file manager class."""
 
     def browse_paths(
-          self,
-          *,
-          mode      = 'select',
-          caption   = "",
-          path_name = t.file_manager.pathname,
-        ):
+        self,
+        *,
+        mode="select",
+        caption="",
+        path_name=t.file_manager.pathname,
+    ):
         """Return selected paths or a new path.
 
         This method shows the user the file manager
         interface, allowing the user to browse the
         filesystem visually while either:
-        
+
         1) in the 'select' mode: selecting paths to be
            returned;
 
@@ -92,19 +103,16 @@ class FileManagerOperations(Object2D):
         """
         ### blit screen sized semi transparent object
 
-        blit_on_screen(
-          UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size],
-          (0, 0)
-        )
+        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
 
         ### update widget caption label
 
         if not caption:
 
             caption = (
-              t.file_manager.select_path
-              if mode == 'select'
-              else t.file_manager.create_new_path
+                t.file_manager.select_path
+                if mode == "select"
+                else t.file_manager.create_new_path
             )
 
         self.caption_label.set(caption)
@@ -166,10 +174,12 @@ class FileManagerOperations(Object2D):
     def set_mode(self, mode, path_name):
         """Perform setups related to given mode."""
         ### set entry contents if in 'create' mode
-        if mode == 'create': self.entry.set(path_name)
+        if mode == "create":
+            self.entry.set(path_name)
 
         ### if mode didn't change, return earlier
-        if mode == self.current_mode: return
+        if mode == self.current_mode:
+            return
 
         ### otherwise, keep performing changes to accomodate
         ### the new mode...
@@ -180,21 +190,17 @@ class FileManagerOperations(Object2D):
         ## set widget label text
 
         widget_label_text = (
-
-          t.file_manager.selected
-          if mode == 'select'
-          else t.file_manager.new_path
-
+            t.file_manager.selected if mode == "select" else t.file_manager.new_path
         ) + ":"
-        
+
         self.widget_label.set(widget_label_text)
 
         ### perform setups to guarantee the appropriate
         ### widget sits beside the widget label according
         ### to the choosen mode
 
-        if mode == 'select':
-            
+        if mode == "select":
+
             chosen_widget = self.selection_label
 
             self.labels.add(self.selection_label)
@@ -209,9 +215,7 @@ class FileManagerOperations(Object2D):
 
         ## reposition the chosen widget beside the widget
         ## label
-        chosen_widget.rect.midleft = (
-          self.widget_label.rect.move(5, 0).midright
-        )
+        chosen_widget.rect.midleft = self.widget_label.rect.move(5, 0).midright
 
         ## set 'update_path_selection_on_load' behaviour;
         ##
@@ -228,46 +232,30 @@ class FileManagerOperations(Object2D):
         ## a directory
 
         self.update_path_selection_on_load = (
-
-          self.store_current_selection
-          if mode == 'select'
-
-          else empty_function
-
+            self.store_current_selection if mode == "select" else empty_function
         )
 
         ## set 'update_path_selection' behaviour
 
         self.update_path_selection = (
-
-          self.store_current_selection
-          if mode == 'select'
-
-          else self.copy_last_selected_to_entry
-
+            self.store_current_selection
+            if mode == "select"
+            else self.copy_last_selected_to_entry
         )
 
         ## set 'on_mouse_release' behaviour for the submit
         ## button
 
-        self.submit_button.on_mouse_release = (
-
-          get_oblivious_callable(
-
-            self.submit_selected
-            if mode == 'select'
-
-            else self.submit_from_entry
-
-          )
-
+        self.submit_button.on_mouse_release = get_oblivious_callable(
+            self.submit_selected if mode == "select" else self.submit_from_entry
         )
 
     def handle_input(self):
         """Handle event queue."""
         for event in get_events():
 
-            if event.type == QUIT: raise QuitAppException
+            if event.type == QUIT:
+                raise QuitAppException
 
             ### KEYDOWN
 
@@ -283,7 +271,8 @@ class FileManagerOperations(Object2D):
 
                     ## otherwise just go to the previous
                     ## item
-                    else: self.go_to_previous()
+                    else:
+                        self.go_to_previous()
 
                 elif event.key == K_DOWN:
                     self.go_to_next()
@@ -297,13 +286,13 @@ class FileManagerOperations(Object2D):
 
                 ## de/select all
 
-                elif event.key == K_a \
-                and event.mod & KMOD_CTRL:
+                elif event.key == K_a and event.mod & KMOD_CTRL:
 
                     if event.mod & KMOD_SHIFT:
-                         self.deselect_all()
+                        self.deselect_all()
 
-                    else: self.select_all()
+                    else:
+                        self.select_all()
 
                 ## jump to first/last item
 
@@ -317,9 +306,11 @@ class FileManagerOperations(Object2D):
 
                     ## otherwise just go to the previous
                     ## item
-                    else: self.go_to_first()
+                    else:
+                        self.go_to_first()
 
-                elif event.key == K_END: self.go_to_last()
+                elif event.key == K_END:
+                    self.go_to_last()
 
                 ## jump the number of items showing
 
@@ -382,9 +373,11 @@ class FileManagerOperations(Object2D):
 
                 if panel.rect.collidepoint(mouse_pos):
 
-                    try: method = getattr(panel, method_name)
+                    try:
+                        method = getattr(panel, method_name)
 
-                    except AttributeError: pass
+                    except AttributeError:
+                        pass
 
                     else:
 
@@ -397,8 +390,10 @@ class FileManagerOperations(Object2D):
 
                 if button.rect.collidepoint(mouse_pos):
 
-                    try: method = getattr(button, method_name)
-                    except AttributeError: pass
+                    try:
+                        method = getattr(button, method_name)
+                    except AttributeError:
+                        pass
 
                     else:
 
@@ -407,13 +402,12 @@ class FileManagerOperations(Object2D):
 
         ### otherwise trigger the exit of the file manager
         ### loop by cancelling
-        else: self.cancel()
+        else:
+            self.cancel()
 
-    on_mouse_click = \
-        partialmethod(on_mouse_action, 'on_mouse_click')
+    on_mouse_click = partialmethod(on_mouse_action, "on_mouse_click")
 
-    on_mouse_release = \
-        partialmethod(on_mouse_action, 'on_mouse_release')
+    on_mouse_release = partialmethod(on_mouse_action, "on_mouse_release")
 
     def scroll_contents(self, mouse_pos, orientation):
         """Verify if scrolling contents and scroll if so.
@@ -436,7 +430,8 @@ class FileManagerOperations(Object2D):
             if orientation == "up":
                 self.dir_panel.scroll_up()
 
-            else: self.dir_panel.scroll_down()
+            else:
+                self.dir_panel.scroll_down()
 
         ### if inside bookmark panel, scroll it
 
@@ -445,7 +440,8 @@ class FileManagerOperations(Object2D):
             if orientation == "up":
                 self.bkm_panel.scroll_up()
 
-            else: self.bkm_panel.scroll_down()
+            else:
+                self.bkm_panel.scroll_down()
 
     def draw(self):
         """Draw different objects/groups and update screen."""
@@ -457,7 +453,7 @@ class FileManagerOperations(Object2D):
 
         self.buttons.draw()
 
-        update() # pygame.display.update
+        update()  # pygame.display.update
 
     def store_current_selection(self):
         """Retrieve path info and store it."""
@@ -490,10 +486,7 @@ class FileManagerOperations(Object2D):
 
         if len(path_selection) > 1:
 
-            text = ', '.join(
-                          path.name
-                          for path in path_selection
-                        )
+            text = ", ".join(path.name for path in path_selection)
 
         ### otherwise...
 
@@ -501,7 +494,8 @@ class FileManagerOperations(Object2D):
 
             ### try assigning the name of the first path
             ### as the text
-            try: text = path_selection[0].name
+            try:
+                text = path_selection[0].name
 
             ### if it fails, though, then use an empty
             ### string as the text
@@ -554,7 +548,8 @@ class FileManagerOperations(Object2D):
         ### stores the path formed by the current loaded
         ### folder joined by the entry contents which we
         ### set below
-        if name: self.entry.set(name)
+        if name:
+            self.entry.set(name)
 
     def store_given_path(self, path):
         """Store given path as selected one."""
@@ -564,11 +559,11 @@ class FileManagerOperations(Object2D):
 
     def submit_selected(self):
         """If a path is stored, exit local loop."""
-        if self.path_selection: self.running = False
+        if self.path_selection:
+            self.running = False
 
-        else: create_and_show_dialog(
-                "No path(s) were selected."
-              )
+        else:
+            create_and_show_dialog("No path(s) were selected.")
 
     def submit_from_entry(self):
         """If a entry has a path name, exit local loop."""
@@ -577,17 +572,19 @@ class FileManagerOperations(Object2D):
 
         ### if there's a selection, it means the entry
         ### isn't empty, so we can exit the local loop
-        if self.path_selection: self.running = False
+        if self.path_selection:
+            self.running = False
 
         ### otherwise, we display a proper message
         ### explaining that we can't exit the loop yet
         ### because no path was typed in the entry or
         ### selected
-        else: create_and_show_dialog(
+        else:
+            create_and_show_dialog(
                 "You must either type a name for a new"
                 " file/folder in the entry or select an"
                 " existing file/folder"
-              )
+            )
 
     def cancel(self):
         """Cancel selecting/creating path.

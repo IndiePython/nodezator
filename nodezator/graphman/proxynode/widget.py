@@ -27,9 +27,9 @@ from ..socket.surfs import type_to_codename
 from .utils import update_with_widget
 
 from .surfs import (
-                                ADD_BUTTON_SURF,
-                                REMOVE_BUTTON_SURF,
-                              )
+    ADD_BUTTON_SURF,
+    REMOVE_BUTTON_SURF,
+)
 
 
 class WidgetOps:
@@ -39,12 +39,10 @@ class WidgetOps:
         """Instantiate a widget for the node."""
         add_button = self.add_button
 
-        viz_objs         = self.visual_objects
+        viz_objs = self.visual_objects
         mouse_aware_objs = self.mouse_aware_objects
 
-        rectsman_rects = (
-          self.rectsman._get_all_rects.__self__
-        )
+        rectsman_rects = self.rectsman._get_all_rects.__self__
 
         ###
 
@@ -55,26 +53,22 @@ class WidgetOps:
 
         ### create "remove widget" button
 
-        remove_button = self.remove_button = (
-
-          Button(
-            surface = REMOVE_BUTTON_SURF,
-            command = self.remove_widget,
-          )
-
+        remove_button = self.remove_button = Button(
+            surface=REMOVE_BUTTON_SURF,
+            command=self.remove_widget,
         )
 
         ### add the widget data to the node's data
-        self.data['widget_data'] = widget_data
+        self.data["widget_data"] = widget_data
 
         ### retrieve widget class using the widget
         ### name from the parameter widget metadata
 
-        widget_name = widget_data['widget_name']
-        widget_cls  = WIDGET_CLASS_MAP[widget_name]
+        widget_name = widget_data["widget_name"]
+        widget_cls = WIDGET_CLASS_MAP[widget_name]
 
         ### retrieve the keyword arguments
-        kwargs = widget_data['widget_kwargs']
+        kwargs = widget_data["widget_kwargs"]
 
         ### instantiate the widget using the keyword
         ### arguments from the widget data
@@ -84,18 +78,18 @@ class WidgetOps:
         ### widget value and perform other related
         ### admin tasks
 
-        command = CallList([
-                    partial(
-                      update_with_widget,
-                      kwargs,
-                      'value',
-                      widget,
-                    ),
-
-                    self.check_header_width,
-                    self.update_remove_button_pos,
-
-                  ])
+        command = CallList(
+            [
+                partial(
+                    update_with_widget,
+                    kwargs,
+                    "value",
+                    widget,
+                ),
+                self.check_header_width,
+                self.update_remove_button_pos,
+            ]
+        )
 
         widget.command = command
 
@@ -116,47 +110,41 @@ class WidgetOps:
         ### reposition all objects within the node
         self.reposition_elements()
 
-
         ### update sockets type_codename if needed
 
-        try: self.data['source_type_codename']
+        try:
+            self.data["source_type_codename"]
 
         except KeyError:
 
             expected_type = widget.get_expected_type()
 
-            type_codename = (
-              type_to_codename(expected_type)
-            )
+            type_codename = type_to_codename(expected_type)
 
             output_socket = self.output_socket
 
-            output_socket.update_type_codename(
-                            type_codename
-                          )
+            output_socket.update_type_codename(type_codename)
 
             self.propagate_output(
-                   self.title,
-                   type_codename,
-                 )
+                self.title,
+                type_codename,
+            )
 
         ### indicate that changes were made in the data
         indicate_unsaved()
 
     def remove_widget(self):
         """Remove existing widget."""
-        widget        = self.widget
+        widget = self.widget
         remove_button = self.remove_button
 
-        viz_objs         = self.visual_objects
+        viz_objs = self.visual_objects
         mouse_aware_objs = self.mouse_aware_objects
 
-        rectsman_rects = (
-          self.rectsman._get_all_rects.__self__
-        )
+        rectsman_rects = self.rectsman._get_all_rects.__self__
 
-        for name in ('widget', 'remove_button'):
-            
+        for name in ("widget", "remove_button"):
+
             obj = getattr(self, name)
 
             delattr(self, name)
@@ -166,36 +154,18 @@ class WidgetOps:
 
             remove_by_identity(obj.rect, rectsman_rects)
 
-
         ### remove the widget data
-        del self.data['widget_data']
+        del self.data["widget_data"]
 
         ### create and store add_button
 
-        command = (
-
-          partial(
-
-            (
-              APP_REFS
-              .ea
-              .widget_creation_popup_menu
-              .trigger_simple_widget_picking
-            ),
-
-            self
-
-          )
-
+        command = partial(
+            (APP_REFS.ea.widget_creation_popup_menu.trigger_simple_widget_picking), self
         )
 
-        add_button = self.add_button = (
-
-          Button(
+        add_button = self.add_button = Button(
             surface=ADD_BUTTON_SURF,
             command=command,
-          )
-
         )
 
         ## add add_button and its rect to relevant
@@ -211,10 +181,10 @@ class WidgetOps:
         ### reposition all objects within the node
         self.reposition_elements()
 
-
         ### update sockets type_codename if needed
 
-        try: self.data['source_type_codename']
+        try:
+            self.data["source_type_codename"]
 
         except KeyError:
 
@@ -222,14 +192,12 @@ class WidgetOps:
 
             output_socket = self.output_socket
 
-            output_socket.update_type_codename(
-                            type_codename
-                          )
+            output_socket.update_type_codename(type_codename)
 
             self.propagate_output(
-                   self.title,
-                   type_codename,
-                 )
+                self.title,
+                type_codename,
+            )
 
         ### indicate that changes were made in the data
         indicate_unsaved()

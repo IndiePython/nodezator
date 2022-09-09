@@ -31,9 +31,9 @@ from pathlib import Path
 ### local imports
 
 from ...ourstdlibs.dictutils import (
-                            settings_to_hashable_repr,
-                            hashable_repr_to_settings,
-                          )
+    settings_to_hashable_repr,
+    hashable_repr_to_settings,
+)
 
 from .render import render_font_preview
 
@@ -43,7 +43,7 @@ class FontPreviewsDatabase(dict):
 
     Extends the built-in dict.
     """
-    
+
     def __missing__(self, key):
         """Create, store and return dict for given key.
 
@@ -59,13 +59,10 @@ class FontPreviewsDatabase(dict):
         ### we create a surface map for the key, store and
         ### return it
 
-        font_preview_surface_map = self[key] = (
-
-          FontPreviewSurfaceMap(key)
-
-        )
+        font_preview_surface_map = self[key] = FontPreviewSurfaceMap(key)
 
         return font_preview_surface_map
+
 
 FONT_PREVIEWS_DB = FontPreviewsDatabase()
 
@@ -97,15 +94,14 @@ class FontPreviewSurfaceMap(dict):
         """
         ### convert the render settings (a dict) to a custom
         ### tuple representing them, to use as dictionary key
-        tuple_key = (
-          settings_to_hashable_repr(font_settings)
-        )
+        tuple_key = settings_to_hashable_repr(font_settings)
 
         ### try returning the value for the tuple we
         ### just obtained, which, if existent, should
         ### be a surface rendered with the corresponding
         ### settings
-        try: return super().__getitem__(tuple_key)
+        try:
+            return super().__getitem__(tuple_key)
 
         ### if such value doesn't exist (a key error is
         ### raised), we create the corresponding surface,
@@ -115,19 +111,12 @@ class FontPreviewSurfaceMap(dict):
         except KeyError:
 
             return self.setdefault(
-
-                          tuple_key,
-
-                          render_font_preview(
-                            self.font_path,
-                            **font_settings
-
-                          )
-
-                        )
+                tuple_key, render_font_preview(self.font_path, **font_settings)
+            )
 
 
 ###
+
 
 def update_cache_for_font_preview(font_path):
 
@@ -140,12 +129,10 @@ def update_cache_for_font_preview(font_path):
 
         old_surf = surf_map[font_settings]
 
-        new_surf = render_font_preview(
-                     font_path,
-                     **font_settings
-                   )
+        new_surf = render_font_preview(font_path, **font_settings)
 
         if old_surf.get_size() == new_surf.get_size():
             old_surf.blit(new_surf, (0, 0))
 
-        else: surf_map[key] = new_surf
+        else:
+            surf_map[key] = new_surf

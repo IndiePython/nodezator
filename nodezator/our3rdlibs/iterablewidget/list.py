@@ -7,9 +7,9 @@ from math import inf as INFINITY
 ### local imports
 
 from ...ourstdlibs.behaviour import (
-                                   empty_function,
-                                   get_oblivious_callable,
-                                 )
+    empty_function,
+    get_oblivious_callable,
+)
 
 from ...classes2d.single import Object2D
 from ...classes2d.collections import List2D
@@ -20,8 +20,8 @@ from .surfs import ADD_BUTTON_SURF
 
 ## class extension
 from .op import (
-                             ListWidgetLifetimeOperations,
-                           )
+    ListWidgetLifetimeOperations,
+)
 
 
 class ListWidget(ListWidgetLifetimeOperations):
@@ -32,19 +32,19 @@ class ListWidget(ListWidgetLifetimeOperations):
     """
 
     def __init__(
-          self,
-          widget_factory,
-          default_factory,
-          value=(),
-          min_len=0,
-          max_len=INFINITY,
-          name="widget_list",
-          command=empty_function,
-          quantity_command=empty_function,
-          vertical_padding=5,
-          coordinates_name="topleft",
-          coordinates_value=(0, 0),
-        ):
+        self,
+        widget_factory,
+        default_factory,
+        value=(),
+        min_len=0,
+        max_len=INFINITY,
+        name="widget_list",
+        command=empty_function,
+        quantity_command=empty_function,
+        vertical_padding=5,
+        coordinates_name="topleft",
+        coordinates_value=(0, 0),
+    ):
         """
         item_factory (callable)
             used as a factory function to generate a new
@@ -102,8 +102,8 @@ class ListWidget(ListWidgetLifetimeOperations):
         if not length >= self.min_len:
 
             msg = (
-              "length of 'value' provided is lower than the"
-              " specified minimum length ({} < {})"
+                "length of 'value' provided is lower than the"
+                " specified minimum length ({} < {})"
             ).format(length, self.min_len)
 
             raise ValueError(msg)
@@ -111,15 +111,15 @@ class ListWidget(ListWidgetLifetimeOperations):
         if not length <= self.max_len:
 
             msg = (
-              "length of 'value' provided is higher than"
-              " the specified maximum length ({} > {})"
+                "length of 'value' provided is higher than"
+                " the specified maximum length ({} > {})"
             ).format(length, self.max_len)
 
             raise ValueError(msg)
 
         ### store the commands
 
-        self._command          = command
+        self._command = command
         self.quantity_command = quantity_command
 
         ### store the vertical padding
@@ -130,7 +130,7 @@ class ListWidget(ListWidgetLifetimeOperations):
 
         ### store the widget and default factory callables
 
-        self.widget_factory  = widget_factory
+        self.widget_factory = widget_factory
         self.default_factory = default_factory
 
         ### create a list to hold all objects
@@ -138,16 +138,13 @@ class ListWidget(ListWidgetLifetimeOperations):
 
         ### instantiate and store an "add button"
 
-        add_on_mouse_release = get_oblivious_callable(
-                                 self.add_item
-                               )
+        add_on_mouse_release = get_oblivious_callable(self.add_item)
 
-        self.add_button = \
-          Object2D(
+        self.add_button = Object2D(
             image=ADD_BUTTON_SURF,
             rect=ADD_BUTTON_SURF.get_rect(),
             on_mouse_release=add_on_mouse_release,
-          )
+        )
 
         ### also append it to the list of objects and
         ### clickable
@@ -157,16 +154,16 @@ class ListWidget(ListWidgetLifetimeOperations):
         ### rectsman protocol (check rectsman subpackage
         ### for more info on that);
         ###
-        ### also, though I can control all items plus the 
-        ### add button with the rects manager of the 
-        ### List2D instance in the "all_objects" 
-        ### attribute, having a dedicated rects manager 
-        ### instance may be useful in case I decide to add 
-        ### other aesthetic elements, like a custom 
-        ### background (in which case I'd need a create an 
-        ### additional "rect" and would not want to add it 
-        ### to the "all_objects" list, I'd just keep it 
-        ### elsewhere as yield it in the "get_all_rects" 
+        ### also, though I can control all items plus the
+        ### add button with the rects manager of the
+        ### List2D instance in the "all_objects"
+        ### attribute, having a dedicated rects manager
+        ### instance may be useful in case I decide to add
+        ### other aesthetic elements, like a custom
+        ### background (in which case I'd need a create an
+        ### additional "rect" and would not want to add it
+        ### to the "all_objects" list, I'd just keep it
+        ### elsewhere as yield it in the "get_all_rects"
         ### method)
         self._rects_man = RectsManager(self.get_all_rects)
 
@@ -181,9 +178,7 @@ class ListWidget(ListWidgetLifetimeOperations):
         ### position this instance using its rect property
         ### and the given coordinates
 
-        setattr(
-          self.rect, coordinates_name, coordinates_value
-        )
+        setattr(self.rect, coordinates_name, coordinates_value)
 
     rect = rect_property
 
@@ -206,11 +201,7 @@ class ListWidget(ListWidgetLifetimeOperations):
         ## the widget which sits at the index 2 of each
         ## item
 
-        widgets = (
-          item[2]
-          for item in self.all_objects
-          if item is not self.add_button
-        )
+        widgets = (item[2] for item in self.all_objects if item is not self.add_button)
 
         ## set the command of each widget to the new one
         for widget in widgets:

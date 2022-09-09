@@ -15,11 +15,7 @@ class NestedObjectFromDict:
         ###
 
         to_change = [
-
-          (key, value)
-          for key, value in d.items()
-          if isinstance(value, Mapping)
-
+            (key, value) for key, value in d.items() if isinstance(value, Mapping)
         ]
 
         ###
@@ -32,14 +28,15 @@ class NestedObjectFromDict:
 
         for key, value in d.items():
 
-            if (key, value) in to_change: continue
+            if (key, value) in to_change:
+                continue
 
             setattr(self, key, value)
 
     def __repr__(self):
-        
-        middle = ''
-        for key, value in self.__dict__.items():
-            middle += f'{key!r}={value!r}, '
 
-        return f'{self.__class__.__name__}({middle[:-1]})'
+        middle = ""
+        for key, value in self.__dict__.items():
+            middle += f"{key!r}={value!r}, "
+
+        return f"{self.__class__.__name__}({middle[:-1]})"

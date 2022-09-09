@@ -16,11 +16,12 @@ from pygame.display import get_caption, set_caption
 from ..config import APP_REFS
 
 from ..pygameconstants import (
-                       _CLOCK,
-                       SCREEN,
-                       SCREEN_RECT,
-                       SCREEN_WIDTH, SCREEN_HEIGHT,
-                     )
+    _CLOCK,
+    SCREEN,
+    SCREEN_RECT,
+    SCREEN_WIDTH,
+    SCREEN_HEIGHT,
+)
 
 from ..loopman.exception import QuitAppException
 
@@ -37,20 +38,25 @@ APP_REFS.screen_size = (SCREEN_WIDTH, SCREEN_HEIGHT)
 
 ### utility functions
 
-set_status_message = \
-    partial(setattr, APP_REFS, 'status_message')
+set_status_message = partial(setattr, APP_REFS, "status_message")
+
 
 def set_status_message_from_key(key):
     set_status_message(STATUS_MESSAGES_MAP[key])
 
+
 def remove_buffer():
     """Remove swap file if present."""
-    try: APP_REFS.swap_path.unlink()
-    except AttributeError: pass
+    try:
+        APP_REFS.swap_path.unlink()
+    except AttributeError:
+        pass
+
 
 def quit_app():
     """Raise a quit app exception."""
     raise QuitAppException
+
 
 def are_changes_saved():
     """Return True if there are no unsaved changes."""
@@ -60,7 +66,9 @@ def are_changes_saved():
     ### the absence of a '*' character at the beginning
     ### of the window title marks the absence of unsaved
     ### changes
-    if not title.startswith("*"): return True
+    if not title.startswith("*"):
+        return True
+
 
 def toggle_caption(indicate_saved):
     """Toggle caption to indicate saved/unsaved state.
@@ -80,7 +88,7 @@ def toggle_caption(indicate_saved):
 
         if not are_changes_saved():
 
-            title     = title    [1:]
+            title = title[1:]
             icontitle = icontitle[1:]
 
     ### add asterisk
@@ -89,14 +97,15 @@ def toggle_caption(indicate_saved):
 
         if are_changes_saved():
 
-            title     = "*" + title
+            title = "*" + title
             icontitle = "*" + icontitle
 
     ### set the caption using the resulting
     ### title and icontitle
     set_caption(title, icontitle)
 
-indicate_saved   = partial(toggle_caption, True)
+
+indicate_saved = partial(toggle_caption, True)
 indicate_unsaved = partial(toggle_caption, False)
 
 
@@ -112,7 +121,8 @@ def saved_or_unsaved_state_kept():
     changes_were_saved = are_changes_saved()
 
     ### enter context
-    try: yield
+    try:
+        yield
 
     ### now that we left the context, restore the state
     ### if it is different from when it was at the
@@ -128,6 +138,7 @@ def saved_or_unsaved_state_kept():
         elif not changes_were_saved and changes_are_saved:
             indicate_unsaved()
 
+
 def get_current_fps():
     """Return current fps custom formatted.
 
@@ -138,6 +149,7 @@ def get_current_fps():
     29.18484242 -> '29'
     """
     return str(round(_CLOCK.get_fps())).rjust(2, "0")
+
 
 def watch_window_size():
     """Perform setups needed if window was resized."""
@@ -164,11 +176,9 @@ def watch_window_size():
         ### do so and delete the request
 
         if hasattr(
-
-          APP_REFS,
-          'draw_after_window_resize_setups',
-
+            APP_REFS,
+            "draw_after_window_resize_setups",
         ):
-            
+
             APP_REFS.draw_after_window_resize_setups()
             del APP_REFS.draw_after_window_resize_setups

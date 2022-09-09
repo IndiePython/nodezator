@@ -31,6 +31,7 @@ POINT_DISTANCE = 20
 ## operation to get a colored particle surface given the
 ## color and height
 
+
 def get_colored_particle_surf(icon_ordinal, height, color):
     """Return surface representing colored character.
 
@@ -50,13 +51,12 @@ def get_colored_particle_surf(icon_ordinal, height, color):
         respectively and are all in range(256).
     """
     return render_layered_icon(
-             chars = [chr(icon_ordinal)],
+        chars=[chr(icon_ordinal)],
+        dimension_name="height",
+        dimension_value=height,
+        colors=[color],
+    )
 
-             dimension_name  = 'height',
-             dimension_value = height,
-
-             colors =[color]
-           )
 
 ## function to return an integer representing a random
 ## distance in pixels to move from a given location;
@@ -64,14 +64,14 @@ def get_colored_particle_surf(icon_ordinal, height, color):
 ## offset points can never reach each other
 
 min_value = (POINT_DISTANCE // 2) * -1
-max_value =  POINT_DISTANCE // 2
+max_value = POINT_DISTANCE // 2
 
-random_distance = \
-    lambda: choice(range(min_value, max_value + 1))
+random_distance = lambda: choice(range(min_value, max_value + 1))
 
 
 ## function to return population with arithmetically
 ## increased number of items
+
 
 def increase_item_count(a_list, step=1):
     """Return list w/ arithmetically increased count of items.
@@ -102,7 +102,7 @@ def increase_item_count(a_list, step=1):
     ### such integers represent increasing item counts
 
     start = 1
-    stop  = (len(a_list) * step) + 1
+    stop = (len(a_list) * step) + 1
 
     item_counts = range(start, stop, step)
 
@@ -119,6 +119,7 @@ def increase_item_count(a_list, step=1):
 
 
 ### main function
+
 
 def draw_particles(icon_ordinal, heights, canvas_surf, colors):
     """Draw particles of varying sizes, colors and locations.
@@ -142,16 +143,13 @@ def draw_particles(icon_ordinal, heights, canvas_surf, colors):
     ### draw a gradient on the canvas
 
     draw_linear_gradient(
-
-      canvas_surf,
-      colors[0],
-
-      start_percentage         = 0.125,
-      stop_percentage          = 1,
-      max_lightness_percentage = .7,
-      min_lightness_percentage = .5,
-      direction                = 'left_to_right'
-
+        canvas_surf,
+        colors[0],
+        start_percentage=0.125,
+        stop_percentage=1,
+        max_lightness_percentage=0.7,
+        min_lightness_percentage=0.5,
+        direction="left_to_right",
     )
 
     ### obtain a new color list from the given one, in which
@@ -163,34 +161,24 @@ def draw_particles(icon_ordinal, heights, canvas_surf, colors):
     ### point to particle surfaces of that color and height
 
     height_to_colors = {
-
-      ## keys of this dictionary are the different heights
-      ## of particle surfaces
-
-      height : {
-
-        ## such height keys point to inner dictionaries
-        ## where keys are tuple instances representing a
-        ## color which points to particle surfaces filled
-        ## with that color and the height which points to
-        ## this dict
-
-        color : get_colored_particle_surf(
-                  icon_ordinal, height, color
-                )
-
-        ## the inner dict is built by iterating over the
-        ## colors
-        for color in colors
-
-      }
-
-      ## the outer dict is built by iterating over the
-      ## heights
-      for height in heights
-
+        ## keys of this dictionary are the different heights
+        ## of particle surfaces
+        height: {
+            ## such height keys point to inner dictionaries
+            ## where keys are tuple instances representing a
+            ## color which points to particle surfaces filled
+            ## with that color and the height which points to
+            ## this dict
+            color: get_colored_particle_surf(icon_ordinal, height, color)
+            ## the inner dict is built by iterating over the
+            ## colors
+            for color in colors
+        }
+        ## the outer dict is built by iterating over the
+        ## heights
+        for height in heights
     }
-        
+
     ### calculate all spots (points) in a rect larger than
     ### the canvas which are distant from each other by the
     ### POINT_DISTANCE and offset by a random distance
@@ -201,10 +189,7 @@ def draw_particles(icon_ordinal, heights, canvas_surf, colors):
     ## make a copy from it, inflated in both dimensions
     ## by 4 times the point distance
 
-    larger_rect = canvas_rect.inflate(
-                                POINT_DISTANCE * 4,
-                                POINT_DISTANCE * 4
-                              )
+    larger_rect = canvas_rect.inflate(POINT_DISTANCE * 4, POINT_DISTANCE * 4)
 
     ## finally align the center of the larger/inflated rect
     ## with the center from the canvas rect
@@ -213,25 +198,16 @@ def draw_particles(icon_ordinal, heights, canvas_surf, colors):
     ## obtain the range from one boundary to another in
     ## both x and y axes
 
-    x_range = range(
-                larger_rect.left, larger_rect.right,
-                POINT_DISTANCE
-              )
+    x_range = range(larger_rect.left, larger_rect.right, POINT_DISTANCE)
 
-    y_range = range(
-                larger_rect.top, larger_rect.bottom,
-                POINT_DISTANCE
-              )
+    y_range = range(larger_rect.top, larger_rect.bottom, POINT_DISTANCE)
 
     ## finally store all points in a list, offsetting the
     ## actual x and y values by a random distance
 
     all_spots = [
-      (x + random_distance(), y + random_distance())
-      for x in x_range
-      for y in y_range
+        (x + random_distance(), y + random_distance()) for x in x_range for y in y_range
     ]
-
 
     ### calculate spots (points) in a new medium area within
     ### the canvas, align to the canvas' midright, which
@@ -250,7 +226,7 @@ def draw_particles(icon_ordinal, heights, canvas_surf, colors):
     ## perform size transformations
 
     medium_area.width //= 3
-    medium_area.width  *= 2
+    medium_area.width *= 2
 
     medium_area.inflate_ip(-POINT_DISTANCE, -POINT_DISTANCE)
 
@@ -268,11 +244,7 @@ def draw_particles(icon_ordinal, heights, canvas_surf, colors):
     ## all spots, only using points within the radius
     ## previously obtained
 
-    less_spots = [
-      spot
-      for spot in all_spots
-      if center.distance_to(spot) <= radius
-    ]
+    less_spots = [spot for spot in all_spots if center.distance_to(spot) <= radius]
 
     ### calculate spots (points) in an even smaller area
     ### this time within the previously created area;
@@ -287,11 +259,8 @@ def draw_particles(icon_ordinal, heights, canvas_surf, colors):
     ## its size
 
     small_area = medium_area.inflate(
-                   tuple(
-                     (dimension // 2) * -1
-                     for dimension in medium_area.size
-                   )
-                 )
+        tuple((dimension // 2) * -1 for dimension in medium_area.size)
+    )
 
     ## obtain a 2d vector from the area's center and also
     ## calculate its distance to the topright coordinates
@@ -303,16 +272,10 @@ def draw_particles(icon_ordinal, heights, canvas_surf, colors):
     ## all spots, only using points within the radius
     ## previously obtained
 
-    even_less_spots = [
-      spot
-      for spot in all_spots
-      if center.distance_to(spot) <= radius
-    ]
-
+    even_less_spots = [spot for spot in all_spots if center.distance_to(spot) <= radius]
 
     ### separate the first color from the remaining ones
     first_color, *other_colors = colors
-
 
     ### obtain a new function which returns the next
     ### color to use from the given colors;
@@ -328,7 +291,7 @@ def draw_particles(icon_ordinal, heights, canvas_surf, colors):
     ## the last ones
 
     if other_colors:
-        
+
         ## obtain a list representing a population of
         ## colors with colors repeating themselves in
         ## different proportions;
@@ -339,8 +302,7 @@ def draw_particles(icon_ordinal, heights, canvas_surf, colors):
         ## repeated more times; once the function returns,
         ## we reverse it again so the original first colors
         ## appear back at the beginning
-        color_population = \
-                    increase_item_count(colors[::-1])[::-1]
+        color_population = increase_item_count(colors[::-1])[::-1]
 
         ## finally, create the function which picks a
         ## color from the population at almost at
@@ -351,8 +313,8 @@ def draw_particles(icon_ordinal, heights, canvas_surf, colors):
 
     ## otherwise the function keeps returning the first
     ## color (since it is the only color)
-    else: next_color = lambda: first_color
-
+    else:
+        next_color = lambda: first_color
 
     ### for each pair of height/list of spots, draw
     ### particles of that height in varied colors on the
@@ -363,11 +325,8 @@ def draw_particles(icon_ordinal, heights, canvas_surf, colors):
     ### ones, making the larger ones appear closer to the
     ### screen
 
-    for height, spots in zip(
-      heights,
-      (all_spots, less_spots, even_less_spots)
-    ):
-        
+    for height, spots in zip(heights, (all_spots, less_spots, even_less_spots)):
+
         ## reference the dict with particle surfaces for
         ## each color locally, all surfaces being of the
         ## specified height
@@ -375,7 +334,7 @@ def draw_particles(icon_ordinal, heights, canvas_surf, colors):
 
         ## sample the given spots proportionally to their
         ## quantity
-        spot_samples = sample(spots, len(spots)//10)
+        spot_samples = sample(spots, len(spots) // 10)
 
         ## iterate over the sampled spots, retrieving a
         ## particle surface of the next given color each
@@ -383,11 +342,10 @@ def draw_particles(icon_ordinal, heights, canvas_surf, colors):
         ## canvas
 
         for spot in spot_samples:
-            
-            particle_surf = color_to_surfs[next_color()]
-            
-            canvas_surf.blit(particle_surf, spot)
 
+            particle_surf = color_to_surfs[next_color()]
+
+            canvas_surf.blit(particle_surf, spot)
 
     ### uncomment lines below to draw visual representations
     ### of the different areas in the canvas surface
@@ -400,8 +358,4 @@ def draw_particles(icon_ordinal, heights, canvas_surf, colors):
 
 ### partial implementation of the draw_particles function
 
-draw_circles = partial(
-                 draw_particles,
-                 101,
-                 [18, 26, 34]
-               )
+draw_circles = partial(draw_particles, 101, [18, 26, 34])

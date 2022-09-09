@@ -4,7 +4,7 @@
 
 from time import time
 
-from contextlib import contextmanager 
+from contextlib import contextmanager
 
 from functools import wraps
 
@@ -17,10 +17,7 @@ from .pyl import load_pyl, save_pyl
 
 
 @contextmanager
-def elapsed_time_printed(
-      current_time_func=time,
-      formatter=friendly_delta_from_secs
-    ):
+def elapsed_time_printed(current_time_func=time, formatter=friendly_delta_from_secs):
     """Print time elapsed during "with block" execution.
 
     That is, print the time between the beginning
@@ -51,19 +48,20 @@ def elapsed_time_printed(
     ### print formated execution time
     print(formatter(execution_time))
 
+
 def get_time_tracking_ctman(
-      filepath,
-      profiling_title="Different ways of doing a task",
-      solution_title="Solution A",
-      quantity_at_which_to_save=10,
-      current_time_func=time
-    ):
+    filepath,
+    profiling_title="Different ways of doing a task",
+    solution_title="Solution A",
+    quantity_at_which_to_save=10,
+    current_time_func=time,
+):
     """Return context manager which stores time intervals.
 
     Returns a function similar to elapsed_time_printed(),
     but instead of printing the time interval, every time
     it is used it stores the interval.
-    
+
     Once a predefined number of intervals are stored, the
     intervals are saved in a custom .json file using the
     save_intervals() function.
@@ -105,29 +103,25 @@ def get_time_tracking_ctman(
 
         if len(intervals) == quantity_at_which_to_save:
 
-            save_intervals(
-              intervals,
-              filepath,
-              profiling_title,
-              solution_title
-            )
+            save_intervals(intervals, filepath, profiling_title, solution_title)
 
     return execution_time_stored
 
+
 def get_time_tracking_deco(
-      filepath,
-      profiling_title="Different ways of doing a task",
-      solution_title="Solution A",
-      quantity_at_which_to_save=10,
-      current_time_func=time
-    ):
+    filepath,
+    profiling_title="Different ways of doing a task",
+    solution_title="Solution A",
+    quantity_at_which_to_save=10,
+    current_time_func=time,
+):
     """Return decorator function which stores time intervals.
 
     Works just like get_time_tracking_ctman(), but instead
     of returning a context manager, it returns a decorator
     function instead, which stores the execution time of
     each run of the callable decorated.
-    
+
     Parameters
     ==========
     Same parameters as in get_time_tracking_ctman() as
@@ -165,12 +159,7 @@ def get_time_tracking_deco(
 
             if len(intervals) == quantity_at_which_to_save:
 
-                save_intervals(
-                  intervals,
-                  filepath,
-                  profiling_title,
-                  solution_title
-                )
+                save_intervals(intervals, filepath, profiling_title, solution_title)
 
         ### return the wrapper function
         return time_tracking_wrapper
@@ -178,12 +167,13 @@ def get_time_tracking_deco(
     ### return the decorator function
     return time_tracking_decorator
 
+
 def save_intervals(
-      intervals,
-      filepath,
-      profiling_title="Different ways of doing a task",
-      solution_title="Solution A",
-    ):
+    intervals,
+    filepath,
+    profiling_title="Different ways of doing a task",
+    solution_title="Solution A",
+):
     """Save intervals in custom .json format.
 
     Works by saving the given intervals (a list of floats)
@@ -215,16 +205,19 @@ def save_intervals(
         solution.
     """
     ### try loading the json data from the given path
-    try: data = load_pyl(filepath)
+    try:
+        data = load_pyl(filepath)
 
     ### create it if it doesn't exist
-    except FileNotFoundError: data = {}
+    except FileNotFoundError:
+        data = {}
 
     ### store the given data
 
     ## try retrieving the dictionary where the group data is
     ## stored
-    try: group_data = data[profiling_title]
+    try:
+        group_data = data[profiling_title]
 
     ## create it if it doesn't exist
     except KeyError:

@@ -3,22 +3,21 @@
 ### third-party imports
 
 from pygame import (
+    QUIT,
+    KEYDOWN,
+    KMOD_CTRL,
+    KMOD_SHIFT,
+    K_w,
+    K_n,
+    K_o,
+    K_j,
+    KEYUP,
+    K_F1,
+    MOUSEMOTION,
+    MOUSEBUTTONUP,
+)
 
-              QUIT,
-
-              KEYDOWN,
-              KMOD_CTRL, KMOD_SHIFT, K_w, K_n, K_o,
-
-              K_j,
-
-              KEYUP, K_F1,
-
-              MOUSEMOTION,
-              MOUSEBUTTONUP,
-
-            )
-
-from pygame.event   import get as get_events
+from pygame.event import get as get_events
 from pygame.display import update
 
 
@@ -27,9 +26,9 @@ from pygame.display import update
 from ...config import APP_REFS
 
 from ...loopman.exception import (
-                         QuitAppException,
-                         SwitchLoopException,
-                       )
+    QuitAppException,
+    SwitchLoopException,
+)
 
 from ...htsl.main import open_htsl_link
 
@@ -42,7 +41,8 @@ class NoFileState:
         for event in get_events():
 
             ### QUIT
-            if event.type == QUIT: raise QuitAppException
+            if event.type == QUIT:
+                raise QuitAppException
 
             ### MOUSEMOTION
 
@@ -57,26 +57,18 @@ class NoFileState:
             ### KEYUP
 
             elif event.type == KEYUP:
-                
+
                 if event.key == K_F1:
 
-                    open_htsl_link(
-                      'htap://help.nodezator.pysite'
-                    )
+                    open_htsl_link("htap://help.nodezator.pysite")
 
                 elif (
-
-                      event.key == K_j
-                  and event.mod  & KMOD_CTRL
-                  and event.mod  & KMOD_SHIFT
-
+                    event.key == K_j
+                    and event.mod & KMOD_CTRL
+                    and event.mod & KMOD_SHIFT
                 ):
 
-                    (
-                      APP_REFS
-                      .ea
-                      .show_user_log_contents()
-                    )
+                    (APP_REFS.ea.show_user_log_contents())
 
             ### KEYDOWN
 
@@ -85,21 +77,20 @@ class NoFileState:
                 ## Application related operations
 
                 # quit
-                if  event.key == K_w \
-                and event.mod & KMOD_CTRL:
+                if event.key == K_w and event.mod & KMOD_CTRL:
                     raise QuitAppException
 
                 # create new file
-                elif event.key == K_n \
-                and  event.mod &  KMOD_CTRL: self.new()
+                elif event.key == K_n and event.mod & KMOD_CTRL:
+                    self.new()
 
                 # open file
-                elif event.key == K_o \
-                and  event.mod &  KMOD_CTRL: self.open()
+                elif event.key == K_o and event.mod & KMOD_CTRL:
+                    self.open()
 
     def no_file_on_mouse_motion(self, event):
         """Act based on mouse motion event.
-        
+
         event
             pygame.event.Event object of type
             pygame.MOUSEMOTION.
@@ -124,4 +115,4 @@ class NoFileState:
         self.separator.draw()
         self.menubar.draw_top_items()
 
-        update() # pygame.display.update
+        update()  # pygame.display.update

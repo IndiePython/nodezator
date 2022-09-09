@@ -7,14 +7,14 @@ from textwrap import wrap
 ### third-party imports
 
 from pygame import (
+    QUIT,
+    KEYUP,
+    K_ESCAPE,
+    MOUSEBUTTONUP,
+    MOUSEMOTION,
+)
 
-              QUIT,
-              KEYUP, K_ESCAPE,
-              MOUSEBUTTONUP, MOUSEMOTION,
-
-            )
-
-from pygame.event   import get as get_events
+from pygame.event import get as get_events
 from pygame.display import update
 
 
@@ -41,22 +41,28 @@ from .fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
 from .surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
 from .colorsman.colors import (
-
-  CONTRAST_LAYER_COLOR,
-
-  BUTTON_FG, BUTTON_BG, HOVERED_BUTTON_BG,
-
-  WINDOW_FG, WINDOW_BG,
-
-  INFO_OUTLINE, INFO_BG, INFO_ICON_OUTLINE, INFO_ICON_FG,
-
-  WARNING_OUTLINE, WARNING_BG, WARNING_ICON_OUTLINE,
-  WARNING_ICON_FG,
-  ERROR_OUTLINE, ERROR_BG, ERROR_ICON_OUTLINE, ERROR_ICON_FG,
-
-  CRITICAL_OUTLINE, CRITICAL_BG, CRITICAL_ICON_OUTLINE,
-  CRITICAL_ICON_FG,
-
+    CONTRAST_LAYER_COLOR,
+    BUTTON_FG,
+    BUTTON_BG,
+    HOVERED_BUTTON_BG,
+    WINDOW_FG,
+    WINDOW_BG,
+    INFO_OUTLINE,
+    INFO_BG,
+    INFO_ICON_OUTLINE,
+    INFO_ICON_FG,
+    WARNING_OUTLINE,
+    WARNING_BG,
+    WARNING_ICON_OUTLINE,
+    WARNING_ICON_FG,
+    ERROR_OUTLINE,
+    ERROR_BG,
+    ERROR_ICON_OUTLINE,
+    ERROR_ICON_FG,
+    CRITICAL_OUTLINE,
+    CRITICAL_BG,
+    CRITICAL_ICON_OUTLINE,
+    CRITICAL_ICON_FG,
 )
 
 # XXX the dialogs could have optional parameters to add
@@ -77,26 +83,26 @@ from .colorsman.colors import (
 ### constants
 
 NORMAL_TEXT_SETTINGS = {
-  'font_height'      : ENC_SANS_BOLD_FONT_HEIGHT,
-  'foreground_color' : WINDOW_FG,
-  'background_color' : WINDOW_BG,
-  'padding'          : 5
+    "font_height": ENC_SANS_BOLD_FONT_HEIGHT,
+    "foreground_color": WINDOW_FG,
+    "background_color": WINDOW_BG,
+    "padding": 5,
 }
 
 NORMAL_BUTTON_SETTINGS = {
-  'font_height'           : ENC_SANS_BOLD_FONT_HEIGHT,
-  'foreground_color'      : BUTTON_FG,
-  'background_color'      : BUTTON_BG,
-  'padding'               : 5,
-  'depth_finish_thickness': 1,
+    "font_height": ENC_SANS_BOLD_FONT_HEIGHT,
+    "foreground_color": BUTTON_FG,
+    "background_color": BUTTON_BG,
+    "padding": 5,
+    "depth_finish_thickness": 1,
 }
 
 HOVERED_BUTTON_SETTINGS = {
-  'font_height'           : ENC_SANS_BOLD_FONT_HEIGHT,
-  'foreground_color'      : BUTTON_FG,
-  'background_color'      : HOVERED_BUTTON_BG,
-  'padding'               : 5,
-  'depth_finish_thickness': 1,
+    "font_height": ENC_SANS_BOLD_FONT_HEIGHT,
+    "foreground_color": BUTTON_FG,
+    "background_color": HOVERED_BUTTON_BG,
+    "padding": 5,
+    "depth_finish_thickness": 1,
 }
 
 
@@ -109,91 +115,65 @@ FONT_HEIGHT = ENC_SANS_BOLD_FONT_HEIGHT
 ICON_HEIGHT = 27
 
 ICON_MAP = {
-
-  level_name : 
-
-  render_layered_icon(
-
-    chars = [chr(ordinal) for ordinal in ordinals],
-
-    dimension_name   = 'height',
-    dimension_value  = ICON_HEIGHT,
-
-    colors = colors,
-
-    background_height = ICON_HEIGHT,
-
-  )
-
-  for level_name, ordinals, colors
-
-  in (
-
-    (
-
-      'info',
-      (167, 63, 64, 168),
-      (
-        INFO_OUTLINE,
-        INFO_ICON_OUTLINE,
-        INFO_ICON_FG,
-        INFO_BG,
-      ),
-
-    ),
-
-    (
-
-        'warning',
-        (59, 69, 70, 60),
+    level_name: render_layered_icon(
+        chars=[chr(ordinal) for ordinal in ordinals],
+        dimension_name="height",
+        dimension_value=ICON_HEIGHT,
+        colors=colors,
+        background_height=ICON_HEIGHT,
+    )
+    for level_name, ordinals, colors in (
         (
-          WARNING_OUTLINE,
-          WARNING_ICON_OUTLINE,
-          WARNING_ICON_FG,
-          WARNING_BG,
+            "info",
+            (167, 63, 64, 168),
+            (
+                INFO_OUTLINE,
+                INFO_ICON_OUTLINE,
+                INFO_ICON_FG,
+                INFO_BG,
+            ),
         ),
-
-    ),
-
-    (
-
-        'error',
-        (167, 125, 126, 168),
         (
-          ERROR_OUTLINE,
-          ERROR_ICON_OUTLINE,
-          ERROR_ICON_FG,
-          ERROR_BG,
+            "warning",
+            (59, 69, 70, 60),
+            (
+                WARNING_OUTLINE,
+                WARNING_ICON_OUTLINE,
+                WARNING_ICON_FG,
+                WARNING_BG,
+            ),
         ),
-
-    ),
-
-    (
-
-        'critical',
-        (167, 67, 68, 168),
         (
-          CRITICAL_OUTLINE,
-          CRITICAL_ICON_OUTLINE,
-          CRITICAL_ICON_FG,
-          CRITICAL_BG,
+            "error",
+            (167, 125, 126, 168),
+            (
+                ERROR_OUTLINE,
+                ERROR_ICON_OUTLINE,
+                ERROR_ICON_FG,
+                ERROR_BG,
+            ),
         ),
-
-    ),
-
-  )
-
+        (
+            "critical",
+            (167, 67, 68, 168),
+            (
+                CRITICAL_OUTLINE,
+                CRITICAL_ICON_OUTLINE,
+                CRITICAL_ICON_FG,
+                CRITICAL_BG,
+            ),
+        ),
+    )
 }
 
-ICON_OBJECT = Object2D.from_surface(
-                         surface=ICON_MAP['info']
-                       )
+ICON_OBJECT = Object2D.from_surface(surface=ICON_MAP["info"])
 
 ### class definition
 
+
 class DialogManager(Object2D, LoopHolder):
     """Prints a message box like in tkinter.
-    
+
     This class is instantiated only once in the end of the
     module and its main method is aliased to be used
     wherever needed in the entire package.
@@ -227,7 +207,7 @@ class DialogManager(Object2D, LoopHolder):
         data = DIALOGS_MAP[key].copy()
 
         ### edit message
-        data['message'] = data['message'].format(*args)
+        data["message"] = data["message"].format(*args)
 
         ### create dialog
         return self.create_and_show_dialog(**data)
@@ -237,33 +217,24 @@ class DialogManager(Object2D, LoopHolder):
     ### also be renamed;
 
     def create_and_show_dialog(
-
-          self,
-
-          message,
-          buttons=None,
-          level_name='info',
-          unhighlighter_obj=None,
-
-          ## button layout
-
-          button_pos_from  = 'topright',
-          button_pos_to    = 'topleft',
-          button_offset_by = (10, 0),
-
-          ## dialog clamping and anchoring
-
-          clamping_rect = None,
-
-          anchor_rect      = None,
-          dialog_pos_from  = 'center',
-          dialog_pos_to    = 'center',
-          dialog_offset_by = (0, 0),
-
-          ## flag
-          dismissable = False,
-
-        ):
+        self,
+        message,
+        buttons=None,
+        level_name="info",
+        unhighlighter_obj=None,
+        ## button layout
+        button_pos_from="topright",
+        button_pos_to="topleft",
+        button_offset_by=(10, 0),
+        ## dialog clamping and anchoring
+        clamping_rect=None,
+        anchor_rect=None,
+        dialog_pos_from="center",
+        dialog_pos_to="center",
+        dialog_offset_by=(0, 0),
+        ## flag
+        dismissable=False,
+    ):
         """Create a dialog with/out buttons.
 
         Parameters
@@ -300,46 +271,37 @@ class DialogManager(Object2D, LoopHolder):
             clamping_rect = SCREEN_RECT
 
         if anchor_rect is None:
-            anchor_rect   = SCREEN_RECT
+            anchor_rect = SCREEN_RECT
 
         ### create objects and their surfaces/rects
 
         self.create_message(message)
 
         self.create_buttons(
-               buttons,
-               button_pos_from,
-               button_pos_to,
-               button_offset_by,
-             )
+            buttons,
+            button_pos_from,
+            button_pos_to,
+            button_offset_by,
+        )
 
         self.create_and_position_dialog(
-               level_name,
-               clamping_rect,
-               anchor_rect,
-               dialog_pos_from,
-               dialog_pos_to,
-               dialog_offset_by,
-             )
+            level_name,
+            clamping_rect,
+            anchor_rect,
+            dialog_pos_from,
+            dialog_pos_to,
+            dialog_offset_by,
+        )
 
-        self.rect_sized_semitransp_obj = (
-
-          Object2D.from_surface(
-
-                     surface=(
-
-                       render_rect(
-                         *self.rect.size,
-                         (*CONTRAST_LAYER_COLOR, 130),
-                       )
-
-                     ),
-
-                     coordinates_name="topleft",
-                     coordinates_value=self.rect.topleft
-
-                   )
-
+        self.rect_sized_semitransp_obj = Object2D.from_surface(
+            surface=(
+                render_rect(
+                    *self.rect.size,
+                    (*CONTRAST_LAYER_COLOR, 130),
+                )
+            ),
+            coordinates_name="topleft",
+            coordinates_value=self.rect.topleft,
         )
 
         ### store a default value
@@ -349,7 +311,7 @@ class DialogManager(Object2D, LoopHolder):
         ### to increase constrast between the dialog
         ### and whatever is behind it (making what's behind
         ### appear unhighlighted)
-        
+
         ## if an object was received, draw it
         if unhighlighter_obj is not None:
             unhighlighter_obj.draw()
@@ -357,13 +319,8 @@ class DialogManager(Object2D, LoopHolder):
         ## otherwise perform a custom operation to draw
         ## such surface
 
-        else: blit_on_screen(
-
-                UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size],
-
-                (0, 0)
-
-              )
+        else:
+            blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
 
         ### draw objects created
         self.draw_once()
@@ -409,36 +366,28 @@ class DialogManager(Object2D, LoopHolder):
         ## the objects
 
         self.message = List2D(
-
-          Object2D.from_surface(
-
-                     surface=render_text(
-                              text = string,
-                              **NORMAL_TEXT_SETTINGS
-                             )
-
-                   )
-
-          for string in (str_list)
-
+            Object2D.from_surface(
+                surface=render_text(text=string, **NORMAL_TEXT_SETTINGS)
+            )
+            for string in (str_list)
         )
 
         ### position objects relative to each other
 
         self.message.rect.snap_rects_ip(
-                            retrieve_pos_from='bottomleft',
-                            assign_pos_to='topleft',
-                          )
+            retrieve_pos_from="bottomleft",
+            assign_pos_to="topleft",
+        )
 
     def create_buttons(
-          self,
-          buttons,
-          button_pos_from,
-          button_pos_to,
-          button_offset_by,
-        ):
+        self,
+        buttons,
+        button_pos_from,
+        button_pos_to,
+        button_offset_by,
+    ):
         """Create buttons for the dialog.
-        
+
         Parameters
         ==========
 
@@ -457,35 +406,25 @@ class DialogManager(Object2D, LoopHolder):
         if buttons is None:
 
             self.buttons.append(
-
-                           CachedTextObject(
-                             text = "Ok",
-                             text_settings = (
-                               NORMAL_BUTTON_SETTINGS
-                             ),
-                             value = None,
-                           )
-
-                         )
+                CachedTextObject(
+                    text="Ok",
+                    text_settings=(NORMAL_BUTTON_SETTINGS),
+                    value=None,
+                )
+            )
 
         ### otherwise create a button for each action
 
         else:
 
             self.buttons.extend(
-
-                           CachedTextObject(
-                             text = button_text,
-                             text_settings = (
-                               NORMAL_BUTTON_SETTINGS
-                             ),
-                             value = button_value,
-                           )
-
-                           for button_text, button_value
-                           in buttons
-
-                         )
+                CachedTextObject(
+                    text=button_text,
+                    text_settings=(NORMAL_BUTTON_SETTINGS),
+                    value=button_value,
+                )
+                for button_text, button_value in buttons
+            )
 
         ### position buttons relative to each other
 
@@ -495,52 +434,44 @@ class DialogManager(Object2D, LoopHolder):
         ## rectsman.main.RectsManager method)
 
         self.buttons.rect.snap_rects_ip(
-
-          retrieve_pos_from=button_pos_from,
-          assign_pos_to=button_pos_to,
-          offset_pos_by=button_offset_by,
-
+            retrieve_pos_from=button_pos_from,
+            assign_pos_to=button_pos_to,
+            offset_pos_by=button_offset_by,
         )
 
     def create_and_position_dialog(
-          self,
-          level_name,
-          clamping_rect,
-          anchor_rect,
-          dialog_pos_from,
-          dialog_pos_to,
-          dialog_offset_by,
-        ):
+        self,
+        level_name,
+        clamping_rect,
+        anchor_rect,
+        dialog_pos_from,
+        dialog_pos_to,
+        dialog_offset_by,
+    ):
         """Create image for dialog and position it."""
         ### assign proper icon surface to icon object
         ICON_OBJECT.image = ICON_MAP[level_name]
 
         ### position message relative to icon
-        self.message.rect.midleft = (
-          ICON_OBJECT.rect.move(5, 0).midright
-        )
+        self.message.rect.midleft = ICON_OBJECT.rect.move(5, 0).midright
 
         ### group message and icons in same special list
         a_list = List2D([self.message, ICON_OBJECT])
 
         ### position buttons relative to special list
-        self.buttons.rect.midtop = (
-          a_list.rect.move(0, 8).midbottom
-        )
+        self.buttons.rect.midtop = a_list.rect.move(0, 8).midbottom
 
         ### append buttons to special list
         a_list.append(self.buttons)
 
         ### position them relative to the given anchor
 
-        offset_anchor_rect = anchor_rect.move(
-                                           dialog_offset_by
-                                         )
+        offset_anchor_rect = anchor_rect.move(dialog_offset_by)
 
         pos = getattr(
-                offset_anchor_rect,
-                dialog_pos_from,
-              )
+            offset_anchor_rect,
+            dialog_pos_from,
+        )
 
         setattr(a_list.rect, dialog_pos_to, pos)
 
@@ -551,29 +482,20 @@ class DialogManager(Object2D, LoopHolder):
         ### between the inflated copy and a new clamped
         ### copy, if any
 
-        a_list.rect.move_ip([
-
-          a - b
-
-          for a, b
-
-          in zip(
-
-               ## topleft of clamped copy
-               inflated_copy.clamp(clamping_rect).topleft,
-
-               inflated_copy.topleft,
-
-             )
-
-        ])
+        a_list.rect.move_ip(
+            [
+                a - b
+                for a, b in zip(
+                    ## topleft of clamped copy
+                    inflated_copy.clamp(clamping_rect).topleft,
+                    inflated_copy.topleft,
+                )
+            ]
+        )
 
         ### generate surf
 
-        self.image = render_rect(
-                       *inflated_copy.size,
-                       WINDOW_BG
-                     )
+        self.image = render_rect(*inflated_copy.size, WINDOW_BG)
 
         draw_border(self.image)
 
@@ -588,13 +510,10 @@ class DialogManager(Object2D, LoopHolder):
         """Retrieve and handle events."""
         for event in get_events():
 
-            if event.type == QUIT: self.quit()
+            if event.type == QUIT:
+                self.quit()
 
-            elif (
-                   self.dismissable
-               and event.type == KEYUP
-               and event.key == K_ESCAPE
-            ):
+            elif self.dismissable and event.type == KEYUP and event.key == K_ESCAPE:
                 self.exit_dialog()
 
             elif event.type == MOUSEMOTION:
@@ -631,12 +550,10 @@ class DialogManager(Object2D, LoopHolder):
         for button in self.buttons:
 
             button.change_text_settings(
-
-                     HOVERED_BUTTON_SETTINGS
-                     if button.rect.collidepoint(mouse_pos)
-                     else NORMAL_BUTTON_SETTINGS
-
-                   )
+                HOVERED_BUTTON_SETTINGS
+                if button.rect.collidepoint(mouse_pos)
+                else NORMAL_BUTTON_SETTINGS
+            )
 
         ### finally redraw the buttons
         self.buttons.draw()
@@ -680,13 +597,9 @@ class DialogManager(Object2D, LoopHolder):
                 break
 
         else:
-            
-            if (
 
-                  self.dismissable
-              and not self.rect.collidepoint(mouse_pos)
-
-            ): self.exit_dialog()
+            if self.dismissable and not self.rect.collidepoint(mouse_pos):
+                self.exit_dialog()
 
     def exit_dialog(self):
 
@@ -727,5 +640,5 @@ class DialogManager(Object2D, LoopHolder):
 _ = DialogManager()
 
 create_and_show_dialog = _.create_and_show_dialog
-show_dialog_from_key   = _.show_dialog_from_key
-show_formatted_dialog  = _.show_formatted_dialog
+show_dialog_from_key = _.show_dialog_from_key
+show_formatted_dialog = _.show_formatted_dialog

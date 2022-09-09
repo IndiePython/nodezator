@@ -14,15 +14,15 @@ from inspect import Parameter
 from ...config import APP_REFS
 
 from ..presets import (
-                        PARAM_ANNOTATION_PRESET_MAP,
-                        OUTPUT_ANNOTATION_PRESET_MAP,
-                      )
+    PARAM_ANNOTATION_PRESET_MAP,
+    OUTPUT_ANNOTATION_PRESET_MAP,
+)
 
 from ..widget.utils import get_widget_metadata
 
 from ..validation.main import (
-                        check_return_annotation_mini_lang,
-                      )
+    check_return_annotation_mini_lang,
+)
 
 
 class Preprocessing:
@@ -110,10 +110,9 @@ class Preprocessing:
             ## retrieve data from the parameter obj
 
             param_name = param_obj.name
-            default    = param_obj.default
+            default = param_obj.default
             annotation = param_obj.annotation
-            kind       = param_obj.kind
-
+            kind = param_obj.kind
 
             ## take specific measures according to
             ## whether or not the parameter is of
@@ -132,28 +131,28 @@ class Preprocessing:
             elif kind is param_obj.VAR_KEYWORD:
                 var_kind_map[param_name] = "var_key"
 
-
             ## check whether the annotation is actually
             ## a key to access a parameter annotation
             ## preset
 
             # if it is, use the preset as the annotation
             # itself
-            try: annotation = PARAM_ANNOTATION_PRESET_MAP[
-                                annotation
-                              ]
+            try:
+                annotation = PARAM_ANNOTATION_PRESET_MAP[annotation]
 
             # if not just ignore
-            except (TypeError, KeyError): pass
+            except (TypeError, KeyError):
+                pass
 
             # also deepcopy the annotation, so the preset
             # isn't shared among other parameters
-            else: annotation = deepcopy(annotation)
-
+            else:
+                annotation = deepcopy(annotation)
 
             ## check whether the annotation provides
             ## a type within a 'type' item
-            try: type_ = annotation['type']
+            try:
+                type_ = annotation["type"]
 
             ## if there's no such data, consider the
             ## annotation itself as the type
@@ -164,7 +163,6 @@ class Preprocessing:
             ## variable obtained, store it in the
             ## type_map
             type_map[param_name] = type_
-
 
             ## if a default value is valid (one which
             ## is not a sentinel value)...
@@ -184,21 +182,15 @@ class Preprocessing:
                 ## suitable data to instantiate a
                 ## widget
 
-                widget_meta[param_name] = \
-                get_widget_metadata(annotation, default)
-
+                widget_meta[param_name] = get_widget_metadata(annotation, default)
 
         ## store the var_kind_map in a map from a class
         ## attribute, so other instances can access it
-        cls.callables_var_kind[signature_callable] = (
-                                          var_kind_map
-                                        )
+        cls.callables_var_kind[signature_callable] = var_kind_map
 
         ## store the default_map in a map from a class
         ## attribute, so other instances can access it
-        cls.callables_defaults[signature_callable] = (
-                                          default_map
-                                        )
+        cls.callables_defaults[signature_callable] = default_map
 
         ## store the type_map in a map from a class
         ## attribute, so other instances can access it
@@ -206,9 +198,7 @@ class Preprocessing:
 
         ## store the widget_meta in a map from a class
         ## attribute, so other instances can access it
-        cls.callables_widgets[signature_callable] = (
-                                          widget_meta
-                                        )
+        cls.callables_widgets[signature_callable] = widget_meta
 
         ## process the output metadata of the
         ## callable (if any) using the signature
@@ -233,27 +223,24 @@ class Preprocessing:
 
         # if it is, use the preset as the annotation
         # itself
-        try: return_annotation = (
-               OUTPUT_ANNOTATION_PRESET_MAP[
-                 return_annotation
-               ]
-             )
+        try:
+            return_annotation = OUTPUT_ANNOTATION_PRESET_MAP[return_annotation]
 
         # if not just ignore
-        except (TypeError, KeyError): pass
-
+        except (TypeError, KeyError):
+            pass
 
         # check whether the annotation adopts a
         # specific mini language
-        try: check_return_annotation_mini_lang(
-                                return_annotation)
+        try:
+            check_return_annotation_mini_lang(return_annotation)
 
         # if type or value errors are raised, then it
         # means no mini language is adopted, so we just
         # store the return annotation in a key
         # named 'output'
         except (ValueError, TypeError):
-            oot_map['output'] = return_annotation
+            oot_map["output"] = return_annotation
 
         # otherwise, we can treat the return annotation
         # as extra metadata provided by the user about
@@ -266,7 +253,7 @@ class Preprocessing:
             ### list's items is a dictionary with
             ### metadata for an output;
             outputs_metadata = return_annotation
-            
+
             ### populate the ordered output with the
             ### names (as keys) and types (as values)
             ### in the provided order
@@ -274,28 +261,19 @@ class Preprocessing:
             for output_data in outputs_metadata:
 
                 ## retrieve name
-                name = output_data['name']
+                name = output_data["name"]
 
                 ## store type using name as key and
                 ## Parameter.empty as default value in
                 ## case the type wasn't specified
 
-                oot_map[name] = \
-                    output_data.get(
-                                  'type',
-                                  Parameter.empty
-                                )
-
+                oot_map[name] = output_data.get("type", Parameter.empty)
 
         ## store the ordered output type map in another
         ## map from a class attribute, so other
         ## instances can access it
 
-        (
-          cls
-          .callables_ordered_output_types
-          [signature_callable]
-        ) = oot_map
+        (cls.callables_ordered_output_types[signature_callable]) = oot_map
 
         ## since we finished preprocessing the callable
         ## object, we can store a reference to it in
@@ -314,35 +292,25 @@ class Preprocessing:
         cls = self.__class__
 
         ## var_kind_map
-        self.var_kind_map = (
-          cls.callables_var_kind[signature_callable]
-        )
+        self.var_kind_map = cls.callables_var_kind[signature_callable]
 
         ## default_map
-        self.default_map = (
-          cls.callables_defaults[signature_callable]
-        )
+        self.default_map = cls.callables_defaults[signature_callable]
 
         ## type_map
-        self.type_map = (
-          cls.callables_types[signature_callable]
-        )
+        self.type_map = cls.callables_types[signature_callable]
 
         ## widget meta
-        self.widget_meta = (
-          cls.callables_widgets[signature_callable]
-        )
+        self.widget_meta = cls.callables_widgets[signature_callable]
 
         ## signature obj
         self.signature_obj = self.get_signature()
 
         ## ordered_output_type_map
 
-        self.ordered_output_type_map = (
-          cls
-          .callables_ordered_output_types
-          [signature_callable]
-        )
+        self.ordered_output_type_map = cls.callables_ordered_output_types[
+            signature_callable
+        ]
 
     def set_data_defaults(self):
         """Set default values for missing node data.
@@ -357,44 +325,38 @@ class Preprocessing:
         ### dict.setdefault method
 
         field_default_pairs = (
-
-          ## the 'param_widget_value_map' field maps
-          ## strings representing each parameter's
-          ## widget to its respective value as defined
-          ## by the user in the last editing session
-          ('param_widget_value_map', {}),
-
-          ## map listing existing subparams; subparams are
-          ## informal parameters (those created to fill
-          ## variable parameters, *args and **kwargs);
-          ## this map uses the name of each variable
-          ## parameter in the callable (if it has) as
-          ## a key; the key points to a list containing
-          ## indices for subparameters created (if they
-          ## exist);
-          ('subparam_map', {}),
-
-          ## the 'subparam_widget_map' field maps strings
-          ## representing variable-kind parameters to data
-          ## describing an embedded widget for each of
-          ## their subparameters which have one;
-          ## this is only used when editing the node layout
-          ## in the visual editor
-          ('subparam_widget_map', {}),
-
-          ## the 'subparam_keyword_map' field maps strings
-          ## representing the name of subparameters
-          ## of a keyword-variable parameter to strings
-          ## representing their respective keyword
-          ('subparam_keyword_map', {}),
-
-          ## the 'subparam_unpacking_map' field maps
-          ## strings representing variable-kind parameters
-          ## to a list of indices representing the
-          ## subparametes which are unpacked when the
-          ## graph is executed
-          ('subparam_unpacking_map', {}),
-
+            ## the 'param_widget_value_map' field maps
+            ## strings representing each parameter's
+            ## widget to its respective value as defined
+            ## by the user in the last editing session
+            ("param_widget_value_map", {}),
+            ## map listing existing subparams; subparams are
+            ## informal parameters (those created to fill
+            ## variable parameters, *args and **kwargs);
+            ## this map uses the name of each variable
+            ## parameter in the callable (if it has) as
+            ## a key; the key points to a list containing
+            ## indices for subparameters created (if they
+            ## exist);
+            ("subparam_map", {}),
+            ## the 'subparam_widget_map' field maps strings
+            ## representing variable-kind parameters to data
+            ## describing an embedded widget for each of
+            ## their subparameters which have one;
+            ## this is only used when editing the node layout
+            ## in the visual editor
+            ("subparam_widget_map", {}),
+            ## the 'subparam_keyword_map' field maps strings
+            ## representing the name of subparameters
+            ## of a keyword-variable parameter to strings
+            ## representing their respective keyword
+            ("subparam_keyword_map", {}),
+            ## the 'subparam_unpacking_map' field maps
+            ## strings representing variable-kind parameters
+            ## to a list of indices representing the
+            ## subparametes which are unpacked when the
+            ## graph is executed
+            ("subparam_unpacking_map", {}),
         )
 
         ### iterate over pairs, passing them to the node
@@ -403,13 +365,10 @@ class Preprocessing:
         for field_name, default in field_default_pairs:
             self.data.setdefault(field_name, default)
 
-
     ### though part of the methods above, the methods
     ### below are isolated so they can be overridden
     ### by subclasses
 
     def get_signature(self):
 
-        return APP_REFS.signature_map[
-                          self.signature_callable
-                        ]
+        return APP_REFS.signature_map[self.signature_callable]

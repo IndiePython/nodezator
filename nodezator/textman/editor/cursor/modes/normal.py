@@ -7,14 +7,30 @@ from functools import partialmethod
 ### third-party imports
 
 from pygame import (
-                   QUIT, KEYDOWN, MOUSEBUTTONUP,
-
-                   K_j, K_k, K_h, K_l,
-                   K_UP, K_DOWN, K_LEFT, K_RIGHT,
-                   KMOD_SHIFT, K_i, K_a, K_o, K_x,
-                   K_HOME, K_END, K_PAGEUP, K_PAGEDOWN,
-                   K_4, K_0,
-                   K_F1)
+    QUIT,
+    KEYDOWN,
+    MOUSEBUTTONUP,
+    K_j,
+    K_k,
+    K_h,
+    K_l,
+    K_UP,
+    K_DOWN,
+    K_LEFT,
+    K_RIGHT,
+    KMOD_SHIFT,
+    K_i,
+    K_a,
+    K_o,
+    K_x,
+    K_HOME,
+    K_END,
+    K_PAGEUP,
+    K_PAGEDOWN,
+    K_4,
+    K_0,
+    K_F1,
+)
 
 from pygame.event import get as get_events
 
@@ -37,7 +53,8 @@ class NormalMode:
         """Get and handle events for normal mode."""
         for event in get_events():
 
-            if event.type == QUIT: raise QuitAppException
+            if event.type == QUIT:
+                raise QuitAppException
 
             ### key down events
 
@@ -48,8 +65,8 @@ class NormalMode:
                 if event.key == K_F1:
 
                     open_htsl_link(
-                      'htap://help.nodezator.pysite/'
-                      'text-editor-vim-like-behavior.htsl'
+                        "htap://help.nodezator.pysite/"
+                        "text-editor-vim-like-behavior.htsl"
                     )
 
                 ### keys to move cursor
@@ -68,18 +85,22 @@ class NormalMode:
 
                 ### keys to enter insert mode
 
-                elif event.key == K_i: self.insert_before()
-                elif event.key == K_a: self.insert_after()
+                elif event.key == K_i:
+                    self.insert_before()
+                elif event.key == K_a:
+                    self.insert_after()
 
                 elif event.key == K_o:
 
                     if KMOD_SHIFT & event.mod:
                         self.insert_above()
 
-                    else: self.insert_bellow()
+                    else:
+                        self.insert_bellow()
 
                 ### delete character under cursor
-                elif event.key == K_x: self.delete_under()
+                elif event.key == K_x:
+                    self.delete_under()
 
                 ### snap cursor to different edges of
                 ### text
@@ -91,20 +112,21 @@ class NormalMode:
                     if KMOD_SHIFT & event.mod:
                         self.go_to_top()
 
-                    else: self.go_to_line_start()
+                    else:
+                        self.go_to_line_start()
 
                 elif event.key == K_END:
 
                     if KMOD_SHIFT & event.mod:
                         self.go_to_bottom()
 
-                    else: self.go_to_line_end()
+                    else:
+                        self.go_to_line_end()
 
                 ## using numbers from alphanumeric portion
                 ## of keyboard (just like in Vim software)
 
-                elif event.key == K_4 \
-                and KMOD_SHIFT & event.mod:
+                elif event.key == K_4 and KMOD_SHIFT & event.mod:
                     self.go_to_line_end()
 
                 elif event.key == K_0:
@@ -119,14 +141,16 @@ class NormalMode:
                     if KMOD_SHIFT & event.mod:
                         self.go_to_top()
 
-                    else: self.jump_page_up()
+                    else:
+                        self.jump_page_up()
 
                 elif event.key == K_PAGEDOWN:
 
                     if KMOD_SHIFT & event.mod:
                         self.go_to_bottom()
 
-                    else: self.jump_page_down()
+                    else:
+                        self.jump_page_down()
 
             ### mouse button up event
 
@@ -140,8 +164,10 @@ class NormalMode:
                 ### jump many lines up or down using the
                 ### mousewheel
 
-                elif event.button == 4: self.go_many_up()
-                elif event.button == 5: self.go_many_down()
+                elif event.button == 4:
+                    self.go_many_up()
+                elif event.button == 5:
+                    self.go_many_down()
 
     def start_insert(self, where):
         """Enable insert mode and perform setups.
@@ -160,17 +186,19 @@ class NormalMode:
         ## if must start inserting text 'after' cursor
         ## position, just move cursor one character to the
         ## right in insert mode
-        if where == 'after': self.go_right_ins()
+        if where == "after":
+            self.go_right_ins()
 
         ## if must start inserting text before the cursor,
         ## there's no need to do anything else
-        elif where == 'before': pass
+        elif where == "before":
+            pass
 
         ## if must start inserting text above or below
         ## the current position of the cursor, call
         ## special method to perform extra setups
 
-        elif where in ('above', 'below'):
+        elif where in ("above", "below"):
             self.add_line(where)
 
         ## there shouldn't possibly be another scenario,
@@ -179,15 +207,17 @@ class NormalMode:
 
         else:
 
-            raise RuntimeError((
+            raise RuntimeError(
+                (
                     "Entered 'else' block never supposed to"
                     " be entered; logic went wrong somewhere"
-                  ))
+                )
+            )
 
-    insert_before = partialmethod(start_insert, 'before')
-    insert_after  = partialmethod(start_insert,  'after')
-    insert_above  = partialmethod(start_insert,  'above')
-    insert_bellow = partialmethod(start_insert,  'below')
+    insert_before = partialmethod(start_insert, "before")
+    insert_after = partialmethod(start_insert, "after")
+    insert_above = partialmethod(start_insert, "above")
+    insert_bellow = partialmethod(start_insert, "below")
 
     def add_line(self, where):
         """Add new line above or below current one.
@@ -205,12 +235,14 @@ class NormalMode:
         ## if we want a new line above the current one,
         ## we want to insert a new line where the current
         ## line is
-        if where == "above": index = self.row
+        if where == "above":
+            index = self.row
 
         ## if we want a new line below the current one we
         ## use the index of the next line (current line plus
         ## one)
-        elif where == "below": index = self.row + 1
+        elif where == "below":
+            index = self.row + 1
 
         ## there shouldn't possibly be another scenario,
         ## in which case we indicate it by raising an
@@ -218,14 +250,15 @@ class NormalMode:
 
         else:
 
-            raise RuntimeError((
+            raise RuntimeError(
+                (
                     "Entered 'else' block never supposed to"
                     " be entered; logic went wrong somewhere"
-                  ))
+                )
+            )
 
         ### insert new line at the chosen index
         self.lines.insert(index, Line(""))
-
 
         ### since some change took place, we execute the
         ### edition routine;
@@ -240,7 +273,7 @@ class NormalMode:
         ### whether the line was inserted above or below
         ### the current one
 
-        if where == 'above':
+        if where == "above":
 
             ## update which lines are visible, since
             ## we added a new one
@@ -251,7 +284,7 @@ class NormalMode:
             ## reposition_ins() method here
             self.go_to_line_start_ins()
 
-        elif where == 'below':
+        elif where == "below":
 
             ## the go_down_ins() call executed after this
             ## "if block" automatically updates the visible
@@ -261,7 +294,7 @@ class NormalMode:
             ## if the cursor isn't in the last visible line,
             ## though, we'll have to execute it ourselves,
             ## which is what we do here
-            if self.visible_row != NUMBER_OF_VISIBLE_LINES-1:
+            if self.visible_row != NUMBER_OF_VISIBLE_LINES - 1:
                 self.update_visible_lines()
 
             ## make it so the cursor goes down one line,
@@ -275,11 +308,13 @@ class NormalMode:
         """Delete char under cursor."""
         ### try deleting current character (self.col) in
         ### in current line (self.row)
-        try: del self.lines[self.row][self.col]
+        try:
+            del self.lines[self.row][self.col]
 
         ### if it fails, it just means the line is empty,
         ### so there's nothing left to do, we return early
-        except IndexError: return
+        except IndexError:
+            return
 
         ### if it works, though...
 

@@ -1,21 +1,19 @@
 """Facility for exception related utilities."""
 
 ### local imports
-from .behaviour import (
-                             return_untouched,
-                             get_decorator_from_wrapper)
+from .behaviour import return_untouched, get_decorator_from_wrapper
 
 
 def bool_func_from_raiser(
-      raiser_func,
-      *,
-      expected_exceptions=None,
-      exceptions_to_reraise=(KeyboardInterrupt, SystemExit),
-      reporting_func=return_untouched,
-      new_message='',
-      message_formatter=return_untouched,
-      include_exception_name=True
-    ):
+    raiser_func,
+    *,
+    expected_exceptions=None,
+    exceptions_to_reraise=(KeyboardInterrupt, SystemExit),
+    reporting_func=return_untouched,
+    new_message="",
+    message_formatter=return_untouched,
+    include_exception_name=True
+):
     """Return a boolean function from exception raising one.
 
     Usage
@@ -24,7 +22,7 @@ def bool_func_from_raiser(
     Used when you have a function which raises exceptions
     under certain conditions and want to replace it with a
     boolean function.
-    
+
     The replacement function works in such manner that if
     an expected exception is thrown, it is caught and the
     execution proceeds normally until None is returned and,
@@ -84,9 +82,7 @@ def bool_func_from_raiser(
 
     if expected_exceptions is None:
 
-        expected_exceptions = \
-          getattr(
-            raiser_func, 'expected_exceptions', Exception)
+        expected_exceptions = getattr(raiser_func, "expected_exceptions", Exception)
 
     ### define function
 
@@ -101,7 +97,8 @@ def bool_func_from_raiser(
         """
         ### try executing the function with the received
         ### arguments
-        try: raiser_func(*args, **kwargs)
+        try:
+            raiser_func(*args, **kwargs)
 
         ### if an exception marked to be reraise is raised,
         ### reraise it as expected
@@ -119,29 +116,23 @@ def bool_func_from_raiser(
             ### be reported
 
             ## if a new message was given, use it
-            if new_message: msg = new_message
+            if new_message:
+                msg = new_message
 
             ## otherwise assemble a message from the
             ## message of the exception caught, whether
             ## preformated or not
 
             else:
-                
+
                 ## grab exception message
 
                 raw_msg = (
-
-                  ## preformat exception message
-
-                  '{}: {}'.format(
-                             err.__class__.__name__,
-                             str(err)
-                           )
-                  if include_exception_name
-
-                  ## or use it as-is
-                  else str(err)
-
+                    ## preformat exception message
+                    "{}: {}".format(err.__class__.__name__, str(err))
+                    if include_exception_name
+                    ## or use it as-is
+                    else str(err)
                 )
 
                 ## then pass it through the custom
@@ -154,22 +145,23 @@ def bool_func_from_raiser(
 
         ### if no exception is raised, though, we just
         ### return True
-        else: return True
-    
+        else:
+            return True
+
     ### return defined function
     return didnt_raise_expected
 
 
 def new_raiser_from_existing(
-      raiser_func,
-      *,
-      expected_exceptions=None,
-      exceptions_to_reraise=(KeyboardInterrupt, SystemExit),
-      new_exception=None,
-      new_message='',
-      message_formatter=return_untouched,
-      include_exception_name=True
-    ):
+    raiser_func,
+    *,
+    expected_exceptions=None,
+    exceptions_to_reraise=(KeyboardInterrupt, SystemExit),
+    new_exception=None,
+    new_message="",
+    message_formatter=return_untouched,
+    include_exception_name=True
+):
     """Wrap function in custom 'raise from' behaviour.
 
     Usage
@@ -257,9 +249,7 @@ def new_raiser_from_existing(
 
     if expected_exceptions is None:
 
-        expected_exceptions = \
-          getattr(
-            raiser_func, 'expected_exceptions', Exception)
+        expected_exceptions = getattr(raiser_func, "expected_exceptions", Exception)
 
     ### define function
 
@@ -267,7 +257,8 @@ def new_raiser_from_existing(
         """If expected exception occurs, raise a new one."""
         ### try executing the function with the received
         ### arguments and storing the output
-        try: output = raiser_func(*args, **kwargs)
+        try:
+            output = raiser_func(*args, **kwargs)
 
         ### if an exception marked to be reraise is raised,
         ### do so
@@ -285,29 +276,23 @@ def new_raiser_from_existing(
             ### message to use when raising
 
             ## if a new message was given, use it
-            if new_message: msg = new_message
+            if new_message:
+                msg = new_message
 
             ## otherwise assemble a message from the
             ## message of the exception caught, whether
             ## preformated or not
 
             else:
-                
+
                 ## grab exception message
 
                 raw_msg = (
-
-                  ## preformat exception message
-
-                  '{}: {}'.format(
-                             err.__class__.__name__,
-                             str(err)
-                           )
-                  if include_exception_name
-
-                  ## or use it as-is
-                  else str(err)
-
+                    ## preformat exception message
+                    "{}: {}".format(err.__class__.__name__, str(err))
+                    if include_exception_name
+                    ## or use it as-is
+                    else str(err)
                 )
 
                 ## then pass it through the custom
@@ -317,16 +302,13 @@ def new_raiser_from_existing(
             ### define the class for the new exceptions
 
             exception_class = (
-
-              ## if new exception wasn't provided (it is
-              ## None), use the same class as the exception
-              ## caught
-              err.__class__
-              if new_exception is None
-
-              ## otherwise use the new exception provided
-              else new_exception
-
+                ## if new exception wasn't provided (it is
+                ## None), use the same class as the exception
+                ## caught
+                err.__class__
+                if new_exception is None
+                ## otherwise use the new exception provided
+                else new_exception
             )
 
             ### then pass the message to the exception
@@ -335,11 +317,12 @@ def new_raiser_from_existing(
             raise exception_class(msg) from err
 
         ### otherwise we just return the output
-        else: return output
-    
+        else:
+            return output
+
     ### return defined function
     return raise_another_exception
 
+
 ### get decorator version from new_raiser_from_existing
-new_raiser_from_existing_deco = \
-       get_decorator_from_wrapper(new_raiser_from_existing)
+new_raiser_from_existing_deco = get_decorator_from_wrapper(new_raiser_from_existing)

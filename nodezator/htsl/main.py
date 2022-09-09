@@ -2,9 +2,7 @@
 
 ### standard library imports
 
-from xml.dom.minidom import (
-                       parse as dom_from_filepath
-                     )
+from xml.dom.minidom import parse as dom_from_filepath
 
 from operator import truediv
 
@@ -16,23 +14,29 @@ from webbrowser import open as open_url
 ### third-party imports
 
 from pygame import (
-
-              QUIT,
-
-              KEYUP,
-              K_ESCAPE, K_RETURN, K_KP_ENTER,
-
-              K_w, K_a, K_s, K_d,
-              K_k, K_h, K_j, K_l,
-              K_UP, K_LEFT, K_DOWN, K_RIGHT,
-
-              K_PAGEUP, K_PAGEDOWN,
-
-              K_HOME, K_END,
-
-              MOUSEBUTTONUP,
-
-            )
+    QUIT,
+    KEYUP,
+    K_ESCAPE,
+    K_RETURN,
+    K_KP_ENTER,
+    K_w,
+    K_a,
+    K_s,
+    K_d,
+    K_k,
+    K_h,
+    K_j,
+    K_l,
+    K_UP,
+    K_LEFT,
+    K_DOWN,
+    K_RIGHT,
+    K_PAGEUP,
+    K_PAGEDOWN,
+    K_HOME,
+    K_END,
+    MOUSEBUTTONUP,
+)
 
 from pygame.event import get as get_events
 
@@ -68,11 +72,11 @@ from ..surfsman.render import render_rect
 from ..surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
 from ..colorsman.colors import (
-                        HTSL_BROWSER_BG,
-                        HTSL_CANVAS_BG,
-                        HTSL_DOCUMENT_TITLE_TEXT_FG,
-                        BLACK,
-                      )
+    HTSL_BROWSER_BG,
+    HTSL_CANVAS_BG,
+    HTSL_DOCUMENT_TITLE_TEXT_FG,
+    BLACK,
+)
 
 ## extension class
 from .prep import Preparation
@@ -80,36 +84,33 @@ from .prep import Preparation
 
 ### constants
 
-UP_KEYS    = (K_w, K_k, K_UP)
-LEFT_KEYS  = (K_a, K_h, K_LEFT)
-DOWN_KEYS  = (K_s, K_j, K_DOWN)
+UP_KEYS = (K_w, K_k, K_UP)
+LEFT_KEYS = (K_a, K_h, K_LEFT)
+DOWN_KEYS = (K_s, K_j, K_DOWN)
 RIGHT_KEYS = (K_d, K_l, K_RIGHT)
 
 
 AWW_ICON = render_layered_icon(
-             chars=[chr(ordinal) for ordinal in (90, 91)],
-
-             dimension_name  = 'height',
-             dimension_value = 22,
-
-             colors = [BLACK, (30, 150, 80)],
-
-             background_width  = 24,
-             background_height = 24,
-           )
+    chars=[chr(ordinal) for ordinal in (90, 91)],
+    dimension_name="height",
+    dimension_value=22,
+    colors=[BLACK, (30, 150, 80)],
+    background_width=24,
+    background_height=24,
+)
 
 
 class HTSLBrowser(
-      Object2D,
-      Preparation,
-      LoopHolder,
-    ):
+    Object2D,
+    Preparation,
+    LoopHolder,
+):
     """Allows browsing web-like pages.
 
     HTSL means "HyperText as Surfaces" markup Language,
     which is just a xml file used to describe web-like
     pages to be rendered as pygame surfaces.
-    
+
     This class is instantiated only once in the end of the
     module and its main method is aliased to be used
     wherever needed in the entire package.
@@ -123,7 +124,7 @@ class HTSLBrowser(
 
         ### create dicts to serve as caches
 
-        self.cache       = {}
+        self.cache = {}
         self.title_cache = {}
 
         ### create image and rect
@@ -136,20 +137,18 @@ class HTSLBrowser(
 
         content_area = self.rect.inflate(-20, -50)
 
-        content_area.bottomleft = (
-          self.rect.move(5, -15).bottomleft
-        )
+        content_area.bottomleft = self.rect.move(5, -15).bottomleft
 
         content_canvas = render_rect(
-                           *content_area.size,
-                           HTSL_CANVAS_BG,
-                         )
+            *content_area.size,
+            HTSL_CANVAS_BG,
+        )
         self.canvas_copy = content_canvas.copy()
 
         self.content_area_obj = Object2D(
-                                  image = content_canvas,
-                                  rect  = content_area,
-                                )
+            image=content_canvas,
+            rect=content_area,
+        )
 
         ### XXX
         ### also probably create a scroll area by
@@ -158,7 +157,7 @@ class HTSLBrowser(
 
         ### set initial pysite attribute (default pysite
         ### opened in the htsl browser)
-        self.pysite = 'nodezator.pysite'
+        self.pysite = "nodezator.pysite"
 
         ### set vertical page movement amount
         self.v_page_amount = content_area.height - 140
@@ -167,24 +166,14 @@ class HTSLBrowser(
 
         label_max_width = self.rect.inflate(-40, 0).width
 
-        self.title_label = (
-
-          Label(
-
+        self.title_label = Label(
             "HTSL Browser - Untitled document",
-
-            font_height = 20,
-            font_path = ENC_SANS_BOLD_FONT_PATH,
-
-            foreground_color = HTSL_DOCUMENT_TITLE_TEXT_FG,
-            background_color = HTSL_BROWSER_BG,
-
-            padding = 0,
-
-            max_width = label_max_width,
-
-          )
-
+            font_height=20,
+            font_path=ENC_SANS_BOLD_FONT_PATH,
+            foreground_color=HTSL_DOCUMENT_TITLE_TEXT_FG,
+            background_color=HTSL_BROWSER_BG,
+            padding=0,
+            max_width=label_max_width,
         )
 
         ### center htsl browser and append the centering
@@ -192,15 +181,11 @@ class HTSLBrowser(
 
         self.center_htsl_browser()
 
-        APP_REFS.window_resize_setups.append(
-          self.center_htsl_browser
-        )
+        APP_REFS.window_resize_setups.append(self.center_htsl_browser)
 
     def center_htsl_browser(self):
 
-        diff = (
-          Vector2(SCREEN_RECT.center) - self.rect.center
-        )
+        diff = Vector2(SCREEN_RECT.center) - self.rect.center
 
         self.rect.center = SCREEN_RECT.center
 
@@ -210,8 +195,8 @@ class HTSLBrowser(
         ###
 
         self.title_label.rect.midleft = (
-          self.rect.move(35, 0).left,
-          self.rect.move(0, 17).top,
+            self.rect.move(35, 0).left,
+            self.rect.move(0, 17).top,
         )
 
         ###
@@ -222,11 +207,9 @@ class HTSLBrowser(
         ### if htsl browser loop is running, request it
         ### to be drawn
 
-        if hasattr(self, 'running') and self.running:
+        if hasattr(self, "running") and self.running:
 
-            APP_REFS.draw_after_window_resize_setups = (
-              self.draw_once
-            )
+            APP_REFS.draw_after_window_resize_setups = self.draw_once
 
     def open_htsl_link(self, link):
         """Create a htsl page from existing htsl file.
@@ -241,11 +224,7 @@ class HTSLBrowser(
         """
         resource_path = self.resolve_htsl_path(link)
 
-        address, _, optional_id = (
-
-          resource_path.partition('#')
-
-        )
+        address, _, optional_id = resource_path.partition("#")
 
         if address in self.cache:
             self.set_htsl_objects_from_cache(address)
@@ -255,9 +234,9 @@ class HTSLBrowser(
             htsl_dom = dom_from_filepath(address)
 
             self.create_and_set_htsl_objects(
-                   htsl_dom,
-                   address,
-                 )
+                htsl_dom,
+                address,
+            )
 
         ### show htsl page
         self.show_htsl_page(optional_id)
@@ -267,23 +246,21 @@ class HTSLBrowser(
         self.create_and_set_htsl_objects(htsl_element)
         self.show_htsl_page()
 
-    def show_htsl_page(self, optional_id=''):
-        
+    def show_htsl_page(self, optional_id=""):
+
         ### define whether horizontal and vertical
         ### scrolling are enabled
 
-        available_width, available_height = (
-          self.content_area_obj.rect.size
-        )
+        available_width, available_height = self.content_area_obj.rect.size
 
         page_width, page_height = self.objs.rect.size
 
         self.horizontal_scrolling_enabled = (
-          True if page_width > available_width else False
+            True if page_width > available_width else False
         )
 
         self.vertical_scrolling_enabled = (
-          True if page_height > available_height else False
+            True if page_height > available_height else False
         )
 
         ### blit a semitransparent surface in the canvas
@@ -291,18 +268,15 @@ class HTSLBrowser(
         ### and whatever is behind it (making what's behind
         ### appear unhighlighted)
 
-        blit_on_screen(
-          UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size],
-          (0, 0)
-        )
+        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
 
         ###
 
         if optional_id:
 
             for obj in self.objs:
-                
-                obj_id = getattr(obj, 'id', '')
+
+                obj_id = getattr(obj, "id", "")
 
                 if optional_id == obj_id:
 
@@ -320,50 +294,50 @@ class HTSLBrowser(
 
     def open_link(self, link_string):
 
-        if link_string.startswith('http'):
+        if link_string.startswith("http"):
             open_url(link_string)
 
-        else: self.open_htsl_link(link_string)
+        else:
+            self.open_htsl_link(link_string)
 
     def resolve_htsl_path(self, path_string):
 
         for string in (
-          'htap://aww.',
-          'htap://',
-          'aww.',
+            "htap://aww.",
+            "htap://",
+            "aww.",
         ):
 
             if path_string.startswith(string):
 
-                path_string = path_string[len(string):]
+                path_string = path_string[len(string) :]
                 break
 
-        start = path_string.find('.pysite')
+        start = path_string.find(".pysite")
 
         if start != -1:
-            
-            pysite = self.pysite = path_string[:start+7]
 
-            path_string = (
-              path_string[start+8:] or 'index.htsl'
-            )
+            pysite = self.pysite = path_string[: start + 7]
 
-        else: pysite = self.pysite
+            path_string = path_string[start + 8 :] or "index.htsl"
+
+        else:
+            pysite = self.pysite
 
         return str(
-                 reduce(
-                   truediv,
-                   path_string.split('/'),
-                   APP_WIDE_WEB_DIR / pysite,
-                 )
-               )
+            reduce(
+                truediv,
+                path_string.split("/"),
+                APP_WIDE_WEB_DIR / pysite,
+            )
+        )
 
     def ensure_obj_on_screen(self, obj):
 
         content_area = self.content_area_obj.rect
 
         area_top = content_area.top
-        obj_top  = obj.rect.top
+        obj_top = obj.rect.top
 
         dy = area_top - obj_top
 
@@ -378,13 +352,12 @@ class HTSLBrowser(
         """Retrieve and handle events."""
         for event in get_events():
 
-            if event.type == QUIT: self.quit()
+            if event.type == QUIT:
+                self.quit()
 
             elif event.type == KEYUP:
-                
-                if event.key in (
-                  K_ESCAPE, K_RETURN, K_KP_ENTER
-                ):
+
+                if event.key in (K_ESCAPE, K_RETURN, K_KP_ENTER):
                     self.exit_loop()
 
                 elif event.key == K_PAGEUP:
@@ -443,26 +416,30 @@ class HTSLBrowser(
         ### iterate over objects
 
         for obj in self.objs:
-            
-            if obj.rect.collidepoint(mouse_pos):
-                
-                try: href = self.href
 
-                except AttributeError: pass
+            if obj.rect.collidepoint(mouse_pos):
+
+                try:
+                    href = self.href
+
+                except AttributeError:
+                    pass
 
                 else:
 
                     self.open_link(href)
                     break
-            
-                try: anchors = obj.anchor_list
 
-                except AttributeError: pass
+                try:
+                    anchors = obj.anchor_list
+
+                except AttributeError:
+                    pass
 
                 else:
-                    
+
                     for anchor in anchors:
-                        
+
                         if anchor.rect.collidepoint(mouse_pos):
 
                             self.open_link(anchor.href)
@@ -472,11 +449,11 @@ class HTSLBrowser(
 
     def handle_keyboard_input(self):
         """Handle pressed state of keys from keyboard."""
-        key_input  = get_pressed_keys()
+        key_input = get_pressed_keys()
 
-        up    = any(key_input[item] for item in    UP_KEYS)
-        left  = any(key_input[item] for item in  LEFT_KEYS)
-        down  = any(key_input[item] for item in  DOWN_KEYS)
+        up = any(key_input[item] for item in UP_KEYS)
+        left = any(key_input[item] for item in LEFT_KEYS)
+        down = any(key_input[item] for item in DOWN_KEYS)
         right = any(key_input[item] for item in RIGHT_KEYS)
 
         if up and not down:
@@ -500,14 +477,14 @@ class HTSLBrowser(
             self.draw_once()
 
     def move_objs(self, x, y):
-        
+
         objs_rect = self.objs.rect.copy()
         content_area = self.content_area_obj.rect
 
         if x and self.horizontal_scrolling_enabled:
-            
+
             if x > 0:
-                
+
                 max_left = content_area.left
                 resulting_left = objs_rect.move(x, 0).left
 
@@ -522,13 +499,13 @@ class HTSLBrowser(
                 if resulting_right < min_right:
                     x += min_right - resulting_right
 
-
-        else: x = 0
+        else:
+            x = 0
 
         if y and self.vertical_scrolling_enabled:
 
             if y > 0:
-                
+
                 max_top = content_area.top
                 resulting_top = objs_rect.move(0, y).top
 
@@ -538,21 +515,20 @@ class HTSLBrowser(
             else:
 
                 min_bottom = content_area.bottom
-                resulting_bottom = (
-                  objs_rect.move(0, y).bottom
-                )
+                resulting_bottom = objs_rect.move(0, y).bottom
 
                 if resulting_bottom < min_bottom:
                     y += min_bottom - resulting_bottom
 
-        else: y = 0
+        else:
+            y = 0
 
         self.objs.rect.move_ip(x, y)
 
-    go_up    = partialmethod(move_objs,   0,  20)
-    go_left  = partialmethod(move_objs, -20,   0)
-    go_down  = partialmethod(move_objs,   0, -20)
-    go_right = partialmethod(move_objs,  20,   0)
+    go_up = partialmethod(move_objs, 0, 20)
+    go_left = partialmethod(move_objs, -20, 0)
+    go_down = partialmethod(move_objs, 0, -20)
+    go_right = partialmethod(move_objs, 20, 0)
 
     def draw_once(self):
         """"""
@@ -566,7 +542,7 @@ class HTSLBrowser(
         content_area_obj = self.content_area_obj
 
         content_canvas = content_area_obj.image
-        content_area   = content_area_obj.rect
+        content_area = content_area_obj.rect
 
         ###
         content_canvas.blit(self.canvas_copy, (0, 0))
@@ -576,7 +552,7 @@ class HTSLBrowser(
         for obj in self.objs:
 
             if obj.rect.colliderect(content_area):
-                
+
                 obj.draw_relative(content_area_obj)
 
         ###
@@ -591,11 +567,12 @@ class HTSLBrowser(
         ### pygame.display.update
         update()
 
+
 ### instantiate htsl browser and reference its relevant
 ### methods in the module level, so they can be easily
 ### imported from anywhere else in the package
 
 _ = HTSLBrowser()
 
-open_htsl_link  = _.open_htsl_link
+open_htsl_link = _.open_htsl_link
 create_and_show_htsl_page = _.create_and_show_htsl_page

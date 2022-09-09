@@ -17,7 +17,6 @@ from pathlib import Path
 from sys import path
 
 
-
 ### local imports
 
 from .logman.main import get_new_logger
@@ -49,7 +48,8 @@ def main(filepath=None):
     logger.info("Loading application.")
 
     ## try loading
-    try: from .mainloop import run_app
+    try:
+        from .mainloop import run_app
 
     ## catch unexpected exceptions so we can log them
     ## before reraising
@@ -57,8 +57,7 @@ def main(filepath=None):
     except Exception as err:
 
         logger.exception(
-          "Unexpected exception while loading application."
-          " Reraising now."
+            "Unexpected exception while loading application." " Reraising now."
         )
 
         raise err
@@ -82,28 +81,18 @@ if __name__ == "__main__":
 
     ## instantiate and configure it
 
-    parser = ArgumentParser(
-               description = TITLE + " - Python Node Editor"
-             )
+    parser = ArgumentParser(description=TITLE + " - Python Node Editor")
 
     parser.add_argument(
-
-             'filepath',
-
-             type    = str,
-             nargs   = '?',
-             default = None,
-
-             help    = (
-               "path of "
-               + NATIVE_FILE_EXTENSION
-               + " file to be loaded."
-             )
-           )
+        "filepath",
+        type=str,
+        nargs="?",
+        default=None,
+        help=("path of " + NATIVE_FILE_EXTENSION + " file to be loaded."),
+    )
 
     ## parse arguments
     args = parser.parse_args()
-
 
     ### finally call the main function, passing along
     ### the filepath argument received (which might be the

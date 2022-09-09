@@ -21,25 +21,21 @@ from ...classes2d.single import Object2D
 from ...loopman.exception import SwitchLoopException
 
 from ...ourstdlibs.behaviour import (
-                            empty_function,
-                            return_untouched,
-                          )
+    empty_function,
+    return_untouched,
+)
 
 from .numeval import numeric_evaluation
 
 
 INFS_AND_NANS = (
-
-  float('-inf'),
-  float('inf'),
-  float('nan'),
-  nan,
-
+    float("-inf"),
+    float("inf"),
+    float("nan"),
+    nan,
 )
 
-RANGE_ERROR_FORMATTER = (
-  "{} argument must be of one of the following types: {}"
-).format
+RANGE_ERROR_FORMATTER = ("{} argument must be of one of the following types: {}").format
 
 
 class IntFloatOperations(Object2D):
@@ -63,7 +59,8 @@ class IntFloatOperations(Object2D):
         ### return if value isn't of allowed type
 
         ## try validating type
-        try: self.validate_type(value)
+        try:
+            self.validate_type(value)
 
         ## if a type/value error is raised, report it
         ## by printing, then exit this method by
@@ -83,7 +80,8 @@ class IntFloatOperations(Object2D):
         value = self.evaluate_string(str(value))
 
         ### return if value is already set
-        if value == self.value: return
+        if value == self.value:
+            return
 
         ### otherwise store the value
         self.value = value
@@ -96,7 +94,8 @@ class IntFloatOperations(Object2D):
         self.update_image()
 
         ### also, if requested, execute custom command
-        if custom_command: self.command()
+        if custom_command:
+            self.command()
 
     def update_image(self):
         """Update image surface attribute."""
@@ -112,17 +111,9 @@ class IntFloatOperations(Object2D):
 
         ### blit character objects from line on the image
 
-
         ## reposition line
 
-        self.cursor.line.rect.topleft = (
-
-          self
-          .rect
-          .move(self.sla_right, 0)
-          .topleft
-
-        )
+        self.cursor.line.rect.topleft = self.rect.move(self.sla_right, 0).topleft
 
         ## create an offset from rect's topleft inverse
         offset = -Vector2(self.rect.topleft)
@@ -146,22 +137,25 @@ class IntFloatOperations(Object2D):
 
     def update_image_like_range(self):
         """"""
-        if self.value is None: return
+        if self.value is None:
+            return
 
         value = self.evaluate_string(self.cursor.get())
 
-        try: factor = value / self.difference
-        except ZeroDivisionError: factor = 1
+        try:
+            factor = value / self.difference
+        except ZeroDivisionError:
+            factor = 1
 
-        rect    = self.rect.copy()
+        rect = self.rect.copy()
         rect.w *= factor
 
         rect.topleft = (0, 0)
 
         draw_rect(
-          self.image,
-          (30, 130, 70),
-          rect,
+            self.image,
+            (30, 130, 70),
+            rect,
         )
 
     def on_mouse_click(self, event):
@@ -207,37 +201,25 @@ class IntFloatOperations(Object2D):
 
             if delta_x < self.dla_right:
 
-                self.set(
-                       self.value
-                       - self.normal_click_increment
-                     )
+                self.set(self.value - self.normal_click_increment)
 
                 return
 
             elif delta_x < self.sla_right:
 
-                self.set(
-                       self.value
-                       - self.preciser_click_increment
-                     )
+                self.set(self.value - self.preciser_click_increment)
 
                 return
 
             elif delta_x > self.dra_left:
 
-                self.set(
-                       self.value
-                       + self.normal_click_increment
-                     )
+                self.set(self.value + self.normal_click_increment)
 
                 return
 
             elif delta_x > self.sra_left:
 
-                self.set(
-                       self.value
-                       + self.preciser_click_increment
-                     )
+                self.set(self.value + self.preciser_click_increment)
 
                 return
 
@@ -272,7 +254,7 @@ class IntFloatOperations(Object2D):
         ### restore default behaviours for update and
         ### drawing operations
 
-        self.draw   = super().draw
+        self.draw = super().draw
         self.update = empty_function
 
         ### switch to the stored loop holder (if
@@ -339,7 +321,8 @@ class IntFloatOperations(Object2D):
                 self.command()
 
             ## otherwise just update the image
-            else: self.update_image()
+            else:
+                self.update_image()
 
         ### finally we lose focus
         self.lose_focus()
@@ -350,10 +333,9 @@ class IntFloatOperations(Object2D):
 
         if type(value) not in self.num_classes:
 
-            msg = (
-              "'value' must be of one of the following"
-              " types: {}"
-            ).format(self.num_classes)
+            msg = ("'value' must be of one of the following" " types: {}").format(
+                self.num_classes
+            )
 
             ## if None is allowed...
 
@@ -367,7 +349,8 @@ class IntFloatOperations(Object2D):
 
             ## otherwise, since the value isn't of the
             ## specified type and None is not allowed
-            else: raise TypeError(msg)
+            else:
+                raise TypeError(msg)
 
         if value in INFS_AND_NANS:
             raise ValueError("Can't use inf/-inf/nan")
@@ -405,7 +388,7 @@ class IntFloatOperations(Object2D):
                string or a string representing a numerical
                value with wrong syntax or numerical
                expression with wrong syntax);
-               
+
                the error raised won't be caught, since this
                method is used in safe contexts (either with
                try/except clauses or with strings known to
@@ -416,13 +399,12 @@ class IntFloatOperations(Object2D):
 
         if not string:
 
-            raise ValueError(
-                    "there is nothing typed in the entry"
-                  )
+            raise ValueError("there is nothing typed in the entry")
 
         ### if None is allowed and the string represents it,
         ### return None
-        if self.allow_none and string == 'None': return None
+        if self.allow_none and string == "None":
+            return None
 
         ### otherwise perform a custom evaluation of the
         ### string
@@ -432,41 +414,31 @@ class IntFloatOperations(Object2D):
         ### it through several relevant operations
 
         for operation in (
-
-          ## restrain to the allowed numeric type(s); check
-          ## the docstring of the __init__ method of the
-          ## IntFloatEntry class
-          self.ensure_num_type,
-
-          ## clamp to the allowed interval (when applicable)
-
-          self.clamp_min,
-          self.clamp_max
-
+            ## restrain to the allowed numeric type(s); check
+            ## the docstring of the __init__ method of the
+            ## IntFloatEntry class
+            self.ensure_num_type,
+            ## clamp to the allowed interval (when applicable)
+            self.clamp_min,
+            self.clamp_max,
         ):
             value = operation(value)
 
         ### finally return the value
         return value
 
-
     def set_range(
-          self,
-          min_value,
-          max_value,
-          update_image=True,
-        ):
+        self,
+        min_value,
+        max_value,
+        update_image=True,
+    ):
         """"""
         value = self.value
 
         ### process range constraining arguments
 
-        range_is_constrained = (
-
-              min_value is not None
-          and max_value is not None
-
-        )
+        range_is_constrained = min_value is not None and max_value is not None
 
         ## make extra checks/assignments depending on
         ## whether or not the range is constrained
@@ -476,13 +448,11 @@ class IntFloatOperations(Object2D):
             ## ensure the maximum value is greater than or
             ## at least equal to the minimum value
 
-
             if not (max_value >= min_value):
 
                 raise ValueError(
-                        "arguments must follow rule:"
-                        " max_value >= min_value."
-                      )
+                    "arguments must follow rule:" " max_value >= min_value."
+                )
 
             ## store difference between maximum and
             ## minimum values
@@ -493,12 +463,8 @@ class IntFloatOperations(Object2D):
         ## range is constrained or not
 
         self.range_like_image_update_operation = (
-
-               self.update_image_like_range
-               if range_is_constrained
-               else empty_function
-
-             )
+            self.update_image_like_range if range_is_constrained else empty_function
+        )
 
         ## define minimum and maximum value clamping
         ## operations, according to whether the
@@ -527,11 +493,7 @@ class IntFloatOperations(Object2D):
 
             if type(min_value) not in self.num_classes:
 
-                raise ValueError(
-                        RANGE_ERROR_FORMATTER(
-                          "min_value", self.num_classes
-                        )
-                      )
+                raise ValueError(RANGE_ERROR_FORMATTER("min_value", self.num_classes))
 
             ## otherwise, we store a partial of the max
             ## function with the minimum value as the
@@ -558,13 +520,14 @@ class IntFloatOperations(Object2D):
                 if value is not None and value < min_value:
 
                     msg = (
-
-                      "value must be None or "
-                      if self.allow_none 
-
-                      else "value must be "
-
-                    ) + ">= " + str(min_value)
+                        (
+                            "value must be None or "
+                            if self.allow_none
+                            else "value must be "
+                        )
+                        + ">= "
+                        + str(min_value)
+                    )
 
                     raise ValueError(msg)
 
@@ -572,8 +535,8 @@ class IntFloatOperations(Object2D):
         # value clamping must take place, so we set a
         # dummy clamping operation, one which returns the
         # value as-is, without changing it
-        else: self.clamp_min = return_untouched
-
+        else:
+            self.clamp_min = return_untouched
 
         # if max_value is not None, that is, if it is
         # numeric, check wheter it is of an allowed type
@@ -587,11 +550,7 @@ class IntFloatOperations(Object2D):
 
             if type(max_value) not in self.num_classes:
 
-                raise ValueError(
-                        RANGE_ERROR_FORMATTER(
-                          "max_value", self.num_classes
-                        )
-                      )
+                raise ValueError(RANGE_ERROR_FORMATTER("max_value", self.num_classes))
 
             ## otherwise, we store a partial of the min
             ## function with the maximum value as the
@@ -618,13 +577,14 @@ class IntFloatOperations(Object2D):
                 if value is not None and value > max_value:
 
                     msg = (
-
-                      "value must be None or "
-                      if self.allow_none
-
-                      else "value must be "
-
-                    ) + "<= " + str(max_value)
+                        (
+                            "value must be None or "
+                            if self.allow_none
+                            else "value must be "
+                        )
+                        + "<= "
+                        + str(max_value)
+                    )
 
                     raise ValueError(msg)
 
@@ -632,7 +592,9 @@ class IntFloatOperations(Object2D):
         # value clamping must take place, so we set a
         # dummy clamping operation, one which returns the
         # value as-is, without changing it
-        else: self.clamp_max = return_untouched
+        else:
+            self.clamp_max = return_untouched
 
         ### if requested, update the image
-        if update_image: self.update_image()
+        if update_image:
+            self.update_image()

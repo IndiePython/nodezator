@@ -31,22 +31,22 @@ from ...surfsman.render import render_rect
 from ...surfsman.cache import RECT_SURF_MAP
 
 from ..render import (
-                      get_text_size,
-                      render_text,
-                    )
+    get_text_size,
+    render_text,
+)
 
 from ..text import (
-                    get_normal_lines,
-                    get_highlighted_lines,
-                  )
+    get_normal_lines,
+    get_highlighted_lines,
+)
 
 ## common constants
 from .constants import (
-                            DEFAULT_TEXT_SETTINGS,
-                            TEXT_SETTINGS_PRESETS_MAP,
-                            TEXT_VIEWER_RECT,
-                            RECT_PRESETS_MAP,
-                          )
+    DEFAULT_TEXT_SETTINGS,
+    TEXT_SETTINGS_PRESETS_MAP,
+    TEXT_VIEWER_RECT,
+    RECT_PRESETS_MAP,
+)
 
 
 class TextPreparation:
@@ -61,24 +61,17 @@ class TextPreparation:
     """
 
     def view_text(
-
-          self,
-          text,
-
-          *,
-
-          general_text_settings = 'default',
-
-          text_viewer_rect = 'default',
-
-          show_caption = True,
-          header_text  = '',
-
-          syntax_highlighting = '',
-          show_line_number    = False,
-          index_to_jump_to    = 0,
-
-        ):
+        self,
+        text,
+        *,
+        general_text_settings="default",
+        text_viewer_rect="default",
+        show_caption=True,
+        header_text="",
+        syntax_highlighting="",
+        show_line_number=False,
+        index_to_jump_to=0,
+    ):
         """Prepare received text for displaying.
 
         Executes setups like creating objects, setting
@@ -91,7 +84,7 @@ class TextPreparation:
         syntax_highlighting (string)
             represents the name of a syntax used to
             highlight the text (for instance 'python');
-            if an empty string, which is the default value, 
+            if an empty string, which is the default value,
             or the name of an unsupported syntax is given,
             syntax highlighting isn't applied;
             if, otherwise, it indicates an available syntax,
@@ -117,15 +110,8 @@ class TextPreparation:
 
         if isinstance(general_text_settings, str):
 
-            general_text_settings = (
-
-              TEXT_SETTINGS_PRESETS_MAP.get(
-
-                general_text_settings,
-                DEFAULT_TEXT_SETTINGS
-
-              )
-
+            general_text_settings = TEXT_SETTINGS_PRESETS_MAP.get(
+                general_text_settings, DEFAULT_TEXT_SETTINGS
             )
 
         ### define text viewer rect preset if a string is
@@ -133,21 +119,15 @@ class TextPreparation:
 
         if isinstance(text_viewer_rect, str):
 
-            text_viewer_rect = RECT_PRESETS_MAP.get(
-                                 text_viewer_rect,
-                                 TEXT_VIEWER_RECT
-                               )
+            text_viewer_rect = RECT_PRESETS_MAP.get(text_viewer_rect, TEXT_VIEWER_RECT)
 
         ### define line height based on general text
         ### settings
 
-        _, self.line_height = (
-
-          get_text_size(
-            'dummy text',
-            general_text_settings['font_height'],
-            general_text_settings['font_path'],
-          )
+        _, self.line_height = get_text_size(
+            "dummy text",
+            general_text_settings["font_height"],
+            general_text_settings["font_path"],
         )
 
         ### store rect
@@ -174,38 +154,33 @@ class TextPreparation:
         ### though this is an optional measure, I assume
         ### it helps making the movement more readable
 
-        self.page_height = (
-
-          self.scroll_area.height
-          - (self.line_height * 3)
-
-        )
+        self.page_height = self.scroll_area.height - (self.line_height * 3)
 
         ### store the inverted self.rect.topleft to use as
         ### an offset to draw lines on self.image
         self.offset = -Vector2(self.rect.topleft)
-
 
         ### make syntax_highlighting string lowercase
         ### so users don't need to worry about
         ### capitalization when providing the value
         syntax_highlighting = syntax_highlighting.lower()
 
-
         ### try retrieving a theme map for the requested
         ### syntax highlighting
 
-        try: theme_map = get_ready_theme(
-                           syntax_highlighting,
-                           general_text_settings,
-                         )
+        try:
+            theme_map = get_ready_theme(
+                syntax_highlighting,
+                general_text_settings,
+            )
 
         ### if you can't retrieve the theme map, it means
         ### the syntax highlighting requested isn't among
         ### the available ones, so turn the feature off
         ### by setting the corresponding variable to an
         ### empty string
-        except KeyError: syntax_highlighting = ''
+        except KeyError:
+            syntax_highlighting = ""
 
         ### otherwise, if you can, create the text objects
         ### representing the lines of the text according
@@ -218,12 +193,10 @@ class TextPreparation:
             try:
 
                 self.lines = get_highlighted_lines(
-                               syntax_highlighting,
-                               text,
-                               syntax_settings_map=(
-                                 theme_map['text_settings']
-                               )
-                             )
+                    syntax_highlighting,
+                    text,
+                    syntax_settings_map=(theme_map["text_settings"]),
+                )
 
             ## if a syntax mapping error occurs...
 
@@ -232,15 +205,15 @@ class TextPreparation:
                 ## notify user via dialog
 
                 create_and_show_dialog(
-                  "Error while applying syntax"
-                  " highlighting. Text will be"
-                  " displayed without it."
+                    "Error while applying syntax"
+                    " highlighting. Text will be"
+                    " displayed without it."
                 )
 
                 ## also turn off the syntax highlighting by
                 ## setting the corresponding variable to an
                 ## empty string
-                syntax_highlighting = ''
+                syntax_highlighting = ""
 
             ## if the rendering succeeds, though, we assign
             ## a background image surface with the theme
@@ -248,17 +221,12 @@ class TextPreparation:
 
             else:
 
-                self.background = (
-
-                  RECT_SURF_MAP[
+                self.background = RECT_SURF_MAP[
                     (
-                      *text_viewer_rect.size,
-                      theme_map['background_color'],
+                        *text_viewer_rect.size,
+                        theme_map["background_color"],
                     )
-                  ]
-
-                )
-
+                ]
 
         ## if by this point no highlighting is specified,
         ## we render normal lines and use the general
@@ -268,39 +236,30 @@ class TextPreparation:
         if not syntax_highlighting:
 
             self.lines = get_normal_lines(
-                           text,
-                           general_text_settings,
-                         )
-
-            self.background = (
-
-              RECT_SURF_MAP[
-                (
-                  *text_viewer_rect.size,
-                  general_text_settings['background_color']
-                )
-              ]
-
+                text,
+                general_text_settings,
             )
+
+            self.background = RECT_SURF_MAP[
+                (*text_viewer_rect.size, general_text_settings["background_color"])
+            ]
 
         ### position text objects representing lines one
         ### below the other
 
         self.lines.rect.snap_rects_ip(
-          retrieve_pos_from = 'bottomleft',
-          assign_pos_to     = 'topleft'
+            retrieve_pos_from="bottomleft", assign_pos_to="topleft"
         )
 
         ### align the topleft of the text with the topleft
         ### of the scroll area
         self.lines.rect.topleft = self.scroll_area.topleft
 
-
         ### perform setups according to whether displaying
         ### the line numbers was required or not
 
         if show_line_number:
-            
+
             ## set line drawing behaviour to draw both
             ## lines and their respective line numbers
             self.draw_lines = self.draw_lines_and_lineno
@@ -309,29 +268,23 @@ class TextPreparation:
             ## background color according to presence
             ## or absence of syntax highlighting
 
-
             if syntax_highlighting:
-                
-                text_settings = theme_map['text_settings']
 
-                try: lineno_settings = (
-                       text_settings['line_number']
-                     )
+                text_settings = theme_map["text_settings"]
+
+                try:
+                    lineno_settings = text_settings["line_number"]
 
                 except KeyError:
-                    lineno_settings = text_settings['normal']
+                    lineno_settings = text_settings["normal"]
 
-                background_color = (
-                  theme_map['background_color']
-                )
+                background_color = theme_map["background_color"]
 
             else:
 
                 lineno_settings = general_text_settings
 
-                background_color = (
-                  general_text_settings['background_color']
-                )
+                background_color = general_text_settings["background_color"]
 
             ## create digits surfaces based on the
             ## lineno settings
@@ -351,25 +304,13 @@ class TextPreparation:
             # instantiate panel and draw border on its
             # surface
 
-            self.lineno_panel = (
-
-              Object2D.from_surface(
-                surface=(
-                  render_rect(
-                    width,
-                    self.rect.height,
-                    background_color
-                  )
-                ),
-                coordinates_name='topright',
-                coordinates_value=self.rect.topleft
-              )
-
+            self.lineno_panel = Object2D.from_surface(
+                surface=(render_rect(width, self.rect.height, background_color)),
+                coordinates_name="topright",
+                coordinates_value=self.rect.topleft,
             )
 
-            draw_border(
-              self.lineno_panel.image, thickness=2
-            )
+            draw_border(self.lineno_panel.image, thickness=2)
 
             ## store the right coordinate minus the width
             ## of a digit two times; we'll use this 'right'
@@ -377,9 +318,8 @@ class TextPreparation:
             ## from the last to the first character, from
             ## right to left;
 
-            self.lineno_right = (
-                 self.lineno_panel.rect.right
-              - (self.digit_surf_width * 2)
+            self.lineno_right = self.lineno_panel.rect.right - (
+                self.digit_surf_width * 2
             )
 
         else:
@@ -395,34 +335,26 @@ class TextPreparation:
 
         ###
 
-        try: self.image = (
-               self.canvas_map[self.background.get_size()]
-             )
+        try:
+            self.image = self.canvas_map[self.background.get_size()]
 
         except KeyError:
 
-            self.image = \
-            self.canvas_map[self.background.get_size()] = \
-            self.background.copy()
+            self.image = self.canvas_map[
+                self.background.get_size()
+            ] = self.background.copy()
 
         ###
 
         ###
 
-        self.caption.rect.bottomleft = (
-          self.rect.move(0, -3).topleft
-        )
+        self.caption.rect.bottomleft = self.rect.move(0, -3).topleft
 
         ### assign caption drawing routine depending on
         ### 'show_caption' flag
 
         self.caption_drawing_routine = (
-
-          self.caption.draw
-          if show_caption
-
-          else empty_function
-
+            self.caption.draw if show_caption else empty_function
         )
 
         ### perform setups according to whether a header
@@ -430,39 +362,27 @@ class TextPreparation:
 
         if header_text:
 
-            self.header_drawing_routine = (
-              self.header_label.draw
-            )
+            self.header_drawing_routine = self.header_label.draw
 
             self.header_label.set(f":: {header_text} ::")
 
             if show_caption:
-                
-                self.header_label.rect.midleft = (
-                  self.caption.rect.move(5, 0).midright
-                )
+
+                self.header_label.rect.midleft = self.caption.rect.move(5, 0).midright
 
             else:
 
-                self.header_label.rect.bottomleft = (
-                  self.rect.move(0, -3).topleft
-                )
+                self.header_label.rect.bottomleft = self.rect.move(0, -3).topleft
 
-
-        else: self.header_drawing_routine = empty_function
-
-
+        else:
+            self.header_drawing_routine = empty_function
 
         ### position the help icon and help text objects
         ### near the bottomright corner of the text viewer
 
-        self.help_icon.rect.bottomright = (
-          self.rect.move(-10, -10).bottomright
-        )
+        self.help_icon.rect.bottomright = self.rect.move(-10, -10).bottomright
 
-        self.help_text_obj.rect.bottomright = (
-          self.rect.move(-10, -35).bottomright
-        )
+        self.help_text_obj.rect.bottomright = self.rect.move(-10, -35).bottomright
 
         ### finally run the text viewer loop
         self.run()
@@ -485,20 +405,14 @@ class TextPreparation:
 
         ### override the font style settings to force the
         ### digits to use a monospaced font
-        digits_text_settings['font_path'] = (
-          FIRA_MONO_BOLD_FONT_PATH
-        )
+        digits_text_settings["font_path"] = FIRA_MONO_BOLD_FONT_PATH
 
         ### iterate over the digits, creating key-value
         ### pairs of each digit string and its corresponding
         ### surface
 
         self.digits_surf_map = {
-
-          digit: render_text(digit, **digits_text_settings)
-
-          for digit in digits
-
+            digit: render_text(digit, **digits_text_settings) for digit in digits
         }
 
         ### also store the width of any digit (here we use
@@ -506,8 +420,7 @@ class TextPreparation:
         ### which we use when blitting the digit surfaces
         ### beside each visible line
 
-        self.digit_surf_width = \
-                    self.digits_surf_map['0'].get_width()
+        self.digit_surf_width = self.digits_surf_map["0"].get_width()
 
     def jump_to_line_index(self, index):
         """Ensure the line indicated by index is visible."""
@@ -538,9 +451,7 @@ class TextPreparation:
 
         if line_rect.bottom > self.scroll_area.bottom:
 
-            y_delta = (
-              self.scroll_area.bottom - line_rect.bottom
-            )
+            y_delta = self.scroll_area.bottom - line_rect.bottom
 
             self.lines.rect.move_ip(0, y_delta)
 

@@ -1,6 +1,6 @@
 """Facility for custom dictionary class definition."""
 
-from copy            import deepcopy
+from copy import deepcopy
 from collections.abc import Mapping
 
 ### local import
@@ -13,6 +13,7 @@ from ...behaviour import flatten_mapping_values
 ### misuse in the poka-yoke style; however, this is not
 ### urgent since there's activities of higher priority to
 ### be executed
+
 
 class FlatListDict(dict):
     """Dictionary w/ a list of all values, nested or not.
@@ -27,21 +28,16 @@ class FlatListDict(dict):
     ### list names of the builtin list methods so you can
     ### reference them later
 
-    builtin_list_method_names = (
-      "extend",
-      "append",
-      "remove",
-      "clear"
-    )
+    builtin_list_method_names = ("extend", "append", "remove", "clear")
 
     ### define names for custom attributes wherein to store
     ### bound methods of the builtin list instance
 
     bound_method_names = (
-      "_bound_extend",
-      "_bound_append",
-      "_bound_remove",
-      "_bound_clear"
+        "_bound_extend",
+        "_bound_append",
+        "_bound_remove",
+        "_bound_clear",
     )
 
     ### constructor
@@ -80,10 +76,7 @@ class FlatListDict(dict):
         ## pair up the list builtin method names with the
         ## names define for their bound version
 
-        paired_up_items = zip(
-          self.builtin_list_method_names,
-          self.bound_method_names
-        )
+        paired_up_items = zip(self.builtin_list_method_names, self.bound_method_names)
 
         ## we will now iterate over the paired up items,
         ## assigning the bound methods of the flat_values
@@ -92,9 +85,7 @@ class FlatListDict(dict):
         for builtin_name, name_for_bound in paired_up_items:
 
             ## retrieve the bound method using its name
-            bound_method = (
-              getattr(self._flat_values, builtin_name)
-            )
+            bound_method = getattr(self._flat_values, builtin_name)
 
             ## store the bound method in the
             ## instance attribute using the name define
@@ -157,8 +148,10 @@ class FlatListDict(dict):
         ### before assigning the new value(s) to the list
         ### in a further step;
 
-        try: del self[key]
-        except KeyError: pass
+        try:
+            del self[key]
+        except KeyError:
+            pass
 
         ### use the builtin dict.__setitem__ method
         super().__setitem__(key, value)
@@ -314,8 +307,7 @@ class FlatListDict(dict):
             else:
 
                 # get generator with all nested values
-                nested_values = \
-                            flatten_mapping_values(value)
+                nested_values = flatten_mapping_values(value)
 
                 # remove one by one from the flat_values
                 # list
@@ -345,7 +337,6 @@ class FlatListDict(dict):
         ## remove the value(s) from the flat_values list
         ## depending on whether the value from the
         ## popped item is a mapping or not
-
 
         # if value is not a mapping, just remove it
 
@@ -436,8 +427,7 @@ class FlatListDict(dict):
 
             else:
 
-                nested_values = \
-                         flatten_mapping_values(value)
+                nested_values = flatten_mapping_values(value)
                 self._bound_extend(nested_values)
 
         ### finally return the value

@@ -5,10 +5,10 @@ from collections.abc import Iterable
 
 
 def get_type_yielder(
-      types_to_yield,
-      types_not_to_iterate=(),
-      types_to_ignore=(),
-    ):
+    types_to_yield,
+    types_not_to_iterate=(),
+    types_to_ignore=(),
+):
     """Return custom type-related filter generator function.
 
     That is, returns a generator function that
@@ -102,16 +102,11 @@ def get_type_yielder(
             ### if the item is of one of the desired types
             ### and not of one of the undesired ones,
             ### yield it
-            
-            if (
 
-              isinstance(item, types_to_yield)
-
-              and not isinstance(item, types_to_ignore)
-
+            if isinstance(item, types_to_yield) and not isinstance(
+                item, types_to_ignore
             ):
                 yield item
-
 
             ### otherwise, if the item can be subject to
             ### iteration without incurring in recursion
@@ -120,29 +115,23 @@ def get_type_yielder(
             ### from it
 
             elif (
-
-              ## item must be iterable
-              isinstance(item, Iterable)
-
-              ## and its type must not be listed among
-              ## those not to be iterated
-              and not isinstance(item, types_not_to_iterate)
-
-              ## also, to prevent recursion in iterable
-              ## classes whose items are also iterables,
-              ## like strings, the item must also be
-              ## different from the iterable itself
-              and item != iterable_obj
-
+                ## item must be iterable
+                isinstance(item, Iterable)
+                ## and its type must not be listed among
+                ## those not to be iterated
+                and not isinstance(item, types_not_to_iterate)
+                ## also, to prevent recursion in iterable
+                ## classes whose items are also iterables,
+                ## like strings, the item must also be
+                ## different from the iterable itself
+                and item != iterable_obj
             ):
                 yield from yield_type(item)
-
 
             ### since the two conditional branches above
             ### (the "if block" and "elif block") are the
             ### only scenarios of interest, no "else clause"
             ### is needed;
-
 
     ### return the yielder function
     return yield_type
@@ -174,21 +163,23 @@ def separate_by_condition(items, bool_func=bool):
     ### and quicker access
 
     append_false = false_list.append
-    append_true  = true_list .append
+    append_true = true_list.append
 
     ### iterate over items, storing each of them in one of
     ### the lists, depending on whether they condition is
     ### evaluated to True or False
 
     for item in items:
-        
+
         ## append item in "true list" if condition
         ## passes
 
-        if bool_func(item): append_true(item)
+        if bool_func(item):
+            append_true(item)
 
         ## otherwise, append it in the "false list"
-        else: append_false(item)
+        else:
+            append_false(item)
 
     ### finally return both lists
     return false_list, true_list

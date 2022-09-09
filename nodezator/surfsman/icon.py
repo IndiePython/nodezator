@@ -24,7 +24,7 @@ we desire (either 'width' or 'height') of the surface.
 
 ### standard library import
 
-from pathlib   import Path
+from pathlib import Path
 from itertools import repeat
 
 
@@ -35,9 +35,9 @@ from pygame import Surface
 from pygame.font import Font
 
 from pygame.transform import (
-                        rotate as rotate_surface,
-                        flip   as flip_surface,
-                      )
+    rotate as rotate_surface,
+    flip as flip_surface,
+)
 
 
 ### local imports
@@ -45,55 +45,42 @@ from pygame.transform import (
 from ..fontsman.constants import ICON_FONT_PATH
 
 from .draw import (
-                     draw_border,
-                     draw_depth_finish,
-                   )
+    draw_border,
+    draw_depth_finish,
+)
 
 from ..colorsman.colors import BLACK
 
 
-
 def render_layered_icon(
-
-      chars,
-
-      dimension_name  = 'height',
-      dimension_value = 26,
-      font_path       = ICON_FONT_PATH,
-
-      # why padding if we can control background size?
-      # because sometimes we just want to increment
-      # the icon dimension which we can't predict;
-      # for instance, by passing...
-      # dimension_name = 'height'; dimension_value = 26;
-      # .. which will be the resulting width? since
-      # we don't know, the padding is needed here;
-      padding = 0,
-
-      antialiased = True,
-
-      colors = [BLACK, (*BLACK, 0)],
-
-      background_width  = 0,
-      background_height = 0,
-      background_color = (*BLACK, 0),
-
-      retrieve_pos_from = 'center',
-      assign_pos_to     = 'center',
-      offset_pos_by     = (0, 0),
-
-      rotation_degrees = 0,
-
-      flip_x = False,
-      flip_y = False,
-
-      depth_finish_thickness = 0,
-      depth_finish_outset    = True,
-
-      border_thickness = 0,
-      border_color     = BLACK
-
-    ):
+    chars,
+    dimension_name="height",
+    dimension_value=26,
+    font_path=ICON_FONT_PATH,
+    # why padding if we can control background size?
+    # because sometimes we just want to increment
+    # the icon dimension which we can't predict;
+    # for instance, by passing...
+    # dimension_name = 'height'; dimension_value = 26;
+    # .. which will be the resulting width? since
+    # we don't know, the padding is needed here;
+    padding=0,
+    antialiased=True,
+    colors=[BLACK, (*BLACK, 0)],
+    background_width=0,
+    background_height=0,
+    background_color=(*BLACK, 0),
+    retrieve_pos_from="center",
+    assign_pos_to="center",
+    offset_pos_by=(0, 0),
+    rotation_degrees=0,
+    flip_x=False,
+    flip_y=False,
+    depth_finish_thickness=0,
+    depth_finish_outset=True,
+    border_thickness=0,
+    border_color=BLACK,
+):
 
     ###
     stroke_char = chars[0]
@@ -105,13 +92,9 @@ def render_layered_icon(
     ### the bounding rect represents the area from which
     ### to crop the character surface
 
-    font, bounding_rect = \
-      get_objs_for_icon_rendering(
-        font_path,
-        stroke_char,
-        dimension_name,
-        dimension_value
-      )
+    font, bounding_rect = get_objs_for_icon_rendering(
+        font_path, stroke_char, dimension_name, dimension_value
+    )
 
     ###
 
@@ -119,15 +102,9 @@ def render_layered_icon(
 
     for char, color in zip(chars, repeat_last(colors)):
 
-        full_char_surf = font.render(
-                           char,
-                           antialiased,
-                           color
-                         ).convert_alpha()
+        full_char_surf = font.render(char, antialiased, color).convert_alpha()
 
-        clipped_b_rect = bounding_rect.clip(
-                           full_char_surf.get_rect()
-                         )
+        clipped_b_rect = bounding_rect.clip(full_char_surf.get_rect())
 
         try:
 
@@ -140,9 +117,7 @@ def render_layered_icon(
             # clipped bounding rect there is an exception
             # raised saying the bounding rect is out of
             # the surface boundaries;
-            char_surf = full_char_surf.subsurface(
-                                         clipped_b_rect
-                                       )
+            char_surf = full_char_surf.subsurface(clipped_b_rect)
         except ValueError:
 
             print(f"char ordinal is {ord(char)}")
@@ -153,27 +128,22 @@ def render_layered_icon(
     ### background
 
     size = tuple(
-
-      dimension + (padding * 2)
-
-      for dimension in (
-        background_width  or bounding_rect.width,
-        background_height or bounding_rect.height,
-      )
-
+        dimension + (padding * 2)
+        for dimension in (
+            background_width or bounding_rect.width,
+            background_height or bounding_rect.height,
+        )
     )
 
     ### define whether the background has transparency
 
-    try: has_transparency = background_color[3] < 255
-    except IndexError: has_transparency = False
+    try:
+        has_transparency = background_color[3] < 255
+    except IndexError:
+        has_transparency = False
 
     surf = (
-
-      Surface(size).convert_alpha()
-      if has_transparency
-
-      else Surface(size).convert()
+        Surface(size).convert_alpha() if has_transparency else Surface(size).convert()
     )
 
     surf.fill(background_color)
@@ -188,16 +158,12 @@ def render_layered_icon(
 
         ## position char rect
 
-        pos = getattr(
-                offset_rect,
-                retrieve_pos_from
-              )
+        pos = getattr(offset_rect, retrieve_pos_from)
 
         setattr(char_rect, assign_pos_to, pos)
 
         ### blit char on surf
         surf.blit(char_surf, char_rect)
-
 
     ### add other effects as requested
 
@@ -215,11 +181,7 @@ def render_layered_icon(
 
     if depth_finish_thickness:
 
-        draw_depth_finish(
-          surf,
-          depth_finish_thickness,
-          depth_finish_outset
-        )
+        draw_depth_finish(surf, depth_finish_thickness, depth_finish_outset)
 
     ## border
 
@@ -229,9 +191,8 @@ def render_layered_icon(
     ### finally, return the surf
     return surf
 
-def get_objs_for_icon_rendering(
-      font_path, char, dimension_name, dimension_value
-    ):
+
+def get_objs_for_icon_rendering(font_path, char, dimension_name, dimension_value):
     """Return font and bounding rect for the given arguments.
 
     The dimension of the cropped char will be equal to the
@@ -254,21 +215,21 @@ def get_objs_for_icon_rendering(
     ### define an index to retrieve the appropriate dimension
     ### based on the dimension name
 
-    if   dimension_name == 'height': index = 1
-    elif dimension_name ==  'width': index = 0
+    if dimension_name == "height":
+        index = 1
+    elif dimension_name == "width":
+        index = 0
 
-    else: raise ValueError(
-                  "'dimension_name' must be either 'width'"
-                  " or 'height'"
-                )
+    else:
+        raise ValueError("'dimension_name' must be either 'width'" " or 'height'")
 
     ### define a foreground color (it can be any color)
-    foreground_color = (0,)*3
+    foreground_color = (0,) * 3
 
     ### utility function
 
     def get_size_results(font_size):
-        
+
         ### create font and produce a surface with the
         ### given char, using its "render" method; the
         ### render method must not receive a background
@@ -282,25 +243,20 @@ def get_objs_for_icon_rendering(
 
         bounding_rect = full_surf.get_bounding_rect()
 
-        cropped_surf = (
-          full_surf
-          .subsurface(bounding_rect)
-          .copy()
-        )
+        cropped_surf = full_surf.subsurface(bounding_rect).copy()
 
         return (
-          full_surf.get_size()[index],
-          cropped_surf.get_size()[index],
-          bounding_rect,
-          font
+            full_surf.get_size()[index],
+            cropped_surf.get_size()[index],
+            bounding_rect,
+            font,
         )
 
     ### calculate a first size to be attempted; such size
     ### must be based on the ratio between the heights of
     ### a full surface and its cropped area
 
-    full_dimension, cropped_dimension = \
-                        get_size_results(dimension_value)[:2]
+    full_dimension, cropped_dimension = get_size_results(dimension_value)[:2]
 
     ratio = full_dimension / cropped_dimension
 
@@ -324,8 +280,7 @@ def get_objs_for_icon_rendering(
         ### (the bounding rect will only be used outside
         ### the "while loop", but must be referenced here);
         ### also pick the font
-        current_dimension, bounding_rect, font \
-                         = get_size_results(font_size)[1:]
+        current_dimension, bounding_rect, font = get_size_results(font_size)[1:]
 
         ### store current font size as an attempted one since
         ### we just tried it
@@ -339,11 +294,7 @@ def get_objs_for_icon_rendering(
 
         if current_dimension != dimension_value:
 
-            font_size += (
-              1
-              if current_dimension < dimension_value
-              else -1
-            )
+            font_size += 1 if current_dimension < dimension_value else -1
 
         ### otherwise, since we reached a font which
         ### satisfies our dimension requirement, we can
@@ -365,11 +316,7 @@ def get_objs_for_icon_rendering(
         ### the highest dimension achieved until now, and its
         ### font and bounding rect as the chosen ones
 
-        if (
-          highest_dimension
-          < current_dimension
-          <= dimension_value
-        ):
+        if highest_dimension < current_dimension <= dimension_value:
 
             highest_dimension = current_dimension
 
@@ -382,9 +329,9 @@ def get_objs_for_icon_rendering(
     if dimension_value != highest_dimension:
 
         message = (
-          f"couldn't get icon of {dimension_name}"
-          f" {dimension_value} from {Path(font_path).name}"
-           " font file"
+            f"couldn't get icon of {dimension_name}"
+            f" {dimension_value} from {Path(font_path).name}"
+            " font file"
         )
 
         raise ValueError(message)
@@ -395,7 +342,9 @@ def get_objs_for_icon_rendering(
 
 ### small utility
 
+
 def repeat_last(iterable):
     """Yield each item, then keep yielding the last one."""
-    for item in iterable: yield item
+    for item in iterable:
+        yield item
     yield from repeat(item)

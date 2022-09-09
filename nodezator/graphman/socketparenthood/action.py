@@ -27,7 +27,7 @@ class UserActions:
 
         ### change window manager state to draw temp line
         ### between socket and
-        APP_REFS.window_manager.set_state('segment_definition')
+        APP_REFS.window_manager.set_state("segment_definition")
 
         ### restart the loop
         raise ContinueLoopException
@@ -57,9 +57,11 @@ class UserActions:
 
         ### establish segment line segment if it validates
 
-        try: self.validate_line_segment(socket_a, socket_b)
+        try:
+            self.validate_line_segment(socket_a, socket_b)
 
-        except (TypeError, ValueError) as err: print(err)
+        except (TypeError, ValueError) as err:
+            print(err)
 
         else:
 
@@ -67,29 +69,34 @@ class UserActions:
             ## between them since after this we're about to
             ## establish a new one
 
-            try: parent = socket_b.parent
+            try:
+                parent = socket_b.parent
 
-            except AttributeError: pass
+            except AttributeError:
+                pass
 
             else:
 
                 self.sever_segment_between_sockets(
-                       parent,
-                       socket_b,
-                       store_for_signaling=False,
-                     )
+                    parent,
+                    socket_b,
+                    store_for_signaling=False,
+                )
 
             ## check whether socket_b has a
             ## 'get_input_socket' method
-            try: get_input_socket = socket_b.get_input_socket
+            try:
+                get_input_socket = socket_b.get_input_socket
 
             ## if it doesn't have one, just pass
-            except AttributeError: pass
+            except AttributeError:
+                pass
 
             ## if it has, though, it is a placeholder
             ## socket, so use the retrieved method to
             ## obtain an input socket to replace it
-            else: socket_b = get_input_socket()
+            else:
+                socket_b = get_input_socket()
 
             ### you can now safely establish a new line
             ### segment between the two sockets
@@ -101,7 +108,7 @@ class UserActions:
 
         ### change window manager state to the loaded
         ### file state
-        APP_REFS.window_manager.set_state('loaded_file')
+        APP_REFS.window_manager.set_state("loaded_file")
 
         ### restart the loop
         raise ContinueLoopException
@@ -114,7 +121,7 @@ class UserActions:
 
         ### change window manager state to the loaded
         ### file state
-        APP_REFS.window_manager.set_state('loaded_file')
+        APP_REFS.window_manager.set_state("loaded_file")
 
         ### restart the loop
         raise ContinueLoopException
@@ -134,7 +141,7 @@ class UserActions:
         ### change window manager state to draw temporary
         ### "cut" line between provided cut start position
         ### and mouse
-        APP_REFS.window_manager.set_state('segment_severance')
+        APP_REFS.window_manager.set_state("segment_severance")
 
         ### restart the loop
         raise ContinueLoopException
@@ -156,12 +163,11 @@ class UserActions:
 
         ### perform severance of segments which are crossed
         ### by the line defined by the points
-        self.cut_crossing_segments(
-                                cut_start_pos, cut_end_pos)
+        self.cut_crossing_segments(cut_start_pos, cut_end_pos)
 
         ### change window manager state to the loaded
         ### file state
-        APP_REFS.window_manager.set_state('loaded_file')
+        APP_REFS.window_manager.set_state("loaded_file")
 
         ### restart the loop
         raise ContinueLoopException
@@ -174,7 +180,7 @@ class UserActions:
 
         ### change window manager state to the loaded
         ### file state
-        APP_REFS.window_manager.set_state('loaded_file')
+        APP_REFS.window_manager.set_state("loaded_file")
 
         ### restart the loop
         raise ContinueLoopException

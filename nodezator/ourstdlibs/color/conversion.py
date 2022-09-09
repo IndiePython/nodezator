@@ -3,12 +3,12 @@
 ### standard library imports
 
 from colorsys import (
-                       hls_to_rgb,
-                       rgb_to_hls,
-                       hsv_to_rgb,
-                       rgb_to_hsv,
-                       rgb_to_yiq,
-                     )
+    hls_to_rgb,
+    rgb_to_hls,
+    hsv_to_rgb,
+    rgb_to_hsv,
+    rgb_to_yiq,
+)
 
 from functools import partial
 
@@ -16,15 +16,15 @@ from functools import partial
 ### local imports
 
 from .largemaps import (
-                                  HTML_COLOR_MAP,
-                                  PYGAME_COLOR_MAP,
-                                )
+    HTML_COLOR_MAP,
+    PYGAME_COLOR_MAP,
+)
 
 from .constants import (
-                                  RGBA_FACTOR,
-                                  HLS_FACTORS,
-                                  HSV_FACTORS,
-                                )
+    RGBA_FACTOR,
+    HLS_FACTORS,
+    HSV_FACTORS,
+)
 
 
 ### other colorsystem conversions
@@ -35,97 +35,37 @@ hsv_to_hls = lambda h, s, v: rgb_to_hls(*hsv_to_rgb(h, s, v))
 
 ### common conversions
 
-full_to_unit_rgba = lambda color: tuple(
-                                    value / RGBA_FACTOR
-                                    for value in color
-                                  )
+full_to_unit_rgba = lambda color: tuple(value / RGBA_FACTOR for value in color)
 
-unit_to_full_rgba = lambda color: tuple(
-                                    round(
-                                      value * RGBA_FACTOR
-                                    )
-                                    for value in color
-                                  )
+unit_to_full_rgba = lambda color: tuple(round(value * RGBA_FACTOR) for value in color)
 
 full_to_unit_hls = lambda color: tuple(
-                                   value / factor
-                                   for value, factor
-                                   in zip(
-                                        color, HLS_FACTORS
-                                      )
-                                 )
+    value / factor for value, factor in zip(color, HLS_FACTORS)
+)
 
 unit_to_full_hls = lambda color: tuple(
-                                   round(value * factor)
-                                   for value, factor
-                                   in zip(
-                                        color, HLS_FACTORS
-                                      )
-                                 )
+    round(value * factor) for value, factor in zip(color, HLS_FACTORS)
+)
 
 full_to_unit_hsv = lambda color: tuple(
-                                   value / factor
-                                   for value, factor
-                                   in zip(
-                                        color, HSV_FACTORS
-                                      )
-                                 )
+    value / factor for value, factor in zip(color, HSV_FACTORS)
+)
 
 unit_to_full_hsv = lambda color: tuple(
-                                   round(value * factor)
-                                   for value, factor
-                                   in zip(
-                                        color, HSV_FACTORS
-                                      )
-                                 )
+    round(value * factor) for value, factor in zip(color, HSV_FACTORS)
+)
 
-full_rgb_to_hsv = lambda color: unit_to_full_hsv(
-                                  rgb_to_hsv(
-                                    *full_to_unit_rgba(
-                                       color
-                                     )
-                                  )
-                                )
+full_rgb_to_hsv = lambda color: unit_to_full_hsv(rgb_to_hsv(*full_to_unit_rgba(color)))
 
-full_rgb_to_hls = lambda color: unit_to_full_hls(
-                                  rgb_to_hls(
-                                    *full_to_unit_rgba(
-                                       color
-                                     )
-                                  )
-                                )
+full_rgb_to_hls = lambda color: unit_to_full_hls(rgb_to_hls(*full_to_unit_rgba(color)))
 
-full_hls_to_rgb = lambda color: unit_to_full_rgba(
-                                  hls_to_rgb(
-                                    *full_to_unit_hls(
-                                       color
-                                     )
-                                  )
-                                )
+full_hls_to_rgb = lambda color: unit_to_full_rgba(hls_to_rgb(*full_to_unit_hls(color)))
 
-full_hls_to_hsv = lambda color: unit_to_full_hsv(
-                                  hls_to_hsv(
-                                    *full_to_unit_hls(
-                                       color
-                                     )
-                                  )
-                                )
+full_hls_to_hsv = lambda color: unit_to_full_hsv(hls_to_hsv(*full_to_unit_hls(color)))
 
-full_hsv_to_rgb = lambda color: unit_to_full_rgba(
-                                  hsv_to_rgb(
-                                    *full_to_unit_hsv(
-                                       color
-                                     )
-                                  )
-                                )
+full_hsv_to_rgb = lambda color: unit_to_full_rgba(hsv_to_rgb(*full_to_unit_hsv(color)))
 
-full_hsv_to_hls = lambda color: unit_to_full_hls(
-                                  hsv_to_hls(
-                                    *full_to_unit_hsv(
-                                       color
-                                     )
-                                  )
-                                )
+full_hsv_to_hls = lambda color: unit_to_full_hls(hsv_to_hls(*full_to_unit_hsv(color)))
 
 
 ### map to store specific conversion functions for colors
@@ -133,58 +73,33 @@ full_hsv_to_hls = lambda color: unit_to_full_hls(
 ### systems
 
 COLOR_CONVERSION_MAP = {
-
-  ## conversions from rgb
-
-  'rgb' : {
-
-    'hls' : full_rgb_to_hls,
-    'hsv' : full_rgb_to_hsv,
-  },
-
-  ## conversions from hls
-
-  'hls' : {
-
-    'rgb' : full_hls_to_rgb,
-    'hsv' : full_hls_to_hsv,
-  },
-
-  ## conversions from hsv
-
-  'hsv' : {
-
-    'rgb' : full_hsv_to_rgb,
-    'hls' : full_hsv_to_hls
-  },
-
+    ## conversions from rgb
+    "rgb": {
+        "hls": full_rgb_to_hls,
+        "hsv": full_rgb_to_hsv,
+    },
+    ## conversions from hls
+    "hls": {
+        "rgb": full_hls_to_rgb,
+        "hsv": full_hls_to_hsv,
+    },
+    ## conversions from hsv
+    "hsv": {"rgb": full_hsv_to_rgb, "hls": full_hsv_to_hls},
 }
 
 ### yiq colorsystem
 
-full_rgba_to_yiq = lambda full_rgba: rgb_to_yiq(
-                                       *full_to_unit_rgba(
-                                          full_rgba[:3]
-                                        )
-                                     )
+full_rgba_to_yiq = lambda full_rgba: rgb_to_yiq(*full_to_unit_rgba(full_rgba[:3]))
 
-full_rgba_to_luma = lambda full_rgba: (
-                             round(
-                               full_rgba_to_yiq(
-                                 full_rgba[:3]
-                               )[0] * 255
-                             )
-                           )
+full_rgba_to_luma = lambda full_rgba: (round(full_rgba_to_yiq(full_rgba[:3])[0] * 255))
 
-full_rgba_to_luma_grey = \
-lambda full_rgba: (full_rgba_to_luma(full_rgba),)*3
+full_rgba_to_luma_grey = lambda full_rgba: (full_rgba_to_luma(full_rgba),) * 3
 
-yiq_to_full_rgb = lambda yiq: unit_to_full_rgba(
-                                yiq_to_rgb(*yiq)
-                              )
+yiq_to_full_rgb = lambda yiq: unit_to_full_rgba(yiq_to_rgb(*yiq))
 
 
 ### common conversion/validation/formatting operations
+
 
 def hex_string_to_full_rgb(hex_string):
     """Convert hex string into RGB(A) tuple and return it.
@@ -208,10 +123,7 @@ def hex_string_to_full_rgb(hex_string):
     ### respective integer (of base 16) value and return
     ### the resulting tuple
 
-    return tuple(
-      int(hex_string[i: i+2], 16)
-      for i in range(0, len(hex_string), 2)
-    )
+    return tuple(int(hex_string[i : i + 2], 16) for i in range(0, len(hex_string), 2))
 
 
 def int_to_custom_hex(integer):
@@ -235,7 +147,8 @@ def int_to_custom_hex(integer):
     >>> '#' + ''.join(int_to_custom_hex(i) for i in white)
     '#ffffff'
     """
-    return hex(integer)[2:].rjust(2, '0')
+    return hex(integer)[2:].rjust(2, "0")
+
 
 def full_rgb_to_hex_string(full_rgba):
     """Return '#XXXXXX' formated string representing color.
@@ -250,21 +163,14 @@ def full_rgb_to_hex_string(full_rgba):
         channel.
     """
     return (
-
-      ### start string with a '#' character
-      '#'
-
-      ### then add a string obtained by converting each
-      ### integer from the full rgba color into a custom
-      ### hexadecimal representation
-
-      + ''.join(
-
-             int_to_custom_hex(value)
-             for value in full_rgba
-
-           )
+        ### start string with a '#' character
+        "#"
+        ### then add a string obtained by converting each
+        ### integer from the full rgba color into a custom
+        ### hexadecimal representation
+        + "".join(int_to_custom_hex(value) for value in full_rgba)
     )
+
 
 def full_rgb_to_color_name(color_map, full_rgba):
     """Return string representing name of color.
@@ -290,19 +196,22 @@ def full_rgb_to_color_name(color_map, full_rgba):
     ### color, returning the corresponding name in such case
 
     for name, value in color_map.items():
-        
-        if color == value: return name
+
+        if color == value:
+            return name
 
     ### if no name is found instead, we return the 'unamed'
     ### string
-    else: return 'unamed'
+    else:
+        return "unamed"
+
 
 full_rgb_to_html_name = partial(
-                          full_rgb_to_color_name,
-                          HTML_COLOR_MAP,
-                        )
+    full_rgb_to_color_name,
+    HTML_COLOR_MAP,
+)
 
 full_rgb_to_pygame_name = partial(
-                            full_rgb_to_color_name,
-                            PYGAME_COLOR_MAP,
-                          )
+    full_rgb_to_color_name,
+    PYGAME_COLOR_MAP,
+)

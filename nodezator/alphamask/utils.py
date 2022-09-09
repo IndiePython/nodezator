@@ -36,14 +36,12 @@ def size_from_alpha_values(alpha_values):
         alpha values, either in full or unit form.
     """
     return (
-
-      ### number of columns == width
-      len(alpha_values),
-
-      ### number of items in column == height
-      len(alpha_values[0])
-
+        ### number of columns == width
+        len(alpha_values),
+        ### number of items in column == height
+        len(alpha_values[0]),
     )
+
 
 def unit_from_full_alpha_values(full_alpha_values):
     """Return new alpha values converted to unit intervals.
@@ -59,27 +57,21 @@ def unit_from_full_alpha_values(full_alpha_values):
     ### unit form
 
     return [
-
-      ## the inner lists represent the alpha values of
-      ## each column of pixels, in their unit form
-
-      [
-
-        ## the unit format is obtained by simply dividing
-        ## the full alpha values by the maximum value they
-        ## can assume, resulting in a float which
-        ## represents the percentage of the alpha value
-
-        alpha_value / 255
-        for alpha_value in alpha_values_in_column
-
-      ]
-
-      ## the alpha values for each column are retrieved
-      ## from the given full alpha values list
-      for alpha_values_in_column in full_alpha_values
-
+        ## the inner lists represent the alpha values of
+        ## each column of pixels, in their unit form
+        [
+            ## the unit format is obtained by simply dividing
+            ## the full alpha values by the maximum value they
+            ## can assume, resulting in a float which
+            ## represents the percentage of the alpha value
+            alpha_value / 255
+            for alpha_value in alpha_values_in_column
+        ]
+        ## the alpha values for each column are retrieved
+        ## from the given full alpha values list
+        for alpha_values_in_column in full_alpha_values
     ]
+
 
 def full_from_unit_alpha_values(unit_alpha_values):
     """Return new alpha values converted to full values.
@@ -94,28 +86,22 @@ def full_from_unit_alpha_values(unit_alpha_values):
     ### full form
 
     return [
-
-      ## the inner lists represent the alpha values of
-      ## each column of pixels, in their full form
-
-      [
-
-        ## the full format is obtained by simply multiplying
-        ## the unit alpha values by the maximum value the
-        ## full values can assume and rounding the result,
-        ## which ultimately results in an integer in the
-        ## range(256)
-
-        round(unit_alpha_value * 255)
-        for unit_alpha_value in unit_alpha_values_in_column
-
-      ]
-
-      ## the alpha values for each column are retrieved
-      ## from the given unit alpha values list
-      for unit_alpha_values_in_column in unit_alpha_values
-
+        ## the inner lists represent the alpha values of
+        ## each column of pixels, in their full form
+        [
+            ## the full format is obtained by simply multiplying
+            ## the unit alpha values by the maximum value the
+            ## full values can assume and rounding the result,
+            ## which ultimately results in an integer in the
+            ## range(256)
+            round(unit_alpha_value * 255)
+            for unit_alpha_value in unit_alpha_values_in_column
+        ]
+        ## the alpha values for each column are retrieved
+        ## from the given unit alpha values list
+        for unit_alpha_values_in_column in unit_alpha_values
     ]
+
 
 def full_alpha_values_from_surface(surf):
     """Return list of lists representing alpha values.
@@ -124,7 +110,7 @@ def full_alpha_values_from_surface(surf):
     ==========
     surf (pygame.Surface instance)
         surface used as source of alpha values.
-      
+
     How it works
     ============
 
@@ -133,7 +119,7 @@ def full_alpha_values_from_surface(surf):
     which represent columns of the source surface
     and hold the alpha value of each pixel in that
     column.
-    
+
     To be more specific, the columns are listed from
     the leftmost to the rightmost pixel column of the
     source surface and the values within each column
@@ -184,10 +170,6 @@ def full_alpha_values_from_surface(surf):
     ### observed in practice cannot be perceived by a human;
 
     return [
-
-      list(map(int, alpha_values_in_column))
-
-      for alpha_values_in_column
-      in pixels_alpha(surf)
-
+        list(map(int, alpha_values_in_column))
+        for alpha_values_in_column in pixels_alpha(surf)
     ]

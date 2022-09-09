@@ -22,9 +22,9 @@ from ..logman.main import get_new_logger
 from ..our3rdlibs.userlogger import USER_LOGGER
 
 from ..our3rdlibs.behaviour import (
-                            indicate_unsaved,
-                            saved_or_unsaved_state_kept,
-                          )
+    indicate_unsaved,
+    saved_or_unsaved_state_kept,
+)
 
 from ..graphman.callablenode.main import CallableNode
 from ..graphman.operatornode.main import OperatorNode
@@ -72,25 +72,22 @@ class ObjectInsertionRemoval:
 
         ### if widget data is None, cancel the operation
         ### by returning earlier
-        if widget_data is None: return
+        if widget_data is None:
+            return
 
         ### otherwise insert new raw data node by passing
         ### widget data as node hint
 
         self.insert_node(
-               node_hint=widget_data,
-             )
+            node_hint=widget_data,
+        )
 
     def insert_node(
-
-          self,
-
-          node_hint,
-
-          absolute_midtop     = None,
-          commented_out_state = False,
-
-        ):
+        self,
+        node_hint,
+        absolute_midtop=None,
+        commented_out_state=False,
+    ):
         """Trigger node insertion on graph manager.
 
         Parameters
@@ -125,14 +122,12 @@ class ObjectInsertionRemoval:
         """
         ### assess which kind of argument was received in
         ### the node_hint parameter
-            
+
         ## if we have a node instance, we just insert it
 
         if isinstance(
-
-          node_hint,
-          (CallableNode, OperatorNode, ProxyNode),
-
+            node_hint,
+            (CallableNode, OperatorNode, ProxyNode),
         ):
 
             APP_REFS.gm.insert_node(node=node_hint)
@@ -149,24 +144,14 @@ class ObjectInsertionRemoval:
             ## via argument or not
 
             absolute_midtop = (
-
-              absolute_midtop
-              if absolute_midtop is not None
-
-              else self.popup_spawn_pos
-
+                absolute_midtop if absolute_midtop is not None else self.popup_spawn_pos
             )
 
             ## the relative midtop is obtained by
             ## taking into account the effect of the
             ## scrolling
 
-            relative_midtop = (
-              tuple(
-                absolute_midtop
-                - self.scrolling_amount
-              )
-            )
+            relative_midtop = tuple(absolute_midtop - self.scrolling_amount)
 
             ## if we have a string, we create an operator
             ## node
@@ -177,20 +162,18 @@ class ObjectInsertionRemoval:
                 ## to the node constructor
 
                 node_data = {
-                  'id'            : new_id,
-                  'midtop'        : relative_midtop,
-                  'commented_out' : commented_out_state,
+                    "id": new_id,
+                    "midtop": relative_midtop,
+                    "commented_out": commented_out_state,
                 }
 
                 for cls, key in (
-
-                  (OperatorNode,    'operation_id'),
-                  (BuiltinNode,     'builtin_id'),
-                  (StandardLibNode, 'stlib_id'),
-                  (CapsuleNode,     'capsule_id'),
-
+                    (OperatorNode, "operation_id"),
+                    (BuiltinNode, "builtin_id"),
+                    (StandardLibNode, "stlib_id"),
+                    (CapsuleNode, "capsule_id"),
                 ):
-                    
+
                     if node_hint in cls.available_ids:
 
                         node_data[key] = node_hint
@@ -199,42 +182,35 @@ class ObjectInsertionRemoval:
                         ## data to the file
 
                         APP_REFS.gm.create_node(
-                                  cls,
-                                  data   = node_data,
-                                  midtop = absolute_midtop,
-                                )
+                            cls,
+                            data=node_data,
+                            midtop=absolute_midtop,
+                        )
 
             ## if we have a dict...
 
             elif isinstance(node_hint, dict):
-                
-                if 'signature_callable' in node_hint:
+
+                if "signature_callable" in node_hint:
 
                     ## gather data in a dict which will be
                     ## fed to the node constructor
 
                     node_data = {
-                      'id'            : new_id,
-                      'midtop'        : relative_midtop,
-                      'commented_out' : commented_out_state,
+                        "id": new_id,
+                        "midtop": relative_midtop,
+                        "commented_out": commented_out_state,
                     }
 
                     ## try creating the node, adding its data to
                     ## the file
 
-                    try: APP_REFS.gm.create_callable_node(
-
-                                   node_defining_object = (
-                                     node_hint
-                                   ),
-
-                                   data = node_data,
-
-                                   midtop = (
-                                     absolute_midtop
-                                   ),
-
-                                 )
+                    try:
+                        APP_REFS.gm.create_callable_node(
+                            node_defining_object=(node_hint),
+                            data=node_data,
+                            midtop=(absolute_midtop),
+                        )
 
                     except Exception as err:
 
@@ -242,9 +218,9 @@ class ObjectInsertionRemoval:
                         ## log and and user log
 
                         msg = (
-                          "An unexpected error ocurred"
-                          " while trying to instantiate"
-                          " the node."
+                            "An unexpected error ocurred"
+                            " while trying to instantiate"
+                            " the node."
                         )
 
                         logger.exception(msg)
@@ -253,44 +229,41 @@ class ObjectInsertionRemoval:
                         ## notify user via dialog
 
                         create_and_show_dialog(
-
-                          (
-                            "An error ocurred while"
-                            " trying to instantiate"
-                            " the node. Check the user"
-                            " log for details"
-                            " (click <Ctrl+Shift+J> after"
-                            " leaving this dialog)."
-                          ),
-
-                          level_name = 'error',
-
+                            (
+                                "An error ocurred while"
+                                " trying to instantiate"
+                                " the node. Check the user"
+                                " log for details"
+                                " (click <Ctrl+Shift+J> after"
+                                " leaving this dialog)."
+                            ),
+                            level_name="error",
                         )
 
                         ## leave the method
                         return
 
                 else:
-                
+
                     widget_data = deepcopy(node_hint)
 
                     ## gather data in a dict which will be
                     ## fed to the node constructor
 
                     node_data = {
-                      'id'            : new_id,
-                      'midtop'        : relative_midtop,
-                      'commented_out' : commented_out_state,
-                      'widget_data'   : widget_data,
+                        "id": new_id,
+                        "midtop": relative_midtop,
+                        "commented_out": commented_out_state,
+                        "widget_data": widget_data,
                     }
 
                     ## create the node, adding its data to the
                     ## file
 
                     APP_REFS.gm.create_proxy_node(
-                              data   = node_data,
-                              midtop = absolute_midtop,
-                            )
+                        data=node_data,
+                        midtop=absolute_midtop,
+                    )
 
             ## if node_hint argument is none, we also
             ## create a proxy node
@@ -300,31 +273,27 @@ class ObjectInsertionRemoval:
                 ## the node constructor
 
                 node_data = {
-                  'id'            : new_id,
-                  'midtop'        : relative_midtop,
-                  'commented_out' : commented_out_state,
+                    "id": new_id,
+                    "midtop": relative_midtop,
+                    "commented_out": commented_out_state,
                 }
 
                 ## create the node, adding its data to the
                 ## file
 
                 APP_REFS.gm.create_proxy_node(
-                          data   = node_data,
-                          midtop = absolute_midtop,
-                        )
-
+                    data=node_data,
+                    midtop=absolute_midtop,
+                )
 
         ### indicate the data was changed
         indicate_unsaved()
 
-
     def insert_text_block(
-          self,
-          text_block_hint=(
-            t.editing.objinsert.new_text_block
-          ),
-          absolute_midtop=None,
-        ):
+        self,
+        text_block_hint=(t.editing.objinsert.new_text_block),
+        absolute_midtop=None,
+    ):
         """Trigger text block insertion on graph manager.
 
         text_block_hint (
@@ -342,8 +311,7 @@ class ObjectInsertionRemoval:
         """
         ### assess whether the text_block_hint argument is
         ### a string or not, storing the result
-        text_block_hint_is_str = \
-                    isinstance(text_block_hint, str)
+        text_block_hint_is_str = isinstance(text_block_hint, str)
 
         ### if text_block_hint argument is a string
         ### gather spatial data and pass it to the
@@ -356,38 +324,32 @@ class ObjectInsertionRemoval:
             ## whether it was provided via argument or not
 
             absolute_midtop = (
-              absolute_midtop
-              if absolute_midtop is not None
-              else self.popup_spawn_pos
+                absolute_midtop if absolute_midtop is not None else self.popup_spawn_pos
             )
 
             ## the relative midtop is obtained by taking
             ## into account the effect of the scrolling
-            relative_midtop = \
-            tuple(absolute_midtop - self.scrolling_amount)
+            relative_midtop = tuple(absolute_midtop - self.scrolling_amount)
 
             ## gather id and spatial data in a dict which
             ## will be fed to the text block constructor
 
             text = text_block_hint
 
-            text_block_data = {
-              "text"   : text,
-              "midtop" : relative_midtop
-            }
+            text_block_data = {"text": text, "midtop": relative_midtop}
 
             ## create text block, adding its data file to
             ## the file
 
             APP_REFS.gm.create_text_block(
-                 text_block_data=text_block_data,
-                 text_block_absolute_midtop=absolute_midtop
-               )
-            
+                text_block_data=text_block_data,
+                text_block_absolute_midtop=absolute_midtop,
+            )
+
         ### otherwise, we know it is a text block instance,
         ### so we instead just insert it
-        else: APP_REFS.gm.insert_text_block(
-                            text_block=text_block_hint)
+        else:
+            APP_REFS.gm.insert_text_block(text_block=text_block_hint)
 
         ### indicate the data was changed
         indicate_unsaved()
@@ -396,8 +358,8 @@ class ObjectInsertionRemoval:
         """Duplicate selected objects."""
         ### return earlier if there's no selected objects,
         ### since the duplication must be performed on them
-        if not self.selected_objs: return
-
+        if not self.selected_objs:
+            return
 
         ### perform duplication and related admin tasks
 
@@ -408,9 +370,7 @@ class ObjectInsertionRemoval:
         pre_existing_nodes = list(APP_REFS.gm.nodes)
 
         # text blocks
-        pre_existing_text_blocks = (
-          list(APP_REFS.gm.text_blocks)
-        )
+        pre_existing_text_blocks = list(APP_REFS.gm.text_blocks)
 
         ## for each selected obj, create another of the
         ## same kind instantiated at almost the same spot,
@@ -425,78 +385,43 @@ class ObjectInsertionRemoval:
                 if type(obj) is CallableNode:
 
                     self.insert_node(
-                      node_hint=obj.node_defining_object,
-                      absolute_midtop=(
-                        obj.rectsman.move(20, -20).midtop
-                      ),
-                      commented_out_state=(
-                        obj.data.get('commented_out', False)
-                      )
+                        node_hint=obj.node_defining_object,
+                        absolute_midtop=(obj.rectsman.move(20, -20).midtop),
+                        commented_out_state=(obj.data.get("commented_out", False)),
                     )
 
                 elif isinstance(obj, ProxyNode):
 
                     self.insert_node(
-
-                           node_hint=(
-                             obj.data.get(
-                               'widget_data', None
-                             )
-                           ),
-                           absolute_midtop=(
-                             obj
-                             .rectsman
-                             .move(20, -20).midtop
-                           ),
-                           commented_out_state=(
-                             obj.data.get(
-                               'commented_out', False
-                             )
-                           ),
-
-                         )
+                        node_hint=(obj.data.get("widget_data", None)),
+                        absolute_midtop=(obj.rectsman.move(20, -20).midtop),
+                        commented_out_state=(obj.data.get("commented_out", False)),
+                    )
 
                 elif isinstance(obj, TextBlock):
 
                     self.insert_text_block(
-                      text_block_hint=obj.data['text'],
-                      absolute_midtop=(
-                        obj.rect.move(20, -20).midtop
-                      )
+                        text_block_hint=obj.data["text"],
+                        absolute_midtop=(obj.rect.move(20, -20).midtop),
                     )
 
                 else:
 
                     for cls, key in (
-
-                      (OperatorNode,    'operation_id'),
-                      (BuiltinNode,     'builtin_id'),
-                      (StandardLibNode, 'stlib_id'),
-                      (CapsuleNode,     'capsule_id'),
-
+                        (OperatorNode, "operation_id"),
+                        (BuiltinNode, "builtin_id"),
+                        (StandardLibNode, "stlib_id"),
+                        (CapsuleNode, "capsule_id"),
                     ):
 
                         if type(obj) is cls:
 
                             self.insert_node(
-
-                              node_hint=obj.data[key],
-
-                              absolute_midtop=(
-                                obj
-                                .rectsman
-                                .move(20, -20)
-                                .midtop
-                              ),
-
-                              commented_out_state=(
-                                obj
-                                .data
-                                .get(
-                                   'commented_out', False
-                                 )
-                              ),
-
+                                node_hint=obj.data[key],
+                                absolute_midtop=(obj.rectsman.move(20, -20).midtop),
+                                commented_out_state=(
+                                    obj.data.get("commented_out", False)
+                                ),
                             )
 
                             break
@@ -504,27 +429,15 @@ class ObjectInsertionRemoval:
         ### gather references for all newly created objects
 
         new_objects = chain(
-
             ## nodes
-
-            (
-              node
-              for node in APP_REFS.gm.nodes
-              if node not in pre_existing_nodes
-            ),
-
-
+            (node for node in APP_REFS.gm.nodes if node not in pre_existing_nodes),
             ## text blocks
-
             (
-
-              block
-              for block in APP_REFS.gm.text_blocks
-              if block not in pre_existing_text_blocks
-            )
-
+                block
+                for block in APP_REFS.gm.text_blocks
+                if block not in pre_existing_text_blocks
+            ),
         )
-
 
         ### deselect current selection
         self.selected_objs.clear()
@@ -544,17 +457,19 @@ class ObjectInsertionRemoval:
         """Remove selected objects."""
         ### return earlier if there's no selected objects,
         ### since this deletion is applied on them
-        if not self.selected_objs: return
+        if not self.selected_objs:
+            return
 
         ### otherwise remove each selected object according
         ### to its class
 
         for obj in self.selected_objs:
-            
+
             if isinstance(obj, TextBlock):
                 self.remove_text_block(obj)
 
-            else: self.remove_node(obj)
+            else:
+                self.remove_node(obj)
 
         ### clear selection
         self.deselect_all()
@@ -573,9 +488,9 @@ class ObjectInsertionRemoval:
         APP_REFS.gm.remove_node(node)
 
     def remove_text_block(
-          self,
-          text_block,
-        ):
+        self,
+        text_block,
+    ):
         """Remove given text block.
 
         text_block (graphman.textblock.main.TextBlock obj)
@@ -586,6 +501,7 @@ class ObjectInsertionRemoval:
 
 
 ### utility function
+
 
 def get_new_node_id():
     """Return a new unused id for the nodes."""
@@ -602,7 +518,8 @@ def get_new_node_id():
     while True:
 
         new_id = get_new_id()
-        if new_id not in existing_ids: break
+        if new_id not in existing_ids:
+            break
 
     ### finally return the new unused id
     return new_id

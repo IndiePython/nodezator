@@ -9,6 +9,7 @@ from ..appinfo import MAIN_CALLABLE_VAR_NAME
 
 ### raised when loading/processing a native file
 
+
 class NodeScriptsError(Exception):
     """Raised whenever we can't load/process a node script.
 
@@ -27,67 +28,58 @@ class NodeScriptsError(Exception):
     """
 
     def __init__(
-          self, 
-          scripts_not_loaded,
-          scripts_missing_node_definition,
-          not_actually_callables,
-          signature_callables_not_inspectable,
-        ):
+        self,
+        scripts_not_loaded,
+        scripts_missing_node_definition,
+        not_actually_callables,
+        signature_callables_not_inspectable,
+    ):
         """Initialize superclass with custom message."""
 
-        msg = ''
+        msg = ""
 
-        for script_filepath, error_message \
-        in scripts_not_loaded:
+        for script_filepath, error_message in scripts_not_loaded:
 
             msg += (
-              "error while trying to load '{}' node script"
-              " with runpy.run_path(): {}"
+                "error while trying to load '{}' node script"
+                " with runpy.run_path(): {}"
             ).format(
                 str(script_filepath),
                 error_message,
-              ) + linesep
+            ) + linesep
 
-        for script_filepath in (
-          scripts_missing_node_definition
-        ):
+        for script_filepath in scripts_missing_node_definition:
 
             msg += (
-              "the '{}' node script is missing a '{}'"
-              " variable with a valid node definition"
-              " object"
+                "the '{}' node script is missing a '{}'"
+                " variable with a valid node definition"
+                " object"
             ).format(
                 str(script_filepath),
                 MAIN_CALLABLE_VAR_NAME,
-              ) + linesep
+            ) + linesep
 
-        for callable_name, script_filepath in (
-          not_actually_callables
-        ):
+        for callable_name, script_filepath in not_actually_callables:
 
             msg += (
-              "the '{}' object provided in the '{}' node"
-              " script must be callable"
+                "the '{}' object provided in the '{}' node" " script must be callable"
             ).format(
                 callable_name,
                 str(script_filepath),
-              ) + linesep
+            ) + linesep
 
-        for callable_name, script_filepath in (
-          signature_callables_not_inspectable
-        ):
+        for callable_name, script_filepath in signature_callables_not_inspectable:
 
             msg += (
-
-              "the '{}' signature callable from the '{}'"
-              " node script isn't inspectable"
-
+                "the '{}' signature callable from the '{}'"
+                " node script isn't inspectable"
             ).format(
                 callable_name,
                 str(script_filepath),
-              ) + linesep
+            ) + linesep
 
         super().__init__(msg)
+
 
 class MissingNodeScriptsError(Exception):
     """Raised whenever there are missing node scripts.
@@ -108,15 +100,13 @@ class MissingNodeScriptsError(Exception):
 
         ### initialize superclass with custom message
 
-        msg = (
-          'node packs have the following missing scripts: '
-          + str(missing_ids)
-        )
+        msg = "node packs have the following missing scripts: " + str(missing_ids)
 
         super().__init__(msg)
 
 
 ### raised during graph execution
+
 
 class WaitingInputException(Exception):
     """Raised whenever a node is waiting for arguments.
@@ -126,27 +116,28 @@ class WaitingInputException(Exception):
     node.
     """
 
+
 class MissingInputError(Exception):
     """Raised whenever a (sub)parameter has no data."""
 
     def __init__(
-          self,
-          inexecutable_node,
-          params_or_subparams_lacking_data,
-        ):
+        self,
+        inexecutable_node,
+        params_or_subparams_lacking_data,
+    ):
         """Execute superclass __init__ w/ custom message."""
         ### get a string representing a message in the
         ### form of a custom report about the inexecutable
         ### node
 
         report_message = (
-          "'{}'() node (id {}) was deemed inexecutable due"
-          " to lack of data in the following parameters (or"
-          " subparameters): {}"
+            "'{}'() node (id {}) was deemed inexecutable due"
+            " to lack of data in the following parameters (or"
+            " subparameters): {}"
         ).format(
-          inexecutable_node.title_text,
-          inexecutable_node.id,
-          params_or_subparams_lacking_data,
+            inexecutable_node.title_text,
+            inexecutable_node.id,
+            params_or_subparams_lacking_data,
         )
 
         ### initialize superclass with custom message
@@ -162,6 +153,7 @@ class MissingOutputError(Exception):
     isn't a mapping or, if it is, it lacks the
     needed key.
     """
+
     def __init__(self, node, expected_outputs):
         """Execute superclass __init__ w/ custom message."""
         ### get a string representing a message in the
@@ -169,16 +161,17 @@ class MissingOutputError(Exception):
         ### its missing output
 
         report_message = (
-          "the '{}'() node (id {}) must return a dict"
-          " (mapping) with the following keys: {}"
+            "the '{}'() node (id {}) must return a dict"
+            " (mapping) with the following keys: {}"
         ).format(
-          node.title_text,
-          node.id,
-          ', '.join(expected_outputs),
+            node.title_text,
+            node.id,
+            ", ".join(expected_outputs),
         )
 
         ### initialize superclass with custom message
         super().__init__(report_message)
+
 
 class PositionalSubparameterUnpackingError(Exception):
     """Raised when positional subparameter unpacking fails.
@@ -188,29 +181,30 @@ class PositionalSubparameterUnpackingError(Exception):
     """
 
     def __init__(
-          self,
-          node,
-          parameter_name,
-          positional_subparameter_index,
-        ):
+        self,
+        node,
+        parameter_name,
+        positional_subparameter_index,
+    ):
         """Execute superclass __init__ w/ custom message."""
         ### get a string representing a message in the
         ### form of a custom report about the node and
         ### the subparameter that failed to unpack
 
         report_message = (
-          "the '{}'() node (id {}) failed to unpack"
-          " the subparameter received in the position"
-          " #{} of the '{}' parameter"
+            "the '{}'() node (id {}) failed to unpack"
+            " the subparameter received in the position"
+            " #{} of the '{}' parameter"
         ).format(
-          node.title_text,
-          node.id,
-          positional_subparameter_index,
-          parameter_name,
+            node.title_text,
+            node.id,
+            positional_subparameter_index,
+            parameter_name,
         )
 
         ### initialize superclass with custom message
         super().__init__(report_message)
+
 
 class KeywordSubparameterUnpackingError(Exception):
     """Raised when keyword subparameter unpacking fails.
@@ -220,25 +214,25 @@ class KeywordSubparameterUnpackingError(Exception):
     """
 
     def __init__(
-          self,
-          node,
-          parameter_name,
-          keyword_subparameter_index,
-        ):
+        self,
+        node,
+        parameter_name,
+        keyword_subparameter_index,
+    ):
         """Execute superclass __init__ w/ custom message."""
         ### get a string representing a message in the
         ### form of a custom report about the node and
         ### the subparameter that failed to dict-unpack
 
         report_message = (
-          "the '{}'() node (id {}) failed to dict-unpack"
-          " the subparameter received in the position"
-          " #{} of the '{}' parameter"
+            "the '{}'() node (id {}) failed to dict-unpack"
+            " the subparameter received in the position"
+            " #{} of the '{}' parameter"
         ).format(
-          node.title_text,
-          node.id,
-          keyword_subparameter_index,
-          parameter_name,
+            node.title_text,
+            node.id,
+            keyword_subparameter_index,
+            parameter_name,
         )
 
         ### initialize superclass with custom message
@@ -263,17 +257,16 @@ class NodeCallableError(Exception):
         ### information about the node whose callable
         ### raised an error
 
-        report_message = (
-          "'{}'() callable from node #{} failed."
-        ).format(
+        report_message = ("'{}'() callable from node #{} failed.").format(
             node.title_text, node.id
-          )
+        )
 
         ### initialize superclass with custom message
         super().__init__(report_message)
 
 
 ### proxy node error
+
 
 class ProxyNodesLackingDataError(Exception):
     """Raised during graph execution."""
@@ -286,17 +279,10 @@ class ProxyNodesLackingDataError(Exception):
         ### create a string representing a message with
         ### information about the node
 
-        report_message = (
-          "Lack of data source in the"
-          " following proxy node(s):"
-        )
+        report_message = "Lack of data source in the" " following proxy node(s):"
 
-        report_message += (
-
-          ', '.join(
-                 f"id #{node.id} (title={node.title})"
-                 for node in nodes
-               )
+        report_message += ", ".join(
+            f"id #{node.id} (title={node.title})" for node in nodes
         )
 
         ### initialize superclass with custom message
@@ -305,43 +291,48 @@ class ProxyNodesLackingDataError(Exception):
 
 ### node packs errors
 
+
 class NodePackNotFoundError(Exception):
     """Raised when a node pack isn't found."""
+
 
 class NodePackNotADirectoryError(NotADirectoryError):
     """Raised when the node pack path isn't a directory."""
 
+
 class NodePackLackingCategoryError(Exception):
     """Raised when node pack hasn't at least 01 category."""
+
 
 class CategoryLackingScriptDirectoryError(Exception):
     """Raised when category hasn't at least 01 script dir."""
 
+
 class ScriptDirectoryLackingScriptError(Exception):
     """Raised when script directory lacks script."""
-    
+
     def __init__(
-          self,
-          node_pack_path,
-          category_dir,
-          script_dir,
-          script_file,
-        ):
+        self,
+        node_pack_path,
+        category_dir,
+        script_dir,
+        script_file,
+    ):
 
         message = (
-          f"The '{script_dir.name}' script of the"
-          f" '{category_dir.name}' category of the"
-          f" '{node_pack_path} node pack is missing its"
-          f" '{script_file.name}' script file"
+            f"The '{script_dir.name}' script of the"
+            f" '{category_dir.name}' category of the"
+            f" '{node_pack_path} node pack is missing its"
+            f" '{script_file.name}' script file"
         )
 
         super().__init__(message)
 
 
 NODE_PACK_ERRORS = (
-  NodePackNotFoundError,
-  NodePackNotADirectoryError,
-  NodePackLackingCategoryError,
-  CategoryLackingScriptDirectoryError,
-  ScriptDirectoryLackingScriptError,
+    NodePackNotFoundError,
+    NodePackNotADirectoryError,
+    NodePackLackingCategoryError,
+    CategoryLackingScriptDirectoryError,
+    ScriptDirectoryLackingScriptError,
 )

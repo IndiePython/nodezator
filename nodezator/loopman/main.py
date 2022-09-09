@@ -16,23 +16,23 @@ from ..pygameconstants import FPS, maintain_fps
 from ..our3rdlibs.behaviour import watch_window_size
 
 from .exception import (
-                         ContinueLoopException,
-                         SwitchLoopException,
-                         QuitAppException,
-                       )
+    ContinueLoopException,
+    SwitchLoopException,
+    QuitAppException,
+)
 
 
 class LoopHolder:
-
     def loop(self):
-        
+
         ### if loop hold doesn't have a 'draw' method,
         ### assign pygame.display.update to the
         ### attribute
 
-        try: self.draw
+        try:
+            self.draw
         except AttributeError:
-            self.draw = update # pygame.display.update
+            self.draw = update  # pygame.display.update
 
         ### set self as the loop holder
         loop_holder = self
@@ -42,24 +42,24 @@ class LoopHolder:
         self.running = True
 
         while self.running:
-            
+
             maintain_fps(FPS)
 
             watch_window_size()
 
             try:
-                
+
                 loop_holder.handle_input()
                 loop_holder.update()
                 loop_holder.draw()
-
 
             ## the sole purpose of this exception is to
             ## stop the execution flow of the try block and
             ## restart again at the top of the 'while' block,
             ## so we just pass, since this is exactly what
             ## happens
-            except ContinueLoopException: pass
+            except ContinueLoopException:
+                pass
 
             except SwitchLoopException as err:
 
@@ -69,9 +69,12 @@ class LoopHolder:
                 ## if loop holder has an enter method,
                 ## execute it
 
-                try: method = loop_holder.enter
-                except AttributeError: pass
-                else: method()
+                try:
+                    method = loop_holder.enter
+                except AttributeError:
+                    pass
+                else:
+                    method()
 
     def exit_loop(self):
         self.running = False

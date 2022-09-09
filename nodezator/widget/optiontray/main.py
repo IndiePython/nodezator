@@ -18,38 +18,42 @@ from ...ourstdlibs.dictutils import settings_to_hashable_repr
 from ...textman.render import get_text_size
 
 from ...fontsman.constants import (
-                          ENC_SANS_BOLD_FONT_HEIGHT,
-                          ENC_SANS_BOLD_FONT_PATH,
-                        )
+    ENC_SANS_BOLD_FONT_HEIGHT,
+    ENC_SANS_BOLD_FONT_PATH,
+)
 
 from ...colorsman.colors import (
-                        OPTION_TRAY_FG,
-                        OPTION_TRAY_BG,
-                        OPTION_TRAY_SELECTED_FG,
-                        OPTION_TRAY_SELECTED_BG,
-                      )
+    OPTION_TRAY_FG,
+    OPTION_TRAY_BG,
+    OPTION_TRAY_SELECTED_FG,
+    OPTION_TRAY_SELECTED_BG,
+)
 
 ## class extension
 from .op import (
-                            OptionTrayLifetimeOperations,
-                          )
+    OptionTrayLifetimeOperations,
+)
 
 from .creation import (
-                         OptionTrayCreationOperations,
-                       )
+    OptionTrayCreationOperations,
+)
 
 
 ### constants
 
 ## support function
 
+
 def isliteral(value):
 
-    try: literal_eval(repr(value))
+    try:
+        literal_eval(repr(value))
 
-    except Exception: return False
+    except Exception:
+        return False
 
     return True
+
 
 ## nested dictionary used to store surfaces in its
 ## innermost level;
@@ -141,10 +145,8 @@ RIGHT_COORDINATES_MAP = {}
 
 ### class definition
 
-class OptionTray(
-      OptionTrayLifetimeOperations,
-      OptionTrayCreationOperations
-    ):
+
+class OptionTray(OptionTrayLifetimeOperations, OptionTrayCreationOperations):
     """Like an OptionMenu, but w/ values side by side.
 
     It doesn't collapse like the option menu, so the sum
@@ -156,33 +158,22 @@ class OptionTray(
     """
 
     def __init__(
-
-          self,
-          value   = '',
-          options = ('',),
-
-          max_width=155,
-
-          font_path    = ENC_SANS_BOLD_FONT_PATH,
-          font_height = ENC_SANS_BOLD_FONT_HEIGHT,
-          antialiased = True,
-
-          foreground_color = OPTION_TRAY_FG,
-          background_color = OPTION_TRAY_BG,
-
-          selected_foreground_color=(
-            OPTION_TRAY_SELECTED_FG
-          ),
-          selected_background_color=(
-            OPTION_TRAY_SELECTED_BG
-          ),
-
-          name='option_tray',
-          coordinates_name='topleft',
-          coordinates_value=(0, 0),
-          command=empty_function
-
-        ):
+        self,
+        value="",
+        options=("",),
+        max_width=155,
+        font_path=ENC_SANS_BOLD_FONT_PATH,
+        font_height=ENC_SANS_BOLD_FONT_HEIGHT,
+        antialiased=True,
+        foreground_color=OPTION_TRAY_FG,
+        background_color=OPTION_TRAY_BG,
+        selected_foreground_color=(OPTION_TRAY_SELECTED_FG),
+        selected_background_color=(OPTION_TRAY_SELECTED_BG),
+        name="option_tray",
+        coordinates_name="topleft",
+        coordinates_value=(0, 0),
+        command=empty_function,
+    ):
         """Store data and perform setups.
 
         Parameters
@@ -236,9 +227,9 @@ class OptionTray(
         """
         ### store max width, font height and font key
 
-        self.max_width   = max_width
+        self.max_width = max_width
         self.font_height = font_height
-        self.font_path   = font_path
+        self.font_path = font_path
 
         ### make sure options is a list
         options = list(options)
@@ -248,40 +239,38 @@ class OptionTray(
 
         ### store value and options
 
-        self.value   = value
+        self.value = value
         self.options = options
 
         ### store other attributes
 
         self.command = command
-        self.name    = name
+        self.name = name
 
         ### gather text style data for each kind of text
         ### surfaces to be created
 
         self.normal_text_settings = {
-          'font_path'         : font_path,
-          'font_height'      : font_height,
-          'antialiased'      : antialiased,
-          'foreground_color' : foreground_color,
-          'background_color' : background_color
+            "font_path": font_path,
+            "font_height": font_height,
+            "antialiased": antialiased,
+            "foreground_color": foreground_color,
+            "background_color": background_color,
         }
 
         self.selected_text_settings = {
-          'font_path'         : font_path,
-          'font_height'      : font_height,
-          'antialiased'      : antialiased,
-          'foreground_color' : selected_foreground_color,
-          'background_color' : selected_background_color
+            "font_path": font_path,
+            "font_height": font_height,
+            "antialiased": antialiased,
+            "foreground_color": selected_foreground_color,
+            "background_color": selected_background_color,
         }
 
         ### set the surface map and right coordinates
         self.set_surface_map_and_right_coordinates()
 
         ### position the rect
-        setattr(
-          self.rect, coordinates_name, coordinates_value
-        )
+        setattr(self.rect, coordinates_name, coordinates_value)
 
     def validate_value_and_options(self, value, options):
         """Check whether value and options are valid.
@@ -296,31 +285,24 @@ class OptionTray(
         ### available options
 
         if value not in options:
-            raise ValueError(
-                    "'value' must be listed in 'options'")
+            raise ValueError("'value' must be listed in 'options'")
 
         ### raise type error if values aren't python
         ### literals
 
         if any(not isliteral(item) for item in options):
 
-            raise TypeError(
-                    "each item in 'options' must be a"
-                    " python literal"
-                  )
+            raise TypeError("each item in 'options' must be a" " python literal")
 
         ### raise value error if any value is the same/equal
         ### as any other existing value
 
-        if any(
-          a is b or a == b
-          for a, b in combinations(options, 2)
-        ):
+        if any(a is b or a == b for a, b in combinations(options, 2)):
 
             raise ValueError(
-                    "'options' can't have items which are"
-                    " identical or equal to one another"
-                  )
+                "'options' can't have items which are"
+                " identical or equal to one another"
+            )
 
         ### if a maximum width was specified, raise a value
         ### error if sum of the options' widths are not
@@ -331,26 +313,24 @@ class OptionTray(
             ## calculate sum of options' widths
 
             total_width = sum(
-
-                            get_text_size(
-                              str(option),
-                              font_height = self.font_height,
-                              font_path    = self.font_path,
-                            )[0] + 6
-
-                            for option in options
-
-                          )
+                get_text_size(
+                    str(option),
+                    font_height=self.font_height,
+                    font_path=self.font_path,
+                )[0]
+                + 6
+                for option in options
+            )
 
             ## compare it with the maximum width allowed
 
             if total_width > self.max_width:
-                
+
                 raise ValueError(
-                        "sum of option width's must not"
-                        " surpass given 'max_width' when"
-                        " max_width > 0"
-                      )
+                    "sum of option width's must not"
+                    " surpass given 'max_width' when"
+                    " max_width > 0"
+                )
 
     def set_surface_map_and_right_coordinates(self):
         """Reference/create maps of surfaces and coordinates.
@@ -382,11 +362,9 @@ class OptionTray(
 
         try:
 
-            styles_to_surface_map = \
-            OPTIONS_TO_STYLE_DATA[options_tuple]
+            styles_to_surface_map = OPTIONS_TO_STYLE_DATA[options_tuple]
 
-            styles_to_right_coordinates = \
-            RIGHT_COORDINATES_MAP[options_tuple]
+            styles_to_right_coordinates = RIGHT_COORDINATES_MAP[options_tuple]
 
         ### if the first dict doesn't exist, the second one
         ### doesn't exist either, so we create and store
@@ -394,11 +372,9 @@ class OptionTray(
 
         except KeyError:
 
-            styles_to_surface_map = \
-            OPTIONS_TO_STYLE_DATA[options_tuple] = {}
+            styles_to_surface_map = OPTIONS_TO_STYLE_DATA[options_tuple] = {}
 
-            styles_to_right_coordinates = \
-            RIGHT_COORDINATES_MAP[options_tuple] = {}
+            styles_to_right_coordinates = RIGHT_COORDINATES_MAP[options_tuple] = {}
 
         ### try retrieving both the surface map and right
         ### coordinates tuple needed, creating them if they
@@ -411,17 +387,15 @@ class OptionTray(
         ## settings for normal and selected text
 
         styles_key = settings_to_hashable_repr(
-
-          {
-            'selected_foreground_color': (
-              self.selected_text_settings['foreground_color']
-            ),
-            'selected_background_color': (
-              self.selected_text_settings['background_color']
-            ),
-            **self.normal_text_settings
-          }
-
+            {
+                "selected_foreground_color": (
+                    self.selected_text_settings["foreground_color"]
+                ),
+                "selected_background_color": (
+                    self.selected_text_settings["background_color"]
+                ),
+                **self.normal_text_settings,
+            }
         )
 
         ## put together a custom key used to retrieve the
@@ -431,36 +405,26 @@ class OptionTray(
         ## affect appearance;
 
         right_key = settings_to_hashable_repr(
-                      {
-                        'font_path'    : self.font_path,
-                        'font_height' : self.font_height
-                      }
-                    )
+            {"font_path": self.font_path, "font_height": self.font_height}
+        )
 
         ## iterate over the gathered data, retrieving and
         ## referencing the collections, creating and storing
         ## them when they don't exist already
 
         for attr_name, key, a_map, creation_method in (
-
-          (
-            'surface_map',
-            styles_key,
-            styles_to_surface_map,
-            self.create_surface_map
-          ),
-
-          (
-            'right_coordinates',
-            right_key,
-            styles_to_right_coordinates,
-            self.create_right_coordinates
-          )
-
+            ("surface_map", styles_key, styles_to_surface_map, self.create_surface_map),
+            (
+                "right_coordinates",
+                right_key,
+                styles_to_right_coordinates,
+                self.create_right_coordinates,
+            ),
         ):
 
             ## try retrieving the needed collection
-            try: needed_collection = a_map[key]
+            try:
+                needed_collection = a_map[key]
 
             ## if a key error is raised, it means the
             ## collection must be created, so we do so by
@@ -487,34 +451,24 @@ class OptionTray(
 
         classes = set(map(type, self.options))
 
-        return (
-
-          classes.pop()
-          if len(classes) == 1
-          else tuple(classes)
-
-        )
+        return classes.pop() if len(classes) == 1 else tuple(classes)
 
     def svg_repr(self):
         """"""
-        g = Element('g', {'class':'option_tray'})
+        g = Element("g", {"class": "option_tray"})
 
         ###
 
         text_args = [
-
-          (
-            str(option), 
-
-            get_text_size(
-              str(option),
-              font_height = self.font_height,
-              font_path   = self.font_path,
+            (
+                str(option),
+                get_text_size(
+                    str(option),
+                    font_height=self.font_height,
+                    font_path=self.font_path,
+                ),
             )
-          )
-
-          for option in self.options
-
+            for option in self.options
         ]
 
         ### add bgs and text
@@ -530,43 +484,32 @@ class OptionTray(
         for option_str, (width, _) in text_args:
 
             class_name = (
-
-              'selected_bg'
-              if option_str == str(self.value)
-
-              else 'not_selected_bg'
-
+                "selected_bg" if option_str == str(self.value) else "not_selected_bg"
             )
 
             g.append(
-
                 Element(
-
-                  'rect',
-
-                  {
-                    'x': f'{x}',
-                    'y': f'{y}',
-                    'width': str(width + 6),
-                    'height': str(height),
-                    'class': class_name,
-                  },
-
+                    "rect",
+                    {
+                        "x": f"{x}",
+                        "y": f"{y}",
+                        "width": str(width + 6),
+                        "height": str(height),
+                        "class": class_name,
+                    },
                 ),
-
-
-              )
+            )
 
             middle = x + (round((width + 6) / 2))
 
             text_element = Element(
-                             'text',
-                             {
-                               'x': f'{middle}',
-                               'y': f'{bottom}',
-                               'text-anchor': 'middle',
-                             }
-                           )
+                "text",
+                {
+                    "x": f"{middle}",
+                    "y": f"{bottom}",
+                    "text-anchor": "middle",
+                },
+            )
 
             text_element.text = option_str
 

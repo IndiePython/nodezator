@@ -7,13 +7,16 @@ from functools import partialmethod
 ### third-paraty imports
 
 from pygame import (
-              QUIT,
-              MOUSEBUTTONDOWN,
-              MOUSEBUTTONUP,
-              KEYUP, K_ESCAPE, K_RETURN, K_KP_ENTER
-            )
+    QUIT,
+    MOUSEBUTTONDOWN,
+    MOUSEBUTTONUP,
+    KEYUP,
+    K_ESCAPE,
+    K_RETURN,
+    K_KP_ENTER,
+)
 
-from pygame.event   import get as get_events
+from pygame.event import get as get_events
 from pygame.display import update
 
 
@@ -26,25 +29,25 @@ from ..translation import TRANSLATION_HOLDER as t
 from .main import USER_PREFS, CONFIG_FILEPATH
 
 from .validation import (
-                               AVAILABLE_LANGUAGES,
-                               validate_prefs_dict,
-                             )
+    AVAILABLE_LANGUAGES,
+    validate_prefs_dict,
+)
 
 from ..dialog import create_and_show_dialog
 
 from ..pygameconstants import (
-                       SCREEN_RECT,
-                       blit_on_screen,
-                     )
+    SCREEN_RECT,
+    blit_on_screen,
+)
 
 from ..ourstdlibs.pyl import save_pyl
 
 from ..ourstdlibs.collections.general import CallList
 
 from ..ourstdlibs.behaviour import (
-                            empty_function,
-                            get_oblivious_callable,
-                          )
+    empty_function,
+    get_oblivious_callable,
+)
 
 from ..our3rdlibs.button import Button
 
@@ -55,9 +58,9 @@ from ..classes2d.single import Object2D
 from ..classes2d.collections import List2D
 
 from ..fontsman.constants import (
-                          ENC_SANS_BOLD_FONT_HEIGHT,
-                          ENC_SANS_BOLD_FONT_PATH,
-                        )
+    ENC_SANS_BOLD_FONT_HEIGHT,
+    ENC_SANS_BOLD_FONT_PATH,
+)
 
 from ..textman.render import render_text
 
@@ -74,29 +77,31 @@ from ..widget.intfloatentry.main import IntFloatEntry
 from ..widget.optionmenu.main import OptionMenu
 
 from ..colorsman.colors import (
-                        CONTRAST_LAYER_COLOR,
-                        BUTTON_FG, BUTTON_BG,
-                        WINDOW_FG, WINDOW_BG,
-                      )
+    CONTRAST_LAYER_COLOR,
+    BUTTON_FG,
+    BUTTON_BG,
+    WINDOW_FG,
+    WINDOW_BG,
+)
 
 
 ### constants
 
 TEXT_SETTINGS = {
-  'font_height'      : ENC_SANS_BOLD_FONT_HEIGHT,
-  'font_path'        : ENC_SANS_BOLD_FONT_PATH,
-  'padding'          : 5,
-  'foreground_color' : WINDOW_FG,
-  'background_color' : WINDOW_BG,
+    "font_height": ENC_SANS_BOLD_FONT_HEIGHT,
+    "font_path": ENC_SANS_BOLD_FONT_PATH,
+    "padding": 5,
+    "foreground_color": WINDOW_FG,
+    "background_color": WINDOW_BG,
 }
 
 BUTTON_SETTINGS = {
-  'font_height'            : ENC_SANS_BOLD_FONT_HEIGHT,
-  'font_path'              : ENC_SANS_BOLD_FONT_PATH,
-  'padding'                : 5,
-  'depth_finish_thickness' : 1,
-  'foreground_color'       : BUTTON_FG,
-  'background_color'       : BUTTON_BG,
+    "font_height": ENC_SANS_BOLD_FONT_HEIGHT,
+    "font_path": ENC_SANS_BOLD_FONT_PATH,
+    "padding": 5,
+    "depth_finish_thickness": 1,
+    "foreground_color": BUTTON_FG,
+    "background_color": BUTTON_BG,
 }
 
 
@@ -117,15 +122,11 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
 
         ### store a semitransparent object
 
-        self.rect_size_semitransp_obj = \
-          Object2D.from_surface(
-            surface=render_rect(
-                   *self.rect.size,
-                   (*CONTRAST_LAYER_COLOR, 130)
-                 ),
-            coordinates_name='center',
-            coordinates_value=SCREEN_RECT.center
-          )
+        self.rect_size_semitransp_obj = Object2D.from_surface(
+            surface=render_rect(*self.rect.size, (*CONTRAST_LAYER_COLOR, 130)),
+            coordinates_name="center",
+            coordinates_value=SCREEN_RECT.center,
+        )
 
         ### assign behaviour
         self.update = empty_function
@@ -135,17 +136,11 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
 
         self.center_preferences_form()
 
-        APP_REFS.window_resize_setups.append(
-          self.center_preferences_form
-        )
+        APP_REFS.window_resize_setups.append(self.center_preferences_form)
 
     def center_preferences_form(self):
 
-        self.rect.center = self.widgets.rect.center = (
-
-          SCREEN_RECT.center
-
-        )
+        self.rect.center = self.widgets.rect.center = SCREEN_RECT.center
 
     def build_form_widgets(self):
         """Build widgets to hold settings for edition."""
@@ -154,167 +149,115 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
 
         ### instantiate a caption for the form
 
-        caption_label = (
-
-          Object2D.from_surface(
-
+        caption_label = Object2D.from_surface(
             surface=(
-              render_text(
-                text=(
-                  t
-                  .user_preferences_form
-                  .caption
-                ),
-                border_thickness=2,
-                border_color=(
-                  TEXT_SETTINGS['foreground_color' ]
-                ),
-                **TEXT_SETTINGS,
-              )
+                render_text(
+                    text=(t.user_preferences_form.caption),
+                    border_thickness=2,
+                    border_color=(TEXT_SETTINGS["foreground_color"]),
+                    **TEXT_SETTINGS,
+                )
             ),
-
-          )
-
         )
 
         widgets.append(caption_label)
 
         labels = List2D()
 
-
         ### create specific widgets to edit user preferences
 
         for label_text in (
-          t.user_preferences_form.language,
-          t.user_preferences_form.backup_files,
-          t.user_preferences_form.user_logger_lines,
-          t.user_preferences_form.custom_stdout_lines,
-          'Text editor behavior',
+            t.user_preferences_form.language,
+            t.user_preferences_form.backup_files,
+            t.user_preferences_form.user_logger_lines,
+            t.user_preferences_form.custom_stdout_lines,
+            "Text editor behavior",
         ):
-            
+
             label_obj = Object2D.from_surface(
-                                   render_text(
-                                     text=f'{label_text}:',
-                                     **TEXT_SETTINGS
-                                   )
-                                 )
+                render_text(text=f"{label_text}:", **TEXT_SETTINGS)
+            )
 
             labels.append(label_obj)
 
-
-        lang_option_menu = (
-
-          OptionMenu(
+        lang_option_menu = OptionMenu(
             loop_holder=self,
             options=AVAILABLE_LANGUAGES,
-            value=USER_PREFS['LANGUAGE'],
-            draw_on_window_resize = self.draw,
-            name='LANGUAGE',
-            max_width = 0,
-          )
-
-        )
-        
-        number_backups_intfloat_entry = (
-
-          IntFloatEntry(
-            loop_holder = self,
-            value = USER_PREFS['NUMBER_OF_BACKUPS'],
-            name = 'NUMBER_OF_BACKUPS',
-            width = 65,
-            min_value = 0,
-            numeric_classes_hint= 'int',
-            allow_none = False,
-            draw_on_window_resize = self.draw,
-          )
-
-        )
-        
-        user_logger_lines_intfloat_entry = (
-
-          IntFloatEntry(
-            loop_holder = self,
-            value = USER_PREFS['USER_LOGGER_MAX_LINES'],
-            name = 'USER_LOGGER_MAX_LINES',
-            min_value = 0,
-            width = 90,
-            numeric_classes_hint= 'int',
-            allow_none = False,
-            draw_on_window_resize = self.draw,
-          )
-
+            value=USER_PREFS["LANGUAGE"],
+            draw_on_window_resize=self.draw,
+            name="LANGUAGE",
+            max_width=0,
         )
 
-        custom_stdout_lines_intfloat_entry = (
-
-          IntFloatEntry(
-            loop_holder = self,
-            value = USER_PREFS['CUSTOM_STDOUT_MAX_LINES'],
-            name = 'CUSTOM_STDOUT_MAX_LINES',
-            min_value = 0,
-            width = 90,
-            numeric_classes_hint= 'int',
-            allow_none = False,
-            draw_on_window_resize = self.draw,
-          )
-
-        )
-
-        text_editor_behavior_option_menu = (
-
-          OptionMenu(
+        number_backups_intfloat_entry = IntFloatEntry(
             loop_holder=self,
-            options = ('default', 'vim-like'),
-            value = USER_PREFS['TEXT_EDITOR_BEHAVIOR'],
-            name='TEXT_EDITOR_BEHAVIOR',
-            draw_on_window_resize = self.draw,
-            max_width = 0,
-          )
+            value=USER_PREFS["NUMBER_OF_BACKUPS"],
+            name="NUMBER_OF_BACKUPS",
+            width=65,
+            min_value=0,
+            numeric_classes_hint="int",
+            allow_none=False,
+            draw_on_window_resize=self.draw,
+        )
 
+        user_logger_lines_intfloat_entry = IntFloatEntry(
+            loop_holder=self,
+            value=USER_PREFS["USER_LOGGER_MAX_LINES"],
+            name="USER_LOGGER_MAX_LINES",
+            min_value=0,
+            width=90,
+            numeric_classes_hint="int",
+            allow_none=False,
+            draw_on_window_resize=self.draw,
+        )
+
+        custom_stdout_lines_intfloat_entry = IntFloatEntry(
+            loop_holder=self,
+            value=USER_PREFS["CUSTOM_STDOUT_MAX_LINES"],
+            name="CUSTOM_STDOUT_MAX_LINES",
+            min_value=0,
+            width=90,
+            numeric_classes_hint="int",
+            allow_none=False,
+            draw_on_window_resize=self.draw,
+        )
+
+        text_editor_behavior_option_menu = OptionMenu(
+            loop_holder=self,
+            options=("default", "vim-like"),
+            value=USER_PREFS["TEXT_EDITOR_BEHAVIOR"],
+            name="TEXT_EDITOR_BEHAVIOR",
+            draw_on_window_resize=self.draw,
+            max_width=0,
         )
 
         labels.rect.snap_rects_ip(
-                      retrieve_pos_from = 'bottomleft',
-                      assign_pos_to     = 'topleft',
-                      offset_pos_by     = (0, 5),
-                    )
-
-
-        labels.rect.topleft = (
-          widgets.rect.move(0, 5).bottomleft
+            retrieve_pos_from="bottomleft",
+            assign_pos_to="topleft",
+            offset_pos_by=(0, 5),
         )
+
+        labels.rect.topleft = widgets.rect.move(0, 5).bottomleft
 
         widgets.extend(labels)
 
         self.prefs_widgets = prefs_widgets = List2D(
-
-          [
-            lang_option_menu,
-            number_backups_intfloat_entry,
-            user_logger_lines_intfloat_entry,
-            custom_stdout_lines_intfloat_entry,
-            text_editor_behavior_option_menu,
-          ]
-
+            [
+                lang_option_menu,
+                number_backups_intfloat_entry,
+                user_logger_lines_intfloat_entry,
+                custom_stdout_lines_intfloat_entry,
+                text_editor_behavior_option_menu,
+            ]
         )
 
-        right = max(
+        right = max(label.rect.right for label in labels) + 5
 
-          label.rect.right
-          for label in labels
+        for (pref_widget, label) in zip(prefs_widgets, labels):
 
-        ) + 5
-
-        for (
-          pref_widget, label
-        ) in zip(prefs_widgets, labels):
-
-            pref_widget.rect.midleft = (
-              right, label.rect.centery
-            )
+            pref_widget.rect.midleft = (right, label.rect.centery)
 
         widgets.extend(prefs_widgets)
-
 
         ### create, position and store form related buttons
 
@@ -322,73 +265,47 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
 
         ## submit button
 
-        self.finish_button = (
-
-          Button.from_text(
-                   text=(
-                     t
-                     .user_preferences_form
-                     .finish
-                   ),
-                   command=CallList([
-                             self.finish_form,
-                             self.exit_loop,
-                           ]),
-                   **BUTTON_SETTINGS
-                 )
+        self.finish_button = Button.from_text(
+            text=(t.user_preferences_form.finish),
+            command=CallList(
+                [
+                    self.finish_form,
+                    self.exit_loop,
+                ]
+            ),
+            **BUTTON_SETTINGS,
         )
 
         draw_depth_finish(self.finish_button.image)
 
-        self.finish_button.rect.topright = (
-          widgets.rect.move(0, 5).bottomright
-        )
+        self.finish_button.rect.topright = widgets.rect.move(0, 5).bottomright
 
         ## cancel button
 
-        self.cancel_button = (
-
-          Button.from_text(
-                   text=(
-                     t
-                     .user_preferences_form
-                     .cancel
-                   ),
-                   command=self.exit_loop,
-                   **BUTTON_SETTINGS,
-                 )
-
+        self.cancel_button = Button.from_text(
+            text=(t.user_preferences_form.cancel),
+            command=self.exit_loop,
+            **BUTTON_SETTINGS,
         )
 
         draw_depth_finish(self.cancel_button.image)
 
-        self.cancel_button.rect.midright = (
-          self.finish_button.rect.move(-5, 0).midleft
-        )
+        self.cancel_button.rect.midright = self.finish_button.rect.move(-5, 0).midleft
 
         ## store
 
-        self.finish_button.rect.topright = (
-          widgets.rect.move(0, 5).bottomright
-        )
+        self.finish_button.rect.topright = widgets.rect.move(0, 5).bottomright
 
-        self.cancel_button.rect.topright = (
-          self.finish_button.rect.move(-5, 0).topleft
-        )
+        self.cancel_button.rect.topright = self.finish_button.rect.move(-5, 0).topleft
 
-        widgets.extend(
-                  (self.cancel_button, self.finish_button)
-                )
+        widgets.extend((self.cancel_button, self.finish_button))
 
     def edit_user_preferences(self):
 
         ### blit the screen-size semitransparent surf in the
         ### canvas to increase constrast
 
-        blit_on_screen(
-          UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size],
-          (0, 0)
-        )
+        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
 
         ###
         self.loop()
@@ -402,7 +319,8 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
 
         for event in get_events():
             ### QUIT
-            if event.type == QUIT: self.quit()
+            if event.type == QUIT:
+                self.quit()
 
             ### KEYUP
 
@@ -442,8 +360,8 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
 
                     ## cancel editing form if mouse left
                     ## button is released out of boundaries
-                    else: self.exit_loop()
-
+                    else:
+                        self.exit_loop()
 
     def mouse_method_on_collision(self, method_name, event):
         """Invoke inner widget if it collides with mouse.
@@ -459,7 +377,7 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
             mouse interaction protocol used; here we
             use it to retrieve the position of the
             mouse when the first button was released.
-              
+
             Check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -477,47 +395,49 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
                 self.unhighlight()
                 break
 
-        else: return
+        else:
+            return
 
         ### if you manage to find a colliding obj, execute
         ### the requested method on it, passing along the
         ### received event
 
-        try: method = getattr(colliding_obj, method_name)
-        except AttributeError: pass
-        else: method(event)
+        try:
+            method = getattr(colliding_obj, method_name)
+        except AttributeError:
+            pass
+        else:
+            method(event)
 
     on_mouse_click = partialmethod(
-                       mouse_method_on_collision,
-                       'on_mouse_click',
-                     )
+        mouse_method_on_collision,
+        "on_mouse_click",
+    )
 
     on_mouse_release = partialmethod(
-                         mouse_method_on_collision,
-                         'on_mouse_release',
-                       )
-
+        mouse_method_on_collision,
+        "on_mouse_release",
+    )
 
     def finish_form(self):
         """Assign new category indices and exit loop."""
 
-        edited_prefs = {
-          widget.name : widget.get()
-          for widget in self.prefs_widgets
-        }
+        edited_prefs = {widget.name: widget.get() for widget in self.prefs_widgets}
 
-        try: validate_prefs_dict(edited_prefs)
+        try:
+            validate_prefs_dict(edited_prefs)
 
         except Exception:
-            
+
             return
 
         else:
-            
-            try: save_pyl(edited_prefs, CONFIG_FILEPATH)
+
+            try:
+                save_pyl(edited_prefs, CONFIG_FILEPATH)
 
             except Exception:
-                
+
                 return
 
             else:
@@ -528,12 +448,12 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
                 # also take care of max lines for
                 # the custom stdout)
                 USER_PREFS.update(edited_prefs)
-            
+
         ### notify user via dialog and status message
 
         message = (
-          "User preferences changed. Some changes may"
-          " only take effect after restarting the app"
+            "User preferences changed. Some changes may"
+            " only take effect after restarting the app"
         )
 
         set_status_message(message)
@@ -558,13 +478,7 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
 
         Done to make form appear unhighlighted.
         """
-        blit_on_screen(
-          UNHIGHLIGHT_SURF_MAP[self.rect.size],
-          self.rect
-        )
+        blit_on_screen(UNHIGHLIGHT_SURF_MAP[self.rect.size], self.rect)
 
 
-edit_user_preferences = (
-  UserPreferencesEditingForm().edit_user_preferences
-)
-
+edit_user_preferences = UserPreferencesEditingForm().edit_user_preferences

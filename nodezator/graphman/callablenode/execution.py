@@ -1,14 +1,12 @@
-
 ### local imports
 
 from ..exception import (
+    MissingInputError,
+    WaitingInputException,
+    PositionalSubparameterUnpackingError,
+    KeywordSubparameterUnpackingError,
+)
 
-                      MissingInputError,
-                      WaitingInputException,
-                      PositionalSubparameterUnpackingError,
-                      KeywordSubparameterUnpackingError,
-
-                    )
 
 class Execution:
     """Operations related to node execution."""
@@ -20,10 +18,7 @@ class Execution:
         ### (the input comes from default values, widgets
         ### or other nodes)
 
-        self.argument_map = {
-          param_name : {}
-          for param_name in self.var_kind_map
-        }
+        self.argument_map = {param_name: {} for param_name in self.var_kind_map}
 
         ### create a set to store the names of all
         ### pending parameters, that is, parameters
@@ -44,9 +39,7 @@ class Execution:
         ### update the pending parameter names set with the
         ### name of all existing parameters
 
-        self.pending_param_names.update(
-          self.signature_obj.parameters.keys()
-        )
+        self.pending_param_names.update(self.signature_obj.parameters.keys())
 
         ### clear the argument map and insert empty dicts
         ### for subparameters
@@ -73,10 +66,8 @@ class Execution:
             if input_socket.subparameter_index is not None:
 
                 key = (
-
-                  key,
-                  input_socket.subparameter_index,
-
+                    key,
+                    input_socket.subparameter_index,
                 )
 
             ### use the key to store whether the input
@@ -84,12 +75,12 @@ class Execution:
             ### in the map
 
             self.expects_input_map[key] = hasattr(
-                                            input_socket,
-                                            'parent',
-                                          )
+                input_socket,
+                "parent",
+            )
 
         ### set a state as 'ready
-        self.state = 'ready'
+        self.state = "ready"
 
     def __call__(self):
         """Return objects needed to execute node's callable.
@@ -119,16 +110,16 @@ class Execution:
         ### return all elements needed
 
         return (
-          self.main_callable,
-          self.argument_map,
-          self.signature_obj,
+            self.main_callable,
+            self.argument_map,
+            self.signature_obj,
         )
 
     def check_pending_parameters(self):
         """Perform checks on pending parameters.
 
         Here we check pending parameters to see whether we
-        
+
         1. should raise a WaitingInputException, meaning the
         node must wait for inputs from other nodes before
         executing.
@@ -164,7 +155,8 @@ class Execution:
             ## check whether the parameter is or not of
             ## variable kind, by trying to retrieve which
             ## kind of variable parameter it is
-            try: kind = self.var_kind_map[param_name]
+            try:
+                kind = self.var_kind_map[param_name]
 
             ## if it fails, it means it is not a variable
             ## parameter, so we perform suitable checks
@@ -195,12 +187,14 @@ class Execution:
                     # case you can deem the parameter as
                     # ready
 
-                    try: arg_map[param_name] = \
-                         self.default_map[param_name]
+                    try:
+                        arg_map[param_name] = self.default_map[param_name]
 
-                    except KeyError: pass
+                    except KeyError:
+                        pass
 
-                    else: ready_param_names.add(param_name)
+                    else:
+                        ready_param_names.add(param_name)
 
                     # try assigning a value from an
                     # embedded widget if such value
@@ -215,16 +209,15 @@ class Execution:
 
                     try:
 
-                        arg_map[param_name] = (
-                          self
-                          .data
-                          ['param_widget_value_map']
-                          [param_name]
-                        )
+                        arg_map[param_name] = self.data["param_widget_value_map"][
+                            param_name
+                        ]
 
-                    except KeyError: pass
+                    except KeyError:
+                        pass
 
-                    else: ready_param_names.add(param_name)
+                    else:
+                        ready_param_names.add(param_name)
 
                     # if, after the attempted assignments
                     # above, the input still isn't
@@ -235,9 +228,7 @@ class Execution:
 
                     if param_name not in arg_map:
 
-                        lacking_data_source.append(
-                                              param_name
-                                            )
+                        lacking_data_source.append(param_name)
 
             ## if parameter is of variable kind, check
             ## whether it has subparameters and their
@@ -248,12 +239,7 @@ class Execution:
 
                 ## retrieve a list of subparameters
 
-                subparams = (
-                  self
-                  .data
-                  ['subparam_map']
-                  [param_name]
-                )
+                subparams = self.data["subparam_map"][param_name]
 
                 ## if it has subparameters (list isn't
                 ## empty), check whether the subparameters
@@ -275,11 +261,7 @@ class Execution:
                         # check presence of subparameter
 
                         try:
-                            (
-                              arg_map
-                              [param_name]
-                              [subparam_index]
-                            )
+                            (arg_map[param_name][subparam_index])
 
                         # if subparameter is not present
 
@@ -293,18 +275,9 @@ class Execution:
                             # the subparams_waiting flag
                             # to True
 
-                            if self.expects_input_map[
-                              (param_name, subparam_index)
-                            ]:
+                            if self.expects_input_map[(param_name, subparam_index)]:
 
-                                waiting_input.append(
-
-                                  (
-                                    param_name,
-                                    subparam_index
-                                  )
-
-                                )
+                                waiting_input.append((param_name, subparam_index))
 
                                 subparams_waiting = True
 
@@ -315,23 +288,11 @@ class Execution:
 
                                 try:
 
-                                    (
-
-                                      arg_map
-                                      [param_name]
-                                      [subparam_index] 
-
-                                    ) = (
-
-                                      self
-                                      .data
-                                      ['subparam_widget_map']
-                                      [param_name]
-                                      [subparam_index]
-                                      ['widget_kwargs']
-                                      ['value']
-
-                                    )
+                                    (arg_map[param_name][subparam_index]) = self.data[
+                                        "subparam_widget_map"
+                                    ][param_name][subparam_index]["widget_kwargs"][
+                                        "value"
+                                    ]
 
                                 # if the attempt fails
                                 # (the subparam widget map
@@ -347,13 +308,12 @@ class Execution:
                                 except KeyError:
 
                                     (
-                                      lacking_data_source
-                                      .append(
-                                         (
-                                           param_name,
-                                           subparam_index,
-                                         )
-                                       )
+                                        lacking_data_source.append(
+                                            (
+                                                param_name,
+                                                subparam_index,
+                                            )
+                                        )
                                     )
 
                     # if there are no subparameters waiting,
@@ -366,36 +326,27 @@ class Execution:
                         ready_param_names.add(param_name)
 
                         # retrieve subparam value map
-                        subparam_value_map = (
-                          arg_map[param_name]
-                        )
+                        subparam_value_map = arg_map[param_name]
 
                         # perform additional setups
                         # depending on the specific kind
                         # of variable parameter we have
 
-                        if kind == 'var_pos':
+                        if kind == "var_pos":
 
                             # obtain a list which represents
                             # the subparameters' indices,
                             # which are keys, sorted
 
-                            sorted_indices = (
-                              sorted(subparam_value_map)
-                            )
+                            sorted_indices = sorted(subparam_value_map)
 
                             # retrieve the list of
                             # subparameters that must
                             # be unpacked
 
-                            subparams_for_unpacking = (
-
-                              self
-                              .data
-                              ['subparam_unpacking_map']
-                              [param_name]
-
-                            )
+                            subparams_for_unpacking = self.data[
+                                "subparam_unpacking_map"
+                            ][param_name]
 
                             # retrieve the values of each
                             # subparameter in the order
@@ -411,45 +362,32 @@ class Execution:
 
                                     try:
 
-                                        param_args.extend(
-
-                                          subparam_value_map[index]
-
-                                        )
+                                        param_args.extend(subparam_value_map[index])
 
                                     except Exception as err:
 
                                         raise PositionalSubparameterUnpackingError(
-                                                self,
-                                                param_name,
-                                                index,
-                                              ) from err
+                                            self,
+                                            param_name,
+                                            index,
+                                        ) from err
 
                                 else:
 
-                                    param_args.append(
-
-                                      subparam_value_map[index]
-
-                                    )
+                                    param_args.append(subparam_value_map[index])
 
                             # replace the parameter data in
                             # the argument map by the list
                             # we just created
                             arg_map[param_name] = param_args
 
-
-                        elif kind == 'var_key':
+                        elif kind == "var_key":
 
                             # retrieve map containing
                             # name of keyword for each
                             # subparameter
 
-                            subparam_keywords = (
-                              self
-                              .data
-                              ['subparam_keyword_map']
-                            )
+                            subparam_keywords = self.data["subparam_keyword_map"]
 
                             # now build a new dictionary
                             # with the sorted keys from the
@@ -460,18 +398,11 @@ class Execution:
 
                             for index in sorted(subparam_value_map):
 
-                                value = (
-
-                                  subparam_value_map
-                                  .pop(index)
-
-                                )
+                                value = subparam_value_map.pop(index)
 
                                 if index in subparam_keywords:
-                                    
-                                    param_args[
-                                      subparam_keywords[index]
-                                    ] = value
+
+                                    param_args[subparam_keywords[index]] = value
 
                                 else:
 
@@ -487,16 +418,16 @@ class Execution:
                                     # of '**', we go with the less lenient
                                     # behaviour of only accepting mappings
 
-                                    try: param_args.update(**value)
+                                    try:
+                                        param_args.update(**value)
 
                                     except Exception as err:
 
                                         raise KeywordSubparameterUnpackingError(
-                                                self,
-                                                param_name,
-                                                index,
-                                              ) from err
-
+                                            self,
+                                            param_name,
+                                            index,
+                                        ) from err
 
                             # replace the parameter data in
                             # the argument map by the dict
@@ -506,13 +437,12 @@ class Execution:
                         else:
 
                             raise RuntimeError(
-                              "there shouldn't be possible"
-                              " to specify a variable"
-                              " parameter of a kind which"
-                              " is neither 'var_pos' or"
-                              " 'var_key'"
+                                "there shouldn't be possible"
+                                " to specify a variable"
+                                " parameter of a kind which"
+                                " is neither 'var_pos' or"
+                                " 'var_key'"
                             )
-
 
                 ## otherwise, if it doesn't have any
                 ## subparameters, we deem the parameter
@@ -524,21 +454,14 @@ class Execution:
                 ## parameter)
 
                 else:
-                    
+
                     # deem the parameter ready
                     ready_param_names.add(param_name)
 
                     # define and store a default value
                     # according to the kind of parameter
 
-                    default = (
-
-                      ()
-                      if kind == 'var_pos'
-
-                      else {}
-
-                    )
+                    default = () if kind == "var_pos" else {}
 
                     arg_map[param_name] = default
 
@@ -551,25 +474,18 @@ class Execution:
         if lacking_data_source:
 
             raise MissingInputError(
-                    self,
-                    lacking_data_source,
-                  )
+                self,
+                lacking_data_source,
+            )
 
         ### if there are (sub)parameters waiting for input,
         ### raise the WaitingInputException
 
         if waiting_input:
 
-            raise WaitingInputException(
-              "node has (sub)parameters waiting for input"
-            )
+            raise WaitingInputException("node has (sub)parameters waiting for input")
 
-    def receive_input(
-          self,
-          data,
-          param_name,
-          subparam_index=None
-        ):
+    def receive_input(self, data, param_name, subparam_index=None):
         """Store given data
 
         Parameters
@@ -593,13 +509,9 @@ class Execution:
 
         if subparam_index is not None:
 
-            (
-              self
-              .argument_map
-              [param_name]
-              [subparam_index]
-            ) = data
+            (self.argument_map[param_name][subparam_index]) = data
 
         ### otherwise the data is supposed to be stored
         ### for the parameter
-        else: self.argument_map[param_name] = data
+        else:
+            self.argument_map[param_name] = data

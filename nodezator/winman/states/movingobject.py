@@ -3,27 +3,37 @@
 ### third-party imports
 
 from pygame import (
+    QUIT,
+    KEYDOWN,
+    KEYUP,
+    KMOD_CTRL,
+    K_ESCAPE,
+    K_x,
+    K_y,
+    K_RETURN,
+    K_KP_ENTER,
+    K_KP0,
+    K_RSHIFT,
+    K_LSHIFT,
+    K_w,
+    K_a,
+    K_s,
+    K_d,
+    K_o,
+    K_UP,
+    K_LEFT,
+    K_DOWN,
+    K_RIGHT,
+    MOUSEBUTTONUP,
+)
 
-              QUIT,
-
-              KEYDOWN, KEYUP,
-              KMOD_CTRL, K_ESCAPE, K_x, K_y,
-              K_RETURN, K_KP_ENTER,
-              K_KP0, K_RSHIFT, K_LSHIFT,
-              K_w, K_a, K_s, K_d, K_o,
-              K_UP, K_LEFT, K_DOWN, K_RIGHT,
-
-              MOUSEBUTTONUP,
-
-            )
-
-from pygame.event   import get as get_events
+from pygame.event import get as get_events
 from pygame.display import update
 
 from pygame.key import (
-                  get_mods    as get_mods_bitmask,
-                  get_pressed as get_pressed_keys,
-                )
+    get_mods as get_mods_bitmask,
+    get_pressed as get_pressed_keys,
+)
 
 
 ### local imports
@@ -41,7 +51,8 @@ class MovingObjectState:
         for event in get_events():
 
             ### QUIT
-            if event.type == QUIT: raise QuitAppException
+            if event.type == QUIT:
+                raise QuitAppException
 
             ### MOUSEBUTTONUP
 
@@ -53,7 +64,6 @@ class MovingObjectState:
                 if event.button == 1:
                     APP_REFS.ea.confirm_moving()
 
-
                 elif event.button == 3:
 
                     ## cancel operation
@@ -62,12 +72,11 @@ class MovingObjectState:
             ### KEYDOWN
 
             elif event.type == KEYDOWN:
-                
+
                 ## set translation factor to 10
 
                 if event.key in (K_RSHIFT, K_LSHIFT):
                     APP_REFS.ea.translation_factor = 10
-
 
             ### KEYUP
 
@@ -97,14 +106,13 @@ class MovingObjectState:
     def moving_object_keyboard_input_handling(self):
         """Handle keyboard specific input."""
         ### get input state maps
-        key_input, mods_bitmask = \
-            get_pressed_keys(), get_mods_bitmask()
+        key_input, mods_bitmask = get_pressed_keys(), get_mods_bitmask()
 
         ### state of keys related to scrolling
 
-        up    = key_input[K_w] or key_input[K_UP]
-        left  = key_input[K_a] or key_input[K_LEFT]
-        down  = key_input[K_s] or key_input[K_DOWN]
+        up = key_input[K_w] or key_input[K_UP]
+        left = key_input[K_a] or key_input[K_LEFT]
+        down = key_input[K_s] or key_input[K_DOWN]
         right = key_input[K_d] or key_input[K_RIGHT]
 
         ### perform scrolling or not, according to state
@@ -112,7 +120,7 @@ class MovingObjectState:
 
         ## vertical scrolling
 
-        if  up and not down:
+        if up and not down:
             APP_REFS.ea.scroll_up()
 
         elif down and not up:
@@ -140,8 +148,10 @@ class MovingObjectState:
 
     def moving_object_update(self):
         """Update method for the 'moving_object' state."""
-        for item in self.labels_update_methods: item()
-        for item in self.switches_update_methods: item()
+        for item in self.labels_update_methods:
+            item()
+        for item in self.switches_update_methods:
+            item()
 
         APP_REFS.ea.track_mouse()
 
@@ -155,10 +165,12 @@ class MovingObjectState:
         APP_REFS.ea.check_axis_line()
         APP_REFS.gm.draw()
 
-        for item in self.labels_drawing_methods: item()
-        for item in self.switches_drawing_methods: item()
+        for item in self.labels_drawing_methods:
+            item()
+        for item in self.switches_drawing_methods:
+            item()
 
         self.separator.draw()
         self.menubar.draw_top_items()
 
-        update() # pygame.display.update
+        update()  # pygame.display.update

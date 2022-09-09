@@ -27,15 +27,15 @@ from ..socket.surfs import type_to_codename
 from .utils import update_with_widget
 
 from .surfs import (
-                              LABEL_SURF_MAP,
-                              HEADER_SURF_MAP,
-                              ADD_BUTTON_SURF,
-                              REMOVE_BUTTON_SURF,
-                            )
+    LABEL_SURF_MAP,
+    HEADER_SURF_MAP,
+    ADD_BUTTON_SURF,
+    REMOVE_BUTTON_SURF,
+)
 
 from .constants import (
-                            HEADER_LABEL_WIDTH_INCREMENT,
-                          )
+    HEADER_LABEL_WIDTH_INCREMENT,
+)
 
 
 ## classes for composition
@@ -44,8 +44,8 @@ from ..socket.proxy import ProxySocket
 from ..socket.output import OutputSocket
 
 
-
 REMOVE_BUTTON_WIDTH = REMOVE_BUTTON_SURF.get_width()
+
 
 class VisualRelatedPreparations:
     """Manages creation and setup of node visuals."""
@@ -65,16 +65,8 @@ class VisualRelatedPreparations:
 
         ### create label
 
-        label = self.label = (
-
-          Object2D.from_surface(
-
-                     surface = (
-                       self.get_new_label_surface()
-                     ),
-
-                   )
-
+        label = self.label = Object2D.from_surface(
+            surface=(self.get_new_label_surface()),
         )
 
         viz_objs.append(label)
@@ -82,36 +74,21 @@ class VisualRelatedPreparations:
 
         ### try grabbing widget data
 
-        try: widget_data = self.data['widget_data']
+        try:
+            widget_data = self.data["widget_data"]
 
         ### if we fail, instantiate widget add button
 
         except KeyError:
 
-            command = (
-
-              partial(
-
-                (
-                  APP_REFS
-                  .ea
-                  .widget_creation_popup_menu
-                  .trigger_simple_widget_picking
-                ),
-
-                self
-
-              )
-
+            command = partial(
+                (APP_REFS.ea.widget_creation_popup_menu.trigger_simple_widget_picking),
+                self,
             )
 
-            add_button = self.add_button = (
-
-              Button(
+            add_button = self.add_button = Button(
                 surface=ADD_BUTTON_SURF,
                 command=command,
-              )
-
             )
 
             viz_objs.append(add_button)
@@ -127,13 +104,9 @@ class VisualRelatedPreparations:
 
             ### instantiate remove widget button
 
-            remove_button = self.remove_button = (
-
-              Button(
-                surface = REMOVE_BUTTON_SURF,
-                command = self.remove_widget,
-              )
-
+            remove_button = self.remove_button = Button(
+                surface=REMOVE_BUTTON_SURF,
+                command=self.remove_widget,
             )
 
             viz_objs.append(remove_button)
@@ -145,19 +118,19 @@ class VisualRelatedPreparations:
             ## retrieve widget class using the widget
             ## name from the widget data
 
-            widget_name = widget_data['widget_name']
-            widget_cls  = WIDGET_CLASS_MAP[widget_name]
+            widget_name = widget_data["widget_name"]
+            widget_cls = WIDGET_CLASS_MAP[widget_name]
 
             ## retrieve keyword arguments to use when
             ## instantiating the widget
-            kwargs = widget_data['widget_kwargs']
+            kwargs = widget_data["widget_kwargs"]
 
             ## instantiate the widget using the keyword
             ## arguments
 
             widget = self.widget = widget_cls(
-                                     **kwargs,
-                                   )
+                **kwargs,
+            )
 
             viz_objs.append(widget)
             mouse_aware_objs.append(widget)
@@ -169,19 +142,18 @@ class VisualRelatedPreparations:
             ## command to the 'command' attribute of the
             ## widget
 
-            command = CallList([
-
-                        partial(
-                          update_with_widget,
-                          kwargs,
-                          'value',
-                          widget,
-                        ),
-
-                        self.check_header_width,
-                        self.update_remove_button_pos,
-
-                      ])
+            command = CallList(
+                [
+                    partial(
+                        update_with_widget,
+                        kwargs,
+                        "value",
+                        widget,
+                    ),
+                    self.check_header_width,
+                    self.update_remove_button_pos,
+                ]
+            )
 
             widget.command = command
 
@@ -190,21 +162,13 @@ class VisualRelatedPreparations:
 
             expected_type = widget.get_expected_type()
 
-            output_type_codename = type_to_codename(
-                                     expected_type
-                                   )
+            output_type_codename = type_to_codename(expected_type)
 
         ### instantiate proxy socket
 
-        proxy_socket = self.proxy_socket = (
-
-          ProxySocket(
-            node = self,
-            type_codename = (
-              self.data.get('source_type_codename')
-            ),
-          )
-
+        proxy_socket = self.proxy_socket = ProxySocket(
+            node=self,
+            type_codename=(self.data.get("source_type_codename")),
         )
 
         viz_objs.append(proxy_socket)
@@ -219,28 +183,17 @@ class VisualRelatedPreparations:
         ### input sockets of the node
         self.input_sockets = (proxy_socket,)
 
-
         ### instantiate output socket
 
-        output_socket = self.output_socket = (
-
-          OutputSocket(
-
-            node = self,
-
-            type_codename = (
-
-              self.data.get(
-                'source_type_codename',
-                output_type_codename,
-              )
-
+        output_socket = self.output_socket = OutputSocket(
+            node=self,
+            type_codename=(
+                self.data.get(
+                    "source_type_codename",
+                    output_type_codename,
+                )
             ),
-
-            output_name = self.title,
-
-          )
-
+            output_name=self.title,
         )
 
         viz_objs.append(output_socket)
@@ -256,19 +209,14 @@ class VisualRelatedPreparations:
         width = self.get_header_width()
 
         key = (
-          width,
-          self.data.get('commented_out', False),
+            width,
+            self.data.get("commented_out", False),
         )
 
-
-        header = self.header = (
-
-          Object2D.from_surface(
-                     HEADER_SURF_MAP[key],
-                     coordinates_name  = 'midtop',
-                     coordinates_value = self.midtop,
-                   )
-
+        header = self.header = Object2D.from_surface(
+            HEADER_SURF_MAP[key],
+            coordinates_name="midtop",
+            coordinates_value=self.midtop,
         )
 
         viz_objs.insert(0, header)
@@ -303,8 +251,8 @@ class VisualRelatedPreparations:
     def check_header_width(self):
 
         width = self.get_header_width()
-        if width == self.header.rect.width: return
-
+        if width == self.header.rect.width:
+            return
 
         ## adjust width and reposition
 
@@ -314,12 +262,11 @@ class VisualRelatedPreparations:
 
         self.header.rect.midtop = midtop
 
-
         ## change image
 
         key = (
-          width,
-          self.data.get('commented_out', False),
+            width,
+            self.data.get("commented_out", False),
         )
 
         self.header.image = HEADER_SURF_MAP[key]
@@ -328,28 +275,18 @@ class VisualRelatedPreparations:
         self.reposition_elements()
 
     def update_remove_button_pos(self):
-        self.remove_button.rect.topleft = (
-          self.widget.rect.topright
-        )
+        self.remove_button.rect.topleft = self.widget.rect.topright
 
     def get_header_width(self):
 
-        width = (
-          self.label.rect.width
-          + HEADER_LABEL_WIDTH_INCREMENT
-        )
+        width = self.label.rect.width + HEADER_LABEL_WIDTH_INCREMENT
 
-        if hasattr(self, 'widget'):
+        if hasattr(self, "widget"):
 
             width = max(
-
-                      (
-                        self.widget.rect.width
-                        + REMOVE_BUTTON_WIDTH
-                      ),
-
-                      width,
-                    )
+                (self.widget.rect.width + REMOVE_BUTTON_WIDTH),
+                width,
+            )
 
         return width
 
@@ -359,8 +296,8 @@ class VisualRelatedPreparations:
     def perform_commenting_uncommenting_setups(self):
 
         key = (
-          self.header.rect.width,
-          self.data.get('commented_out', False),
+            self.header.rect.width,
+            self.data.get("commented_out", False),
         )
 
         self.header.image = HEADER_SURF_MAP[key]
@@ -369,29 +306,21 @@ class VisualRelatedPreparations:
 
     def update_label_surface(self):
 
-        self.label.image     = self.get_new_label_surface()
+        self.label.image = self.get_new_label_surface()
         self.label.rect.size = self.label.image.get_size()
 
     def get_new_label_surface(self):
-        
+
         return LABEL_SURF_MAP[
-
-                 (
-
-                   self.get_label_text(),
-
-                   self.data.get('commented_out', False),
-
-                 )
-
-               ]
+            (
+                self.get_label_text(),
+                self.data.get("commented_out", False),
+            )
+        ]
 
     def get_label_text(self):
 
-        return (
-
-          self.data.get(
-                       'source_name',
-                      f'{self.id} : {self.title}',
-                    )
+        return self.data.get(
+            "source_name",
+            f"{self.id} : {self.title}",
         )

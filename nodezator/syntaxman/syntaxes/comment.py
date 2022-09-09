@@ -23,6 +23,7 @@ ALLOWED_SURROUNDING_CHARS = punctuation + whitespace
 ## of the function below to know why it isn't expected
 ## to raise SyntaxMappingError
 
+
 def get_comment_syntax_map(comment_text):
     """Return dict mapping portions to respective categories.
 
@@ -94,38 +95,27 @@ def get_comment_syntax_map(comment_text):
     ### return dict
 
     return {
-
-      ### each item in such dict is composed by the index of
-      ### a line to which a dict is mapped
-
-      line_index : {
-
-        ## this other dict associates intervals of the line
-        ## to the name of the syntax category the text in
-        ## that interval represents
-        interval: syntax_category_name
-
-        ## we get the intervals and respective categories
-        ## from passing the line text through a special
-        ## function
-
-        for interval, syntax_category_name
-        in get_line_syntax_intervals(line_text)
-
-      }
-
-      ### we grab pairs of line index/ line text from lines
-      ### which are not empty
-
-      for line_index, line_text \
-      in enumerate(comment_text.splitlines())
-
-      if line_text
-
+        ### each item in such dict is composed by the index of
+        ### a line to which a dict is mapped
+        line_index: {
+            ## this other dict associates intervals of the line
+            ## to the name of the syntax category the text in
+            ## that interval represents
+            interval: syntax_category_name
+            ## we get the intervals and respective categories
+            ## from passing the line text through a special
+            ## function
+            for interval, syntax_category_name in get_line_syntax_intervals(line_text)
+        }
+        ### we grab pairs of line index/ line text from lines
+        ### which are not empty
+        for line_index, line_text in enumerate(comment_text.splitlines())
+        if line_text
     }
 
 
 ### utility functions
+
 
 def get_line_syntax_intervals(comment_text):
     """Return list containing interval/syntax name pairs.
@@ -145,7 +135,7 @@ def get_line_syntax_intervals(comment_text):
     ### (if there are such words)
 
     for word in TODO_WORDS:
-        
+
         ## store the length of the word
         length = len(word)
 
@@ -155,18 +145,17 @@ def get_line_syntax_intervals(comment_text):
 
         ## now we repeat the block below as many times as
         ## there are substrings of the todo word in the
-        ## comment_text string 
+        ## comment_text string
 
         for _ in range(comment_text.count(word)):
-            
+
             ## define the boundaries of the interval
             ## containing the todo word in the string
 
             # pick the first index where the todo substring
             # can be found in the comment_text searching
             # from the start search index on
-            including_start = \
-                comment_text.index(word, start_search_index)
+            including_start = comment_text.index(word, start_search_index)
 
             # then calculate the end by adding the length
             # to it
@@ -184,7 +173,7 @@ def get_line_syntax_intervals(comment_text):
             ## right boundary of the interval)
 
             index_char_before = including_start - 1
-            index_char_after  = excluding_end
+            index_char_after = excluding_end
 
             ## here we check whether the substring really
             ## represents a proper todo word or not: by
@@ -197,17 +186,11 @@ def get_line_syntax_intervals(comment_text):
             ## word, its interval is stored
 
             if all(
-
-               is_char_allowed(comment_text, index)
-
-               for index
-               in (index_char_before, index_char_after)
-
+                is_char_allowed(comment_text, index)
+                for index in (index_char_before, index_char_after)
             ):
 
-                todo_intervals.append(
-                  (including_start, excluding_end)
-                )
+                todo_intervals.append((including_start, excluding_end))
 
             ## we then update the start search index, so
             ## the next search is performed from such index
@@ -219,11 +202,9 @@ def get_line_syntax_intervals(comment_text):
     ### which intervals of the comment_text string contain
     ### normal text by removing the todo word intervals
 
-    normal_intervals = \
-      get_remaining_intervals(
-        all_indices = range(len(comment_text)),
-        intervals_to_subtract = todo_intervals
-      )
+    normal_intervals = get_remaining_intervals(
+        all_indices=range(len(comment_text)), intervals_to_subtract=todo_intervals
+    )
 
     ### now that we have the intervals for each kind of
     ### text, we pair the intervals with the corresponding
@@ -234,17 +215,15 @@ def get_line_syntax_intervals(comment_text):
     ## the try/except clause is needed for compatibility
     ## with Python 3.7+ (see PEP 479)
 
-    try: normal_pairs = [
-           (item, 'normal') for item in normal_intervals
-         ]
+    try:
+        normal_pairs = [(item, "normal") for item in normal_intervals]
 
-    except RuntimeError: normal_pairs = []
+    except RuntimeError:
+        normal_pairs = []
 
     ## todo pairs
 
-    todo_pairs = [
-      (item, 'todo_word') for item in todo_intervals
-    ]
+    todo_pairs = [(item, "todo_word") for item in todo_intervals]
 
     ### then we concatenate all the pairs together into a
     ### a new list then return it
@@ -252,6 +231,7 @@ def get_line_syntax_intervals(comment_text):
     interval_name_pairs = normal_pairs + todo_pairs
 
     return interval_name_pairs
+
 
 def is_char_allowed(line_string, index):
     """Return True if char in index is allowed or don't exist.
@@ -269,7 +249,7 @@ def is_char_allowed(line_string, index):
     Used to check whether a "todo" substring (a string
     from the TODO_WORDS constant) from line_string is
     a proper todo word.
-    
+
     Such check is made indirectly, by checking the
     characters which reside in the adjacent indices
     of the substring. The following rules apply:
@@ -290,16 +270,19 @@ def is_char_allowed(line_string, index):
     ### in this context, if the index is negative, it means
     ### it doesn't exist, which is a valid condition, so
     ### we return True
-    if index < 0: return True
-    
+    if index < 0:
+        return True
+
     ### check whether the index points to a character in
     ### the line string
-    try: char = line_string[index]
+    try:
+        char = line_string[index]
 
     ### if it doesn't, since this is a valid condition we
     ### pass in order to meet the 'return True' statement
     ### at the end of the function
-    except IndexError: pass
+    except IndexError:
+        pass
 
     ### if there is such character, we check whether it
     ### is not allowed, in which case we return False

@@ -13,6 +13,7 @@ logger = get_new_logger(__name__)
 
 ### class definition
 
+
 class HoveringOperations:
     """Hovering-related methods."""
 
@@ -39,7 +40,7 @@ class HoveringOperations:
             ## evaluate conditions
 
             is_top_command = self.is_top_command(hovered)
-            is_top_menu    = self.is_top_menu(hovered)
+            is_top_menu = self.is_top_menu(hovered)
 
             ## if an active branch is being drawn, perform
             ## special tasks based on additional conditions
@@ -53,9 +54,7 @@ class HoveringOperations:
                 if is_top_command:
 
                     self.active_menu = None
-                    self.draw.remove(
-                                self.draw_active_branch
-                              )
+                    self.draw.remove(self.draw_active_branch)
 
                 # if item is a top menu, we turn it into
                 # the active menu
@@ -67,21 +66,16 @@ class HoveringOperations:
             ## a top menu and a top menu was expanded
             ## before
 
-            elif (
-                  is_top_menu
-              and self.was_top_menu_expanded
-            ):
+            elif is_top_menu and self.was_top_menu_expanded:
 
-                    self.active_menu = hovered
+                self.active_menu = hovered
 
-                    (
-                      self
-                      .draw
-                      .insert(
-                         -1,
-                         self.draw_active_branch,
-                       )
+                (
+                    self.draw.insert(
+                        -1,
+                        self.draw_active_branch,
                     )
+                )
 
             # if the widget is on top, regardless of it
             # being a command or a menu, unhighlight all
@@ -98,7 +92,6 @@ class HoveringOperations:
             ## we highlight it along with its parents in the
             ## active branch
             self.highlight_widget_and_parents(hovered)
-
 
         ### admin tasks in case there's no hovered widget
 
@@ -120,19 +113,16 @@ class HoveringOperations:
         ## description in the __init__ method docstring)
 
         elif (
-              not self.is_drawing_active_branch()
-          and not self.hovered_arrow
-          and not self.keep_focus_when_unhovered
+            not self.is_drawing_active_branch()
+            and not self.hovered_arrow
+            and not self.keep_focus_when_unhovered
         ):
             self.focus_loop_holder()
 
         ## if no active branch exists, but there's an
         ## arrow hovered, unhighlight the active menu
 
-        elif (
-          not self.is_drawing_active_branch()
-          and self.hovered_arrow
-        ):
+        elif not self.is_drawing_active_branch() and self.hovered_arrow:
             self.collapse_active_menu()
 
     def get_hovered_widget(self):
@@ -141,11 +131,13 @@ class HoveringOperations:
         hovered_widgets = self.gather_hovered(self, [])
 
         ### retrieve the last one
-        try: hovered = hovered_widgets[-1]
+        try:
+            hovered = hovered_widgets[-1]
 
         ### if there isn't a last one, then there's no
         ### hovered widget, so we assign None to the variable
-        except IndexError: hovered = None
+        except IndexError:
+            hovered = None
 
         ### finally return the object stored in hovered
         return hovered
@@ -199,23 +191,23 @@ class HoveringOperations:
             ## evaluate conditions
 
             is_top_command = self.is_top_command(child)
-            is_top_menu    = self.is_top_menu(child)
+            is_top_menu = self.is_top_menu(child)
 
             collided = child.rect.collidepoint(mouse_pos)
 
-            try: is_expanded = child.is_expanded
-            except AttributeError: is_expanded = False
+            try:
+                is_expanded = child.is_expanded
+            except AttributeError:
+                is_expanded = False
 
             ## disregard collision if the menu is scrollable
             ## and the mouse doesn't hover the scroll area
 
-            if menu.is_scrollable() \
-            and not menu.scroll_area.collidepoint(mouse_pos):
+            if menu.is_scrollable() and not menu.scroll_area.collidepoint(mouse_pos):
                 collided = 0
 
             ## admin task: update flag
-            any_child_collided = \
-                          max(any_child_collided, collided)
+            any_child_collided = max(any_child_collided, collided)
 
             ## if a collision was detected, check the
             ## preliminary conditions for the widget to be
@@ -229,11 +221,12 @@ class HoveringOperations:
                 # is expanded we append the child to the
                 # list of hovered widgets
 
-                if is_top_command or is_top_menu \
-                or (self.top_menu_is_active(child)
-                and child.parent.is_expanded):
+                if (
+                    is_top_command
+                    or is_top_menu
+                    or (self.top_menu_is_active(child) and child.parent.is_expanded)
+                ):
                     hovered_widgets.append(child)
-
 
             ## if no collision was detected, though, just
             ## unhighlight the child if it is not expanded
@@ -241,12 +234,14 @@ class HoveringOperations:
 
             else:
 
-                if not is_expanded: child.unhighlight()
+                if not is_expanded:
+                    child.unhighlight()
 
             ## regardless of whether the child is hovered
             ## by the mouse or not, if it is expanded,
             ## store a reference to it
-            if is_expanded: expanded_child = child
+            if is_expanded:
+                expanded_child = child
 
         ### extra measure in case no collision is detected
         ### for any child
@@ -282,8 +277,7 @@ class HoveringOperations:
 
         if expanded_child:
 
-            hovered_on_child = \
-                  self.gather_hovered(expanded_child, [])
+            hovered_on_child = self.gather_hovered(expanded_child, [])
             hovered_widgets.extend(hovered_on_child)
 
         ### finally return the hovered widgets list
@@ -298,7 +292,8 @@ class HoveringOperations:
         """
         ### try retrieving the invoke method of the hovered
         ### widget
-        try: method = self.hovered_widget.invoke
+        try:
+            method = self.hovered_widget.invoke
 
         ### this attribute error will be triggered by either
         ### of the following scenarios:
@@ -313,7 +308,7 @@ class HoveringOperations:
             ## if the hovered widget exists, check if the
             ## hovered widget is a top menu, in which case
             ## make it the active menu and perform other
-            ## extra tasks 
+            ## extra tasks
 
             if self.hovered_widget:
 
@@ -345,16 +340,9 @@ class HoveringOperations:
 
                         self.active_menu = None
 
-                        self.draw.remove(
-                                    self
-                                    .draw_active_branch
-                                  )
+                        self.draw.remove(self.draw_active_branch)
 
-                        (
-                          self
-                          .hovered_widget
-                          .collapse_self_and_children()
-                        )
+                        (self.hovered_widget.collapse_self_and_children())
 
                         self.was_top_menu_expanded = False
 
@@ -369,12 +357,10 @@ class HoveringOperations:
                     else:
 
                         (
-                          self
-                          .draw
-                          .insert(
-                             -1,
-                             self.draw_active_branch,
-                           )
+                            self.draw.insert(
+                                -1,
+                                self.draw_active_branch,
+                            )
                         )
 
                         self.was_top_menu_expanded = True
@@ -389,17 +375,18 @@ class HoveringOperations:
         ### it, performing extra administrative tasks
 
         else:
-            
+
             ### first of all, log the call we are about
             ### to attemp
 
             logger.info(
-              "About to invoke menu command: "
-              + self.hovered_widget.get_formatted_tree()
+                "About to invoke menu command: "
+                + self.hovered_widget.get_formatted_tree()
             )
 
             ### try executing the method
-            try: method()
+            try:
+                method()
 
             ### if a manager switch exception is raised,
             ### it means we are about to give control of
@@ -411,13 +398,14 @@ class HoveringOperations:
             except SwitchLoopException:
 
                 self.collapse_active_menu()
-                raise # reraises the SwitchLoopException
+                raise  # reraises the SwitchLoopException
 
             ### otherwise we just give focus back to
             ### the loop holder saved in this menu
             ### (this also causes the active menu tree
             ### to be collapsed)
-            else: self.focus_loop_holder()
+            else:
+                self.focus_loop_holder()
 
     def is_clicking_out(self):
         """Return True if mouse is out of any meaningful area.
@@ -439,7 +427,4 @@ class HoveringOperations:
         out of the menu widgets with the intention of having
         the menu manager loose its focus.
         """
-        return (
-          not self.hovered_widget \
-          and not self.hovered_arrow
-        )
+        return not self.hovered_widget and not self.hovered_arrow

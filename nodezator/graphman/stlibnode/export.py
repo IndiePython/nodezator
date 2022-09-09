@@ -1,15 +1,10 @@
-
-from ..callablenode.constants import (
-                               NODE_OUTLINE_THICKNESS
-                             )
+from ..callablenode.constants import NODE_OUTLINE_THICKNESS
 
 from ...colorsman.colors import (
-
-                        BLACK,
-                        NODE_OUTLINE,
-                        STANDARD_LIB_NODES_CATEGORY_COLOR,
-
-                      )
+    BLACK,
+    NODE_OUTLINE,
+    STANDARD_LIB_NODES_CATEGORY_COLOR,
+)
 
 STLIB_NODE_CSS = f"""
 g.callable_node > path.header_fill_stlib_node

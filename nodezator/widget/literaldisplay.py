@@ -29,84 +29,59 @@ from ..classes2d.single import Object2D
 
 from ..textman.text import render_highlighted_line
 from ..textman.render import (
-                      fit_text,
-                      get_text_size,
-                      render_text,
-                    )
+    fit_text,
+    get_text_size,
+    render_text,
+)
 
 from ..textman.viewer.main import view_text
 from ..textman.editor.main import edit_text
 
 from ..fontsman.constants import (
-                          FIRA_MONO_BOLD_FONT_HEIGHT,
-                          FIRA_MONO_BOLD_FONT_PATH,
-                        )
+    FIRA_MONO_BOLD_FONT_HEIGHT,
+    FIRA_MONO_BOLD_FONT_PATH,
+)
 
 from ..syntaxman.utils import (
-                       AVAILABLE_SYNTAXES,
-                       SYNTAX_TO_MAPPING_FUNCTION,
-                       get_ready_theme,
-                     )
+    AVAILABLE_SYNTAXES,
+    SYNTAX_TO_MAPPING_FUNCTION,
+    get_ready_theme,
+)
 
 from ..syntaxman.exception import SyntaxMappingError
 
 from ..colorsman.colors import (
-                        BLACK,
-                        WHITE,
-                        LITERAL_DISPLAY_BG,
-                      )
+    BLACK,
+    WHITE,
+    LITERAL_DISPLAY_BG,
+)
 
 
 ### surface representing an icon for the text editor
 
 ICON_SURF = combine_surfaces(
-
-              [
-                render_layered_icon(
-
-                  chars = [
-                    chr(ordinal) for ordinal in (35, 36)
-                  ],
-
-                  dimension_name  = 'height',
-                  dimension_value = 18,
-
-                  colors = [BLACK, WHITE],
-
-                  offset_pos_by=(-1, 0),
-
-                  background_width  = 20,
-                  background_height = 20,
-
-                ),
-
-                render_layered_icon(
-
-                  chars = [
-                    chr(ordinal)
-                    for ordinal in range(115, 119)
-                  ],
-
-                  dimension_name  = 'height',
-                  dimension_value = 14,
-
-                  colors = [
-                    BLACK,
-                    (255, 225, 140),
-                    (255, 255, 0),
-                    (255, 170, 170)
-                  ],
-
-                )
-              ],
-
-              retrieve_pos_from = 'bottomright',
-              assign_pos_to     = 'bottomright',
-
-            )
+    [
+        render_layered_icon(
+            chars=[chr(ordinal) for ordinal in (35, 36)],
+            dimension_name="height",
+            dimension_value=18,
+            colors=[BLACK, WHITE],
+            offset_pos_by=(-1, 0),
+            background_width=20,
+            background_height=20,
+        ),
+        render_layered_icon(
+            chars=[chr(ordinal) for ordinal in range(115, 119)],
+            dimension_name="height",
+            dimension_value=14,
+            colors=[BLACK, (255, 225, 140), (255, 255, 0), (255, 170, 170)],
+        ),
+    ],
+    retrieve_pos_from="bottomright",
+    assign_pos_to="bottomright",
+)
 
 ICON_WIDTH, ICON_HEIGHT = ICON_SURF.get_size()
-
 
 
 ### class definition
@@ -116,22 +91,17 @@ class LiteralDisplay(Object2D):
     """A widget for storing/displaying python literals."""
 
     def __init__(
-
-          self,
-          value=None,
-
-          font_height=FIRA_MONO_BOLD_FONT_HEIGHT,
-          width=155,
-
-          no_of_visible_lines=7,
-          show_line_number=False,
-
-          name='literal_display',
-          command=empty_function,
-          coordinates_name="topleft",
-          coordinates_value=(0, 0)
-
-        ):
+        self,
+        value=None,
+        font_height=FIRA_MONO_BOLD_FONT_HEIGHT,
+        width=155,
+        no_of_visible_lines=7,
+        show_line_number=False,
+        name="literal_display",
+        command=empty_function,
+        coordinates_name="topleft",
+        coordinates_value=(0, 0),
+    ):
         """Store data and perform setups.
 
         Parameters
@@ -163,19 +133,13 @@ class LiteralDisplay(Object2D):
 
         if not self.validate(value):
 
-            raise TypeError(
-                    "'value' received must be a python"
-                    " literal"
-                  )
+            raise TypeError("'value' received must be a python" " literal")
 
         ### ensure there is at least one visible line
 
         if no_of_visible_lines < 1:
 
-            raise ValueError(
-                    "'no_of_visible_lines' must be >= 1"
-                  )
-
+            raise ValueError("'no_of_visible_lines' must be >= 1")
 
         ### store other arguments
 
@@ -188,32 +152,24 @@ class LiteralDisplay(Object2D):
         self.no_of_visible_lines = no_of_visible_lines
 
         self.command = command
-        self.name    = name
-
+        self.name = name
 
         ### create a surface to clean the image attribute
         ### surface every time the value changes
 
-        height = (
-          ICON_HEIGHT
-          + (font_height * no_of_visible_lines)
-          + 3
-        )
+        height = ICON_HEIGHT + (font_height * no_of_visible_lines) + 3
 
-        self.clean_surf = render_rect(
-                            width, height,
-                            LITERAL_DISPLAY_BG
-                          )
+        self.clean_surf = render_rect(width, height, LITERAL_DISPLAY_BG)
 
         ### use blit aligned to blit icon aligned to the
         ### topleft
 
         blit_aligned(
-          ICON_SURF,
-          self.clean_surf,
-          retrieve_pos_from = 'topleft',
-          assign_pos_to     = 'topleft',
-          offset_pos_by     = (1, 1),
+            ICON_SURF,
+            self.clean_surf,
+            retrieve_pos_from="topleft",
+            assign_pos_to="topleft",
+            offset_pos_by=(1, 1),
         )
 
         ### create an image from the clean surf
@@ -229,14 +185,16 @@ class LiteralDisplay(Object2D):
         ### position it
 
         self.rect = self.image.get_rect()
-        setattr(
-            self.rect, coordinates_name, coordinates_value)
+        setattr(self.rect, coordinates_name, coordinates_value)
 
     def validate(self, value):
 
-        try: literal_eval(repr(value))
-        except: return False
-        else: return True
+        try:
+            literal_eval(repr(value))
+        except:
+            return False
+        else:
+            return True
 
     def on_mouse_release(self, event):
         """Act according to mouse release position.
@@ -248,7 +206,7 @@ class LiteralDisplay(Object2D):
             it is required in order to comply with the
             mouse action protocol used; we retrieve the
             mouse position from its "pos" attribute;
-                  
+
             check pygame.event module documentation on
             pygame website for more info about this event
             object.
@@ -259,7 +217,8 @@ class LiteralDisplay(Object2D):
         ### if click was more to the left, where the icon
         ### is, we call the method responsible for
         ### calling the text editor to edit the value
-        if mouse_x < (self.rect.x + 17): self.edit_value()
+        if mouse_x < (self.rect.x + 17):
+            self.edit_value()
 
         ### otherwise the user clicked on the portion of
         ### the button which hints the contents of the
@@ -269,9 +228,9 @@ class LiteralDisplay(Object2D):
         else:
 
             view_text(
-              text=pformat(self.value, width=84),
-              syntax_highlighting='python',
-              show_line_number=self.show_line_number
+                text=pformat(self.value, width=84),
+                syntax_highlighting="python",
+                show_line_number=self.show_line_number,
             )
 
     def get(self):
@@ -292,8 +251,7 @@ class LiteralDisplay(Object2D):
         ### changes are only performed if the new value is
         ### indeed different from the current one
 
-        if self.value != value \
-        and self.validate(value):
+        if self.value != value and self.validate(value):
 
             ### store new value
             self.value = value
@@ -302,7 +260,8 @@ class LiteralDisplay(Object2D):
             self.update_image()
 
             ### if requested, execute the custom command
-            if custom_command: self.command()
+            if custom_command:
+                self.command()
 
     def update_image(self):
         """Update widget image."""
@@ -317,86 +276,66 @@ class LiteralDisplay(Object2D):
         ###
 
         draw_rect(
-
-          image, self.background_color,
-
-          # subarea
-
-          (
-            1, ICON_HEIGHT+2,
-            width-2, height - ICON_HEIGHT - 1
-          )
-
+            image,
+            self.background_color,
+            # subarea
+            (1, ICON_HEIGHT + 2, width - 2, height - ICON_HEIGHT - 1),
         )
 
         ###
 
         no_of_visible_lines = self.no_of_visible_lines
-        show_line_number    = self.show_line_number
-        font_height         = self.font_height
-        syntax_highlighting = 'python',
+        show_line_number = self.show_line_number
+        font_height = self.font_height
+        syntax_highlighting = ("python",)
 
         if show_line_number:
-            
+
             lineno_width, _ = get_text_size(
-              '01',
-              font_height=font_height,
-              font_path=FIRA_MONO_BOLD_FONT_PATH
+                "01", font_height=font_height, font_path=FIRA_MONO_BOLD_FONT_PATH
             )
 
             draw_rect(
-              image, self.lineno_bg,
-              (
-                1, ICON_HEIGHT + 2,
-                lineno_width-2, height - ICON_HEIGHT-1
-              )
+                image,
+                self.lineno_bg,
+                (1, ICON_HEIGHT + 2, lineno_width - 2, height - ICON_HEIGHT - 1),
             )
 
-        else: lineno_width = 0
+        else:
+            lineno_width = 0
 
         text = pformat(self.value, width=20)
 
-
         lines = text.splitlines()[:no_of_visible_lines]
 
-
-        try: highlight_data = \
-                    self.get_syntax_map(text)
+        try:
+            highlight_data = self.get_syntax_map(text)
 
         except SyntaxMappingError:
 
             highlight_data = {
-              
-              ## store a dict item where the line index
-              ## is the key and another dict is the value
-
-              line_index : {
-
-                ## in this dict, an interval representing
-                ## the indices of all items of the line
-                ## (character objects) is used as the
-                ## key, while the 'normal' string is used
-                ## as value, indicating that all content
-                ## must be considered normal text
-                (0, len(line_text)): 'normal'
-
-              }
-              
-              ## for each line_index and respective line
-              for line_index, line_text \
-              in enumerate(lines)
-
-              ## but only if the line isn't empty
-              if line_text
-
+                ## store a dict item where the line index
+                ## is the key and another dict is the value
+                line_index: {
+                    ## in this dict, an interval representing
+                    ## the indices of all items of the line
+                    ## (character objects) is used as the
+                    ## key, while the 'normal' string is used
+                    ## as value, indicating that all content
+                    ## must be considered normal text
+                    (0, len(line_text)): "normal"
+                }
+                ## for each line_index and respective line
+                for line_index, line_text in enumerate(lines)
+                ## but only if the line isn't empty
+                if line_text
             }
 
         ##
         x = lineno_width + 4
         y = ICON_HEIGHT + 2
 
-        theme_text_settings = \
-                        self.theme_map['text_settings']
+        theme_text_settings = self.theme_map["text_settings"]
 
         ## iterate over the visible lines and their
         ## indices, highlighting their text according
@@ -408,22 +347,20 @@ class LiteralDisplay(Object2D):
             ## the highlight data dict with the line
             ## index
 
-            try: interval_data = \
-                          highlight_data.pop(line_index)
+            try:
+                interval_data = highlight_data.pop(line_index)
 
             ## if there is no such data, skip iteration
             ## of this item
-            except KeyError: pass
+            except KeyError:
+                pass
 
             ## otherwise...
             else:
 
                 line_surf = render_highlighted_line(
-                              line_text,
-                              interval_data,
-                              theme_text_settings,
-                              join_objects=True
-                            ).image
+                    line_text, interval_data, theme_text_settings, join_objects=True
+                ).image
 
                 image.blit(line_surf, (x, y))
 
@@ -438,16 +375,15 @@ class LiteralDisplay(Object2D):
             lineno_fg = self.lineno_fg
             lineno_bg = self.lineno_bg
 
-            for line_number, line_text \
-            in enumerate(lines, 1):
-                
+            for line_number, line_text in enumerate(lines, 1):
+
                 surf = render_text(
-                         text=str(line_number).rjust(2, '0'),
-                         font_height=font_height,
-                         font_path=FIRA_MONO_BOLD_FONT_PATH,
-                         foreground_color=lineno_fg,
-                         background_color=lineno_bg
-                       )
+                    text=str(line_number).rjust(2, "0"),
+                    font_height=font_height,
+                    font_path=FIRA_MONO_BOLD_FONT_PATH,
+                    foreground_color=lineno_fg,
+                    background_color=lineno_bg,
+                )
 
                 image.blit(surf, (2, y))
 
@@ -458,23 +394,17 @@ class LiteralDisplay(Object2D):
     def prepare_style_data(self):
 
         general_text_settings = {
-          'font_height'     : self.font_height,
-          'font_path'       : FIRA_MONO_BOLD_FONT_PATH,
+            "font_height": self.font_height,
+            "font_path": FIRA_MONO_BOLD_FONT_PATH,
         }
-
 
         ### store a theme map ready for usage with the
         ### syntax name and default settings
 
-        self.theme_map = get_ready_theme(
-                           'python',
-                           general_text_settings
-                         )
+        self.theme_map = get_ready_theme("python", general_text_settings)
 
         ### store specific syntax mapping behaviour
-        self.get_syntax_map = (
-          SYNTAX_TO_MAPPING_FUNCTION['python']
-        )
+        self.get_syntax_map = SYNTAX_TO_MAPPING_FUNCTION["python"]
 
         ### define foreground and background colors for
         ### the line numbers
@@ -482,34 +412,29 @@ class LiteralDisplay(Object2D):
         ## define text settings for the line numbers
 
         # reference the theme text settings locally
-        theme_text_settings = \
-                        self.theme_map['text_settings']
+        theme_text_settings = self.theme_map["text_settings"]
 
         # if the line number settings from the theme
         # are available, use them
-        try: lineno_settings = \
-                 theme_text_settings['line_number']
+        try:
+            lineno_settings = theme_text_settings["line_number"]
 
         # otherwise use the settings for normal text of
         # the theme for the line number settings
 
         except KeyError:
 
-            lineno_settings = \
-                          theme_text_settings['normal']
+            lineno_settings = theme_text_settings["normal"]
 
         ## store the colors
 
-        self.lineno_fg = \
-            lineno_settings['foreground_color']
+        self.lineno_fg = lineno_settings["foreground_color"]
 
-        self.lineno_bg = \
-            lineno_settings['background_color']
+        self.lineno_bg = lineno_settings["background_color"]
 
         ### define the background color for the text
 
-        self.background_color = \
-                     self.theme_map['background_color']
+        self.background_color = self.theme_map["background_color"]
 
     def reset_style(self, style_name, new_style_value):
         current_style_value = getattr(self, style_name)
@@ -520,9 +445,7 @@ class LiteralDisplay(Object2D):
             self.prepare_style_data()
             self.update_image()
 
-    reset_show_line_number = (
-      partialmethod(reset_style, 'show_line_number')
-    )
+    reset_show_line_number = partialmethod(reset_style, "show_line_number")
 
     def edit_value(self):
         """Edit value of widget on the text editor."""
@@ -532,15 +455,11 @@ class LiteralDisplay(Object2D):
         ### the text (or None, if the user decides to
         ### cancel the operation)
 
-        text = (
-
-          edit_text(
+        text = edit_text(
             text=pformat(self.value, width=84),
             font_path=FIRA_MONO_BOLD_FONT_PATH,
-            syntax_highlighting='python',
+            syntax_highlighting="python",
             validation_command=literal_eval,
-          )
-
         )
 
         ### if there is an edited text (it is not None)
@@ -551,304 +470,188 @@ class LiteralDisplay(Object2D):
         if text is not None:
 
             value = literal_eval(text)
-            if value != self.value: self.set(value)
+            if value != self.value:
+                self.set(value)
 
     def get_expected_type(self):
         return _empty
 
     def svg_repr(self):
 
-        g = Element('g', {'class': 'literal_display'})
+        g = Element("g", {"class": "literal_display"})
 
         rect = self.rect.inflate(-2, -2)
 
         g.append(
             Element(
-
-              'rect',
-
-              {
-
-                attr_name: str(getattr(rect, attr_name))
-
-                for attr_name
-                in ('x', 'y', 'width', 'height')
-
-              },
+                "rect",
+                {
+                    attr_name: str(getattr(rect, attr_name))
+                    for attr_name in ("x", "y", "width", "height")
+                },
             )
-          )
-        
+        )
+
         ###
 
         x, y = rect.topleft
 
         for path_directives, style in (
-
-          (
-
             (
-              'm5 3'
-              ' l13 0'
-              ' q-4 4 0 8'
-              ' q4 4 0 8'
-              ' l-13 0'
-              ' q4 -4 0 -8'
-              ' q-4 -4 0 -8'
-              ' Z'
+                (
+                    "m5 3"
+                    " l13 0"
+                    " q-4 4 0 8"
+                    " q4 4 0 8"
+                    " l-13 0"
+                    " q4 -4 0 -8"
+                    " q-4 -4 0 -8"
+                    " Z"
+                ),
+                ("fill:white;" "stroke:black;" "stroke-width:2;"),
             ),
-
             (
-              'fill:white;'
-              'stroke:black;'
-              'stroke-width:2;'
+                ("m6 7" " l8 0" " Z"),
+                ("fill:none;" "stroke:black;" "stroke-width:2;"),
             ),
-
-          ),
-
-          (
-
             (
-              'm6 7'
-              ' l8 0'
-              ' Z'
+                ("m8 11" " l8 0" " Z"),
+                ("fill:none;" "stroke:black;" "stroke-width:2;"),
             ),
-
             (
-              'fill:none;'
-              'stroke:black;'
-              'stroke-width:2;'
+                ("m9 15" " l8 0" " Z"),
+                ("fill:none;" "stroke:black;" "stroke-width:2;"),
             ),
-
-          ),
-
-          (
-
             (
-              'm8 11'
-              ' l8 0'
-              ' Z'
+                ("m11 21" "l2 -7" "l5 3" " Z"),
+                (
+                    "fill:white;"
+                    "stroke:black;"
+                    "stroke-width:2px;"
+                    "stroke-linejoin:round;"
+                ),
             ),
-
             (
-              'fill:none;'
-              'stroke:black;'
-              'stroke-width:2;'
+                ("m13 14" "l5 3" "l6 -6" "-5 -3" "l-6 6" " Z"),
+                (
+                    "fill:yellow;"
+                    "stroke:black;"
+                    "stroke-width:2px;"
+                    "stroke-linejoin:round;"
+                ),
             ),
-
-          ),
-
-          (
-
             (
-              'm9 15'
-              ' l8 0'
-              ' Z'
+                ("m19 8" "l5 3" "l4 -4" "l-5 -3" " Z"),
+                "fill:red;stroke:black;stroke-width:2px;stroke-linejoin:round;",
             ),
-
-            (
-              'fill:none;'
-              'stroke:black;'
-              'stroke-width:2;'
-            ),
-
-          ),
-
-          (
-            (
-              'm11 21'
-              'l2 -7'
-              'l5 3'
-              ' Z'
-            ),
-
-            (
-              'fill:white;'
-              'stroke:black;'
-              'stroke-width:2px;'
-              'stroke-linejoin:round;'
-            ),
-          ),
-
-          (
-            (
-              'm13 14'
-              'l5 3'
-              'l6 -6'
-              '-5 -3'
-              'l-6 6'
-              ' Z'
-            ),
-
-            (
-              'fill:yellow;'
-              'stroke:black;'
-              'stroke-width:2px;'
-              'stroke-linejoin:round;'
-            ),
-
-          ),
-
-          (
-            (
-              'm19 8'
-              'l5 3'
-              'l4 -4'
-              'l-5 -3'
-              ' Z'
-            ),
-
-            'fill:red;stroke:black;stroke-width:2px;stroke-linejoin:round;'
-          ),
-
         ):
 
-            path_directives = (
-              f'M{x} {y}' + path_directives
-            )
+            path_directives = f"M{x} {y}" + path_directives
 
             g.append(
-
                 Element(
-                  'path',
-                  {
-                    'd': path_directives,
-                    'style': style,
-                  }
+                    "path",
+                    {
+                        "d": path_directives,
+                        "style": style,
+                    },
                 )
-
-              )
+            )
 
         #########
-
 
         rect = rect.move(0, ICON_HEIGHT)
         rect.height += -ICON_HEIGHT
 
         ###
 
-        style = f'fill:rgb{self.background_color};'
+        style = f"fill:rgb{self.background_color};"
 
         g.append(
-
             Element(
-
-              'rect',
-
-              {
-
-                'style': style,
-
-                **{
-
-                  attr_name: str(getattr(rect, attr_name))
-
-                  for attr_name
-                  in ('x', 'y', 'width', 'height')
-
+                "rect",
+                {
+                    "style": style,
+                    **{
+                        attr_name: str(getattr(rect, attr_name))
+                        for attr_name in ("x", "y", "width", "height")
+                    },
                 },
-
-
-              }
             )
-
-          )
+        )
 
         ###
 
         no_of_visible_lines = self.no_of_visible_lines
-        show_line_number    = self.show_line_number
-        font_height         = self.font_height
+        show_line_number = self.show_line_number
+        font_height = self.font_height
 
-        syntax_highlighting = 'python',
+        syntax_highlighting = ("python",)
 
         text = pformat(self.value, width=20)
 
         if show_line_number:
-            
+
             max_lineno_text = str(len(text.splitlines()))
             lineno_digits = len(max_lineno_text)
 
             lineno_width, _ = get_text_size(
-              max_lineno_text,
-              font_height=font_height,
-              font_path=FIRA_MONO_BOLD_FONT_PATH
+                max_lineno_text,
+                font_height=font_height,
+                font_path=FIRA_MONO_BOLD_FONT_PATH,
             )
 
             lineno_rect = rect.copy()
             lineno_rect.width = lineno_width - 2
 
-            style = f'fill:rgb{self.lineno_bg};'
+            style = f"fill:rgb{self.lineno_bg};"
 
             g.append(
-
                 Element(
-
-                  'rect',
-
-                  {
-
-                    'style': style,
-
-                    **{
-
-                        attr_name: str(
-                                     getattr(
-                                       lineno_rect,
-                                       attr_name
-                                     )
-                                   )
-
-                        for attr_name
-                        in ('x', 'y', 'width', 'height')
-
+                    "rect",
+                    {
+                        "style": style,
+                        **{
+                            attr_name: str(getattr(lineno_rect, attr_name))
+                            for attr_name in ("x", "y", "width", "height")
+                        },
                     },
-
-                  }
-
                 )
+            )
 
-              )
-
-        else: lineno_width = 0
+        else:
+            lineno_width = 0
 
         lines = text.splitlines()[:no_of_visible_lines]
 
-        try: highlight_data = self.get_syntax_map(text)
+        try:
+            highlight_data = self.get_syntax_map(text)
 
         except SyntaxMappingError:
 
             highlight_data = {
-              
-              ## store a dict item where the line index
-              ## is the key and another dict is the value
-
-              line_index : {
-
-                ## in this dict, an interval representing
-                ## the indices of all items of the line
-                ## (character objects) is used as the
-                ## key, while the 'normal' string is used
-                ## as value, indicating that all content
-                ## must be considered normal text
-                (0, len(line_text)): 'normal'
-
-              }
-              
-              ## for each line_index and respective line
-              for line_index, line_text \
-              in enumerate(lines)
-
-              ## but only if the line isn't empty
-              if line_text
-
+                ## store a dict item where the line index
+                ## is the key and another dict is the value
+                line_index: {
+                    ## in this dict, an interval representing
+                    ## the indices of all items of the line
+                    ## (character objects) is used as the
+                    ## key, while the 'normal' string is used
+                    ## as value, indicating that all content
+                    ## must be considered normal text
+                    (0, len(line_text)): "normal"
+                }
+                ## for each line_index and respective line
+                for line_index, line_text in enumerate(lines)
+                ## but only if the line isn't empty
+                if line_text
             }
 
         ##
         x = rect.x + lineno_width + 4
         y = rect.y
 
-        theme_text_settings = \
-                        self.theme_map['text_settings']
+        theme_text_settings = self.theme_map["text_settings"]
 
         ## iterate over the visible lines and their
         ## indices, highlighting their text according
@@ -862,70 +665,55 @@ class LiteralDisplay(Object2D):
             ## the highlight data dict with the line
             ## index
 
-            try: interval_data = \
-                          highlight_data.pop(line_index)
+            try:
+                interval_data = highlight_data.pop(line_index)
 
             ## if there is no such data, skip iteration
             ## of this item
-            except KeyError: pass
+            except KeyError:
+                pass
 
             ## otherwise...
 
             else:
 
                 string_kwargs_pairs = (
-
-                  (
-                    line_text[
-                      including_start : excluding_end
-                    ],
-                    theme_text_settings[kind]
-                  )
-
-                  for (
-                    including_start, excluding_end
-                  ), kind in sorted(
-                    interval_data.items(),
-                    key=lambda item: item[0]
-                  )
-
+                    (
+                        line_text[including_start:excluding_end],
+                        theme_text_settings[kind],
+                    )
+                    for (including_start, excluding_end), kind in sorted(
+                        interval_data.items(), key=lambda item: item[0]
+                    )
                 )
 
                 max_right = x + (125 - lineno_width)
 
                 temp_x = x
 
-                for string, text_settings \
-                in string_kwargs_pairs:
+                for string, text_settings in string_kwargs_pairs:
 
                     x_increment, _ = get_text_size(
-                      string,
-                      font_height=font_height,
-                      font_path=FIRA_MONO_BOLD_FONT_PATH,
+                        string,
+                        font_height=font_height,
+                        font_path=FIRA_MONO_BOLD_FONT_PATH,
                     )
 
-                    text_fg = text_settings[
-                                'foreground_color'
-                              ]
+                    text_fg = text_settings["foreground_color"]
 
-                    style = (
-                      'font:bold 13px monospace;'
-                      f'fill:rgb{text_fg};'
-                    )
+                    style = "font:bold 13px monospace;" f"fill:rgb{text_fg};"
 
                     if temp_x + x_increment <= max_right:
 
-                        text_element = \
-                          Element(
-                            'text',
-
+                        text_element = Element(
+                            "text",
                             {
-                              'x': str(temp_x),
-                              'y': str(y),
-                              'text-anchor': 'start',
-                              'style': style,
-                            }
-                          )
+                                "x": str(temp_x),
+                                "y": str(y),
+                                "text-anchor": "start",
+                                "style": style,
+                            },
+                        )
 
                         text_element.text = string
 
@@ -933,37 +721,32 @@ class LiteralDisplay(Object2D):
 
                         temp_x += x_increment
 
-
                     ## try squeezing...
                     else:
 
                         try:
 
                             string = fit_text(
-                                       text=string,
-                                       max_width = max_right - temp_x,
-                                       ommit_direction='right',
-                                       font_height=font_height,
-                                       font_path=FIRA_MONO_BOLD_FONT_PATH,
-                                       padding=0,
-                                     )
-
-                        except ValueError:
-                            string = (
-                              '\N{horizontal ellipsis}'
+                                text=string,
+                                max_width=max_right - temp_x,
+                                ommit_direction="right",
+                                font_height=font_height,
+                                font_path=FIRA_MONO_BOLD_FONT_PATH,
+                                padding=0,
                             )
 
-                        text_element = \
-                          Element(
-                            'text',
+                        except ValueError:
+                            string = "\N{horizontal ellipsis}"
 
+                        text_element = Element(
+                            "text",
                             {
-                              'x': str(temp_x),
-                              'y': str(y),
-                              'text-anchor': 'start',
-                              'style': style,
-                            }
-                          )
+                                "x": str(temp_x),
+                                "y": str(y),
+                                "text-anchor": "start",
+                                "style": style,
+                            },
+                        )
 
                         text_element.text = string
 
@@ -980,32 +763,23 @@ class LiteralDisplay(Object2D):
 
             lineno_fg = self.lineno_fg
 
-            style = (
-              'font:bold 13px monospace;'
-             f'fill:rgb{lineno_fg};'
-            )
+            style = "font:bold 13px monospace;" f"fill:rgb{lineno_fg};"
 
-            for line_number, line_text \
-            in enumerate(lines, 1):
-                
+            for line_number, line_text in enumerate(lines, 1):
+
                 y += font_height
 
                 text_element = Element(
-                                 'text',
+                    "text",
+                    {
+                        "x": str(x),
+                        "y": str(y),
+                        "text-anchor": "start",
+                        "style": style,
+                    },
+                )
 
-                                 {
-                                   'x': str(x),
-                                   'y': str(y),
-                                   'text-anchor': 'start',
-                                   'style': style,
-                                 }
-                               )
-
-                text_element.text = \
-                    text=str(line_number).rjust(
-                                            lineno_digits,
-                                            '0'
-                                          )
+                text_element.text = text = str(line_number).rjust(lineno_digits, "0")
 
                 g.append(text_element)
 

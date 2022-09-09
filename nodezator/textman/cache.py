@@ -79,13 +79,14 @@ from .render import render_text
 ### their representations
 
 CHAR_VS_REPR_PAIRS = (
-  ('\n', '\\n'),
-  ('\r', '\\r'),
-  ('\t', ' ' * 4) # 4 spaces, as in the text editor
+    ("\n", "\\n"),
+    ("\r", "\\r"),
+    ("\t", " " * 4),  # 4 spaces, as in the text editor
 )
 
 
 ### classes
+
 
 class TextSurfacesDatabase(dict):
     """Dict used store maps related to text surfaces.
@@ -108,12 +109,12 @@ class TextSurfacesDatabase(dict):
         """
         ### convert the text settings (a dict) to a custom
         ### tuple representing them, to use as dictionary key
-        tuple_key = \
-            settings_to_hashable_repr(text_settings)
+        tuple_key = settings_to_hashable_repr(text_settings)
 
         ### try returning the value for the tuple we
         ### just obtained
-        try: return super().__getitem__(tuple_key)
+        try:
+            return super().__getitem__(tuple_key)
 
         ### if such value doesn't exist (a key error is
         ### raised), we create the corresponding data,
@@ -125,15 +126,8 @@ class TextSurfacesDatabase(dict):
             surf_map = TextSurfaceMap(text_settings)
 
             return self.setdefault(
-
-                          tuple_key,
-
-                          {
-                            'surf_map'  : surf_map,
-                            'width_map' : surf_map.width_map
-                          }
-
-                        )
+                tuple_key, {"surf_map": surf_map, "width_map": surf_map.width_map}
+            )
 
     def free_up_memory(self):
         """Call free_up_memory() in the surf and width maps.
@@ -142,13 +136,13 @@ class TextSurfacesDatabase(dict):
         """
         for maps in self.values():
 
-            maps[ 'surf_map'].free_up_memory()
-            maps['width_map'].free_up_memory()
+            maps["surf_map"].free_up_memory()
+            maps["width_map"].free_up_memory()
 
 
 class TextSurfaceMap(dict):
     """Map to store text surfaces; has extra behaviour."""
-    
+
     def __init__(self, text_settings):
         """Store given text settings, perform extra setups."""
         ### store text settings
@@ -185,9 +179,7 @@ class TextSurfaceMap(dict):
             ## the character as the key and the text surface
             ## from the custom representation as the value
 
-            self[char] = render_text(
-                           custom_repr, **self.text_settings
-                         )
+            self[char] = render_text(custom_repr, **self.text_settings)
 
     def __missing__(self, key):
         """Create, store and return surface for key (string).
@@ -198,10 +190,7 @@ class TextSurfaceMap(dict):
             text from which we want a surface rendered
             using the stored text settings.
         """
-        return self.setdefault(
-                      key,
-                      render_text(key, **self.text_settings)
-                    )
+        return self.setdefault(key, render_text(key, **self.text_settings))
 
     def free_up_memory(self):
         """Call clear all items except for special characters.
@@ -211,10 +200,7 @@ class TextSurfaceMap(dict):
         ### backup (key, value) pairs for special chars
         ### temporarily
 
-        key_value_pairs = [
-          (char, self[char])
-          for char, _ in CHAR_VS_REPR_PAIRS
-        ]
+        key_value_pairs = [(char, self[char]) for char, _ in CHAR_VS_REPR_PAIRS]
 
         ### clear entire surface map
         self.clear()
@@ -225,7 +211,7 @@ class TextSurfaceMap(dict):
 
 class TextWidthMap(dict):
     """Map to store text surfs width; has extra behaviour."""
-    
+
     def __init__(self, surf_map):
         """Store the given surface map."""
         self.surf_map = surf_map
@@ -235,10 +221,7 @@ class TextWidthMap(dict):
 
         The mentioned width is also stored in this width map.
         """
-        return self.setdefault(
-                      key,
-                      self.surf_map[key].get_width()
-                    )
+        return self.setdefault(key, self.surf_map[key].get_width())
 
     def free_up_memory(self):
         """Clear the items."""
@@ -249,15 +232,13 @@ class CachedTextObject(Object2D):
     """A text object whose surface is cached."""
 
     def __init__(
-
-          self,
-          text,
-          text_settings,
-          coordinates_name='topleft',
-          coordinates_value=(0, 0),
-          **kwargs,
-
-        ):
+        self,
+        text,
+        text_settings,
+        coordinates_name="topleft",
+        coordinates_value=(0, 0),
+        **kwargs,
+    ):
         """Store arguments, set image and rect."""
         ### store arguments
 
@@ -267,17 +248,10 @@ class CachedTextObject(Object2D):
 
         ### set image and rect
 
-        self.image = (
-          TEXT_SURFS_DB
-          [text_settings]
-          ['surf_map']
-          [text]
-        )
+        self.image = TEXT_SURFS_DB[text_settings]["surf_map"][text]
 
         self.rect = self.image.get_rect()
-        setattr(
-          self.rect, coordinates_name, coordinates_value
-        )
+        setattr(self.rect, coordinates_name, coordinates_value)
 
     def change_text_settings(self, text_settings):
         """Change text settings and replace surface.
@@ -294,19 +268,19 @@ class CachedTextObject(Object2D):
         settings. We did so by decorating this method with
         appcommon.debug.measure_average_speed function. We
         used 4, 100, 1000, and 10000 repetitions.
-        
+
         It turned out, unexpectedly so, that the solution
         with the "if block" made the method quicker when
         the number of repetitions where 4, 100, 1000. The
         speed was about 10% faster.
-        
+
         We expected all experiments to yield results
         favorable to the solution without the "if block",
         since we know every time the "if check" was
         performed, it came out negative and ended up
         executing the rest of the method anyway, so it
         was just an unnecessary step.
-        
+
         Only when the repetitions were 10000 the solution
         without the "if block" performed better, but it
         isn't that relevant, cause this method is intended
@@ -333,14 +307,10 @@ class CachedTextObject(Object2D):
            maintainability/readability; (though in a way,
            this point is related to the point 2).
         """
-        if self.text_settings == text_settings: return
+        if self.text_settings == text_settings:
+            return
 
-        self.image = (
-          TEXT_SURFS_DB
-          [text_settings]
-          ['surf_map']
-          [self.text]
-        )
+        self.image = TEXT_SURFS_DB[text_settings]["surf_map"][self.text]
 
         self.text_settings = text_settings
 

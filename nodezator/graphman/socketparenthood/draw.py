@@ -3,7 +3,7 @@
 ### third-party imports
 
 from pygame.mouse import get_pos as get_mouse_pos
-from pygame.draw  import line    as draw_line
+from pygame.draw import line as draw_line
 
 
 ### local imports
@@ -27,17 +27,23 @@ class DrawingOperations:
 
             for child in parent.children:
 
-                try: start, end = clip_segment(
-                                    parent_center,
-                                    child.rect.center,
-                                  )
+                try:
+                    start, end = clip_segment(
+                        parent_center,
+                        child.rect.center,
+                    )
 
-                except ValueError: pass
+                except ValueError:
+                    pass
 
                 else:
 
                     draw_line(
-                      SCREEN, segment_color, start, end, 4,
+                        SCREEN,
+                        segment_color,
+                        start,
+                        end,
+                        4,
                     )
 
     def draw_temp_segment(self):
@@ -48,21 +54,23 @@ class DrawingOperations:
         line segment will be defined) to the current mouse
         position.
         """
-        try: start, end = clip_segment(
-                            self.socket_a.rect.center,
-                            get_mouse_pos(),
-                          )
+        try:
+            start, end = clip_segment(
+                self.socket_a.rect.center,
+                get_mouse_pos(),
+            )
 
-        except ValueError: pass
+        except ValueError:
+            pass
 
         else:
 
             draw_line(
-              SCREEN,
-              self.socket_a.line_color,
-              start,
-              end,
-              3,
+                SCREEN,
+                self.socket_a.line_color,
+                start,
+                end,
+                3,
             )
 
     def draw_temp_cutting_segment(self):
@@ -80,9 +88,9 @@ class DrawingOperations:
         ### right away
 
         draw_line(
-          SCREEN,
-          CUTTING_SEGMENT,
-          self.cut_start_pos, # start
-          get_mouse_pos(),    # end
-          3,
+            SCREEN,
+            CUTTING_SEGMENT,
+            self.cut_start_pos,  # start
+            get_mouse_pos(),  # end
+            3,
         )

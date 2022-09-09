@@ -11,16 +11,19 @@ from re import fullmatch
 from itertools import count
 
 
-TIMESTAMP_PATTERN = '_'.join((
-                          '[0-9]' * 4,  # year
-                          '[0-1][0-9]', # month
-                          '[0-3][0-9]', # day
-                          '[0-2][0-9]', # hour
-                          '[0-5][0-9]', # minutes
-                          '[0-5][0-9]'  # seconds
-                        ))
+TIMESTAMP_PATTERN = "_".join(
+    (
+        "[0-9]" * 4,  # year
+        "[0-1][0-9]",  # month
+        "[0-3][0-9]",  # day
+        "[0-2][0-9]",  # hour
+        "[0-5][0-9]",  # minutes
+        "[0-5][0-9]",  # seconds
+    )
+)
 
 # XXX review docstrings
+
 
 def get_custom_path_repr(path):
     """Return a custom string representation of given path.
@@ -42,22 +45,26 @@ def get_custom_path_repr(path):
 
     ### try turning parent into its version relative to
     ### the user directory
-    try: relative_path = parent.relative_to(Path.home())
+    try:
+        relative_path = parent.relative_to(Path.home())
 
     ### if the a ValueError is raised (happens when
     ### the path is not a subpath of the path given to
     ### Path.relative_to), use the entire stringified
     ### parent as the 'parent' part in the custom format
-    except ValueError: parent = str(parent)
+    except ValueError:
+        parent = str(parent)
 
     ### otherwise use a stringified path which is the
     ### result of joining the '~' path (the user
     ### directory) with the version of the parent
     ### relative to the user directory
-    else: parent = str(Path('~') / relative_path)
+    else:
+        parent = str(Path("~") / relative_path)
 
     ## assign information to title text
     return "{} ({})".format(name, parent)
+
 
 def get_swap_path(path):
     """Return new path representing swap file of given path.
@@ -73,10 +80,10 @@ def get_swap_path(path):
     existing extension.
     """
     ### hide path
-    hidden_path = path.with_name('.' + path.name)
+    hidden_path = path.with_name("." + path.name)
 
     ### add suffix
-    hidden_swap_path = Path(str(hidden_path) + '.swp')
+    hidden_swap_path = Path(str(hidden_path) + ".swp")
 
     return hidden_swap_path
 
@@ -109,45 +116,35 @@ def save_timestamped_backup(path, backup_quantity):
     ### reference objects/data locally for quick/easier
     ### access
 
-    parent    = path.parent
+    parent = path.parent
     path_name = path.name
-
 
     ### if quantity of backup files is above 0, we can save
     ### a backup
 
     if backup_quantity > 0:
 
-
         ### build a custom timestamp in the
         ### 'YYYY_MM_DD_HH_MM_SS' format
 
-        timestamp = ''.join(
-
-                         ## use either a digit or '_'
-                         char if char.isdigit() else '_'
-
-                         ## for each char from the first
-                         ## 19 ones in string from
-                         ## datetime.now()
-                         for char in str(datetime.now())[:19]
-
-                       )
+        timestamp = "".join(
+            ## use either a digit or '_'
+            char if char.isdigit() else "_"
+            ## for each char from the first
+            ## 19 ones in string from
+            ## datetime.now()
+            for char in str(datetime.now())[:19]
+        )
 
         ### create a backup path at the same folder of the
         ### original one, but whose name is comprised by
         ### the original name plus a '.' and the timestamp
-        new_path = \
-            parent / '{}.{}'.format(path_name, timestamp)
+        new_path = parent / "{}.{}".format(path_name, timestamp)
 
         ### copy the contents of the original path in the
         ### backup
 
-        new_path.write_text(
-                   path.read_text(encoding='utf-8'),
-                   encoding='utf-8'
-                 )
-
+        new_path.write_text(path.read_text(encoding="utf-8"), encoding="utf-8")
 
     ### now limit the existing backups, if any, to the
     ### allowed number
@@ -169,20 +166,21 @@ def save_timestamped_backup(path, backup_quantity):
         for item in exceeding_backups:
 
             ## try deleting the item
-            try: item.unlink()
+            try:
+                item.unlink()
 
             ## if deletion fails, raise a RuntimeError
             ## from the original one, explaining what we
             ## were doing when the problem appeared
 
             except Exception as err:
-                
-                msg = (
-                  "error while trying to delete excess"
-                  " backup file "
-                ) + str(item)
+
+                msg = ("error while trying to delete excess" " backup file ") + str(
+                    item
+                )
 
                 raise RuntimeError(msg) from err
+
 
 def retrieve_backups(filename, directory):
     """Return list of existing backups.
@@ -206,59 +204,48 @@ def retrieve_backups(filename, directory):
     ### backups appear last
 
     return sorted(
-
-      ## all backups
-
-      (
-        ## backups are items within the given directory...
-
-        item
-        for item in directory.iterdir()
-
-        ## ...whose digits before the last 20 ones are
-        ## equal to the original path name (we use 20
-        ## instead of 19 to account for the '.' before the
-        ## timestamp)...
-        if item.name[:-20] == filename
-
-        ## ...and whose last 19 digits are a timestamp,
-        ## that is, they match our timestamp pattern
-        if fullmatch(TIMESTAMP_PATTERN, item.name[-19:])
-
-      ),
-
-      ## sorted by their timestamps
-      key=lambda item: item.name[-19:],
-
-      ## in reverse order
-      reverse=True
-
+        ## all backups
+        (
+            ## backups are items within the given directory...
+            item
+            for item in directory.iterdir()
+            ## ...whose digits before the last 20 ones are
+            ## equal to the original path name (we use 20
+            ## instead of 19 to account for the '.' before the
+            ## timestamp)...
+            if item.name[:-20] == filename
+            ## ...and whose last 19 digits are a timestamp,
+            ## that is, they match our timestamp pattern
+            if fullmatch(TIMESTAMP_PATTERN, item.name[-19:])
+        ),
+        ## sorted by their timestamps
+        key=lambda item: item.name[-19:],
+        ## in reverse order
+        reverse=True,
     )
 
 
 ### get new filename: solve naming conflicts
 
+
 def get_new_filename(
-      conflicting_name,
-      existing_names,
-      index_format_spec='>03',
-    ):
+    conflicting_name,
+    existing_names,
+    index_format_spec=">03",
+):
 
     path = Path(conflicting_name)
 
-    stem   = path.stem
-    suffix = ''.join(path.suffixes)
+    stem = path.stem
+    suffix = "".join(path.suffixes)
 
     get_new_index = count().__iter__().__next__
 
     while True:
 
-        new_name = (
-            stem
-          + format(get_new_index(), index_format_spec)
-          + suffix
-        )
+        new_name = stem + format(get_new_index(), index_format_spec) + suffix
 
-        if new_name not in existing_names: break
+        if new_name not in existing_names:
+            break
 
     return new_name

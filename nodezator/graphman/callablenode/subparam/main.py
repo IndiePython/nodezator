@@ -20,16 +20,14 @@ from ...socket.surfs import type_to_codename
 
 from .widget import WidgetOps
 from .segment import SegmentOps
-from .unpacking import (
-                                                UnpackingOps
-                                              )
+from .unpacking import UnpackingOps
 
 
 class SubparameterHandling(
-      WidgetOps,
-      SegmentOps,
-      UnpackingOps,
-    ):
+    WidgetOps,
+    SegmentOps,
+    UnpackingOps,
+):
     """Methods for handling subparameter operations.
 
     Subparameters have somewhat complex handling. They
@@ -56,24 +54,26 @@ class SubparameterHandling(
             we'll create a new subparameter.
         """
         ### retrieve subparam indices map for the parameter
-        subparam_indices = (
-                self.data["subparam_map"][param_name])
+        subparam_indices = self.data["subparam_map"][param_name]
 
         ### create a subparam index by going through the
         ### existing keys and incrementing the highest one
 
         ## try obtaining the highest the keys which
         ## represents the highest integer
-        try: highest_key = max(subparam_indices)
+        try:
+            highest_key = max(subparam_indices)
 
         ## max will fail with a ValueError if the iterable
         ## it receives is empty (dict has no keys); in such
         ## case, use the default "0" as the subparameter
         ## name
-        except ValueError: subparam_index = 0
+        except ValueError:
+            subparam_index = 0
 
         ## otherwise increment the highest key
-        else: subparam_index = highest_key + 1
+        else:
+            subparam_index = highest_key + 1
 
         ### append the new subparam index to the subparam
         ### names map for the parameter representing the
@@ -97,29 +97,26 @@ class SubparameterHandling(
         ### instantiate input socket
 
         input_socket = InputSocket(
-                         node               = self,
-                         type_codename      = type_codename,
-                         parameter_name     = param_name,
-                         subparameter_index = subparam_index,
-                         center             = center
-                       )
+            node=self,
+            type_codename=type_codename,
+            parameter_name=param_name,
+            subparameter_index=subparam_index,
+            center=center,
+        )
 
         ### store the input socket instance in the live
         ### instance map for input sockets (this custom
         ### dict subclass also need its "update" method
         ### executed whenever it is changed)
 
-        (self.input_socket_live_flmap
-                [param_name][subparam_index]) = input_socket
+        (self.input_socket_live_flmap[param_name][subparam_index]) = input_socket
 
         self.input_socket_live_flmap.update()
 
     def get_new_keyword_name(self):
         """Return a new unique keyword name."""
         ### retrieve iterable of existing keywords
-        existing_keywords = (
-          self.data['subparam_keyword_map'].values()
-        )
+        existing_keywords = self.data["subparam_keyword_map"].values()
 
         ### retrieve their quantity
         number_of_keywords = len(existing_keywords)
@@ -137,11 +134,12 @@ class SubparameterHandling(
         for index in range(number_of_keywords + 1):
 
             ## create a keyword name
-            keyword_name = 'keyword_' + str(index)
+            keyword_name = "keyword_" + str(index)
 
             ## if the name isn't used, you can break
             ## out of the loop
-            if keyword_name not in existing_keywords: break
+            if keyword_name not in existing_keywords:
+                break
 
         ### since the algorithm for this method guarantees
         ### that we'll break out of the for loop above,
@@ -152,8 +150,8 @@ class SubparameterHandling(
         else:
 
             raise RuntimeError(
-              "this 'else' clause shouldn't execute, so"
-              " please, verify this method's implementation"
+                "this 'else' clause shouldn't execute, so"
+                " please, verify this method's implementation"
             )
 
         ### if we broke out of the 'for' loop successfully,
@@ -186,29 +184,25 @@ class SubparameterHandling(
         ### use it further ahead); the value in question is
         ### the new keyword name to be set
 
-        keyword_entry = (
-          self.subparam_keyword_entry_live_map[subparam_index]
-        )
+        keyword_entry = self.subparam_keyword_entry_live_map[subparam_index]
 
         new_keyword = keyword_entry.get()
 
         ### retrieve subparam_keyword_map
-        subparam_keyword_map = (
-          self.data['subparam_keyword_map']
-        )
+        subparam_keyword_map = self.data["subparam_keyword_map"]
 
         ### set an appropriate error message according to
         ### whether the new keyword name is available or not
         ### (the "if" and "elif" blocks below represent
         ### actual forbidden situations which cause
         ### SyntaxError when they happen in a function call).
-        ### 
+        ###
         ### I'd prefer to handle the SyntaxError during the
         ### actual function call, but we are forced to do
         ### it here because during execution of the node
         ### the inputs for each subparameter are stored in
         ### a map using the keyword names as keys.
-        ### 
+        ###
         ### This would make the duplicate keyword override
         ### the original one, causing the value of the
         ### original keyword to be lost and making the
@@ -218,34 +212,29 @@ class SubparameterHandling(
         if new_keyword in subparam_keyword_map.values():
 
             error_msg = (
-              "subparameter keyword can't be the same as"
-              " other existing subparameter keywords"
+                "subparameter keyword can't be the same as"
+                " other existing subparameter keywords"
             )
 
-
         elif (
-
-          new_keyword in self.signature_obj.parameters.keys()
-          and new_keyword not in self.var_kind_map.keys()
-
+            new_keyword in self.signature_obj.parameters.keys()
+            and new_keyword not in self.var_kind_map.keys()
         ):
 
             error_msg = (
-              "subparameter keyword can't be the same as"
-              " the name of a regular parameter"
+                "subparameter keyword can't be the same as"
+                " the name of a regular parameter"
             )
 
-        else: error_msg = ""
-
+        else:
+            error_msg = ""
 
         ### if an error message was not set, you can
         ### safely store the new keyword
 
         if not error_msg:
 
-            subparam_keyword_map[subparam_index] = (
-              new_keyword
-            )
+            subparam_keyword_map[subparam_index] = new_keyword
 
         ### otherwise, you must revert to the previous
         ### keyword and inform the user with the error
@@ -254,9 +243,7 @@ class SubparameterHandling(
         else:
 
             ## retrieve old keyword
-            previous_keyword = (
-              subparam_keyword_map[subparam_index]
-            )
+            previous_keyword = subparam_keyword_map[subparam_index]
 
             ## set the old value back on the keyword entry
             ## passing False along the value, to prevent
@@ -267,10 +254,7 @@ class SubparameterHandling(
 
             # increment error message
 
-            error_msg += (
-              ". The keyword was set back to its previous"
-              " value"
-            )
+            error_msg += ". The keyword was set back to its previous" " value"
 
             # display it in a dialog box
             create_and_show_dialog(error_msg)
@@ -281,7 +265,7 @@ class SubparameterHandling(
         Works by ensuring subparameter indices go from 0 to n
         in increments of 1 (n = length - 1), that is, that
         there's no gap between the numbers.
-        
+
         While looking for gaps in the subparameter indices,
         this function puts together a list with the data
         needed to fix the problem and delegates the actual
@@ -289,9 +273,7 @@ class SubparameterHandling(
         """
         ### reference list of subparam indices for this
         ### parameter
-        subparam_indices = (
-          self.data['subparam_map'][param_name]
-        )
+        subparam_indices = self.data["subparam_map"][param_name]
 
         ### obtain a new list from it, sorting the contents
         sorted_subparam_indices = sorted(subparam_indices)
@@ -304,9 +286,7 @@ class SubparameterHandling(
 
         ## iterate
 
-        for right_index, subparam_index in (
-          enumerate(sorted_subparam_indices)
-        ):
+        for right_index, subparam_index in enumerate(sorted_subparam_indices):
 
             ## alias the subparam_index as the current
             ## one
@@ -317,11 +297,9 @@ class SubparameterHandling(
             ## tuple with both names in the 'changes'
             ## list
 
-            if current_index != right_index: 
+            if current_index != right_index:
 
-                needed_changes.append(
-                  (current_index, right_index)
-                )
+                needed_changes.append((current_index, right_index))
 
         ### now that you put together a list containing
         ### the data for the changes to be made, you can
@@ -330,9 +308,9 @@ class SubparameterHandling(
         ### of needed changes is empty)
 
         self.change_subparameter_indices(
-               param_name,
-               needed_changes,
-             )
+            param_name,
+            needed_changes,
+        )
 
     def move_subparam(self, input_socket, orientation):
         """Move subparameter one position up or down.
@@ -345,9 +323,7 @@ class SubparameterHandling(
 
         ### reference list of subparam indices for this
         ### parameter
-        subparam_indices = (
-          self.data['subparam_map'][param_name]
-        )
+        subparam_indices = self.data["subparam_map"][param_name]
 
         ### retrieve the number of existing subparameters
         ### (length)
@@ -355,24 +331,23 @@ class SubparameterHandling(
 
         ### if length is only one, return earlier, since
         ### there's no position to change
-        if length == 1: return
+        if length == 1:
+            return
 
         ### give special names to some specific subparameters
 
         first_subparam_index = 0
-        last_subparam_index  = max(subparam_indices)
+        last_subparam_index = max(subparam_indices)
 
         ### retrieve the subparameter index (it represents
         ### its order/position from top to bottom)
-        our_subparam_index = (
-          input_socket.subparameter_index
-        )
+        our_subparam_index = input_socket.subparameter_index
 
         ### otherwise, act according to orientation of
         ### movement and current position of the
         ### subparameter represented by the input socket
 
-        if orientation == 'up':
+        if orientation == "up":
 
             ### if the subparameter is already the
             ### first one, return earlier, since there's
@@ -385,7 +360,7 @@ class SubparameterHandling(
             ### position to the desired one
             distance = -1
 
-        elif orientation == 'down':
+        elif orientation == "down":
 
             ### if the subparameter is already the
             ### last one, return earlier, since there's
@@ -401,16 +376,13 @@ class SubparameterHandling(
         else:
 
             raise ValueError(
-                    "There shouldn't be another"
-                    " orientation besides 'up' or 'down'"
-                  )
+                "There shouldn't be another" " orientation besides 'up' or 'down'"
+            )
 
         ### with the distance defined before, obtain the
         ### name of the neighbour subparameter whose
         ### position we want for our subparameter
-        neighbour_subparam_index = (
-          our_subparam_index + distance
-        )
+        neighbour_subparam_index = our_subparam_index + distance
 
         ### create a temporary subparameteter name (note
         ### that a subparameter with this name don't exist
@@ -430,9 +402,9 @@ class SubparameterHandling(
         ## the time of the change)
 
         changes = [
-          (neighbour_subparam_index, temp_subparam_index),
-          (our_subparam_index,       neighbour_subparam_index),
-          (temp_subparam_index,      our_subparam_index)
+            (neighbour_subparam_index, temp_subparam_index),
+            (our_subparam_index, neighbour_subparam_index),
+            (temp_subparam_index, our_subparam_index),
         ]
 
         ## apply changes
@@ -444,19 +416,15 @@ class SubparameterHandling(
         ### indicate that changes were made in the data
         indicate_unsaved()
 
-    move_subparam_up = (
-      partialmethod(move_subparam, orientation='up')
-    )
+    move_subparam_up = partialmethod(move_subparam, orientation="up")
 
-    move_subparam_down = (
-      partialmethod(move_subparam, orientation='down')
-    )
+    move_subparam_down = partialmethod(move_subparam, orientation="down")
 
     def change_subparameter_indices(
-          self,
-          param_name,
-          changes,
-        ):
+        self,
+        param_name,
+        changes,
+    ):
         """Change the name of subparameters listed.
 
         Parameters
@@ -475,39 +443,29 @@ class SubparameterHandling(
         """
         ### reference list of subparam indices for this
         ### parameter
-        subparam_indices = (
-          self.data['subparam_map'][param_name]
-        )
+        subparam_indices = self.data["subparam_map"][param_name]
 
         ### reference list of subparams for unpacking for
         ### the parameter
-        subparams_for_unpacking = (
-          self.data['subparam_unpacking_map'][param_name]
-        )
+        subparams_for_unpacking = self.data["subparam_unpacking_map"][param_name]
 
         ### reference map containing subparam unpacking
         ### icon flmap for the parameter
 
-        unpacking_icon_flmap_for_param = (
-          self
-          .subparam_unpacking_icon_flmap
-          [param_name]
-        )
+        unpacking_icon_flmap_for_param = self.subparam_unpacking_icon_flmap[param_name]
 
         ### list all maps that need to be fixed in case any
         ### subparameter needs to have its name fixed
 
         maps_to_fix = (
-
-          self.data['subparam_widget_map'] [param_name],
-          self.input_socket_live_flmap     [param_name],
-          self.subparam_up_button_flmap    [param_name],
-          self.subparam_down_button_flmap  [param_name],
-          self.widget_live_flmap           [param_name],
-          self.widget_add_button_flmap     [param_name],
-          self.widget_remove_button_flmap  [param_name],
-          self.subparam_rectsman_map       [param_name],
-
+            self.data["subparam_widget_map"][param_name],
+            self.input_socket_live_flmap[param_name],
+            self.subparam_up_button_flmap[param_name],
+            self.subparam_down_button_flmap[param_name],
+            self.widget_live_flmap[param_name],
+            self.widget_add_button_flmap[param_name],
+            self.widget_remove_button_flmap[param_name],
+            self.subparam_rectsman_map[param_name],
         )
 
         ### iterate over needed changes, performing them
@@ -528,9 +486,12 @@ class SubparameterHandling(
                 # map, pop its value and assign it
                 # to the right name
 
-                try: value = item.pop(current_index)
-                except KeyError: pass
-                else: item[right_index] = value
+                try:
+                    value = item.pop(current_index)
+                except KeyError:
+                    pass
+                else:
+                    item[right_index] = value
 
                 # using 'update' without arguments
                 # has no effect in built-in dict
@@ -547,16 +508,8 @@ class SubparameterHandling(
             if current_index in subparams_for_unpacking:
 
                 (
-
-                  unpacking_icon_flmap_for_param
-                  [right_index]
-
-                ) = (
-
-                  unpacking_icon_flmap_for_param
-                  .pop(current_index)
-
-                )
+                    unpacking_icon_flmap_for_param[right_index]
+                ) = unpacking_icon_flmap_for_param.pop(current_index)
 
                 ## since the flat values list didn't
                 ## actually change, the call which is
@@ -569,59 +522,28 @@ class SubparameterHandling(
 
                 ###
 
-                subparams_for_unpacking.remove(
-                                          current_index
-                                        )
+                subparams_for_unpacking.remove(current_index)
 
-                subparams_for_unpacking.append(
-                                          right_index
-                                        )
+                subparams_for_unpacking.append(right_index)
 
                 subparams_for_unpacking.sort()
-
 
             ## else if the parameter is of keyword variable
             ## kind, fix the index in the related maps
 
-            elif self.var_kind_map[param_name] == 'var_key':
+            elif self.var_kind_map[param_name] == "var_key":
 
                 (
+                    self.subparam_keyword_entry_live_map[right_index]
+                ) = self.subparam_keyword_entry_live_map.pop(current_index)
 
-                  self
-                  .subparam_keyword_entry_live_map
-                  [right_index]
-
-                ) = (
-
-                  self
-                  .subparam_keyword_entry_live_map
-                  .pop(current_index)
-
-                )
-
-                (
-
-                  self
-                  .data['subparam_keyword_map']
-                  [right_index]
-
-                ) = (
-
-                  self
-                  .data['subparam_keyword_map']
-                  .pop(current_index)
-
-                )
-
+                (self.data["subparam_keyword_map"][right_index]) = self.data[
+                    "subparam_keyword_map"
+                ].pop(current_index)
 
             ## retrieve a reference to the input socket
 
-            input_socket = (
-              self
-              .input_socket_live_flmap
-              [param_name]
-              [right_index]
-            )
+            input_socket = self.input_socket_live_flmap[param_name][right_index]
 
             ## store its current custom id and update its
             ## subparameter index with the right name
@@ -633,11 +555,14 @@ class SubparameterHandling(
             ## socket tree data to take the change in the
             ## subparameter index into account
 
-            try: input_socket.parent
+            try:
+                input_socket.parent
 
-            except AttributeError: pass
+            except AttributeError:
+                pass
 
-            else: APP_REFS.gm.fix_input_socket_id(
-                                input_socket,
-                                old_id,
-                              )
+            else:
+                APP_REFS.gm.fix_input_socket_id(
+                    input_socket,
+                    old_id,
+                )

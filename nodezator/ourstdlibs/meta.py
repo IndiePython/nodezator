@@ -27,7 +27,7 @@ def has_own_init(class_):
     False
     >>> class OtherObj:
     ...     def __init__(self): pass
-    ... 
+    ...
     >>> has_own_init(OtherObj)
     True
     >>> has_own_init(object)
@@ -36,18 +36,22 @@ def has_own_init(class_):
     class_init = class_.__init__
 
     ### try retrieving the superclass
-    try: superclass = class_.__bases__[0]
+    try:
+        superclass = class_.__bases__[0]
 
     ### considering the class has an init but it doesn't
     ### have a superclass, then we assume the init is its
     ### own;
-    except IndexError: return True
+    except IndexError:
+        return True
 
     ### if you succeed, retrieve its constructor
-    else: superclass_init = superclass.__init__
+    else:
+        superclass_init = superclass.__init__
 
     ### return the inequality comparison of the inits
     return class_init != superclass_init
+
 
 def initialize_bases(obj):
     """Initialize base classes with own __init__ method.
