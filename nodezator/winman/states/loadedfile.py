@@ -428,14 +428,10 @@ class LoadedFileState:
                     ## set the flag to False
                     obj.mouse_click_target = False
 
-                    ## deselect all objects
-                    APP_REFS.ea.deselect_all()
-
-                    ## selected the object and start moving
-                    ## the selection
-
-                    APP_REFS.ea.add_obj_to_selection(obj)
-                    APP_REFS.ea.start_moving()
+                    ## move object considering it is
+                    ## an target of a click and drag
+                    ## action
+                    APP_REFS.ea.move_from_click_and_drag(obj)
 
         ### if we reach this point in the method we know
         ### that objects weren't hovered in the "for loop"

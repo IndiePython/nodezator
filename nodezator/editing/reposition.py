@@ -330,3 +330,22 @@ class Repositioning:
 
             ## clear redo_stack
             self.redo_stack.clear()
+
+    def move_from_click_and_drag(self, obj):
+        """Move object target of a click and drag action.
+
+        If it is selected, the entire selection is moved,
+        otherwise, the selection is cleared and the object
+        is selected and moves alone.
+        """
+        ### if obj is not selected, deselected all
+        if obj not in self.selected_objs:
+            APP_REFS.ea.deselect_all()
+
+        ### regardless of being selected or not,
+        ### add it to selection, since it becomes
+        ### the active object anyway
+        self.add_obj_to_selection(obj)
+
+        ## start moving the selection
+        self.start_moving()
