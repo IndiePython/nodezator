@@ -20,7 +20,7 @@ from collections import namedtuple
 
 AppVersion = namedtuple("AppVersion", "major minor micro release_level")
 
-APP_VERSION = AppVersion(1, 2, 14, "release_candidate")
+APP_VERSION = AppVersion(1, 2, 15, "release_candidate")
 
 
 ### titles for the application
