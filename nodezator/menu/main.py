@@ -13,9 +13,9 @@ from ..ourstdlibs.behaviour import empty_function
 from ..classes2d.collections import List2D
 
 from ..surfsman.cache import (
-                      RECT_SURF_MAP,
-                      draw_cached_screen_state,
-                    )
+    RECT_SURF_MAP,
+    draw_cached_screen_state,
+)
 
 from ..colorsman.colors import MENU_BG
 
@@ -33,9 +33,9 @@ from .submenu.main import Menu
 ## surface factory utility
 
 from .surffactory import (
-                        create_top_surfaces,
-                        create_equal_surfaces,
-                      )
+    create_top_surfaces,
+    create_equal_surfaces,
+)
 
 # XXX whenever convenient, implement new changes in
 # menu subpackage on other packages, since this is the
@@ -48,7 +48,7 @@ from .surffactory import (
 ### A submenu of the popup menu will appear in the previous
 ### spot it was (that is, it seems its as if its position
 ### isn't updated);
-### 
+###
 ### in other words, it seems I must not only update the
 ### position of the menu when summoning it, but also of the
 ### submenus as well; at least that's what it seems to be
@@ -67,50 +67,35 @@ from .surffactory import (
 
 
 class MenuManager(
-      BehaviourDefinitions,
-      HoveringOperations,
-      Scrollability,
-    ):
+    BehaviourDefinitions,
+    HoveringOperations,
+    Scrollability,
+):
     """Manages menus, their its items and subitems.
 
     This class, along with the classes used for composition
     (Menu and Command) were design to work together to
     reproduce a behaviour similar to the one observed in
     tkinter.Menu widgets.
-    
+
     The menu manager works as a container for other
     menu-like items and/or their subitems. Such items and
     subitems consist of (sub)menus and commands.
 
     The menu manager structure, is a tree-like structure,
     which starts with the MenuManager instance as the
-    root and always end up in a command:
+    root and always end up in a command. We present
+    a visual representation of this tree-like structure
+    in a comment just after this class docstring
+    (because keeping the backslash character at the
+    end of a line inside a docstring causes the
+    black formatter to fail).
 
-         Menu - Menu - Command
-        /
-    MenuManager - Menu - [...] - Command
-        \ 
-         Command
-
-    For instance:
-
-         File (menu) 
-         /    > Open (command)
-        /     > Open recent... (menu)
-       /      > Close (command)  |
-      /                          |
-    MenuManager                   > Open file 01 (command)
-       \   \                      > Open file 02 (command)
-        \   \ 
-         \   Edit (menu) > Preferences (command)
-          \ 
-           Undo (command)
-
-    As you can see, the MenuManager object can have both
-    menu.submenu.main.Menu and menu.command.Command objects
-    directly attached to it. Menu objects, on the other hand,
-    can have other menus attached to them, or a command
-    object.
+    As can be seen in the visual representation, the
+    MenuManager object can have both menu.submenu.main.Menu
+    and menu.command.Command objects directly attached
+    to it. Menu objects, on the other hand, can have other
+    menus attached to them, or a command object.
 
     However, if you aim to use the menu manager as a
     menubar, don't add commands directly to it, but first
@@ -133,7 +118,7 @@ class MenuManager(
     widgets are considered its children, and are stored in
     the 'children' attribute. This is true for both the
     MenuManager and the Menu classes.
-    
+
     Each widget also has a 'parent' attribute wherein they
     store a reference to its parent widget, except for the
     menu.main.MenuManager instance, since it works like a
@@ -156,7 +141,7 @@ class MenuManager(
     The branch or hierarchy of the top menu and all its
     items and subitems until the last expanded menu is
     called the active branch.
-    
+
     Only the children, grandchildren, etc. of a single top
     menu can be visible at a time, that is, only one top menu
     is expanded at a time, while all the others are collapsed.
@@ -183,30 +168,46 @@ class MenuManager(
     returns a boolean.
     """
 
+    ### visual representation of MenuManager tree-like
+    ### structure:
+    ###
+    ###
+    ###         Menu - Menu - Command
+    ###        /
+    ###    MenuManager - Menu - [...] - Command
+    ###        \
+    ###         Command
+    ###
+    ###    For instance:
+    ###
+    ###         File (menu)
+    ###         /    > Open (command)
+    ###        /     > Open recent... (menu)
+    ###       /      > Close (command)  |
+    ###      /                          |
+    ###    MenuManager                   > Open file 01 (command)
+    ###       \   \                      > Open file 02 (command)
+    ###        \   \
+    ###         \   Edit (menu) > Preferences (command)
+    ###          \
+    ###           Undo (command)
+
     def __init__(
-
-          self,
-          menu_list,
-          loop_holder = None,
-
-          draw_behind   = draw_cached_screen_state,
-
-          boundaries_rect = SCREEN_RECT,
-
-          coordinates_name  = 'topleft',
-          coordinates_value = (0, 0),
-
-          is_menubar = True,
-
-          horiz_bg_width     = 0,
-          vertical_bg_height = 0,
-
-          use_outline = False,
-          keep_focus_when_unhovered = False
-
-        ):
+        self,
+        menu_list,
+        loop_holder=None,
+        draw_behind=draw_cached_screen_state,
+        boundaries_rect=SCREEN_RECT,
+        coordinates_name="topleft",
+        coordinates_value=(0, 0),
+        is_menubar=True,
+        horiz_bg_width=0,
+        vertical_bg_height=0,
+        use_outline=False,
+        keep_focus_when_unhovered=False,
+    ):
         """Assign variables and perform setups.
-        
+
         Parameters
         ==========
 
@@ -283,32 +284,22 @@ class MenuManager(
         ### check condition, if a menubar is being created,
         ### its top items must all be submenus;
 
-        if (
-
-          is_menubar
-          and any(
-                'children' not in item
-                for item in menu_list
-              )
-
-        ): raise ValueError(
-                   "all top items in a menubar"
-                   " (when is_menubar == True) must be"
-                   " submenus"
-                 )
-
+        if is_menubar and any("children" not in item for item in menu_list):
+            raise ValueError(
+                "all top items in a menubar"
+                " (when is_menubar == True) must be"
+                " submenus"
+            )
 
         ### store arguments
 
-        self.loop_holder     = loop_holder
-        self.draw_behind     = draw_behind
+        self.loop_holder = loop_holder
+        self.draw_behind = draw_behind
         self.boundaries_rect = boundaries_rect
-        self.is_menubar      = is_menubar
-        self.use_outline     = use_outline
+        self.is_menubar = is_menubar
+        self.use_outline = use_outline
 
-        self.keep_focus_when_unhovered = (
-          keep_focus_when_unhovered
-        )
+        self.keep_focus_when_unhovered = keep_focus_when_unhovered
 
         ### assign an empty update operation to the
         ### instance, since it is a loop holder
@@ -321,14 +312,9 @@ class MenuManager(
         ### function to create surfaces for the menu
         ### elements
 
-        surface_maps = (
-
-          create_top_surfaces
-          if is_menubar
-
-          else create_equal_surfaces
-
-        )(menu_list)
+        surface_maps = (create_top_surfaces if is_menubar else create_equal_surfaces)(
+            menu_list
+        )
 
         ### process the data in the menu list to instantiate
         ### children widgets
@@ -347,8 +333,7 @@ class MenuManager(
 
             ## restrain horiz_bg_width to boundaries width
 
-            self.max_width = \
-              min(horiz_bg_width, self.boundaries_rect.width)
+            self.max_width = min(horiz_bg_width, self.boundaries_rect.width)
 
         else:
 
@@ -356,17 +341,12 @@ class MenuManager(
             ## vertical_bg_height
 
             if not vertical_bg_height:
-                vertical_bg_height = (
-                  self.children.rect.height
-                )
+                vertical_bg_height = self.children.rect.height
 
             ## restrain vertical_bg_height to boundaries
             ## height
 
-            self.max_height = min(
-                                vertical_bg_height,
-                                self.boundaries_rect.height
-                              )
+            self.max_height = min(vertical_bg_height, self.boundaries_rect.height)
 
         ### define rect dimensions
 
@@ -399,20 +379,16 @@ class MenuManager(
 
         ### position rect using provided coordinates data
 
-        setattr(
-          self.rect, coordinates_name, coordinates_value
-        )
+        setattr(self.rect, coordinates_name, coordinates_value)
 
         ### instantiate a surface to be store in the image
         ### attribute and used as background and also
         ### perform related setups
 
-        ## instantiate background, storing it on the 
+        ## instantiate background, storing it on the
         ## image attribute, using the rect size
 
-        self.image = RECT_SURF_MAP[
-                       (*self.rect.size, MENU_BG)
-                     ]
+        self.image = RECT_SURF_MAP[(*self.rect.size, MENU_BG)]
 
         ## if the menu manager is scrollable, copy the
         ## background into a clean_bg attribute, which
@@ -438,10 +414,10 @@ class MenuManager(
         self.was_top_menu_expanded = False
 
     def instantiate_children(
-          self,
-          menu_list,
-          top_surf_data,
-        ):
+        self,
+        menu_list,
+        top_surf_data,
+    ):
         """Instantiate children widgets.
 
         menu_list (list of dicts)
@@ -456,14 +432,14 @@ class MenuManager(
         ### are instantiated recursively inside its __init__
         ### method)
 
-        for item_data, surface_map \
-        in zip(menu_list, top_surf_data):
+        for item_data, surface_map in zip(menu_list, top_surf_data):
 
             ## choose top item class based on presence/
             ## absence of attribute and instantiate it
 
             # try retrieving children data
-            try: item_data['children']
+            try:
+                item_data["children"]
 
             # not having children data means the data
             # describes a command, so instantiate one
@@ -479,27 +455,18 @@ class MenuManager(
                 # instantiate menu (all its children are
                 # instantiated recursively in this step)
 
-                widget = Menu(
-                             self, item_data, surface_map
-                           )
+                widget = Menu(self, item_data, surface_map)
 
             children.append(widget)
 
         ###
 
-        retrieve_pos_from = (
-
-          'topright'
-          if self.is_menubar
-
-          else 'bottomleft'
-
-        )
+        retrieve_pos_from = "topright" if self.is_menubar else "bottomleft"
 
         children.rect.snap_rects_ip(
-                        retrieve_pos_from=retrieve_pos_from,
-                        assign_pos_to='topleft',
-                      )
+            retrieve_pos_from=retrieve_pos_from,
+            assign_pos_to="topleft",
+        )
 
     def perform_extra_setups(self):
         """Call the perform_extra_setups method on children.
@@ -513,11 +480,14 @@ class MenuManager(
 
         for child in self.children:
 
-            try: method = child.perform_extra_setups
+            try:
+                method = child.perform_extra_setups
 
-            except AttributeError: pass
+            except AttributeError:
+                pass
 
-            else: method()
+            else:
+                method()
 
     def __repr__(self):
         """Return nearest unambiguous string representation.
@@ -535,12 +505,12 @@ class MenuManager(
         base_text = "MenuManager instance\n"
 
         ### add the number of direct children info
-        base_text += \
-            "Direct children: " + str(len(self.children))
+        base_text += "Direct children: " + str(len(self.children))
 
         ### change the base text to indicate the menu is
         ### scrollable if it is the case
-        if self.is_scrollable(): base_text += ", scrollable"
+        if self.is_scrollable():
+            base_text += ", scrollable"
 
         ### gather some of the menu manager more relevant
         ### __init__ arguments using a special format and
@@ -550,17 +520,15 @@ class MenuManager(
         ## data
 
         attr_names = (
-          "loop_holder",
-          "boundaries_rect",
-          "is_menubar",
+            "loop_holder",
+            "boundaries_rect",
+            "is_menubar",
         )
 
         ## retrieve the maximum length between the names
         ## and increment by 2 to compensate for padding
 
-        max_len = max(
-          len(attr_name) for attr_name in attr_names
-        )
+        max_len = max(len(attr_name) for attr_name in attr_names)
 
         max_len += 2
 
@@ -568,8 +536,8 @@ class MenuManager(
         ## string variable to gather the formated text
         ## displaying the arguments data
 
-        padding   = "  "
-        sep       = " : "
+        padding = "  "
+        sep = " : "
         final_str = ""
 
         ## iterate over the attr names building custom
@@ -603,7 +571,7 @@ class MenuManager(
 
         ### increment the base text with the final string
         ### containing the data about the arguments
-        base_text += ", {\n" + final_str  + "\n}"
+        base_text += ", {\n" + final_str + "\n}"
 
         ### increment the base text again with a caption to
         ### indicate we'll be listing the menu tree
@@ -613,7 +581,4 @@ class MenuManager(
         ### string representation, separated by a new line
         ### character
 
-        return "\n".join([
-          base_text,
-          *map(repr, self.children)
-        ])
+        return "\n".join([base_text, *map(repr, self.children)])
