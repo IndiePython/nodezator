@@ -62,8 +62,9 @@ def check_node_packs(node_packs):
         category_folders = [
             path
             for path in node_pack.iterdir()
-            if not path.name.startswith(".")
             if path.is_dir()
+            if not path.name.startswith(".")
+            if not path.name == "__pycache__"
         ]
 
         if not category_folders:
@@ -77,7 +78,9 @@ def check_node_packs(node_packs):
             script_dirs = [
                 path
                 for path in category_folder.iterdir()
-                if (not path.name.startswith(".") and path.is_dir())
+                if path.is_dir()
+                if not path.name.startswith(".")
+                if not path.name == "__pycache__"
             ]
 
             if not script_dirs:

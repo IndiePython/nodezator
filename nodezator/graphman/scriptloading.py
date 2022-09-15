@@ -11,7 +11,7 @@ Each callable represents a different kind of node.
 
 from pathlib import Path
 
-from runpy import run_path
+from importlib import import_module
 
 from collections import namedtuple
 
@@ -95,7 +95,7 @@ from ..colorsman.colors import NODE_CATEGORY_COLORS
 ### implement/teach it, or not even be needed);
 
 
-def load_scripts(node_packs_paths):
+def load_scripts(node_packs_dirs):
     """Load modules and store specific data in dicts.
 
     Namely, the object called 'main', which must be
@@ -103,7 +103,7 @@ def load_scripts(node_packs_paths):
 
     Parameters
     ==========
-    node_packs_paths (pathlib.Path or string)
+    node_packs_dirs (pathlib.Path or string)
         represents the path to the directory from where
         the scripts will be loaded in order to retrieve
         a callable called 'main' from each of them.
@@ -125,16 +125,16 @@ def load_scripts(node_packs_paths):
     category_path_map = APP_REFS.category_path_map
     category_index_map = APP_REFS.category_index_map
 
-    ### make sure node_packs_paths is a list of node packs
+    ### make sure node_packs_dirs is a list of node packs
 
-    if not isinstance(node_packs_paths, list):
-        node_packs_paths = [node_packs_paths]
+    if not isinstance(node_packs_dirs, list):
+        node_packs_dirs = [node_packs_dirs]
 
-    ### if they aren't already, turn the node packs paths
-    ### into pathlib.Path objects
+    ### if they aren't already, turn the node packs
+    ### directories into pathlib.Path objects
 
-    node_packs_paths = sorted(
-        (Path(path) for path in node_packs_paths),
+    node_packs_dirs = sorted(
+        (Path(path) for path in node_packs_dirs),
         key=get_path_name,
     )
 
@@ -156,13 +156,13 @@ def load_scripts(node_packs_paths):
     ### such folders represent categories which hold
     ### more folders representing node scripts;
 
-    for node_pack_path in node_packs_paths:
+    for node_pack_dir in node_packs_dirs:
 
         ## check whether node pack folder name is
         ## a valid Python identifier, raising an
         ## error if not
 
-        node_pack_name = node_pack_path.name
+        node_pack_name = node_pack_dir.name
 
         if not node_pack_name.isidentifier():
 
@@ -174,254 +174,271 @@ def load_scripts(node_packs_paths):
 
         ## retrieve the name of the node pack path
         ## as the name of the node pack
-        node_pack_name = node_pack_path.name
+        node_pack_name = node_pack_dir.name
 
-        ## iterate over each subdirectory in the
-        ## node pack, which represent categories
+        ## obtain a list of all directories in the
+        ## node pack (they represent categories)
 
         category_folders = sorted(
             (
                 item
-                for item in node_pack_path.iterdir()
+                for item in node_pack_dir.iterdir()
                 if item.is_dir()
                 if not item.name.startswith(".")
+                if not item.name == "__pycache__"
             ),
             key=get_path_name,
         )
 
-        for category_folder in category_folders:
+        ## reference the parent of the node pack folder,
+        ## that is, the folder where the node pack
+        ## directory is located
+        node_pack_parent = node_pack_dir.parent
 
-            ## check whether category folder name is
-            ## a valid Python identifier, raising an
-            ## error if not
+        ## remove the app directory from sys.path and
+        ## add the folder where the node pack is located
+        ## instead, that is, the node pack's parent
 
-            category_folder_name = category_folder.name
+        remove_import_visibility(APP_REFS.app_dir)
+        grant_import_visibility(node_pack_parent)
 
-            if not category_folder_name.isidentifier():
+        try:
 
-                raise ValueError(
-                    "Category folder name must be a"
-                    " valid Python identifier; the"
-                    " category folder"
-                    f" '{category_folder_name}'"
-                    " doesn't comply"
-                )
+            for category_folder in category_folders:
 
-            ## retrieve the name of the category
-            ## folder to use as a category name
-            category_name = category_folder.name
-
-            ## with the node pack name it forms
-            ## the category id in a 2-tuple
-            category_id = (node_pack_name, category_name)
-
-            ## store the category path in a special map
-            ## holding category paths
-            category_path_map[category_id] = category_folder
-
-            ## define a default color index for the
-            ## category
-
-            color_index = (
-                (color_index + 1) % no_of_colors if "color_index" in locals() else 0
-            )
-
-            ## try loading the category metadata
-
-            try:
-                category_metadata = load_pyl(
-                    category_folder / NODE_CATEGORY_METADATA_FILENAME
-                )
-
-            ## if it fails, just pass
-            except Exception as err:
-                pass
-
-            ## otherwise, try obtaining the category
-            ## color index from the metadata, unless it
-            ## fails, in which case we pass
-
-            else:
-
-                try:
-                    color_index = int(category_metadata["color_index"]) % no_of_colors
-
-                except Exception:
-                    pass
-
-            ## store the category index in the map using the
-            ## category id
-            category_index_map[category_id] = color_index
-
-            ## iterate over the directories in the
-            ## category folder
-
-            subdirectories_iterator = (
-                item
-                for item in category_folder.iterdir()
-                if item.is_dir()
-                if not item.name.startswith(".")
-            )
-
-            for script_dir in subdirectories_iterator:
-
-                ## check whether script directory name is
+                ## check whether category folder name is
                 ## a valid Python identifier, raising an
                 ## error if not
 
-                script_dir_name = script_dir.name
+                category_folder_name = category_folder.name
 
-                if not script_dir_name.isidentifier():
+                if not category_folder_name.isidentifier():
 
                     raise ValueError(
-                        "Script folder name must be a"
-                        " valid Python identifier;"
-                        " the script folder"
-                        f" '{script_dir_name}' doesn't"
-                        " comply"
+                        "Category folder name must be a"
+                        " valid Python identifier; the"
+                        " category folder"
+                        f" '{category_folder_name}'"
+                        " doesn't comply"
                     )
 
-                ## populate the module map
+                ## retrieve the name of the category
+                ## folder to use as a category name
+                category_name = category_folder.name
 
-                # put together the path to the script by
-                # combining a '__main__.py" file name with
-                # the script directory
+                ## with the node pack name it forms
+                ## the category id in a 2-tuple
+                category_id = (node_pack_name, category_name)
 
-                script_filepath = script_dir / NODE_SCRIPT_NAME
+                ## store the category path in a special map
+                ## holding category paths
+                category_path_map[category_id] = category_folder
 
-                # remove app_dir from sys.path and append
-                # scirpt_dir to it
+                ## define a default color index for the
+                ## category
 
-                remove_import_visibility(APP_REFS.app_dir)
-                grant_import_visibility(script_dir)
+                color_index = (
+                    (color_index + 1) % no_of_colors if "color_index" in locals() else 0
+                )
 
-                # try executing the file from the path as a
-                # python module, retrieving the resulting
-                # namespace dictionary
+                ## try loading the category metadata
 
                 try:
-                    namespace_dict = run_path(str(script_filepath))
+                    category_metadata = load_pyl(
+                        category_folder / NODE_CATEGORY_METADATA_FILENAME
+                    )
 
-                # if it fails, store data about the error
-                # a custom error explaining the problem
-                # then skip loading this script with a
-                # "continue" statement
-
+                ## if it fails, just pass
                 except Exception as err:
+                    pass
 
-                    scripts_not_loaded.append(
-                        (
-                            script_filepath,
-                            str(err),
-                        )
-                    )
-
-                    continue
-
-                finally:
-
-                    # remove script_dir from sys.path and
-                    # append app_dir to it
-
-                    remove_import_visibility(script_dir)
-
-                    grant_import_visibility(APP_REFS.app_dir)
-
-                # build dict with objects used to define
-                # the node stored in special variables
-
-                node_def_dict = {
-                    var_name: namespace_dict[var_name]
-                    for var_name in NODE_DEF_VAR_NAMES
-                    if var_name in namespace_dict
-                }
-
-                # if we don't find a main callable to
-                # define the node, we store data about
-                # this problem and skip processing this
-                # script with a "continue" statement
-
-                try:
-                    main_callable = node_def_dict["main_callable"]
-
-                except KeyError:
-
-                    scripts_missing_node_definition.append(script_filepath)
-
-                    continue
+                ## otherwise, try obtaining the category
+                ## color index from the metadata, unless it
+                ## fails, in which case we pass
 
                 else:
 
-                    signature_callable = node_def_dict.setdefault(
-                        "signature_callable", main_callable
-                    )
+                    try:
+                        color_index = int(category_metadata["color_index"]) % no_of_colors
 
-                # if callables aren't indeed callable,
-                # we store data about this error and skip
-                # processing this script with a "continue"
-                # statement
+                    except Exception:
+                        pass
 
-                for callable_obj in (
-                    main_callable,
-                    signature_callable,
-                ):
+                ## store the category index in the map using the
+                ## category id
+                category_index_map[category_id] = color_index
 
-                    if not callable(callable_obj):
+                ## iterate over the directories in the
+                ## category folder
 
-                        not_actually_callables.append(
+                subdirectories_iterator = (
+                    item
+                    for item in category_folder.iterdir()
+                    if item.is_dir()
+                    if not item.name.startswith(".")
+                    if not item.name == "__pycache__"
+                )
+
+                for script_dir in subdirectories_iterator:
+
+                    ## check whether script directory name is
+                    ## a valid Python identifier, raising an
+                    ## error if not
+
+                    script_dir_name = script_dir.name
+
+                    if not script_dir_name.isidentifier():
+
+                        raise ValueError(
+                            "Script folder name must be a"
+                            " valid Python identifier;"
+                            " the script folder"
+                            f" '{script_dir_name}' doesn't"
+                            " comply"
+                        )
+
+                    ## populate the module map
+
+                    # put together the path to the script by
+                    # combining a '__main__.py" file name with
+                    # the script directory
+
+                    script_filepath = script_dir / NODE_SCRIPT_NAME
+
+
+                    # try importing the file from the path as a
+                    # module, retrieving its namespace dictionary
+
+                    try:
+                        ### retrieve the module name
+                        ###
+                        ### it will be in the format
+                        ### "node_pack_dir.category_dir.node_script_dir.__main__",
+                        ### that is, the last 4 parts of the path linked by
+                        ### dots ('.') minus the 03 characters at the end of the
+                        ### path ('.py')
+                        module_name = '.'.join(script_filepath.parts[-4:])[:-3]
+
+                        ### load the module and retrieve the namespace dictionary
+                        namespace_dict = import_module(module_name).__dict__
+
+                    # if it fails, store data about the error
+                    # a custom error explaining the problem
+                    # then skip loading this script with a
+                    # "continue" statement
+
+                    except Exception as err:
+
+                        scripts_not_loaded.append(
                             (
-                                callable_obj.__name__,
+                                script_filepath,
+                                str(err),
+                            )
+                        )
+
+                        continue
+
+                    # build dict with objects used to define
+                    # the node stored in special variables
+
+                    node_def_dict = {
+                        var_name: namespace_dict[var_name]
+                        for var_name in NODE_DEF_VAR_NAMES
+                        if var_name in namespace_dict
+                    }
+
+                    # if we don't find a main callable to
+                    # define the node, we store data about
+                    # this problem and skip processing this
+                    # script with a "continue" statement
+
+                    try:
+                        main_callable = node_def_dict["main_callable"]
+
+                    except KeyError:
+
+                        scripts_missing_node_definition.append(script_filepath)
+
+                        continue
+
+                    else:
+
+                        signature_callable = node_def_dict.setdefault(
+                            "signature_callable", main_callable
+                        )
+
+                    # if callables aren't indeed callable,
+                    # we store data about this error and skip
+                    # processing this script with a "continue"
+                    # statement
+
+                    for callable_obj in (
+                        main_callable,
+                        signature_callable,
+                    ):
+
+                        if not callable(callable_obj):
+
+                            not_actually_callables.append(
+                                (
+                                    callable_obj.__name__,
+                                    script_filepath,
+                                )
+                            )
+
+                        continue
+
+                    # check whether object is inspectable
+                    # or not by attempting to get a
+                    # signature from it
+
+                    try:
+                        signature_obj = signature(signature_callable)
+
+                    # if not, store data about the error and
+                    # skip processing this script with a
+                    # "continue" statement
+
+                    except Exception as err:
+
+                        callables_not_inspectable.append(
+                            (
+                                signature_callable.__name__,
                                 script_filepath,
                             )
                         )
 
-                    continue
+                        continue
 
-                # check whether object is inspectable
-                # or not by attempting to get a
-                # signature from it
+                    # otherwise, just store the signature in
+                    # a special map, using the signature obj
+                    # as the key
+                    else:
+                        signature_map[signature_callable] = signature_obj
 
-                try:
-                    signature_obj = signature(signature_callable)
+                    # define id for script and also store it
+                    # in the node definition dict
 
-                # if not, store data about the error and
-                # skip processing this script with a
-                # "continue" statement
-
-                except Exception as err:
-
-                    callables_not_inspectable.append(
-                        (
-                            signature_callable.__name__,
-                            script_filepath,
-                        )
+                    script_id = (
+                        node_pack_name,
+                        category_name,
+                        script_dir.name,
                     )
 
-                    continue
+                    node_def_dict["script_id"] = script_id
 
-                # otherwise, just store the signature in
-                # a special map, using the signature obj
-                # as the key
-                else:
-                    signature_map[signature_callable] = signature_obj
+                    # store the node definition object in the
+                    # proper map with the id we created
+                    node_def_map[script_id] = node_def_dict
 
-                # define id for script and also store it
-                # in the node definition dict
+                    ## also store the script's path
+                    script_path_map[script_id] = script_filepath
 
-                script_id = (
-                    node_pack_name,
-                    category_name,
-                    script_dir.name,
-                )
+        ### revert the sys.path changes made earlier
 
-                node_def_dict["script_id"] = script_id
-
-                # store the node definition object in the
-                # proper map with the id we created
-                node_def_map[script_id] = node_def_dict
-
-                ## also store the script's path
-                script_path_map[script_id] = script_filepath
+        finally:
+            remove_import_visibility(APP_REFS.app_dir)
+            grant_import_visibility(node_pack_parent)
 
     ### if any errors were found during script loading,
     ### report them by raising a custom exception

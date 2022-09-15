@@ -15,8 +15,8 @@ class NodeScriptsError(Exception):
 
     These errors can be divided into 04 categories:
 
-    1) run_path(node_script_path) fails, that is, when the
-       script can't be loaded;
+    1) importing a node script fails, that is, when the
+       script can't be imported;
     2) the user doesn't provide an object to define a node
        stored in a special variable as expected;
     3) the object provided isn't actually callable
@@ -42,7 +42,7 @@ class NodeScriptsError(Exception):
 
             msg += (
                 "error while trying to load '{}' node script"
-                " with runpy.run_path(): {}"
+                ": {}"
             ).format(
                 str(script_filepath),
                 error_message,
