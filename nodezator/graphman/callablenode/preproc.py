@@ -149,14 +149,14 @@ class Preprocessing:
             else:
                 annotation = deepcopy(annotation)
 
-            ## check whether the annotation provides
-            ## a type within a 'type' item
-            try:
+            ## check whether the annotation is a dict providing
+            ## a 'type' key, in which case, the value in the 'type'
+            ## key must be considered the actual type to be used
+            if isinstance(annotation, dict) and 'type' in annotation:
                 type_ = annotation["type"]
 
-            ## if there's no such data, consider the
-            ## annotation itself as the type
-            except (TypeError, KeyError):
+            ## otherwise, consider the annotation itself as the type
+            else:
                 type_ = annotation
 
             ## regardless of the origin of the type_
