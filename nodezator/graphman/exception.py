@@ -13,15 +13,16 @@ from ..appinfo import MAIN_CALLABLE_VAR_NAME
 class NodeScriptsError(Exception):
     """Raised whenever we can't load/process a node script.
 
-    These errors can be divided into 04 categories:
+    These errors can be divided into 05 categories:
 
-    1) importing a node script fails, that is, when the
+    1) importing a (supposedly) installed node pack fails;
+    2) importing a node script module fails, that is, when the
        script can't be imported;
-    2) the user doesn't provide an object to define a node
+    3) the user doesn't provide an object to define a node
        stored in a special variable as expected;
-    3) the object provided isn't actually callable
+    4) the object provided isn't actually callable
        or doesn't contain one;
-    4) the callable provided isn't inspectable, that is,
+    5) the callable provided isn't inspectable, that is,
        we can't obtain a signature object from it using
        inspect.signature or inspect.signature plus
        inspect.get_annotations;
@@ -29,6 +30,7 @@ class NodeScriptsError(Exception):
 
     def __init__(
         self,
+        installed_pack_not_imported,
         scripts_not_loaded,
         scripts_missing_node_definition,
         not_actually_callables,
@@ -37,6 +39,9 @@ class NodeScriptsError(Exception):
         """Initialize superclass with custom message."""
 
         msg = ""
+
+        for message in installed_pack_not_imported:
+            msg += message + linesep
 
         for script_filepath, error_message in scripts_not_loaded:
 
@@ -291,6 +296,8 @@ class ProxyNodesLackingDataError(Exception):
 
 ### node packs errors
 
+class NodePackNotImportedError(ModuleNotFoundError):
+    """Raised when a node pack supposed to be installed can't be imported."""
 
 class NodePackNotFoundError(Exception):
     """Raised when a node pack isn't found."""
@@ -313,23 +320,33 @@ class ScriptDirectoryLackingScriptError(Exception):
 
     def __init__(
         self,
-        node_pack_path,
+        node_pack,
         category_dir,
         script_dir,
         script_file,
     ):
 
-        message = (
-            f"The '{script_dir.name}' script of the"
-            f" '{category_dir.name}' category of the"
-            f" '{node_pack_path} node pack is missing its"
-            f" '{script_file.name}' script file"
-        )
+        if type(node_pack) == str:
+            message = (
+                f"The '{script_dir.name}' script of the"
+                f" '{category_dir.name}' category of the"
+                f" 'installed '{node_pack}' node pack is missing its"
+                f" '{script_file.name}' script file"
+            )
+
+        else:
+            message = (
+                f"The '{script_dir.name}' script of the"
+                f" '{category_dir.name}' category of the"
+                f" '{node_pack} node pack is missing its"
+                f" '{script_file.name}' script file"
+            )
 
         super().__init__(message)
 
 
 NODE_PACK_ERRORS = (
+    NodePackNotImportedError,
     NodePackNotFoundError,
     NodePackNotADirectoryError,
     NodePackLackingCategoryError,

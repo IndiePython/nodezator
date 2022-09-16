@@ -102,7 +102,7 @@ class GraphManager(
 
         ### load scripts to use callables provided by
         ### them as specifications for nodes
-        load_scripts(data["node_packs"])
+        load_scripts(data['node_packs'], data['installed_node_packs'])
 
         ### instantiate nodes
         self.instantiate_nodes()

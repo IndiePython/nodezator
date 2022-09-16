@@ -95,7 +95,7 @@ from ..colorsman.colors import NODE_CATEGORY_COLORS
 ### implement/teach it, or not even be needed);
 
 
-def load_scripts(node_packs_dirs):
+def load_scripts(local_node_pack_dirs, installed_node_pack_names):
     """Load modules and store specific data in dicts.
 
     Namely, the object called 'main', which must be
@@ -103,12 +103,14 @@ def load_scripts(node_packs_dirs):
 
     Parameters
     ==========
-    node_packs_dirs (pathlib.Path or string)
-        represents the path to the directory from where
-        the scripts will be loaded in order to retrieve
-        a callable called 'main' from each of them.
-        Such callables are later used as specifications
-        for nodes.
+    local_node_pack_dirs (string or list of strings)
+        represents a path or paths to directories
+        from where we'll load the scripts and retrieve
+        objects used to define nodes from them.
+    installed_node_pack_names (string or list of strings)
+        represents a name or names to packages that can
+        be import and have their subpackages used to
+        define nodes.
 
     How it works
     ============
@@ -125,22 +127,29 @@ def load_scripts(node_packs_dirs):
     category_path_map = APP_REFS.category_path_map
     category_index_map = APP_REFS.category_index_map
 
-    ### make sure node_packs_dirs is a list of node packs
+    ### make sure local_node_pack_dirs is a list
 
-    if not isinstance(node_packs_dirs, list):
-        node_packs_dirs = [node_packs_dirs]
+    if not isinstance(local_node_pack_dirs, list):
+        local_node_pack_dirs = [local_node_pack_dirs]
 
     ### if they aren't already, turn the node packs
     ### directories into pathlib.Path objects
 
-    node_packs_dirs = sorted(
-        (Path(path) for path in node_packs_dirs),
-        key=get_path_name,
-    )
+    local_node_pack_dirs = [Path(path) for path in local_node_pack_dirs]
+    local_node_pack_dirs.sort(key=get_path_name)
+
+    ### make sure installed_node_pack_names is a list
+
+    if not isinstance(installed_node_pack_names, list):
+        installed_node_pack_names = [installed_node_pack_names]
+
+    ### concatenate both kinds of node packs
+    all_node_packs = local_node_pack_dirs + installed_node_pack_names
 
     ### create lists to hold information about errors
     ### during script loading, if any
 
+    installed_pack_not_imported = []
     scripts_not_loaded = []
     scripts_missing_node_definition = []
     not_actually_callables = []
@@ -156,7 +165,26 @@ def load_scripts(node_packs_dirs):
     ### such folders represent categories which hold
     ### more folders representing node scripts;
 
-    for node_pack_dir in node_packs_dirs:
+    for node_pack in all_node_packs:
+
+        is_local = isinstance(node_pack, Path)
+
+        if is_local:
+            node_pack_dir = node_pack
+
+        else:
+
+            try: node_pack_dir = Path(import_module(node_pack).__path__[0])
+
+            except ModuleNotFoundError:
+                installed_pack_not_imported.append(
+                    (
+                        f"could not import '{node_pack}' node pack"
+                        " (it is supposed to be installed)"
+                    )
+                )
+
+                continue
 
         ## check whether node pack folder name is
         ## a valid Python identifier, raising an
@@ -195,12 +223,14 @@ def load_scripts(node_packs_dirs):
         ## directory is located
         node_pack_parent = node_pack_dir.parent
 
+        ## if we are dealing with a local node pack,
         ## remove the app directory from sys.path and
         ## add the folder where the node pack is located
         ## instead, that is, the node pack's parent
 
-        remove_import_visibility(APP_REFS.app_dir)
-        grant_import_visibility(node_pack_parent)
+        if is_local:
+            remove_import_visibility(APP_REFS.app_dir)
+            grant_import_visibility(node_pack_parent)
 
         try:
 
@@ -302,7 +332,6 @@ def load_scripts(node_packs_dirs):
                     # put together the path to the script by
                     # combining a '__main__.py" file name with
                     # the script directory
-
                     script_filepath = script_dir / NODE_SCRIPT_NAME
 
 
@@ -310,10 +339,10 @@ def load_scripts(node_packs_dirs):
                     # module, retrieving its namespace dictionary
 
                     try:
-                        ### retrieve the module name
+                        ### obtain the module name
                         ###
                         ### it will be in the format
-                        ### "node_pack_dir.category_dir.node_script_dir.__main__",
+                        ### "node_pack_dir.category_dir.node_script_dir.filename",
                         ### that is, the last 4 parts of the path linked by
                         ### dots ('.') minus the 03 characters at the end of the
                         ### path ('.py')
@@ -434,17 +463,19 @@ def load_scripts(node_packs_dirs):
                     ## also store the script's path
                     script_path_map[script_id] = script_filepath
 
-        ### revert the sys.path changes made earlier
+        ### revert the sys.path changes if they were made earlier
 
         finally:
-            remove_import_visibility(APP_REFS.app_dir)
-            grant_import_visibility(node_pack_parent)
+            if is_local:
+                remove_import_visibility(node_pack_parent)
+                grant_import_visibility(APP_REFS.app_dir)
 
     ### if any errors were found during script loading,
     ### report them by raising a custom exception
 
     if any(
         chain(
+            installed_pack_not_imported,
             scripts_not_loaded,
             scripts_missing_node_definition,
             not_actually_callables,
@@ -453,6 +484,7 @@ def load_scripts(node_packs_dirs):
     ):
 
         raise NodeScriptsError(
+            installed_pack_not_imported,
             scripts_not_loaded,
             scripts_missing_node_definition,
             not_actually_callables,

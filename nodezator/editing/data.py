@@ -64,8 +64,8 @@ from ..graphman.textblock.check import (
 )
 
 from ..graphman.nodepacksissues import (
-    get_formatted_current_node_packs,
-    check_node_packs,
+    get_formatted_local_node_packs,
+    check_local_node_packs,
 )
 
 from ..graphman.exception import NODE_PACK_ERRORS
@@ -441,7 +441,7 @@ class DataHandling:
         ### check them
 
         try:
-            check_node_packs(paths)
+            check_local_node_packs(paths)
 
         except NODE_PACK_ERRORS as err:
 
@@ -453,7 +453,7 @@ class DataHandling:
             return
 
         ### grab current node pack selection;
-        current = get_formatted_current_node_packs()
+        current = get_formatted_local_node_packs()
 
         if set(current) == set(paths):
             return
@@ -560,7 +560,7 @@ class DataHandling:
         )
 
         ### grab current node pack selection;
-        current = get_formatted_current_node_packs()
+        current = get_formatted_local_node_packs()
 
         ### check whether there are instantiated nodes
         ### from them

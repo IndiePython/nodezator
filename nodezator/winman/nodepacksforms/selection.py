@@ -531,7 +531,7 @@ class NodePacksSelectionChangeForm(Object2D):
             paths = [Path(path) for path in paths]
 
             try:
-                check_node_packs(paths)
+                check_local_node_packs(paths)
 
             except NODE_PACK_ERRORS as err:
 

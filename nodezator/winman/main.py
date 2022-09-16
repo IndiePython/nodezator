@@ -61,8 +61,10 @@ from ..editing.main import EditingAssistant
 from ..graphman.main import GraphManager
 
 from ..graphman.nodepacksissues import (
-    get_formatted_current_node_packs,
-    check_node_packs,
+    get_formatted_local_node_packs,
+    get_formatted_installed_node_packs,
+    check_local_node_packs,
+    check_installed_node_packs,
 )
 
 from ..graphman.exception import NODE_PACK_ERRORS
@@ -208,25 +210,21 @@ class WindowManager(
 
         else:
 
-            ### check if the node packs provided in
+            ### check if the local node packs provided in
             ### the file are appropriate, to prevent the
-            ### application from crashing if the node
-            ### packs don't exist or have no scripts
-            ###
-            ### if the packs are appropriate, keep
-            ### performing additional checks and
-            ### setups
+            ### application from crashing if such node
+            ### packs don't exist or are somehow faulty
 
             original_node_packs = (
                 current_node_packs
-            ) = get_formatted_current_node_packs()
+            ) = get_formatted_local_node_packs()
 
-            must_try_loading_file = True
+            local_node_packs_are_ok = True
 
             while True:
 
                 try:
-                    check_node_packs(current_node_packs)
+                    check_local_node_packs(current_node_packs)
 
                 except NODE_PACK_ERRORS as err:
 
@@ -255,13 +253,13 @@ class WindowManager(
 
                     else:
 
-                        must_try_loading_file = False
+                        local_node_packs_are_ok = False
                         break
 
                 else:
                     break
 
-            if must_try_loading_file:
+            if local_node_packs_are_ok:
 
                 ### if by this point the original node
                 ### packs listed have changed, then it is
@@ -295,6 +293,33 @@ class WindowManager(
                         APP_REFS.source_path.read_text(encoding="utf-8"),
                         encoding="utf-8",
                     )
+
+            ### check if the "installed" node packs provided in
+            ### the file are appropriate, to prevent the
+            ### application from crashing if such node
+            ### packs can't be found or are somehow faulty
+
+            installed_node_packs = get_formatted_installed_node_packs()
+
+            try:
+                check_installed_node_packs(installed_node_packs)
+            except NODE_PACK_ERRORS as err:
+
+                message = (
+                    "One of the provided node packs"
+                    " (the ones supposed to be installed)"
+                    " presented the following issue:"
+                    f" {err}; aborting loading file now"
+                )
+
+                create_and_show_dialog(message)
+
+                installed_node_packs_are_ok = False
+
+            else:
+                installed_node_packs_are_ok = True
+
+            if local_node_packs_are_ok and installed_node_packs_are_ok:
 
                 ### try preparing graph manager for
                 ### edition
