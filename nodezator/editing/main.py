@@ -24,6 +24,14 @@ from .categorycolors import (
 
 ## classes for composition
 
+from .nodepacksforms.selection import (
+    present_change_node_packs_form,
+)
+
+from .nodepacksforms.renaming import (
+    present_rename_node_packs_form,
+)
+
 from .widgetpopups.creation import (
     WidgetCreationPopupMenu,
 )
@@ -75,6 +83,10 @@ class EditingAssistant(
         self.change_category_colors = change_category_colors
 
         self.rebuild_category_color_form = rebuild_category_color_form
+
+        ### store calls to present forms
+        self.present_rename_node_packs_form = present_rename_node_packs_form
+        self.present_change_node_packs_form = present_change_node_packs_form
 
         ### create and store popup menus
 

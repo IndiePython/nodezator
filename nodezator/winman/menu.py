@@ -31,14 +31,6 @@ from ..recentfile import get_recent_files
 
 from ..userprefsman.editionform import edit_user_preferences
 
-from .nodepacksforms.selection import (
-    present_change_node_packs_form,
-)
-
-from .nodepacksforms.renaming import (
-    present_rename_node_packs_form,
-)
-
 from ..graphman.presets import (
     WIDGET_DATA_PRESET_MAP,
     WIDGET_PRESET_MENU_LABEL_MAP,
@@ -221,11 +213,11 @@ class MenuSetup:
                 "children": [
                     {
                         "label": (t.menu.change_node_packs_on_file),
-                        "command": (present_change_node_packs_form),
+                        "command": (APP_REFS.ea.present_change_node_packs_form),
                     },
                     {
                         "label": (t.menu.rename_node_packs_on_file),
-                        "command": (present_rename_node_packs_form),
+                        "command": (APP_REFS.ea.present_rename_node_packs_form),
                     },
                 ],
             }
