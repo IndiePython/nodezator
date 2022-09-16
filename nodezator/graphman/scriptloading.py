@@ -115,17 +115,17 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
     How it works
     ============
 
-    First, we retrieve references for a special dictionaries
+    First, we retrieve references for special dictionaries
     from the APP_REFS object imported from the config.py
     module. Then, we populate them with the proper data.
     """
-    ### retrieve dictionary references
+    ### create special dicts
 
-    node_def_map = APP_REFS.node_def_map
-    signature_map = APP_REFS.signature_map
-    script_path_map = APP_REFS.script_path_map
-    category_path_map = APP_REFS.category_path_map
-    category_index_map = APP_REFS.category_index_map
+    node_def_map = {}
+    signature_map = {}
+    script_path_map = {}
+    category_path_map = {}
+    category_index_map = {}
 
     ### make sure local_node_pack_dirs is a list
 
@@ -491,6 +491,28 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
             callables_not_inspectable,
         )
 
+    ### otherwise, update the corresponding dicts from
+    ### the APP_REFS
+
+    APP_REFS.node_def_map.clear()
+    APP_REFS.node_def_map.update(node_def_map)
+    node_def_map.clear()
+
+    APP_REFS.signature_map.clear()
+    APP_REFS.signature_map.update(signature_map)
+    signature_map.clear()
+
+    APP_REFS.script_path_map.clear()
+    APP_REFS.script_path_map.update(script_path_map)
+    script_path_map.clear()
+
+    APP_REFS.category_path_map.clear()
+    APP_REFS.category_path_map.update(category_path_map)
+    category_path_map.clear()
+
+    APP_REFS.category_index_map.clear()
+    APP_REFS.category_index_map.update(category_index_map)
+    category_index_map.clear()
 
 ### small utility
 def get_path_name(item):
