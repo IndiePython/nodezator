@@ -156,16 +156,13 @@
 
     },
 
-    'rename_node_packs_on_any_file_form' : {
+    'rename_node_packs_form' : {
 
       'form_caption' : "Form to rename node packs on {} file",
       'file_manager_caption' : "Select {} file to rename its node packs",
 
       'choose_filepath'    : "Filepath",
       'no_filepath_chosen' : "No filepath chosen",
-
-      'current_names' : "Current names",
-      'new_names'     : "New names",
 
       'submit'     : "Submit",
       'cancel'     : "Cancel",
