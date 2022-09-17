@@ -9,6 +9,8 @@ Each callable represents a different kind of node.
 
 ### standard library imports
 
+from sys import modules
+
 from pathlib import Path
 
 from importlib import import_module
@@ -174,11 +176,14 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
         is_local = isinstance(node_pack, Path)
 
         if is_local:
+            node_pack_name = node_pack.name
             node_pack_dir = node_pack
 
         else:
+            node_pack_name = node_pack
 
-            try: node_pack_dir = Path(import_module(node_pack).__path__[0])
+            try:
+                node_pack_dir = Path(import_module(node_pack).__path__[0])
 
             except ModuleNotFoundError:
                 installed_pack_not_imported.append(
@@ -193,8 +198,6 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
         ## check whether node pack folder name is
         ## a valid Python identifier, raising an
         ## error if not
-
-        node_pack_name = node_pack_dir.name
 
         if not node_pack_name.isidentifier():
 
@@ -464,6 +467,29 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
 
                     ## also store the script's path
                     script_path_map[script_id] = script_filepath
+
+        ### remove imported modules from sys.modules so they are reloaded
+        ### everytime a file is loaded/reloaded;
+        ###
+        ### this also prevents this error: suppose we have a local node pack
+        ### called 'foo' and the user also wants to load an installed node
+        ### pack with the same name; when the node packs were loaded, whichever
+        ### pack was loaded first would shadow the second pack, causing
+        ### unintended and harmful effects;
+        ###
+        ### also, standard and third-party libraries loaded within
+        ### the node packs are not removed, making it so only the node packs
+        ### are reloaded when needed, saving time
+
+        module_keys = tuple(modules)
+
+        keys_to_remove = [
+          item for item in module_keys
+          if item.split('.')[0] == node_pack_name
+        ]
+
+        for key in keys_to_remove:
+            modules.pop(key)
 
 
     ### if any errors were found during script loading,
