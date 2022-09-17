@@ -10,24 +10,11 @@ https://nodezator.com
 https://github.com/IndiePython/nodezator
 """
 
-### standard library imports
-
-from pathlib import Path
-
-from sys import path
-
-
 ### local imports
 
 from .logman.main import get_new_logger
 
 from .appinfo import TITLE, NATIVE_FILE_EXTENSION
-
-from .config import APP_REFS
-
-
-### store reference to application directory
-APP_REFS.app_dir = Path(__file__).parent.resolve()
 
 
 ### create logger for module

@@ -4,33 +4,36 @@ from sys import path
 
 from pathlib import Path
 
+from contextlib import contextmanager
 
-def remove_import_visibility(dirpath):
-    """Make it so it is not possible to import from path."""
-    visible_paths = [Path(item).resolve() for item in path]
-
-    resolved_dirpath = dirpath.resolve()
-
-    indices_to_remove = [
-        index
-        for index, item in enumerate(visible_paths)
-        if item.resolve() == resolved_dirpath
-    ]
-
-    indices_to_remove.reverse()
-
-    for index in indices_to_remove:
-        path.pop(index)
-
-
-def grant_import_visibility(dirpath):
-    """Make it so it is possible to import from path."""
-
-    visible_paths = [Path(item).resolve() for item in path]
+@contextmanager
+def temporary_sys_path_visibility(dirpath):
 
     resolved_dirpath = dirpath.resolve()
+    visible_paths = [Path(item).resolve() for item in path]
 
-    if any(item.resolve() == resolved_dirpath for item in visible_paths):
-        return
+    dirpath_already_on_sys_path = (
+        any(item.resolve() == resolved_dirpath for item in visible_paths)
+    )
 
-    path.append(str(resolved_dirpath))
+    if not dirpath_already_on_sys_path:
+        string_dirpath = str(resolved_dirpath)
+        path.append(string_dirpath)
+
+    try:
+        yield
+
+    finally:
+
+        if not dirpath_already_on_sys_path:
+
+            indices_to_remove = [
+                index
+                for index, item in enumerate(path)
+                if string_dirpath == item
+            ]
+
+            indices_to_remove.reverse()
+
+            for index in indices_to_remove:
+                path.pop(index)

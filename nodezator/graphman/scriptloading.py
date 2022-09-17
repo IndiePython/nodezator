@@ -21,6 +21,8 @@ from itertools import chain
 
 from inspect import signature
 
+from contextlib import contextmanager
+
 
 ### local imports
 
@@ -34,10 +36,7 @@ from ..appinfo import (
 
 from ..ourstdlibs.pyl import load_pyl
 
-from ..ourstdlibs.importutils import (
-    remove_import_visibility,
-    grant_import_visibility,
-)
+from ..ourstdlibs.importutils import temporary_sys_path_visibility
 
 from .exception import NodeScriptsError
 
@@ -93,6 +92,11 @@ from ..colorsman.colors import NODE_CATEGORY_COLORS
 ### (a better solution may in fact not even exist, or be
 ### too complex to be worth the time required to
 ### implement/teach it, or not even be needed);
+
+@contextmanager
+def no_context(node_pack_parent):
+    """Do nothing on entering/exiting context."""
+    yield
 
 
 def load_scripts(local_node_pack_dirs, installed_node_pack_names):
@@ -223,16 +227,14 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
         ## directory is located
         node_pack_parent = node_pack_dir.parent
 
-        ## if we are dealing with a local node pack,
-        ## remove the app directory from sys.path and
-        ## add the folder where the node pack is located
-        ## instead, that is, the node pack's parent
+        ## pick a proper context wherein to execute the node pack loading
+        context_to_enable = (
+            temporary_sys_path_visibility if is_local else no_context
+        )
 
-        if is_local:
-            remove_import_visibility(APP_REFS.app_dir)
-            grant_import_visibility(node_pack_parent)
+        ## load scripts
 
-        try:
+        with context_to_enable(node_pack_parent):
 
             for category_folder in category_folders:
 
@@ -463,12 +465,6 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
                     ## also store the script's path
                     script_path_map[script_id] = script_filepath
 
-        ### revert the sys.path changes if they were made earlier
-
-        finally:
-            if is_local:
-                remove_import_visibility(node_pack_parent)
-                grant_import_visibility(APP_REFS.app_dir)
 
     ### if any errors were found during script loading,
     ### report them by raising a custom exception
