@@ -22,21 +22,45 @@ from .exception import (
     ScriptDirectoryLackingScriptError,
 )
 
+from ..ourstdlibs.pyl import load_pyl
 
-def get_formatted_local_node_packs():
+
+def get_formatted_local_node_packs(filepath):
     ### retrieve the contents of the node_packs field
-    node_packs_paths = APP_REFS.data.setdefault('node_packs', [])
+
+    try:
+        source_path = APP_REFS.source_path
+    except AttributeError:
+        data = load_pyl(filepath)
+    else:
+        if filepath == source_path:
+            data = APP_REFS.data
+        else:
+            data = load_pyl(filepath)
+
+    node_packs_paths = data.setdefault('node_packs', [])
 
     ### guarantee node packs paths is a list
     if not isinstance(node_packs_paths, list):
         node_packs_paths = [node_packs_paths]
 
-    ### we turn it into a pathlib.Path object
+    ### we turn items into pathlib.Path objects and return list
     return [Path(path) for path in node_packs_paths]
 
-def get_formatted_installed_node_packs():
+def get_formatted_installed_node_packs(filepath):
     ### retrieve the contents of the installed_node_packs field
-    node_packs_names = APP_REFS.data.setdefault('installed_node_packs', [])
+
+    try:
+        source_path = APP_REFS.source_path
+    except AttributeError:
+        data = load_pyl(filepath)
+    else:
+        if filepath == source_path:
+            data = APP_REFS.data
+        else:
+            data = load_pyl(filepath)
+
+    node_packs_names = data.setdefault('installed_node_packs', [])
 
     ### guarantee node packs names is a list
     if not isinstance(node_packs_names, list):

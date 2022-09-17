@@ -14,6 +14,8 @@ from pygame import (
     MOUSEBUTTONDOWN,
     MOUSEBUTTONUP,
     KEYUP,
+    KEYDOWN,
+    K_UP, K_DOWN,
     K_ESCAPE,
     K_RETURN,
     K_KP_ENTER,
@@ -47,13 +49,17 @@ from ...fileman.main import select_path
 
 from ...ourstdlibs.collections.general import CallList
 
-from ...ourstdlibs.behaviour import empty_function
+from ...ourstdlibs.behaviour import empty_function, get_oblivious_callable
 
 from ...ourstdlibs.pyl import load_pyl, save_pyl
 
-from ...our3rdlibs.behaviour import watch_window_size
-
 from ...our3rdlibs.button import Button
+
+from ...our3rdlibs.behaviour import (
+    watch_window_size,
+    indicate_unsaved,
+    set_status_message,
+)
 
 from ...classes2d.single import Object2D
 from ...classes2d.collections import List2D
@@ -66,7 +72,13 @@ from ...fontsman.constants import (
 from ...textman.render import render_text
 from ...textman.label.main import Label
 
-from ...surfsman.cache import UNHIGHLIGHT_SURF_MAP
+from ...surfsman.cache import (
+    UNHIGHLIGHT_SURF_MAP,
+    cache_screen_state,
+    draw_cached_screen_state,
+)
+
+from ...surfsman.icon import render_layered_icon
 
 from ...surfsman.draw import draw_border, draw_depth_finish
 from ...surfsman.render import render_rect
@@ -76,9 +88,8 @@ from ...loopman.exception import (
     SwitchLoopException,
 )
 
-from ...graphman.exception import NODE_PACK_ERRORS
-
 from ...colorsman.colors import (
+    BLACK,
     CONTRAST_LAYER_COLOR,
     WINDOW_FG,
     WINDOW_BG,
@@ -86,12 +97,25 @@ from ...colorsman.colors import (
     BUTTON_BG,
 )
 
+from ...graphman.nodepacksissues import (
+    get_formatted_local_node_packs,
+    get_formatted_installed_node_packs,
+    check_local_node_packs,
+    check_installed_node_packs,
+)
+
+from ...graphman.scriptloading import load_scripts
+
+from ...graphman.exception import NODE_PACK_ERRORS
+
+from ...knownpacks import get_known_node_packs
+
 
 ## widgets
 
-from ...widget.checkbutton import CheckButton
+from ...widget.optionmenu.main import OptionMenu
 
-from ...widget.pathpreview.path import PathPreview
+from ...widget.stringentry import StringEntry
 
 
 ### constants
@@ -114,12 +138,15 @@ BUTTON_SETTINGS = {
 }
 
 FILE_MANAGER_CAPTION = (
-    t.editing.change_node_packs_on_any_file_form.file_manager_caption
+    t.editing.change_node_packs_form.file_manager_caption
 ).format(NATIVE_FILE_EXTENSION)
 
-FORM_CAPTION = (t.editing.change_node_packs_on_any_file_form.form_caption).format(
+FORM_CAPTION = (t.editing.change_node_packs_form.form_caption).format(
     NATIVE_FILE_EXTENSION
 )
+
+
+OPTION_MENU_DEFAULT_STRING = 'Pick a known node pack'
 
 
 ### class definition
@@ -130,12 +157,19 @@ class NodePacksSelectionChangeForm(Object2D):
 
     def __init__(self):
         """Setup form objects."""
-        ### build surf and rect for background
+        ###
+        self.node_pack_widget_list = List2D()
 
-        self.image = render_rect(500, 205, WINDOW_BG)
+        ### build widgets
+        self.build_form_widgets()
+
+        ### build rect and surf for background
+
+        self.rect = self.widgets.rect.inflate(10, 10)
+
+        self.image = render_rect(*self.rect.size, WINDOW_BG)
         draw_border(self.image)
 
-        self.rect = self.image.get_rect()
 
         ### store a semitransparent object
 
@@ -144,12 +178,6 @@ class NodePacksSelectionChangeForm(Object2D):
             coordinates_name="center",
             coordinates_value=SCREEN_RECT.center,
         )
-
-        ###
-        self.chosen_filepath = Path(".")
-
-        ### build widgets
-        self.build_form_widgets()
 
         ### assign behaviour
         self.update = empty_function
@@ -169,14 +197,27 @@ class NodePacksSelectionChangeForm(Object2D):
 
         self.widgets.rect.move_ip(diff)
 
+        ###
+        npwl = self.node_pack_widget_list
+
+        if npwl:
+            npwl.rect.move_ip(diff)
+
+        ### if this form loop is running, ask for screen
+        ### preparations to be made
+
+        if hasattr(self, "running") and self.running:
+            APP_REFS.draw_after_window_resize_setups = (
+                perform_screen_preparations
+            )
+
     def build_form_widgets(self):
         """Build widgets to hold the data for edition."""
         ### create list to hold widgets
         self.widgets = List2D()
 
-        ### define an initial topleft relative to the
-        ### topleft corner of the form 'rect'
-        topleft = self.rect.move(5, 5).topleft
+        ### define an initial topleft
+        topleft = (0, 0)
 
         ### instantiate a caption for the form
 
@@ -200,89 +241,169 @@ class NodePacksSelectionChangeForm(Object2D):
         ### in the versatile list
         topleft = self.widgets.rect.move(0, 20).bottomleft
 
-        ### instantiate widgets for filepath
+        ### instantiate widgets to pick known node packs
 
-        ## filepath choose button
+        ## known node packs label
 
-        choose_filepath_button = Object2D.from_surface(
-            surface=render_text(
-                text=(t.editing.change_node_packs_on_any_file_form.choose_filepath),
-                **BUTTON_SETTINGS,
+        known_node_packs_label = Object2D.from_surface(
+            surface=(
+                render_text(
+                    text="Pick known node packs:",
+                    **TEXT_SETTINGS,
+                )
             ),
-            coordinates_name="topleft",
+            coordinates_name='topleft',
             coordinates_value=topleft,
         )
 
-        choose_filepath_button.on_mouse_release = self.choose_filepath
+        self.widgets.append(known_node_packs_label)
 
-        self.widgets.append(choose_filepath_button)
+        ## known node packs option menu
 
-        ## chosen filepath label
+        midleft = known_node_packs_label.rect.move(5, 0).midright
 
-        midleft = choose_filepath_button.rect.move(5, 0).midright
-
-        self.chosen_filepath_label = Label(
-            text=(t.editing.change_node_packs_on_any_file_form.no_filepath_chosen),
-            name="filepath",
-            max_width=345,
-            ellipsis_at_end=False,
-            coordinates_name="midleft",
+        self.node_packs_option_menu = OptionMenu(
+            loop_holder=self,
+            value=OPTION_MENU_DEFAULT_STRING,
+            options=[OPTION_MENU_DEFAULT_STRING]+get_known_node_packs(),
+            max_width=700,
+            command=self.pick_chosen_node_pack,
+            draw_on_window_resize=self.draw,
+            coordinates_name='midleft',
             coordinates_value=midleft,
-            **TEXT_SETTINGS,
         )
 
-        self.widgets.append(self.chosen_filepath_label)
+        self.widgets.append(self.node_packs_option_menu)
 
         ### update the topleft to a value a bit below
         ### the bottomleft corner of the widgets already
         ### in the versatile list
         topleft = self.widgets.rect.move(0, 15).bottomleft
 
-        ### instantiate widgets for nodes directory
+        ### instantiate widgets to add new local node packs
 
-        ## nodes directory label
+        ## add local node packs label
 
-        node_packs_label = Object2D.from_surface(
+        add_local_node_packs_label = Object2D.from_surface(
             surface=(
                 render_text(
-                    text=(t.editing.change_node_packs_on_any_file_form.node_packs)
-                    + ":",
+                    text="Add local node pack(s):",
                     **TEXT_SETTINGS,
                 )
             ),
-            coordinates_name="topleft",
+            coordinates_name='topleft',
             coordinates_value=topleft,
         )
 
-        self.widgets.append(node_packs_label)
+        self.widgets.append(add_local_node_packs_label)
 
-        ## node packs checkbutton
+        ## add local node packs button
 
-        topleft = node_packs_label.rect.move(5, 0).topright
+        midleft = add_local_node_packs_label.rect.move(5, 0).midright
 
-        self.node_packs_checkbutton = CheckButton(
-            value=False,
-            command=self.toggle_node_packs_preview,
-            coordinates_name="topleft",
+        add_local_node_packs_button = Object2D.from_surface(
+            surface=(
+                render_layered_icon(
+                    chars=[chr(ordinal) for ordinal in (33, 34)],
+                    dimension_name="height",
+                    dimension_value=20,
+                    colors=[BLACK, (30, 130, 70)],
+                    background_width=27,
+                    background_height=27,
+                    background_color=(40, 40, 50),
+                    depth_finish_thickness = 1,
+                )
+            ),
+            on_mouse_release=(
+                get_oblivious_callable(self.add_local_node_packs)
+            ),
+            coordinates_name='midleft',
+            coordinates_value=midleft,
+        )
+
+        self.widgets.append(add_local_node_packs_button)
+
+        ### update the topleft to a value a bit below
+        ### the bottomleft corner of the widgets already
+        ### in the versatile list
+        topleft = self.widgets.rect.move(0, 15).bottomleft
+
+        ### instantiate widgets to add new installed node packs
+
+        ## add installed node packs label
+
+        add_installed_node_packs_label = Object2D.from_surface(
+            surface=(
+                render_text(
+                    text="Add installed node pack(s):",
+                    **TEXT_SETTINGS,
+                )
+            ),
+            coordinates_name='topleft',
             coordinates_value=topleft,
         )
 
-        self.widgets.append(self.node_packs_checkbutton)
+        self.widgets.append(add_installed_node_packs_label)
 
-        ## node packs path preview button
+        ## add installed node packs entry
 
-        topleft = self.node_packs_checkbutton.rect.move(5, 0).topright
+        midleft = add_installed_node_packs_label.rect.move(5, 0).midright
 
-        self.node_packs_pathpreview = PathPreview(
-            value=".",
-            name="node_packs",
+        self.add_installed_node_packs_entry = StringEntry(
             loop_holder=self,
+            value='',
+            width=500,
             draw_on_window_resize=self.draw,
-            coordinates_name="topleft",
+            coordinates_name='midleft',
+            coordinates_value=midleft,
+        )
+
+        self.widgets.append(self.add_installed_node_packs_entry)
+
+        ## add installed node packs button
+
+        midleft = self.add_installed_node_packs_entry.rect.move(5, 0).midright
+
+        add_installed_node_packs_button = Object2D.from_surface(
+            surface=(
+                render_layered_icon(
+                    chars=[chr(78)],
+                    dimension_name="height",
+                    dimension_value=20,
+                    colors=[(30, 210, 70)],
+                    background_width=27,
+                    background_height=27,
+                    background_color=(40, 40, 50),
+                    depth_finish_thickness = 1,
+                )
+            ),
+            on_mouse_release=(
+                get_oblivious_callable(
+                    self.add_installed_node_packs_from_entry
+                )
+            ),
+            coordinates_name='midleft',
+            coordinates_value=midleft,
+        )
+
+        self.widgets.append(add_installed_node_packs_button)
+
+        ### obtain a topleft from the widgets' bottomleft
+        topleft = self.widgets.rect.move(0, 20).bottomleft
+
+        ### instantiate panel to indicate pack list below it
+
+        self.pack_list_panel = Object2D.from_surface(
+            surface=render_rect(960, 240, (40, 40, 40)),
+            on_mouse_release=self.click_remove_buttons,
+            coordinates_name='topleft',
             coordinates_value=topleft,
         )
 
-        self.widgets.append(self.node_packs_pathpreview)
+        self.panel_bg = self.pack_list_panel.image.copy()
+
+        self.widgets.append(self.pack_list_panel)
+
 
         ### create and store behaviour for cancelling form
         ### edition (equivalent to setting the form data to
@@ -297,82 +418,225 @@ class NodePacksSelectionChangeForm(Object2D):
 
         ### create, position and store form related buttons
 
-        ## submit button
+        ## apply changes button
 
-        self.submit_button = Button.from_text(
-            text=(t.editing.change_node_packs_on_any_file_form.submit),
-            command=self.submit_form,
+        self.apply_changes_button = Button.from_text(
+            text="Apply changes",
+            command=self.apply_changes,
             **BUTTON_SETTINGS,
         )
 
-        draw_depth_finish(self.submit_button.image)
+        draw_depth_finish(self.apply_changes_button.image)
 
-        self.submit_button.rect.bottomright = self.rect.move(-10, -10).bottomright
+        self.apply_changes_button.rect.topright = self.widgets.rect.move(0, 20).bottomright
 
         ## cancel button
 
         self.cancel_button = Button.from_text(
-            text=(t.editing.change_node_packs_on_any_file_form.cancel),
+            text=(t.editing.change_node_packs_form.cancel),
             command=self.cancel,
             **BUTTON_SETTINGS,
         )
 
         draw_depth_finish(self.cancel_button.image)
 
-        self.cancel_button.rect.midright = self.submit_button.rect.move(-5, 0).midleft
+        self.cancel_button.rect.midright = self.apply_changes_button.rect.move(-5, 0).midleft
 
         ## store
+        self.widgets.extend((self.cancel_button, self.apply_changes_button))
 
-        self.widgets.extend((self.cancel_button, self.submit_button))
+    def pick_chosen_node_pack(self):
 
-    def choose_filepath(self, event):
-        """Pick new path and update label using it.
+        op_menu = self.node_packs_option_menu
 
-        Parameters
-        ==========
-        event (pygame.event.Event of pygame.MOUSEBUTTONDOWN
-               type)
-          although not used, it is required in order to
-          comply with protocol used;
+        value = op_menu.get()
+        op_menu.set(OPTION_MENU_DEFAULT_STRING, False)
 
-          Check pygame.event module documentation on
-          pygame website for more info about this event
-          object.
-        """
-        ### pick new path
+        kind, pack_ref = value.split(' : ')
 
-        paths = select_path(caption=FILE_MANAGER_CAPTION)
-
-        ### if paths were given, a single one, should be
-        ### used as the new filepath;
-        ###
-        ### update the label using the given value
-
-        if paths:
-
-            self.chosen_filepath = paths[0]
-
-            self.chosen_filepath_label.set(str(self.chosen_filepath))
-
-    def toggle_node_packs_preview(self):
-        node_packs_preview = self.node_packs_pathpreview
-
-        if self.node_packs_checkbutton.get():
-
-            if node_packs_preview not in self.widgets:
-                self.widgets.append(node_packs_preview)
-
+        if kind == 'local':
+            node_pack = Path(pack_ref)
         else:
+            node_pack = pack_ref
 
-            if node_packs_preview in self.widgets:
-                self.widgets.remove(node_packs_preview)
+        ### add node pack
+        self.add_node_packs(node_pack)
+
+
+    def retrieve_current_node_packs(self):
+
+        ### grab node packs
+
+        all_packs = (
+            get_formatted_local_node_packs(APP_REFS.source_path)
+            + get_formatted_installed_node_packs(APP_REFS.source_path)
+        )
+
+        ### clear the node pack widget list
+        self.node_pack_widget_list.clear()
+
+        ### list each node pack
+        self.add_node_packs(all_packs)
+
+    def add_local_node_packs(self):
+        """"""
+        ### select new paths;
+
+        paths = select_path(
+            caption=("Select node to be added to file"),
+        )
+
+        if not paths:
+            return
+
+        self.add_node_packs(paths)
+
+    def add_installed_node_packs_from_entry(self):
+
+        entry = self.add_installed_node_packs_entry
+
+        content = entry.get()
+        entry.set('')
+
+        new_installed_node_packs = [
+          name.strip()
+          for name in content.split(',')
+        ]
+
+        self.add_node_packs(new_installed_node_packs)
+
+    def add_node_packs(self, node_packs):
+
+        ### make sure node_packs is a containter
+
+        if not isinstance(node_packs, (list,tuple)):
+            node_packs = [node_packs]
+
+        ### reference the node pack widget list locally
+        npwl = self.node_pack_widget_list
+
+        ### store whether the list is empty
+        is_empty = not npwl
+
+        ###
+        for node_pack in node_packs:
+
+            item = List2D()
+
+            remove_button = (
+                Object2D.from_surface(
+                    surface=(
+                        render_layered_icon(
+                            chars=[chr(66)],
+                            dimension_name='height',
+                            dimension_value=13,
+                            colors=[(202, 0, 0)],
+                            background_width=17,
+                            background_height=17,
+                            background_color=(40, 40, 50),
+                            depth_finish_thickness=1,
+                        )
+                    ),
+                    on_mouse_release = (
+                        get_oblivious_callable(
+                            partial(self.remove_item, item)
+                        )
+                    ),
+                )
+            )
+
+            prefix = "local" if isinstance(node_pack, Path) else "installed"
+
+            label = Object2D.from_surface(
+                        surface=(
+                            render_text(
+                                text=f"{prefix} : {node_pack}",
+                                **TEXT_SETTINGS,
+                            )
+                        ),
+                        node_pack = node_pack,
+                    )
+
+            ###
+
+            item.append(remove_button)
+            item.append(label)
+
+            item.rect.snap_rects_ip(
+                retrieve_pos_from='midright',
+                assign_pos_to='midleft',
+                offset_pos_by=(5, 0),
+            )
+
+            ### append the item
+            npwl.append(item)
+
+        npwl.rect.snap_rects_ip(
+            retrieve_pos_from='bottomleft',
+            assign_pos_to='topleft',
+            offset_pos_by=(0, 5),
+        )
+
+        panel_rect = self.pack_list_panel.rect
+
+        if is_empty and npwl:
+
+            npwl.rect.topleft = panel_rect.move(5, 5).topleft
+
+            if item.rect.bottom > panel_rect.bottom:
+                y_diff = panel_rect.bottom - item.rect.bottom
+                npwl.rect.move_ip(0, y_diff)
+
+            elif item.rect.top < panel_rect.top:
+                y_diff = panel_rect.top - item.rect.top
+                npwl.rect.move_ip(0, y_diff)
+
+    def remove_item(self, item):
+
+        ### reference node pack widget list locally
+        npwl = self.node_pack_widget_list
+
+        ###
+
+        for index, current_item in enumerate(npwl):
+
+            if current_item is item:
+                break
+
+        npwl.pop(index)
+
+        ###
+
+        if npwl:
+
+            npwl.rect.snap_rects_ip(
+                retrieve_pos_from='bottomleft',
+                assign_pos_to='topleft',
+                offset_pos_by=(0, 5),
+            )
+
+            top = self.pack_list_panel.rect.move(0, 5).top
+            npwl_top = npwl.rect.top
+
+            if  npwl_top > top:
+                y_diff = top - npwl_top
+                npwl.rect.move_ip(0, y_diff)
 
     def present_change_node_packs_form(self):
         """Allow user to change node packs on any file."""
-        ### draw semi-transparent object so screen behind
-        ### form appears as if unhighlighted
+        ### perform screen preparations
+        perform_screen_preparations()
 
-        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
+        ###
+        self.retrieve_current_node_packs()
+
+        ### update values on option menu
+
+        self.node_packs_option_menu.reset_value_and_options(
+            value=OPTION_MENU_DEFAULT_STRING,
+            options=[OPTION_MENU_DEFAULT_STRING]+get_known_node_packs(),
+            custom_command=False,
+        )
 
         ### loop until running attribute is set to False
 
@@ -422,7 +686,15 @@ class NodePacksSelectionChangeForm(Object2D):
                     self.cancel()
 
                 elif event.key in (K_RETURN, K_KP_ENTER):
-                    self.submit_form()
+                    self.apply_changes()
+
+            elif event.type == KEYDOWN:
+
+                if event.key == K_UP:
+                    self.scroll_up()
+
+                elif event.key == K_DOWN:
+                    self.scroll_down()
 
             elif event.type == MOUSEBUTTONDOWN:
 
@@ -437,6 +709,12 @@ class NodePacksSelectionChangeForm(Object2D):
 
                     if self.rect.collidepoint(event.pos):
                         self.on_mouse_release(event)
+
+                elif event.button == 4:
+                    self.scroll_up()
+
+                elif event.button == 5:
+                    self.scroll_down()
 
     # XXX in the future, maybe a "Reset" button would be
     # nice
@@ -495,118 +773,158 @@ class NodePacksSelectionChangeForm(Object2D):
         "on_mouse_release",
     )
 
-    def submit_form(self):
+    def click_remove_buttons(self, event):
+        """Remove node pack from list if remove button was clicked.
+
+        Parameters
+        ==========
+        event (pygame.event.Event of pygame.MOUSEBUTTONUP
+               type)
+
+            Check pygame.event module documentation on
+            pygame website for more info about this event
+            object.
+        """
+        mouse_pos = event.pos
+
+        for remove_button, _ in self.node_pack_widget_list:
+
+            if remove_button.rect.collidepoint(mouse_pos):
+
+                remove_button.on_mouse_release(event)
+                break
+
+    def scroll(self, dy):
+
+        npwl = self.node_pack_widget_list
+        if not npwl: return
+
+        npwl_rect = npwl.rect
+        panel_rect = self.pack_list_panel.rect
+
+        if npwl_rect.height <= panel_rect.height: return
+
+        if dy > 0:
+
+            if npwl_rect.top + dy > panel_rect.top:
+                dy = panel_rect.top - npwl_rect.top
+
+        elif dy < 0:
+
+            if npwl_rect.bottom + dy < panel_rect.bottom:
+                dy = panel_rect.bottom - npwl_rect.bottom
+
+        npwl_rect.move_ip(0, dy)
+
+    scroll_up = partialmethod(scroll, 30)
+    scroll_down = partialmethod(scroll, -30)
+
+    def apply_changes(self):
         """Treat data and, if valid, perform changes."""
-        if not self.chosen_filepath.is_file():
+        current_packs = set(
+            get_formatted_local_node_packs(APP_REFS.source_path)
+            + get_formatted_installed_node_packs(APP_REFS.source_path)
+        )
+
+        final_selection = {
+            item[1].node_pack
+            for item in self.node_pack_widget_list
+        }
+
+        if current_packs == final_selection:
+
+            create_and_show_dialog(
+              "There is no change to apply, the node packs selected"
+              " already correspond to the current node pack selection."
+            )
+
             return
 
-        elif not self.chosen_filepath.suffix == ".ndz":
+
+        ### check existence of orphaned nodes
+
+        existing_node_pack_names = {
+            node.id: node.data['script_id'][0]
+            for node in APP_REFS.gm.nodes
+            if 'script_id' in node.data
+        }
+
+        final_node_pack_names = {
+            pack.name if isinstance(pack, Path) else pack
+            for pack in final_selection
+        }
+
+        orphaned_nodes = {
+            node_id: node_pack_name
+            for node_id, node_pack_name in existing_node_pack_names.items()
+            if node_pack_name not in final_node_pack_names
+        }
+
+        if orphaned_nodes:
+
+            orphan_node_ids = tuple(orphaned_nodes)
+
+            create_and_show_dialog(
+              "Can't proceed with operation, because there are nodes"
+              " in the node layout still using some of the packs to be"
+              f" removed: the nodes of ids {orphan_node_ids}"
+            )
+
             return
 
-        if not self.node_packs_checkbutton.get():
+        ### separate node packs
 
-            try:
-                data = load_pyl(self.chosen_filepath)
+        local_node_packs = [
+            str(node_pack)
+            for node_pack in final_selection
+            if isinstance(node_pack, Path)
+        ]
 
-            except Exception as err:
+        installed_node_packs = [
+            node_pack
+            for node_pack in final_selection
+            if isinstance(node_pack, str)
+        ]
 
-                print(err)
-                return
+        ### try loading node packs
 
-            else:
+        try:
+            load_scripts(local_node_packs, installed_node_packs)
 
-                try:
-                    del data["node_packs"]
-                except KeyError:
-                    pass
+        except Exception as err:
 
-                save_pyl(data, self.chosen_filepath)
+            create_and_show_dialog(
+              f"Error message: {err}"
+            )
 
-        else:
+            return
 
-            value = self.node_packs_pathpreview.get()
+        ###
+        APP_REFS.data['node_packs'] = local_node_packs
+        APP_REFS.data['installed_node_packs'] = installed_node_packs
 
-            paths = [value] if isinstance(value, str) else value
+        ###
 
-            paths = [Path(path) for path in paths]
+        APP_REFS.data['node_packs'] = local_node_packs = [
+            str(node_pack)
+            for node_pack in final_selection
+            if isinstance(node_pack, Path)
+        ]
 
-            try:
-                check_local_node_packs(paths)
+        APP_REFS.data['installed_node_packs'] = installed_node_packs = [
+            node_pack
+            for node_pack in final_selection
+            if isinstance(node_pack, str)
+        ]
 
-            except NODE_PACK_ERRORS as err:
+        ### rebuild canvas popup menu
+        APP_REFS.window_manager.create_canvas_popup_menu()
 
-                print(err)
-                return
+        ###
+        indicate_unsaved()
 
-            else:
-
-                try:
-                    data = load_pyl(self.chosen_filepath)
-
-                except Exception as err:
-
-                    print(err)
-                    return
-
-                else:
-
-                    ###
-
-                    current_value = data.get("node_packs", [])
-
-                    if isinstance(current_value, str):
-                        current_value = [current_value]
-
-                    current = [Path(item) for item in current_value]
-
-                    current_names = {path.name for path in current}
-
-                    removed_names = {
-                        path.name for path in paths if path.name not in current_names
-                    }
-
-                    nodes_data = data.get("nodes", {})
-
-                    orphaned_nodes_ids = []
-                    not_removable_packs = set()
-
-                    for node_id, node_data in nodes_data.items():
-
-                        if "script_id" not in node_data:
-                            continue
-
-                        node_pack_name = node_data["script_id"][0]
-
-                        if node_pack_name in removed_names:
-
-                            (not_removable_packs.add(node_pack_name))
-
-                        orphaned_nodes_ids.append(node_id)
-
-                    if orphaned_nodes_ids:
-
-                        message = (
-                            "before removing packs named"
-                            f" {not_removable_packs}, you"
-                            " must remove the nodes of ids"
-                            f" {orphaned_nodes_ids}, which"
-                            " belong to those node packs"
-                        )
-
-                        create_and_show_dialog(message)
-                        return
-
-                    ###
-
-                    value = (
-                        str(paths[0])
-                        if len(paths) == 1
-                        else [str(path) for path in paths]
-                    )
-
-                    data["node_packs"] = value
-
-                    save_pyl(data, self.chosen_filepath)
+        ###
+        set_status_message("Changed selected node pack(s)")
 
         ### trigger exiting the form by setting special
         ### flag to False
@@ -617,10 +935,25 @@ class NodePacksSelectionChangeForm(Object2D):
 
         Extends Object2D.draw.
         """
-        ### draw self (background)
+        ### draw a cached copy of the screen over itself
+        draw_cached_screen_state()
+
+        ### draw form background (self.image)
         super().draw()
 
-        ### draw widgets
+        ### draw clean panel and draw its items over it (if any)
+
+        panel = self.pack_list_panel
+        panel.image.blit(self.panel_bg, (0, 0))
+
+        for pack_objs in self.node_pack_widget_list:
+
+            for obj in pack_objs:
+                obj.draw_relative(panel)
+
+        draw_border(panel.image, (235, 235, 235))
+
+        ### draw all widgets
         self.widgets.draw()
 
         ### update screen (pygame.display.update)
@@ -630,3 +963,14 @@ class NodePacksSelectionChangeForm(Object2D):
 present_change_node_packs_form = (
     NodePacksSelectionChangeForm().present_change_node_packs_form
 )
+
+
+### utility function
+
+def perform_screen_preparations():
+
+    ### dim the screen
+    blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
+
+    ### update the copy of the screen as it is now
+    cache_screen_state()

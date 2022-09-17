@@ -30,6 +30,8 @@ from contextlib import contextmanager
 
 from ..config import APP_REFS
 
+from ..knownpacks import store_node_pack_reference
+
 from ..appinfo import (
     NODE_SCRIPT_NAME,
     NODE_DEF_VAR_NAMES,
@@ -237,6 +239,9 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
 
         ## load scripts
 
+        # create flag to indicate when all scripts loaded sucessfully
+        loaded_scripts_successfully = True
+
         with context_to_enable(node_pack_parent):
 
             for category_folder in category_folders:
@@ -310,8 +315,8 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
                     item
                     for item in category_folder.iterdir()
                     if item.is_dir()
-                    if not item.name.startswith(".")
-                    if not item.name == "__pycache__"
+                    if not item.name.startswith('.')
+                    if not item.name == '__pycache__'
                 )
 
                 for script_dir in subdirectories_iterator:
@@ -358,8 +363,9 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
 
                     # if it fails, store data about the error
                     # a custom error explaining the problem
-                    # then skip loading this script with a
-                    # "continue" statement
+                    # then turn off the flag that indicates all
+                    # scripts were loaded succesfully and skip
+                    # loading this script with a "continue" statement
 
                     except Exception as err:
 
@@ -370,6 +376,7 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
                             )
                         )
 
+                        loaded_scripts_successfully = False
                         continue
 
                     # build dict with objects used to define
@@ -383,8 +390,9 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
 
                     # if we don't find a main callable to
                     # define the node, we store data about
-                    # this problem and skip processing this
-                    # script with a "continue" statement
+                    # this problem, turn off the flag that indicates all
+                    # scripts were loaded succesfully and skip
+                    # processing this script with a "continue" statement
 
                     try:
                         main_callable = node_def_dict["main_callable"]
@@ -393,6 +401,7 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
 
                         scripts_missing_node_definition.append(script_filepath)
 
+                        loaded_scripts_successfully = False
                         continue
 
                     else:
@@ -402,9 +411,10 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
                         )
 
                     # if callables aren't indeed callable,
-                    # we store data about this error and skip
-                    # processing this script with a "continue"
-                    # statement
+                    # we store data about this problem, turn off the
+                    # flag that indicates all scripts were loaded
+                    # succesfully and skip processing this script with
+                    # a "continue" statement
 
                     for callable_obj in (
                         main_callable,
@@ -420,6 +430,7 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
                                 )
                             )
 
+                        loaded_scripts_successfully = False
                         continue
 
                     # check whether object is inspectable
@@ -429,9 +440,10 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
                     try:
                         signature_obj = signature(signature_callable)
 
-                    # if not, store data about the error and
-                    # skip processing this script with a
-                    # "continue" statement
+                    # if not, store data about the error, turn off the
+                    # flag that indicates all scripts were loaded
+                    # succesfully and skip processing this script with
+                    # a "continue" statement
 
                     except Exception as err:
 
@@ -442,6 +454,7 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
                             )
                         )
 
+                        loaded_scripts_successfully = False
                         continue
 
                     # otherwise, just store the signature in
@@ -468,6 +481,14 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
                     ## also store the script's path
                     script_path_map[script_id] = script_filepath
 
+        ### if your reach this point in the "for loop" without finding
+        ### an error in one (or more) of your node scripts, it means the
+        ### node pack was successfully loaded, so we store a reference to it as
+        ### a known node pack
+
+        if loaded_scripts_successfully:
+            store_node_pack_reference(node_pack)
+
         ### remove imported modules from sys.modules so they are reloaded
         ### everytime a file is loaded/reloaded;
         ###
@@ -490,7 +511,6 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
 
         for key in keys_to_remove:
             modules.pop(key)
-
 
     ### if any errors were found during script loading,
     ### report them by raising a custom exception

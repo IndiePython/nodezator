@@ -60,13 +60,9 @@
 
     'graph' : "Graph",
 
-    'change_node_packs_on_file' : (
-      "Change node packs on any file"
-    ),
+    'change_node_packs' : "Change node packs",
 
-    'rename_node_packs_on_file' : (
-      "Rename node packs on any file"
-    ),
+    'rename_node_packs' : "Rename node packs",
 
     'change_category_colors' : "Change category colors",
     'select_node_packs'      : "Select node packs",
@@ -142,16 +138,11 @@
 
     },
 
-    'change_node_packs_on_any_file_form' : {
+    'change_node_packs_form' : {
 
       'form_caption' : "Form to change node packs on {} file",
       'file_manager_caption' : "Select {} file to change its node packs",
-
-      'choose_filepath'    : "Filepath",
       'no_filepath_chosen' : "No filepath chosen",
-
-      'node_packs' : "Node packs",
-      'submit'     : "Submit",
       'cancel'     : "Cancel",
 
     },

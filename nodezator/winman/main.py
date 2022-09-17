@@ -215,27 +215,27 @@ class WindowManager(
             ### application from crashing if such node
             ### packs don't exist or are somehow faulty
 
-            original_node_packs = (
-                current_node_packs
-            ) = get_formatted_local_node_packs()
+            original_local_node_packs = current_local_node_packs = (
+                get_formatted_local_node_packs(APP_REFS.source_path)
+            )
 
             local_node_packs_are_ok = True
 
             while True:
 
                 try:
-                    check_local_node_packs(current_node_packs)
+                    check_local_node_packs(current_local_node_packs)
 
                 except NODE_PACK_ERRORS as err:
 
                     message = (
-                        "One of the provided node packs"
+                        "One of the provided local node packs"
                         " presented the following issue:"
                         f" {err}; what would you like to do?"
                     )
 
                     options = (
-                        ("Select new node packs", "select"),
+                        ("Select new local node packs", "select"),
                         ("Cancel loading file", "cancel"),
                     )
 
@@ -247,8 +247,8 @@ class WindowManager(
 
                     if answer == "select":
 
-                        current_node_packs = select_path(
-                            caption="Select new node paths"
+                        current_local_node_packs = select_path(
+                            caption="Select new local node packs"
                         )
 
                     else:
@@ -267,10 +267,10 @@ class WindowManager(
                 ### its current contents before assigning
                 ### the new node packs
 
-                if set(current_node_packs) != set(original_node_packs):
+                if set(current_local_node_packs) != set(original_local_node_packs):
 
                     APP_REFS.data["node_packs"] = [
-                        str(path) for path in current_node_packs
+                        str(path) for path in current_local_node_packs
                     ]
 
                     ## pass content from source to backup
@@ -299,7 +299,9 @@ class WindowManager(
             ### application from crashing if such node
             ### packs can't be found or are somehow faulty
 
-            installed_node_packs = get_formatted_installed_node_packs()
+            installed_node_packs = (
+                get_formatted_installed_node_packs(APP_REFS.source_path)
+            )
 
             try:
                 check_installed_node_packs(installed_node_packs)

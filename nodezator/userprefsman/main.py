@@ -81,6 +81,7 @@ APP_CONFIG_DIR = config_dir / APP_DIR_NAME
 BOOKMARKS_FILE = APP_CONFIG_DIR / "bookmarks.pyl"
 RECENT_FILES = APP_CONFIG_DIR / "recent_files.pyl"
 CONFIG_FILEPATH = APP_CONFIG_DIR / "config.pyl"
+KNOWN_PACKS_FILE = APP_CONFIG_DIR / "known_packs.pyl"
 
 
 ## if file exists, try loading it

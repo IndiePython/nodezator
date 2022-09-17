@@ -212,11 +212,7 @@ class MenuSetup:
                 "label": t.menu.graph,
                 "children": [
                     {
-                        "label": (t.menu.change_node_packs_on_file),
-                        "command": (APP_REFS.ea.present_change_node_packs_form),
-                    },
-                    {
-                        "label": (t.menu.rename_node_packs_on_file),
+                        "label": (t.menu.rename_node_packs),
                         "command": (APP_REFS.ea.present_rename_node_packs_form),
                     },
                 ],
@@ -335,7 +331,7 @@ class MenuSetup:
                     },
                     {
                         "label": (t.menu.select_node_packs),
-                        "command": (APP_REFS.ea.select_node_packs),
+                        "command": (APP_REFS.ea.present_change_node_packs_form),
                     },
                     {"label": "------"},
                     {

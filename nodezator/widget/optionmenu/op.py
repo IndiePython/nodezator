@@ -147,12 +147,6 @@ class OptionMenuLifetimeOperations(Object2D):
         ## (and in the same order)
 
         if options == self.options:
-
-            print(
-                "new options provided are the same as the"
-                " current ones and in the same order"
-            )
-
             return
 
         ## the value and options are not valid
