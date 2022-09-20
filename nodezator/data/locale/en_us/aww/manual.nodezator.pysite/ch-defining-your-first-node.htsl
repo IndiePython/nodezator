@@ -104,6 +104,9 @@ main_callable = get_circle
 
 <p>Additionally, since the node script folder is treated like a Python package, remember to use <a href="https://docs.python.org/3/reference/import.html#package-relative-imports">relative local imports</a> in all your local Python modules/subpackages inside your folder, that is, if you have other Python modules inside your node script folder other than __main__.py.</p>
 
+
+<h2 id="node-pack-anatomy">The anatomy of a node pack</h2>
+
 <p>Here's the anatomy of a node pack summarized in a picture.</p>
 
 <surfdef width="730" height="430" style="background-color:#C0C0C0;">

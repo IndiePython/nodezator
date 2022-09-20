@@ -1,0 +1,106 @@
+<htsl>
+
+<head>
+  <title>Nodezator Manual | Distributing your nodes</title>
+</head>
+
+<body>
+
+<p><a href="index.htsl">Table of contents</a> &gt; Distributing your nodes</p>
+
+
+<h1>Distributing your nodes</h1>
+
+
+<h2 id="local-vs-installed">Local vs installed node packs</h2>
+
+
+<p>As explained <a href="ch-defining-your-first-node.htsl#node-pack-anatomy">before</a>, Nodezator manages nodes by having them organized within categories inside a folder we call a node pack. With such folder structure and the scripts contained within, the node pack can already be distributed as-is by whichever medium you want, uploading to the web and sharing a download link, emailing to friends or co-workers, etc.</p>
+
+<p>This is the simplest way of using/distributing node packs. It is straightforward and requires no understanding of packaging in Python, which makes it accessible to newcomers as well as great for experimentation for people with all levels of proficiency in Python. In other words, you just create the folders, create your scripts and they can be loaded and executed right away on Nodezator. You don't need to know packaging in Python nor bother dealing with the extra work required.</p>
+
+<p>The only minor hassle users of your node pack would face would be that, if they open a nodezator file created in your computer using your node pack, they'd need to <a href="ch-loading-nodes.htsl#opening-file-external-source">fix the path</a> to point to their local copy of your node pack.</p>
+
+<p>Because this kind of distribution relies on the location of the node pack in you systems, we say your node pack is a <b>local node pack</b>. I recommend this kind of usage for people beginning with Python, specially those with no experience in packaging. Regardless of whether, you are a seasoned Python developer or not though, even if you are used to configuring and uploading Python packages, if you are just experimenting with creating a new node pack, why bother dealing with all the extra steps needed to upload your node pack to <a href="https://pypi.org">PyPI</a> only to test it? Once the code defining your nodes is ready, just load the node pack right away and start testing/using/improving it. This is an advantage of the local node packs.</p>
+
+<p>The alternative way of using/distributing a node pack is by making it installable via pip. This doesn't require any changes in your node pack source, but you'll need to move your node pack into a dedicated folder and provide extra files which represent metadata about your node pack. This is required in order to upload your node pack to PyPI as a Python package. Once your node pack is uploaded to PyPI, you don't need to worry about distributing your node pack yourself. Your users just need to install your node pack via <i>pip install [name_of_your_nodepack]</i>. Because this kind of distribution/usage of node packs relies on it being installed, we say the node pack is a <b>installed node pack</b>.</p>
+
+<p>The advantage of installed node packs is that .ndz files you create and share can be opened by others in their computers without them having to fix any path the first time. This is so because Nodezator can find the node pack automatically using the name of the package. That is, since the node pack can be installed, your users just need to install your node pack and Nodezator can import it right away using its name.</p>
+
+<p>Under the hood, Nodezator only cares about whether a node pack is local or installed when loading them. Once the node packs are loaded they are all treated the same way.</p>
+
+<p>Here's a table summarizing how the methods differ:</p>
+
+<table>
+
+    <thead>
+        <tr>
+            <th class="col-3">Aspect</th>
+            <th class="col-4">Local node packs</th>
+            <th class="col-4">Installed node packs</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <tr>
+            <td>Creation</td>
+            <td>create folder and scripts divided into categories</td>
+            <td>create folder and scripts divided into categories</td>
+        </tr>
+
+        <tr>
+            <td>What can be achieved</td>
+            <td>allows any level of work, from simple to advanced</td>
+            <td>allows any level of work, from simple to advanced</td>
+        </tr>
+
+        <tr>
+            <td>Package management</td>
+            <td>doesn't need package management</td>
+            <td>requires author to package node pack and upload to PyPI</td>
+        </tr>
+
+        <tr>
+            <td>Node pack selection</td>
+            <td>need location of node pack</td>
+            <td>need name of node pack</td>
+        </tr>
+
+    </tbody>
+
+</table>
+
+<p>Note that both methods are the same regarding how the node packs are created and what can be achieved with them. Both are created and organized in the same way. You can also use any of the methods regardless of what you want to achieve, be it simple or complex stuff. The differences only begin to appear when we consider distribution.</p>
+
+
+<h2 id="combining-node-pack-kinds">Combining node pack kinds</h2>
+
+<p>You don't need to choose ony kind of distribution over another. You can create you node pack and use it as a local node pack while you are creating and testing new nodes. Then, once you are satisfied with your results you can worry about packaging your node pack and publishing it as a installed node pack. As explained before, once loaded, nodezator doesn't make a distinction between local or installed node packs.</p>
+
+<p>This is so because .ndz files store node layout data based on the names of the node packs, their categories and node scripts. This means, for instance, that if you have a local node pack called "mypack", a .ndz file containing nodes from such pack and you want to publish your pack as an installed one, you can do so easily:</p>
+
+<ol>
+  <li>publish your node pack as an installed one</li>
+  <li>install it via pip</li>
+  <li>open your .ndz file on nodezator</li>
+  <li>open the <a href="ch-loading-nodes.htsl#creating-file-loading-nodes">form</a> on <b>&lt;Graph &gt; select node packs&gt;</b></li>
+  <li>remove the local node pack and add the installed one</li>
+  <li>press the <b>Apply changes</b> button</li>
+</ol>
+
+<p>And that's it. As long as the name of the node packs are the same this will work right away.</p>
+
+
+<h2 id="node-pack-packaging-template">Installed node pack packaging template</h2>
+
+<p>There's a template demonstrating how to package and publish a node pack to PyPI in this <a href="https://github.com/KennedyRichard/mynodepack">online repository</a>.</p>
+
+<p>Beware that this template does not attempt to teach you the best way or configuration for your package. It just presents <b>one</b> possible and relatively straightforward way of packaging your node pack. Teaching about packaging in Python and the many options available is outside the scope of our project. Even so, we always welcome questions and people seeking help, so if you have any trouble just reach us on the <a href="https://github.com/IndiePython/nodezator/discussions">discussions</a> or the <a href="https://indiepython.com/discord">discord server</a>.</p>
+
+
+<p><a href="ch-other-objects.htsl">Previous chapter</a> | <a href="index.htsl">Table of contents</a></p>
+
+</body>
+
+</htsl>

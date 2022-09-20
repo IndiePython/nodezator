@@ -94,7 +94,7 @@
 
 <p>If you want to turn the redirect node back into a data node again just sever the connection to its input and create a widget for it by pressing the "+" (plus sign) icon on its bottomleft corner. That is, if the node doesn't have a widget already.</p>
 
-<p><a href="ch10-preview-widgets.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a></p>
+<p><a href="ch-preview-widgets.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch-distributing-nodes.htsl">Next chapter</a></p>
 
 </body>
 

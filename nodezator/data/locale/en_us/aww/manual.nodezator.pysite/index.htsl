@@ -24,6 +24,7 @@
       <li><a href="ch-defining-your-first-node.htsl#category-folder">Categories within a node pack</a></li>
       <li><a href="ch-defining-your-first-node.htsl#script-folder">The script folder</a></li>
       <li><a href="ch-defining-your-first-node.htsl#defining-node">Defining the node</a></li>
+      <li><a href="ch-defining-your-first-node.htsl#node-pack-anatomy">The anatomy of a node pack</a></li>
     </ol>
 
   </li>
@@ -55,8 +56,8 @@
   <li><a href="ch-loading-nodes.htsl">Loading your nodes</a>
 
     <ol>
+      <li><a href="ch-loading-nodes.htsl#kinds-node-packs">The two kinds of node packs</a></li>
       <li><a href="ch-loading-nodes.htsl#creating-file-loading-nodes">Creating a file and loading your nodes</a></li>
-      <li><a href="ch-loading-nodes.htsl#changing-loaded-nodes">Changing which node packs are loaded</a></li>
       <li><a href="ch-loading-nodes.htsl#opening-file-external-source">Opening a file from an external source</a></li>
     </ol>
 
@@ -136,6 +137,16 @@
       <li><a href="ch-other-objects.htsl#data-nodes">Data nodes</a></li>
       <li><a href="ch-other-objects.htsl#redirect-nodes">Redirect nodes</a></li>
       <li><a href="ch-other-objects.htsl#relationship-data-redirect-nodes">Relationship between data nodes and redirect nodes</a></li>
+    </ol>
+
+  </li>
+
+  <li><a href="ch-distributing-nodes.htsl">Distributing your nodes</a>
+
+    <ol>
+      <li><a href="ch-distributing-nodes.htsl#local-vs-installed">Local vs installed node packs</a></li>
+      <li><a href="ch-distributing-nodes.htsl#combining-node-pack-kinds">Combining node pack kinds</a></li>
+      <li><a href="ch-distributing-nodes.htsl#node-pack-packaging-template">Installed node pack packaging template</a></li>
     </ol>
 
   </li>
