@@ -416,6 +416,8 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
                     # succesfully and skip processing this script with
                     # a "continue" statement
 
+                    must_skip = False
+
                     for callable_obj in (
                         main_callable,
                         signature_callable,
@@ -430,7 +432,10 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
                                 )
                             )
 
-                        loaded_scripts_successfully = False
+                            must_skip = True
+                            loaded_scripts_successfully = False
+
+                    if must_skip:
                         continue
 
                     # check whether object is inspectable
