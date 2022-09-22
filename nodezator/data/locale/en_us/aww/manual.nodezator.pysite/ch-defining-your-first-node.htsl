@@ -49,9 +49,9 @@ main_callable = function_name
 
 <p>Within our point_creation category folder we'll finally create our node, which will be represented by a folder containing our node script, a <b>node script folder</b>. Why do we use an entire folder just to store our node script? Because this way you can guarantee that your node script has all the resources it needs in a single place.</p>
 
-<p>Even though a node is defined by a function (or other callable) it doesn't mean your node script will be comprised of just a single function in a Python file. It may need to define and import other local modules or files like images or databases, it all depends on what you want to do.</p>
+<p>Even though a node is defined by a function (or other callable) it doesn't mean your node script will be comprised of just a single function in a Python file. It may need to define and import other local modules or load other files like images or databases, it all depends on what you want to do.</p>
 
-<p>That's why a whole folder is used to store your script. You can think of this folder as an entire package wherein you define your node even if it ends up only needing a single file containing a single function. Moreover, even if your node starts as a single file it may grow over time as you further extend it.</p>
+<p>That's why a whole folder is used to store your script. Internally, this folder is actually treated as a subpackage of your node pack. You can think of this folder as an entire package wherein you define your node even if it ends up only needing a single file containing a single function. Moreover, even if your node starts as a single file it may grow over time as you further extend it.</p>
 
 <p>You can go as simple or as complex as you'd need/like. Think of the folder containing your node script as the personal limitless playground of your node. In our case, though, the first node we'll create, due to its simplicity, will need just a single Python file inside its folder.</p>
 
@@ -102,8 +102,9 @@ main_callable = get_circle
 
 <p>No other change is needed. No need to import a special node class or anything like that. In other words, your code is kept untouched and as free as possible from foreign code and is thus easier to read and maintain. It is just your own code, after all. Nodezator will do all the rest for you, turning your function into a node.</p>
 
-<p>Here's the anatomy of a node pack summarized in a picture.</p>
+<p>Additionally, since the node script folder is treated like a Python package, remember to use <a href="https://docs.python.org/3/reference/import.html#package-relative-imports">relative local imports</a> in all your local Python modules/subpackages inside your folder, that is, if you have other Python modules inside your node script folder other than __main__.py.</p>
 
+<p>Here's the anatomy of a node pack summarized in a picture.</p>
 
 <surfdef width="730" height="430" style="background-color:#C0C0C0;">
 
