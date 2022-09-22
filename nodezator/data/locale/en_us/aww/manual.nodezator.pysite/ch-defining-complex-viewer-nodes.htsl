@@ -183,16 +183,13 @@ main_callable = view_image
 
 <p>Do not stress over the details. The code to be presented is just what I thought was the best solution for what was needed. As long as you understand the purpose of the individual pieces you'll be able to come up with your own solutions. You are also always welcome to ask on <a href="https://indiepython.com/discord">discord</a> or <a href="https://github.com/IndiePython/nodezator/discussions">github discussions</a> every time you have questions.</p>
 
-<p>First of all, we have the imports and the definition of constants:</p>
+<p>First of all, we have the imports and the definition of constants. Note that, only for the sake of making things a bit more organized, I relocated the definition of the <i>blit_checker_pattern()</i> function (and all related import statements) to a local module called <i>utils.py</i>:</p>
 
 <python>
 """Facility for image visualization."""
 
-### standard library import
-from itertools import cycle
 
-
-### thrid-party imports
+### third-party imports
 
 ## pygame
 
@@ -213,7 +210,7 @@ from pygame import (
               MOUSEBUTTONDOWN,
               MOUSEMOTION,
 
-              Surface, Rect,
+              Surface,
 
             )
 
@@ -221,7 +218,6 @@ from pygame.display import get_surface, update
 from pygame.time    import Clock
 from pygame.event   import get as get_events
 from pygame.image   import fromstring as image_from_string
-from pygame.draw    import rect as draw_rect
 
 from pygame.key import get_pressed as get_pressed_keys
 
@@ -229,6 +225,9 @@ from pygame.key import get_pressed as get_pressed_keys
 ## Pillow
 from PIL.Image import Image
 
+
+### local import
+from .utils import blit_checker_pattern
 
 
 ### get screen reference and a rect for it
@@ -751,13 +750,20 @@ class ImageViewer:
 
 
 ### finally, we just need to instantiate the ImageViewer
-### and use the view_image method as the main callable
-main_callable = ImageViewer().view_image
+### and use the view_image method as the main callable;
+###
+### note that we also make it so the callable can be found in
+### this module using its own name, that is, 'view_image';
+###
+### we do so because when the node layout is exported as a python
+### script, its name is used to find the callable
+main_callable = view_image = ImageViewer().view_image
 </python>
 
-<p>There's still a function defined past this point in the script, but we ommitted it since it is the same <i>blit_checker_pattern()</i> function presented before in the first version.</p>
 
-<p>This new version of the node script has just <b>598 lines</b>. It is a small number of lines and yet with just that we defined a viewer tool that can display an image, move it around using the keyboard and mouse and reposition/redraw the image automatically when the window is resized.</p>
+<p>This new version of the node script, including the <i>utils.py</i> local module from where it imports the  <i>blit_checker_pattern()</i> function, has only <b>600 lines</b>. It is a small number of lines and yet with just that we defined a viewer tool that can display an image, move it around using the keyboard and mouse and reposition/redraw the image automatically when the window is resized.</p>
+
+<p>Also note that in addition to referencing the main callable to be used in the <i>main_callable</i> variable, we also created a variable called <i>view_image</i> at the same time. As explained in the code comment, if we use this node in a .ndz file and we want to export the file as Python code, we must ensure the main callable can be found on the node script module <i>__main__.py</i> using its name (in this case, <i>view_image</i>). The first version using a function doesn't need this extra step because the <i>def</i> statement already stores the function in the module using its name.</p>
 
 <p>Moreover, no syntax or api is ever enforced by Nodezator, it is all plain pygame and its power in action. Of all the 598 lines of code the only change required by Nodezator was to point out the main callable using the <i>main_callable</i> variable. We also set the <i>dismiss_exec_time_tracking</i> attribute on the view_image method, but even this is a very small change and optional.</p>
 
