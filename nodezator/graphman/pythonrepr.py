@@ -933,7 +933,7 @@ def snippet_node_to_text(
 
             subparam_socket_map = insocket_flmap[param_name]
 
-            argument = "*(" if kind == "var_pos" else "**{"
+            argument = "(" if kind == "var_pos" else "{"
 
             for subparam_index in sorted(subparam_socket_map.keys()):
 
@@ -996,7 +996,7 @@ def snippet_node_to_text(
 
                 argument += subargument + ", "
 
-            argument += "), " if kind == "var_pos" else "}, "
+            argument += ")" if kind == "var_pos" else "}"
 
             substitution_map[param_name] = argument
 
