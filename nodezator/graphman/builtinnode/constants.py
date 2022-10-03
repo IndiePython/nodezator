@@ -239,7 +239,7 @@ def _eval2(
 
 
 def _exec1(
-    string_source: "python_literal_string" = "''",
+    string_source: str = "",
     globals=None,
     locals=None,
 ):
@@ -247,7 +247,14 @@ def _exec1(
 
 
 def _exec2(
-    text_string_source: ("python_literal_text_string") = "''",
+    text_string_source: {
+        'widget_name': 'text_display',
+        'widget_kwargs': {
+            'syntax_highlighting': 'python',
+            'font_path': 'mono_bold',
+        },
+        'type':str,
+    } = "",
     globals=None,
     locals=None,
 ):
