@@ -244,6 +244,28 @@ def set_from_args(*args) -> [{"name": "a_set", "type": set}]:  # {a, b, c}
     return set(args)
 
 
+def get_at_int(obj, integer:int=0) -> [{"name": "item"}]:
+    return obj[integer]
+
+def get_at_string(obj, string:str='') -> [{"name": "item"}]:
+    return obj[string]
+
+def get_at_literal(obj, literal:'python_literal'=None) -> [{"name": "item"}]:
+    return obj[literal]
+
+def namespace_from_exec(
+    python_source: {
+        'widget_name': 'text_display',
+        'widget_kwargs': {'syntax_highlighting': 'python', 'font_path': 'mono_bold'},
+        'type': str,
+    } = '',
+    **variables,
+    ) -> [{"name": "namespace", "type": dict}]:
+    exec(python_source, variables)
+    _d = {}
+    exec('', _d)
+    return {k:v for k, v in variables.items() if k not in _d}
+
 CAPSULE_IDS_TO_CALLABLES_MAP = {
     "read_text_file": read_text_file,
     "write_text_file": write_text_file,
@@ -260,6 +282,10 @@ CAPSULE_IDS_TO_CALLABLES_MAP = {
     "tuple_from_args": tuple_from_args,
     "list_from_args": list_from_args,
     "set_from_args": set_from_args,
+    "get_at_int": get_at_int,
+    "get_at_string": get_at_string,
+    "get_at_literal": get_at_literal,
+    "namespace_from_exec": namespace_from_exec,
 }
 
 CAPSULE_IDS_TO_SIGNATURES_MAP = {
@@ -444,6 +470,26 @@ $a_list = list($args)
 $a_set = set($args)
 """.strip()
     ).substitute,
+
+    "get_at_int": Template("""
+$item = $obj[$integer]
+""".strip()).substitute,
+    "get_at_string": Template("""
+$item = $obj[$string]
+""".strip()).substitute,
+    "get_at_literal": Template("""
+$item = $obj[$literal]
+""".strip()).substitute,
+
+    "namespace_from_exec": Template("""
+
+_vars = $variables
+exec($python_source, _vars)
+_d = {}
+exec('', _d)
+$namespace = {k:v for k, v in _vars.items() if k not in _d}
+
+""".strip()).substitute,
 }
 
 CAPSULE_IDS_TO_STLIB_IMPORT_MAP = {
