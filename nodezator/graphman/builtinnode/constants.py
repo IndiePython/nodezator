@@ -248,12 +248,12 @@ def _exec1(
 
 def _exec2(
     text_string_source: {
-        'widget_name': 'text_display',
-        'widget_kwargs': {
-            'syntax_highlighting': 'python',
-            'font_path': 'mono_bold',
+        "widget_name": "text_display",
+        "widget_kwargs": {
+            "syntax_highlighting": "python",
+            "font_path": "mono_bold",
         },
-        'type':str,
+        "type": str,
     } = "",
     globals=None,
     locals=None,

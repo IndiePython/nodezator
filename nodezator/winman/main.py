@@ -215,9 +215,9 @@ class WindowManager(
             ### application from crashing if such node
             ### packs don't exist or are somehow faulty
 
-            original_local_node_packs = current_local_node_packs = (
-                get_formatted_local_node_packs(APP_REFS.source_path)
-            )
+            original_local_node_packs = (
+                current_local_node_packs
+            ) = get_formatted_local_node_packs(APP_REFS.source_path)
 
             local_node_packs_are_ok = True
 
@@ -299,8 +299,8 @@ class WindowManager(
             ### application from crashing if such node
             ### packs can't be found or are somehow faulty
 
-            installed_node_packs = (
-                get_formatted_installed_node_packs(APP_REFS.source_path)
+            installed_node_packs = get_formatted_installed_node_packs(
+                APP_REFS.source_path
             )
 
             try:

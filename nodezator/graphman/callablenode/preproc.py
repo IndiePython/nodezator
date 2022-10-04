@@ -152,7 +152,7 @@ class Preprocessing:
             ## check whether the annotation is a dict providing
             ## a 'type' key, in which case, the value in the 'type'
             ## key must be considered the actual type to be used
-            if isinstance(annotation, dict) and 'type' in annotation:
+            if isinstance(annotation, dict) and "type" in annotation:
                 type_ = annotation["type"]
 
             ## otherwise, consider the annotation itself as the type

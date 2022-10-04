@@ -97,6 +97,7 @@ from ..colorsman.colors import NODE_CATEGORY_COLORS
 ### too complex to be worth the time required to
 ### implement/teach it, or not even be needed);
 
+
 @contextmanager
 def no_context(node_pack_parent):
     """Do nothing on entering/exiting context."""
@@ -233,9 +234,7 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
         node_pack_parent = node_pack_dir.parent
 
         ## pick a proper context wherein to execute the node pack loading
-        context_to_enable = (
-            temporary_sys_path_visibility if is_local else no_context
-        )
+        context_to_enable = temporary_sys_path_visibility if is_local else no_context
 
         ## load scripts
 
@@ -299,7 +298,9 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
                 else:
 
                     try:
-                        color_index = int(category_metadata["color_index"]) % no_of_colors
+                        color_index = (
+                            int(category_metadata["color_index"]) % no_of_colors
+                        )
 
                     except Exception:
                         pass
@@ -315,8 +316,8 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
                     item
                     for item in category_folder.iterdir()
                     if item.is_dir()
-                    if not item.name.startswith('.')
-                    if not item.name == '__pycache__'
+                    if not item.name.startswith(".")
+                    if not item.name == "__pycache__"
                 )
 
                 for script_dir in subdirectories_iterator:
@@ -344,7 +345,6 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
                     # the script directory
                     script_filepath = script_dir / NODE_SCRIPT_NAME
 
-
                     # try importing the file from the path as a
                     # module, retrieving its namespace dictionary
 
@@ -356,7 +356,7 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
                         ### that is, the last 4 parts of the path linked by
                         ### dots ('.') minus the 03 characters at the end of the
                         ### path ('.py')
-                        module_name = '.'.join(script_filepath.parts[-4:])[:-3]
+                        module_name = ".".join(script_filepath.parts[-4:])[:-3]
 
                         ### load the module and retrieve the namespace dictionary
                         namespace_dict = import_module(module_name).__dict__
@@ -510,8 +510,7 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
         module_keys = tuple(modules)
 
         keys_to_remove = [
-          item for item in module_keys
-          if item.split('.')[0] == node_pack_name
+            item for item in module_keys if item.split(".")[0] == node_pack_name
         ]
 
         for key in keys_to_remove:
@@ -560,6 +559,7 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
     APP_REFS.category_index_map.clear()
     APP_REFS.category_index_map.update(category_index_map)
     category_index_map.clear()
+
 
 ### small utility
 def get_path_name(item):

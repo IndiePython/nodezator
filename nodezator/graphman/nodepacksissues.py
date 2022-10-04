@@ -38,7 +38,7 @@ def get_formatted_local_node_packs(filepath):
         else:
             data = load_pyl(filepath)
 
-    node_packs_paths = data.setdefault('node_packs', [])
+    node_packs_paths = data.setdefault("node_packs", [])
 
     ### guarantee node packs paths is a list
     if not isinstance(node_packs_paths, list):
@@ -46,6 +46,7 @@ def get_formatted_local_node_packs(filepath):
 
     ### we turn items into pathlib.Path objects and return list
     return [Path(path) for path in node_packs_paths]
+
 
 def get_formatted_installed_node_packs(filepath):
     ### retrieve the contents of the installed_node_packs field
@@ -60,7 +61,7 @@ def get_formatted_installed_node_packs(filepath):
         else:
             data = load_pyl(filepath)
 
-    node_packs_names = data.setdefault('installed_node_packs', [])
+    node_packs_names = data.setdefault("installed_node_packs", [])
 
     ### guarantee node packs names is a list
     if not isinstance(node_packs_names, list):
@@ -140,6 +141,7 @@ def check_local_node_packs(node_packs):
                         script_dir,
                         script_file,
                     )
+
 
 def check_installed_node_packs(node_packs):
     """Raise error if issues are found in installed node packs."""

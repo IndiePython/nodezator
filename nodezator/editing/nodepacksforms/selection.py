@@ -15,7 +15,8 @@ from pygame import (
     MOUSEBUTTONUP,
     KEYUP,
     KEYDOWN,
-    K_UP, K_DOWN,
+    K_UP,
+    K_DOWN,
     K_ESCAPE,
     K_RETURN,
     K_KP_ENTER,
@@ -137,16 +138,16 @@ BUTTON_SETTINGS = {
     "background_color": BUTTON_BG,
 }
 
-FILE_MANAGER_CAPTION = (
-    t.editing.change_node_packs_form.file_manager_caption
-).format(NATIVE_FILE_EXTENSION)
+FILE_MANAGER_CAPTION = (t.editing.change_node_packs_form.file_manager_caption).format(
+    NATIVE_FILE_EXTENSION
+)
 
 FORM_CAPTION = (t.editing.change_node_packs_form.form_caption).format(
     NATIVE_FILE_EXTENSION
 )
 
 
-OPTION_MENU_DEFAULT_STRING = 'Pick a known node pack'
+OPTION_MENU_DEFAULT_STRING = "Pick a known node pack"
 
 
 ### class definition
@@ -169,7 +170,6 @@ class NodePacksSelectionChangeForm(Object2D):
 
         self.image = render_rect(*self.rect.size, WINDOW_BG)
         draw_border(self.image)
-
 
         ### store a semitransparent object
 
@@ -207,9 +207,7 @@ class NodePacksSelectionChangeForm(Object2D):
         ### preparations to be made
 
         if hasattr(self, "running") and self.running:
-            APP_REFS.draw_after_window_resize_setups = (
-                perform_screen_preparations
-            )
+            APP_REFS.draw_after_window_resize_setups = perform_screen_preparations
 
     def build_form_widgets(self):
         """Build widgets to hold the data for edition."""
@@ -252,7 +250,7 @@ class NodePacksSelectionChangeForm(Object2D):
                     **TEXT_SETTINGS,
                 )
             ),
-            coordinates_name='topleft',
+            coordinates_name="topleft",
             coordinates_value=topleft,
         )
 
@@ -265,11 +263,11 @@ class NodePacksSelectionChangeForm(Object2D):
         self.node_packs_option_menu = OptionMenu(
             loop_holder=self,
             value=OPTION_MENU_DEFAULT_STRING,
-            options=[OPTION_MENU_DEFAULT_STRING]+get_known_node_packs(),
+            options=[OPTION_MENU_DEFAULT_STRING] + get_known_node_packs(),
             max_width=700,
             command=self.pick_chosen_node_pack,
             draw_on_window_resize=self.draw,
-            coordinates_name='midleft',
+            coordinates_name="midleft",
             coordinates_value=midleft,
         )
 
@@ -291,7 +289,7 @@ class NodePacksSelectionChangeForm(Object2D):
                     **TEXT_SETTINGS,
                 )
             ),
-            coordinates_name='topleft',
+            coordinates_name="topleft",
             coordinates_value=topleft,
         )
 
@@ -311,13 +309,11 @@ class NodePacksSelectionChangeForm(Object2D):
                     background_width=27,
                     background_height=27,
                     background_color=(40, 40, 50),
-                    depth_finish_thickness = 1,
+                    depth_finish_thickness=1,
                 )
             ),
-            on_mouse_release=(
-                get_oblivious_callable(self.add_local_node_packs)
-            ),
-            coordinates_name='midleft',
+            on_mouse_release=(get_oblivious_callable(self.add_local_node_packs)),
+            coordinates_name="midleft",
             coordinates_value=midleft,
         )
 
@@ -339,7 +335,7 @@ class NodePacksSelectionChangeForm(Object2D):
                     **TEXT_SETTINGS,
                 )
             ),
-            coordinates_name='topleft',
+            coordinates_name="topleft",
             coordinates_value=topleft,
         )
 
@@ -351,10 +347,10 @@ class NodePacksSelectionChangeForm(Object2D):
 
         self.add_installed_node_packs_entry = StringEntry(
             loop_holder=self,
-            value='',
+            value="",
             width=500,
             draw_on_window_resize=self.draw,
-            coordinates_name='midleft',
+            coordinates_name="midleft",
             coordinates_value=midleft,
         )
 
@@ -374,15 +370,13 @@ class NodePacksSelectionChangeForm(Object2D):
                     background_width=27,
                     background_height=27,
                     background_color=(40, 40, 50),
-                    depth_finish_thickness = 1,
+                    depth_finish_thickness=1,
                 )
             ),
             on_mouse_release=(
-                get_oblivious_callable(
-                    self.add_installed_node_packs_from_entry
-                )
+                get_oblivious_callable(self.add_installed_node_packs_from_entry)
             ),
-            coordinates_name='midleft',
+            coordinates_name="midleft",
             coordinates_value=midleft,
         )
 
@@ -396,14 +390,13 @@ class NodePacksSelectionChangeForm(Object2D):
         self.pack_list_panel = Object2D.from_surface(
             surface=render_rect(960, 240, (40, 40, 40)),
             on_mouse_release=self.click_remove_buttons,
-            coordinates_name='topleft',
+            coordinates_name="topleft",
             coordinates_value=topleft,
         )
 
         self.panel_bg = self.pack_list_panel.image.copy()
 
         self.widgets.append(self.pack_list_panel)
-
 
         ### create and store behaviour for cancelling form
         ### edition (equivalent to setting the form data to
@@ -428,7 +421,9 @@ class NodePacksSelectionChangeForm(Object2D):
 
         draw_depth_finish(self.apply_changes_button.image)
 
-        self.apply_changes_button.rect.topright = self.widgets.rect.move(0, 20).bottomright
+        self.apply_changes_button.rect.topright = self.widgets.rect.move(
+            0, 20
+        ).bottomright
 
         ## cancel button
 
@@ -440,7 +435,9 @@ class NodePacksSelectionChangeForm(Object2D):
 
         draw_depth_finish(self.cancel_button.image)
 
-        self.cancel_button.rect.midright = self.apply_changes_button.rect.move(-5, 0).midleft
+        self.cancel_button.rect.midright = self.apply_changes_button.rect.move(
+            -5, 0
+        ).midleft
 
         ## store
         self.widgets.extend((self.cancel_button, self.apply_changes_button))
@@ -452,9 +449,9 @@ class NodePacksSelectionChangeForm(Object2D):
         value = op_menu.get()
         op_menu.set(OPTION_MENU_DEFAULT_STRING, False)
 
-        kind, pack_ref = value.split(' : ')
+        kind, pack_ref = value.split(" : ")
 
-        if kind == 'local':
+        if kind == "local":
             node_pack = Path(pack_ref)
         else:
             node_pack = pack_ref
@@ -462,15 +459,13 @@ class NodePacksSelectionChangeForm(Object2D):
         ### add node pack
         self.add_node_packs(node_pack)
 
-
     def retrieve_current_node_packs(self):
 
         ### grab node packs
 
-        all_packs = (
-            get_formatted_local_node_packs(APP_REFS.source_path)
-            + get_formatted_installed_node_packs(APP_REFS.source_path)
-        )
+        all_packs = get_formatted_local_node_packs(
+            APP_REFS.source_path
+        ) + get_formatted_installed_node_packs(APP_REFS.source_path)
 
         ### clear the node pack widget list
         self.node_pack_widget_list.clear()
@@ -496,12 +491,9 @@ class NodePacksSelectionChangeForm(Object2D):
         entry = self.add_installed_node_packs_entry
 
         content = entry.get()
-        entry.set('')
+        entry.set("")
 
-        new_installed_node_packs = [
-          name.strip()
-          for name in content.split(',')
-        ]
+        new_installed_node_packs = [name.strip() for name in content.split(",")]
 
         self.add_node_packs(new_installed_node_packs)
 
@@ -509,7 +501,7 @@ class NodePacksSelectionChangeForm(Object2D):
 
         ### make sure node_packs is a containter
 
-        if not isinstance(node_packs, (list,tuple)):
+        if not isinstance(node_packs, (list, tuple)):
             node_packs = [node_packs]
 
         ### reference the node pack widget list locally
@@ -523,39 +515,35 @@ class NodePacksSelectionChangeForm(Object2D):
 
             item = List2D()
 
-            remove_button = (
-                Object2D.from_surface(
-                    surface=(
-                        render_layered_icon(
-                            chars=[chr(66)],
-                            dimension_name='height',
-                            dimension_value=13,
-                            colors=[(202, 0, 0)],
-                            background_width=17,
-                            background_height=17,
-                            background_color=(40, 40, 50),
-                            depth_finish_thickness=1,
-                        )
-                    ),
-                    on_mouse_release = (
-                        get_oblivious_callable(
-                            partial(self.remove_item, item)
-                        )
-                    ),
-                )
+            remove_button = Object2D.from_surface(
+                surface=(
+                    render_layered_icon(
+                        chars=[chr(66)],
+                        dimension_name="height",
+                        dimension_value=13,
+                        colors=[(202, 0, 0)],
+                        background_width=17,
+                        background_height=17,
+                        background_color=(40, 40, 50),
+                        depth_finish_thickness=1,
+                    )
+                ),
+                on_mouse_release=(
+                    get_oblivious_callable(partial(self.remove_item, item))
+                ),
             )
 
             prefix = "local" if isinstance(node_pack, Path) else "installed"
 
             label = Object2D.from_surface(
-                        surface=(
-                            render_text(
-                                text=f"{prefix} : {node_pack}",
-                                **TEXT_SETTINGS,
-                            )
-                        ),
-                        node_pack = node_pack,
+                surface=(
+                    render_text(
+                        text=f"{prefix} : {node_pack}",
+                        **TEXT_SETTINGS,
                     )
+                ),
+                node_pack=node_pack,
+            )
 
             ###
 
@@ -563,8 +551,8 @@ class NodePacksSelectionChangeForm(Object2D):
             item.append(label)
 
             item.rect.snap_rects_ip(
-                retrieve_pos_from='midright',
-                assign_pos_to='midleft',
+                retrieve_pos_from="midright",
+                assign_pos_to="midleft",
                 offset_pos_by=(5, 0),
             )
 
@@ -572,8 +560,8 @@ class NodePacksSelectionChangeForm(Object2D):
             npwl.append(item)
 
         npwl.rect.snap_rects_ip(
-            retrieve_pos_from='bottomleft',
-            assign_pos_to='topleft',
+            retrieve_pos_from="bottomleft",
+            assign_pos_to="topleft",
             offset_pos_by=(0, 5),
         )
 
@@ -610,15 +598,15 @@ class NodePacksSelectionChangeForm(Object2D):
         if npwl:
 
             npwl.rect.snap_rects_ip(
-                retrieve_pos_from='bottomleft',
-                assign_pos_to='topleft',
+                retrieve_pos_from="bottomleft",
+                assign_pos_to="topleft",
                 offset_pos_by=(0, 5),
             )
 
             top = self.pack_list_panel.rect.move(0, 5).top
             npwl_top = npwl.rect.top
 
-            if  npwl_top > top:
+            if npwl_top > top:
                 y_diff = top - npwl_top
                 npwl.rect.move_ip(0, y_diff)
 
@@ -634,7 +622,7 @@ class NodePacksSelectionChangeForm(Object2D):
 
         self.node_packs_option_menu.reset_value_and_options(
             value=OPTION_MENU_DEFAULT_STRING,
-            options=[OPTION_MENU_DEFAULT_STRING]+get_known_node_packs(),
+            options=[OPTION_MENU_DEFAULT_STRING] + get_known_node_packs(),
             custom_command=False,
         )
 
@@ -797,12 +785,14 @@ class NodePacksSelectionChangeForm(Object2D):
     def scroll(self, dy):
 
         npwl = self.node_pack_widget_list
-        if not npwl: return
+        if not npwl:
+            return
 
         npwl_rect = npwl.rect
         panel_rect = self.pack_list_panel.rect
 
-        if npwl_rect.height <= panel_rect.height: return
+        if npwl_rect.height <= panel_rect.height:
+            return
 
         if dy > 0:
 
@@ -826,32 +816,27 @@ class NodePacksSelectionChangeForm(Object2D):
             + get_formatted_installed_node_packs(APP_REFS.source_path)
         )
 
-        final_selection = {
-            item[1].node_pack
-            for item in self.node_pack_widget_list
-        }
+        final_selection = {item[1].node_pack for item in self.node_pack_widget_list}
 
         if current_packs == final_selection:
 
             create_and_show_dialog(
-              "There is no change to apply, the node packs selected"
-              " already correspond to the current node pack selection."
+                "There is no change to apply, the node packs selected"
+                " already correspond to the current node pack selection."
             )
 
             return
 
-
         ### check existence of orphaned nodes
 
         existing_node_pack_names = {
-            node.id: node.data['script_id'][0]
+            node.id: node.data["script_id"][0]
             for node in APP_REFS.gm.nodes
-            if 'script_id' in node.data
+            if "script_id" in node.data
         }
 
         final_node_pack_names = {
-            pack.name if isinstance(pack, Path) else pack
-            for pack in final_selection
+            pack.name if isinstance(pack, Path) else pack for pack in final_selection
         }
 
         orphaned_nodes = {
@@ -865,9 +850,9 @@ class NodePacksSelectionChangeForm(Object2D):
             orphan_node_ids = tuple(orphaned_nodes)
 
             create_and_show_dialog(
-              "Can't proceed with operation, because there are nodes"
-              " in the node layout still using some of the packs to be"
-              f" removed: the nodes of ids {orphan_node_ids}"
+                "Can't proceed with operation, because there are nodes"
+                " in the node layout still using some of the packs to be"
+                f" removed: the nodes of ids {orphan_node_ids}"
             )
 
             return
@@ -881,9 +866,7 @@ class NodePacksSelectionChangeForm(Object2D):
         ]
 
         installed_node_packs = [
-            node_pack
-            for node_pack in final_selection
-            if isinstance(node_pack, str)
+            node_pack for node_pack in final_selection if isinstance(node_pack, str)
         ]
 
         ### try loading node packs
@@ -893,28 +876,24 @@ class NodePacksSelectionChangeForm(Object2D):
 
         except Exception as err:
 
-            create_and_show_dialog(
-              f"Error message: {err}"
-            )
+            create_and_show_dialog(f"Error message: {err}")
 
             return
 
         ###
-        APP_REFS.data['node_packs'] = local_node_packs
-        APP_REFS.data['installed_node_packs'] = installed_node_packs
+        APP_REFS.data["node_packs"] = local_node_packs
+        APP_REFS.data["installed_node_packs"] = installed_node_packs
 
         ###
 
-        APP_REFS.data['node_packs'] = local_node_packs = [
+        APP_REFS.data["node_packs"] = local_node_packs = [
             str(node_pack)
             for node_pack in final_selection
             if isinstance(node_pack, Path)
         ]
 
-        APP_REFS.data['installed_node_packs'] = installed_node_packs = [
-            node_pack
-            for node_pack in final_selection
-            if isinstance(node_pack, str)
+        APP_REFS.data["installed_node_packs"] = installed_node_packs = [
+            node_pack for node_pack in final_selection if isinstance(node_pack, str)
         ]
 
         ### rebuild canvas popup menu
@@ -966,6 +945,7 @@ present_change_node_packs_form = (
 
 
 ### utility function
+
 
 def perform_screen_preparations():
 

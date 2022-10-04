@@ -112,9 +112,9 @@ BUTTON_SETTINGS = {
     "background_color": BUTTON_BG,
 }
 
-FILE_MANAGER_CAPTION = (
-    t.editing.rename_node_packs_form.file_manager_caption
-).format(NATIVE_FILE_EXTENSION)
+FILE_MANAGER_CAPTION = (t.editing.rename_node_packs_form.file_manager_caption).format(
+    NATIVE_FILE_EXTENSION
+)
 
 FORM_CAPTION = (t.editing.rename_node_packs_form.form_caption).format(
     NATIVE_FILE_EXTENSION

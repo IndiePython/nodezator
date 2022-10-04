@@ -45,10 +45,7 @@ class NodeScriptsError(Exception):
 
         for script_filepath, error_message in scripts_not_loaded:
 
-            msg += (
-                "error while trying to load '{}' node script"
-                ": {}"
-            ).format(
+            msg += ("error while trying to load '{}' node script" ": {}").format(
                 str(script_filepath),
                 error_message,
             ) + linesep
@@ -296,8 +293,10 @@ class ProxyNodesLackingDataError(Exception):
 
 ### node packs errors
 
+
 class NodePackNotImportedError(ModuleNotFoundError):
     """Raised when a node pack supposed to be installed can't be imported."""
+
 
 class NodePackNotFoundError(Exception):
     """Raised when a node pack isn't found."""
