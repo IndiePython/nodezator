@@ -431,7 +431,11 @@ class WidgetOps:
         ## retrieve the parameter name and the data for
         ## widgets in its subparameters
 
-        for param_name, subparam_widgets_data in self.widget_live_flmap.items():
+        for param_name in self.var_kind_map:
+
+            # retrieve subparam widgets data (a map which associates
+            # the index of a subparam with its widget)
+            subparam_widgets_data = self.widget_live_flmap[param_name]
 
             # retrieve subparameter index and its value,
             # which is a widget instance
