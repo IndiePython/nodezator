@@ -20,6 +20,7 @@ from pygame.draw import rect as draw_rect
 ### local imports
 
 from ..ourstdlibs.behaviour import empty_function
+from ..ourstdlibs.exceptionutils import bool_func_from_raiser
 
 from ..surfsman.draw import blit_aligned, draw_depth_finish
 from ..surfsman.render import render_rect, combine_surfaces
@@ -83,6 +84,9 @@ ICON_SURF = combine_surfaces(
 
 ICON_WIDTH, ICON_HEIGHT = ICON_SURF.get_size()
 
+##
+is_python_literal = bool_func_from_raiser(literal_eval)
+
 
 ### class definition
 
@@ -131,8 +135,7 @@ class LiteralDisplay(Object2D):
         ### ensure value argument received is a python
         ### literal
 
-        if not self.validate(value):
-
+        if not is_python_literal(repr(value)):
             raise TypeError("'value' received must be a python" " literal")
 
         ### ensure there is at least one visible line
@@ -186,15 +189,6 @@ class LiteralDisplay(Object2D):
 
         self.rect = self.image.get_rect()
         setattr(self.rect, coordinates_name, coordinates_value)
-
-    def validate(self, value):
-
-        try:
-            literal_eval(repr(value))
-        except:
-            return False
-        else:
-            return True
 
     def on_mouse_release(self, event):
         """Act according to mouse release position.
@@ -251,7 +245,7 @@ class LiteralDisplay(Object2D):
         ### changes are only performed if the new value is
         ### indeed different from the current one
 
-        if self.value != value and self.validate(value):
+        if self.value != value and is_python_literal(repr(value)):
 
             ### store new value
             self.value = value
@@ -459,7 +453,7 @@ class LiteralDisplay(Object2D):
             text=pformat(self.value, width=84),
             font_path=FIRA_MONO_BOLD_FONT_PATH,
             syntax_highlighting="python",
-            validation_command=literal_eval,
+            validation_command=is_python_literal,
         )
 
         ### if there is an edited text (it is not None)

@@ -592,7 +592,7 @@ class TextEditor(Object2D):
 
         ### try validating text
         try:
-            self.validation_command(text)
+            text_validates = self.validation_command(text)
 
         ### if text doesn't validate, user is notified
 
@@ -608,15 +608,27 @@ class TextEditor(Object2D):
                 level_name="error",
             )
 
-        ### otherwise, it is assigned to text
-        ### attribute and we trigger the end of this
-        ### loop holder loop by setting the running
-        ### flag to False
+        ### otherwise...
 
         else:
 
-            self.text = text
-            self.running = False
+            ### if the text validates it is assigned to the text
+            ### attribute and we trigger the end of the looping by
+            ### setting the running flag to False
+
+            if text_validates:
+
+                self.text = text
+                self.running = False
+
+            ### otherwise we notify the user
+
+            else:
+
+                create_and_show_dialog(
+                    "Text doesn't validate.",
+                    level_name="info",
+                )
 
 
 edit_text = TextEditor().edit_text
