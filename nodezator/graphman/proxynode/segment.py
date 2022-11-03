@@ -8,7 +8,9 @@ class SegmentOps:
         """Act on establishment of incomming connection."""
         ## update source name and type_codename
 
-        source_name = self.data["source_name"] = self.proxy_socket.parent.output_name
+        source_name = self.data["source_name"] = next(
+            get_source_name(self.proxy_socket.parent)
+        )
 
         type_codename = self.proxy_socket.type_codename
 
@@ -102,3 +104,34 @@ class SegmentOps:
                 node.check_header_width()
 
                 node.propagate_output(source_name, type_codename)
+
+
+### utility function
+
+def get_source_name(parent):
+    """Yield source name once you find it.
+    
+    The source name is found by travelling the graph backwards
+    until we find the output socket of a regular node or of an
+    orphan redirect node.
+
+    Parameters
+    ==========
+
+    parent (an output socket)
+        socket containing data needed to determine the source
+        name to use; it is called "parent" because it is further
+        up in the socket parenthood tree.
+    """
+    ### if the parent node has 'source_name' in its data, it means
+    ### the previous node is a redirect node with a parent, so
+    ### we look further backwards
+
+    if 'source_name' in parent.node.data:
+        yield from get_source_name(parent.node.proxy_socket.parent)
+
+    ### otherwise, we just use the output name of the output socket found,
+    ### regardless of whether it is an orphan redirect node or another
+    ### kind of node
+    else:
+        yield parent.output_name
