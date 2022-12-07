@@ -107,86 +107,107 @@ main_callable = get_circle
 
 <h2 id="node-pack-anatomy">The anatomy of a node pack</h2>
 
-<p>Here's the anatomy of a node pack summarized in a picture.</p>
+<p>Here's the anatomy of a node pack:</p>
 
-<surfdef width="730" height="430" style="background-color:#C0C0C0;">
+<surfdef width="460" height="285">
 
 <!-- folders -->
 
-<path d="M155 20 l5 -5 l10 0 l5 5 l15 0 l5 5 l0 20 l-5 5 l-30 0 l-5 -5" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
+<path d="M5 5 l2 -2 l5 0 l2 2 l7 0 l2 2 l0 10 l-2 2 l-14 0 l-2 -2" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
+<path d="M9 19 l7 -7 l14 0 l-7 7" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
 
-<path d="M80 135 l5 -5 l10 0 l5 5 l15 0 l5 5 l0 20 l-5 5 l-30 0 l-5 -5" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
-<path d="M155 135 l5 -5 l10 0 l5 5 l15 0 l5 5 l0 20 l-5 5 l-30 0 l-5 -5" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
+<path d="M55 35 l2 -2 l5 0 l2 2 l7 0 l2 2 l0 10 l-2 2 l-14 0 l-2 -2" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
+<path d="M59 49 l7 -7 l14 0 l-7 7" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
 
-<path d="M5 250 l5 -5 l10 0 l5 5 l15 0 l5 5 l0 20 l-5 5 l-30 0 l-5 -5" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
-<path d="M80 250 l5 -5 l10 0 l5 5 l15 0 l5 5 l0 20 l-5 5 l-30 0 l-5 -5" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
-<path d="M155 250 l5 -5 l10 0 l5 5 l15 0 l5 5 l0 20 l-5 5 l-30 0 l-5 -5" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
+<path d="M105 65 l2 -2 l5 0 l2 2 l7 0 l2 2 l0 10 l-2 2 l-14 0 l-2 -2" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
+<path d="M109 79 l7 -7 l14 0 l-7 7" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
+
+<path d="M181 136 l2 -2 l5 0 l2 2 l7 0 l2 2 l0 10 l-2 2 l-14 0 l-2 -2" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
+<path d="M185 150 l7 -7 l14 0 l-7 7" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
+
+
+<path d="M105 206 l2 -2 l5 0 l2 2 l7 0 l2 2 l0 10 l-2 2 l-14 0 l-2 -2" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
+<path d="M109 220 l7 -7 l14 0 l-7 7" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
+
+<path d="M55 256 l2 -2 l5 0 l2 2 l7 0 l2 2 l0 10 l-2 2 l-14 0 l-2 -2" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
+<path d="M59 271 l7 -7 l14 0 l-7 7" fill="(255, 255, 0)" stroke="(0, 0, 0)" stroke-width="2" />
 
 <!-- files -->
 
-<rect x="5" y="360" width="40" height="50" fill="(255, 255, 255)" stroke="(0, 0, 0)" stroke-width="2" />
+<path d="M155 97 l8 0 l7 7 l0 13 l-15 0" fill="(255, 255, 255)" stroke="(0, 0, 0)" stroke-width="2" />
+<polyline d="M163 97 l0 7 l7 0 l-7 -7" stroke="(0, 0, 0)" stroke-width="2" />
 
-<rect x="80" y="360" width="40" height="50" fill="(255, 255, 255)" stroke="(0, 0, 0)" stroke-width="2" />
+<path d="M155 132 l8 0 l7 7 l0 13 l-15 0" fill="(255, 255, 255)" stroke="(0, 0, 0)" stroke-width="2" />
+<polyline d="M163 132 l0 7 l7 0 l-7 -7" stroke="(0, 0, 0)" stroke-width="2" />
 
-<rect x="155" y="360" width="40" height="50" fill="(255, 255, 255)" stroke="(0, 0, 0)" stroke-width="2" />
 
 <!-- strokes -->
 
-<polyline d="M175 60 l0 30 l0 30 l0 -30 l-75 0 l0 30 l0 -30 l150 0 l0 30" stroke="(0, 0, 0)" stroke-width="2" />
+<polyline d="M14 25 l0 15 l30 0 l-30 0 l0 220 l30 0" stroke="(0, 0, 0)" stroke-width="2" />
 
-<polyline d="M100 175 l0 30 l0 30 l0 -30 l-75 0 l0 30" stroke="(0, 0, 0)" stroke-width="2" />
+<polyline d="M64 55 l0 15 l30 0 l-30 0 l0 140 l30 0" stroke="(0, 0, 0)" stroke-width="2" />
 
-<polyline d="M175 175 l0 60" stroke="(0, 0, 0)" stroke-width="2" />
+<polyline d="M114 85 l0 20 l30 0 l-30 0 l0 40 l30 0" stroke="(0, 0, 0)" stroke-width="2" />
 
-<polyline d="M250 175 l0 30 l0 30 l0 -30 l75 0 l0 30" stroke="(0, 0, 0)" stroke-width="2" />
-
-<polyline d="M25 290 l0 60" stroke="(0, 0, 0)" stroke-width="2" />
-
-<polyline d="M100 290 l0 60" stroke="(0, 0, 0)" stroke-width="2" />
-
-<polyline d="M175 290 l0 60" stroke="(0, 0, 0)" stroke-width="2" />
-
-<polyline d="M250 290 l0 60" stroke="(0, 0, 0)" stroke-width="2" />
-
-<polyline d="M325 290 l0 60" stroke="(0, 0, 0)" stroke-width="2" />
-
-<!-- arrows -->
-
-<path d="M360 30 l15 0 l0 -5 l10 10 l-10 10 l0 -5 l-15 0" fill="(255, 0, 0)" stroke="(0, 0, 0)" stroke-width="2" />
-
-<path d="M360 142 l15 0 l0 -5 l10 10 l-10 10 l0 -5 l-15 0" fill="(255, 0, 0)" stroke="(0, 0, 0)" stroke-width="2" />
-
-<path d="M360 257 l15 0 l0 -5 l10 10 l-10 10 l0 -5 l-15 0" fill="(255, 0, 0)" stroke="(0, 0, 0)" stroke-width="2" />
-
-<path d="M360 380 l15 0 l0 -5 l10 10 l-10 10 l0 -5 l-15 0" fill="(255, 0, 0)" stroke="(0, 0, 0)" stroke-width="2" />
 
 <!-- text -->
 
-<text x="239" y="152">[...]</text>
+<text x="40" y="20">a_node_pack [1]</text>
 
-<text x="239" y="267">[...]</text>
-<text x="314" y="267">[...]</text>
+<text x="90" y="53">a_category_folder [2]</text>
 
-<text x="239" y="387">[...]</text>
-<text x="314" y="387">[...]</text>
+<text x="140" y="83">a_node_script_folder [3]</text>
 
-<text x="400" y="20"><b>Node pack</b>:</text>
+<text x="180" y="119">__main__.py [4] (the node script)</text>
 
-<text x="400" y="24" max-width="300" coordinates-name="topleft">single folder at top of hierarchy; holds all nodes within categories; must have at least one category folder;</text>
+<text x="212" y="152">... (more files/folders, optionally)</text>
 
-<text x="400" y="124"><b>Category folders</b>:</text>
+<text x="140" y="210">... (as many node script folders as you</text>
+<text x="140" y="234">desire inside each category node)</text>
 
-<text x="400" y="128" max-width="300" coordinates-name="topleft">node pack can have as many category folders as needed; must have at least one node script folder;</text>
-
-<text x="400" y="230"><b>Node script folders</b>:</text>
-
-<text x="400" y="234" max-width="330" coordinates-name="topleft">category folder can have as many node script folders as needed; each node script folder represents a node; must have at least a __main__.py script;</text>
-
-<text x="400" y="357"><b>__main__.py script</b>:</text>
-
-<text x="400" y="361" max-width="300" coordinates-name="topleft">must have a 'main_callable' variable pointing to the callable to be turned into a node.</text>
+<text x="90" y="276">... (as many category folders as you desire)</text>
 
 </surfdef>
+
+<table>
+
+  <thead>
+    <tr>
+      <th class="col-1">#</th>
+      <th class="col-3">Name</th>
+      <th class="col-8">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+
+    <tr>
+      <td><span class="big-icon">1</span></td>
+      <td>Node pack</td>
+      <td>single folder at top of hierarchy; holds all nodes within
+categories; must have at least one category folder</td>
+    </tr>
+
+    <tr>
+      <td><span class="big-icon">2</span></td>
+      <td>Category folder</td>
+      <td>node pack can have as many category folders as needed; must have at least one node script folder</td>
+    </tr>
+
+    <tr>
+      <td><span class="big-icon">3</span></td>
+      <td>Node script folder</td>
+      <td>category folder can have as many node script folders as needed; each node script folder represents a node; must have at least a __main__.py script</td>
+    </tr>
+
+    <tr>
+      <td><span class="big-icon">4</span></td>
+      <td>__main__.py script</td>
+      <td>must have a 'main_callable' variable pointing to the callable to be turned into a node.</td>
+    </tr>
+
+  </tbody>
+</table>
 
 <p>With that explained, we just have to say "Congratulations!". You successfuly created your first node!</p>
 
