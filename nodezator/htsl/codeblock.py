@@ -72,7 +72,6 @@ def get_python_codeblock(python_code_element):
         lines = get_normal_lines(
             text,
             GENERAL_CODE_TEXT_SETTINGS,
-            GENERAL_CODE_TEXT_SETTINGS,
         )
 
         lineno_settings = GENERAL_CODE_TEXT_SETTINGS
