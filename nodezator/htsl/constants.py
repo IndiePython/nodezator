@@ -24,6 +24,7 @@ KNOWN_TAGS = (
     "p",
     *HEADING_TAGS,
     "python",
+    "pre",
     "ol",
     "ul",
     "a",
@@ -120,3 +121,12 @@ GENERAL_CODE_TEXT_SETTINGS = {
     "foreground_color": (235, 235, 235),
     "background_color": (15, 15, 15),
 }
+
+PRE_TEXT_SETTINGS = {
+    "font_height": NOTO_SANS_MONO_MEDIUM_FONT_HEIGHT,
+    "font_path": NOTO_SANS_MONO_MEDIUM_FONT_PATH,
+    "foreground_color": (15, 15, 15),
+    "background_color": (230, 230, 235),
+}
+
+PRE_TEXT_BORDER = (145, 145, 145)

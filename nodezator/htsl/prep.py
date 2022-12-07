@@ -24,7 +24,10 @@ from .creation import (
 
 from .image import get_image_obj
 
-from .codeblock import get_python_codeblock
+from .codeblock import (
+    get_python_codeblock,
+    get_pre_textblock,
+)
 
 from ..colorsman.colors import HTSL_CANVAS_BG
 
@@ -95,6 +98,9 @@ class Preparation:
 
             elif tag_name == "python":
                 append_obj(get_python_codeblock(child))
+
+            elif tag_name == "pre":
+                append_obj(get_pre_textblock(child))
 
             elif tag_name == "ol":
 

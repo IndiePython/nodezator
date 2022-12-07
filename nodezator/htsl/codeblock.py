@@ -12,6 +12,8 @@ from ..classes2d.single import Object2D
 
 from ..surfsman.render import render_rect
 
+from ..surfsman.draw import draw_border
+
 from ..textman.render import render_text, get_text_size
 
 from ..textman.text import (
@@ -23,8 +25,11 @@ from ..syntaxman.exception import SyntaxMappingError
 
 from ..syntaxman.utils import get_ready_theme
 
-from .constants import GENERAL_CODE_TEXT_SETTINGS
-
+from .constants import (
+    GENERAL_CODE_TEXT_SETTINGS,
+    PRE_TEXT_SETTINGS,
+    PRE_TEXT_BORDER,
+)
 
 ###
 
@@ -155,4 +160,112 @@ def get_python_codeblock(python_code_element):
 
     ###
 
+    return Object2D.from_surface(surf)
+
+def get_pre_textblock(pre_element):
+
+    text = pre_element.childNodes[0].data
+
+    ### by default, first line is stripped
+    text = linesep.join(text.splitlines()[1:])
+
+    ###
+    background_color = PRE_TEXT_SETTINGS["background_color"]
+
+    lines = get_normal_lines(
+        text,
+        PRE_TEXT_SETTINGS,
+    )
+
+    lineno_settings = PRE_TEXT_SETTINGS
+
+    ### position text objects representing lines one
+    ### below the other
+    lines.rect.snap_rects_ip(retrieve_pos_from="bottomleft", assign_pos_to="topleft")
+
+    ### lineno
+
+    use_lineno = pre_element.getAttribute("use_lineno") or "false"
+
+    if use_lineno != "false":
+
+        first_lineno = int(pre_element.getAttribute("linenofrom") or "1")
+
+        ## calculate the number of digits needed to
+        ## display the number of the last line
+        max_chars = len(str((first_lineno - 1) + len(lines)))
+
+        ## width of panel is total width occupied
+        ## by max_chars plus 2 additional characters
+        ## used as padding
+        lineno_width = (max_chars + 2) * DIGIT_WIDTH
+
+        ### areas
+
+        text_area = lines.rect.copy()
+        text_area.width += 15
+        text_area.height += 10
+
+        lineno_area = lines.rect.copy()
+        lineno_area.width = lineno_width
+        lineno_area.height += 10
+
+        text_area.topleft = lineno_area.topright
+
+        total_area = lineno_area.union(text_area)
+
+        surf = render_rect(*total_area.size)
+
+        for bg_color, area in (
+            (
+                lineno_settings["background_color"],
+                lineno_area,
+            ),
+            (
+                background_color,
+                text_area,
+            ),
+        ):
+
+            draw_rect(surf, bg_color, area)
+
+        ###
+
+        lines.rect.topleft = lineno_area.topright
+        lines.rect.move_ip(5, 5)
+
+        for lineno, line in enumerate(lines, first_lineno):
+
+            surf.blit(line.image, line.rect)
+
+            lineno_surf = render_text(
+                str(lineno).rjust(max_chars, "0"),
+                **lineno_settings,
+            )
+
+            surf.blit(lineno_surf, (DIGIT_WIDTH, line.rect.top))
+
+    ###
+    else:
+
+        ### text area
+
+        text_area = lines.rect.copy()
+        text_area.width += 15
+        text_area.height += 10
+
+        surf = render_rect(*text_area.size)
+
+        draw_rect(surf, background_color, text_area)
+
+        ###
+
+        lines.rect.move_ip(5, 5)
+
+        for line in lines:
+            surf.blit(line.image, line.rect)
+
+
+    draw_border(surf, PRE_TEXT_BORDER)
+    ###
     return Object2D.from_surface(surf)
