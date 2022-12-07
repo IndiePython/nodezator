@@ -46,6 +46,8 @@ IMAGES_DIR = DATA_DIR / "images"
 
 SYNTAX_THEMES_DIR = DATA_DIR / "syntax_themes"
 
+APP_WIDE_WEB_DIR = DATA_DIR / "aww"
+
 APP_COLORS_FILE = DATA_DIR / "app_themes" / "emeralds_on_coal.pyl"
 
 

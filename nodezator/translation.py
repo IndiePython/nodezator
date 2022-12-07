@@ -26,8 +26,6 @@ DIALOGS_MAP = load_pyl(LANG_DEPENDENT_DATA_DIR / "dialogs_map.pyl")
 
 STATUS_MESSAGES_MAP = load_pyl(LANG_DEPENDENT_DATA_DIR / "status_messages_map.pyl")
 
-APP_WIDE_WEB_DIR = LANG_DEPENDENT_DATA_DIR / "aww"
-
 TRANSLATION_MAP = load_pyl(LANG_DEPENDENT_DATA_DIR / "translations_map.pyl")
 
 
@@ -64,13 +62,6 @@ if USER_PREFS["LANGUAGE"] != "English":
         load_pyl(LANG_DEPENDENT_DATA_DIR / "status_messages_map.pyl"),
         STATUS_MESSAGES_MAP,
     )
-
-    ###
-
-    dirpath = LANG_DEPENDENT_DATA_DIR / "aww"
-
-    if dirpath.is_dir():
-        APP_WIDE_WEB_DIR = dirpath
 
     ###
 
