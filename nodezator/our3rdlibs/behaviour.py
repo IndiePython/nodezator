@@ -19,21 +19,11 @@ from ..pygameconstants import (
     _CLOCK,
     SCREEN,
     SCREEN_RECT,
-    SCREEN_WIDTH,
-    SCREEN_HEIGHT,
 )
 
 from ..loopman.exception import QuitAppException
 
 from ..translation import STATUS_MESSAGES_MAP
-
-
-### store current screen size
-###
-### note that we use the values used to create the screen
-### on purpose at this step, rather than obtaining them
-### from SCREEN_RECT.size
-APP_REFS.screen_size = (SCREEN_WIDTH, SCREEN_HEIGHT)
 
 
 ### utility functions
