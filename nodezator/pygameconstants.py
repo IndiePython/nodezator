@@ -9,6 +9,7 @@ from pathlib import Path
 from pygame import (
     RESIZABLE,
     init as init_pygame,
+    get_sdl_version,
 )
 
 from pygame.key import set_repeat
@@ -50,10 +51,19 @@ set_repeat(500, 30)  # set_repeat(delay, interval)
 
 ### screen setup/constants
 
-SCREEN_WIDTH, SCREEN_HEIGHT = 1280, 720
+DEFAULT_SIZE = (
+    # this value causes window size to equal screen resolution
+    (0, 0)
+    if get_sdl_version() >= (1, 2, 10)
+
+    # if sld isn't >= (1, 2, 10) though, it would raise an exception,
+    # so we need to provide a proper size
+    else (1280, 720)
+)
+
 FLAG, DEPTH = RESIZABLE, 32
 
-SCREEN = set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), FLAG, DEPTH)
+SCREEN = set_mode(DEFAULT_SIZE, FLAG, DEPTH)
 
 blit_on_screen = SCREEN.blit
 
