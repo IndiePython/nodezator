@@ -10,7 +10,6 @@ from pygame import (
     K_KP_ENTER,
     MOUSEBUTTONUP,
     MOUSEMOTION,
-    VIDEORESIZE,
     Rect,
 )
 
@@ -25,7 +24,11 @@ from pygame.math import Vector2
 
 ### local imports
 
-from ...pygameconstants import SCREEN, blit_on_screen
+from ...pygameconstants import (
+    SCREEN,
+    blit_on_screen,
+    WINDOW_RESIZE_EVENT_TYPE,
+)
 
 from ...classes2d.single import Object2D
 
@@ -310,7 +313,7 @@ class OptionMenuLifetimeOperations(Object2D):
             ### events and mouse pos and at the same time
             ### watches out for movement of the widget
 
-            elif event.type == VIDEORESIZE:
+            elif event.type == WINDOW_RESIZE_EVENT_TYPE:
 
                 self.handle_input = self.watch_out_for_movement
 

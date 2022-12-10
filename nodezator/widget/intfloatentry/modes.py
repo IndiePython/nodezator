@@ -13,7 +13,6 @@ from pygame import (
     KEYUP,
     MOUSEBUTTONUP,
     MOUSEMOTION,
-    VIDEORESIZE,
     ### keys
     K_ESCAPE,
     K_RETURN,
@@ -46,7 +45,7 @@ from pygame.math import Vector2
 
 ### local imports
 
-from ...pygameconstants import SCREEN_RECT
+from ...pygameconstants import SCREEN_RECT, WINDOW_RESIZE_EVENT_TYPE
 
 from ...ourstdlibs.behaviour import empty_function
 
@@ -193,7 +192,7 @@ class IntFloatModes(Object2D):
             ## if window is resized, set the movement watch
             ## out routine
 
-            elif event.type == VIDEORESIZE:
+            elif event.type == WINDOW_RESIZE_EVENT_TYPE:
 
                 self.movement_watch_out_routine = self.watch_out_for_movement
 
@@ -328,7 +327,7 @@ class IntFloatModes(Object2D):
             ## if window is resized, set the movement watch
             ## out routine
 
-            elif event.type == VIDEORESIZE:
+            elif event.type == WINDOW_RESIZE_EVENT_TYPE:
 
                 self.movement_watch_out_routine = self.watch_out_for_movement
 
@@ -397,7 +396,7 @@ class IntFloatModes(Object2D):
             ## if window is resized, set the movement watch
             ## out routine
 
-            elif event.type == VIDEORESIZE:
+            elif event.type == WINDOW_RESIZE_EVENT_TYPE:
 
                 self.movement_watch_out_routine = self.watch_out_for_movement
 

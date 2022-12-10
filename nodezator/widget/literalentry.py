@@ -21,7 +21,6 @@ from pygame import (
     KEYUP,
     KEYDOWN,
     MOUSEBUTTONUP,
-    VIDEORESIZE,
     ## keys
     K_BACKSPACE,
     K_DELETE,
@@ -46,6 +45,8 @@ from pygame.math import Vector2
 
 
 ### local imports
+
+from ..pygameconstants import WINDOW_RESIZE_EVENT_TYPE
 
 from ..ourstdlibs.behaviour import (
     empty_function,
@@ -385,7 +386,7 @@ class LiteralEntry(Object2D):
             ### events and at the same time watches out
             ### for movement of the widget
 
-            elif event.type == VIDEORESIZE:
+            elif event.type == WINDOW_RESIZE_EVENT_TYPE:
 
                 self.handle_input = self.watch_out_for_movement
 

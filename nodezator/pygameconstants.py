@@ -12,6 +12,19 @@ from pygame import (
     get_sdl_version,
 )
 
+# choose appropriate window resize event type according to
+# availability
+
+try:
+    from pygame import WINDOWRESIZED
+except ImportError:
+    from pygame import VIDEORESIZE
+    WINDOW_RESIZE_EVENT_TYPE = VIDEORESIZE
+else:
+    WINDOW_RESIZE_EVENT_TYPE = WINDOWRESIZED
+
+#
+
 from pygame.key import set_repeat
 from pygame.time import Clock
 from pygame.image import load as load_image
