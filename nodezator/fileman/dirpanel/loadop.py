@@ -93,14 +93,22 @@ class LoadingOperations:
         ## selected/highlighted)
         self.fm.bkm_panel.update_bookmark_objs_appearance()
 
-        ### update text on the current path label
-        self.current_path_lb.set(str(self.current_dir))
+        ### update text on the current path entry (if not already)
+
+        string_dirpath = str(self.current_dir)
+
+        if self.navigation_entry.get() != string_dirpath:
+            self.navigation_entry.set(string_dirpath, False)
 
         ### set a value for the last selected index property,
         ### to keep track of the last selected index and
         ### update the outline rect attribute whenever such
         ### index changes
         self.last_selected_index = None
+
+    def load_from_entry(self):
+        """Load path typed on the navigation_entry."""
+        self.change_current_dir(Path(self.navigation_entry.get()))
 
     def load_selected(self):
         """Load single selected path.

@@ -240,23 +240,26 @@ class FileManager(FileManagerOperations):
 
             temp_container.append(surf)
 
-        ### store the topright of the first surface
-        ### as a topleft coordinate for the "current
-        ### path label" (a label from the directory
+        ### store the midright of the first surface
+        ### as a midleft coordinate for the navigation
+        ### entry (an entry from the directory
         ### panel object which we'll instantiate in
         ### another method)
 
         ## retrieve topleft coordinates of first surf
         x, y = surf_params[0][1]
 
-        ## get width of first surf
-        surf_width = temp_container[0].get_width()
+        ## get size of first surf
+        surf_width, surf_height = temp_container[0].get_size()
 
         ## increment x
         x += surf_width
 
+        ## increment y
+        y += (surf_height // 2)
+
         ## finally store the new coordinates
-        self.current_path_label_offset = x, y
+        self.navigation_entry_offset = x, y
 
     def build_labels(self):
         """Build and store label objects."""
@@ -332,14 +335,10 @@ class FileManager(FileManagerOperations):
             "reload_dir_button",
             "new_file_button",
             "new_folder_button",
-            "current_path_lb",
+            "navigation_entry"
         ):
             attribute = getattr(dir_panel, attribute_name)
             setattr(self, attribute_name, attribute)
-
-        ## also store the current path label in the
-        ## labels special collection
-        self.labels.add(self.current_path_lb)
 
         ### instantiate and store the bookmark panel,
         ### passing along references to the directory
@@ -422,6 +421,7 @@ class FileManager(FileManagerOperations):
                 self.new_folder_button,
                 self.bookmark_button,
                 self.unbookmark_button,
+                self.navigation_entry,
                 self.selection_entry,
                 self.cancel_button,
                 self.submit_button,
@@ -444,11 +444,11 @@ class FileManager(FileManagerOperations):
         self.selected_label.rect.bottomleft = self.rect.move(10, -15).bottomleft
         self.selection_entry.rect.midleft = self.selected_label.rect.move(5, 0).midright
 
-        ## reposition the current path label with the
+        ## reposition the current path entry with the
         ## offset we saved for it
 
-        self.current_path_lb.rect.topleft = self.rect.move(
-            self.current_path_label_offset
+        self.navigation_entry.rect.midleft = self.rect.move(
+            self.navigation_entry_offset
         ).topleft
 
         ### reposition buttons relative to the right side

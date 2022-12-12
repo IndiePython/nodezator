@@ -33,7 +33,7 @@ from ...surfsman.render import render_rect
 from ...classes2d.single import Object2D
 from ...classes2d.collections import List2D
 
-from ...textman.label.main import Label
+from ...widget.stringentry import StringEntry
 
 from ...colorsman.colors import (
     BUTTON_BG,
@@ -67,6 +67,7 @@ from ..constants import (
 from .loadop import LoadingOperations
 from .mouseop import MouseOperations
 from .extraop import ExtraOperations
+
 
 
 class DirectoryPanel(
@@ -110,26 +111,28 @@ class DirectoryPanel(
 
     def build_widget_structure(self):
         """Create objects which compose the panel."""
-        ### create a current path label
+        ### create a current path entry
 
-        ## max width is the length between the left of
-        ## the current path label defined on the file
+        ## width is the length between the left of
+        ## the current path entry defined on the file
         ## manager and the right of the file manager
         ## (with a bit of padding)
 
-        max_width = (self.fm.rect.right - 18) - (
-            self.fm.rect.left + self.fm.current_path_label_offset[0]
+        width = (self.fm.rect.right - 18) - (
+            self.fm.rect.left + self.fm.navigation_entry_offset[0]
         )
 
         ## creation
 
-        self.current_path_lb = Label(
+        self.navigation_entry = StringEntry(
             str(self.current_dir),
+            loop_holder=self.fm,
             font_height=FONT_HEIGHT,
             foreground_color=NORMAL_PATH_FG,
             background_color=NORMAL_PATH_BG,
-            max_width=max_width,
-            ellipsis_at_end=False,
+            command=self.load_from_entry,
+            validation_command=ensure_valid_dir,
+            width=width,
         )
 
         ### create and store buttons
@@ -522,3 +525,16 @@ class DirectoryPanel(
 
         for path_obj in self.path_objs:
             path_obj.reposition_icon_and_text()
+
+
+### utility function
+
+def ensure_valid_dir(string_to_validate):
+
+    try:
+        path = Path(string_to_validate)
+    except Exception:
+        return False
+    else:
+        return path.is_dir()
+
