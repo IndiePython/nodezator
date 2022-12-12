@@ -45,7 +45,7 @@ from ...appinfo import NATIVE_FILE_EXTENSION
 
 from ...dialog import create_and_show_dialog
 
-from ...fileman.main import select_path
+from ...fileman.main import select_paths
 
 from ...ourstdlibs.collections.general import CallList
 
@@ -292,7 +292,7 @@ class NodePacksRenamingChangeForm(Object2D):
         """
         ### pick new path
 
-        paths = select_path(caption=FILE_MANAGER_CAPTION)
+        paths = select_paths(caption=FILE_MANAGER_CAPTION)
 
         ### if paths were given, a single one, should be
         ### used as the new filepath;

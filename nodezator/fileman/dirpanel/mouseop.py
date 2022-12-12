@@ -131,7 +131,7 @@ class MouseOperations:
 
         ### since the selection may have changed, make it
         ### so the file manager updates its path selection
-        self.fm.update_path_selection()
+        self.fm.update_entry_with_selected()
 
     def revert_selection_state(self, path_obj):
         """Revert the selection of the path object.
@@ -173,7 +173,7 @@ class MouseOperations:
 
         ### since the selection changed, make it so the file
         ### manager updates its path selection
-        self.fm.update_path_selection()
+        self.fm.update_entry_with_selected()
 
     def extend_selection(self, path_obj):
         """Trigger selection extension if needed.
@@ -221,4 +221,4 @@ class MouseOperations:
             ### since the selection may have changed, make
             ### it so the file manager updates its path
             ### selection
-            self.fm.update_path_selection()
+            self.fm.update_entry_with_selected()

@@ -19,7 +19,7 @@ from pygame.draw import rect as draw_rect
 
 from ...ourstdlibs.behaviour import empty_function
 
-from ...fileman.main import select_path
+from ...fileman.main import select_paths
 
 from ...classes2d.single import Object2D
 
@@ -382,7 +382,7 @@ class _BasePreview(Object2D):
         If no path is returned, the widget isn't updated.
         """
         ### retrieve path(s) from file browser
-        paths = select_path(caption="Select path(s)")
+        paths = select_paths(caption="Select path(s)")
 
         ### if no paths are selected, return
         if not paths:

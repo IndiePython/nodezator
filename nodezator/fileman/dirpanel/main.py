@@ -416,24 +416,34 @@ class DirectoryPanel(
             if selection_state
         ]
 
-    def get_name_of_last_selected(self):
-        """Return name of last selected path."""
-        ### try retrieving last selected path, if there
-        ### is one
-        try:
-            last_selected_path = self.selectable_paths[self.last_selected_index]
+    def update_data_from_path_selection(self):
+        """Update data according to path selection.
 
-        ### if a TypeError is raised, then the index of
-        ### last selected path is None, which means no path
-        ### was selected yet, in which case we return an
-        ### empty string
-        except TypeError:
-            return ""
+        Used when the path selection changes in result of edition
+        made in the selection entry.
+        """
+        ### reference objects locally for quicker/easier access
 
-        ### otherwise we return the name of the retrieved
-        ### path
-        else:
-            return last_selected_path.name
+        selection_states = self.selection_states
+        selectable_paths = self.selectable_paths
+
+        ### turn off all selection states
+        selection_states[:] = [False] * len(selection_states)
+
+        ### turn on selection states for paths from the
+        ### path selection that are present in the list of
+        ### selectable paths
+
+        for path in self.fm.path_selection:
+
+            if path in selectable_paths:
+
+                index = selectable_paths.index(path)
+                selection_states[index] = True
+
+        ### finally update the appearance of the objects
+        ### based on their selection state
+        self.update_path_objs_appearance()
 
     def present_new_path_form(self, is_file):
         """Present form to get a new path and pick action.
@@ -451,81 +461,53 @@ class DirectoryPanel(
         ### passing the current directory and whether the
         ### new path is supposed to be a file or not;
         ### store the form data once you leave the form
-        form_data = get_path(self.current_dir, is_file)
+        path = get_path(self.current_dir, is_file)
 
-        ### if the form data is None, it means the user
+        ### if the path is None, it means the user
         ### cancelled the action, so return now to prevent
         ### any action from happening
-        if form_data is None:
+        if path is None:
             return
 
-        ### otherwise we proceed according to the requested
-        ### action
+        ### otherwise we proceed with creation of path
 
-        ## reference the action name and the new path
+        ## pick path creation operation according to
+        ## kind of path chosen
+        creation_operation = Path.touch if is_file else Path.mkdir
 
-        action_name = form_data["action_name"]
-        path = form_data["path"]
+        ## try creating path ('exist_ok' set to False
+        ## causes an error to be raised if path already
+        ## exists)
+        try:
+            creation_operation(path, exist_ok=False)
 
-        ## act according to requested action
+        ## report error message if error occurs
 
-        if action_name == "return_path":
+        except Exception as err:
 
-            ## make it so the file manager has the path
-            ## in its selection, then submit the selection
+            # pick name for kind of path depending on
+            # is_file argument
+            path_kind = "file" if is_file else "folder"
 
-            self.fm.store_given_path(path)
-            self.fm.submit_selected()
+            # put an error message together explaining
+            # the error
 
-        elif action_name == "create_path":
+            error_msg = (
+                "The following error prevented the {}" " from being created: {}: {}"
+            ).format(path_kind, err.__class__.__name__, str(err))
 
-            ## pick path creation operation according to
-            ## kind of path chosen
+            # present the dialog
+            create_and_show_dialog(error_msg)
 
-            creation_operation = Path.touch if is_file else Path.mkdir
-
-            ## try creating path ('exist_ok' set to False
-            ## causes an error to be raised if path already
-            ## exists)
-            try:
-                creation_operation(path, exist_ok=False)
-
-            ## report error message if error occurs
-
-            except Exception as err:
-
-                # pick name for kind of path depending on
-                # is_file argument
-                path_kind = "file" if is_file else "folder"
-
-                # put an error message together explaining
-                # the error
-
-                error_msg = (
-                    "The following error prevented the {}" " from being created: {}: {}"
-                ).format(path_kind, err.__class__.name, str(err))
-
-                # present the dialog
-                create_and_show_dialog(error_msg)
-
-            ## if the path is created, though, just reload
-            ## the current directory, then jump to the path,
-            ## leaving it selected
-
-            else:
-
-                self.load_current_dir_contents()
-                self.jump_to_path(path)
-
-        ## if the action name is none of the above, the
-        ## logic went wrong somewhere, so we raise an
-        ## error explaining it
+        ## if the path is created, though, just reload
+        ## the current directory, then jump to the path,
+        ## leaving it selected
 
         else:
 
-            raise RuntimeError(
-                ("'action_name' must be either 'return path'" " or 'create path'")
-            )
+            self.load_current_dir_contents()
+            self.jump_to_path(path)
+
 
     present_new_file_form = partialmethod(present_new_path_form, True)
 

@@ -198,12 +198,7 @@ class PathForm(Object2D):
             (
                 "create_button",
                 t.file_manager.new_path_form.create,
-                self.submit_for_creation,
-            ),
-            (
-                "return_path_button",
-                t.file_manager.new_path_form.return_path,
-                self.submit_for_returning,
+                self.submit_form,
             ),
             ("cancel_button", t.file_manager.new_path_form.cancel, self.cancel_form),
         ):
@@ -236,7 +231,6 @@ class PathForm(Object2D):
         self.widgets.extend(
             (
                 self.create_button,
-                self.return_path_button,
                 self.cancel_button,
             )
         )
@@ -244,15 +238,14 @@ class PathForm(Object2D):
     def cancel_form(self):
         """Cancel form edition.
 
-        Works by setting the form data to None and 'running'
+        Works by setting the new_path to None and 'running'
         flag to False.
         """
-        self.form_data = None
+        self.new_path = None
         self.running = False
 
-    def submit_form(self, action_name):
-        """Create new form data with given action."""
-        self.form_data = {"action_name": action_name}
+    def submit_form(self):
+        """Store new path and trigger its submission."""
 
         ### try retrieve name from entry name and building
         ### path using self.parent as the parent
@@ -269,20 +262,16 @@ class PathForm(Object2D):
             )
 
         ### if the pathlib.Path object is successfully built,
-        ### add it to the form data
+        ### set it as the new path
         else:
-            self.form_data["path"] = path
+            self.new_path = path
 
         ### trigger form exit by setting special flag to
         ### False
         self.running = False
 
-    submit_for_creation = partialmethod(submit_form, "create_path")
-
-    submit_for_returning = partialmethod(submit_form, "return_path")
-
     def get_path(self, parent, is_file):
-        """Return form data after user edits form."""
+        """Return new path after user edits form."""
         ### store parent
         self.parent = parent
 
@@ -313,8 +302,8 @@ class PathForm(Object2D):
             else t.file_manager.new_path_form.type_folder_name
         )
 
-        ### set form data to None
-        self.form_data = None
+        ### set new path to None
+        self.new_path = None
 
         ### TODO loop_holder attribute in block below and
         ### within "while block" could probably be just
@@ -351,8 +340,8 @@ class PathForm(Object2D):
                 ## attribute of same name
                 self.loop_holder = err.loop_holder
 
-        ### finally, return the form data
-        return self.form_data
+        ### finally, return the new path
+        return self.new_path
 
     def handle_input(self):
         """Process events from event queue."""

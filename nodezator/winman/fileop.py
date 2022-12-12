@@ -17,10 +17,7 @@ from ..dialog import (
     show_dialog_from_key,
 )
 
-from ..fileman.main import (
-    select_path,
-    create_path,
-)
+from ..fileman.main import select_paths
 
 from ..ourstdlibs.path import (
     get_swap_path,
@@ -75,7 +72,7 @@ class FileOperations:
     def new(self):
         """Create a new file."""
         ### prompt user to pick filepath from file manager
-        paths = create_path(caption=NEW_FILE_CAPTION)
+        paths = select_paths(caption=NEW_FILE_CAPTION)
 
         ### respond according to whether paths were given
 
@@ -177,7 +174,7 @@ class FileOperations:
 
             ## pick path
 
-            paths = select_path(caption=OPEN_FILE_CAPTION)
+            paths = select_paths(caption=OPEN_FILE_CAPTION)
 
             ## respond according to number of paths given
 
@@ -524,7 +521,7 @@ class FileOperations:
         the swap file for the original file.
         """
         ### prompt user to pick filepath from file manager
-        paths = create_path(caption=SAVE_AS_CAPTION)
+        paths = select_paths(caption=SAVE_AS_CAPTION)
 
         ### respond according to whether paths were given
 

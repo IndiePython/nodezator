@@ -41,7 +41,7 @@ from ....pygameconstants import (
 
 from ....dialog import create_and_show_dialog
 
-from ....fileman.main import create_path
+from ....fileman.main import select_paths
 
 from ....ourstdlibs.behaviour import empty_function
 
@@ -322,7 +322,7 @@ class PythonExportForm(Object2D):
         """Pick new path and update label using it."""
         ### pick new path
 
-        paths = create_path(
+        paths = select_paths(
             caption=NEW_PYTHON_FILEPATH_CAPTION,
             path_name=DEFAULT_FILENAME,
         )

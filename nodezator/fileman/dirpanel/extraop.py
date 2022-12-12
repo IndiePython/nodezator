@@ -125,7 +125,7 @@ class ExtraOperations:
 
         ### since the selection may have changed, make it
         ### so the file manager updates its path selection
-        self.fm.update_path_selection()
+        self.fm.update_entry_with_selected()
 
     select_all = partialmethod(bulk_selection_change, True)
     deselect_all = partialmethod(bulk_selection_change, False)
@@ -264,7 +264,7 @@ class ExtraOperations:
 
         ### since the selection may have changed, make it
         ### so the file manager updates its path selection
-        self.fm.update_path_selection()
+        self.fm.update_entry_with_selected()
 
     go_to_previous = partialmethod(move_selection, -1)
     go_to_next = partialmethod(move_selection, 1)
@@ -373,4 +373,4 @@ class ExtraOperations:
 
         ### since the selection may have changed, make it
         ### so the file manager updates its path selection
-        self.fm.update_path_selection()
+        self.fm.update_entry_with_selected()

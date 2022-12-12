@@ -29,7 +29,7 @@ from ..surfsman.render import render_rect
 
 from ..surfsman.icon import render_layered_icon
 
-from ..surfsman.cache import UNHIGHLIGHT_SURF_MAP
+from ..surfsman.cache import UNHIGHLIGHT_SURF_MAP, EMPTY_SURF
 
 from ..widget.stringentry import StringEntry
 
@@ -101,7 +101,7 @@ class FileManager(FileManagerOperations):
         ## control for storing current mode
         self.current_mode = None
 
-        ## control for storing the path selection
+        ## control for storing selected paths
         self.path_selection = []
 
         ### store semitransparent object the size of
@@ -288,14 +288,16 @@ class FileManager(FileManagerOperations):
         ### according to the current mode; that is, it will
         ### be either 'Selected:' or 'New path:'
 
-        self.widget_label = Label(
-            t.file_manager.selected + ":",
-            font_height=FONT_HEIGHT,
-            foreground_color=WINDOW_FG,
-            background_color=WINDOW_BG,
+        self.selected_label = Object2D.from_surface(
+            render_text(
+                t.file_manager.selected + ":",
+                font_height=FONT_HEIGHT,
+                foreground_color=WINDOW_FG,
+                background_color=WINDOW_BG,
+            )
         )
 
-        self.labels.add(self.widget_label)
+        self.labels.add(self.selected_label)
 
     def instantiate_and_store_widgets(self):
         """Instantiate and store panels and other objects."""
@@ -378,7 +380,7 @@ class FileManager(FileManagerOperations):
         )
 
         self.submit_button.on_mouse_release = get_oblivious_callable(
-            self.submit_selected
+            self.submit
         )
 
         ## cancel button
@@ -394,33 +396,19 @@ class FileManager(FileManagerOperations):
             ),
         )
 
-        self.cancel_button.on_mouse_release = get_oblivious_callable(self.cancel)
+        self.cancel_button.on_mouse_release = (
+            get_oblivious_callable(self.cancel)
+        )
 
-        ### create an entry widget;
-        ###
-        ### no need to position it, since it is repositioned
-        ### every time the file manager is entered;
+        ### create an entry widget to edit path names;
 
-        self.entry = StringEntry(
-            value=t.file_manager.pathname,
+        self.selection_entry = StringEntry(
+            value='',
             loop_holder=self,
             font_height=FONT_HEIGHT,
             draw_on_window_resize=self.draw,
             width=550,
-        )
-
-        ### create a label to show the current path(s)
-        ### selected when in 'select_path' mode (it appears
-        ### in the same spot as the entry when in such mode,
-        ### and the entry is not displayed)
-
-        self.selection_label = Label(
-            text=t.file_manager.no_path_selected,
-            font_height=FONT_HEIGHT,
-            padding=0,
-            max_width=550,
-            foreground_color=NORMAL_PATH_FG,
-            background_color=NORMAL_PATH_BG,
+            command=self.update_selection_from_entry,
         )
 
         ### reference all buttons together in a set
@@ -434,6 +422,7 @@ class FileManager(FileManagerOperations):
                 self.new_folder_button,
                 self.bookmark_button,
                 self.unbookmark_button,
+                self.selection_entry,
                 self.cancel_button,
                 self.submit_button,
             )
@@ -452,11 +441,8 @@ class FileManager(FileManagerOperations):
             self.caption_label_offset
         ).topleft
 
-        self.widget_label.rect.bottomleft = self.rect.move(5, -10).bottomleft
-
-        for obj in (self.selection_label, self.entry):
-
-            obj.rect.midleft = self.widget_label.rect.move(5, 0).midright
+        self.selected_label.rect.bottomleft = self.rect.move(10, -15).bottomleft
+        self.selection_entry.rect.midleft = self.selected_label.rect.move(5, 0).midright
 
         ## reposition the current path label with the
         ## offset we saved for it
@@ -497,7 +483,4 @@ class FileManager(FileManagerOperations):
         self.cancel_button.rect.topright = self.submit_button.rect.move(-5, 0).topleft
 
 
-_ = FileManager()
-
-select_path = _.select_path
-create_path = _.create_path
+select_paths = FileManager().select_paths

@@ -80,12 +80,7 @@ class LoadingOperations:
 
         ## make it so the file manager updates its path
         ## selection;
-        ##
-        ## be sure to use the "update path selection
-        ## operation whose name ends with 'on_load',
-        ## since it is different than the version
-        ## without that ending when in 'create' mode
-        self.fm.update_path_selection_on_load()
+        self.fm.store_current_selection()
 
         ## update appearance on the path objects (so they
         ## appear deselected)

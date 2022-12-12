@@ -13,11 +13,7 @@
     'selected'           : "Selected",
     'submit'             : "Submit",
     'cancel'             : "Cancel",
-    'pathname'           : "pathname",
-    'no_path_selected'   : "no path(s) selected",
     'select_path'        : "Select path(s)",
-    'create_new_path'    : "Create new path",
-    'new_path'           : "New path",
     'dummy_text'         : "dummy text",
 
     'new_path_form' : {
@@ -25,7 +21,6 @@
       'caption'          : "Get new path",
       'type_path_name'   : "Type name for new path",
       'create'           : "Create",
-      'return_path'      : "Return path",
       'cancel'           : "Cancel",
       'get_new_file'     : "Get new file",
       'get_new_folder'   : "Get new folder",

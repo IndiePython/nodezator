@@ -39,7 +39,7 @@ from ..our3rdlibs.behaviour import set_status_message
 
 from ..logman.main import get_new_logger
 
-from ..fileman.main import select_path
+from ..fileman.main import select_paths
 
 from ..recentfile import store_recent_file
 
@@ -247,7 +247,7 @@ class WindowManager(
 
                     if answer == "select":
 
-                        current_local_node_packs = select_path(
+                        current_local_node_packs = select_paths(
                             caption="Select new local node packs"
                         )
 

@@ -1,6 +1,9 @@
 """File Manager class extension with operations."""
 
-### standard-library import
+### standard-library imports
+
+from os import pathsep
+
 from functools import partialmethod
 
 
@@ -63,43 +66,30 @@ from ..classes2d.single import Object2D
 class FileManagerOperations(Object2D):
     """Operations for file manager class."""
 
-    def browse_paths(
+    def select_paths(
         self,
         *,
-        mode="select",
         caption="",
-        path_name=t.file_manager.pathname,
+        path_name="",
     ):
-        """Return selected paths or a new path.
+        """Return selected paths.
 
         This method shows the user the file manager
         interface, allowing the user to browse the
-        filesystem visually while either:
-
-        1) in the 'select' mode: selecting paths to be
-           returned;
-
-        2) in the 'create' mode: providing the name for a
-           new path which is them used to create a new
-           pathlib.Path object as if it exists in the
-           current directory the user is navigating; only
-           the pathlib.Path object is created, not the
-           actual file/folder to which it refers;
+        filesystem visually while selecting paths
+        to be returned or providing the name for new
+        path(s) to be created.
 
         Parameters
         ==========
 
-        mode (string)
-            either 'select' or 'create'. Changes the
-            behaviour of the file manager to support
-            the specified action (either select or create
-            path(s))
         caption (string)
             represents a caption for the widget.
         path_name (string)
-            only relevant on 'create' mode. It is used
-            as the default name of the path being
-            created.
+            It is used as a path name to be included in the
+            selected paths entry. It can actually represent
+            multiple path names, as long as you separate each
+            path with the path separator character (os.pathsep).
         """
         ### blit screen sized semi transparent object
 
@@ -107,18 +97,13 @@ class FileManagerOperations(Object2D):
 
         ### update widget caption label
 
-        if not caption:
+        self.caption_label.set(
 
-            caption = (
-                t.file_manager.select_path
-                if mode == "select"
-                else t.file_manager.create_new_path
-            )
+            caption
+            if caption
+            else t.file_manager.select_paths
 
-        self.caption_label.set(caption)
-
-        ### perform setups according to given mode
-        self.set_mode(mode, path_name)
+        )
 
         ### load paths from the current directory so they
         ### are displayed in the directory panel
@@ -126,6 +111,9 @@ class FileManagerOperations(Object2D):
 
         ### check whether the current bookmarks still exists
         self.bkm_panel.check_live_bookmarks()
+
+        ### set entry contents
+        self.selection_entry.set(path_name)
 
         ### alias self as the loop holder
         loop_holder = self
@@ -167,88 +155,6 @@ class FileManagerOperations(Object2D):
 
         ### return a copy of the path selection
         return tuple(self.path_selection)
-
-    select_path = partialmethod(browse_paths, mode="select")
-    create_path = partialmethod(browse_paths, mode="create")
-
-    def set_mode(self, mode, path_name):
-        """Perform setups related to given mode."""
-        ### set entry contents if in 'create' mode
-        if mode == "create":
-            self.entry.set(path_name)
-
-        ### if mode didn't change, return earlier
-        if mode == self.current_mode:
-            return
-
-        ### otherwise, keep performing changes to accomodate
-        ### the new mode...
-
-        ## store the new mode as the current one
-        self.current_mode = mode
-
-        ## set widget label text
-
-        widget_label_text = (
-            t.file_manager.selected if mode == "select" else t.file_manager.new_path
-        ) + ":"
-
-        self.widget_label.set(widget_label_text)
-
-        ### perform setups to guarantee the appropriate
-        ### widget sits beside the widget label according
-        ### to the choosen mode
-
-        if mode == "select":
-
-            chosen_widget = self.selection_label
-
-            self.labels.add(self.selection_label)
-            self.buttons.discard(self.entry)
-
-        else:
-
-            chosen_widget = self.entry
-
-            self.buttons.add(self.entry)
-            self.labels.discard(self.selection_label)
-
-        ## reposition the chosen widget beside the widget
-        ## label
-        chosen_widget.rect.midleft = self.widget_label.rect.move(5, 0).midright
-
-        ## set 'update_path_selection_on_load' behaviour;
-        ##
-        ## must be set before reloading the paths in the
-        ## directory panel, since this behaviour is called
-        ## during such operation;
-        ##
-        ## we use an empty function in 'create' mode
-        ## to prevent changes in the entry widget that
-        ## are not directly caused by the user; that is,
-        ## we only want the entry to be changed either
-        ## when the user types text in it or selects
-        ## items in the directory panel, not when loading
-        ## a directory
-
-        self.update_path_selection_on_load = (
-            self.store_current_selection if mode == "select" else empty_function
-        )
-
-        ## set 'update_path_selection' behaviour
-
-        self.update_path_selection = (
-            self.store_current_selection
-            if mode == "select"
-            else self.copy_last_selected_to_entry
-        )
-
-        ## set 'on_mouse_release' behaviour for the submit
-        ## button
-
-        self.submit_button.on_mouse_release = get_oblivious_callable(
-            self.submit_selected if mode == "select" else self.submit_from_entry
-        )
 
     def handle_input(self):
         """Handle event queue."""
@@ -453,7 +359,7 @@ class FileManagerOperations(Object2D):
 
         self.buttons.draw()
 
-        update()  # pygame.display.update
+        update() # pygame.display.update
 
     def store_current_selection(self):
         """Retrieve path info and store it."""
@@ -461,20 +367,11 @@ class FileManagerOperations(Object2D):
         ### path_selection attribute
         self.path_selection = self.dir_panel.get_selection()
 
-        ### admin task:
-        ### set the selection label text according to the
+        ### set the selection entry text according to the
         ### path selection, to indicate to user which paths
         ### are selected (or whether there is a selection at
-        ### all);
-        ###
-        ### this is an aesthetic measure to indicate
-        ### that there are paths selected, since not all
-        ### can be seen in the entry when there are too
-        ### many - besides, the user can clearly see which
-        ### paths are selected in the directory panel;
-
-        text = self.get_selection_text()
-        self.selection_label.set(text)
+        ### all)
+        self.update_entry_with_selected()
 
     def get_selection_text(self):
         """Return custom text according to selected paths."""
@@ -485,8 +382,7 @@ class FileManagerOperations(Object2D):
         ### is all the names of the paths joined by ', '
 
         if len(path_selection) > 1:
-
-            text = ", ".join(path.name for path in path_selection)
+            text = pathsep.join(path.name for path in path_selection)
 
         ### otherwise...
 
@@ -500,78 +396,48 @@ class FileManagerOperations(Object2D):
             ### if it fails, though, then use an empty
             ### string as the text
             except IndexError:
-                text = t.file_manager.no_path_selected
+                text = ''
 
         return text
 
-    def store_path_from_entry(self):
-        """Build path from entry, store as selected path."""
-        ### clear the path selection;
-        ###
-        ### the name of the last selected path is
-        ### automatically set in the entry, so even
-        ### though we are clearing the path selection
-        ### that path will still be passed to the
-        ### path selection inside the 'if block' down
-        ### below
+    def update_entry_with_selected(self):
+        """If a file was selected, copy its name to entry."""
         self.path_selection.clear()
 
-        ### get name from entry
-        path_name = self.entry.get()
+        self.path_selection.extend(self.dir_panel.get_selection())
 
-        ### if there is a path name, build a path by joining
-        ### the current directory with the path name from
-        ### the entry and append such path to the
-        ### path_selection list
+        name = pathsep.join(
+            path.name
+            for path in self.path_selection
+        )
 
-        if path_name:
+        self.selection_entry.set(name, False)
 
-            ## build path using the current directory and
-            ## the path name from the entry
-            path = self.dir_panel.current_dir / path_name
+    def update_selection_from_entry(self):
 
-            ### reset the path selection to a new list
-            ### containing the path
-            self.path_selection.append(path)
+        entry_contents = self.selection_entry.get()
 
-    def copy_last_selected_to_entry(self):
-        """If a file was selected, copy its name to entry."""
-        ### retrieve name of last selected path
-        name = self.dir_panel.get_name_of_last_selected()
+        self.path_selection.clear()
 
-        ### if such name exists, set it on the entry;
-        ###
-        ### note that, by default, the 'set' method of the
-        ### entry also executes its command automatically,
-        ### which in this case is the
-        ### self.store_path_from_entry method, which
-        ### stores the path formed by the current loaded
-        ### folder joined by the entry contents which we
-        ### set below
-        if name:
-            self.entry.set(name)
+        if entry_contents:
 
-    def store_given_path(self, path):
-        """Store given path as selected one."""
-        ### reset the path selection to a new list
-        ### containing the given path
-        self.path_selection = [path]
+            current_dir = self.dir_panel.current_dir
 
-    def submit_selected(self):
-        """If a path is stored, exit local loop."""
-        if self.path_selection:
-            self.running = False
+            self.path_selection.extend(
 
-        else:
-            create_and_show_dialog("No path(s) were selected.")
+                current_dir / path_name.strip()
 
-    def submit_from_entry(self):
-        """If a entry has a path name, exit local loop."""
-        ### store path from entry
-        self.store_path_from_entry()
+                for path_name
+                in entry_contents.split(pathsep)
 
-        ### if there's a selection, it means the entry
-        ### isn't empty, so we can exit the local loop
+            )
+
+        self.dir_panel.update_data_from_path_selection()
+
+    def submit(self):
+        """Trigger exit of file browser, if there's a selection."""
+        ### if there's a selection, we can trigger the exit of the
+        ### local loop by setting the 'running' flag off
         if self.path_selection:
             self.running = False
 
@@ -581,19 +447,22 @@ class FileManagerOperations(Object2D):
         ### selected
         else:
             create_and_show_dialog(
-                "You must either type a name for a new"
-                " file/folder in the entry or select an"
-                " existing file/folder"
+                (
+                    "You must either type name(s) for new path(s) in"
+                    " the entry at the bottom or select existing ones"
+                ),
+                dismissable=True,
             )
 
     def cancel(self):
         """Cancel selecting/creating path.
 
-        Works by setting the path selection to an empty
-        list, which make it so no path is returned.
+        Works by clearing the path selection, which causes no
+        path to be returned.
+
         The 'running' attribute is also set to False, which
         triggers the exit of the file manager loop which
-        you can find of the browse_paths method.
+        you can find on the select_paths method.
         """
-        self.path_selection = []
+        self.path_selection.clear()
         self.running = False

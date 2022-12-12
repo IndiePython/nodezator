@@ -12,7 +12,7 @@ from ....ourstdlibs.color.custom import custom_format_color
 
 from ....dialog import create_and_show_dialog
 
-from ....fileman.main import select_path
+from ....fileman.main import select_paths
 
 
 class ImportExportOperations:
@@ -22,7 +22,7 @@ class ImportExportOperations:
         """Import colors from python literals in path(s)."""
 
         ### retrieve path(s) from file browser
-        paths = select_path(caption="Select path(s)")
+        paths = select_paths(caption="Select path(s)")
 
         ### if a path or list of paths was not returned,
         ### just exit the method by returning
@@ -63,7 +63,7 @@ class ImportExportOperations:
 
         ### retrieve path(s) from file browser
 
-        path = select_path(caption=("Provide a single path wherein to save" " colors"))
+        path = select_paths(caption=("Provide a single path wherein to save" " colors"))
 
         ### if a path or list of paths was not returned,
         ### just exit the method by returning

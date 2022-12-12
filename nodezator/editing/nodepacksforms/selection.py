@@ -46,7 +46,7 @@ from ...appinfo import NATIVE_FILE_EXTENSION
 
 from ...dialog import create_and_show_dialog
 
-from ...fileman.main import select_path
+from ...fileman.main import select_paths
 
 from ...ourstdlibs.collections.general import CallList
 
@@ -477,7 +477,7 @@ class NodePacksSelectionChangeForm(Object2D):
         """"""
         ### select new paths;
 
-        paths = select_path(
+        paths = select_paths(
             caption=("Select node to be added to file"),
         )
 
