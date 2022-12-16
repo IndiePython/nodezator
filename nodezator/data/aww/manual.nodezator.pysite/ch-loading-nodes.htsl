@@ -25,9 +25,9 @@
 
 <h2 id="creating-file-loading-nodes">Creating a file and loading your nodes</h2>
 
-<p>To create a file, just click the <b>New file</b> action in the splash screen or click the menubar command <b>File &gt; New</b>. The <b>&lt;Ctrl+N&gt;</b> keyboard shortcut also access the feature. You'll be presented with Nodezator's file manager. Just browse to the location where you want to create your file and write the name of the file in the entry at the bottom of the file manager with a <b>.ndz</b> extension. Then, finally click the <b>Submit</b> button.</p>
+<p>To create a file, just click the <b>New file</b> action in the splash screen or click the menubar command <b>File &gt; New</b>. The <b>&lt;Ctrl+N&gt;</b> keyboard shortcut also access the feature. A new untitled empty file will be automatically created and opened for you, so you can start working right away.</p>
 
-<p>The new file will be loaded immediately on Nodezator. Right-clicking the screen will bring the popup menu into view, where you'll be able to instantiate nodes. However, only app-defined nodes will be available, that is, the ones already included in the Nodezator. This is so because you didn't load any node packs yet.</p>
+<p>Right-clicking the screen will bring the popup menu into view, where you'll be able to instantiate nodes. However, only app-defined nodes will be available, that is, the ones already included in the Nodezator. This is so because you didn't load any node packs yet.</p>
 
 <p>To load or remove node packs in any .ndz file, just click the menubar command <b>Graph &gt; Load nodes</b>. You'll be presented with a form to add (or remove) node packs to your file as you wish. The form presents widgets to add node packs and a panel where you can see the node packs already on the file and the ones you add using the widgets. In this panel, one 'x' button sits to the left of each node pack listed and can be clicked to remove the node pack. In this form you can add and remove node packs as much as you want without worrying about the consequences because the node packs are only added/removed if you press the <b>Apply changes</b> button.</p>
 

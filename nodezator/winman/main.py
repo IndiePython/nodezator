@@ -22,7 +22,11 @@ from ..dialog import (
 
 from ..pygameconstants import SCREEN_RECT, blit_on_screen
 
-from ..appinfo import FULL_TITLE, ABBREVIATED_TITLE
+from ..appinfo import (
+    FULL_TITLE,
+    ABBREVIATED_TITLE,
+    NATIVE_FILE_EXTENSION,
+)
 
 from ..ourstdlibs.path import get_custom_path_repr
 from ..ourstdlibs.behaviour import empty_function
@@ -364,7 +368,12 @@ class WindowManager(
                 else:
 
                     APP_REFS.ea.prepare_for_new_session()
-                    store_recent_file(APP_REFS.source_path)
+
+                    if not APP_REFS.temp_filepaths_man.is_temp_path(
+                        APP_REFS.source_path
+                    ):
+                        store_recent_file(APP_REFS.source_path)
+
                     self.build_app_widgets()
 
                     state_name = "loaded_file"
@@ -519,8 +528,16 @@ class WindowManager(
 
     def build_app_widgets(self):
         """Build graph management related widgets."""
-        ### get a custom string representation for the source
-        path_str = get_custom_path_repr(APP_REFS.source_path)
+        ### get a custom string representation for the file
+        ### depending on whether it is a temporary file or not
+
+        if APP_REFS.temp_filepaths_man.is_temp_path(
+            APP_REFS.source_path
+        ):
+            path_str = f"untitled{NATIVE_FILE_EXTENSION}"
+
+        else:
+            path_str = get_custom_path_repr(APP_REFS.source_path)
 
         ### update caption to show the loaded path
         self.update_caption(path_str)

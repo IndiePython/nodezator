@@ -28,7 +28,7 @@
 
     <tr>
       <td><b>&lt;Ctrl+n&gt;</b></td>
-      <td>Displays file manager to create a new file</td>
+      <td>Automatically creates and opens new empty file for the user</td>
     </tr>
 
     <tr>

@@ -9,7 +9,7 @@ from pathlib import Path
 
 ### local imports
 
-from ..appinfo import APP_DIR_NAME
+from ..appinfo import APP_DIR_NAME, NATIVE_FILE_EXTENSION
 
 from ..our3rdlibs.userlogger import USER_LOGGER
 
@@ -83,6 +83,7 @@ RECENT_FILES = APP_CONFIG_DIR / "recent_files.pyl"
 CONFIG_FILEPATH = APP_CONFIG_DIR / "config.pyl"
 KNOWN_PACKS_FILE = APP_CONFIG_DIR / "known_packs.pyl"
 
+TEMP_FILE_SWAP = APP_CONFIG_DIR  / f"temp_file_swap{NATIVE_FILE_EXTENSION}"
 
 ## if file exists, try loading it
 

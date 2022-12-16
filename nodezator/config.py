@@ -9,8 +9,13 @@ from pathlib import Path
 from subprocess import run as run_subprocess
 
 
-### local import
+### local imports
+
 from .ourstdlibs.collections.general import CallList
+
+from .ourstdlibs.path import TemporaryFilepathsManager
+
+from .appinfo import APP_DIR_NAME, NATIVE_FILE_EXTENSION
 
 
 ### an object to hold references/data used throughout the
@@ -35,6 +40,14 @@ APP_REFS = SimpleNamespace(
     window_resize_setups=CallList(),
     ## placeholder for copy of screen
     SCREEN_COPY=None,
+    ## temporary filepaths manager
+    temp_filepaths_man = (
+        TemporaryFilepathsManager(
+            temp_dir_prefix=f'{APP_DIR_NAME}_temp_',
+            temp_file_prefix='temp_',
+            temp_file_suffix=NATIVE_FILE_EXTENSION,
+        )
+    ),
 )
 
 

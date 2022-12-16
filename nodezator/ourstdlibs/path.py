@@ -10,6 +10,9 @@ from re import fullmatch
 
 from itertools import count
 
+from tempfile import mkdtemp
+
+
 
 TIMESTAMP_PATTERN = "_".join(
     (
@@ -249,3 +252,102 @@ def get_new_filename(
             break
 
     return new_name
+
+
+### class definition
+
+class TemporaryFilepathsManager:
+    
+    created_filepaths = set()
+
+    def __init__(
+        self,
+        temp_dir_suffix=None,
+        temp_dir_prefix=None,
+        temp_file_prefix='',
+        temp_file_suffix='',
+        _dir=None,
+    ):
+
+        self.suffix = temp_dir_suffix
+        self.prefix = temp_dir_prefix
+
+        self.temp_file_prefix = temp_file_prefix
+        self.temp_file_suffix = temp_file_suffix
+
+        self.dir = _dir
+
+        self.temp_dir = None
+
+    def get_new_temp_filepath(self):
+        """Return a new temporary filepath."""
+
+        ###
+
+        if self.temp_dir is None:
+
+            self.temp_dir = (
+                Path(
+                    mkdtemp(
+                        suffix=self.suffix,
+                        prefix=self.prefix,
+                        dir=self.dir,
+                    )
+                )
+            )
+
+        ###
+
+        stem_base = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+
+        filename = (
+            self.temp_file_prefix
+            + stem_base
+            + self.temp_file_suffix
+        )
+
+        new_path = self.temp_dir / filename
+
+        ###
+
+        if new_path in self.created_filepaths:
+
+            get_new_index = count().__iter__().__next__
+
+            while True:
+
+                filename = (
+                    self.temp_file_prefix
+                    + stem_base
+                    + "_n"
+                    + f"{get_new_index():0>3}"
+                    + self.temp_file_suffix
+                )
+
+                new_path = self.temp_dir / filename
+
+                if new_path not in self.created_filepaths:
+                    break
+
+        self.created_filepaths.add(new_path)
+
+        return new_path
+
+    def is_temp_path(self, path):
+        """Return whether path is within created filepaths."""
+        return path in self.created_filepaths
+
+    def ensure_removed(self):
+        """Make temporary folder and files within are deleted."""
+
+        if self.temp_dir is None: return
+
+        for path in self.created_filepaths:
+
+            try:
+                path.unlink()
+            except FileNotFoundError:
+                pass
+
+        self.temp_dir.rmdir()
+        self.temp_dir = None

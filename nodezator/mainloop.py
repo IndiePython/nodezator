@@ -13,6 +13,8 @@ from pygame.display import update
 
 from .config import APP_REFS
 
+from .userprefsman.main import TEMP_FILE_SWAP
+
 from .pygameconstants import (
     SCREEN,
     FPS,
@@ -209,5 +211,10 @@ def run_app(filepath=None):
     logger.info("Closing app under expected circumstances.")
 
     remove_buffer()
+
+    APP_REFS.temp_filepaths_man.ensure_removed()
+
+    if TEMP_FILE_SWAP.exists():
+        TEMP_FILE_SWAP.unlink()
 
     quit_pygame()
