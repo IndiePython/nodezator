@@ -27,6 +27,11 @@
   <tbody>
 
     <tr>
+      <td><b>&lt;Ctrl+n&gt;</b></td>
+      <td>Displays file manager to create a new file</td>
+    </tr>
+
+    <tr>
       <td><b>&lt;Ctrl+o&gt;</b></td>
       <td>Displays file manager to open file</td>
     </tr>
