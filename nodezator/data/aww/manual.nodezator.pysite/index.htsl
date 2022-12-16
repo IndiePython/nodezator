@@ -24,6 +24,7 @@
       <li><a href="ch-defining-your-first-node.htsl#category-folder">Categories within a node pack</a></li>
       <li><a href="ch-defining-your-first-node.htsl#script-folder">The script folder</a></li>
       <li><a href="ch-defining-your-first-node.htsl#defining-node">Defining the node</a></li>
+      <li><a href="ch-defining-your-first-node.htsl#loading-testing-first-node">Loading and testing your first node</a></li>
       <li><a href="ch-defining-your-first-node.htsl#node-pack-anatomy">The anatomy of a node pack</a></li>
     </ol>
 

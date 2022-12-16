@@ -104,10 +104,42 @@ main_callable = get_circle
 
 <p>Additionally, since the node script folder is treated like a Python package, remember to use <a href="https://docs.python.org/3/reference/import.html#package-relative-imports">relative local imports</a> in all your local Python modules/subpackages inside your folder, that is, if you have other Python modules inside your node script folder other than __main__.py.</p>
 
+<p>With all that explained, we just have to say "Congratulations!". You successfuly created your first node!</p>
+
+
+<h2 id="loading-testing-first-node">Loading and testing your first node</h2>
+
+<p>There's still a lot to learn about defining nodes and it is all explained in the next chapters. However, you might be itching to load and test your first node in Nodezator right away. If want to do so, just follow these quick steps:</p>
+
+<ol>
+
+    <li>go straight to the chapter about <a href="ch-loading-nodes.htsl">loading your nodes</a>;</li>
+    <li>open nodezator and, following the instructions in the chapter, create a new file and load your node;</li>
+    <li>instantiate your <i>get_circle</i>node by right-clicking the canvas and selecting <b>New point_creation node &gt; get_circle</b> in the popup menu that appears;</li>
+
+    <li>before executing the graph, we need a way to see the output of your node; the simplest way to do this is by printing it; here's how to do this:
+
+        <ol>
+
+            <li>right-click the canvas again and create a <i>print</i> node by navigating the popup menu and selecting the command <b>builtin picks &gt; P-S &gt; print</b>;</li>
+            <li>now connect the output of your <i>get_circle</i> node to the hollow socket at the topleft corner of the <i>print</i> node, right below where "*objects" is written.</li>
+
+        </ol>
+
+    </li>
+
+    <li>now execute the graph using the following method: press <b>&lt;Shift+F12&gt;</b> (or select the command <b>Graph &gt; Execute with custom stdout</b> on the menubar); this will cause the graph to execute, meaning your node will execute them send its output to the <i>print</i> node, which will then be executed as well, printing the output; when using the option to execute the graph with a custom output, all printed content is displayed on the screen, so the text printed is displayed right away, as soon as the execution of the graph finishes; all of this happens in a fraction of seconds and the text appears on the screen, which should consist of a list of points from a circle, generated from the <i>get_circle</i> node you created.</li>
+
+</ol>
+
+<p>Congratulations again on executing your first node!</p>
+
+<p>Well, this is fine, but don't you agree that 2D points forming a shape are better visualized as an image rather than text printed on the screen? Wouldn't it be better to see the circle itself rather than reading the text showing the points? This is the topic of the next chapter about <a href="ch-defining-viewer-nodes.htsl">defining viewer nodes</a>, where we'll create another node to help us visualize our data with custom graphics.</p>
+
 
 <h2 id="node-pack-anatomy">The anatomy of a node pack</h2>
 
-<p>Here's the anatomy of a node pack:</p>
+<p>Before we end the chapter, here's a review of the anatomy of a node pack so you don't forget it:</p>
 
 <surfdef width="460" height="285">
 
@@ -208,10 +240,6 @@ categories; must have at least one category folder</td>
 
   </tbody>
 </table>
-
-<p>With that explained, we just have to say "Congratulations!". You successfuly created your first node!</p>
-
-<p>Before we go on to test the first node we just created, though, let's create another node in the next chapter which will allow us to view our data.</p>
 
 <p><a href="index.htsl">Table of contents</a> | <a href="ch-defining-viewer-nodes.htsl">Next chapter</a></p>
 
