@@ -10,9 +10,9 @@
 
 <h1>Loading your nodes</h1>
 
-<p>A common task when editing node layouts in Nodezator is to <b>select node packs to be loaded</b> so that you can instantiate nodes from those packs. You only need to do this <b>once</b>, since references to the node packs you select are saved in the file. The next time you open the file the nodes will be already available.</p>
+<p>A common task when editing node layouts in Nodezator is to <b>load nodes</b> so that you can instantiate them. The act of loading nodes actually boils down to <b>selecting node packs</b> so that you can use the nodes from those packs. You only need to do this <b>once</b>, since references to the node packs you select are saved in the file. The next time you open the file the nodes will be already listed for you to use.</p>
 
-<p>Here we'll present different scenarios where you'll be loading node packs into your Nodezator files. By the way, the file extension for Nodezator files is <b>.ndz</b>. For instance, <i>my_node_layout.ndz</i>.</p>
+<p>Here we'll present different scenarios where you'll be loading nodes into your Nodezator files. By the way, the file extension for Nodezator files is <b>.ndz</b>. For instance, <i>my_node_layout.ndz</i>.</p>
 
 <h2 id="kinds-node-packs">The two kinds of node packs</h2>
 
@@ -29,7 +29,7 @@
 
 <p>The new file will be loaded immediately on Nodezator. Right-clicking the screen will bring the popup menu into view, where you'll be able to instantiate nodes. However, only app-defined nodes will be available, that is, the ones already included in the Nodezator. This is so because you didn't load any node packs yet.</p>
 
-<p>To load or remove node packs in any .ndz file, just click the menubar command <b>Graph &gt; Select node packs</b>. You'll be presented with a form to add (or remove) node packs to your file as you wish. The form presents widgets to add node packs and a panel where you can see the node packs already on the file and the ones you add using the widgets. In this panel, one 'x' button sits to the left of each node pack listed and can be clicked to remove the node pack. In this form you can add and remove node packs as much as you want without worrying about the consequences because the node packs are only added/removed if you press the <b>Apply changes</b> button.</p>
+<p>To load or remove node packs in any .ndz file, just click the menubar command <b>Graph &gt; Load nodes</b>. You'll be presented with a form to add (or remove) node packs to your file as you wish. The form presents widgets to add node packs and a panel where you can see the node packs already on the file and the ones you add using the widgets. In this panel, one 'x' button sits to the left of each node pack listed and can be clicked to remove the node pack. In this form you can add and remove node packs as much as you want without worrying about the consequences because the node packs are only added/removed if you press the <b>Apply changes</b> button.</p>
 
 <p>The form presents 03 different ways to add node packs. First, you can use the option menu listing known node packs, that is, node packs you have successfuly loaded before, both local and installed node packs are listed there. You can also add local node packs by clicking the folder icon button and selecting the node pack folders you want in the file manager dialog that opens. To add installed node packs, just type the name of the node pack (or multiple node packs separated by commas) in the entry and click the '+' (plus) button beside it.</p>
 

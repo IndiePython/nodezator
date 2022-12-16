@@ -60,7 +60,7 @@
     'rename_node_packs' : "Rename node packs",
 
     'change_category_colors' : "Change category colors",
-    'select_node_packs'      : "Select node packs",
+    'load_nodes' : "Load nodes",
     'execute_graph'          : "Execute graph",
 
     'execute_with_custom_stdout' : "Execute with custom stdout",

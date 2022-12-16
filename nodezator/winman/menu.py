@@ -330,7 +330,7 @@ class MenuSetup:
                         "command": (APP_REFS.ea.change_category_colors),
                     },
                     {
-                        "label": (t.menu.select_node_packs),
+                        "label": (t.menu.load_nodes),
                         "command": (APP_REFS.ea.present_change_node_packs_form),
                     },
                     {"label": "------"},
