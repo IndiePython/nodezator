@@ -659,7 +659,7 @@ def insert_list_item(
                 max_width,
             )
 
-            text_block.rect.bottomleft = icon.rect.move(5, 0).bottomright
+            text_block.rect.topleft = icon.rect.move(5, 0).topright
 
             text_list.extend(text_block)
             text_list.anchor_list.extend(text_block.anchor_list)
@@ -702,7 +702,7 @@ def insert_list_item(
 
         text_block = TextBlock(item_element, max_width)
 
-        text_block.rect.bottomleft = icon.rect.move(5, 0).bottomright
+        text_block.rect.topleft = icon.rect.move(5, 0).topright
 
         text_list.extend(text_block)
         text_list.anchor_list.extend(text_block.anchor_list)
