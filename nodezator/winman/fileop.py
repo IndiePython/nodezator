@@ -446,7 +446,7 @@ class FileOperations:
 
             ### try opening the filepath
             try:
-                self.open(filepath)
+                self.open(Path(filepath))
 
             ### when the operation succeeds, a manager
             ### switch exception is raised to indicate
