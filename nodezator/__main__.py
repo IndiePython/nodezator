@@ -58,8 +58,10 @@ def main(filepath=None):
     logger.info("Finished application session.")
 
 
-if __name__ == "__main__":
+### utility function
 
+def parse_args_and_execute_main():
+    """Executes main with parsed arguments."""
     ### parse arguments received, looking for a filepath
     ### (or using None instead, a filepath wasn't provided)
 
@@ -78,10 +80,16 @@ if __name__ == "__main__":
         help=("path of " + NATIVE_FILE_EXTENSION + " file to be loaded."),
     )
 
-    ## parse arguments
-    args = parser.parse_args()
+    ## parse arguments, retrieving the filepath
+    ## (which might be the default, None)
+    filepath = parser.parse_args().filepath
 
-    ### finally call the main function, passing along
-    ### the filepath argument received (which might be the
-    ### default, None)
-    main(args.filepath)
+    ### call the main function, passing along the filepath
+    ### argument retrieved
+    main(filepath)
+
+if __name__ == "__main__":
+
+    ### call the main function, passing along the filepath
+    ### argument received (which might be the default, None)
+    parse_args_and_execute_main()
