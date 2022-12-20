@@ -4,10 +4,8 @@
 from functools import partialmethod
 
 
-### third-party imports
-
+### third-party import
 from pygame.draw import line as draw_line
-from pygame.mouse import get_pos as get_mouse_pos
 
 
 ### local imports
@@ -17,6 +15,7 @@ from ..config import APP_REFS
 from ..pygameconstants import (
     SCREEN,
     SCREEN_RECT,
+    get_mouse_pos,
 )
 
 from ..ourstdlibs.mathutils import offset_point

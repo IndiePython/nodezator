@@ -17,6 +17,7 @@ from .logman.main import get_new_logger
 from .appinfo import TITLE, NATIVE_FILE_EXTENSION
 
 
+
 ### create logger for module
 logger = get_new_logger(__name__)
 
@@ -26,10 +27,15 @@ def main(filepath=None):
 
     Parameters
     ==========
+
     filepath (string or None)
         the path to a file to be opened. May be None, though,
         in which case the application starts without a
         loaded file.
+
+    behavior (string)
+        Interpreted as an instruction for running the app
+        with an specific behavior.
     """
     ### load function that runs the app
     logger.info("Loading application.")
@@ -61,35 +67,36 @@ def main(filepath=None):
 ### utility function
 
 def parse_args_and_execute_main():
-    """Executes main with parsed arguments."""
-    ### parse arguments received, looking for a filepath
-    ### (or using None instead, a filepath wasn't provided)
+    """Execute main() with custom-parsed arguments.
 
-    ## import argument parser
+    This function is used when executing the package after
+    installing it from https://pypi.org.
+    """
+    ### standard library import
     from argparse import ArgumentParser
 
-    ## instantiate and configure it
+    ### configure parser
 
-    parser = ArgumentParser(description=TITLE + " - Python Node Editor")
+    parser = ArgumentParser(description=f"{TITLE} - Python Node Editor")
 
     parser.add_argument(
         "filepath",
         type=str,
         nargs="?",
         default=None,
-        help=("path of " + NATIVE_FILE_EXTENSION + " file to be loaded."),
+        help=f"path of {NATIVE_FILE_EXTENSION} file to be loaded.",
     )
 
-    ## parse arguments, retrieving the filepath
-    ## (which might be the default, None)
-    filepath = parser.parse_args().filepath
+    ### parse arguments
+    parsed_args = parser.parse_args()
 
-    ### call the main function, passing along the filepath
-    ### argument retrieved
-    main(filepath)
+    ### call the main function with the arguments
+    main(parsed_args.filepath)
+
+
+### when file is run as script...
 
 if __name__ == "__main__":
 
-    ### call the main function, passing along the filepath
-    ### argument received (which might be the default, None)
+    ### execute main() with custom-parsed arguments
     parse_args_and_execute_main()

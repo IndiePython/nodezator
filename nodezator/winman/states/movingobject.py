@@ -27,16 +27,16 @@ from pygame import (
     MOUSEBUTTONUP,
 )
 
-from pygame.event import get as get_events
-from pygame.display import update
-
-from pygame.key import (
-    get_mods as get_mods_bitmask,
-    get_pressed as get_pressed_keys,
-)
-
 
 ### local imports
+
+from ...pygameconstants import get as get_events
+from ...pygameconstants import update_screen
+
+from ...pygameconstants import (
+    get_pressed_mod_keys,
+    get_pressed_keys,
+)
 
 from ...config import APP_REFS
 
@@ -106,7 +106,9 @@ class MovingObjectState:
     def moving_object_keyboard_input_handling(self):
         """Handle keyboard specific input."""
         ### get input state maps
-        key_input, mods_bitmask = get_pressed_keys(), get_mods_bitmask()
+        key_input, mods_bitmask = (
+            get_pressed_keys(), get_pressed_mod_keys()
+        )
 
         ### state of keys related to scrolling
 
@@ -173,4 +175,4 @@ class MovingObjectState:
         self.separator.draw()
         self.menubar.draw_top_items()
 
-        update()  # pygame.display.update
+        update_screen()

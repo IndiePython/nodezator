@@ -14,15 +14,19 @@ from pygame import (
     MOUSEMOTION,
 )
 
-from pygame.event import get as get_events
-from pygame.display import update
-
 
 ### local imports
 
 from .translation import DIALOGS_MAP
 
-from .pygameconstants import SCREEN_RECT, blit_on_screen
+from .pygameconstants import (
+
+    SCREEN_RECT,
+    blit_on_screen,
+
+    get_events,
+    update_screen,
+)
 
 from .classes2d.single import Object2D
 from .classes2d.collections import List2D
@@ -624,8 +628,8 @@ class DialogManager(Object2D, LoopHolder):
 
     def draw(self):
         """Update screen continuously."""
-        ### pygame.display.update
-        update()
+        ### update screen
+        update_screen()
 
     def free_up_memory(self):
         """Free memory by clearing collections."""

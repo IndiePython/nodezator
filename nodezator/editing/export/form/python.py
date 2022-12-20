@@ -18,10 +18,6 @@ from pygame import (
     MOUSEBUTTONUP,
 )
 
-from pygame.event import get as get_events
-
-from pygame.display import update
-
 from pygame.math import Vector2
 
 
@@ -36,6 +32,9 @@ from ....pygameconstants import (
     FPS,
     maintain_fps,
     blit_on_screen,
+
+    get_events,
+    update_screen,
 )
 
 
@@ -532,8 +531,8 @@ class PythonExportForm(Object2D):
         for widget in self.widgets:
             widget.draw()
 
-        ### update screen (pygame.display.update)
-        update()
+        ### update screen
+        update_screen()
 
 
 get_python_exporting_settings = PythonExportForm().get_python_exporting_settings

@@ -167,8 +167,8 @@ class IntFloatOperations(Object2D):
         Parameters
         ==========
         event
-            (pygame.event.Event of pygame.MOUSEBUTTONDOWN
-            type) we use it to retrieve and use the
+            (pygame.event.Event of pygame.MOUSEBUTTONDOWN type
+            or similar object) we use it to retrieve and use the
             mouse position.
         """
         ### store special position for future reference

@@ -196,7 +196,7 @@ class LiteralDisplay(Object2D):
         Parameters
         ==========
         event (pygame.event.Event of pygame.MOUSEBUTTONUP
-        type)
+        type or similar object)
             it is required in order to comply with the
             mouse action protocol used; we retrieve the
             mouse position from its "pos" attribute;

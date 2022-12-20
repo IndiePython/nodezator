@@ -5,11 +5,10 @@ from functools import partial
 from copy import deepcopy
 
 
-### third-party import
-from pygame.mouse import get_pos as get_mouse_pos
-
 
 ### local imports
+
+from ...pygameconstants import get_mouse_pos
 
 from ...menu.main import MenuManager
 

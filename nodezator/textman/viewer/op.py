@@ -33,24 +33,23 @@ from pygame import (
     MOUSEMOTION,
 )
 
-from pygame.display import update
-
-from pygame.event import get as get_events
-
-from pygame.key import (
-    get_pressed as get_pressed_keys,
-    get_mods as get_modifier_keys,
-)
-
 
 ### local imports
 
 from ...pygameconstants import (
+
     SCREEN_RECT,
     FPS,
     blit_on_screen,
     maintain_fps,
+
+    update_screen,
+    get_events,
+    get_pressed_keys,
+    get_pressed_mod_keys,
+
 )
+
 
 from ...our3rdlibs.behaviour import watch_window_size
 
@@ -206,7 +205,7 @@ class Operations(Object2D):
 
                 elif event.button == 4:
 
-                    if get_modifier_keys() & KMOD_SHIFT:
+                    if get_pressed_mod_keys() & KMOD_SHIFT:
                         self.scroll(self.line_height, 0)
 
                     else:
@@ -214,7 +213,7 @@ class Operations(Object2D):
 
                 elif event.button == 5:
 
-                    if get_modifier_keys() & KMOD_SHIFT:
+                    if get_pressed_mod_keys() & KMOD_SHIFT:
                         self.scroll(-self.line_height, 0)
 
                     else:
@@ -285,9 +284,8 @@ class Operations(Object2D):
         if self.hovering_help_icon:
             self.help_text_obj.draw()
 
-        ### finally update the screen with
-        ### pygame.display.update
-        update()
+        ### finally update the screen
+        update_screen()
 
     def draw_lines_only(self):
         """Draw the lines, without the line number."""

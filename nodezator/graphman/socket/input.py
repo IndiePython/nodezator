@@ -95,7 +95,7 @@ class InputSocket(Socket):
         ==========
 
         event (pygame.event.Event of pygame.MOUSEBUTTONUP
-        type)
+        type or similar object)
 
             required in order to comply with protocol
             used;

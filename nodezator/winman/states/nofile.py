@@ -17,11 +17,12 @@ from pygame import (
     MOUSEBUTTONUP,
 )
 
-from pygame.event import get as get_events
-from pygame.display import update
-
 
 ### local imports
+
+from ...pygameconstants import get_events
+
+from ...pygameconstants import update_screen
 
 from ...config import APP_REFS
 
@@ -92,8 +93,8 @@ class NoFileState:
         """Act based on mouse motion event.
 
         event
-            pygame.event.Event object of type
-            pygame.MOUSEMOTION.
+            pygame.event.Event object of type pygame.MOUSEMOTION
+            or similar object.
         """
         if self.menubar.get_hovered_menu(event.pos):
             raise SwitchLoopException(self.menubar)
@@ -115,4 +116,4 @@ class NoFileState:
         self.separator.draw()
         self.menubar.draw_top_items()
 
-        update()  # pygame.display.update
+        update_screen()

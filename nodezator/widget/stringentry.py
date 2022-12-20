@@ -32,16 +32,16 @@ from pygame import (
     Rect,
 )
 
-from pygame.display import update
-
-from pygame.event import get as get_events
-
 from pygame.math import Vector2
 
 
 ### local imports
 
-from ..pygameconstants import WINDOW_RESIZE_EVENT_TYPE
+from ..pygameconstants import (
+    WINDOW_RESIZE_EVENT_TYPE,
+    update_screen,
+    get_events,
+)
 
 from ..ourstdlibs.behaviour import (
     empty_function,
@@ -584,8 +584,8 @@ class StringEntry(Object2D):
         ### blit self.image on screen
         super().draw()
 
-        ### finally update the screen (pygame.display.update)
-        update()
+        ### finally update the screen
+        update_screen()
 
     def on_mouse_click(self, event):
         """Delegate focus-related setups to get_focus().
@@ -596,8 +596,8 @@ class StringEntry(Object2D):
         Parameters
         ==========
         event
-            (pygame.event.Event of pygame.MOUSEBUTTONDOWN
-            type)
+            (pygame.event.Event of pygame.MOUSEBUTTONDOWN type
+            or similar object)
 
             although the argument is not used, it is
             required in order to comply with protocol

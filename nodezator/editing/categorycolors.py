@@ -18,12 +18,15 @@ from pygame import (
     MOUSEMOTION,
 )
 
-from pygame.event import get as get_events
-from pygame.display import update
 from pygame.draw import rect as draw_rect
 
 
 ### local imports
+
+from ..pygameconstants import (
+    get_events,
+    update_screen,
+)
 
 from ..config import APP_REFS
 
@@ -508,8 +511,8 @@ class CategoryColorsPicking(Object2D, LoopHolder):
 
             draw_rect(SCREEN, (30, 130, 70), self.hovered_rect, 2)
 
-        ### update screen (pygame.display.update)
-        update()
+        ### update screen
+        update_screen()
 
     def unhighlight(self):
         """Draw semitransparent surface on self.rect area.

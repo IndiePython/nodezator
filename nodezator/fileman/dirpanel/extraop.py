@@ -7,14 +7,14 @@ from math import inf as INFINITY
 from functools import partialmethod
 
 
-### third-party imports
-
+### third-party import
 from pygame import KMOD_SHIFT
 
-from pygame.key import get_mods as get_key_mods
 
+### local imports
 
-### local import
+from ...pygameconstants import get_pressed_mod_keys
+
 from ..constants import PATH_OBJ_QUANTITY
 
 
@@ -155,7 +155,7 @@ class ExtraOperations:
 
         ### store value indicating whether the shift key
         ### was pressed
-        shift_pressed = get_key_mods() & KMOD_SHIFT
+        shift_pressed = get_pressed_mod_keys() & KMOD_SHIFT
 
         ### reference last selected index in local variable
         last_selected_index = self.last_selected_index

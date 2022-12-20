@@ -12,14 +12,16 @@ from pygame import (
 )
 
 from pygame.draw import rect as draw_rect
-from pygame.event import get as get_events
-from pygame.mouse import get_pos as get_mouse_pos
-from pygame.display import update
 
 
 ### local imports
 
-from ..pygameconstants import SCREEN
+from ..pygameconstants import (
+    SCREEN,
+    get_events,
+    get_mouse_pos,
+    update_screen,
+)
 
 from ..ourstdlibs.mathutils import invert_point
 from ..ourstdlibs.treeutils import yield_tree_attrs
@@ -104,7 +106,7 @@ class BehaviourDefinitions(Object2D):
         ### executed in the draw cycle of the menu manager
 
         self.draw = CallList(
-            [self.draw_behind, self.draw_top_items, update]  # pygame.display.update
+            [self.draw_behind, self.draw_top_items, update_screen]
         )
 
         ### also define a control attribute: the active menu

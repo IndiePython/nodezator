@@ -15,18 +15,21 @@ from pygame import (
     MOUSEBUTTONUP,
 )
 
-from pygame.event import get as get_events
 
-from pygame.display import update
 
 from pygame.math import Vector2
-
-from pygame.key import get_pressed as get_pressed_keys
 
 
 ### local imports
 
-from ....pygameconstants import blit_on_screen
+from ....pygameconstants import (
+
+    blit_on_screen,
+
+    get_pressed_keys,
+    get_events,
+    update_screen,
+)
 
 from ....ourstdlibs.color.conversion import (
     full_rgb_to_html_name,
@@ -428,7 +431,7 @@ class ColorListMode:
         self.color_list_bg.draw()
 
         ### and finally update the screen
-        update()  # pygame.display.update
+        update_screen()
 
     def color_list_free_up_memory(self):
         """Clear objects/delete references to free memory."""

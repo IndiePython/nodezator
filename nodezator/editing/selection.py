@@ -12,8 +12,6 @@ from random import sample
 
 from pygame import Rect, KMOD_SHIFT, KMOD_CTRL
 
-from pygame.key import get_mods as get_mods_bitmask
-from pygame.mouse import get_pos as get_mouse_pos
 from pygame.draw import rect as draw_rect
 
 
@@ -21,7 +19,11 @@ from pygame.draw import rect as draw_rect
 
 from ..config import APP_REFS
 
-from ..pygameconstants import SCREEN
+from ..pygameconstants import (
+    SCREEN,
+    get_pressed_mod_keys,
+    get_mouse_pos,
+)
 
 from ..ourstdlibs.mathutils import get_rect_from_points
 
@@ -65,7 +67,7 @@ class SelectionHandling:
         """
         ### if shift is pressed...
 
-        if KMOD_SHIFT & get_mods_bitmask():
+        if KMOD_SHIFT & get_pressed_mod_keys():
 
             ## if object isn't event selected,
             ## make it so by appending to
@@ -219,7 +221,7 @@ class SelectionHandling:
         ### get a bitmask and use it to evaluate whether
         ### the shift and ctrl keys are pressed or not
 
-        bitmask = get_mods_bitmask()
+        bitmask = get_pressed_mod_keys()
 
         shift = bitmask & KMOD_SHIFT
         ctrl = bitmask & KMOD_CTRL

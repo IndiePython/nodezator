@@ -29,20 +29,22 @@ from pygame import (
     MOUSEBUTTONUP,
 )
 
-from pygame.event import get as get_events
-from pygame.display import update
-
 
 ### local imports
 
-from ..translation import TRANSLATION_HOLDER as t
-
 from ..pygameconstants import (
+
     SCREEN_RECT,
     FPS,
     maintain_fps,
     blit_on_screen,
+
+    get_events,
+    update_screen,
+
 )
+
+from ..translation import TRANSLATION_HOLDER as t
 
 from ..dialog import create_and_show_dialog
 
@@ -359,7 +361,7 @@ class FileManagerOperations(Object2D):
 
         self.buttons.draw()
 
-        update() # pygame.display.update
+        update_screen()
 
     def store_current_selection(self):
         """Retrieve path info and store it."""

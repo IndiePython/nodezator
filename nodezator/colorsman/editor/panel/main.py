@@ -15,15 +15,14 @@ from pygame.math import Vector2
 
 from pygame.draw import rect as draw_rect
 
-from pygame.mouse import (
-    get_pos as get_mouse_pos,
-    get_pressed as get_mouse_pressed,
-)
-
 
 ### local imports
 
-from ....pygameconstants import SCREEN
+from ....pygameconstants import (
+    SCREEN,
+    get_mouse_pos,
+    get_mouse_pressed,
+)
 
 from ....classes2d.single import Object2D
 from ....classes2d.collections import List2D

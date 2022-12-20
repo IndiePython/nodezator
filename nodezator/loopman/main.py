@@ -4,14 +4,18 @@
 
 from pygame import QUIT
 
-from pygame.event import get as get_events
-
-from pygame.display import update
-
 
 ### local imports
 
-from ..pygameconstants import FPS, maintain_fps
+from ..pygameconstants import (
+
+    FPS,
+    maintain_fps,
+
+    get_events,
+    update_screen,
+
+)
 
 from ..our3rdlibs.behaviour import watch_window_size
 
@@ -23,16 +27,16 @@ from .exception import (
 
 
 class LoopHolder:
+
     def loop(self):
 
         ### if loop hold doesn't have a 'draw' method,
-        ### assign pygame.display.update to the
-        ### attribute
+        ### assign update_screen to the attribute
 
         try:
             self.draw
         except AttributeError:
-            self.draw = update  # pygame.display.update
+            self.draw = update_screen
 
         ### set self as the loop holder
         loop_holder = self

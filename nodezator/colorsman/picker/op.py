@@ -16,8 +16,6 @@ from pygame import (
     MOUSEMOTION,
 )
 
-from pygame.event import get as get_events
-
 from pygame.draw import rect as draw_rect
 
 
@@ -27,6 +25,7 @@ from ...pygameconstants import (
     SCREEN,
     SCREEN_RECT,
     blit_on_screen,
+    get_events,
 )
 
 from ...ourstdlibs.color.largemaps import (

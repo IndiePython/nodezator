@@ -36,16 +36,17 @@ from pygame import (
     MOUSEMOTION,
 )
 
-from pygame.display import update
-
-from pygame.event import get as get_events
-
 from pygame.math import Vector2
 
 from pygame.draw import rect as draw_rect
 
 
 ### local imports
+
+from ...pygameconstants import (
+    get_events,
+    update_screen,
+)
 
 from ...surfsman.draw import (
     draw_border,
@@ -251,5 +252,4 @@ class NormalModeOperations(Object2D):
 
     def normal_draw(self):
         """Update screen."""
-        ### pygame.display.update()
-        update()
+        update_screen()

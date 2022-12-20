@@ -1,14 +1,12 @@
 """Facility with class extension with drawing operations."""
 
-### third-party imports
-
-from pygame.mouse import get_pos as get_mouse_pos
+### third-party import
 from pygame.draw import line as draw_line
 
 
 ### local imports
 
-from ...pygameconstants import SCREEN
+from ...pygameconstants import SCREEN, get_mouse_pos
 
 from .utils import clip_segment
 

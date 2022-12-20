@@ -37,12 +37,6 @@ from pygame import (
     MOUSEBUTTONDOWN,
 )
 
-from pygame.display import update
-
-from pygame.event import get as get_events
-
-from pygame.key import get_pressed as get_pressed_keys
-
 from pygame.math import Vector2
 
 
@@ -52,6 +46,10 @@ from ...pygameconstants import (
     SCREEN,
     SCREEN_RECT,
     blit_on_screen,
+
+    get_events,
+    get_pressed_keys,
+    update_screen,
 )
 
 from ...surfsman.draw import draw_border_on_area
@@ -307,5 +305,4 @@ class FullModeOperations(Object2D):
 
     def full_draw(self):
         """Update screen."""
-        ### pygame.display.update()
-        update()
+        update_screen()

@@ -16,11 +16,13 @@ from pygame import (
     K_KP_ENTER,
 )
 
-from pygame.event import get as get_events
-from pygame.display import update
-
 
 ### local imports
+
+from ..pygameconstants import (
+    get_events,
+    update_screen,
+)
 
 from ..config import APP_REFS
 
@@ -470,8 +472,8 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
         ### draw widgets
         self.widgets.call_draw()
 
-        ### update screen (pygame.display.update)
-        update()
+        ### update screen
+        update_screen()
 
     def unhighlight(self):
         """Draw semitransparent surface on self.rect area.

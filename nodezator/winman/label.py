@@ -7,10 +7,6 @@ from functools import partial
 from itertools import cycle
 
 
-### third-party import
-from pygame.mouse import get_pos as get_mouse_pos
-
-
 ### local imports
 
 from ..config import APP_REFS

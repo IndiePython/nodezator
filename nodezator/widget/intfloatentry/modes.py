@@ -30,22 +30,23 @@ from pygame import (
     KMOD_CTRL,
 )
 
-from pygame.event import get as get_events
-from pygame.key import get_mods as get_mods_bitmask
-
-from pygame.mouse import (
-    set_pos as set_mouse_pos,
-    set_visible as set_mouse_visibility,
-)
-
-from pygame.display import update
-
 from pygame.math import Vector2
 
 
 ### local imports
 
-from ...pygameconstants import SCREEN_RECT, WINDOW_RESIZE_EVENT_TYPE
+from ...pygameconstants import (
+
+    SCREEN_RECT,
+    WINDOW_RESIZE_EVENT_TYPE,
+
+    get_events,
+    get_pressed_mod_keys,
+    set_mouse_pos,
+    set_mouse_visibility,
+    update_screen,
+
+)
 
 from ...ourstdlibs.behaviour import empty_function
 
@@ -220,8 +221,8 @@ class IntFloatModes(Object2D):
         ### draw self.image
         super().draw()
 
-        ### update the screen (pygame.display.update)
-        update()
+        ### update the screen
+        update_screen()
 
     def enable_expanded_view(self):
         """Expand widget horizontally to provide space."""
@@ -341,8 +342,8 @@ class IntFloatModes(Object2D):
         ### draw self.image
         super().draw()
 
-        ### update the screen (pygame.display.update)
-        update()
+        ### update the screen
+        update_screen()
 
     def mouse_edition_control(self):
         """Process event in mouse edition mode.
@@ -516,8 +517,8 @@ class IntFloatModes(Object2D):
         ### draw self.image
         super().draw()
 
-        ### update the screen (pygame.display.update)
-        update()
+        ### update the screen
+        update_screen()
 
     def enable_standby_mode(self):
         """Assign behaviours for standby mode."""
@@ -558,7 +559,7 @@ class IntFloatModes(Object2D):
         ###    incremented/decremented whenever the mouse
         ###    moves
 
-        self.change_shift_influence(get_mods_bitmask() & KMOD_SHIFT)
+        self.change_shift_influence(get_pressed_mod_keys() & KMOD_SHIFT)
 
     def perform_mouse_edition_exit_setups(self):
         """Restore mouse settings and clean attributes."""

@@ -9,10 +9,6 @@ from pygame import (
     MOUSEBUTTONDOWN,
 )
 
-from pygame.event import get as get_events
-
-from pygame.display import update
-
 from pygame.draw import rect as draw_rect
 
 
@@ -24,6 +20,9 @@ from ..pygameconstants import (
     SCREEN,
     SCREEN_RECT,
     maintain_fps,
+
+    get_events,
+    update_screen,
 )
 
 from ..ourstdlibs.behaviour import get_oblivious_callable
@@ -222,8 +221,8 @@ class VideoPreviewer(Object2D):
 
         self.draw_video_representation()
 
-        ### update the screen (pygame.display.update)
-        update()
+        ### update the screen
+        update_screen()
 
     def draw_next_video_frame(self):
         """"""

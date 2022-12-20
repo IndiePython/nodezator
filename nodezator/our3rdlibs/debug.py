@@ -11,10 +11,6 @@ from pygame import (
     Surface,
 )
 
-from pygame.display import update
-
-from pygame.event import get as get_events
-
 from pygame.draw import rect as draw_rect
 
 
@@ -26,6 +22,9 @@ from ..pygameconstants import (
     SCREEN_RECT,
     maintain_fps,
     blit_on_screen,
+
+    get_events,
+    update_screen,
 )
 
 from ..classes2d.single import Object2D
@@ -115,6 +114,6 @@ def show_surface(surf, background_color=GREY, should_draw_rect=False):
             draw_rect(SCREEN, BLACK, rect, 1)
 
         ## update screen
-        update()
+        update_screen()
 
     return surf

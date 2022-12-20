@@ -130,8 +130,8 @@ class HideSwitch(Object2D):
 
         Parameters
 
-            - event (pygame.event.Event of
-              pygame.MOUSEBUTTONUP type)
+            - event (pygame.event.Event of pygame.MOUSEBUTTONUP type
+            or similar object)
 
               it is not used in this method, but required
               in order to comply with protocol used;

@@ -13,11 +13,8 @@ from pygame import (
     Rect,
 )
 
-from pygame.display import update
 
-from pygame.event import get as get_events
 from pygame.draw import rect as draw_rect
-from pygame.mouse import get_pos as get_mouse_pos
 
 from pygame.math import Vector2
 
@@ -28,6 +25,10 @@ from ...pygameconstants import (
     SCREEN,
     blit_on_screen,
     WINDOW_RESIZE_EVENT_TYPE,
+
+    get_events,
+    get_mouse_pos,
+    update_screen,
 )
 
 from ...classes2d.single import Object2D
@@ -501,7 +502,7 @@ class OptionMenuLifetimeOperations(Object2D):
         self.draw_subobjects()
 
         ### finally, update the screen
-        update()  # pygame.display.update
+        update_screen()
 
     def draw_options(self):
 

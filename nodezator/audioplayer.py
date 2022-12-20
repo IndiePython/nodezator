@@ -12,15 +12,6 @@ from pygame import (
     Rect,
 )
 
-from pygame.event import get as get_events
-
-from pygame.mouse import (
-    get_pos as get_mouse_pos,
-    get_pressed as get_mouse_pressed,
-)
-
-from pygame.display import update
-
 from pygame.draw import (
     rect as draw_rect,
     polygon as draw_polygon,
@@ -40,6 +31,13 @@ from .pygameconstants import (
     SCREEN_RECT,
     FPS,
     maintain_fps,
+
+    get_events,
+    get_mouse_pos,
+    get_mouse_pressed,
+
+    update_screen,
+
 )
 
 from .dialog import create_and_show_dialog
@@ -320,8 +318,8 @@ class AudioPlayer(Object2D):
 
         draw_polygon(SCREEN, BLACK, self.current_volume_points)
 
-        ### update the screen (pygame.display.update)
-        update()
+        ### update the screen
+        update_screen()
 
     def toggle_play(self):
 

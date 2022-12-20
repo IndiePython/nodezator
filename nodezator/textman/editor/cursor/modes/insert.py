@@ -25,10 +25,10 @@ from pygame import (
     K_F1,
 )
 
-from pygame.event import get as get_events
-
 
 ### local imports
+
+from .....pygameconstants import get_events
 
 from .....loopman.exception import QuitAppException
 

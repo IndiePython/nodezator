@@ -1,15 +1,14 @@
 """Window manager methods for 'segment_severance' state."""
 
 ### third-party imports
-
 from pygame import QUIT, KEYUP, K_ESCAPE, MOUSEBUTTONUP
-
-from pygame.event import get as get_events
-
-from pygame.display import update
 
 
 ### local imports
+
+from ...pygameconstants import get_events
+
+from ...pygameconstants import update_screen
 
 from ...config import APP_REFS
 
@@ -70,4 +69,4 @@ class SegmentSeveranceState:
         self.separator.draw()
         self.menubar.draw_top_items()
 
-        update()  # pygame.display.update
+        update_screen()

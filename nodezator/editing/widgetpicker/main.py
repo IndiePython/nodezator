@@ -18,10 +18,6 @@ from pygame import (
     MOUSEBUTTONUP,
 )
 
-from pygame.event import get as get_events
-
-from pygame.display import update
-
 from pygame.math import Vector2
 
 
@@ -35,6 +31,9 @@ from ...pygameconstants import (
     SCREEN_RECT,
     FPS,
     maintain_fps,
+
+    get_events,
+    update_screen,
 )
 
 from ...our3rdlibs.behaviour import watch_window_size
@@ -564,7 +563,7 @@ class WidgetPicker(Object2D, SubformCreation):
         self.cancel_button.draw()
         self.submit_button.draw()
 
-        update()  # pygame.display.update
+        update_screen()
 
 
 pick_widget = WidgetPicker().pick_widget

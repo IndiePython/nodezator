@@ -13,14 +13,14 @@ from pygame import (
     MOUSEBUTTONUP,
 )
 
-from pygame.event import get as get_events
-
-from pygame.key import get_pressed as get_pressed_keys
-
-from pygame.display import update
-
 
 ### local imports
+
+from ...pygameconstants import get_events
+
+from ...pygameconstants import get_pressed_keys
+
+from ...pygameconstants import update_screen
 
 from ...config import APP_REFS
 
@@ -119,4 +119,4 @@ class BoxSelectionState:
         self.separator.draw()
         self.menubar.draw_top_items()
 
-        update()  # pygame.display.update
+        update_screen()

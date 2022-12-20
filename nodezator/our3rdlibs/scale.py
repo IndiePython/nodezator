@@ -1,16 +1,15 @@
 """Facility for a options widgets."""
 
-### third-party imports
-
-from pygame.mouse import (
-    get_pos as get_mouse_pos,
-    get_pressed as get_mouse_pressed,
-)
-
+### third-party import
 from pygame.transform import flip as flip_surface
 
 
 ### local imports
+
+from ..pygameconstants import (
+    get_mouse_pos,
+    get_mouse_pressed,
+)
 
 from ..ourstdlibs.behaviour import empty_function
 

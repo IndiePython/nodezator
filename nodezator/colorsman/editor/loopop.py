@@ -24,14 +24,15 @@ from pygame import (
     K_KP_ENTER,
 )
 
-from pygame.event import get as get_events
-
-from pygame.display import update
-
 
 ### local imports
 
-from ...pygameconstants import blit_on_screen
+from ...pygameconstants import (
+    blit_on_screen,
+
+    get_events,
+    update_screen,
+)
 
 from ...classes2d.single import Object2D
 
@@ -356,7 +357,7 @@ class LoopOperations(Object2D, LoopHolder):
         self.labels.draw()
 
         ### finally, update the screen
-        update()  # pygame.display.update
+        update_screen()
 
     def unhighlight(self):
         """Draw semitransparent surface on self.rect area.

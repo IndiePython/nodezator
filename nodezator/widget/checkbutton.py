@@ -220,8 +220,8 @@ class CheckButton(Object2D):
         Parameters
         ==========
         event
-            (pygame.event.Event of pygame.MOUSEBUTTONDOWN
-            type)
+            (pygame.event.Event of pygame.MOUSEBUTTONDOWN type
+            or similar object)
 
             although we don't use it here, it is required in
             order to comply with the mouse action protocol;

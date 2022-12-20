@@ -20,16 +20,17 @@ from pygame import (
     MOUSEMOTION,
 )
 
-from pygame.event import get as get_events
-
-from pygame.display import update
-
 from pygame.draw import rect as draw_rect
 
 
 ### local imports
 
-from ..pygameconstants import SCREEN
+from ..pygameconstants import (
+    SCREEN,
+    get_events,
+    update_screen,
+)
+
 
 from ..classes2d.single import Object2D
 
@@ -270,4 +271,4 @@ class SplashScreenOperations(Object2D):
         self.right_shadow.draw()
 
         ### finally update the screen
-        update()  # pygame.display.update()
+        update_screen()

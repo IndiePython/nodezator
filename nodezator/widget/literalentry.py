@@ -37,20 +37,18 @@ from pygame import (
     Rect,
 )
 
-from pygame.display import update
-
-from pygame.event import get as get_events
-
 from pygame.math import Vector2
 
 
 ### local imports
 
-from ..pygameconstants import WINDOW_RESIZE_EVENT_TYPE
-
-from ..ourstdlibs.behaviour import (
-    empty_function,
+from ..pygameconstants import (
+    WINDOW_RESIZE_EVENT_TYPE,
+    update_screen,
+    get_events,
 )
+
+from ..ourstdlibs.behaviour import empty_function
 
 from ..ourstdlibs.color.creation import get_contrasting_bw
 
@@ -433,8 +431,8 @@ class LiteralEntry(Object2D):
         ### blit self.image on screen
         super().draw()
 
-        ### finally update the screen (pygame.display.update)
-        update()
+        ### finally update the screen
+        update_screen()
 
     def get_focus(self, event):
         """Perform setups and get focus to itself.

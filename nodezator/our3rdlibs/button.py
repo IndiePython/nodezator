@@ -80,7 +80,8 @@ class Button(Object2D):
         Parameters
         ==========
 
-        event (pygame.event.Event of MOUSEBUTTONUP type)
+        event (pygame.event.Event of pygame.MOUSEBUTTONUP type
+        or similar object)
               although not used in this method, it is
               required in order to comply with protocol
               used; can be used to retrieve the mouse

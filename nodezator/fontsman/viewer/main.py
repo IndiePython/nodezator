@@ -24,12 +24,6 @@ from pygame import (
     K_w,
 )
 
-from pygame.event import get as get_events
-
-from pygame.key import get_pressed as get_pressed_keys
-
-from pygame.display import update
-
 from pygame.font import Font
 
 from pygame.math import Vector2
@@ -39,7 +33,13 @@ from pygame.math import Vector2
 
 from ...config import APP_REFS
 
-from ...pygameconstants import SCREEN_RECT
+from ...pygameconstants import (
+    SCREEN_RECT,
+
+    get_events,
+    get_pressed_keys,
+    update_screen,
+)
 
 from ...dialog import create_and_show_dialog
 
@@ -227,8 +227,8 @@ class FontsViewer(Object2D, LoopHolder):
 
         super().draw()
 
-        ### update screen: pygame.display.udpate()
-        update()
+        ### update screen
+        update_screen()
 
 
 view_fonts = FontsViewer().view_fonts

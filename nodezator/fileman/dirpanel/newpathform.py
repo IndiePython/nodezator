@@ -13,9 +13,6 @@ from pygame import (
     MOUSEBUTTONUP,
 )
 
-from pygame.event import get as get_events
-from pygame.display import update
-
 from pygame.math import Vector2
 
 
@@ -29,6 +26,9 @@ from ...pygameconstants import (
     SCREEN_RECT,
     FPS,
     maintain_fps,
+
+    get_events,
+    update_screen,
 )
 
 from ...dialog import create_and_show_dialog
@@ -423,8 +423,8 @@ class PathForm(Object2D):
         ### draw widgets
         self.widgets.draw()
 
-        ### update screen (pygame.display.update)
-        update()
+        ### update screen
+        update_screen()
 
 
 get_path = PathForm().get_path

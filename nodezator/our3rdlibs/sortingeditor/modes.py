@@ -24,24 +24,22 @@ from pygame import (
 
 from pygame.math import Vector2
 
-from pygame.event import get as get_events
-
-from pygame.key import get_pressed as get_pressed_keys
-
-from pygame.mouse import (
-    get_pos as get_mouse_pos,
-    set_visible as set_mouse_visibility,
-)
-
 from pygame.draw import (
     line as draw_line,
     rect as draw_rect,
 )
 
-from pygame.display import update
-
 
 ### local imports
+
+from ...pygameconstants import (
+    get_events,
+    get_pressed_keys,
+    get_mouse_pos,
+    set_mouse_visibility,
+    update_screen,
+)
+
 
 from ...ourstdlibs.behaviour import empty_function
 
@@ -507,7 +505,7 @@ class SortingEditorModes(Object2D):
         super().draw()
 
         ### finally update the screen
-        update()  # pygame.display.update
+        update_screen()
 
     def drag_mode_draw(self):
         """Draw operations for the drag mode."""
@@ -562,4 +560,4 @@ class SortingEditorModes(Object2D):
         super().draw()
 
         ### finally update the screen
-        update()  # pygame.display.update
+        update_screen()

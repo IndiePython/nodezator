@@ -43,19 +43,18 @@ from pygame import (
     MOUSEBUTTONDOWN,
 )
 
-from pygame.event import get as get_events
-
-from pygame.key import (
-    get_mods as get_mods_bitmask,
-    get_pressed as get_pressed_keys,
-)
-
-from pygame.mouse import get_pos as get_mouse_pos
-
-from pygame.display import update
-
 
 ### local imports
+
+
+from ...pygameconstants import (
+    get_events,
+    get_pressed_keys,
+    get_pressed_mod_keys,
+    get_mouse_pos,
+    update_screen,
+)
+
 
 from ...config import APP_REFS
 
@@ -282,7 +281,10 @@ class LoadedFileState:
     def loaded_file_keyboard_input_handling(self):
         """Handle keyboard specific input."""
         ### get input state maps
-        key_input, modif_bitmask = get_pressed_keys(), get_mods_bitmask()
+
+        key_input, modif_bitmask = (
+            get_pressed_keys(), get_pressed_mod_keys()
+        )
 
         ### check whether the control key is pressed
         ctrl = modif_bitmask & KMOD_CTRL
@@ -366,8 +368,8 @@ class LoadedFileState:
         Parameters
         ==========
         event
-            pygame.event.Event object of type
-            pygame.MOUSEMOTION.
+            pygame.event.Event object of type pygame.MOUSEMOTION
+            or similar object.
 
         About the 'mouse_click_target' attribute
         ========================================
@@ -457,7 +459,7 @@ class LoadedFileState:
 
             ## obtain a bitmask which you'll use to check
             ## the state of modifier keys along the method
-            bitmask = get_mods_bitmask()
+            bitmask = get_pressed_mod_keys()
 
             ## store the state of the ctrl key
             ctrl_pressed = bitmask & KMOD_CTRL
@@ -484,8 +486,8 @@ class LoadedFileState:
         Act based on mouse position.
 
         event
-            pygame.event.Event object of type
-            pygame.MOUSEBUTTONUP.
+            pygame.event.Event object of type pygame.MOUSEBUTTONUP
+            or similar object.
         """
         ### store the mouse position when released
         mouse_pos = event.pos
@@ -603,4 +605,4 @@ class LoadedFileState:
         self.separator.draw()
         self.menubar.draw_top_items()
 
-        update()  # pygame.display.update
+        update_screen()

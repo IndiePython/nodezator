@@ -15,14 +15,15 @@ from pygame import (
     MOUSEBUTTONUP,
 )
 
-from pygame.event import get as get_events
-
-from pygame.display import update
-
 
 ### local imports
 
-from .....pygameconstants import blit_on_screen
+from .....pygameconstants import (
+    blit_on_screen,
+
+    get_events,
+    update_screen,
+)
 
 from .....ourstdlibs.behaviour import (
     empty_function,
@@ -213,7 +214,7 @@ class PatternsMode:
     def patterns_event_handling(self):
         """Event handling for the patterns mode.
 
-        Grab and process events from pygame.event.get.
+        Grab and process pygame events (or similar objects).
         """
         for event in get_events():
 
@@ -245,7 +246,7 @@ class PatternsMode:
 
         Parameters
         ==========
-        event (pygame.event.Event instance)
+        event (pygame.event.Event instance or similar object)
             event of type MOUSEBUTTONUP; its 'pos' attribute
             contains a tuple with two integers and represents
             the position of the mouse on the screen;
@@ -303,4 +304,4 @@ class PatternsMode:
         self.canvas.draw()
 
         ### finally, update the screen
-        update()  # pygame.display.update
+        update_screen()

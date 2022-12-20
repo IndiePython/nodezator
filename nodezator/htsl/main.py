@@ -38,12 +38,6 @@ from pygame import (
     MOUSEBUTTONUP,
 )
 
-from pygame.event import get as get_events
-
-from pygame.key import get_pressed as get_pressed_keys
-
-from pygame.display import update
-
 from pygame.math import Vector2
 
 
@@ -51,7 +45,14 @@ from pygame.math import Vector2
 
 from ..config import APP_REFS, APP_WIDE_WEB_DIR
 
-from ..pygameconstants import SCREEN_RECT, blit_on_screen
+from ..pygameconstants import (
+    SCREEN_RECT,
+    blit_on_screen,
+
+    get_events,
+    get_pressed_keys,
+    update_screen,
+)
 
 from ..ourstdlibs.meta import initialize_bases
 
@@ -562,8 +563,8 @@ class HTSLBrowser(
 
     def draw(self):
         """Update screen."""
-        ### pygame.display.update
-        update()
+        ### update the screen
+        update_screen()
 
 
 ### instantiate htsl browser and reference its relevant

@@ -334,15 +334,14 @@ class TextDisplay(Object2D):
 
         Parameters
         ==========
-        event (pygame.event.Event of pygame.MOUSEBUTTONUP
-        type)
+        event (pygame.event.Event of pygame.MOUSEBUTTONUP type or
+        similar object)
             it is required in order to comply with the
             mouse action protocol used; we retrieve the
             mouse position from its "pos" attribute;
 
-            check pygame.event module documentation on
-            pygame website for more info about this event
-            object.
+            check documentation of pygame's event submodule on
+            pygame website for more info about this event object.
         """
         ### retrieve x coordinate of mouse position
         mouse_x, _ = event.pos

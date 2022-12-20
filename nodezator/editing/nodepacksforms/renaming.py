@@ -21,10 +21,6 @@ from pygame import (
     K_KP_ENTER,
 )
 
-from pygame.event import get as get_events
-
-from pygame.display import update
-
 from pygame.math import Vector2
 
 
@@ -39,6 +35,9 @@ from ...pygameconstants import (
     FPS,
     maintain_fps,
     blit_on_screen,
+
+    get_events,
+    update_screen,
 )
 
 from ...appinfo import NATIVE_FILE_EXTENSION
@@ -605,8 +604,8 @@ class NodePacksRenamingChangeForm(Object2D):
         ### draw widgets
         self.widgets.draw()
 
-        ### update screen (pygame.display.update)
-        update()
+        ### update screen
+        update_screen()
 
 
 present_rename_node_packs_form = (
