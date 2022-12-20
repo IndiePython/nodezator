@@ -51,11 +51,11 @@ from pygame.mixer import pre_init as pre_init_mixer
 
 ### local imports
 
-from .appinfo import FULL_TITLE, ABBREVIATED_TITLE
+from ..appinfo import FULL_TITLE, ABBREVIATED_TITLE
 
-from .config import DATA_DIR
+from ..config import DATA_DIR
 
-from .ourstdlibs.behaviour import empty_function
+from ..ourstdlibs.behaviour import empty_function
 
 
 ### pygame mixer pre-initialization
