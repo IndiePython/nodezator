@@ -130,11 +130,26 @@ class FileOperations:
                     ### file is opened
                     indicate_saved()
 
+                    ### delete swap path contents
+                    APP_REFS.swap_path.unlink()
+
                 elif answer == "save_first":
                     self.save()
 
                 else:
                     return
+
+        ### if there are not and there's a file loaded, it means it
+        ### is a regular file, so delete its swap file
+
+        else:
+
+            try:
+                APP_REFS.source_path
+            except AttributeError:
+                pass
+            else:
+                APP_REFS.swap_path.unlink()
 
         ### generate new temporary filepath
         filepath = APP_REFS.temp_filepaths_man.get_new_temp_filepath()
