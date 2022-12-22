@@ -10,11 +10,17 @@ https://nodezator.com
 https://github.com/IndiePython/nodezator
 """
 
+### standard library import
+from pathlib import Path
+
+
 ### local imports
 
 from .logman.main import get_new_logger
 
 from .appinfo import TITLE, NATIVE_FILE_EXTENSION
+
+from .config import APP_REFS
 
 
 
@@ -22,23 +28,32 @@ from .appinfo import TITLE, NATIVE_FILE_EXTENSION
 logger = get_new_logger(__name__)
 
 
-def main(filepath=None):
+def main(filepath='', recording_path='', ):
     """Launch application.
 
     Parameters
     ==========
 
-    filepath (string or None)
+    filepath (string)
         the path to a file to be opened. May be None, though,
         in which case the application starts without a
         loaded file.
 
-    behavior (string)
-        Interpreted as an instruction for running the app
-        with an specific behavior.
+    recording_path (string)
+        if path is given, app launches in recording mode and
+        saves recording sessions in it.
     """
     ### load function that runs the app
     logger.info("Loading application.")
+
+    ### store recording path
+
+    ## if a path was given, turn it into a pathlib.Path object
+    if recording_path:
+        recording_path = Path(recording_path)
+
+    ## store it
+    APP_REFS.recording_path = recording_path
 
     ## try loading
     try:
@@ -83,15 +98,26 @@ def parse_args_and_execute_main():
         "filepath",
         type=str,
         nargs="?",
-        default=None,
+        default='',
         help=f"path of {NATIVE_FILE_EXTENSION} file to be loaded.",
+    )
+
+    parser.add_argument(
+        "-r",
+        "--recording-path",
+        type=str,
+        default='',
+        help=(
+            "path wherein to save session recording data when requested;"
+            " if given, the app is launched in session recording mode"
+        ),
     )
 
     ### parse arguments
     parsed_args = parser.parse_args()
 
     ### call the main function with the arguments
-    main(parsed_args.filepath)
+    main(parsed_args.filepath, parsed_args.recording_path)
 
 
 ### when file is run as script...

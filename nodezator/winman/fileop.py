@@ -439,8 +439,8 @@ class FileOperations:
 
         Parameters
         ==========
-        filepath (string or None)
-            if None, it means no file must be loaded;
+        filepath (string)
+            if empty, it means no file must be loaded;
             otherwise, it is a string representing the
             path for a file to be loaded.
 
@@ -453,11 +453,10 @@ class FileOperations:
         kept on the screen or not.
         """
 
-        ### if the filepath receive is not None, try
-        ### opening the filepath, taking additional steps
-        ### depending on the outcome
+        ### if a filepath is received, try opening it,
+        ### taking additional steps depending on the outcome
 
-        if filepath is not None:
+        if filepath:
 
             ### try opening the filepath
             try:
@@ -479,9 +478,9 @@ class FileOperations:
             except SwitchLoopException:
                 return self
 
-        ### if the filepath is None, or the operation to
-        ### load it fails, the execution flow of this
-        ### method reaches this spot;
+        ### if the filepath was an empty string, or the operation
+        ### to load it fails, the execution flow of this method
+        ### reaches this spot;
         ###
         ### in such case, we prepare the window
         ### manager for a new session (this call would

@@ -48,6 +48,8 @@ APP_REFS = SimpleNamespace(
             temp_file_suffix=NATIVE_FILE_EXTENSION,
         )
     ),
+    ## recording path
+    recording_path='',
 )
 
 

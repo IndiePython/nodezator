@@ -90,6 +90,22 @@ def get_swap_path(path):
 
     return hidden_swap_path
 
+def get_timestamp(datetime_obj=None):
+    """Return timestamp string in 'YYYY_MM_DD_HH_MM_SS' format."""
+
+    ### if no datetime object is given, use datetime.now()
+    if datetime_obj is None:
+        datetime_obj = datetime.now()
+
+    ### build and return the timestamp
+    return  "".join(
+        ## use either a digit or '_'
+        char if char.isdigit() else "_"
+        ## for each char from the first
+        ## 19 ones in string from
+        ## datetime.now()
+        for char in str(datetime_obj)[:19]
+    )
 
 def save_timestamped_backup(path, backup_quantity):
     """Save new backup, if applicable, limiting to quantity.
@@ -127,17 +143,8 @@ def save_timestamped_backup(path, backup_quantity):
 
     if backup_quantity > 0:
 
-        ### build a custom timestamp in the
-        ### 'YYYY_MM_DD_HH_MM_SS' format
-
-        timestamp = "".join(
-            ## use either a digit or '_'
-            char if char.isdigit() else "_"
-            ## for each char from the first
-            ## 19 ones in string from
-            ## datetime.now()
-            for char in str(datetime.now())[:19]
-        )
+        ### get custom timestamp
+        timestamp = get_timestamp()
 
         ### create a backup path at the same folder of the
         ### original one, but whose name is comprised by

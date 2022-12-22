@@ -53,9 +53,10 @@ from pygame.mixer import pre_init as pre_init_mixer
 
 from ..appinfo import FULL_TITLE, ABBREVIATED_TITLE
 
-from ..config import DATA_DIR
+from ..config import APP_REFS, DATA_DIR
 
 from ..ourstdlibs.behaviour import empty_function
+
 
 
 ### pygame mixer pre-initialization
@@ -86,6 +87,7 @@ set_repeat(500, 30)  # set_repeat(delay, interval)
 ### general screen setup constant
 DEPTH = 32
 
+
 ### overridable constants/behavior;
 ###
 ### the names below can be overriden to change the app's behavior;
@@ -93,31 +95,65 @@ DEPTH = 32
 ### that is, one can set other values and/or replace the behaviors
 ### by other ones that extend them;
 
-DEFAULT_SIZE = (
-    # this value causes window size to equal screen resolution
-    (0, 0)
-    if get_sdl_version() >= (1, 2, 10)
 
-    # if sld isn't >= (1, 2, 10) though, it would raise an exception,
-    # so we need to provide a proper size
-    else (1280, 720)
-)
+## if a recording path was given, we set values and behaviors
+## so app is launched in recording mode
 
-FLAG = RESIZABLE
+if APP_REFS.recording_path:
 
-SCREEN = set_mode(DEFAULT_SIZE, FLAG, DEPTH)
+    DEFAULT_SIZE = (1280, 720)
 
-get_events = get
+    FLAG = 0
 
-get_mouse_pos = get_pos
-set_mouse_pos = set_pos
-get_mouse_pressed = mouse_get_pressed
-set_mouse_visibility = set_visible
+    SCREEN = set_mode(DEFAULT_SIZE, FLAG, DEPTH)
 
-get_pressed_keys = get_pressed
-get_pressed_mod_keys = get_mods
+    # session recording behavior
+    from .recording import recording_ns
 
-update_screen = update
+    get_events = recording_ns.get_events
+
+    get_pressed_keys = recording_ns.get_pressed_keys
+    get_pressed_mod_keys = recording_ns.get_pressed_mod_keys
+
+    get_mouse_pos = recording_ns.get_mouse_pos
+    get_mouse_pressed = recording_ns.get_mouse_pressed
+
+    set_mouse_pos = recording_ns.set_mouse_pos
+    set_mouse_visibility = recording_ns.set_mouse_visibility
+
+
+    update_screen = recording_ns.update_screen
+
+
+## otherwise we set values and behaviors so app runs normally
+
+else:
+
+    DEFAULT_SIZE = (
+        # this value causes window size to equal screen resolution
+        (0, 0)
+        if get_sdl_version() >= (1, 2, 10)
+
+        # if sld isn't >= (1, 2, 10) though, it would raise an exception,
+        # so we need to provide a proper size
+        else (1280, 720)
+    )
+
+    FLAG = RESIZABLE
+
+    SCREEN = set_mode(DEFAULT_SIZE, FLAG, DEPTH)
+
+    get_events = get
+
+    get_mouse_pos = get_pos
+    set_mouse_pos = set_pos
+    get_mouse_pressed = mouse_get_pressed
+    set_mouse_visibility = set_visible
+
+    get_pressed_keys = get_pressed
+    get_pressed_mod_keys = get_mods
+
+    update_screen = update
 
 
 ### the constants below should not be overriden, since they are
