@@ -7,7 +7,7 @@ from types import SimpleNamespace
 
 from collections import defaultdict
 
-from itertools import cycle
+from itertools import cycle, repeat
 
 from datetime import datetime
 
@@ -29,6 +29,7 @@ from pygame.event import (
 from pygame.key import (
     get_pressed,
     get_mods,
+    name as get_key_name,
 )
 
 from pygame.mouse import (
@@ -53,6 +54,8 @@ from pygame.draw import (
 
 from pygame.time import get_ticks as get_msecs
 
+from pygame import locals as pygame_locals
+
 
 ### local imports
 
@@ -65,11 +68,63 @@ from ..ourstdlibs.path import get_timestamp
 from ..ourstdlibs.pyl import save_pyl
 
 
-### set import constants/module-level objects here
+
+### pygame constants
 
 screen = get_surface()
 blit_on_screen = screen.blit
 screen_rect = screen.get_rect()
+
+
+### event values to strip
+
+EVENT_KEY_STRIP_MAP = {
+
+  'MOUSEMOTION': {
+    'buttons': (0, 0, 0),
+    'touch': False,
+    'window': None,
+  },
+
+  'MOUSEBUTTONDOWN': {
+    'button': 1,
+    'touch': False,
+    'window': None,
+  },
+
+  'MOUSEBUTTONUP': {
+    'button': 1,
+    'touch': False,
+    'window': None,
+  },
+
+}
+
+### event name to make compact
+
+EVENT_COMPACT_NAME_MAP = {
+    'KEYDOWN': 'kd',
+    'KEYUP': 'ku',
+    'MOUSEMOTION': 'mm',
+    'MOUSEBUTTONUP': 'mbu',
+    'MOUSEBUTTONDOWN': 'mbd',
+}
+
+### available keys
+
+KEYS = [
+
+    getattr(pygame_locals, item)
+    for item in dir(pygame_locals)
+    if item.startswith('K_')
+
+]
+
+
+### control and data-recording objects
+
+
+## constants
 
 REC_REFS = SimpleNamespace()
 
@@ -88,15 +143,33 @@ MOUSE_VISIBILITY_SETUPS = []
 
 ## label
 
-label_text = (
-    Font(None, 24).render('F9: toggle recording', True, 'white', 'black')
+render_label_text = Font(None, 24).render
+
+def get_label(label_fg, label_bg, label_outline, padding):
+
+    label_text = (
+        render_label_text(
+            "F9: toggle recording", True, label_fg, label_bg
+        )
+    )
+
+    label = Surface(label_text.get_rect().inflate(padding*2, padding*2).size).convert()
+    label.fill(label_outline)
+    draw_rect(label, label_bg, label.get_rect().inflate(-2, -2))
+
+    label.blit(label_text, (padding, padding))
+
+    return label
+
+label = (
+    get_label(
+        label_fg = 'white',
+        label_bg = 'black',
+        label_outline = 'white',
+        padding=6,
+    )
 )
 
-label = Surface(label_text.get_rect().inflate(4, 4).size).convert()
-label.fill('white')
-draw_rect(label, 'black', label.get_rect().inflate(-2, -2))
-
-label.blit(label_text, (2, 2))
 label_rect = label.get_rect()
 
 ## recording indicator
@@ -159,19 +232,33 @@ draw_line(
 )
 
 get_recording_turned_off_surfs = (
-    cycle(
-        (rec_indicator_base_surf,) * 20
-        + (rec_indicator_turned_off_surf,) * 20
-    ).__next__
+    repeat(rec_indicator_turned_off_surf).__next__
 )
 
 ##
-rec_indicator_rect.topright = screen_rect.move(-10, 40).topright
-label_rect.topright = rec_indicator_rect.move(0, 5).bottomright
+label_rect.topright = screen_rect.move(-10, 40).topright
+rec_indicator_rect.topright = label_rect.move(0, 5).bottomright
 ##
 
-###
-REC_REFS.next_indicator_surf = get_recording_turned_off_surfs
+def set_behaviors_to_ignore_session_data():
+
+    ### make it so session data is ignored
+
+    for attr_name in (
+        'process_event',
+        'process_key_state',
+        'process_mod_key_state',
+        'process_mouse_pos',
+        'process_mouse_key_state',
+        'process_mouse_pos_setup',
+        'process_mouse_visibility_setup',
+    ):
+        setattr(REC_REFS, attr_name, empty_oblivious_function)
+
+    ### ensure this is shown in the indicator
+    REC_REFS.next_indicator_surf = get_recording_turned_off_surfs
+
+set_behaviors_to_ignore_session_data()
 
 ### utility functions
 
@@ -200,24 +287,11 @@ def toggle_recording():
 
     else:
 
-        ### save recorded session
-        save_recorded_session()
+        ### save recorded session data
+        save_session_data()
 
         ### make it so session data is ignored
-
-        for attr_name in (
-            'process_event',
-            'process_key_state',
-            'process_mod_key_state',
-            'process_mouse_pos',
-            'process_mouse_key_state',
-            'process_mouse_pos_setup',
-            'process_mouse_visibility_setup',
-        ):
-            setattr(REC_REFS, attr_name, empty_oblivious_function)
-
-        ###
-        REC_REFS.next_indicator_surf = get_recording_turned_off_surfs
+        set_behaviors_to_ignore_session_data()
 
 ### events
 
@@ -227,8 +301,6 @@ def record_event(event):
         event_name(event.type).upper(),
         event.__dict__
     ])
-
-REC_REFS.process_event = empty_oblivious_function
 
 
 ### key requests
@@ -246,7 +318,7 @@ record_mouse_visibility_setup = MOUSE_VISIBILITY_SETUPS.append
 
 ###
 
-def save_recorded_session():
+def save_session_data():
     
     session_data = {}
 
@@ -259,7 +331,7 @@ def save_recorded_session():
         first_msecs = min(EVENTS_MAP.keys())
 
         session_data['events_map'] = {
-            a_time - first_msecs: events
+            a_time - first_msecs: get_compact_events(events)
             for a_time, events in EVENTS_MAP.items()
         }
 
@@ -268,7 +340,7 @@ def save_recorded_session():
 
     ### store lists
 
-    session_data['key_state_requests'] = KEY_STATE_REQUESTS
+    session_data['key_state_requests'] = get_compact_key_states(KEY_STATE_REQUESTS)
     session_data['mod_key_bitmask_request'] = MOD_KEY_BITMASK_REQUEST
 
     session_data['mouse_pos_requests'] = MOUSE_POS_REQUESTS
@@ -281,16 +353,15 @@ def save_recorded_session():
 
     rec_path = APP_REFS.recording_path
 
-    parent, stem, suffix = (
+    parent, stem = (
         getattr(rec_path, attr_name)
-        for attr_name in ('parent', 'stem', 'suffix')
+        for attr_name in ('parent', 'stem')
     )
 
     timestamp = get_timestamp(REC_REFS.session_start_datetime)
 
-    final_path = parent / f"{stem}_{timestamp}{suffix}"
-
-    save_pyl(session_data, final_path)
+    final_path = parent / f"{stem}_{timestamp}.pyl"
+    save_pyl(session_data, final_path, width=125, compact=True)
 
     ### clear stuff
 
@@ -316,6 +387,55 @@ def save_recorded_session():
     session_data.clear()
 
 
+def get_compact_events(events):
+
+    return [
+
+        [
+
+            EVENT_COMPACT_NAME_MAP.get(name, name),
+
+            (
+
+                a_dict
+
+                if name not in EVENT_KEY_STRIP_MAP
+
+                else {
+
+                    key: value
+
+                    for key, value in a_dict.items()
+
+                    if (
+
+                        key not in EVENT_KEY_STRIP_MAP[name]
+
+                        or (
+                            key in EVENT_KEY_STRIP_MAP[name]
+                            and value != EVENT_KEY_STRIP_MAP[name][key]
+                        )
+
+                    )
+
+                }
+
+            )
+        ]
+
+        for name, a_dict in events
+
+    ]
+
+
+def get_compact_key_states(scan_code_wrappers):
+
+    return [
+        [get_key_name(key) for key in KEYS if wrapper[key]]
+        for wrapper in scan_code_wrappers
+    ]
+
+
 ### processing events
 
 def get_events():
@@ -339,21 +459,28 @@ def get_pressed_keys():
     return state
 
 def get_pressed_mod_keys():
-    return get_mods()
+    mods_bitmask = get_mods()
+    REC_REFS.process_mod_key_state(mods_bitmask)
+    return mods_bitmask
 
-
-### processing mouse states
+### processing mouse
 
 def get_mouse_pos():
-    return get_pos()
+    pos = get_pos()
+    REC_REFS.process_mouse_pos(pos)
+    return pos
 
 def get_mouse_pressed():
-    return mouse_get_pressed()
+    pressed_list = mouse_get_pressed()
+    REC_REFS.process_mouse_pos(pressed_list)
+    return pressed_list
 
 def set_mouse_pos(pos):
+    REC_REFS.process_mouse_pos_setup(pos)
     set_pos(pos)
 
 def set_mouse_visibility(boolean):
+    REC_REFS.process_mouse_visibility_setup(boolean)
     set_visible(boolean)
 
 def update_screen():
