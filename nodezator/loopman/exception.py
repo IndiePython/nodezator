@@ -1,5 +1,9 @@
 """Loop management exceptions."""
 
+### third-party import
+from pygame.event import clear as clear_events
+
+
 ### local import
 from ..config import APP_REFS
 
@@ -19,6 +23,11 @@ class SwitchLoopException(Exception):
         self.loop_holder = (
             loop_holder if loop_holder is not None else APP_REFS.window_manager
         )
+
+        ### admin task: clear event queue to prevent events
+        ### generated in the current loop holder to spill into
+        ### the new loop holder
+        clear_events()
 
         ### initialize superclass with custom message
         super().__init__("Switch loop holder.")
