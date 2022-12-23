@@ -28,6 +28,7 @@ def save_pyl(
     *,
     indent=2,
     width=80,
+    compact=False,
 ):
     """Save pretty-formatted python literal in filepath."""
 
@@ -40,6 +41,7 @@ def save_pyl(
                     python_literal,
                     indent=indent,
                     width=width,
+                    compact=compact,
                 )
             )
 
