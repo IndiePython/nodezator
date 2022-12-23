@@ -8,7 +8,7 @@ from functools import partial
 
 from ...config import APP_REFS
 
-from ...pygameconstants import SCREEN_RECT
+from ...pygamesetup import SCREEN_RECT
 
 from ...ourstdlibs.color.utils import get_int_sequence_repr
 

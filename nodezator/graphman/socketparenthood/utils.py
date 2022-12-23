@@ -23,7 +23,7 @@ The code was further refactored and commented by me
 
 from ...config import APP_REFS
 
-from ...pygameconstants import SCREEN_RECT
+from ...pygamesetup import SCREEN_RECT
 
 
 ### clipping utilities

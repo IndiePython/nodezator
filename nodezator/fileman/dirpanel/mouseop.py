@@ -9,7 +9,7 @@ from pygame.time import get_ticks as get_milliseconds
 
 ### local imports
 
-from ...pygameconstants import get_pressed_mod_keys
+from ...pygamesetup import get_pressed_mod_keys
 
 from ..constants import MAX_MSECS_TO_2ND_MOUSE_EVENT
 

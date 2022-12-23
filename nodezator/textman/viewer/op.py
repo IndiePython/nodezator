@@ -36,7 +36,7 @@ from pygame import (
 
 ### local imports
 
-from ...pygameconstants import (
+from ...pygamesetup import (
 
     SCREEN_RECT,
     FPS,

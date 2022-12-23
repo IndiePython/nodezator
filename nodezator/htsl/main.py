@@ -45,7 +45,7 @@ from pygame.math import Vector2
 
 from ..config import APP_REFS, APP_WIDE_WEB_DIR
 
-from ..pygameconstants import (
+from ..pygamesetup import (
     SCREEN_RECT,
     blit_on_screen,
 

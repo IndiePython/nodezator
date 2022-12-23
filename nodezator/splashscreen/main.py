@@ -7,7 +7,7 @@ from ..config import APP_REFS
 
 from ..translation import TRANSLATION_HOLDER as t
 
-from ..pygameconstants import SCREEN
+from ..pygamesetup import SCREEN
 
 from ..appinfo import (
     APP_VERSION,

@@ -37,7 +37,7 @@ from pygame.math import Vector2
 
 ### local imports
 
-from ..pygameconstants import (
+from ..pygamesetup import (
     WINDOW_RESIZE_EVENT_TYPE,
     update_screen,
     get_events,

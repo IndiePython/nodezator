@@ -12,7 +12,7 @@ from pygame.draw import line as draw_line
 
 from ..config import APP_REFS
 
-from ..pygameconstants import (
+from ..pygamesetup import (
     SCREEN,
     SCREEN_RECT,
     get_mouse_pos,

@@ -23,7 +23,7 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from ..pygameconstants import (
+from ..pygamesetup import (
     get_events,
     update_screen,
 )
@@ -36,7 +36,7 @@ from ..translation import TRANSLATION_HOLDER as t
 
 from ..dialog import create_and_show_dialog
 
-from ..pygameconstants import (
+from ..pygamesetup import (
     SCREEN,
     SCREEN_RECT,
     blit_on_screen,

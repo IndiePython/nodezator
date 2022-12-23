@@ -16,7 +16,7 @@ from pygame.draw import rect as draw_rect
 
 from ..config import APP_REFS, FFMPEG_AVAILABLE
 
-from ..pygameconstants import (
+from ..pygamesetup import (
     SCREEN,
     SCREEN_RECT,
     maintain_fps,

@@ -30,10 +30,10 @@ from pygame import (
 
 ### local imports
 
-from ...pygameconstants import get as get_events
-from ...pygameconstants import update_screen
+from ...pygamesetup import get as get_events
+from ...pygamesetup import update_screen
 
-from ...pygameconstants import (
+from ...pygamesetup import (
     get_pressed_mod_keys,
     get_pressed_keys,
 )

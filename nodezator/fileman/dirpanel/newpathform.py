@@ -22,7 +22,7 @@ from ...config import APP_REFS
 
 from ...translation import TRANSLATION_HOLDER as t
 
-from ...pygameconstants import (
+from ...pygamesetup import (
     SCREEN_RECT,
     FPS,
     maintain_fps,

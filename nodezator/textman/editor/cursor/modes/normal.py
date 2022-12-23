@@ -35,7 +35,7 @@ from pygame import (
 
 ### local imports
 
-from .....pygameconstants import get_events
+from .....pygamesetup import get_events
 
 from .....loopman.exception import QuitAppException
 

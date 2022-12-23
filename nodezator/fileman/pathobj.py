@@ -8,7 +8,7 @@ from functools import partialmethod
 
 from ..translation import TRANSLATION_HOLDER as t
 
-from ..pygameconstants import blit_on_screen
+from ..pygamesetup import blit_on_screen
 
 from ..appinfo import NATIVE_FILE_EXTENSION
 

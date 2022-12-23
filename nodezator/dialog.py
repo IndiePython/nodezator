@@ -19,7 +19,7 @@ from pygame import (
 
 from .translation import DIALOGS_MAP
 
-from .pygameconstants import (
+from .pygamesetup import (
 
     SCREEN_RECT,
     blit_on_screen,

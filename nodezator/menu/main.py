@@ -6,7 +6,7 @@ from pygame import Rect
 
 ### local imports
 
-from ..pygameconstants import SCREEN_RECT
+from ..pygamesetup import SCREEN_RECT
 
 from ..ourstdlibs.behaviour import empty_function
 

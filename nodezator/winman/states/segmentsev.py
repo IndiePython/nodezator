@@ -6,9 +6,9 @@ from pygame import QUIT, KEYUP, K_ESCAPE, MOUSEBUTTONUP
 
 ### local imports
 
-from ...pygameconstants import get_events
+from ...pygamesetup import get_events
 
-from ...pygameconstants import update_screen
+from ...pygamesetup import update_screen
 
 from ...config import APP_REFS
 

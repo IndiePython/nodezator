@@ -19,7 +19,7 @@ from pygame.draw import rect as draw_rect
 
 from ..config import APP_REFS
 
-from ..pygameconstants import (
+from ..pygamesetup import (
     SCREEN,
     get_pressed_mod_keys,
     get_mouse_pos,

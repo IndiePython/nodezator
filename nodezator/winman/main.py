@@ -20,7 +20,7 @@ from ..dialog import (
     show_dialog_from_key,
 )
 
-from ..pygameconstants import SCREEN_RECT, blit_on_screen
+from ..pygamesetup import SCREEN_RECT, blit_on_screen
 
 from ..appinfo import (
     FULL_TITLE,

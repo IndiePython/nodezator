@@ -15,7 +15,7 @@ from pygame.draw import rect as draw_rect
 
 from ..config import APP_REFS
 
-from ..pygameconstants import SCREEN_RECT
+from ..pygamesetup import SCREEN_RECT
 
 from ..translation import TRANSLATION_HOLDER as t
 

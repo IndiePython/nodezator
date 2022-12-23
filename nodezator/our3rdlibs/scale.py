@@ -6,7 +6,7 @@ from pygame.transform import flip as flip_surface
 
 ### local imports
 
-from ..pygameconstants import (
+from ..pygamesetup import (
     get_mouse_pos,
     get_mouse_pressed,
 )

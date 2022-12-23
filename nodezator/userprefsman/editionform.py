@@ -19,7 +19,7 @@ from pygame import (
 
 ### local imports
 
-from ..pygameconstants import (
+from ..pygamesetup import (
     get_events,
     update_screen,
 )
@@ -37,7 +37,7 @@ from .validation import (
 
 from ..dialog import create_and_show_dialog
 
-from ..pygameconstants import (
+from ..pygamesetup import (
     SCREEN_RECT,
     blit_on_screen,
 )

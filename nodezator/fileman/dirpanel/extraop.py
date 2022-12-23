@@ -13,7 +13,7 @@ from pygame import KMOD_SHIFT
 
 ### local imports
 
-from ...pygameconstants import get_pressed_mod_keys
+from ...pygamesetup import get_pressed_mod_keys
 
 from ..constants import PATH_OBJ_QUANTITY
 

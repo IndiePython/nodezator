@@ -15,7 +15,7 @@ from webbrowser import open as open_url
 
 from ..config import APP_REFS
 
-from ..pygameconstants import SCREEN
+from ..pygamesetup import SCREEN
 
 from ..translation import TRANSLATION_HOLDER as t
 

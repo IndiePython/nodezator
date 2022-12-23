@@ -27,7 +27,7 @@ from pygame import (
 
 ### local imports
 
-from ...pygameconstants import (
+from ...pygamesetup import (
     blit_on_screen,
 
     get_events,

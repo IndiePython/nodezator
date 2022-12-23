@@ -26,7 +26,7 @@ from pygame.mixer import music
 
 from .config import APP_REFS
 
-from .pygameconstants import (
+from .pygamesetup import (
     SCREEN,
     SCREEN_RECT,
     FPS,

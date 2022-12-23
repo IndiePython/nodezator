@@ -15,7 +15,7 @@ from .config import APP_REFS
 
 from .userprefsman.main import TEMP_FILE_SWAP
 
-from .pygameconstants import (
+from .pygamesetup import (
     SCREEN,
     FPS,
     maintain_fps,

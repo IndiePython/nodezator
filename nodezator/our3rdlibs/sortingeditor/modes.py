@@ -32,7 +32,7 @@ from pygame.draw import (
 
 ### local imports
 
-from ...pygameconstants import (
+from ...pygamesetup import (
     get_events,
     get_pressed_keys,
     get_mouse_pos,

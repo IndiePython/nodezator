@@ -13,7 +13,7 @@ from ..config import APP_REFS
 
 from ..translation import TRANSLATION_HOLDER as t
 
-from ..pygameconstants import SCREEN_RECT
+from ..pygamesetup import SCREEN_RECT
 
 from ..fontsman.constants import (
     FIRA_MONO_BOLD_FONT_HEIGHT,

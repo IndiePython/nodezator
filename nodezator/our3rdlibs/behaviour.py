@@ -15,7 +15,7 @@ from pygame.display import get_caption, set_caption
 
 from ..config import APP_REFS
 
-from ..pygameconstants import (
+from ..pygamesetup import (
     _CLOCK,
     SCREEN,
     SCREEN_RECT,

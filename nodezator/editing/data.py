@@ -26,7 +26,7 @@ from os import linesep
 
 from ..config import APP_REFS
 
-from ..pygameconstants import SCREEN_RECT
+from ..pygamesetup import SCREEN_RECT
 
 from ..logman.main import get_new_logger
 

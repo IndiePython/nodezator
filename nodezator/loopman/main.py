@@ -7,7 +7,7 @@ from pygame import QUIT
 
 ### local imports
 
-from ..pygameconstants import (
+from ..pygamesetup import (
 
     FPS,
     maintain_fps,

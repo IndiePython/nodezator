@@ -8,7 +8,7 @@ from copy import deepcopy
 
 ### local imports
 
-from ...pygameconstants import get_mouse_pos
+from ...pygamesetup import get_mouse_pos
 
 from ...menu.main import MenuManager
 

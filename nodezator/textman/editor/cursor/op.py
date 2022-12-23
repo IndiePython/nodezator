@@ -10,7 +10,7 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from ....pygameconstants import SCREEN, blit_on_screen
+from ....pygamesetup import SCREEN, blit_on_screen
 
 from ....ourstdlibs.behaviour import had_to_set_new_value
 

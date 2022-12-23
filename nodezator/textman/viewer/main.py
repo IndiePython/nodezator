@@ -8,7 +8,7 @@ from pygame.math import Vector2
 
 from ...config import APP_REFS
 
-from ...pygameconstants import SCREEN_RECT
+from ...pygamesetup import SCREEN_RECT
 
 from ...ourstdlibs.collections.general import CallList
 

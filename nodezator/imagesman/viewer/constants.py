@@ -2,7 +2,7 @@
 
 ### local imports
 
-from ...pygameconstants import SCREEN_RECT
+from ...pygamesetup import SCREEN_RECT
 
 from ...classes2d.single import Object2D
 from ...classes2d.collections import List2D

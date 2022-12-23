@@ -33,7 +33,7 @@ from pygame.math import Vector2
 
 from ...config import APP_REFS
 
-from ...pygameconstants import (
+from ...pygamesetup import (
     SCREEN_RECT,
 
     get_events,

@@ -22,7 +22,7 @@ from pygame.math import Vector2
 
 ### local imports
 
-from ....pygameconstants import (
+from ....pygamesetup import (
 
     blit_on_screen,
 

@@ -6,7 +6,7 @@ from pygame.draw import line as draw_line
 
 ### local imports
 
-from ...pygameconstants import SCREEN, get_mouse_pos
+from ...pygamesetup import SCREEN, get_mouse_pos
 
 from .utils import clip_segment
 

@@ -16,7 +16,7 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from ..pygameconstants import (
+from ..pygamesetup import (
     SCREEN,
     get_events,
     get_mouse_pos,

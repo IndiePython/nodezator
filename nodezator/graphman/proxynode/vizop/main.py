@@ -12,7 +12,7 @@ from pygame.draw import rect as draw_rect
 
 from ....config import APP_REFS
 
-from ....pygameconstants import SCREEN
+from ....pygamesetup import SCREEN
 
 ## function for injection
 from .reposition import (

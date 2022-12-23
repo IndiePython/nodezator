@@ -16,7 +16,7 @@ from pygame.time import get_ticks as get_milliseconds
 
 ### local imports
 
-from ...pygameconstants import SCREEN
+from ...pygamesetup import SCREEN
 
 from ...dialog import create_and_show_dialog
 

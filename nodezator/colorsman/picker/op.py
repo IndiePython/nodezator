@@ -21,7 +21,7 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from ...pygameconstants import (
+from ...pygamesetup import (
     SCREEN,
     SCREEN_RECT,
     blit_on_screen,

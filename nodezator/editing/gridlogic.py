@@ -19,7 +19,7 @@ from pygame.display import get_surface
 
 from ..config import APP_REFS
 
-from ..pygameconstants import SCREEN, SCREEN_RECT
+from ..pygamesetup import SCREEN, SCREEN_RECT
 
 from ..dialog import create_and_show_dialog
 

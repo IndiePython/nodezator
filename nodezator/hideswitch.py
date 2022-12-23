@@ -8,7 +8,7 @@ from itertools import cycle
 
 from .config import APP_REFS
 
-from .pygameconstants import SCREEN_RECT
+from .pygamesetup import SCREEN_RECT
 
 from .ourstdlibs.behaviour import empty_function
 
