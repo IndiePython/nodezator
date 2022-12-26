@@ -732,7 +732,7 @@ class FileOperations:
         ###
         ### if it is the case, we notify the user and exit this method
 
-        if APP_REFS.temp_filepaths_man.is_temp_path(filepath):
+        if APP_REFS.temp_filepaths_man.is_temp_path(APP_REFS.source_path):
 
             create_and_show_dialog(
                 "Cannot reload temporary files.",
