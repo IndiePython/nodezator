@@ -33,12 +33,11 @@ from ...translation import TRANSLATION_HOLDER as t
 
 from ...pygamesetup import (
     SCREEN_RECT,
-    FPS,
-    maintain_fps,
     blit_on_screen,
 
     get_events,
     update_screen,
+    frame_checkups,
 )
 
 from ...appinfo import NATIVE_FILE_EXTENSION
@@ -56,7 +55,6 @@ from ...ourstdlibs.pyl import load_pyl, save_pyl
 from ...our3rdlibs.button import Button
 
 from ...our3rdlibs.behaviour import (
-    watch_window_size,
     indicate_unsaved,
     set_status_message,
 )
@@ -683,9 +681,7 @@ class NodePacksSelectionChangeForm(Object2D):
 
         while self.running:
 
-            maintain_fps(FPS)
-
-            watch_window_size()
+            frame_checkups()
 
             ### put the handle_input/update/draw method
             ### execution inside a try/except clause

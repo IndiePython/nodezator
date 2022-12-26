@@ -35,12 +35,11 @@ from pygame import (
 from ..pygamesetup import (
 
     SCREEN_RECT,
-    FPS,
-    maintain_fps,
     blit_on_screen,
 
     get_events,
     update_screen,
+    frame_checkups,
 
 )
 
@@ -52,8 +51,6 @@ from ..ourstdlibs.behaviour import (
     empty_function,
     get_oblivious_callable,
 )
-
-from ..our3rdlibs.behaviour import watch_window_size
 
 from ..loopman.exception import (
     SwitchLoopException,
@@ -128,11 +125,10 @@ class FileManagerOperations(Object2D):
 
         while self.running:
 
-            ### keep a constant framerate
-            maintain_fps(FPS)
-
-            ### watch for changes on window size
-            watch_window_size()
+            ### perform various checkups for this frame;
+            ###
+            ### stuff like maintaing a constant framerate and more
+            frame_checkups()
 
             ### run the GUD methods (check the glossary
             ### for loop holder/loop/methods)

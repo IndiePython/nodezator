@@ -30,12 +30,11 @@ from pygame import (
 
 ### local imports
 
-from ...pygamesetup import get as get_events
-from ...pygamesetup import update_screen
-
 from ...pygamesetup import (
-    get_pressed_mod_keys,
+    get_events,
     get_pressed_keys,
+    get_pressed_mod_keys,
+    update_screen,
 )
 
 from ...config import APP_REFS

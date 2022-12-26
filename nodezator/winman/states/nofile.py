@@ -20,9 +20,7 @@ from pygame import (
 
 ### local imports
 
-from ...pygamesetup import get_events
-
-from ...pygamesetup import update_screen
+from ...pygamesetup import get_events, update_screen
 
 from ...config import APP_REFS
 

@@ -21,16 +21,13 @@ from ...config import APP_REFS
 
 from ...pygamesetup import (
     SCREEN_RECT,
-    maintain_fps,
-    FPS,
     blit_on_screen,
+    frame_checkups,
 )
 
 from ...dialog import create_and_show_dialog
 
 from ...ourstdlibs.collections.general import CallList
-
-from ...our3rdlibs.behaviour import watch_window_size
 
 from ...surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
@@ -433,9 +430,10 @@ class TextEditor(Object2D):
 
         while self.running:
 
-            maintain_fps(FPS)
-
-            watch_window_size()
+            ### perform various checkups for this frame;
+            ###
+            ### stuff like maintaing a constant framerate and more
+            frame_checkups()
 
             ### perform the GUD operations;
             ###

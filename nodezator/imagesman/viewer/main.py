@@ -14,13 +14,10 @@ from ...config import APP_REFS
 
 from ...pygamesetup import (
     SCREEN_RECT,
-    FPS,
-    maintain_fps,
+    frame_checkups,
 )
 
 from ...ourstdlibs.behaviour import empty_function
-
-from ...our3rdlibs.behaviour import watch_window_size
 
 from ...classes2d.single import Object2D
 from ...classes2d.collections import List2D
@@ -131,9 +128,10 @@ class ImagesViewer(NormalModeOperations, FullModeOperations):
 
         while self.running:
 
-            maintain_fps(FPS)
-
-            watch_window_size()
+            ### perform various checkups for this frame;
+            ###
+            ### stuff like maintaing a constant framerate and more
+            frame_checkups()
 
             self.handle_input()
             self.draw()

@@ -9,15 +9,11 @@ from pygame import QUIT
 
 from ..pygamesetup import (
 
-    FPS,
-    maintain_fps,
-
     get_events,
     update_screen,
+    frame_checkups,
 
 )
-
-from ..our3rdlibs.behaviour import watch_window_size
 
 from .exception import (
     ContinueLoopException,
@@ -47,9 +43,10 @@ class LoopHolder:
 
         while self.running:
 
-            maintain_fps(FPS)
-
-            watch_window_size()
+            ### perform various checkups for this frame;
+            ###
+            ### stuff like maintaing a constant framerate and more
+            frame_checkups()
 
             try:
 

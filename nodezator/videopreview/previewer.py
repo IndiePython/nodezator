@@ -19,15 +19,13 @@ from ..config import APP_REFS, FFMPEG_AVAILABLE
 from ..pygamesetup import (
     SCREEN,
     SCREEN_RECT,
-    maintain_fps,
 
     get_events,
     update_screen,
+    frame_checkups_with_fps,
 )
 
 from ..ourstdlibs.behaviour import get_oblivious_callable
-
-from ..our3rdlibs.behaviour import watch_window_size
 
 from ..loopman.exception import (
     QuitAppException,
@@ -166,9 +164,7 @@ class VideoPreviewer(Object2D):
 
         while self.running:
 
-            maintain_fps(self.fps)
-
-            watch_window_size()
+            frame_checkups_with_fps(self.fps)
 
             try:
 

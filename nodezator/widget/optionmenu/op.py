@@ -24,12 +24,13 @@ from pygame.math import Vector2
 from ...pygamesetup import (
     SCREEN,
     blit_on_screen,
-    WINDOW_RESIZE_EVENT_TYPE,
 
     get_events,
     get_mouse_pos,
     update_screen,
 )
+
+from ...pygamesetup.constants import WINDOW_RESIZE_EVENT_TYPE
 
 from ...classes2d.single import Object2D
 
@@ -315,7 +316,6 @@ class OptionMenuLifetimeOperations(Object2D):
             ### watches out for movement of the widget
 
             elif event.type == WINDOW_RESIZE_EVENT_TYPE:
-
                 self.handle_input = self.watch_out_for_movement
 
     def watch_out_for_movement(self):

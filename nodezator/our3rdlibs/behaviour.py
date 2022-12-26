@@ -15,15 +15,12 @@ from pygame.display import get_caption, set_caption
 
 from ..config import APP_REFS
 
-from ..pygamesetup import (
-    _CLOCK,
-    SCREEN,
-    SCREEN_RECT,
-)
+from ..pygamesetup.constants import get_fps
 
 from ..loopman.exception import QuitAppException
 
 from ..translation import STATUS_MESSAGES_MAP
+
 
 
 ### utility functions
@@ -138,37 +135,4 @@ def get_current_fps():
      9.18484242 -> '09'
     29.18484242 -> '29'
     """
-    return str(round(_CLOCK.get_fps())).rjust(2, "0")
-
-
-def watch_window_size():
-    """Perform setups needed if window was resized."""
-    ### obtain current size
-    current_size = SCREEN.get_size()
-
-    ### if current screen size is different from the one
-    ### we stored...
-
-    if current_size != SCREEN_RECT.size:
-
-        ### perform window resize setups
-
-        SCREEN_RECT.size = current_size
-        APP_REFS.window_resize_setups()
-
-        ### redraw the window manager
-        APP_REFS.window_manager.draw()
-
-        ### update the screen copy
-        APP_REFS.SCREEN_COPY = SCREEN.copy()
-
-        ### if there's a request to draw after the setups,
-        ### do so and delete the request
-
-        if hasattr(
-            APP_REFS,
-            "draw_after_window_resize_setups",
-        ):
-
-            APP_REFS.draw_after_window_resize_setups()
-            del APP_REFS.draw_after_window_resize_setups
+    return str(round(get_fps())).rjust(2, "0")

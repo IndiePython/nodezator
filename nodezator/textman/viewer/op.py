@@ -39,19 +39,17 @@ from pygame import (
 from ...pygamesetup import (
 
     SCREEN_RECT,
-    FPS,
     blit_on_screen,
-    maintain_fps,
 
     update_screen,
     get_events,
     get_pressed_keys,
     get_pressed_mod_keys,
 
+    frame_checkups,
+
 )
 
-
-from ...our3rdlibs.behaviour import watch_window_size
 
 from ...surfsman.draw import draw_border
 from ...surfsman.cache import UNHIGHLIGHT_SURF_MAP
@@ -103,9 +101,10 @@ class Operations(Object2D):
 
         while self.running:
 
-            maintain_fps(FPS)
-
-            watch_window_size()
+            ### perform various checkups for this frame;
+            ###
+            ### stuff like maintaing a constant framerate and more
+            frame_checkups()
 
             self.handle_input()
 

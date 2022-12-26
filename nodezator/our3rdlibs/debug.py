@@ -17,15 +17,15 @@ from pygame.draw import rect as draw_rect
 ### local imports
 
 from ..pygamesetup import (
-    FPS,
     SCREEN,
     SCREEN_RECT,
-    maintain_fps,
     blit_on_screen,
 
     get_events,
     update_screen,
 )
+
+from ..pygamesetup.constants import FPS, maintain_fps
 
 from ..classes2d.single import Object2D
 

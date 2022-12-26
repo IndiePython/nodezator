@@ -38,7 +38,6 @@ from pygame.math import Vector2
 from ...pygamesetup import (
 
     SCREEN_RECT,
-    WINDOW_RESIZE_EVENT_TYPE,
 
     get_events,
     get_pressed_mod_keys,
@@ -47,6 +46,8 @@ from ...pygamesetup import (
     update_screen,
 
 )
+
+from ...pygamesetup.constants import WINDOW_RESIZE_EVENT_TYPE
 
 from ...ourstdlibs.behaviour import empty_function
 
@@ -194,7 +195,6 @@ class IntFloatModes(Object2D):
             ## out routine
 
             elif event.type == WINDOW_RESIZE_EVENT_TYPE:
-
                 self.movement_watch_out_routine = self.watch_out_for_movement
 
         self.movement_watch_out_routine()

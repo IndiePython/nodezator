@@ -14,7 +14,7 @@ from pygame.math import Vector2
 
 
 ### local import
-from ..pygamesetup import FPS
+from ..pygamesetup.constants import FPS
 
 
 ### nodes animation

@@ -13,17 +13,13 @@ from pygame.display import update
 
 from .config import APP_REFS
 
+from .pygamesetup import frame_checkups
+
 from .userprefsman.main import TEMP_FILE_SWAP
 
-from .pygamesetup import (
-    SCREEN,
-    FPS,
-    maintain_fps,
-)
+from .pygamesetup import SCREEN
 
 from .colorsman.colors import WINDOW_BG
-
-from .our3rdlibs.behaviour import watch_window_size
 
 
 ## before going on, fill the screen with the window
@@ -84,11 +80,10 @@ def run_app(filepath=None):
 
     while True:
 
-        ### keep a constant framerate
-        maintain_fps(FPS)
-
-        ### keep an eye on the window size
-        watch_window_size()
+        ### perform various checkups for this frame;
+        ###
+        ### stuff like maintaing a constant framerate and more
+        frame_checkups()
 
         ### run the GUD methods (check glossary for
         ### loop holder/methods/loop)

@@ -42,11 +42,9 @@ from pygame.math import Vector2
 
 ### local imports
 
-from ..pygamesetup import (
-    WINDOW_RESIZE_EVENT_TYPE,
-    update_screen,
-    get_events,
-)
+from ..pygamesetup import update_screen, get_events
+
+from ..pygamesetup.constants import WINDOW_RESIZE_EVENT_TYPE
 
 from ..ourstdlibs.behaviour import empty_function
 
@@ -385,7 +383,6 @@ class LiteralEntry(Object2D):
             ### for movement of the widget
 
             elif event.type == WINDOW_RESIZE_EVENT_TYPE:
-
                 self.handle_input = self.watch_out_for_movement
 
     def watch_out_for_movement(self):

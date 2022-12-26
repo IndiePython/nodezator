@@ -29,14 +29,14 @@ from .config import APP_REFS
 from .pygamesetup import (
     SCREEN,
     SCREEN_RECT,
-    FPS,
-    maintain_fps,
 
     get_events,
     get_mouse_pos,
     get_mouse_pressed,
 
     update_screen,
+
+    frame_checkups,
 
 )
 
@@ -47,8 +47,6 @@ from .logman.main import get_new_logger
 from .ourstdlibs.behaviour import get_oblivious_callable
 
 from .our3rdlibs.userlogger import USER_LOGGER
-
-from .our3rdlibs.behaviour import watch_window_size
 
 from .loopman.exception import (
     QuitAppException,
@@ -228,9 +226,10 @@ class AudioPlayer(Object2D):
 
         while self.running:
 
-            maintain_fps(FPS)
-
-            watch_window_size()
+            ### perform various checkups for this frame;
+            ###
+            ### stuff like maintaing a constant framerate and more
+            frame_checkups()
 
             try:
 

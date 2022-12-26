@@ -2,48 +2,15 @@
 
 ### third-party imports
 
-from pygame import (
-    RESIZABLE,
-    init as init_pygame,
-    get_sdl_version,
-)
-
-# choose appropriate window resize event type according to
-# availability
-
-try:
-    from pygame import WINDOWRESIZED
-except ImportError:
-    from pygame import VIDEORESIZE
-    WINDOW_RESIZE_EVENT_TYPE = VIDEORESIZE
-else:
-    WINDOW_RESIZE_EVENT_TYPE = WINDOWRESIZED
+from pygame import init as init_pygame
 
 #
 
-from pygame.event import get
 
-from pygame.key import (
-    set_repeat,
-    get_pressed,
-    get_mods,
-)
+from pygame.key import set_repeat
 
-from pygame.mouse import (
-    set_visible,
-    get_pos,
-    set_pos,
-    get_pressed as mouse_get_pressed,
-)
+from pygame.display import set_icon, set_caption
 
-from pygame.display import (
-    set_mode,
-    set_icon,
-    set_caption,
-    update,
-)
-
-from pygame.time import Clock
 from pygame.image import load as load_image
 
 from pygame.mixer import pre_init as pre_init_mixer
@@ -55,8 +22,6 @@ from ..appinfo import FULL_TITLE, ABBREVIATED_TITLE
 
 from ..config import APP_REFS, DATA_DIR
 
-from ..ourstdlibs.behaviour import empty_function
-
 
 
 ### pygame mixer pre-initialization
@@ -64,13 +29,6 @@ pre_init_mixer(44100, -16, 2, 4096)
 
 ### pygame initialization
 init_pygame()
-
-### framerate-related constants/behaviour
-
-_CLOCK = Clock()
-maintain_fps = _CLOCK.tick
-
-FPS = 24
 
 ### set caption and icon for window
 
@@ -84,81 +42,66 @@ set_icon(load_image(image_path))
 set_repeat(500, 30)  # set_repeat(delay, interval)
 
 
-### general screen setup constant
-DEPTH = 32
-
-
 ### overridable constants/behavior;
 ###
-### the names below can be overriden to change the app's behavior;
-###
-### that is, one can set other values and/or replace the behaviors
-### by other ones that extend them;
+### you can import values/objects/behaviours below from different
+### modules to change the app's behavior;
 
 
-## if a recording path was given, we set values and behaviors
+## if a recording path was given, we import values and behaviors
 ## so app is launched in recording mode
 
 if APP_REFS.recording_path:
 
-    DEFAULT_SIZE = (1280, 720)
+    from .recording import (
 
-    FLAG = 0
+        SCREEN,
+        SCREEN_RECT,
+        blit_on_screen,
 
-    SCREEN = set_mode(DEFAULT_SIZE, FLAG, DEPTH)
+        get_events,
 
-    # session recording behavior
-    from .recording import recording_ns
+        get_pressed_keys,
+        get_pressed_mod_keys,
 
-    get_events = recording_ns.get_events
+        get_mouse_pos,
+        get_mouse_pressed,
 
-    get_pressed_keys = recording_ns.get_pressed_keys
-    get_pressed_mod_keys = recording_ns.get_pressed_mod_keys
+        set_mouse_pos,
+        set_mouse_visibility,
 
-    get_mouse_pos = recording_ns.get_mouse_pos
-    get_mouse_pressed = recording_ns.get_mouse_pressed
+        update_screen,
 
-    set_mouse_pos = recording_ns.set_mouse_pos
-    set_mouse_visibility = recording_ns.set_mouse_visibility
+        frame_checkups,
+        frame_checkups_with_fps,
 
-
-    update_screen = recording_ns.update_screen
+    )
 
 
 ## otherwise we set values and behaviors so app runs normally
 
 else:
 
-    DEFAULT_SIZE = (
-        # this value causes window size to equal screen resolution
-        (0, 0)
-        if get_sdl_version() >= (1, 2, 10)
+    from .usingnormally import (
 
-        # if sld isn't >= (1, 2, 10) though, it would raise an exception,
-        # so we need to provide a proper size
-        else (1280, 720)
+        SCREEN,
+        SCREEN_RECT,
+        blit_on_screen,
+
+        get_events,
+
+        get_pressed_keys,
+        get_pressed_mod_keys,
+
+        get_mouse_pos,
+        get_mouse_pressed,
+
+        set_mouse_pos,
+        set_mouse_visibility,
+
+        update_screen,
+
+        frame_checkups,
+        frame_checkups_with_fps,
+
     )
-
-    FLAG = RESIZABLE
-
-    SCREEN = set_mode(DEFAULT_SIZE, FLAG, DEPTH)
-
-    get_events = get
-
-    get_mouse_pos = get_pos
-    set_mouse_pos = set_pos
-    get_mouse_pressed = mouse_get_pressed
-    set_mouse_visibility = set_visible
-
-    get_pressed_keys = get_pressed
-    get_pressed_mod_keys = get_mods
-
-    update_screen = update
-
-
-### the constants below should not be overriden, since they are
-### useful regardless of the desired behavior
-
-blit_on_screen = SCREEN.blit
-
-SCREEN_RECT = SCREEN.get_rect()

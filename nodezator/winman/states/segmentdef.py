@@ -16,11 +16,7 @@ from pygame import (
 
 ### local import
 
-from ...pygamesetup import get_events
-
-from ...pygamesetup import get_pressed_keys
-
-from ...pygamesetup import update_screen
+from ...pygamesetup import get_events, get_pressed_keys, update_screen
 
 from ...config import APP_REFS
 

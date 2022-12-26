@@ -20,15 +20,12 @@ from ...config import APP_REFS
 
 from ...pygamesetup import (
     SCREEN_RECT,
-    FPS,
-    maintain_fps,
+    frame_checkups,
 )
 
 from ...ourstdlibs.behaviour import get_oblivious_callable
 
 from ...ourstdlibs.collections.general import CallList
-
-from ..behaviour import watch_window_size
 
 from ...surfsman.draw import blit_aligned
 from ...surfsman.render import render_rect
@@ -348,11 +345,10 @@ class SortingEditor(SortingEditorModes):
 
         while self.running:
 
-            ## maintain a constant framerate
-            maintain_fps(FPS)
-
-            ## watch out for when window is resized
-            watch_window_size()
+            ### perform various checkups for this frame;
+            ###
+            ### stuff like maintaing a constant framerate and more
+            frame_checkups()
 
             ## perform GUD operations (initials of the
             ## methods; see also the loop holder definition
