@@ -17,6 +17,7 @@ from datetime import datetime
 from pygame import (
     KEYUP,
     K_F9,
+    KMOD_NONE,
     Rect,
     Surface,
 )
@@ -29,7 +30,6 @@ from pygame.event import (
 from pygame.key import (
     get_pressed,
     get_mods,
-    name as get_key_name,
 )
 
 from pygame.mouse import (
@@ -48,8 +48,6 @@ from pygame.draw import (
     ellipse as draw_ellipse,
     line as draw_line,
 )
-
-from pygame.time import get_ticks as get_msecs
 
 from pygame import locals as pygame_locals
 
@@ -105,6 +103,14 @@ EVENT_KEY_STRIP_MAP = {
     'window': None,
   },
 
+  'KEYUP': {
+    'mod': 0,
+  },
+
+  'KEYDOWN': {
+    'mod': 0,
+  },
+
 }
 
 ### event name to make compact
@@ -117,15 +123,32 @@ EVENT_COMPACT_NAME_MAP = {
     'MOUSEBUTTONDOWN': 'mbd',
 }
 
+
 ### available keys
 
-KEYS = [
+KEYS_MAP = {
 
-    getattr(pygame_locals, item)
+    item : getattr(pygame_locals, item)
+
     for item in dir(pygame_locals)
+
     if item.startswith('K_')
 
-]
+}
+
+
+MOD_KEYS_MAP = {
+
+    item: getattr(pygame_locals, item)
+
+    for item in dir(pygame_locals)
+
+    if (
+        item.startswith('K_MOD')
+        and item != 'KMOD_NONE'
+    )
+
+}
 
 
 ### control and data-recording objects
@@ -265,8 +288,8 @@ def set_behaviors_to_ignore_session_data():
     ### ensure this is shown in the indicator
     REC_REFS.next_indicator_surf = get_recording_turned_off_surfs
 
-    ### set an empty function as the frame time routine
-    REC_REFS.frame_time_routine = empty_function
+    ### set an empty function as the frame index routine
+    REC_REFS.frame_index_routine = empty_function
 
 set_behaviors_to_ignore_session_data()
 
@@ -279,11 +302,11 @@ def toggle_recording():
         ### record beginning of recording session
         REC_REFS.session_start_datetime = datetime.now()
 
-        ### store frame time
-        store_frame_time()
+        ### set frame index to 0
+        REC_REFS.frame_index = 0
 
-        ### set frame time storing as frame time routine
-        REC_REFS.frame_time_routine = store_frame_time
+        ### set frame index incrementation as the frame index routine
+        REC_REFS.frame_index_routine = increment_frame_index
 
         ### make it so session data is recorded
 
@@ -309,110 +332,172 @@ def toggle_recording():
         ### make it so session data is ignored
         set_behaviors_to_ignore_session_data()
 
-def store_frame_time():
-    ### store current frame time
-    REC_REFS.frame_msecs = get_msecs()
+def increment_frame_index():
+    """increment frame index by 1"""
+    REC_REFS.frame_index += 1
 
-### events
+### recording operations
+
+## events
 
 def record_event(event):
 
-    EVENTS_MAP[REC_REFS.frame_msecs].append([
-        event_name(event.type).upper(),
+    EVENTS_MAP[REC_REFS.frame_index].append([
+        event.type,
         event.__dict__
     ])
 
 
-### key requests
+## key requests
 
 append_key_state_data = KEY_STATE_REQUESTS.append
 def record_key_state(state):
-    append_key_state_data((REC_REFS.frame_msecs, state))
+    append_key_state_data((REC_REFS.frame_index, state))
 
 append_mods_bitmask_data = MOD_KEY_BITMASK_REQUESTS.append
 def record_mod_key_state(mods_bitmask):
-    append_mods_bitmask_data((REC_REFS.frame_msecs, mods_bitmask))
+    append_mods_bitmask_data((REC_REFS.frame_index, mods_bitmask))
 
-### mouse requests/setups
+## mouse requests/setups
 
 append_mouse_pos_request_data = MOUSE_POS_REQUESTS.append
 def record_mouse_pos(pos):
-    append_mouse_pos_request_data((REC_REFS.frame_msecs, pos))
+    append_mouse_pos_request_data((REC_REFS.frame_index, pos))
 
 append_mouse_key_state_data = MOUSE_KEY_STATE_REQUESTS.append
 def record_mouse_key_state(pressed_tuple):
-    append_mouse_key_state_data((REC_REFS.frame_msecs, pressed_tuple))
+    append_mouse_key_state_data((REC_REFS.frame_index, pressed_tuple))
 
 append_mouse_pos_setup_data = MOUSE_POS_SETUPS.append
 def record_mouse_pos_setup(pos):
-    append_mouse_pos_setup_data((REC_REFS.frame_msecs, pos))
+    append_mouse_pos_setup_data((REC_REFS.frame_index, pos))
 
 append_mouse_visibility_data = MOUSE_VISIBILITY_SETUPS.append
 def record_mouse_visibility_setup(boolean):
-    append_mouse_visibility_data((REC_REFS.frame_msecs, boolean))
+    append_mouse_visibility_data((REC_REFS.frame_index, boolean))
 
-###
+
+### session behaviours
+
+## processing events
+
+def get_events():
+
+    for event in get():
+
+        if event.type == KEYUP and event.key == K_F9:
+
+            ### set toggle recording as the frame index routine;
+            ###
+            ### this will cause the recording state to be toggled
+            ### (either turned on or off) at the very beginning of
+            ### the next frame
+            REC_REFS.frame_index_routine = toggle_recording
+
+        else:
+
+            REC_REFS.process_event(event)
+            yield event
+
+## processing key pressed states
+
+def get_pressed_keys():
+    state = get_pressed()
+    REC_REFS.process_key_state(state)
+    return state
+
+def get_pressed_mod_keys():
+    mods_bitmask = get_mods()
+    REC_REFS.process_mod_key_state(mods_bitmask)
+    return mods_bitmask
+
+## processing mouse
+
+def get_mouse_pos():
+    pos = get_pos()
+    REC_REFS.process_mouse_pos(pos)
+    return pos
+
+def get_mouse_pressed():
+    pressed_tuple = mouse_get_pressed()
+    REC_REFS.process_mouse_key_state(pressed_tuple)
+    return pressed_tuple
+
+def set_mouse_pos(pos):
+    REC_REFS.process_mouse_pos_setup(pos)
+    set_pos(pos)
+
+def set_mouse_visibility(boolean):
+    REC_REFS.process_mouse_visibility_setup(boolean)
+    set_visible(boolean)
+
+
+### screen updating
+
+def update_screen():
+    ###
+    blit_on_screen(REC_REFS.next_indicator_surf(), rec_indicator_rect)
+    blit_on_screen(label, label_rect)
+
+    ### update the screen
+    update()
+
+
+### frame checkup operations
+
+def frame_checkups():
+    """Perform various checkups.
+
+    Meant to be used at the beginning of each frame in the
+    app loop.
+    """
+    ### keep constants fps
+    maintain_fps(FPS)
+
+    ### execute frame index routine
+    REC_REFS.frame_index_routine()
+
+def frame_checkups_with_fps(fps):
+    """Same as frame_checkups(), but uses given fps."""
+    ### keep constants fps
+    maintain_fps(fps)
+
+    ### execute frame index routine
+    REC_REFS.frame_index_routine()
+
+
+### session data saving operations
 
 def save_session_data():
     
     session_data = {}
 
-    ### calculate first milliseconds value recorded
-
-    first_msecs = min(
-        *EVENTS_MAP.keys(),
-        *(item[0] for item in KEY_STATE_REQUESTS),
-        *(item[0] for item in MOD_KEY_BITMASK_REQUESTS),
-        *(item[0] for item in MOUSE_POS_REQUESTS),
-        *(item[0] for item in MOUSE_KEY_STATE_REQUESTS),
-        *(item[0] for item in MOUSE_POS_SETUPS),
-        *(item[0] for item in MOUSE_VISIBILITY_SETUPS),
-    )
-
-    ### events map
-
-    ## process
+    ### process event map
 
     if EVENTS_MAP:
 
         session_data['events_map'] = {
-            a_time - first_msecs: get_compact_events(events)
-            for a_time, events in EVENTS_MAP.items()
+            frame_index : get_compact_events(events)
+            for frame_index, events in EVENTS_MAP.items()
         }
 
     ## clear
     EVENTS_MAP.clear()
 
-    ### store lists
+    ### store data
 
     session_data['key_state_requests'] = (
-        treat_key_states(first_msecs, KEY_STATE_REQUESTS)
+        treat_key_states(KEY_STATE_REQUESTS)
     )
 
-    session_data['mod_key_bitmask_request'] = tuple(
-        (a_time - first_msecs, bitmask)
-        for a_time, bitmask in MOD_KEY_BITMASK_REQUESTS
+    session_data['mod_key_bitmask_request'] = (
+        treat_mod_bitmasks(MOD_KEY_BITMASK_REQUESTS)
     )
 
-    session_data['mouse_pos_requests'] = tuple(
-        (a_time - first_msecs, pos)
-        for a_time, pos in MOUSE_POS_REQUESTS
-    )
-
-    session_data['mouse_key_state_requests'] = tuple(
-        (a_time - first_msecs, pressed_tuple)
-        for a_time, pressed_tuple in MOUSE_KEY_STATE_REQUESTS
-    )
-
-    session_data['mouse_pos_setups'] = tuple(
-        (a_time - first_msecs, pos)
-        for a_time, pos in MOUSE_POS_SETUPS
-    )
-
-    session_data['mouse_visibility_setups'] = tuple(
-        (a_time - first_msecs, boolean)
-        for a_time, boolean in MOUSE_VISIBILITY_SETUPS
-    )
+    session_data['mouse_pos_requests'] = tuple(MOUSE_POS_REQUESTS)
+    session_data['mouse_key_state_requests'] = tuple(MOUSE_KEY_STATE_REQUESTS)
+    session_data['mouse_pos_setups'] = tuple(MOUSE_POS_SETUPS)
+    session_data['mouse_visibility_setups'] = tuple(MOUSE_VISIBILITY_SETUPS)
 
     ### save session data in file or its rotated version
 
@@ -428,7 +513,7 @@ def save_session_data():
     final_path = parent / f"{stem}_{timestamp}.pyl"
     save_pyl(session_data, final_path, width=125, compact=True)
 
-    ### clear stuff
+    ### clear lists
 
     for a_list in (
         KEY_STATE_REQUESTS,
@@ -453,6 +538,17 @@ def save_session_data():
 
 
 def get_compact_events(events):
+
+    named_events = (
+
+        (
+            event_name(event_type).upper(),
+            event_dict
+        )
+
+        for event_type, event_dict in events
+
+    )
 
     return [
 
@@ -488,105 +584,54 @@ def get_compact_events(events):
             )
         ]
 
-        for name, a_dict in events
+        for name, a_dict in named_events
 
     ]
 
 
-def treat_key_states(first_msecs, time_obj_pairs):
+def treat_key_states(time_obj_pairs):
+
+    return tuple(
+        
+        item
+
+        for item in (
+
+            (
+
+                frame_index,
+
+                tuple(key_name for key_name, key in KEYS_MAP.items() if wrapper[key])
+
+            )
+
+            for frame_index, wrapper in time_obj_pairs
+
+        )
+
+        if item[1]
+
+    )
+
+def treat_mod_bitmasks(frame_bitmask_pairs):
 
     return tuple(
 
         (
 
-            a_time - first_msecs,
+            frame_index,
 
-            tuple(get_key_name(key) for key in KEYS if wrapper[key])
+            tuple(
+                mod_key_name
+                for mod_key_name, mod_key in MOD_KEYS_MAP.items()
+                if bitmask & mod_key
+            )
 
         )
 
-        for a_time, wrapper in time_obj_pairs
+        for frame_index, bitmask in frame_bitmask_pairs
+
+        if bitmask != KMOD_NONE
 
     )
 
-
-### processing events
-
-def get_events():
-
-    for event in get():
-
-        if event.type == KEYUP and event.key == K_F9:
-
-            ### set toggle recording as the frame time routine;
-            ###
-            ### this will cause the recording state to be toggled
-            ### (either turned on or off) at the very beginning of
-            ### the next frame
-            REC_REFS.frame_time_routine = toggle_recording
-
-        else:
-
-            REC_REFS.process_event(event)
-            yield event
-
-### processing key pressed states
-
-def get_pressed_keys():
-    state = get_pressed()
-    REC_REFS.process_key_state(state)
-    return state
-
-def get_pressed_mod_keys():
-    mods_bitmask = get_mods()
-    REC_REFS.process_mod_key_state(mods_bitmask)
-    return mods_bitmask
-
-### processing mouse
-
-def get_mouse_pos():
-    pos = get_pos()
-    REC_REFS.process_mouse_pos(pos)
-    return pos
-
-def get_mouse_pressed():
-    pressed_tuple = mouse_get_pressed()
-    REC_REFS.process_mouse_key_state(pressed_tuple)
-    return pressed_tuple
-
-def set_mouse_pos(pos):
-    REC_REFS.process_mouse_pos_setup(pos)
-    set_pos(pos)
-
-def set_mouse_visibility(boolean):
-    REC_REFS.process_mouse_visibility_setup(boolean)
-    set_visible(boolean)
-
-def update_screen():
-    ###
-    blit_on_screen(REC_REFS.next_indicator_surf(), rec_indicator_rect)
-    blit_on_screen(label, label_rect)
-
-    ### update the screen
-    update()
-
-
-def frame_checkups():
-    """Perform various checkups.
-
-    Meant to be used at the beginning of each frame in the
-    app loop.
-    """
-    ### keep constants fps
-    maintain_fps(FPS)
-
-    ### execute frame time routine
-    REC_REFS.frame_time_routine()
-
-def frame_checkups_with_fps(fps):
-    """Same as frame_checkups(), but uses given fps."""
-    ### keep constants fps
-    maintain_fps(fps)
-
-    ### execute frame time routine
-    REC_REFS.frame_time_routine()
