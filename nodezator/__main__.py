@@ -28,7 +28,7 @@ from .config import APP_REFS
 logger = get_new_logger(__name__)
 
 
-def main(filepath='', recording_path='', ):
+def main(filepath='', recording_path='', input_path=''):
     """Launch application.
 
     Parameters
@@ -42,18 +42,36 @@ def main(filepath='', recording_path='', ):
     recording_path (string)
         if path is given, app launches in recording mode and
         saves recording sessions in it.
+
+    input_path (string)
+        if path is given, app launches in playing mode and
+        play the given input data.
     """
     ### load function that runs the app
     logger.info("Loading application.")
 
-    ### store recording path
+    ### treat extra arguments received
 
-    ## if a path was given, turn it into a pathlib.Path object
-    if recording_path:
+
+    ## cannot receive both a recording_path and input_path
+
+    if recording_path and input_path:
+
+        raise ValueError(
+            "The app cannot receive both a 'recording_path' and"
+            " 'input_path'"
+        )
+
+    ## if a recording or input path was given, turn it into a pathlib.Path
+    ## object and store it
+
+    elif recording_path:
         recording_path = Path(recording_path)
+        APP_REFS.recording_path = recording_path
 
-    ## store it
-    APP_REFS.recording_path = recording_path
+    elif input_path:
+        input_path = Path(input_path)
+        APP_REFS.input_path = input_path
 
     ## try loading
     try:
@@ -102,7 +120,9 @@ def parse_args_and_execute_main():
         help=f"path of {NATIVE_FILE_EXTENSION} file to be loaded.",
     )
 
-    parser.add_argument(
+    group = parser.add_mutually_exclusive_group()
+
+    group.add_argument(
         "-r",
         "--recording-path",
         type=str,
@@ -113,11 +133,27 @@ def parse_args_and_execute_main():
         ),
     )
 
+    group.add_argument(
+        "-i",
+        "--input-path",
+        type=str,
+        default='',
+        help=(
+            "file containing input data to be played in the app;"
+            " if given, the app is launched in input playing mode"
+        ),
+    )
+
     ### parse arguments
     parsed_args = parser.parse_args()
 
     ### call the main function with the arguments
-    main(parsed_args.filepath, parsed_args.recording_path)
+
+    main(
+        parsed_args.filepath,
+        parsed_args.recording_path,
+        parsed_args.input_path,
+    )
 
 
 ### when file is run as script...

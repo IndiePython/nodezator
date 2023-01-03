@@ -8,8 +8,6 @@ from functools import partial
 
 from pygame import Rect
 
-from pygame.display import update
-
 from pygame.draw import rect as draw_rect
 
 from pygame.math import Vector2
@@ -22,6 +20,7 @@ from ...config import APP_REFS
 from ...pygamesetup import (
     SCREEN_RECT,
     blit_on_screen,
+    update_screen,
     frame_checkups,
 )
 
@@ -558,8 +557,8 @@ class TextEditor(Object2D):
         ### draw statusbar
         self.statusbar.draw()
 
-        ### update screen (pygame.display.update)
-        update()
+        ### update screen
+        update_screen()
 
     def mouse_release_action(self, mouse_pos):
         """Invoke colliding button, if any.

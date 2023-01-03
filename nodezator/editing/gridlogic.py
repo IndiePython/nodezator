@@ -12,8 +12,6 @@ from pygame import Rect
 
 from pygame.math import Vector2
 
-from pygame.display import get_surface
-
 
 ### local imports
 

@@ -50,6 +50,8 @@ APP_REFS = SimpleNamespace(
     ),
     ## recording path
     recording_path='',
+    ## input path
+    input_path='',
 )
 
 

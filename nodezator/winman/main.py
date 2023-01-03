@@ -4,7 +4,7 @@
 
 from pygame import Rect
 
-from pygame.display import update, set_caption
+from pygame.display import set_caption
 
 
 ### local imports

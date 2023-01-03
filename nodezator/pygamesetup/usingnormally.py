@@ -3,18 +3,21 @@
 
 from pygame import RESIZABLE, get_sdl_version
 
-from pygame.event import get
+from pygame.event import get as get_events
 
-from pygame.key import get_pressed, get_mods
-
-from pygame.mouse import (
-    set_visible,
-    get_pos,
-    set_pos,
-    get_pressed as mouse_get_pressed,
+from pygame.key import (
+    get_pressed as get_pressed_keys,
+    get_mods as get_pressed_mod_keys,
 )
 
-from pygame.display import set_mode, update
+from pygame.mouse import (
+    set_visible as set_mouse_visibility,
+    get_pos as get_mouse_pos,
+    set_pos as set_mouse_pos,
+    get_pressed as get_mouse_pressed,
+)
+
+from pygame.display import set_mode, update as update_screen
 
 
 ### local imports
@@ -39,18 +42,6 @@ SCREEN = set_mode(DEFAULT_SIZE, FLAG, DEPTH)
 SCREEN_RECT = SCREEN.get_rect()
 blit_on_screen = SCREEN.blit
 
-get_events = get
-
-get_pressed_keys = get_pressed
-get_pressed_mod_keys = get_mods
-
-get_mouse_pos = get_pos
-set_mouse_pos = set_pos
-get_mouse_pressed = mouse_get_pressed
-set_mouse_visibility = set_visible
-
-update_screen = update
-##
 
 def watch_window_size():
     """Perform setups needed if window was resized."""

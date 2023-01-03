@@ -77,6 +77,34 @@ if APP_REFS.recording_path:
 
     )
 
+## if an input path was given, we import values and behaviors
+## so app is launched in input playing mode
+
+elif APP_REFS.input_path:
+
+    from .playing import (
+
+        SCREEN,
+        SCREEN_RECT,
+        blit_on_screen,
+
+        get_events,
+
+        get_pressed_keys,
+        get_pressed_mod_keys,
+
+        get_mouse_pos,
+        get_mouse_pressed,
+
+        set_mouse_pos,
+        set_mouse_visibility,
+
+        update_screen,
+
+        frame_checkups,
+        frame_checkups_with_fps,
+
+    )
 
 ## otherwise we set values and behaviors so app runs normally
 

@@ -35,8 +35,8 @@ from pygame.key import (
 from pygame.mouse import (
     get_pos,
     get_pressed as mouse_get_pressed,
-    set_pos,
-    set_visible,
+    set_pos as set_mouse_pos,
+    set_visible as set_mouse_visibility,
 )
 
 from pygame.display import set_mode, update
@@ -48,8 +48,6 @@ from pygame.draw import (
     ellipse as draw_ellipse,
     line as draw_line,
 )
-
-from pygame import locals as pygame_locals
 
 
 ### local imports
@@ -65,90 +63,29 @@ from ..ourstdlibs.path import get_timestamp
 
 from ..ourstdlibs.pyl import save_pyl
 
-from .constants import DEPTH, FPS, maintain_fps
+from .constants import (
+
+    DEPTH, FPS, maintain_fps,
+
+    DEFAULT_SIZE, FLAG,
+
+    EVENT_KEY_STRIP_MAP,
+    EVENT_COMPACT_NAME_MAP,
+    KEYS_MAP,
+    SCANCODE_NAMES_MAP,
+    MOD_KEYS_MAP,
+
+)
 
 
 
 ### pygame constants
-
-DEFAULT_SIZE = (1280, 720)
-
-FLAG = 0
 
 SCREEN = set_mode(DEFAULT_SIZE, FLAG, DEPTH)
 
 SCREEN_RECT = SCREEN.get_rect()
 blit_on_screen = SCREEN.blit
 
-
-### event values to strip
-
-EVENT_KEY_STRIP_MAP = {
-
-  'MOUSEMOTION': {
-    'buttons': (0, 0, 0),
-    'touch': False,
-    'window': None,
-  },
-
-  'MOUSEBUTTONDOWN': {
-    'button': 1,
-    'touch': False,
-    'window': None,
-  },
-
-  'MOUSEBUTTONUP': {
-    'button': 1,
-    'touch': False,
-    'window': None,
-  },
-
-  'KEYUP': {
-    'mod': 0,
-  },
-
-  'KEYDOWN': {
-    'mod': 0,
-  },
-
-}
-
-### event name to make compact
-
-EVENT_COMPACT_NAME_MAP = {
-    'KEYDOWN': 'kd',
-    'KEYUP': 'ku',
-    'MOUSEMOTION': 'mm',
-    'MOUSEBUTTONUP': 'mbu',
-    'MOUSEBUTTONDOWN': 'mbd',
-}
-
-
-### available keys
-
-KEYS_MAP = {
-
-    item : getattr(pygame_locals, item)
-
-    for item in dir(pygame_locals)
-
-    if item.startswith('K_')
-
-}
-
-
-MOD_KEYS_MAP = {
-
-    item: getattr(pygame_locals, item)
-
-    for item in dir(pygame_locals)
-
-    if (
-        item.startswith('K_MOD')
-        and item != 'KMOD_NONE'
-    )
-
-}
 
 
 ### control and data-recording objects
@@ -167,9 +104,12 @@ MOD_KEY_BITMASK_REQUESTS = []
 MOUSE_POS_REQUESTS = []
 MOUSE_KEY_STATE_REQUESTS = []
 
-MOUSE_POS_SETUPS = []
-MOUSE_VISIBILITY_SETUPS = []
+## reverse keys map
 
+REVERSE_KEYS_MAP = {
+    value: key
+    for key, value in KEYS_MAP.items()
+}
 
 ## label
 
@@ -280,8 +220,6 @@ def set_behaviors_to_ignore_session_data():
         'process_mod_key_state',
         'process_mouse_pos',
         'process_mouse_key_state',
-        'process_mouse_pos_setup',
-        'process_mouse_visibility_setup',
     ):
         setattr(REC_REFS, attr_name, empty_oblivious_function)
 
@@ -312,12 +250,10 @@ def toggle_recording():
 
         for attr_name, recording_operation in (
             ('process_event', record_event),
-            ('process_key_state', record_key_state),
-            ('process_mod_key_state', record_mod_key_state),
-            ('process_mouse_pos', record_mouse_pos),
-            ('process_mouse_key_state', record_mouse_key_state),
-            ('process_mouse_pos_setup', record_mouse_pos_setup),
-            ('process_mouse_visibility_setup', record_mouse_visibility_setup),
+            ('process_key_state', record_key_states),
+            ('process_mod_key_state', record_mod_key_states),
+            ('process_mouse_pos', MOUSE_POS_REQUESTS.append),
+            ('process_mouse_key_state', MOUSE_KEY_STATE_REQUESTS.append),
         ):
             setattr(REC_REFS, attr_name, recording_operation)
 
@@ -336,9 +272,8 @@ def increment_frame_index():
     """increment frame index by 1"""
     REC_REFS.frame_index += 1
 
-### recording operations
 
-## events
+### event recording operation
 
 def record_event(event):
 
@@ -347,37 +282,15 @@ def record_event(event):
         event.__dict__
     ])
 
+append_key_states = KEY_STATE_REQUESTS.append
+def record_key_states(key_states):
+    append_key_states((REC_REFS.frame_index, key_states))
 
-## key requests
+append_mod_key_states = MOD_KEY_BITMASK_REQUESTS.append
+def record_mod_key_states(mods_bitmask):
+    append_mod_key_states((REC_REFS.frame_index, mods_bitmask))
 
-append_key_state_data = KEY_STATE_REQUESTS.append
-def record_key_state(state):
-    append_key_state_data((REC_REFS.frame_index, state))
-
-append_mods_bitmask_data = MOD_KEY_BITMASK_REQUESTS.append
-def record_mod_key_state(mods_bitmask):
-    append_mods_bitmask_data((REC_REFS.frame_index, mods_bitmask))
-
-## mouse requests/setups
-
-append_mouse_pos_request_data = MOUSE_POS_REQUESTS.append
-def record_mouse_pos(pos):
-    append_mouse_pos_request_data((REC_REFS.frame_index, pos))
-
-append_mouse_key_state_data = MOUSE_KEY_STATE_REQUESTS.append
-def record_mouse_key_state(pressed_tuple):
-    append_mouse_key_state_data((REC_REFS.frame_index, pressed_tuple))
-
-append_mouse_pos_setup_data = MOUSE_POS_SETUPS.append
-def record_mouse_pos_setup(pos):
-    append_mouse_pos_setup_data((REC_REFS.frame_index, pos))
-
-append_mouse_visibility_data = MOUSE_VISIBILITY_SETUPS.append
-def record_mouse_visibility_setup(boolean):
-    append_mouse_visibility_data((REC_REFS.frame_index, boolean))
-
-
-### session behaviours
+### extended session behaviours
 
 ## processing events
 
@@ -423,16 +336,8 @@ def get_mouse_pressed():
     REC_REFS.process_mouse_key_state(pressed_tuple)
     return pressed_tuple
 
-def set_mouse_pos(pos):
-    REC_REFS.process_mouse_pos_setup(pos)
-    set_pos(pos)
 
-def set_mouse_visibility(boolean):
-    REC_REFS.process_mouse_visibility_setup(boolean)
-    set_visible(boolean)
-
-
-### screen updating
+## screen updating
 
 def update_screen():
     ###
@@ -469,7 +374,7 @@ def frame_checkups_with_fps(fps):
 ### session data saving operations
 
 def save_session_data():
-    
+
     session_data = {}
 
     ### process event map
@@ -477,7 +382,7 @@ def save_session_data():
     if EVENTS_MAP:
 
         session_data['events_map'] = {
-            frame_index : get_compact_events(events)
+            frame_index : list(yield_treated_events(events))
             for frame_index, events in EVENTS_MAP.items()
         }
 
@@ -486,18 +391,22 @@ def save_session_data():
 
     ### store data
 
-    session_data['key_state_requests'] = (
-        treat_key_states(KEY_STATE_REQUESTS)
+    session_data['pressed_keys_map'] = (
+        get_pressed_keys_map(KEY_STATE_REQUESTS)
     )
 
-    session_data['mod_key_bitmask_request'] = (
-        treat_mod_bitmasks(MOD_KEY_BITMASK_REQUESTS)
-    )
+    session_data['mod_key_bitmasks_map'] = {
+        frame_index: treated_bitmask
+        for frame_index, treated_bitmask
+        in yield_filtered_frame_bitmask_pairs(MOD_KEY_BITMASK_REQUESTS)
+    }
 
     session_data['mouse_pos_requests'] = tuple(MOUSE_POS_REQUESTS)
+
     session_data['mouse_key_state_requests'] = tuple(MOUSE_KEY_STATE_REQUESTS)
-    session_data['mouse_pos_setups'] = tuple(MOUSE_POS_SETUPS)
-    session_data['mouse_visibility_setups'] = tuple(MOUSE_VISIBILITY_SETUPS)
+
+    ### store last frame index as well
+    session_data['last_frame_index'] = REC_REFS.frame_index + 1
 
     ### save session data in file or its rotated version
 
@@ -522,8 +431,6 @@ def save_session_data():
         MOUSE_POS_REQUESTS,
         MOUSE_KEY_STATE_REQUESTS,
 
-        MOUSE_POS_SETUPS,
-        MOUSE_VISIBILITY_SETUPS,
     ):
         a_list.clear()
 
@@ -537,71 +444,116 @@ def save_session_data():
     session_data.clear()
 
 
-def get_compact_events(events):
+def yield_treated_events(type_data_pairs):
 
-    named_events = (
+    yield from (
+        yield_compact_events(
+            yield_named_keys_and_mod_keys(
+                yield_known_events(
+                    yield_named_events(type_data_pairs)
+                )
+            )
+        )
+    )
 
-        (
+
+def yield_named_events(events):
+
+    for event_type, event_dict in events:
+    
+        yield (
             event_name(event_type).upper(),
             event_dict
         )
 
-        for event_type, event_dict in events
+def yield_known_events(events):
+    for event in events:
+        if event[0] != 'UNKNOWN':
+            yield event
 
-    )
+def yield_named_keys_and_mod_keys(events):
 
-    return [
+    for item in events:
 
-        [
+        yield (
+
+            item
+            if item[0] not in ('KEYUP', 'KEYDOWN')
+
+            else ( item[0], get_treated_key_event_dict(item[1]) )
+
+        )
+
+def get_treated_key_event_dict(event_dict):
+
+    for key, get_treated in (
+
+        ('key', REVERSE_KEYS_MAP.__getitem__),
+        ('scancode', SCANCODE_NAMES_MAP.__getitem__),
+
+    ):
+        event_dict[key] = get_treated(event_dict[key])
+
+    ## if mod != KMOD_NONE, process it
+
+    bitmask = event_dict['mod']
+
+    if bitmask != KMOD_NONE:
+        event_dict['mod'] = get_mod_names_tuple(bitmask)
+
+    return event_dict
+
+def yield_compact_events(events):
+
+    for name, a_dict in events:
+
+        yield [
 
             EVENT_COMPACT_NAME_MAP.get(name, name),
 
             (
-
                 a_dict
-
                 if name not in EVENT_KEY_STRIP_MAP
 
-                else {
-
-                    key: value
-
-                    for key, value in a_dict.items()
-
-                    if (
-
-                        key not in EVENT_KEY_STRIP_MAP[name]
-
-                        or (
-                            key in EVENT_KEY_STRIP_MAP[name]
-                            and value != EVENT_KEY_STRIP_MAP[name][key]
-                        )
-
-                    )
-
-                }
+                else get_compact_event_dict(EVENT_KEY_STRIP_MAP[name], a_dict)
 
             )
+
         ]
 
-        for name, a_dict in named_events
+def get_compact_event_dict(map_of_values_to_strip, a_dict):
 
-    ]
+    return {
 
+        key: value
 
-def treat_key_states(time_obj_pairs):
+        for key, value in a_dict.items()
 
-    return tuple(
+        if (
+
+            key not in map_of_values_to_strip
+
+            or (
+                key in map_of_values_to_strip
+                and value != map_of_values_to_strip[key]
+            )
+
+        )
+    }
+
+def get_pressed_keys_map(time_obj_pairs):
+
+    return {
         
-        item
+        item[0]: item[1]
 
         for item in (
 
             (
 
                 frame_index,
-
                 tuple(key_name for key_name, key in KEYS_MAP.items() if wrapper[key])
+
 
             )
 
@@ -611,27 +563,24 @@ def treat_key_states(time_obj_pairs):
 
         if item[1]
 
-    )
+    }
 
-def treat_mod_bitmasks(frame_bitmask_pairs):
+def yield_filtered_frame_bitmask_pairs(frame_bitmask_pairs):
 
-    return tuple(
+    for frame_index, bitmask in frame_bitmask_pairs:
 
-        (
+        if bitmask != KMOD_NONE:
 
-            frame_index,
-
-            tuple(
-                mod_key_name
-                for mod_key_name, mod_key in MOD_KEYS_MAP.items()
-                if bitmask & mod_key
+            yield (
+                frame_index,
+                get_mod_names_tuple(bitmask),
             )
 
-        )
 
-        for frame_index, bitmask in frame_bitmask_pairs
+def get_mod_names_tuple(bitmask):
 
-        if bitmask != KMOD_NONE
-
+    return tuple(
+        mod_key_name
+        for mod_key_name, mod_key in MOD_KEYS_MAP.items()
+        if bitmask & mod_key
     )
-
