@@ -22,15 +22,9 @@ from pygame import (
     Surface,
 )
 
-from pygame.event import (
-    get,
-    event_name,
-)
+from pygame.event import get, event_name
 
-from pygame.key import (
-    get_pressed,
-    get_mods,
-)
+from pygame.key import get_pressed, get_mods
 
 from pygame.mouse import (
     get_pos,
@@ -379,15 +373,10 @@ def save_session_data():
 
     ### process event map
 
-    if EVENTS_MAP:
-
-        session_data['events_map'] = {
-            frame_index : list(yield_treated_events(events))
-            for frame_index, events in EVENTS_MAP.items()
-        }
-
-    ## clear
-    EVENTS_MAP.clear()
+    session_data['events_map'] = {
+        frame_index : list(yield_treated_events(events))
+        for frame_index, events in EVENTS_MAP.items()
+    }
 
     ### store data
 
@@ -422,9 +411,11 @@ def save_session_data():
     final_path = parent / f"{stem}_{timestamp}.pyl"
     save_pyl(session_data, final_path, width=125, compact=True)
 
-    ### clear lists
+    ### clear collections
 
-    for a_list in (
+    for a_collection in (
+
+        EVENTS_MAP,
         KEY_STATE_REQUESTS,
         MOD_KEY_BITMASK_REQUESTS,
 
@@ -432,14 +423,12 @@ def save_session_data():
         MOUSE_KEY_STATE_REQUESTS,
 
     ):
-        a_list.clear()
+        a_collection.clear()
 
     ### clear other collections (not really needed, but in our
     ### experience memory is freed faster when collections are
     ### cleared
-
-    if 'events_map' in session_data:
-        session_data['events_map'].clear()
+    session_data['events_map'].clear()
 
     session_data.clear()
 
