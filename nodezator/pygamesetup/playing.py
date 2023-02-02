@@ -23,7 +23,7 @@ from pygame.locals import (
     QUIT,
 
     KEYDOWN,
-    K_F9,
+    K_F8, K_F9,
 
     MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP,
 
@@ -82,7 +82,9 @@ SCREEN_RECT = SCREEN.get_rect()
 blit_on_screen = SCREEN.blit
 
 
-### block all events except pygame.QUIT and pygame.KEYDOWN
+### since the app will be playing recorded events, we are not interested
+### in new ones generated while playing, so we block most of them, leaving
+### just a few that we may use to during playback
 
 set_blocked(None)
 set_allowed([QUIT, KEYDOWN])
@@ -94,9 +96,13 @@ PLAY_REFS = SimpleNamespace()
 ### create virtual mouse
 MOUSE_POS = Vector2(0, 0)
 
+### create flag indicating whether real mouse must trace movements
+### of virtual one
+PLAY_REFS.mouse_tracing = True
 
 
-###
+
+### TODO collections defined below lack proper commenting
 
 REVERSE_EVENT_COMPACT_NAME_MAP = {
     value: key
@@ -220,7 +226,7 @@ EVENTS_MAP = {
 ## define special frozenset class
 
 class GetterFrozenSet(frozenset):
-    """Same as frozenset, but obj[item] works like "item in obj"."""
+    """frozenset subclass where "obj[item]" works like "item in obj"."""
     __getitem__ = frozenset.__contains__
 
 ## create an empty special frozenset
@@ -290,7 +296,7 @@ MOUSE_PRESSED_TUPLES.reverse()
 
 ## label creation
 
-# define callables to assist in creating label
+# define callables to assist in creating labels
 
 render_label_text = SysFont('Arial', 16, bold=True).render
 
@@ -335,21 +341,47 @@ def get_label(text, label_fg, label_bg, label_outline, padding):
     ### finally return the label
     return label
 
-# create label, its rect, and position it
+# create labels, their rects, and position them
 
-label = (
-    get_label(
-        text = "F9: play/pause toggle",
-        label_fg = 'white',
-        label_bg = 'blue',
-        label_outline = 'white',
-        padding=6,
+LABELS = []
+
+Object = type("Object", (), {})
+
+bottomright = SCREEN_RECT.move(-10, -20).bottomright
+
+for text in (
+    "F9: play/pause",
+    "F8: toggle mouse tracing",
+):
+
+    ### create label surface
+
+    label_surf = (
+        get_label(
+            text = text,
+            label_fg = 'white',
+            label_bg = 'blue',
+            label_outline = 'white',
+            padding = 6,
+        )
     )
-)
 
-label_rect = label.get_rect()
+    ### create and position rect
 
-label_rect.topright = SCREEN_RECT.move(-10, 40).topright
+    label_rect = label_surf.get_rect()
+
+    label_rect.bottomright = bottomright
+
+    ### instantiate and populate label instance
+
+    label = Object()
+    label.__dict__.update(image=label_surf, rect=label_rect)
+
+    ### store label
+    LABELS.append(label)
+
+    ### update bottomright
+    bottomright = label_rect.move(0, -20).topright
 
 
 ### create function to setup playing mode and assign it as the
@@ -404,89 +436,134 @@ def pause():
 
         ### update the screen
         update()
-            
-
-## TODO keep refactoring from here
 
 
 ### session behaviours
 
 ## processing events
 
-MOUSE_EVENTS = MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP
+MOUSE_EVENTS = frozenset({MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP})
 
 def get_events():
+
+    ### process QUIT or KEYDOWN event (for the F9 key) if
+    ### they are thrown
 
     for event in get():
 
         if event.type == QUIT:
             print("Tried quitting")
 
-        elif event.type == KEYDOWN and event.key == K_F9:
-            pause()
+        elif event.type == KEYDOWN:
 
-    for event in (
+            if event.key == K_F8:
+                PLAY_REFS.mouse_tracing = not PLAY_REFS.mouse_tracing
 
-        #
-        EVENTS_MAP[PLAY_REFS.frame_index]
-        if PLAY_REFS.frame_index in EVENTS_MAP
+            elif event.key == K_F9:
+                pause()
 
-        #
-        else ()
+    ### play the recorded events
 
-    ):
-        if event.type in MOUSE_EVENTS:
-            set_mouse_pos(event.pos)
+    ## if there are events for the current frame index in the event map,
+    ## iterate over them
 
-        yield event
+    if PLAY_REFS.frame_index in EVENTS_MAP:
+
+        for event in EVENTS_MAP[PLAY_REFS.frame_index]:
+
+            ## if we have a mouse event, we use it to position the mouse
+            if event.type in MOUSE_EVENTS:
+                set_mouse_pos(event.pos)
+
+            ## finally yield the event, regardless of its type
+            yield event
+
 
 ## processing key pressed states
 
 def get_pressed_keys():
+    """Emulates pygame.key.get_pressed().
+
+    That is, the return value despite being a different object, works
+    just like the return value of pygame.key.get_pressed().
+    """
 
     return (
 
-        #
+        ### return a non empty GetterFrozenSet for the current
+        ### frame index if there's one
         NON_EMPTY_GETTER_FROZENSETS[PLAY_REFS.frame_index]
         if PLAY_REFS.frame_index in NON_EMPTY_GETTER_FROZENSETS
 
-        #
+        ### otherwise return an empty GetterFrozenSet
         else EMPTY_GETTER_FROZENSET
 
     )
 
+
+## processing modifier key pressed states
+
 def get_pressed_mod_keys():
+    """Emulates pygame.key.get_mods().
+
+    That is, the return value is also a bitmask or pygame.locals.KMOD_NONE.
+    """
 
     return (
 
-        #
+        ### return a bitmask for the current frame index if there's one
         NO_KMOD_NONE_BITMASKS[PLAY_REFS.frame_index]
         if PLAY_REFS.frame_index in NO_KMOD_NONE_BITMASKS
 
-        #
+        ### otherwise return pygame.locals.KMOD_NONE
         else KMOD_NONE
 
     )
 
-## processing mouse
+
+## processing mouse position getting and setting
 
 def get_mouse_pos():
-
+    """Emulates pygame.mouse.get_pos(); performs additional setups."""
+    ### grab recorded position
     pos = MOUSE_POSITIONS.pop()
+
+    ### set mouse pointer to the position
     set_mouse_pos(pos)
 
+    ### return position
     return pos
 
-get_mouse_pressed = MOUSE_PRESSED_TUPLES.pop
 
 def set_mouse_pos(pos):
+    """Extends pygame.mouse.set_pos()."""
+    ### update position of virtual mouse with given pos
     MOUSE_POS.update(pos)
-    set_pos(pos)
+
+    ### if mouse tracing is on, set position of real mouse as well,
+    ### (using pygame.mouse.set_pos())
+    ###
+    ### this is done so that the real mouse traces the movement of the
+    ### virtual one
+    PLAY_REFS.mouse_tracing and set_pos(pos)
+
+
+## processing mouse button pressed state;
+##
+## this get_mouse_pressed() callable is used to emulate the
+## pygame.mouse.get_pressed() function and return the same kind
+## of value
+get_mouse_pressed = MOUSE_PRESSED_TUPLES.pop
+
 
 ### screen updating
 
 def update_screen():
-    blit_on_screen(label, label_rect)
+    """Extends pygame.display.update()."""
+    ### blit labels
+
+    for label in LABELS:
+        blit_on_screen(label.image, label.rect)
 
     ### update the screen
     update()
@@ -513,4 +590,3 @@ def frame_checkups_with_fps(fps):
 
     ### execute frame index routine
     PLAY_REFS.frame_index_routine()
-
