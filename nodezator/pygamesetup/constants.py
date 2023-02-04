@@ -1,11 +1,19 @@
 
 ### third-party imports
 
-from pygame import KMOD_NONE
+from pygame import (
+    locals as pygame_locals,
+    Surface,
+)
 
-from pygame import locals as pygame_locals
+from pygame.locals import KMOD_NONE
 
 from pygame.time import Clock
+
+from pygame.font import SysFont
+
+from pygame.draw import rect as draw_rect
+
 
 
 # choose appropriate window resize event type according to
@@ -18,6 +26,13 @@ except ImportError:
     WINDOW_RESIZE_EVENT_TYPE = VIDEORESIZE
 else:
     WINDOW_RESIZE_EVENT_TYPE = WINDOWRESIZED
+
+
+### local imports
+
+from ..config import APP_REFS
+
+from ..userprefsman.main import TEMP_FILE_SWAP
 
 
 
@@ -34,11 +49,66 @@ _CLOCK = Clock()
 maintain_fps = _CLOCK.tick
 get_fps = _CLOCK.get_fps
 
+### label text rendering operations
 
-### recording/playing related values
+render_label_text = SysFont('Arial', 16, bold=True).render
 
-DEFAULT_SIZE = (1280, 720)
-FLAG = 0
+Object = type("Object", (), {})
+
+def get_label_object(text, label_fg, label_bg, label_outline, padding):
+
+    ### render the text itself
+
+    text_surface = render_label_text(
+        text,
+        True,
+        label_fg,
+        label_bg,
+    )
+
+    ### create a surface with the sides incremented by
+    ### double the padding
+
+    label_surface = (
+
+        Surface(
+
+            tuple(
+                v + (padding * 2)
+                for v in text_surface.get_size()
+            )
+
+        ).convert()
+
+    )
+
+    ### fill the surface with the outline color
+    label_surface.fill(label_outline)
+
+    ### draw a slightly smaller rect inside the surface with the
+    ### filling color
+
+    draw_rect(
+        label_surface,
+        label_bg,
+        label_surface.get_rect().inflate(-2, -2),
+    )
+
+    ### blit the text inside the surface where the padding
+    ### ends
+    label_surface.blit(text_surface, (padding, padding))
+
+    ### create label rect
+    label_rect = label_surface.get_rect()
+
+    ### instantiate and populate label object
+
+    label = Object()
+    label.__dict__.update(image=label_surface, rect=label_rect)
+
+    ### finally return the label
+    return label
+
 
 ## event values to strip
 
@@ -126,3 +196,18 @@ MOD_KEYS_MAP = {
     )
 
 }
+
+### temporary file cleaning
+
+def clean_temp_files():
+
+    APP_REFS.temp_filepaths_man.ensure_removed()
+
+    if TEMP_FILE_SWAP.exists():
+        TEMP_FILE_SWAP.unlink()
+
+    try:
+        APP_REFS.swap_path.unlink()
+    except AttributeError:
+        pass
+

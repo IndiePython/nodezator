@@ -13,11 +13,7 @@ from pygame.display import update
 
 from .config import APP_REFS
 
-from .pygamesetup import frame_checkups
-
-from .userprefsman.main import TEMP_FILE_SWAP
-
-from .pygamesetup import SCREEN
+from .pygamesetup import SCREEN, frame_checkups, clean_temp_files
 
 from .colorsman.colors import WINDOW_BG
 
@@ -36,10 +32,7 @@ update()
 
 from .logman.main import get_new_logger
 
-from .our3rdlibs.behaviour import (
-    are_changes_saved,
-    remove_buffer,
-)
+from .our3rdlibs.behaviour import are_changes_saved
 
 from .loopman.exception import (
     ContinueLoopException,
@@ -205,11 +198,6 @@ def run_app(filepath=None):
 
     logger.info("Closing app under expected circumstances.")
 
-    remove_buffer()
-
-    APP_REFS.temp_filepaths_man.ensure_removed()
-
-    if TEMP_FILE_SWAP.exists():
-        TEMP_FILE_SWAP.unlink()
+    clean_temp_files()
 
     quit_pygame()

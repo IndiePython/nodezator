@@ -1,13 +1,9 @@
 
 ### standard library imports
 
-from pathlib import Path
-
 from types import SimpleNamespace
 
 from collections import defaultdict
-
-from itertools import cycle, repeat
 
 from datetime import datetime
 
@@ -15,14 +11,17 @@ from datetime import datetime
 ### third-party imports
 
 from pygame import (
+    Surface,
+    quit as quit_pygame,
+)
+
+from pygame.locals import (
     KEYUP,
     K_F9,
     KMOD_NONE,
-    Rect,
-    Surface,
 )
 
-from pygame.event import get, event_name
+from pygame.event import clear, get, event_name
 
 from pygame.key import get_pressed, get_mods
 
@@ -35,23 +34,10 @@ from pygame.mouse import (
 
 from pygame.display import set_mode, update
 
-from pygame.font import Font
-
-from pygame.draw import (
-    rect as draw_rect,
-    ellipse as draw_ellipse,
-    line as draw_line,
-)
-
 
 ### local imports
 
 from ..config import APP_REFS
-
-from ..ourstdlibs.behaviour import (
-    empty_oblivious_function,
-    empty_function,
-)
 
 from ..ourstdlibs.path import get_timestamp
 
@@ -61,13 +47,14 @@ from .constants import (
 
     DEPTH, FPS, maintain_fps,
 
-    DEFAULT_SIZE, FLAG,
-
     EVENT_KEY_STRIP_MAP,
     EVENT_COMPACT_NAME_MAP,
     KEYS_MAP,
     SCANCODE_NAMES_MAP,
     MOD_KEYS_MAP,
+
+    get_label_object,
+    clean_temp_files,
 
 )
 
@@ -75,7 +62,9 @@ from .constants import (
 
 ### pygame constants
 
-SCREEN = set_mode(DEFAULT_SIZE, FLAG, DEPTH)
+FLAG = 0
+
+SCREEN = set_mode(APP_REFS.recording_size, FLAG, DEPTH)
 
 SCREEN_RECT = SCREEN.get_rect()
 blit_on_screen = SCREEN.blit
@@ -105,166 +94,76 @@ REVERSE_KEYS_MAP = {
     for key, value in KEYS_MAP.items()
 }
 
-## label
+# create labels, their rects, and position them
 
-render_label_text = Font(None, 24).render
+LABELS = []
 
-def get_label(label_fg, label_bg, label_outline, padding):
+topright = SCREEN_RECT.move(-10, 32).topright
 
-    label_text = (
-        render_label_text(
-            "F9: toggle recording", True, label_fg, label_bg
+for text in (
+    getattr(APP_REFS, "recording_title", "Untitled session"),
+    "F9: finish recording & exit",
+):
+
+    ### create label object
+
+    label = (
+        get_label_object(
+            text = text,
+            label_fg = 'white',
+            label_bg = 'blue',
+            label_outline = 'white',
+            padding = 6,
         )
     )
 
-    label = Surface(label_text.get_rect().inflate(padding*2, padding*2).size).convert()
-    label.fill(label_outline)
-    draw_rect(label, label_bg, label.get_rect().inflate(-2, -2))
+    ### position label
+    label.rect.topright = topright
 
-    label.blit(label_text, (padding, padding))
+    ### store label
+    LABELS.append(label)
 
-    return label
+    ### update topright
+    topright = label.rect.move(0, 5).bottomright
 
-label = (
-    get_label(
-        label_fg = 'white',
-        label_bg = 'black',
-        label_outline = 'white',
-        padding=6,
-    )
-)
 
-label_rect = label.get_rect()
+### set behaviors to record session data
 
-## recording indicator
+def setup_recording():
 
-rec_text = Font(None, 28).render('rec', True, 'white', 'black')
+    ## clear any existing events
+    clear()
 
-w, h = rec_text.get_size()
+    ## record beginning of recording session
+    REC_REFS.session_start_datetime = datetime.now()
 
-h += 4
-w += h
+    ## set frame index to 0
+    REC_REFS.frame_index = 0
 
-rec_indicator_rect = Rect(0, 0, w, h)
+    ## set frame index incrementation as the frame index routine
+    REC_REFS.frame_index_routine = increment_frame_index
 
-rec_indicator_base_surf = Surface(rec_indicator_rect.size).convert()
-rec_indicator_base_surf.fill('white')
 
-draw_rect(
-    rec_indicator_base_surf,
-    'black',
-    rec_indicator_rect.inflate(-2, -2),
-)
+## make it so the frame index routine sets up recording
+REC_REFS.frame_index_routine = setup_recording
 
-rec_indicator_base_surf.blit(rec_text, (2, 1))
-rec_indicator_turned_on_surf = rec_indicator_base_surf.copy()
-
-red_circle = Font(None, 70).render('\N{bullet}', True, 'red')
-red_circle = red_circle.subsurface(red_circle.get_bounding_rect())
-
-rec_indicator_turned_on_surf.blit(red_circle, (w - 18, 5))
-
-get_recording_turned_on_surfs = (
-    cycle(
-        (rec_indicator_base_surf,) * 20
-        + (rec_indicator_turned_on_surf,) * 20
-    ).__next__
-)
-
-#
-
-rec_indicator_turned_off_surf = rec_indicator_base_surf.copy()
-
-ellipse_rect = Rect(0, 0, h-8, h-8)
-ellipse_rect.topright = rec_indicator_rect.move(-3, 4).topright
-
-draw_ellipse(
-    rec_indicator_turned_off_surf,
-    'red',
-    ellipse_rect,
-    2,
-)
-
-small_ellipse_rect = ellipse_rect.inflate(-6, -6).move(-1, 0)
-
-draw_line(
-    rec_indicator_turned_off_surf,
-    'red',
-    small_ellipse_rect.topright,
-    small_ellipse_rect.bottomleft,
-    2,
-)
-
-get_recording_turned_off_surfs = (
-    repeat(rec_indicator_turned_off_surf).__next__
-)
-
-##
-label_rect.topright = SCREEN_RECT.move(-10, 40).topright
-rec_indicator_rect.topright = label_rect.move(0, 5).bottomright
-##
-
-def set_behaviors_to_ignore_session_data():
-
-    ### make it so session data is ignored
-
-    for attr_name in (
-        'process_event',
-        'process_key_state',
-        'process_mod_key_state',
-        'process_mouse_pos',
-        'process_mouse_key_state',
-    ):
-        setattr(REC_REFS, attr_name, empty_oblivious_function)
-
-    ### ensure this is shown in the indicator
-    REC_REFS.next_indicator_surf = get_recording_turned_off_surfs
-
-    ### set an empty function as the frame index routine
-    REC_REFS.frame_index_routine = empty_function
-
-set_behaviors_to_ignore_session_data()
-
-### utility functions
-
-def toggle_recording():
-
-    if REC_REFS.process_event is empty_oblivious_function:
-        
-        ### record beginning of recording session
-        REC_REFS.session_start_datetime = datetime.now()
-
-        ### set frame index to 0
-        REC_REFS.frame_index = 0
-
-        ### set frame index incrementation as the frame index routine
-        REC_REFS.frame_index_routine = increment_frame_index
-
-        ### make it so session data is recorded
-
-        for attr_name, recording_operation in (
-            ('process_event', record_event),
-            ('process_key_state', record_key_states),
-            ('process_mod_key_state', record_mod_key_states),
-            ('process_mouse_pos', MOUSE_POS_REQUESTS.append),
-            ('process_mouse_key_state', MOUSE_KEY_STATE_REQUESTS.append),
-        ):
-            setattr(REC_REFS, attr_name, recording_operation)
-
-        ###
-        REC_REFS.next_indicator_surf = get_recording_turned_on_surfs
-
-    else:
-
-        ### save recorded session data
-        save_session_data()
-
-        ### make it so session data is ignored
-        set_behaviors_to_ignore_session_data()
 
 def increment_frame_index():
     """increment frame index by 1"""
     REC_REFS.frame_index += 1
+
+
+## assign behaviours to record session data
+
+for attr_name, recording_operation in (
+    ('process_event', record_event),
+    ('process_key_state', record_key_states),
+    ('process_mod_key_state', record_mod_key_states),
+    ('process_mouse_pos', MOUSE_POS_REQUESTS.append),
+    ('process_mouse_key_state', MOUSE_KEY_STATE_REQUESTS.append),
+):
+    setattr(REC_REFS, attr_name, recording_operation)
+
 
 
 ### event recording operation
@@ -294,17 +193,19 @@ def get_events():
 
         if event.type == KEYUP and event.key == K_F9:
 
-            ### set toggle recording as the frame index routine;
-            ###
-            ### this will cause the recording state to be toggled
-            ### (either turned on or off) at the very beginning of
-            ### the next frame
-            REC_REFS.frame_index_routine = toggle_recording
+            ### save session data
+            save_session_data()
 
-        else:
+            ### clean temporary files
+            clean_temp_files()
 
-            REC_REFS.process_event(event)
-            yield event
+            ### quit app
+
+            quit_pygame()
+            quit()
+
+        REC_REFS.process_event(event)
+        yield event
 
 ## processing key pressed states
 
@@ -334,8 +235,7 @@ def get_mouse_pressed():
 ## screen updating
 
 def update_screen():
-    ###
-    blit_on_screen(REC_REFS.next_indicator_surf(), rec_indicator_rect)
+    ### blit label
     blit_on_screen(label, label_rect)
 
     ### update the screen
@@ -396,6 +296,14 @@ def save_session_data():
 
     ### store last frame index as well
     session_data['last_frame_index'] = REC_REFS.frame_index + 1
+
+    ### store recording size and title
+
+    session_data['recording_size'] = APP_REFS.recording_size
+
+    session_data['recording_title'] = (
+        getattr(APP_REFS, "recording_title", "Untitled session")
+    )
 
     ### save session data in file or its rotated version
 

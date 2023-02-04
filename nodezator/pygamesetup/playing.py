@@ -45,10 +45,6 @@ from pygame.display import set_mode, update
 
 from pygame.mouse import set_pos, set_visible as set_mouse_visibility
 
-from pygame.font import SysFont
-
-from pygame.draw import rect as draw_rect
-
 
 ### local imports
 
@@ -63,20 +59,26 @@ from .constants import (
 
     DEPTH, FPS, maintain_fps,
 
-    DEFAULT_SIZE, FLAG,
-
     EVENT_KEY_STRIP_MAP,
     EVENT_COMPACT_NAME_MAP,
     KEYS_MAP,
     SCANCODE_NAMES_MAP,
     MOD_KEYS_MAP,
 
+    get_label_object,
+    clean_temp_files,
+
 )
 
 
+### load session data
+session_data = load_pyl(APP_REFS.input_path)
+
 ### pygame constants
 
-SCREEN = set_mode(DEFAULT_SIZE, FLAG, DEPTH)
+FLAG = 0
+
+SCREEN = set_mode(session_data['recording_size'], FLAG, DEPTH)
 
 SCREEN_RECT = SCREEN.get_rect()
 blit_on_screen = SCREEN.blit
@@ -114,13 +116,9 @@ REVERSE_SCANCODE_NAMES_MAP = {
     for key, value in SCANCODE_NAMES_MAP.items()
 }
 
-### load session inputs
 
-input_path = APP_REFS.input_path
-
-data = load_pyl(input_path)
-
-PLAY_REFS.last_frame_index = data['last_frame_index']
+###
+PLAY_REFS.last_frame_index = session_data['last_frame_index']
 
 ##
 
@@ -216,7 +214,8 @@ EVENTS_MAP = {
 
     frame_index : list(get_ready_events(compact_events))
 
-    for frame_index, compact_events in data['events_map'].items()
+    for frame_index, compact_events
+    in session_data['events_map'].items()
 
 }
 
@@ -247,7 +246,7 @@ NON_EMPTY_GETTER_FROZENSETS = {
     )
 
     for frame_index, pressed_key_names
-    in data['pressed_keys_map'].items()
+    in session_data['pressed_keys_map'].items()
 
 }
 
@@ -273,7 +272,7 @@ NO_KMOD_NONE_BITMASKS = {
     )
 
     for frame_index, mod_key_names
-    in data['mod_key_bitmasks_map'].items()
+    in session_data['mod_key_bitmasks_map'].items()
 }
 
 ### create a list containing all mouse position requests;
@@ -281,13 +280,13 @@ NO_KMOD_NONE_BITMASKS = {
 ### then reverse its orders so the first ones are the first
 ### ones to be popped from the list
 
-MOUSE_POSITIONS = list(data['mouse_pos_requests'])
+MOUSE_POSITIONS = list(session_data['mouse_pos_requests'])
 MOUSE_POSITIONS.reverse()
 
 ### do the same as above to a list of all mouse key pressed
 ### state requests (create and reverse it)
 
-MOUSE_PRESSED_TUPLES = list(data['mouse_key_state_requests'])
+MOUSE_PRESSED_TUPLES = list(session_data['mouse_key_state_requests'])
 MOUSE_PRESSED_TUPLES.reverse()
 
 
@@ -296,68 +295,23 @@ MOUSE_PRESSED_TUPLES.reverse()
 
 ## label creation
 
-# define callables to assist in creating labels
-
-render_label_text = SysFont('Arial', 16, bold=True).render
-
-def get_label(text, label_fg, label_bg, label_outline, padding):
-
-    ### render the text itself
-
-    label_text = render_label_text(
-        text,
-        True,
-        label_fg,
-        label_bg,
-    )
-
-    ### create a surface with the sides incremented by
-    ### double the padding
-
-    label = (
-
-        Surface(
-
-            tuple(
-                v + (padding * 2)
-                for v in label_text.get_size()
-            )
-
-        ).convert()
-
-    )
-
-    ### fill the surface with the outline color
-    label.fill(label_outline)
-
-    ### draw a slightly smaller rect inside the surface with the
-    ### filling color
-    draw_rect(label, label_bg, label.get_rect().inflate(-2, -2))
-
-    ### blit the text inside the surface where the padding
-    ### ends
-    label.blit(label_text, (padding, padding))
-
-    ### finally return the label
-    return label
 
 # create labels, their rects, and position them
 
 LABELS = []
 
-Object = type("Object", (), {})
-
-bottomright = SCREEN_RECT.move(-10, -20).bottomright
+topright = SCREEN_RECT.move(-10, 32).topright
 
 for text in (
+    session_data.get("recording_title", "Untitled session"),
     "F9: play/pause",
     "F8: toggle mouse tracing",
 ):
 
-    ### create label surface
+    ### create label object
 
-    label_surf = (
-        get_label(
+    label = (
+        get_label_object(
             text = text,
             label_fg = 'white',
             label_bg = 'blue',
@@ -366,22 +320,14 @@ for text in (
         )
     )
 
-    ### create and position rect
-
-    label_rect = label_surf.get_rect()
-
-    label_rect.bottomright = bottomright
-
-    ### instantiate and populate label instance
-
-    label = Object()
-    label.__dict__.update(image=label_surf, rect=label_rect)
+    ### position label
+    label.rect.topright = topright
 
     ### store label
     LABELS.append(label)
 
-    ### update bottomright
-    bottomright = label_rect.move(0, -20).topright
+    ### update topright
+    topright = label.rect.move(0, 5).bottomright
 
 
 ### create function to setup playing mode and assign it as the
@@ -406,10 +352,11 @@ def perform_frame_index_setups():
     ### increment frame index by 1
     PLAY_REFS.frame_index += 1
 
-    ### act according to whether frame is last one
+    ### quit app if frame is last one
 
     if PLAY_REFS.frame_index == PLAY_REFS.last_frame_index:
 
+        clean_temp_files()
         quit_pygame()
         quit()
 

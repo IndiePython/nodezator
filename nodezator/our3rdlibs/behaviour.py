@@ -32,14 +32,6 @@ def set_status_message_from_key(key):
     set_status_message(STATUS_MESSAGES_MAP[key])
 
 
-def remove_buffer():
-    """Remove swap file if present."""
-    try:
-        APP_REFS.swap_path.unlink()
-    except AttributeError:
-        pass
-
-
 def quit_app():
     """Raise a quit app exception."""
     raise QuitAppException

@@ -28,7 +28,13 @@ from .config import APP_REFS
 logger = get_new_logger(__name__)
 
 
-def main(filepath='', recording_path='', input_path=''):
+def main(
+    filepath='',
+    input_path='',
+    recording_path='',
+    recording_size=(1280, 720),
+    recording_title="Untitled session",
+    ):
     """Launch application.
 
     Parameters
@@ -63,11 +69,17 @@ def main(filepath='', recording_path='', input_path=''):
         )
 
     ## if a recording or input path was given, turn it into a pathlib.Path
-    ## object and store it
+    ## object and store it, along with additional options if relevant
 
     elif recording_path:
+
         recording_path = Path(recording_path)
         APP_REFS.recording_path = recording_path
+
+        ## also store the recording size and title
+
+        APP_REFS.recording_size = recording_size
+        APP_REFS.recording_title = recording_title
 
     elif input_path:
         input_path = Path(input_path)
@@ -144,15 +156,66 @@ def parse_args_and_execute_main():
         ),
     )
 
+    parser.add_argument(
+        "-s",
+        "--recording-size",
+        type=str,
+        nargs="?",
+        default='1280x720',
+        help=(
+            "fixed window size for recording (default is '1280x720');"
+            " only used if recording path is given."
+        )
+    )
+
+    parser.add_argument(
+        "-t",
+        "--recording-title",
+        type=str,
+        nargs="?",
+        default='Untitled session',
+        help=(
+            "title for recording session (default is 'Untitled session');"
+            " only used if recording path is given."
+        )
+    )
+
     ### parse arguments
     parsed_args = parser.parse_args()
+
+    ### process recording size
+
+    try:
+        recording_size = tuple(
+            map(int, parsed_args.recording_size.split('x'))
+        )
+
+    except Exception as err:
+
+        raise ValueError(
+            "If given, recording size must be a string in the 'WIDTHxHEIGHT'"
+            " format; for instance: 1280x720"
+        ) from err
+
+
+    else:
+
+        w, h = recording_size
+
+        if w == 0 or h == 0:
+
+            raise ValueError(
+                "Neither width nor height for recording size can be 0"
+            )
 
     ### call the main function with the arguments
 
     main(
         parsed_args.filepath,
-        parsed_args.recording_path,
         parsed_args.input_path,
+        parsed_args.recording_path,
+        recording_size,
+        parsed_args.recording_title,
     )
 
 

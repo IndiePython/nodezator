@@ -23,12 +23,19 @@ from ..appinfo import FULL_TITLE, ABBREVIATED_TITLE
 from ..config import APP_REFS, DATA_DIR
 
 
+### pygame initialization setups
 
-### pygame mixer pre-initialization
+## pygame mixer pre-initialization
 pre_init_mixer(44100, -16, 2, 4096)
 
-### pygame initialization
+## pygame initialization
 init_pygame()
+
+
+### post-initialization local import
+from .constants import clean_temp_files
+
+
 
 ### set caption and icon for window
 
