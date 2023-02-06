@@ -6,7 +6,7 @@ from functools import partialmethod
 
 ### third-party imports
 
-from pygame import (
+from pygame.locals import (
     QUIT,
     KEYUP,
     K_ESCAPE,
@@ -14,7 +14,7 @@ from pygame import (
     K_KP_ENTER,
     KEYDOWN,
     KMOD_CTRL,
-    K_w,
+    K_w, K_n, K_o,
     MOUSEBUTTONDOWN,
     MOUSEBUTTONUP,
     MOUSEMOTION,
@@ -24,6 +24,8 @@ from pygame.draw import rect as draw_rect
 
 
 ### local imports
+
+from ..config import APP_REFS
 
 from ..pygamesetup import (
     SCREEN,
@@ -108,14 +110,23 @@ class SplashScreenOperations(Object2D):
                 if event.key in (K_ESCAPE, K_RETURN, K_KP_ENTER):
                     raise SwitchLoopException
 
-            ### pressing "Ctrl" + "W" also triggers
-            ### behaviours to quit application, just
-            ### like in the QUIT event above
+            ### KEYDOWN
 
             elif event.type == KEYDOWN:
 
+                ## Application related operations
+
+                # quit
                 if event.key == K_w and event.mod & KMOD_CTRL:
                     raise QuitAppException
+
+                # create new file
+                elif event.key == K_n and event.mod & KMOD_CTRL:
+                    APP_REFS.window_manager.new()
+
+                # open file
+                elif event.key == K_o and event.mod & KMOD_CTRL:
+                    APP_REFS.window_manager.open()
 
             ### for each type of mouse event (motion,
             ### button pressing or button release),
