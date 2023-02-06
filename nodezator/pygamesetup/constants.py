@@ -28,11 +28,8 @@ else:
     WINDOW_RESIZE_EVENT_TYPE = WINDOWRESIZED
 
 
-### local imports
-
+### local import
 from ..config import APP_REFS
-
-from ..userprefsman.main import TEMP_FILE_SWAP
 
 
 
@@ -197,17 +194,20 @@ MOD_KEYS_MAP = {
 
 }
 
+
 ### temporary file cleaning
 
 def clean_temp_files():
+    """Clean temporary files."""
 
+    ### remove temporary paths
     APP_REFS.temp_filepaths_man.ensure_removed()
 
-    if TEMP_FILE_SWAP.exists():
-        TEMP_FILE_SWAP.unlink()
+    ### remove swap path if it there's one
 
     try:
-        APP_REFS.swap_path.unlink()
+        swap_path = APP_REFS.swap_path
     except AttributeError:
         pass
-
+    else:
+        swap_path.unlink()
