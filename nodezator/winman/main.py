@@ -168,15 +168,12 @@ class WindowManager(
         self.clicked_mouse = False
 
         ### create background obj
-
         self.background = Object2D(rect=Rect(0, 0, 0, 0))
 
         ### create separator obj
-
         self.separator = Object2D(rect=Rect(0, 0, 0, 0))
 
         ### append window resize setup method
-
         APP_REFS.window_resize_setups.append(self.resize_setups)
 
     def resize_setups(self):
@@ -509,9 +506,16 @@ class WindowManager(
         else:
             bg_color = GRAPH_BG
 
-        self.background.image = render_rect(*SCREEN_RECT.size, bg_color)
+        if (
+            not hasattr(self.background, 'image')
+            or SCREEN_RECT.size != self.background.image.get_size()
+        ):
 
-        self.background.rect.size = self.background.image.get_size()
+            self.background.image = render_rect(*SCREEN_RECT.size, bg_color)
+            self.background.rect.size = self.background.image.get_size()
+
+        else:
+            self.background.image.fill(bg_color)
 
     def fix_menubar_size(self):
 
