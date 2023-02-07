@@ -45,7 +45,7 @@ from ..ourstdlibs.pyl import save_pyl
 
 from .constants import (
 
-    DEPTH, FPS, maintain_fps,
+    FPS, maintain_fps,
 
     EVENT_KEY_STRIP_MAP,
     EVENT_COMPACT_NAME_MAP,
@@ -64,7 +64,7 @@ from .constants import (
 
 FLAG = 0
 
-SCREEN = set_mode(APP_REFS.recording_size, FLAG, DEPTH)
+SCREEN = set_mode(APP_REFS.recording_size, FLAG)
 
 SCREEN_RECT = SCREEN.get_rect()
 blit_on_screen = SCREEN.blit

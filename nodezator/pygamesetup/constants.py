@@ -33,10 +33,6 @@ from ..config import APP_REFS
 
 
 
-### general screen setup constant
-DEPTH = 32
-
-
 ### framerate-related values/objects
 
 FPS = 24

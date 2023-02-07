@@ -21,7 +21,7 @@ from pygame.display import set_mode, update as update_screen
 
 
 ### local imports
-from .constants import DEPTH, FPS, maintain_fps
+from .constants import FPS, maintain_fps
 
 
 
@@ -37,7 +37,7 @@ DEFAULT_SIZE = (
 
 FLAG = RESIZABLE
 
-SCREEN = set_mode(DEFAULT_SIZE, FLAG, DEPTH)
+SCREEN = set_mode(DEFAULT_SIZE, FLAG)
 
 SCREEN_RECT = SCREEN.get_rect()
 blit_on_screen = SCREEN.blit

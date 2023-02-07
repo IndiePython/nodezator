@@ -57,7 +57,7 @@ from ..ourstdlibs.behaviour import empty_function
 
 from .constants import (
 
-    DEPTH, FPS, maintain_fps,
+    FPS, maintain_fps,
 
     EVENT_KEY_STRIP_MAP,
     EVENT_COMPACT_NAME_MAP,
@@ -78,7 +78,7 @@ session_data = load_pyl(APP_REFS.input_path)
 
 FLAG = 0
 
-SCREEN = set_mode(session_data['recording_size'], FLAG, DEPTH)
+SCREEN = set_mode(session_data['recording_size'], FLAG)
 
 SCREEN_RECT = SCREEN.get_rect()
 blit_on_screen = SCREEN.blit
