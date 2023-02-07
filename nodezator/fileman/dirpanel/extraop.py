@@ -8,12 +8,12 @@ from functools import partialmethod
 
 
 ### third-party import
-from pygame import KMOD_SHIFT
+from pygame.locals import KMOD_SHIFT
 
 
 ### local imports
 
-from ...pygamesetup import get_pressed_mod_keys
+from ...pygamesetup import SERVICES_NS
 
 from ..constants import PATH_OBJ_QUANTITY
 
@@ -155,7 +155,7 @@ class ExtraOperations:
 
         ### store value indicating whether the shift key
         ### was pressed
-        shift_pressed = get_pressed_mod_keys() & KMOD_SHIFT
+        shift_pressed = SERVICES_NS.get_pressed_mod_keys() & KMOD_SHIFT
 
         ### reference last selected index in local variable
         last_selected_index = self.last_selected_index

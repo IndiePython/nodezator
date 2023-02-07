@@ -45,8 +45,13 @@ image_path = str(DATA_DIR / "app_icon.png")
 
 set_icon(load_image(image_path))
 
+
 ### set key repeating (unit: milliseconds)
-set_repeat(500, 30)  # set_repeat(delay, interval)
+
+set_repeat(
+    500, # delay (time before repetition begins)
+    30, # interval (interval between repetitions)
+)
 
 
 ### overridable constants/behavior;

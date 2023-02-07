@@ -10,7 +10,9 @@ from xml.etree.ElementTree import Element
 
 ### third-party imports
 
-from pygame import (
+from pygame import Rect
+
+from pygame.locals import (
     ## event types
     QUIT,
     KEYUP,
@@ -28,8 +30,6 @@ from pygame import (
     K_RETURN,
     K_KP_ENTER,
     K_t,
-    ## rect class
-    Rect,
 )
 
 from pygame.math import Vector2
@@ -37,7 +37,7 @@ from pygame.math import Vector2
 
 ### local imports
 
-from ..pygamesetup import update_screen, get_events
+from ..pygamesetup import SERVICES_NS
 
 from ..pygamesetup.constants import WINDOW_RESIZE_EVENT_TYPE
 
@@ -443,7 +443,7 @@ class StringEntry(Object2D):
 
     def handle_events(self):
         """Iterate over event queue processing events."""
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             if event.type == QUIT:
                 raise QuitAppException
@@ -582,7 +582,7 @@ class StringEntry(Object2D):
         super().draw()
 
         ### finally update the screen
-        update_screen()
+        SERVICES_NS.update_screen()
 
     def on_mouse_click(self, event):
         """Delegate focus-related setups to get_focus().

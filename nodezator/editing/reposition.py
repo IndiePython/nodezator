@@ -12,11 +12,7 @@ from pygame.draw import line as draw_line
 
 from ..config import APP_REFS
 
-from ..pygamesetup import (
-    SCREEN,
-    SCREEN_RECT,
-    get_mouse_pos,
-)
+from ..pygamesetup import SERVICES_NS, SCREEN, SCREEN_RECT
 
 from ..ourstdlibs.mathutils import offset_point
 
@@ -57,7 +53,7 @@ class Repositioning:
         }
 
         ## backup mouse position
-        self.mouse_pos_backup = get_mouse_pos()
+        self.mouse_pos_backup = SERVICES_NS.get_mouse_pos()
 
         ## set window manager state
         APP_REFS.window_manager.set_state("moving_object")
@@ -67,7 +63,7 @@ class Repositioning:
 
     def track_mouse(self):
         """Transfer mouse relative pos to selected objs."""
-        current_x, current_y = get_mouse_pos()
+        current_x, current_y = SERVICES_NS.get_mouse_pos()
         start_x, start_y = self.mouse_pos_backup
 
         delta_x = current_x - start_x

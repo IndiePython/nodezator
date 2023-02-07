@@ -6,7 +6,7 @@ from functools import partialmethod
 
 ### third-party imports
 
-from pygame import (
+from pygame.locals import (
     QUIT,
     KEYDOWN,
     MOUSEBUTTONDOWN,
@@ -22,13 +22,7 @@ from ...config import APP_REFS
 
 from ...translation import TRANSLATION_HOLDER as t
 
-from ...pygamesetup import (
-    SCREEN_RECT,
-
-    get_events,
-    update_screen,
-    frame_checkups,
-)
+from ...pygamesetup import SERVICES_NS, SCREEN_RECT
 
 from ...dialog import create_and_show_dialog
 
@@ -316,7 +310,7 @@ class PathForm(Object2D):
             ### perform various checkups for this frame;
             ###
             ### stuff like maintaing a constant framerate and more
-            frame_checkups()
+            SERVICES_NS.frame_checkups()
 
             ### put the handle_input/update/draw method
             ### execution inside a try/except clause
@@ -343,7 +337,7 @@ class PathForm(Object2D):
 
     def handle_input(self):
         """Process events from event queue."""
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             if event.type == QUIT:
                 raise QuitAppException
@@ -422,7 +416,7 @@ class PathForm(Object2D):
         self.widgets.draw()
 
         ### update screen
-        update_screen()
+        SERVICES_NS.update_screen()
 
 
 get_path = PathForm().get_path

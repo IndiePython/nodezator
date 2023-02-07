@@ -10,10 +10,7 @@ from datetime import datetime
 
 ### third-party imports
 
-from pygame import (
-    Surface,
-    quit as quit_pygame,
-)
+from pygame import Surface
 
 from pygame.locals import (
     KEYUP,
@@ -42,6 +39,8 @@ from ..config import APP_REFS
 from ..ourstdlibs.path import get_timestamp
 
 from ..ourstdlibs.pyl import save_pyl
+
+from ..loopman.exception import ResetAppException
 
 from .constants import (
 
@@ -196,13 +195,10 @@ def get_events():
             ### save session data
             save_session_data()
 
-            ### clean temporary files
-            clean_temp_files()
+            ### reset app
+            raise ResetAppException
 
-            ### quit app
 
-            quit_pygame()
-            quit()
 
         REC_REFS.process_event(event)
         yield event

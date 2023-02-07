@@ -2,7 +2,9 @@
 
 ### third-party imports
 
-from pygame import (
+from pygame import Rect
+
+from pygame.locals import (
     QUIT,
     KEYUP,
     K_ESCAPE,
@@ -10,7 +12,6 @@ from pygame import (
     K_KP_ENTER,
     MOUSEBUTTONUP,
     MOUSEMOTION,
-    Rect,
 )
 
 
@@ -21,14 +22,7 @@ from pygame.math import Vector2
 
 ### local imports
 
-from ...pygamesetup import (
-    SCREEN,
-    blit_on_screen,
-
-    get_events,
-    get_mouse_pos,
-    update_screen,
-)
+from ...pygamesetup import SERVICES_NS, SCREEN, blit_on_screen
 
 from ...pygamesetup.constants import WINDOW_RESIZE_EVENT_TYPE
 
@@ -263,7 +257,7 @@ class OptionMenuLifetimeOperations(Object2D):
 
     def handle_events(self):
         """Iterate over event queue processing events."""
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             ### raise special exception if user attempts
             ### to quit the application
@@ -328,7 +322,7 @@ class OptionMenuLifetimeOperations(Object2D):
 
             self.align_subobjects()
 
-            self.on_mouse_motion(get_mouse_pos())
+            self.on_mouse_motion(SERVICES_NS.get_mouse_pos())
 
             ##
             self.draw_on_window_resize()
@@ -341,7 +335,7 @@ class OptionMenuLifetimeOperations(Object2D):
 
     def scroll_when_hovering_scroll_arrow(self):
         """"""
-        mouse_pos = mouse_x, mouse_y = get_mouse_pos()
+        mouse_pos = mouse_x, mouse_y = SERVICES_NS.get_mouse_pos()
 
         options_rect = self.option_widgets.rect
 
@@ -418,7 +412,7 @@ class OptionMenuLifetimeOperations(Object2D):
     def choose_option_under_mouse(self):
         """Choose option under mouse, if any."""
         ### get mouse position
-        mouse_pos = get_mouse_pos()
+        mouse_pos = SERVICES_NS.get_mouse_pos()
 
         ### iterate over option widgets, looking for the
         ### widget which collides with the mouse
@@ -502,7 +496,7 @@ class OptionMenuLifetimeOperations(Object2D):
         self.draw_subobjects()
 
         ### finally, update the screen
-        update_screen()
+        SERVICES_NS.update_screen()
 
     def draw_options(self):
 

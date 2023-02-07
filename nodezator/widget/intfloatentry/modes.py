@@ -6,7 +6,7 @@ from string import digits, ascii_letters
 
 ### third-party imports
 
-from pygame import (
+from pygame.locals import (
     ### event types
     QUIT,
     KEYDOWN,
@@ -35,17 +35,7 @@ from pygame.math import Vector2
 
 ### local imports
 
-from ...pygamesetup import (
-
-    SCREEN_RECT,
-
-    get_events,
-    get_pressed_mod_keys,
-    set_mouse_pos,
-    set_mouse_visibility,
-    update_screen,
-
-)
+from ...pygamesetup import SERVICES_NS, SCREEN_RECT
 
 from ...pygamesetup.constants import WINDOW_RESIZE_EVENT_TYPE
 
@@ -115,7 +105,7 @@ class IntFloatModes(Object2D):
         Allows edition of the widget contents using the
         keyboard.
         """
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             if event.type == QUIT:
                 raise QuitAppException
@@ -222,7 +212,7 @@ class IntFloatModes(Object2D):
         super().draw()
 
         ### update the screen
-        update_screen()
+        SERVICES_NS.update_screen()
 
     def enable_expanded_view(self):
         """Expand widget horizontally to provide space."""
@@ -305,7 +295,7 @@ class IntFloatModes(Object2D):
         Allows the widget to watch out for specific events
         to define which mode to enable next.
         """
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             if event.type == QUIT:
                 raise QuitAppException
@@ -343,7 +333,7 @@ class IntFloatModes(Object2D):
         super().draw()
 
         ### update the screen
-        update_screen()
+        SERVICES_NS.update_screen()
 
     def mouse_edition_control(self):
         """Process event in mouse edition mode.
@@ -351,7 +341,7 @@ class IntFloatModes(Object2D):
         Allows edition of the widget contents by dragging
         the mouse.
         """
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             if event.type == QUIT:
                 raise QuitAppException
@@ -475,7 +465,7 @@ class IntFloatModes(Object2D):
             self.dragging_origin_x = SCREEN_CENTERX
 
         ### finally center the mouse in the screen
-        set_mouse_pos(SCREEN_CENTERX, SCREEN_CENTERY)
+        SERVICES_NS.set_mouse_pos(SCREEN_CENTERX, SCREEN_CENTERY)
 
     def change_shift_influence(self, shift_pressed):
         """Perform setups according to state of shift key.
@@ -518,7 +508,7 @@ class IntFloatModes(Object2D):
         super().draw()
 
         ### update the screen
-        update_screen()
+        SERVICES_NS.update_screen()
 
     def enable_standby_mode(self):
         """Assign behaviours for standby mode."""
@@ -541,10 +531,10 @@ class IntFloatModes(Object2D):
         self.handle_input = self.mouse_edition_control
 
         ### disable the mouse visibility
-        set_mouse_visibility(False)
+        SERVICES_NS.set_mouse_visibility(False)
 
         ### position the mouse at the center of the screen
-        set_mouse_pos(SCREEN_CENTERX, SCREEN_CENTERY)
+        SERVICES_NS.set_mouse_pos(SCREEN_CENTERX, SCREEN_CENTERY)
 
         ### define the influence of the state of the
         ### shift key in how the value displayed is
@@ -559,12 +549,12 @@ class IntFloatModes(Object2D):
         ###    incremented/decremented whenever the mouse
         ###    moves
 
-        self.change_shift_influence(get_pressed_mod_keys() & KMOD_SHIFT)
+        self.change_shift_influence(SERVICES_NS.get_pressed_mod_keys() & KMOD_SHIFT)
 
     def perform_mouse_edition_exit_setups(self):
         """Restore mouse settings and clean attributes."""
-        set_mouse_pos(self.initial_mouse_pos)
-        set_mouse_visibility(True)
+        SERVICES_NS.set_mouse_pos(self.initial_mouse_pos)
+        SERVICES_NS.set_mouse_visibility(True)
 
         del self.base_value
         del self.initial_mouse_pos

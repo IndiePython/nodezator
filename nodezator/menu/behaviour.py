@@ -1,8 +1,14 @@
 """Facility for menu manager behaviours extension."""
 
+### standard library imports
+
+from functools import partial
+from operator import methodcaller
+
+
 ### third-party imports
 
-from pygame import (
+from pygame.locals import (
     QUIT,
     KEYUP,
     K_ESCAPE,
@@ -16,12 +22,7 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from ..pygamesetup import (
-    SCREEN,
-    get_events,
-    get_mouse_pos,
-    update_screen,
-)
+from ..pygamesetup import SERVICES_NS, SCREEN
 
 from ..ourstdlibs.mathutils import invert_point
 from ..ourstdlibs.treeutils import yield_tree_attrs
@@ -104,6 +105,8 @@ class BehaviourDefinitions(Object2D):
 
         ### now let's gather all drawing behaviours to be
         ### executed in the draw cycle of the menu manager
+
+        update_screen = partial(methodcaller('update_screen'), SERVICES_NS)
 
         self.draw = CallList(
             [self.draw_behind, self.draw_top_items, update_screen]
@@ -197,7 +200,7 @@ class BehaviourDefinitions(Object2D):
         ### retrieve commonly used data, mouse position,
         ### and store it in a mouse_pos attribute for easy
         ### access by other methods in the class
-        self.mouse_pos = get_mouse_pos()
+        self.mouse_pos = SERVICES_NS.get_mouse_pos()
 
         ### check if there's an arrow hovered and scroll it
         self.manage_scrolling()
@@ -208,7 +211,7 @@ class BehaviourDefinitions(Object2D):
 
         ### process events from the event queue
 
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
             if event.type == QUIT:
                 raise QuitAppException
 

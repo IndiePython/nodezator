@@ -13,7 +13,7 @@ from webbrowser import open as open_url
 
 ### third-party imports
 
-from pygame import (
+from pygame.locals import (
     QUIT,
     KEYUP,
     K_ESCAPE,
@@ -45,14 +45,7 @@ from pygame.math import Vector2
 
 from ..config import APP_REFS, APP_WIDE_WEB_DIR
 
-from ..pygamesetup import (
-    SCREEN_RECT,
-    blit_on_screen,
-
-    get_events,
-    get_pressed_keys,
-    update_screen,
-)
+from ..pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
 
 from ..ourstdlibs.meta import initialize_bases
 
@@ -349,7 +342,7 @@ class HTSLBrowser(
 
     def handle_events(self):
         """Retrieve and handle events."""
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             if event.type == QUIT:
                 self.quit()
@@ -448,7 +441,7 @@ class HTSLBrowser(
 
     def handle_keyboard_input(self):
         """Handle pressed state of keys from keyboard."""
-        key_input = get_pressed_keys()
+        key_input = SERVICES_NS.get_pressed_keys()
 
         up = any(key_input[item] for item in UP_KEYS)
         left = any(key_input[item] for item in LEFT_KEYS)
@@ -564,7 +557,7 @@ class HTSLBrowser(
     def draw(self):
         """Update screen."""
         ### update the screen
-        update_screen()
+        SERVICES_NS.update_screen()
 
 
 ### instantiate htsl browser and reference its relevant

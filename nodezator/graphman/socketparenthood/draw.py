@@ -6,7 +6,7 @@ from pygame.draw import line as draw_line
 
 ### local imports
 
-from ...pygamesetup import SCREEN, get_mouse_pos
+from ...pygamesetup import SERVICES_NS, SCREEN
 
 from .utils import clip_segment
 
@@ -55,7 +55,7 @@ class DrawingOperations:
         try:
             start, end = clip_segment(
                 self.socket_a.rect.center,
-                get_mouse_pos(),
+                SERVICES_NS.get_mouse_pos(),
             )
 
         except ValueError:
@@ -89,6 +89,6 @@ class DrawingOperations:
             SCREEN,
             CUTTING_SEGMENT,
             self.cut_start_pos,  # start
-            get_mouse_pos(),  # end
+            SERVICES_NS.get_mouse_pos(),  # end
             3,
         )

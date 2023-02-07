@@ -2,7 +2,7 @@
 
 ### third-party imports
 
-from pygame import (
+from pygame.locals import (
     QUIT,
     KEYUP,
     K_ESCAPE,
@@ -14,9 +14,9 @@ from pygame import (
 )
 
 
-### local import
+### local imports
 
-from ...pygamesetup import get_events, get_pressed_keys, update_screen
+from ...pygamesetup import SERVICES_NS
 
 from ...config import APP_REFS
 
@@ -28,7 +28,7 @@ class SegmentDefinitionState:
 
     def segment_definition_event_handling(self):
         """Get and respond to events."""
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             ### QUIT
             if event.type == QUIT:
@@ -52,7 +52,7 @@ class SegmentDefinitionState:
     def segment_definition_keyboard_input_handling(self):
         """Handle keyboard specific input."""
         ### get input state maps
-        key_input = get_pressed_keys()
+        key_input = SERVICES_NS.get_pressed_keys()
 
         ### states related to widgets when file is loaded
 
@@ -134,4 +134,4 @@ class SegmentDefinitionState:
         self.separator.draw()
         self.menubar.draw_top_items()
 
-        update_screen()
+        SERVICES_NS.update_screen()

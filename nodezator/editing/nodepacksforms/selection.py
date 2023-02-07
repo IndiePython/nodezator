@@ -9,7 +9,7 @@ from functools import partial, partialmethod
 
 ### third-party imports
 
-from pygame import (
+from pygame.locals import (
     QUIT,
     MOUSEBUTTONDOWN,
     MOUSEBUTTONUP,
@@ -31,14 +31,7 @@ from ...config import APP_REFS
 
 from ...translation import TRANSLATION_HOLDER as t
 
-from ...pygamesetup import (
-    SCREEN_RECT,
-    blit_on_screen,
-
-    get_events,
-    update_screen,
-    frame_checkups,
-)
+from ...pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
 
 from ...appinfo import NATIVE_FILE_EXTENSION
 
@@ -681,7 +674,7 @@ class NodePacksSelectionChangeForm(Object2D):
 
         while self.running:
 
-            frame_checkups()
+            SERVICES_NS.frame_checkups()
 
             ### put the handle_input/update/draw method
             ### execution inside a try/except clause
@@ -709,7 +702,7 @@ class NodePacksSelectionChangeForm(Object2D):
 
     def handle_input(self):
         """Process events from event queue."""
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             if event.type == QUIT:
                 raise QuitAppException
@@ -982,7 +975,7 @@ class NodePacksSelectionChangeForm(Object2D):
         self.widgets.draw()
 
         ### update screen
-        update_screen()
+        SERVICES_NS.update_screen()
 
 
 present_change_node_packs_form = (

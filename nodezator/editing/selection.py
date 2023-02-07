@@ -10,7 +10,9 @@ from random import sample
 
 ### third-party imports
 
-from pygame import Rect, KMOD_SHIFT, KMOD_CTRL
+from pygame import Rect
+
+from pygame.locals import KMOD_SHIFT, KMOD_CTRL
 
 from pygame.draw import rect as draw_rect
 
@@ -19,11 +21,7 @@ from pygame.draw import rect as draw_rect
 
 from ..config import APP_REFS
 
-from ..pygamesetup import (
-    SCREEN,
-    get_pressed_mod_keys,
-    get_mouse_pos,
-)
+from ..pygamesetup import SERVICES_NS, SCREEN
 
 from ..ourstdlibs.mathutils import get_rect_from_points
 
@@ -67,7 +65,7 @@ class SelectionHandling:
         """
         ### if shift is pressed...
 
-        if KMOD_SHIFT & get_pressed_mod_keys():
+        if KMOD_SHIFT & SERVICES_NS.get_pressed_mod_keys():
 
             ## if object isn't event selected,
             ## make it so by appending to
@@ -173,7 +171,7 @@ class SelectionHandling:
     def start_box_selection(self):
         """Prepare for box selection mode and set it."""
         ### store current mouse pos
-        self.initial_box_pos = get_mouse_pos()
+        self.initial_box_pos = SERVICES_NS.get_mouse_pos()
 
         ### get a copy of the scrolling amount by adding
         ### (0, 0) to it and store the copy as the initial
@@ -221,7 +219,7 @@ class SelectionHandling:
         ### get a bitmask and use it to evaluate whether
         ### the shift and ctrl keys are pressed or not
 
-        bitmask = get_pressed_mod_keys()
+        bitmask = SERVICES_NS.get_pressed_mod_keys()
 
         shift = bitmask & KMOD_SHIFT
         ctrl = bitmask & KMOD_CTRL
@@ -354,7 +352,7 @@ class SelectionHandling:
 
         ### the point 2 of the box is the current mouse
         ### position
-        box_point_2 = get_mouse_pos()
+        box_point_2 = SERVICES_NS.get_mouse_pos()
 
         ### now, using the points, define the data for
         ### the selection box

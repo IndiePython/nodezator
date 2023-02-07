@@ -27,12 +27,7 @@ from pygame.draw import rect as draw_rect
 
 from ..config import APP_REFS
 
-from ..pygamesetup import (
-    SCREEN,
-    get_events,
-    update_screen,
-)
-
+from ..pygamesetup import SERVICES_NS, SCREEN
 
 from ..classes2d.single import Object2D
 
@@ -90,7 +85,7 @@ class SplashScreenOperations(Object2D):
         """Iterate over events reacting to them."""
         ### iterate over events from the event queue
 
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             ### if the user attempts to close the window,
             ### raise a custom exception to trigger the
@@ -282,4 +277,4 @@ class SplashScreenOperations(Object2D):
         self.right_shadow.draw()
 
         ### finally update the screen
-        update_screen()
+        SERVICES_NS.update_screen()

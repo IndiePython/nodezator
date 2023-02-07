@@ -33,13 +33,7 @@ from pygame.math import Vector2
 
 from ...config import APP_REFS
 
-from ...pygamesetup import (
-    SCREEN_RECT,
-
-    get_events,
-    get_pressed_keys,
-    update_screen,
-)
+from ...pygamesetup import SCREEN_RECT, SERVICES_NS
 
 from ...dialog import create_and_show_dialog
 
@@ -174,7 +168,7 @@ class FontsViewer(Object2D, LoopHolder):
 
     def handle_key_states(self):
 
-        key_pressed_states = get_pressed_keys()
+        key_pressed_states = SERVICES_NS.get_pressed_keys()
 
         if key_pressed_states[K_a]:
             self.char_objs.rect.move_ip(-20, 0)
@@ -190,7 +184,7 @@ class FontsViewer(Object2D, LoopHolder):
 
     def handle_events(self):
 
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             if event.type == QUIT:
                 self.quit()
@@ -228,7 +222,7 @@ class FontsViewer(Object2D, LoopHolder):
         super().draw()
 
         ### update screen
-        update_screen()
+        SERVICES_NS.update_screen()
 
 
 view_fonts = FontsViewer().view_fonts

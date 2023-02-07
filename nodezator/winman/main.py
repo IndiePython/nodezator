@@ -92,6 +92,10 @@ from .switch import setup_switches
 
 from .fileop import FileOperations
 
+## window manager utility function
+from .fileop import clean_loaded_file_data
+
+
 
 ### create logger for module
 logger = get_new_logger(__name__)
@@ -391,7 +395,7 @@ class WindowManager(
 
                 show_dialog_from_key("cancelled_file_loading_dialog")
 
-                set_file_loading_cancellation()
+                clean_loaded_file_data()
 
                 state_name = "no_file"
 
@@ -581,31 +585,6 @@ class WindowManager(
     def __repr__(self):
         """Return unambiguous string representation."""
         return "WindowManager()"
-
-
-### utility
-
-
-def set_file_loading_cancellation():
-    """Perform setups to cancel loading file.
-
-    Works by deleting attributes from the APP_REFS
-    whose existence trigger file loading operations.
-
-    Also cleans up data which won't be needed anymore.
-    """
-    ### delete swap file
-    APP_REFS.swap_path.unlink()
-
-    ### delete attributes holding paths whose existence
-    ### indicate the need to load a file
-
-    for attr_name in ("source_path", "swap_path"):
-        delattr(APP_REFS, attr_name)
-
-    ### also clean up data from a possible previous
-    ### session thay may still exist
-    APP_REFS.data.clear()
 
 
 perform_startup_preparations = WindowManager().perform_startup_preparations

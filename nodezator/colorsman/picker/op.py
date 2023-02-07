@@ -22,10 +22,10 @@ from pygame.draw import rect as draw_rect
 ### local imports
 
 from ...pygamesetup import (
+    SERVICES_NS,
     SCREEN,
     SCREEN_RECT,
     blit_on_screen,
-    get_events,
 )
 
 from ...ourstdlibs.color.largemaps import (
@@ -305,7 +305,7 @@ class Operations(LoopHolder):
         ### processing the relevant ones according to their
         ### settings
 
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             ### quit the application
             if event.type == QUIT:

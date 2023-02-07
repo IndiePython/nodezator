@@ -12,10 +12,7 @@ from pygame.math import Vector2
 
 from ...config import APP_REFS
 
-from ...pygamesetup import (
-    SCREEN_RECT,
-    frame_checkups,
-)
+from ...pygamesetup import SERVICES_NS, SCREEN_RECT
 
 from ...ourstdlibs.behaviour import empty_function
 
@@ -131,7 +128,7 @@ class ImagesViewer(NormalModeOperations, FullModeOperations):
             ### perform various checkups for this frame;
             ###
             ### stuff like maintaing a constant framerate and more
-            frame_checkups()
+            SERVICES_NS.frame_checkups()
 
             self.handle_input()
             self.draw()

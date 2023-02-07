@@ -6,7 +6,7 @@ from types import GeneratorType
 
 ### third-party imports
 
-from pygame import (
+from pygame.locals import (
     QUIT,
     KEYUP,
     K_ESCAPE,
@@ -18,12 +18,7 @@ from pygame import (
 
 ### local imports
 
-from .....pygamesetup import (
-    blit_on_screen,
-
-    get_events,
-    update_screen,
-)
+from .....pygamesetup import SERVICES_NS, blit_on_screen
 
 from .....ourstdlibs.behaviour import (
     empty_function,
@@ -216,7 +211,7 @@ class PatternsMode:
 
         Grab and process pygame events (or similar objects).
         """
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             ### raise a specific exception if the user
             ### tries to quit the app
@@ -304,4 +299,4 @@ class PatternsMode:
         self.canvas.draw()
 
         ### finally, update the screen
-        update_screen()
+        SERVICES_NS.update_screen()

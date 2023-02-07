@@ -33,7 +33,6 @@ from pygame.locals import (
 
 from pygame import (
     Surface,
-    quit as quit_pygame,
     locals as pygame_locals,
 )
 
@@ -53,6 +52,8 @@ from ..config import APP_REFS
 from ..ourstdlibs.pyl import load_pyl
 
 from ..ourstdlibs.behaviour import empty_function
+
+from ..loopman.exception import ResetAppException
 
 
 from .constants import (
@@ -352,13 +353,10 @@ def perform_frame_index_setups():
     ### increment frame index by 1
     PLAY_REFS.frame_index += 1
 
-    ### quit app if frame is last one
+    ### reset app if frame is last one
 
     if PLAY_REFS.frame_index == PLAY_REFS.last_frame_index:
-
-        clean_temp_files()
-        quit_pygame()
-        quit()
+        raise ResetAppException
 
 ### function to pause session replaying
 

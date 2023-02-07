@@ -22,14 +22,7 @@ from pygame.math import Vector2
 
 ### local imports
 
-from ....pygamesetup import (
-
-    blit_on_screen,
-
-    get_pressed_keys,
-    get_events,
-    update_screen,
-)
+from ....pygamesetup import SERVICES_NS, blit_on_screen
 
 from ....ourstdlibs.color.conversion import (
     full_rgb_to_html_name,
@@ -227,7 +220,7 @@ class ColorListMode:
 
     def color_list_event_handling(self):
         """Event handling for the color list mode."""
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
             ### raise specific exception if user tries to
             ### quit the application
 
@@ -266,7 +259,7 @@ class ColorListMode:
         """Keyboard input handling for the color list mode."""
         ### get a list of booleans representing flags for
         ### whether specific buttons are pressed or not
-        pressed_keys = get_pressed_keys()
+        pressed_keys = SERVICES_NS.get_pressed_keys()
 
         ### calculate whether we should scroll based on the
         ### state of specific buttons
@@ -431,7 +424,7 @@ class ColorListMode:
         self.color_list_bg.draw()
 
         ### and finally update the screen
-        update_screen()
+        SERVICES_NS.update_screen()
 
     def color_list_free_up_memory(self):
         """Clear objects/delete references to free memory."""

@@ -6,7 +6,7 @@ from textwrap import wrap
 
 ### third-party imports
 
-from pygame import (
+from pygame.locals import (
     QUIT,
     KEYUP,
     K_ESCAPE,
@@ -19,14 +19,7 @@ from pygame import (
 
 from .translation import DIALOGS_MAP
 
-from .pygamesetup import (
-
-    SCREEN_RECT,
-    blit_on_screen,
-
-    get_events,
-    update_screen,
-)
+from .pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
 
 from .classes2d.single import Object2D
 from .classes2d.collections import List2D
@@ -512,7 +505,7 @@ class DialogManager(Object2D, LoopHolder):
 
     def handle_input(self):
         """Retrieve and handle events."""
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             if event.type == QUIT:
                 self.quit()
@@ -629,7 +622,7 @@ class DialogManager(Object2D, LoopHolder):
     def draw(self):
         """Update screen continuously."""
         ### update screen
-        update_screen()
+        SERVICES_NS.update_screen()
 
     def free_up_memory(self):
         """Free memory by clearing collections."""

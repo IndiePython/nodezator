@@ -6,7 +6,7 @@ from math import inf as INFINITY
 
 ### third-party imports
 
-from pygame import (
+from pygame.locals import (
     QUIT,
     KEYUP,
     K_ESCAPE,
@@ -36,20 +36,7 @@ from pygame import (
 
 ### local imports
 
-from ...pygamesetup import (
-
-    SCREEN_RECT,
-    blit_on_screen,
-
-    update_screen,
-    get_events,
-    get_pressed_keys,
-    get_pressed_mod_keys,
-
-    frame_checkups,
-
-)
-
+from ...pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
 
 from ...surfsman.draw import draw_border
 from ...surfsman.cache import UNHIGHLIGHT_SURF_MAP
@@ -104,7 +91,7 @@ class Operations(Object2D):
             ### perform various checkups for this frame;
             ###
             ### stuff like maintaing a constant framerate and more
-            frame_checkups()
+            SERVICES_NS.frame_checkups()
 
             self.handle_input()
 
@@ -135,7 +122,7 @@ class Operations(Object2D):
 
     def handle_events(self):
         """Retrieve and respond to events."""
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             ### exit app by clicking the close button
             ### in the window
@@ -204,7 +191,7 @@ class Operations(Object2D):
 
                 elif event.button == 4:
 
-                    if get_pressed_mod_keys() & KMOD_SHIFT:
+                    if SERVICES_NS.get_pressed_mod_keys() & KMOD_SHIFT:
                         self.scroll(self.line_height, 0)
 
                     else:
@@ -212,7 +199,7 @@ class Operations(Object2D):
 
                 elif event.button == 5:
 
-                    if get_pressed_mod_keys() & KMOD_SHIFT:
+                    if SERVICES_NS.get_pressed_mod_keys() & KMOD_SHIFT:
                         self.scroll(-self.line_height, 0)
 
                     else:
@@ -227,7 +214,7 @@ class Operations(Object2D):
     def handle_key_input(self):
         """Respond to inputs from keys."""
         ### retrieve input list
-        input_list = get_pressed_keys()
+        input_list = SERVICES_NS.get_pressed_keys()
 
         ### define actions based on state of specific keys
 
@@ -284,7 +271,7 @@ class Operations(Object2D):
             self.help_text_obj.draw()
 
         ### finally update the screen
-        update_screen()
+        SERVICES_NS.update_screen()
 
     def draw_lines_only(self):
         """Draw the lines, without the line number."""

@@ -17,12 +17,7 @@ from pygame.math import Vector2
 
 from ...config import APP_REFS
 
-from ...pygamesetup import (
-    SCREEN_RECT,
-    blit_on_screen,
-    update_screen,
-    frame_checkups,
-)
+from ...pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
 
 from ...dialog import create_and_show_dialog
 
@@ -432,7 +427,7 @@ class TextEditor(Object2D):
             ### perform various checkups for this frame;
             ###
             ### stuff like maintaing a constant framerate and more
-            frame_checkups()
+            SERVICES_NS.frame_checkups()
 
             ### perform the GUD operations;
             ###
@@ -558,7 +553,7 @@ class TextEditor(Object2D):
         self.statusbar.draw()
 
         ### update screen
-        update_screen()
+        SERVICES_NS.update_screen()
 
     def mouse_release_action(self, mouse_pos):
         """Invoke colliding button, if any.

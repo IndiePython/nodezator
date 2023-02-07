@@ -45,3 +45,19 @@ class ContinueLoopException(Exception):
 
 class QuitAppException(Exception):
     """Raise whenever you want to quit the app."""
+
+class ResetAppException(Exception):
+    """Raised whenever you want to reset the app.
+
+    Resetting the app means bring it back to an initial state.
+    Such initial state is when it is just launched, either
+    with or without a loaded file.
+    """
+
+    def __init__(self, filepath=None):
+        """Store loop holder."""
+        ### store the given filepath value
+        self.filepath = filepath
+
+        ### initialize superclass with custom message
+        super().__init__("Reset the app.")

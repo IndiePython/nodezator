@@ -2,14 +2,14 @@
 
 ### third-party imports
 
-from pygame import KMOD_CTRL, KMOD_SHIFT
+from pygame.locals import KMOD_CTRL, KMOD_SHIFT
 
 from pygame.time import get_ticks as get_milliseconds
 
 
 ### local imports
 
-from ...pygamesetup import get_pressed_mod_keys
+from ...pygamesetup import SERVICES_NS
 
 from ..constants import MAX_MSECS_TO_2ND_MOUSE_EVENT
 
@@ -33,7 +33,7 @@ class MouseOperations:
 
         ### retrieve pressed state of ctrl and shift keys
 
-        mods_bitmask = get_pressed_mod_keys()
+        mods_bitmask = SERVICES_NS.get_pressed_mod_keys()
         ctrl = mods_bitmask & KMOD_CTRL
         shift = mods_bitmask & KMOD_SHIFT
 

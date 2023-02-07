@@ -18,11 +18,7 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from ....pygamesetup import (
-    SCREEN,
-    get_mouse_pos,
-    get_mouse_pressed,
-)
+from ....pygamesetup import SERVICES_NS, SCREEN
 
 from ....classes2d.single import Object2D
 from ....classes2d.collections import List2D
@@ -460,7 +456,7 @@ class ColorsPanel(
         """Check whether scroll buttons are being pressed."""
         ### if left mouse button is not pressed, exit method
         ### by returning earlier
-        if not get_mouse_pressed()[0]:
+        if not SERVICES_NS.get_mouse_pressed()[0]:
             return
 
         ### otherwise retrieve the position of the mouse
@@ -468,7 +464,7 @@ class ColorsPanel(
         ### buttons in case the mouse is hovering one
         ### of them
 
-        mouse_pos = get_mouse_pos()
+        mouse_pos = SERVICES_NS.get_mouse_pos()
 
         for button in self.buttons:
 

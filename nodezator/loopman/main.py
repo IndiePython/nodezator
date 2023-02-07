@@ -1,19 +1,17 @@
 """Loop-related tools for classes."""
 
-### third-party imports
+### standard library imports
 
-from pygame import QUIT
+from functools import partial
+from operator import methodcaller
+
+### third-party import
+from pygame.locals import QUIT
 
 
 ### local imports
 
-from ..pygamesetup import (
-
-    get_events,
-    update_screen,
-    frame_checkups,
-
-)
+from ..pygamesetup import SERVICES_NS
 
 from .exception import (
     ContinueLoopException,
@@ -32,7 +30,7 @@ class LoopHolder:
         try:
             self.draw
         except AttributeError:
-            self.draw = update_screen
+            self.draw = partial(methodcaller('update_screen'), SERVICES_NS)
 
         ### set self as the loop holder
         loop_holder = self
@@ -46,7 +44,7 @@ class LoopHolder:
             ### perform various checkups for this frame;
             ###
             ### stuff like maintaing a constant framerate and more
-            frame_checkups()
+            SERVICES_NS.frame_checkups()
 
             try:
 
@@ -82,7 +80,7 @@ class LoopHolder:
 
     def handle_input(self):
         """Quit if 'x' on window is clicked."""
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
             if event.type == QUIT:
                 self.quit()
 

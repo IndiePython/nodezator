@@ -9,11 +9,8 @@ from pygame.math import Vector2
 
 
 ### local imports
+from ..pygamesetup import SCREEN_RECT, blit_on_screen
 
-from ..pygamesetup import (
-    SCREEN_RECT,
-    blit_on_screen,
-)
 
 
 class SingleObjectBase:

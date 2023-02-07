@@ -6,7 +6,7 @@ from pygame import QUIT, KEYUP, K_ESCAPE, MOUSEBUTTONUP
 
 ### local imports
 
-from ...pygamesetup import get_events, update_screen
+from ...pygamesetup import SERVICES_NS
 
 from ...config import APP_REFS
 
@@ -18,7 +18,7 @@ class SegmentSeveranceState:
 
     def segment_severance_event_handling(self):
         """Get and respond to events."""
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             ### QUIT
             if event.type == QUIT:
@@ -67,4 +67,4 @@ class SegmentSeveranceState:
         self.separator.draw()
         self.menubar.draw_top_items()
 
-        update_screen()
+        SERVICES_NS.update_screen()

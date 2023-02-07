@@ -6,7 +6,7 @@ from itertools import chain
 
 ### third-party imports
 
-from pygame import (
+from pygame.locals import (
     QUIT,
     KEYDOWN,
     KEYUP,
@@ -47,14 +47,7 @@ from pygame import (
 ### local imports
 
 
-from ...pygamesetup import (
-    get_events,
-    get_pressed_keys,
-    get_pressed_mod_keys,
-    get_mouse_pos,
-    update_screen,
-)
-
+from ...pygamesetup import SERVICES_NS
 
 from ...config import APP_REFS
 
@@ -74,7 +67,7 @@ class LoadedFileState:
 
     def loaded_file_event_handling(self):
         """Get and respond to events."""
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             ### QUIT
             if event.type == QUIT:
@@ -252,7 +245,7 @@ class LoadedFileState:
 
                 elif event.key == K_MENU:
 
-                    mouse_pos = get_mouse_pos()
+                    mouse_pos = SERVICES_NS.get_mouse_pos()
 
                     ### mark the mouse position for the
                     ### editing assistant, that is, the
@@ -283,7 +276,7 @@ class LoadedFileState:
         ### get input state maps
 
         key_input, modif_bitmask = (
-            get_pressed_keys(), get_pressed_mod_keys()
+            SERVICES_NS.get_pressed_keys(), SERVICES_NS.get_pressed_mod_keys()
         )
 
         ### check whether the control key is pressed
@@ -459,7 +452,7 @@ class LoadedFileState:
 
             ## obtain a bitmask which you'll use to check
             ## the state of modifier keys along the method
-            bitmask = get_pressed_mod_keys()
+            bitmask = SERVICES_NS.get_pressed_mod_keys()
 
             ## store the state of the ctrl key
             ctrl_pressed = bitmask & KMOD_CTRL
@@ -605,4 +598,4 @@ class LoadedFileState:
         self.separator.draw()
         self.menubar.draw_top_items()
 
-        update_screen()
+        SERVICES_NS.update_screen()

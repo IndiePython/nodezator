@@ -9,7 +9,7 @@ from functools import partialmethod
 
 ### third-party imports
 
-from pygame import (
+from pygame.locals import (
     QUIT,
     KEYDOWN,
     K_ESCAPE,
@@ -43,13 +43,10 @@ from pygame.math import Vector2
 ### local imports
 
 from ...pygamesetup import (
+    SERVICES_NS,
     SCREEN,
     SCREEN_RECT,
     blit_on_screen,
-
-    get_events,
-    get_pressed_keys,
-    update_screen,
 )
 
 from ...surfsman.draw import draw_border_on_area
@@ -89,7 +86,7 @@ class FullModeOperations(Object2D):
 
     def full_handle_input(self):
 
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             ### TODO this will cause cleaning/tear down to
             ### skipped; address it, including the same
@@ -158,7 +155,7 @@ class FullModeOperations(Object2D):
 
         ###
 
-        keys_pressed_state = get_pressed_keys()
+        keys_pressed_state = SERVICES_NS.get_pressed_keys()
 
         dx = dy = 0
 
@@ -305,4 +302,4 @@ class FullModeOperations(Object2D):
 
     def full_draw(self):
         """Update screen."""
-        update_screen()
+        SERVICES_NS.update_screen()

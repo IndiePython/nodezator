@@ -6,7 +6,7 @@ from functools import partialmethod
 
 ### third-party imports
 
-from pygame import (
+from pygame.locals import (
     QUIT,
     KEYDOWN,
     MOUSEBUTTONUP,
@@ -35,7 +35,7 @@ from pygame import (
 
 ### local imports
 
-from .....pygamesetup import get_events
+from .....pygamesetup import SERVICES_NS
 
 from .....loopman.exception import QuitAppException
 
@@ -51,7 +51,7 @@ class NormalMode:
 
     def normal_mode_handling(self):
         """Get and handle events for normal mode."""
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             if event.type == QUIT:
                 raise QuitAppException

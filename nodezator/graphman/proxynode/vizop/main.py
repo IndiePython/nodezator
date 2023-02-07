@@ -15,9 +15,7 @@ from ....config import APP_REFS
 from ....pygamesetup import SCREEN
 
 ## function for injection
-from .reposition import (
-    reposition_elements,
-)
+from .reposition import reposition_elements
 
 
 class VisualRelatedOperations:

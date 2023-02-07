@@ -2,7 +2,7 @@
 
 ### third-party imports
 
-from pygame import (
+from pygame.locals import (
     QUIT,
     KEYDOWN,
     KEYUP,
@@ -30,12 +30,7 @@ from pygame import (
 
 ### local imports
 
-from ...pygamesetup import (
-    get_events,
-    get_pressed_keys,
-    get_pressed_mod_keys,
-    update_screen,
-)
+from ...pygamesetup import SERVICES_NS
 
 from ...config import APP_REFS
 
@@ -47,7 +42,7 @@ class MovingObjectState:
 
     def moving_object_event_handling(self):
         """Get and respond to events."""
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             ### QUIT
             if event.type == QUIT:
@@ -106,7 +101,7 @@ class MovingObjectState:
         """Handle keyboard specific input."""
         ### get input state maps
         key_input, mods_bitmask = (
-            get_pressed_keys(), get_pressed_mod_keys()
+            SERVICES_NS.get_pressed_keys(), SERVICES_NS.get_pressed_mod_keys()
         )
 
         ### state of keys related to scrolling
@@ -174,4 +169,4 @@ class MovingObjectState:
         self.separator.draw()
         self.menubar.draw_top_items()
 
-        update_screen()
+        SERVICES_NS.update_screen()

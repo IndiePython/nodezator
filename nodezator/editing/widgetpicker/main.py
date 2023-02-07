@@ -8,7 +8,7 @@ from functools import partial, partialmethod
 
 ### third-party imports
 
-from pygame import (
+from pygame.locals import (
     QUIT,
     KEYUP,
     K_ESCAPE,
@@ -27,13 +27,7 @@ from ...config import APP_REFS
 
 from ...translation import TRANSLATION_HOLDER as t
 
-from ...pygamesetup import (
-    SCREEN_RECT,
-
-    get_events,
-    update_screen,
-    frame_checkups,
-)
+from ...pygamesetup import SERVICES_NS, SCREEN_RECT
 
 from ...our3rdlibs.button import Button
 
@@ -319,7 +313,7 @@ class WidgetPicker(Object2D, SubformCreation):
             ### perform various checkups for this frame;
             ###
             ### stuff like maintaing a constant framerate and more
-            frame_checkups()
+            SERVICES_NS.frame_checkups()
 
             ### put the handle_input/update/draw method
             ### execution inside a try/except clause
@@ -345,7 +339,7 @@ class WidgetPicker(Object2D, SubformCreation):
 
     def handle_input(self):
         """Process events from event queue."""
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             if event.type == QUIT:
                 raise QuitAppException
@@ -561,7 +555,7 @@ class WidgetPicker(Object2D, SubformCreation):
         self.cancel_button.draw()
         self.submit_button.draw()
 
-        update_screen()
+        SERVICES_NS.update_screen()
 
 
 pick_widget = WidgetPicker().pick_widget

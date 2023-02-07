@@ -452,6 +452,8 @@ class FileOperations:
         and only then we will decide whether it will be
         kept on the screen or not.
         """
+        ### clean loaded file data, if any
+        clean_loaded_file_data()
 
         ### if a filepath is received, try opening it,
         ### taking additional steps depending on the outcome
@@ -764,3 +766,38 @@ class FileOperations:
 
         ### finally reopen the current file
         self.open(APP_REFS.source_path)
+
+
+### utility
+
+def clean_loaded_file_data():
+    """Perform setups to cancel loading file.
+
+    Works by deleting attributes from the APP_REFS
+    whose existence trigger file loading operations.
+
+    Also cleans up data which won't be needed anymore.
+    """
+    ### delete the swap path if the attribute exists
+
+    try:
+        swap_path = APP_REFS.swap_path.unlink()
+    except AttributeError:
+        pass
+    else:
+        swap_path.unlink()
+
+    ### delete attributes holding paths whose existence
+    ### indicate the need to load a file, if such attributes
+    ### exisst
+
+    for attr_name in ("source_path", "swap_path"):
+
+        try:
+            delattr(APP_REFS, attr_name)
+        except AttributeError:
+            pass
+
+    ### also clean up data from a possible previous
+    ### session thay may still exist
+    APP_REFS.data.clear()

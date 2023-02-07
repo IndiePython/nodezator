@@ -13,7 +13,7 @@ from pygame.display import update
 
 from .config import APP_REFS
 
-from .pygamesetup import SCREEN, frame_checkups, clean_temp_files
+from .pygamesetup import SERVICES_NS, SCREEN, clean_temp_files
 
 from .colorsman.colors import WINDOW_BG
 
@@ -38,6 +38,7 @@ from .loopman.exception import (
     ContinueLoopException,
     SwitchLoopException,
     QuitAppException,
+    ResetAppException,
 )
 
 from .dialog import show_dialog_from_key
@@ -76,7 +77,7 @@ def run_app(filepath=None):
         ### perform various checkups for this frame;
         ###
         ### stuff like maintaing a constant framerate and more
-        frame_checkups()
+        SERVICES_NS.frame_checkups()
 
         ### run the GUD methods (check glossary for
         ### loop holder/methods/loop)
@@ -178,8 +179,29 @@ def run_app(filepath=None):
 
                     continue
 
+            ### if we get to the point, we just perform extra admin
+            ### tasks to exit the app and its loop
+
+            logger.info("Closing app under expected circumstances.")
+
+            clean_temp_files()
+
+            quit_pygame()
+
             ## break out of the application loop
             break
+
+        ## this exception serves to reset the app to an
+        ## initial state, that is, when it is just launched,
+        ## either with or without a file to be loaded
+
+        except ResetAppException as obj:
+
+            ### perform startup preparations, retrieveing the chosen
+            ### loop holder, just like we did before starting the
+            ### mainloop at the beginning of this function
+            loop_holder = perform_startup_preparations(obj.filepath)
+
 
         ## catch unexpected exceptions so we can quit pygame
         ## and log the exception before reraising
@@ -195,9 +217,3 @@ def run_app(filepath=None):
             quit_pygame()
 
             raise err
-
-    logger.info("Closing app under expected circumstances.")
-
-    clean_temp_files()
-
-    quit_pygame()

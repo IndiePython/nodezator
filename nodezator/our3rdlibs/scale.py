@@ -6,10 +6,7 @@ from pygame.transform import flip as flip_surface
 
 ### local imports
 
-from ..pygamesetup import (
-    get_mouse_pos,
-    get_mouse_pressed,
-)
+from ..pygamesetup import SERVICES_NS
 
 from ..ourstdlibs.behaviour import empty_function
 
@@ -160,7 +157,7 @@ class Scale(Object2D):
 
     def check_handle(self):
         """Check if handle is being changed."""
-        x, y = get_mouse_pos()
+        x, y = SERVICES_NS.get_mouse_pos()
 
         ## if mouse cursor is outside widget, return earlier
         if not self.rect.collidepoint(x, y):
@@ -169,7 +166,7 @@ class Scale(Object2D):
         ### if mouse button 1 is pressed, position handle
         ### and update value
 
-        if get_mouse_pressed()[0]:
+        if SERVICES_NS.get_mouse_pressed()[0]:
 
             self.handle_to_x(x)
             self.update_value()

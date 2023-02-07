@@ -10,15 +10,9 @@ from pygame.math import Vector2
 
 ### local imports
 
-from ..pygamesetup import (
-    blit_on_screen,
-    SCREEN_RECT,
-)
+from ..pygamesetup import blit_on_screen, SCREEN_RECT
 
-from ..rectsman.main import (
-    rect_property,
-    RectsManager,
-)
+from ..rectsman.main import rect_property, RectsManager
 
 
 ### main collection base class

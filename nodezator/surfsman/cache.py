@@ -8,11 +8,7 @@ from pygame import Surface
 
 from ..config import APP_REFS
 
-from ..pygamesetup import (
-    SCREEN,
-    SCREEN_RECT,
-    blit_on_screen,
-)
+from ..pygamesetup import SCREEN, SCREEN_RECT, blit_on_screen
 
 from ..ourstdlibs.collections.general import FactoryDict
 

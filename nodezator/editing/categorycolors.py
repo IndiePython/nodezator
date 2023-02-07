@@ -11,7 +11,7 @@ from itertools import repeat
 
 ### third-paraty imports
 
-from pygame import (
+from pygame.locals import (
     QUIT,
     MOUSEBUTTONDOWN,
     MOUSEBUTTONUP,
@@ -23,10 +23,7 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from ..pygamesetup import (
-    get_events,
-    update_screen,
-)
+from ..pygamesetup import SERVICES_NS, SCREEN, SCREEN_RECT, blit_on_screen
 
 from ..config import APP_REFS
 
@@ -35,12 +32,6 @@ from ..appinfo import NODE_CATEGORY_METADATA_FILENAME
 from ..translation import TRANSLATION_HOLDER as t
 
 from ..dialog import create_and_show_dialog
-
-from ..pygamesetup import (
-    SCREEN,
-    SCREEN_RECT,
-    blit_on_screen,
-)
 
 from ..ourstdlibs.pyl import load_pyl, save_pyl
 
@@ -313,7 +304,7 @@ class CategoryColorsPicking(Object2D, LoopHolder):
 
     def handle_input(self):
         """Process events from event queue."""
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             ### QUIT
             if event.type == QUIT:
@@ -512,7 +503,7 @@ class CategoryColorsPicking(Object2D, LoopHolder):
             draw_rect(SCREEN, (30, 130, 70), self.hovered_rect, 2)
 
         ### update screen
-        update_screen()
+        SERVICES_NS.update_screen()
 
     def unhighlight(self):
         """Draw semitransparent surface on self.rect area.

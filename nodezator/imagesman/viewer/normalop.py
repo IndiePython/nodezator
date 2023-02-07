@@ -9,7 +9,7 @@ from functools import partialmethod
 
 ### third-party imports
 
-from pygame import (
+from pygame.locals import (
     QUIT,
     KEYDOWN,
     K_ESCAPE,
@@ -43,10 +43,7 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from ...pygamesetup import (
-    get_events,
-    update_screen,
-)
+from ...pygamesetup import SERVICES_NS
 
 from ...surfsman.draw import (
     draw_border,
@@ -72,7 +69,7 @@ class NormalModeOperations(Object2D):
 
     def normal_handle_input(self):
 
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             if event.type == QUIT:
                 raise QuitAppException()
@@ -252,4 +249,4 @@ class NormalModeOperations(Object2D):
 
     def normal_draw(self):
         """Update screen."""
-        update_screen()
+        SERVICES_NS.update_screen()

@@ -9,7 +9,7 @@ from functools import partialmethod
 
 ### third-party imports
 
-from pygame import (
+from pygame.locals import (
     QUIT,
     KEYDOWN,
     KEYUP,
@@ -32,16 +32,7 @@ from pygame import (
 
 ### local imports
 
-from ..pygamesetup import (
-
-    SCREEN_RECT,
-    blit_on_screen,
-
-    get_events,
-    update_screen,
-    frame_checkups,
-
-)
+from ..pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
 
 from ..translation import TRANSLATION_HOLDER as t
 
@@ -128,7 +119,7 @@ class FileManagerOperations(Object2D):
             ### perform various checkups for this frame;
             ###
             ### stuff like maintaing a constant framerate and more
-            frame_checkups()
+            SERVICES_NS.frame_checkups()
 
             ### run the GUD methods (check the glossary
             ### for loop holder/loop/methods)
@@ -156,7 +147,7 @@ class FileManagerOperations(Object2D):
 
     def handle_input(self):
         """Handle event queue."""
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             if event.type == QUIT:
                 raise QuitAppException
@@ -357,7 +348,7 @@ class FileManagerOperations(Object2D):
 
         self.buttons.draw()
 
-        update_screen()
+        SERVICES_NS.update_screen()
 
     def store_current_selection(self):
         """Retrieve path info and store it."""

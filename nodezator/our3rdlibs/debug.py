@@ -2,13 +2,14 @@
 
 ### third-party imports
 
-from pygame import (
+from pygame import Surface
+
+from pygame.locals import (
     QUIT,
     KEYUP,
     K_ESCAPE,
     K_RETURN,
     K_KP_ENTER,
-    Surface,
 )
 
 from pygame.draw import rect as draw_rect
@@ -17,12 +18,13 @@ from pygame.draw import rect as draw_rect
 ### local imports
 
 from ..pygamesetup import (
+
+    SERVICES_NS,
+
     SCREEN,
     SCREEN_RECT,
     blit_on_screen,
 
-    get_events,
-    update_screen,
 )
 
 from ..pygamesetup.constants import FPS, maintain_fps
@@ -93,7 +95,7 @@ def show_surface(surf, background_color=GREY, should_draw_rect=False):
 
         ## handle events
 
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             if event.type == QUIT:
                 running = False
@@ -114,6 +116,6 @@ def show_surface(surf, background_color=GREY, should_draw_rect=False):
             draw_rect(SCREEN, BLACK, rect, 1)
 
         ## update screen
-        update_screen()
+        SERVICES_NS.update_screen()
 
     return surf

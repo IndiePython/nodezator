@@ -8,7 +8,7 @@ from itertools import chain
 
 ### third-party imports
 
-from pygame import (
+from pygame.locals import (
     QUIT,
     KEYUP,
     K_ESCAPE,
@@ -32,14 +32,7 @@ from pygame.draw import (
 
 ### local imports
 
-from ...pygamesetup import (
-    get_events,
-    get_pressed_keys,
-    get_mouse_pos,
-    set_mouse_visibility,
-    update_screen,
-)
-
+from ...pygamesetup import SERVICES_NS
 
 from ...ourstdlibs.behaviour import empty_function
 
@@ -97,7 +90,7 @@ class SortingEditorModes(Object2D):
 
     def normal_mode_handle_events(self):
         """Event handling for the normal mode."""
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             ### raise custom exception if user tries to
             ### quit the app
@@ -198,7 +191,7 @@ class SortingEditorModes(Object2D):
         """Act according to the keys' pressed state."""
         ### retrieve a list whose values represent the
         ### pressed state of the keys
-        pressed_keys = get_pressed_keys()
+        pressed_keys = SERVICES_NS.get_pressed_keys()
 
         ### retrieve the state of keys representing the
         ### left and right scrolling actions
@@ -227,7 +220,7 @@ class SortingEditorModes(Object2D):
             according to signal of the integer.
         """
         ### get vertical position of mouse
-        _, y = get_mouse_pos()
+        _, y = SERVICES_NS.get_mouse_pos()
 
         ### pick list according to the area the mouse hovers
 
@@ -276,7 +269,7 @@ class SortingEditorModes(Object2D):
 
     def drag_mode_handle_events(self):
         """Event handling for the drag mode."""
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             ### raise specific error if the user attempts
             ### to quit the app
@@ -293,7 +286,7 @@ class SortingEditorModes(Object2D):
 
     def drag_obj(self):
         """Center dragged object on mouse w/ an offset."""
-        self.dragged_obj.rect.center = get_mouse_pos() + self.dragged_offset
+        self.dragged_obj.rect.center = SERVICES_NS.get_mouse_pos() + self.dragged_offset
 
     def enable_normal_mode(self):
         """Set normal mode behaviours and perform setups."""
@@ -308,7 +301,7 @@ class SortingEditorModes(Object2D):
         self.draw = self.normal_mode_draw
 
         ### set the mouse visibility on
-        set_mouse_visibility(True)
+        SERVICES_NS.set_mouse_visibility(True)
 
     def enable_drag_mode(self, collection, obj):
         """Set drag mode behaviours and perform setups.
@@ -335,7 +328,7 @@ class SortingEditorModes(Object2D):
         self.draw = self.drag_mode_draw
 
         ### set the mouse visibility off
-        set_mouse_visibility(False)
+        SERVICES_NS.set_mouse_visibility(False)
 
         ###
 
@@ -393,7 +386,10 @@ class SortingEditorModes(Object2D):
         ### and the center of the object to be dragged
         ### across the screen
 
-        self.dragged_offset = self.dragged_obj.rect.center - Vector2(get_mouse_pos())
+        self.dragged_offset = (
+            self.dragged_obj.rect.center
+            - Vector2(SERVICES_NS.get_mouse_pos())
+        )
 
     def perform_drag_mode_exit_setups(self):
         """Perform actions to conclude the dragging action."""
@@ -505,7 +501,7 @@ class SortingEditorModes(Object2D):
         super().draw()
 
         ### finally update the screen
-        update_screen()
+        SERVICES_NS.update_screen()
 
     def drag_mode_draw(self):
         """Draw operations for the drag mode."""
@@ -560,4 +556,4 @@ class SortingEditorModes(Object2D):
         super().draw()
 
         ### finally update the screen
-        update_screen()
+        SERVICES_NS.update_screen()

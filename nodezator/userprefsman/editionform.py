@@ -6,7 +6,7 @@ from functools import partialmethod
 
 ### third-paraty imports
 
-from pygame import (
+from pygame.locals import (
     QUIT,
     MOUSEBUTTONDOWN,
     MOUSEBUTTONUP,
@@ -19,10 +19,7 @@ from pygame import (
 
 ### local imports
 
-from ..pygamesetup import (
-    get_events,
-    update_screen,
-)
+from ..pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
 
 from ..config import APP_REFS
 
@@ -36,11 +33,6 @@ from .validation import (
 )
 
 from ..dialog import create_and_show_dialog
-
-from ..pygamesetup import (
-    SCREEN_RECT,
-    blit_on_screen,
-)
 
 from ..ourstdlibs.pyl import save_pyl
 
@@ -319,7 +311,7 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
     def handle_input(self):
         """Process events from event queue."""
 
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
             ### QUIT
             if event.type == QUIT:
                 self.quit()
@@ -473,7 +465,7 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
         self.widgets.call_draw()
 
         ### update screen
-        update_screen()
+        SERVICES_NS.update_screen()
 
     def unhighlight(self):
         """Draw semitransparent surface on self.rect area.

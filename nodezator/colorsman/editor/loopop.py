@@ -6,7 +6,7 @@ from functools import partialmethod
 
 ### third-party imports
 
-from pygame import (
+from pygame.locals import (
     QUIT,
     MOUSEBUTTONDOWN,
     MOUSEBUTTONUP,
@@ -27,12 +27,7 @@ from pygame import (
 
 ### local imports
 
-from ...pygamesetup import (
-    blit_on_screen,
-
-    get_events,
-    update_screen,
-)
+from ...pygamesetup import SERVICES_NS, blit_on_screen
 
 from ...classes2d.single import Object2D
 
@@ -183,7 +178,7 @@ class LoopOperations(Object2D, LoopHolder):
         ### processing the relevant ones accoding to their
         ### settings
 
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             ### quit the application
             if event.type == QUIT:
@@ -357,7 +352,7 @@ class LoopOperations(Object2D, LoopHolder):
         self.labels.draw()
 
         ### finally, update the screen
-        update_screen()
+        SERVICES_NS.update_screen()
 
     def unhighlight(self):
         """Draw semitransparent surface on self.rect area.

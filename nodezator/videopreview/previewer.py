@@ -1,6 +1,6 @@
 ### third-party imports
 
-from pygame import (
+from pygame.locals import (
     QUIT,
     KEYUP,
     K_ESCAPE,
@@ -16,14 +16,7 @@ from pygame.draw import rect as draw_rect
 
 from ..config import APP_REFS, FFMPEG_AVAILABLE
 
-from ..pygamesetup import (
-    SCREEN,
-    SCREEN_RECT,
-
-    get_events,
-    update_screen,
-    frame_checkups_with_fps,
-)
+from ..pygamesetup import SERVICES_NS, SCREEN, SCREEN_RECT
 
 from ..ourstdlibs.behaviour import get_oblivious_callable
 
@@ -164,7 +157,7 @@ class VideoPreviewer(Object2D):
 
         while self.running:
 
-            frame_checkups_with_fps(self.fps)
+            SERVICES_NS.frame_checkups_with_fps(self.fps)
 
             try:
 
@@ -181,7 +174,7 @@ class VideoPreviewer(Object2D):
 
     def handle_events(self):
 
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             if event.type == QUIT:
                 raise QuitAppException
@@ -218,7 +211,7 @@ class VideoPreviewer(Object2D):
         self.draw_video_representation()
 
         ### update the screen
-        update_screen()
+        SERVICES_NS.update_screen()
 
     def draw_next_video_frame(self):
         """"""

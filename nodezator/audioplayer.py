@@ -1,6 +1,8 @@
 ### third-party imports
 
-from pygame import (
+from pygame import Rect
+
+from pygame.locals import (
     QUIT,
     KEYUP,
     K_SPACE,
@@ -9,7 +11,6 @@ from pygame import (
     K_ESCAPE,
     MOUSEBUTTONDOWN,
     MOUSEBUTTONUP,
-    Rect,
 )
 
 from pygame.draw import (
@@ -26,19 +27,7 @@ from pygame.mixer import music
 
 from .config import APP_REFS
 
-from .pygamesetup import (
-    SCREEN,
-    SCREEN_RECT,
-
-    get_events,
-    get_mouse_pos,
-    get_mouse_pressed,
-
-    update_screen,
-
-    frame_checkups,
-
-)
+from .pygamesetup import SERVICES_NS, SCREEN, SCREEN_RECT
 
 from .dialog import create_and_show_dialog
 
@@ -229,7 +218,7 @@ class AudioPlayer(Object2D):
             ### perform various checkups for this frame;
             ###
             ### stuff like maintaing a constant framerate and more
-            frame_checkups()
+            SERVICES_NS.frame_checkups()
 
             try:
 
@@ -248,7 +237,7 @@ class AudioPlayer(Object2D):
 
     def handle_events(self):
 
-        for event in get_events():
+        for event in SERVICES_NS.get_events():
 
             if event.type == QUIT:
                 raise QuitAppException
@@ -291,9 +280,9 @@ class AudioPlayer(Object2D):
 
     def handle_mouse_state(self):
 
-        mouse_buttons_pressed = get_mouse_pressed()
+        mouse_buttons_pressed = SERVICES_NS.get_mouse_pressed()
 
-        mouse_x, _ = mouse_pos = get_mouse_pos()
+        mouse_x, _ = mouse_pos = SERVICES_NS.get_mouse_pos()
 
         volume_area = self.volume_area
 
@@ -318,7 +307,7 @@ class AudioPlayer(Object2D):
         draw_polygon(SCREEN, BLACK, self.current_volume_points)
 
         ### update the screen
-        update_screen()
+        SERVICES_NS.update_screen()
 
     def toggle_play(self):
 

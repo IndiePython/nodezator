@@ -8,7 +8,7 @@ from copy import deepcopy
 
 ### local imports
 
-from ...pygamesetup import get_mouse_pos
+from ...pygamesetup import SERVICES_NS
 
 from ...menu.main import MenuManager
 
@@ -59,7 +59,7 @@ class WidgetCreationPopupMenu(MenuManager):
 
         self.node_waiting_widget_refs = (node, *other_references)
 
-        self.focus_if_within_boundaries(get_mouse_pos())
+        self.focus_if_within_boundaries(SERVICES_NS.get_mouse_pos())
 
     def trigger_subparameter_widget_instantiation(
         self,
