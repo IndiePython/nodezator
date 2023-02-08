@@ -1,16 +1,12 @@
 
 ### standard library imports
 
-from types import SimpleNamespace
-
 from collections import defaultdict
 
 from datetime import datetime
 
 
 ### third-party imports
-
-from pygame import Surface
 
 from pygame.locals import (
     KEYUP,
@@ -23,27 +19,33 @@ from pygame.event import clear, get, event_name
 from pygame.key import get_pressed, get_mods
 
 from pygame.mouse import (
+
     get_pos,
     get_pressed as mouse_get_pressed,
+
+    # check note [1] at the bottom
     set_pos as set_mouse_pos,
+
+    # check note [2] at the bottom
     set_visible as set_mouse_visibility,
 )
 
-from pygame.display import set_mode, update
+from pygame.display import update
 
 
 ### local imports
 
-from ..config import APP_REFS
+from ...config import APP_REFS
 
-from ..ourstdlibs.path import get_timestamp
+from ...ourstdlibs.path import get_timestamp
 
-from ..ourstdlibs.pyl import save_pyl
+from ...ourstdlibs.pyl import save_pyl
 
-from ..loopman.exception import ResetAppException
+from ...loopman.exception import ResetAppException
 
-from .constants import (
+from ..constants import (
 
+    SCREEN_RECT, blit_on_screen,
     FPS, maintain_fps,
 
     EVENT_KEY_STRIP_MAP,
@@ -53,20 +55,8 @@ from .constants import (
     MOD_KEYS_MAP,
 
     get_label_object,
-    clean_temp_files,
 
 )
-
-
-
-### pygame constants
-
-FLAG = 0
-
-SCREEN = set_mode(APP_REFS.recording_size, FLAG)
-
-SCREEN_RECT = SCREEN.get_rect()
-blit_on_screen = SCREEN.blit
 
 
 
@@ -75,7 +65,8 @@ blit_on_screen = SCREEN.blit
 
 ## constants
 
-REC_REFS = SimpleNamespace()
+## namespace
+REC_REFS = type("Object", (), {})()
 
 
 EVENTS_MAP = defaultdict(list)
@@ -143,25 +134,27 @@ def setup_recording():
     REC_REFS.frame_index_routine = increment_frame_index
 
 
-## make it so the frame index routine sets up recording
-REC_REFS.frame_index_routine = setup_recording
+def set_recording_behaviour():
+
+    ## make it so the frame index routine sets up recording
+    REC_REFS.frame_index_routine = setup_recording
+
+    ## assign behaviours to record session data
+
+    for attr_name, recording_operation in (
+        ('process_event', record_event),
+        ('process_key_state', record_key_states),
+        ('process_mod_key_state', record_mod_key_states),
+        ('process_mouse_pos', MOUSE_POS_REQUESTS.append),
+        ('process_mouse_key_state', MOUSE_KEY_STATE_REQUESTS.append),
+    ):
+        setattr(REC_REFS, attr_name, recording_operation)
 
 
 def increment_frame_index():
     """increment frame index by 1"""
     REC_REFS.frame_index += 1
 
-
-## assign behaviours to record session data
-
-for attr_name, recording_operation in (
-    ('process_event', record_event),
-    ('process_key_state', record_key_states),
-    ('process_mod_key_state', record_mod_key_states),
-    ('process_mouse_pos', MOUSE_POS_REQUESTS.append),
-    ('process_mouse_key_state', MOUSE_KEY_STATE_REQUESTS.append),
-):
-    setattr(REC_REFS, attr_name, recording_operation)
 
 
 
@@ -199,7 +192,6 @@ def get_events():
             raise ResetAppException
 
 
-
         REC_REFS.process_event(event)
         yield event
 
@@ -227,14 +219,13 @@ def get_mouse_pressed():
     REC_REFS.process_mouse_key_state(pressed_tuple)
     return pressed_tuple
 
-
 ## screen updating
 
 def update_screen():
     ### blit label
     blit_on_screen(label, label_rect)
 
-    ### update the screen
+    ### update the screen (pygame.display.update())
     update()
 
 
@@ -477,3 +468,16 @@ def get_mod_names_tuple(bitmask):
         for mod_key_name, mod_key in MOD_KEYS_MAP.items()
         if bitmask & mod_key
     )
+
+
+
+### Notes
+###
+### [1] note that pygame.mouse.set_pos() (aliased as set_mouse_pos())
+### is not changed (overridden or extended) anywhere in this module;
+### this is so because it is used as-is, we just import it so it is
+### available in this module namespace;
+###
+### [2] read note [1] above; the same is applies to
+### pygame.mouse.set_visible, which here is aliased as
+### set_mouse_visibility()

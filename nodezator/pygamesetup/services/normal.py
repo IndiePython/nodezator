@@ -1,8 +1,6 @@
 
 ### third-party imports
 
-from pygame import RESIZABLE, get_sdl_version
-
 from pygame.event import get as get_events
 
 from pygame.key import (
@@ -17,33 +15,18 @@ from pygame.mouse import (
     get_pressed as get_mouse_pressed,
 )
 
-from pygame.display import set_mode, update as update_screen
+from pygame.display import update as update_screen
 
 
 ### local imports
-from .constants import FPS, maintain_fps
+
+from ...config import APP_REFS
+
+from ..constants import SCREEN, SCREEN_RECT, FPS, maintain_fps
 
 
 
-DEFAULT_SIZE = (
-    # this value causes window size to equal screen resolution
-    (0, 0)
-    if get_sdl_version() >= (1, 2, 10)
-
-    # if sld isn't >= (1, 2, 10) though, it would raise an exception,
-    # so we need to provide a proper size
-    else (1280, 720)
-)
-
-FLAG = RESIZABLE
-
-SCREEN = set_mode(DEFAULT_SIZE, FLAG)
-
-SCREEN_RECT = SCREEN.get_rect()
-blit_on_screen = SCREEN.blit
-
-
-def watch_window_size():
+def _watch_window_size():
     """Perform setups needed if window was resized."""
     ### obtain current size
     current_size = SCREEN.get_size()
@@ -86,7 +69,7 @@ def frame_checkups():
     maintain_fps(FPS)
 
     ### keep an eye on the window size
-    watch_window_size()
+    _watch_window_size()
 
 def frame_checkups_with_fps(fps):
     """Same as frame_checkups(), but uses given fps."""
@@ -94,4 +77,4 @@ def frame_checkups_with_fps(fps):
     maintain_fps(fps)
 
     ### keep an eye on the window size
-    watch_window_size()
+    _watch_window_size()

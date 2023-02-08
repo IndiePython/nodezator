@@ -1,8 +1,6 @@
 
 ### standard library imports
 
-from pathlib import Path
-
 from types import SimpleNamespace
 
 from collections import defaultdict
@@ -40,24 +38,23 @@ from pygame.math import Vector2
 
 from pygame.event import Event, get, set_allowed, set_blocked
 
-from pygame.display import set_mode, update
+from pygame.display import update
 
 from pygame.mouse import set_pos, set_visible as set_mouse_visibility
 
 
 ### local imports
 
-from ..config import APP_REFS
+from ...ourstdlibs.pyl import load_pyl
 
-from ..ourstdlibs.pyl import load_pyl
+from ...ourstdlibs.behaviour import empty_function
 
-from ..ourstdlibs.behaviour import empty_function
-
-from ..loopman.exception import ResetAppException
+from ...loopman.exception import ResetAppException
 
 
-from .constants import (
+from ..constants import (
 
+    SCREEN_RECT, blit_on_screen,
     FPS, maintain_fps,
 
     EVENT_KEY_STRIP_MAP,
@@ -72,29 +69,29 @@ from .constants import (
 )
 
 
-### load session data
-session_data = load_pyl(APP_REFS.input_path)
 
-### pygame constants
+### dictionary to store session data
+SESSION_DATA = {}
 
-FLAG = 0
+### custom namespace for playing mode
+PLAY_REFS = type("Object", (), {})()
 
-SCREEN = set_mode(session_data['recording_size'], FLAG)
+### map to store events
+EVENTS_MAP = {}
 
-SCREEN_RECT = SCREEN.get_rect()
-blit_on_screen = SCREEN.blit
+## create a map to associate each frame index to the keys that were
+## pressed at that frame
+NON_EMPTY_GETTER_FROZENSETS = {}
 
+### create a map that associates each frame index to the modifier
+### keys that were pressed in that frame
+NO_KMOD_NONE_BITMASKS = {}
 
-### since the app will be playing recorded events, we are not interested
-### in new ones generated while playing, so we block most of them, leaving
-### just a few that we may use to during playback
+### create a list to hold all mouse position requests;
+MOUSE_POSITIONS = []
 
-set_blocked(None)
-set_allowed([QUIT, KEYDOWN])
-
-
-### references for playing mode
-PLAY_REFS = SimpleNamespace()
+### create list to hold all mouse key pressed state requests
+MOUSE_PRESSED_TUPLES = []
 
 ### create virtual mouse
 MOUSE_POS = Vector2(0, 0)
@@ -102,6 +99,15 @@ MOUSE_POS = Vector2(0, 0)
 ### create flag indicating whether real mouse must trace movements
 ### of virtual one
 PLAY_REFS.mouse_tracing = True
+
+### special frozenset class
+
+class GetterFrozenSet(frozenset):
+    """frozenset subclass where "obj[item]" works like "item in obj"."""
+    __getitem__ = frozenset.__contains__
+
+## create an empty special frozenset
+EMPTY_GETTER_FROZENSET = GetterFrozenSet()
 
 
 
@@ -117,9 +123,6 @@ REVERSE_SCANCODE_NAMES_MAP = {
     for key, value in SCANCODE_NAMES_MAP.items()
 }
 
-
-###
-PLAY_REFS.last_frame_index = session_data['last_frame_index']
 
 ##
 
@@ -209,93 +212,102 @@ def get_ready_events(events):
         yield Event(event_type, event_dict)
 
 
-### prepare events
 
-EVENTS_MAP = {
+def set_play_behaviour(input_filepath):
 
-    frame_index : list(get_ready_events(compact_events))
+    ### load session data
+    SESSION_DATA.update(load_pyl(input_filepath))
 
-    for frame_index, compact_events
-    in session_data['events_map'].items()
+    ### since the app will be playing recorded events, we are not interested
+    ### in new ones generated while playing, so we block most of them, leaving
+    ### just a few that we may use to during playback
 
-}
+    set_blocked(None)
+    set_allowed([QUIT, KEYDOWN])
+
+    ###
+    PLAY_REFS.last_frame_index = SESSION_DATA['last_frame_index']
+
+    ### prepare events
+
+    EVENTS_MAP.update(
+
+        (frame_index, list(get_ready_events(compact_events)))
+
+        for frame_index, compact_events
+        in SESSION_DATA['events_map'].items()
+
+    )
 
 
-### prepare key states
+    ### prepare key states: update map with non empty frozensets
 
-## define special frozenset class
+    NON_EMPTY_GETTER_FROZENSETS.update(
 
-class GetterFrozenSet(frozenset):
-    """frozenset subclass where "obj[item]" works like "item in obj"."""
-    __getitem__ = frozenset.__contains__
+        (
+            frame_index,
 
-## create an empty special frozenset
-EMPTY_GETTER_FROZENSET = GetterFrozenSet()
+            GetterFrozenSet(
+                getattr(pygame_locals, key_name)
+                for key_name in pressed_key_names
+            )
 
-## create a map associating each frame index to the keys that were
-## pressed at that frame
-
-NON_EMPTY_GETTER_FROZENSETS = {
-
-    frame_index: (
-
-        GetterFrozenSet(
-            getattr(pygame_locals, key_name)
-            for key_name in pressed_key_names
         )
 
-    )
-
-    for frame_index, pressed_key_names
-    in session_data['pressed_keys_map'].items()
-
-}
-
-
-### prepare modifier key states;
-###
-### create a map that associates each frame index to the modifier
-### keys that were pressed in that frame
-
-NO_KMOD_NONE_BITMASKS = {
-
-    frame_index : (
-
-        ## if there's only one modifier key pressed, get its value
-        ## from pygame.locals
-        getattr(pygame_locals, mod_key_names[0])
-        if len(mod_key_names) == 1
-
-        ## otherwise get the bitmask that results from combining
-        ## the values of all pressed modifiers
-        else get_resulting_bitmask(mod_key_names)
+        for frame_index, pressed_key_names
+        in SESSION_DATA['pressed_keys_map'].items()
 
     )
 
-    for frame_index, mod_key_names
-    in session_data['mod_key_bitmasks_map'].items()
-}
 
-### create a list containing all mouse position requests;
-###
-### then reverse its orders so the first ones are the first
-### ones to be popped from the list
+    ### prepare modifier key states: update map with bitmasks
 
-MOUSE_POSITIONS = list(session_data['mouse_pos_requests'])
-MOUSE_POSITIONS.reverse()
+    NO_KMOD_NONE_BITMASKS.update(
 
-### do the same as above to a list of all mouse key pressed
-### state requests (create and reverse it)
+        (
+            frame_index,
 
-MOUSE_PRESSED_TUPLES = list(session_data['mouse_key_state_requests'])
-MOUSE_PRESSED_TUPLES.reverse()
+            (
+
+                ## if there's only one modifier key pressed, get its value
+                ## from pygame.locals
+                getattr(pygame_locals, mod_key_names[0])
+                if len(mod_key_names) == 1
+
+                ## otherwise get the bitmask that results from combining
+                ## the values of all pressed modifiers
+                else get_resulting_bitmask(mod_key_names)
+
+            )
+
+        )
+
+        for frame_index, mod_key_names
+        in SESSION_DATA['mod_key_bitmasks_map'].items()
+    )
+
+    ### update list containing all mouse position requests;
+    ###
+    ### then reverse its orders so the first ones are the first
+    ### ones to be popped from the list
+
+    MOUSE_POSITIONS.extend(SESSION_DATA['mouse_pos_requests'])
+    MOUSE_POSITIONS.reverse()
+
+    ### do the same as above to list of all mouse key pressed
+    ### state requests (create and reverse it)
+
+    MOUSE_PRESSED_TUPLES.extend(SESSION_DATA['mouse_key_state_requests'])
+    MOUSE_PRESSED_TUPLES.reverse()
 
 
 ### constants
 
 
-## label creation
+## set with mouse event types
+MOUSE_EVENTS = frozenset({MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP})
 
+## label creation
 
 # create labels, their rects, and position them
 
@@ -304,7 +316,7 @@ LABELS = []
 topright = SCREEN_RECT.move(-10, 32).topright
 
 for text in (
-    session_data.get("recording_title", "Untitled session"),
+    SESSION_DATA.get("recording_title", "Untitled session"),
     "F9: play/pause",
     "F8: toggle mouse tracing",
 ):
@@ -356,6 +368,10 @@ def perform_frame_index_setups():
     ### reset app if frame is last one
 
     if PLAY_REFS.frame_index == PLAY_REFS.last_frame_index:
+
+        # TODO must also clean the collections used before
+        # resetting;
+
         raise ResetAppException
 
 ### function to pause session replaying
@@ -386,8 +402,6 @@ def pause():
 ### session behaviours
 
 ## processing events
-
-MOUSE_EVENTS = frozenset({MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP})
 
 def get_events():
 

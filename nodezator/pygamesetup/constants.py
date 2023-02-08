@@ -2,11 +2,17 @@
 ### third-party imports
 
 from pygame import (
+    init as init_pygame,
+    get_sdl_version,
     locals as pygame_locals,
     Surface,
 )
 
-from pygame.locals import KMOD_NONE
+from pygame.mixer import pre_init as pre_init_mixer
+
+from pygame.key import set_repeat
+
+from pygame.locals import RESIZABLE, KMOD_NONE
 
 from pygame.time import Clock
 
@@ -14,22 +20,70 @@ from pygame.font import SysFont
 
 from pygame.draw import rect as draw_rect
 
+from pygame.display import set_icon, set_caption, set_mode
+
+from pygame.image import load as load_image
 
 
 # choose appropriate window resize event type according to
 # availability
 
 try:
-    from pygame import WINDOWRESIZED
+    from pygame.locals import WINDOWRESIZED
 except ImportError:
-    from pygame import VIDEORESIZE
+    from pygame.locals import VIDEORESIZE
     WINDOW_RESIZE_EVENT_TYPE = VIDEORESIZE
 else:
     WINDOW_RESIZE_EVENT_TYPE = WINDOWRESIZED
 
 
-### local import
-from ..config import APP_REFS
+### local imports
+
+from ..config import APP_REFS, DATA_DIR
+
+from ..appinfo import FULL_TITLE, ABBREVIATED_TITLE
+
+
+
+### pygame initialization setups
+
+## pygame mixer pre-initialization
+pre_init_mixer(44100, -16, 2, 4096)
+
+## pygame initialization
+init_pygame()
+
+
+### set caption and icon for window
+
+set_caption(FULL_TITLE, ABBREVIATED_TITLE)
+
+image_path = str(DATA_DIR / "app_icon.png")
+
+set_icon(load_image(image_path))
+
+
+### set key repeating (unit: milliseconds)
+
+set_repeat(
+    500, # delay (time before repetition begins)
+    30, # interval (interval between repetitions)
+)
+
+
+_size = (
+    # this value causes window size to equal screen resolution
+    (0, 0)
+    if get_sdl_version() >= (1, 2, 10)
+
+    # if sld isn't >= (1, 2, 10) though, it would raise an exception,
+    # so we need to provide a proper size
+    else (1280, 720)
+)
+
+SCREEN = set_mode(_size, RESIZABLE)
+SCREEN_RECT = SCREEN.get_rect()
+blit_on_screen = SCREEN.blit
 
 
 
