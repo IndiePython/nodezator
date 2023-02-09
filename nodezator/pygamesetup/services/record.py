@@ -88,33 +88,48 @@ REVERSE_KEYS_MAP = {
 
 LABELS = []
 
-topright = SCREEN_RECT.move(-10, 32).topright
+def instantiate_and_store_labels():
 
-for text in (
-    getattr(APP_REFS, "recording_title", "Untitled session"),
-    "F9: finish recording & exit",
-):
+    topright = SCREEN_RECT.move(-10, 32).topright
 
-    ### create label object
+    for text in (
+        getattr(APP_REFS, "recording_title", "Untitled session"),
+        "F9: finish recording & exit",
+    ):
 
-    label = (
-        get_label_object(
-            text = text,
-            label_fg = 'white',
-            label_bg = 'blue',
-            label_outline = 'white',
-            padding = 6,
+        ### create label object
+
+        label = (
+            get_label_object(
+                text = text,
+                label_fg = 'white',
+                label_bg = 'blue',
+                label_outline = 'white',
+                padding = 6,
+            )
         )
-    )
 
-    ### position label
-    label.rect.topright = topright
+        ### position label
+        label.rect.topright = topright
 
-    ### store label
-    LABELS.append(label)
+        ### store label
+        LABELS.append(label)
 
-    ### update topright
-    topright = label.rect.move(0, 5).bottomright
+        ### update topright
+        topright = label.rect.move(0, 5).bottomright
+
+instantiate_and_store_labels()
+
+
+def set_recording_behaviour(recording_path, recording_size):
+
+    ### store recording path and recording size
+
+    REC_REFS.recording_path = recording_path
+    REC_REFS.recording_size = recording_size
+
+    ### make it so the frame index routine sets up recording
+    REC_REFS.frame_index_routine = setup_recording
 
 
 ### set behaviors to record session data
@@ -132,23 +147,6 @@ def setup_recording():
 
     ## set frame index incrementation as the frame index routine
     REC_REFS.frame_index_routine = increment_frame_index
-
-
-def set_recording_behaviour():
-
-    ## make it so the frame index routine sets up recording
-    REC_REFS.frame_index_routine = setup_recording
-
-    ## assign behaviours to record session data
-
-    for attr_name, recording_operation in (
-        ('process_event', record_event),
-        ('process_key_state', record_key_states),
-        ('process_mod_key_state', record_mod_key_states),
-        ('process_mouse_pos', MOUSE_POS_REQUESTS.append),
-        ('process_mouse_key_state', MOUSE_KEY_STATE_REQUESTS.append),
-    ):
-        setattr(REC_REFS, attr_name, recording_operation)
 
 
 def increment_frame_index():
@@ -192,31 +190,30 @@ def get_events():
             raise ResetAppException
 
 
-        REC_REFS.process_event(event)
+        record_event(event)
         yield event
 
 ## processing key pressed states
 
 def get_pressed_keys():
     state = get_pressed()
-    REC_REFS.process_key_state(state)
+    record_key_states(state)
     return state
 
 def get_pressed_mod_keys():
     mods_bitmask = get_mods()
-    REC_REFS.process_mod_key_state(mods_bitmask)
+    REC_REFS.record_mod_key_states(mods_bitmask)
     return mods_bitmask
 
 ## processing mouse
 
 def get_mouse_pos():
     pos = get_pos()
-    REC_REFS.process_mouse_pos(pos)
+    MOUSE_POS_REQUESTS.append(pos)
     return pos
-
 def get_mouse_pressed():
     pressed_tuple = mouse_get_pressed()
-    REC_REFS.process_mouse_key_state(pressed_tuple)
+    MOUSE_KEY_STATE_REQUESTS.append(pressed_tuple)
     return pressed_tuple
 
 ## screen updating
@@ -286,7 +283,7 @@ def save_session_data():
 
     ### store recording size and title
 
-    session_data['recording_size'] = APP_REFS.recording_size
+    session_data['recording_size'] = REC_REFS.recording_size
 
     session_data['recording_title'] = (
         getattr(APP_REFS, "recording_title", "Untitled session")
@@ -294,10 +291,8 @@ def save_session_data():
 
     ### save session data in file or its rotated version
 
-    rec_path = APP_REFS.recording_path
-
     parent, stem = (
-        getattr(rec_path, attr_name)
+        getattr(REC_REFS.recording_path, attr_name)
         for attr_name in ('parent', 'stem')
     )
 

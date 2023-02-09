@@ -213,10 +213,10 @@ def get_ready_events(events):
 
 
 
-def set_play_behaviour(input_filepath):
+def set_play_behaviour(input_path):
 
     ### load session data
-    SESSION_DATA.update(load_pyl(input_filepath))
+    SESSION_DATA.update(load_pyl(input_path))
 
     ### since the app will be playing recorded events, we are not interested
     ### in new ones generated while playing, so we block most of them, leaving
