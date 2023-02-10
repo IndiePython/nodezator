@@ -15,6 +15,8 @@ from webbrowser import open as open_url
 
 from ..config import APP_REFS
 
+from ..dialog import create_and_show_dialog
+
 from ..pygamesetup import SCREEN
 
 from ..translation import TRANSLATION_HOLDER as t
@@ -364,6 +366,39 @@ class MenuSetup:
             }
 
             help_children_data.insert(-2, new_child)
+
+        ## Add new "Playback" top menu with different
+        ## commands related to input playback/recording and its
+        ## many applications
+
+        # build top menu data
+
+        playback_menu = {
+            "label": "Playback",
+            "children": [
+                {
+                    "label": "Demonstrations",
+                    "command": partial(create_and_show_dialog, "Not implemented"),
+                },
+                {"label": "---",},
+                {
+                    "label": "Record session",
+                    "command": partial(create_and_show_dialog, "Not implemented"),
+                },
+                {
+                    "label": "Play session",
+                    "command": partial(create_and_show_dialog, "Not implemented"),
+                },
+                {"label": "---",},
+                {
+                    "label": "Automated GUI tests",
+                    "command": partial(create_and_show_dialog, "Not implemented"),
+                },
+            ],
+        }
+
+        # insert top menu on menu list as penultimate item
+        menu_list.insert(-1, playback_menu)
 
         ### finally instantiate the menubar using the data
         ### you put together
