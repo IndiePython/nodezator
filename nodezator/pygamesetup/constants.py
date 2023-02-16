@@ -1,4 +1,8 @@
 
+### standard library import
+from functools import partial
+
+
 ### third-party imports
 
 from pygame import (
@@ -54,12 +58,16 @@ pre_init_mixer(44100, -16, 2, 4096)
 init_pygame()
 
 
-### set caption and icon for window
+### create a callable to reset the caption to a
+### default state whenever needed, then use
+### it to set the caption
 
-set_caption(FULL_TITLE, ABBREVIATED_TITLE)
+reset_caption = partial(set_caption, FULL_TITLE, ABBREVIATED_TITLE)
+reset_caption()
+
+### set icon and caption for window
 
 image_path = str(DATA_DIR / "app_icon.png")
-
 set_icon(load_image(image_path))
 
 
@@ -71,7 +79,7 @@ set_repeat(
 )
 
 
-_size = (
+SIZE = (
     # this value causes window size to equal screen resolution
     (0, 0)
     if get_sdl_version() >= (1, 2, 10)
@@ -81,7 +89,7 @@ _size = (
     else (1280, 720)
 )
 
-SCREEN = set_mode(_size, RESIZABLE)
+SCREEN = set_mode(SIZE, RESIZABLE)
 SCREEN_RECT = SCREEN.get_rect()
 blit_on_screen = SCREEN.blit
 
@@ -95,6 +103,29 @@ _CLOCK = Clock()
 
 maintain_fps = _CLOCK.tick
 get_fps = _CLOCK.get_fps
+
+
+### name of key pygame services used by all different modes
+
+GENERAL_SERVICE_NAMES = (
+
+    "get_events",
+
+    "get_pressed_keys",
+    "get_pressed_mod_keys",
+
+    "get_mouse_pos",
+    "get_mouse_pressed",
+
+    "set_mouse_pos",
+    "set_mouse_visibility",
+
+    "update_screen",
+
+    "frame_checkups",
+    "frame_checkups_with_fps",
+
+)
 
 ### label text rendering operations
 
@@ -261,3 +292,38 @@ def clean_temp_files():
         pass
     else:
         swap_path.unlink()
+
+
+### 
+
+def watch_window_size():
+    """Perform setups needed if window was resized."""
+    ### obtain current size
+    current_size = SCREEN.get_size()
+
+    ### if current screen size is different from the one
+    ### we stored...
+
+    if current_size != SCREEN_RECT.size:
+
+        ### perform window resize setups
+
+        SCREEN_RECT.size = current_size
+        APP_REFS.window_resize_setups()
+
+        ### redraw the window manager
+        APP_REFS.window_manager.draw()
+
+        ### update the screen copy
+        APP_REFS.SCREEN_COPY = SCREEN.copy()
+
+        ### if there's a request to draw after the setups,
+        ### do so and delete the request
+
+        if hasattr(
+            APP_REFS,
+            "draw_after_window_resize_setups",
+        ):
+
+            APP_REFS.draw_after_window_resize_setups()
+            del APP_REFS.draw_after_window_resize_setups

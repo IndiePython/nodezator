@@ -1,6 +1,10 @@
 
 ### third-party imports
 
+from pygame.locals import RESIZABLE
+
+from pygame.display import set_mode
+
 from pygame.event import get as get_events
 
 from pygame.key import (
@@ -20,43 +24,41 @@ from pygame.display import update as update_screen
 
 ### local imports
 
-from ...config import APP_REFS
+from ..constants import (
+    SCREEN,
+    SCREEN_RECT,
+    SIZE,
+    GENERAL_SERVICE_NAMES,
+    FPS,
+    maintain_fps,
+    watch_window_size,
+)
 
-from ..constants import SCREEN, SCREEN_RECT, FPS, maintain_fps
 
 
+### create and use function to activate normal behaviour
 
-def _watch_window_size():
-    """Perform setups needed if window was resized."""
-    ### obtain current size
-    current_size = SCREEN.get_size()
+def set_behaviour(services_namespace, reset_window_mode=True):
+    """Setup normal mode."""
+    ### set normal services as current ones.
 
-    ### if current screen size is different from the one
-    ### we stored...
+    our_globals = globals()
 
-    if current_size != SCREEN_RECT.size:
+    for attr_name in GENERAL_SERVICE_NAMES:
 
-        ### perform window resize setups
+        value = our_globals[attr_name]
+        setattr(services_namespace, attr_name, value)
 
-        SCREEN_RECT.size = current_size
-        APP_REFS.window_resize_setups()
+    ### reset window mode if requested
 
-        ### redraw the window manager
-        APP_REFS.window_manager.draw()
+    if reset_window_mode:
 
-        ### update the screen copy
-        APP_REFS.SCREEN_COPY = SCREEN.copy()
+        ## use pygame.display.set_mode
+        set_mode(SIZE, RESIZABLE)
 
-        ### if there's a request to draw after the setups,
-        ### do so and delete the request
+        ## perform setups related to window size
+        watch_window_size()
 
-        if hasattr(
-            APP_REFS,
-            "draw_after_window_resize_setups",
-        ):
-
-            APP_REFS.draw_after_window_resize_setups()
-            del APP_REFS.draw_after_window_resize_setups
 
 
 def frame_checkups():
@@ -69,7 +71,7 @@ def frame_checkups():
     maintain_fps(FPS)
 
     ### keep an eye on the window size
-    _watch_window_size()
+    watch_window_size()
 
 def frame_checkups_with_fps(fps):
     """Same as frame_checkups(), but uses given fps."""
@@ -77,4 +79,4 @@ def frame_checkups_with_fps(fps):
     maintain_fps(fps)
 
     ### keep an eye on the window size
-    _watch_window_size()
+    watch_window_size()

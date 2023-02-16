@@ -13,7 +13,12 @@ from pygame.display import update
 
 from .config import APP_REFS
 
-from .pygamesetup import SERVICES_NS, SCREEN, clean_temp_files
+from .pygamesetup import (
+    SERVICES_NS,
+    SCREEN,
+    switch_mode,
+    clean_temp_files,
+)
 
 from .colorsman.colors import WINDOW_BG
 
@@ -196,6 +201,9 @@ def run_app(filepath=None):
         ## either with or without a file to be loaded
 
         except ResetAppException as obj:
+
+            ### switch mode according to exception info
+            switch_mode(obj)
 
             ### perform startup preparations, retrieveing the chosen
             ### loop holder, just like we did before starting the

@@ -3,8 +3,14 @@
 ### local imports
 
 ## constants
+
 from .constants import (
-    SCREEN, SCREEN_RECT, blit_on_screen, clean_temp_files
+    SCREEN,
+    SCREEN_RECT,
+    GENERAL_SERVICE_NAMES,
+    reset_caption,
+    blit_on_screen,
+    clean_temp_files,
 )
 
 ## custom services
@@ -14,36 +20,29 @@ from .services import normal, record, play
 ### create a namespace to store the services in use
 SERVICES_NS = type("Object", (), {})()
 
+### set normal services on namespace (enables normal mode)
+###
+### there's no need to reset the window mode this first time,
+### because it was already properly set in the constants.py
+### sibling module
+normal.set_behaviour(SERVICES_NS, reset_window_mode=False)
 
-### create and use function to activate normal behaviour
 
-def set_normal_behaviour():
-    """Set normal services as current ones.
+### function to switch modes
 
-    This is done by storing them in the SERVICES_NS
-    namespace.
+def switch_mode(mode_info_ns):
+    """Switch to specific mode according to reset info data.
+
+    Parameters
+    ==========
+    mode_info_ns (loopman.exception.ResetAppException)
+        has attributes containing data about mode to be
+        switched to.
     """
-    for attr_name in (
+    mode = mode_info_ns.mode
 
-        "get_events",
+    if mode == 'record':
+        record.set_behaviour(SERVICES_NS, mode_info_ns.data)
 
-        "get_pressed_keys",
-        "get_pressed_mod_keys",
-
-        "get_mouse_pos",
-        "get_mouse_pressed",
-
-        "set_mouse_pos",
-        "set_mouse_visibility",
-
-        "update_screen",
-
-        "frame_checkups",
-        "frame_checkups_with_fps",
-
-    ):
-
-        value = getattr(normal, attr_name)
-        setattr(SERVICES_NS, attr_name, value)
-
-set_normal_behaviour()
+    elif mode == 'normal':
+        normal.set_behaviour(SERVICES_NS)

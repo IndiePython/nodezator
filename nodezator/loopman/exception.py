@@ -54,10 +54,13 @@ class ResetAppException(Exception):
     with or without a loaded file.
     """
 
-    def __init__(self, filepath=None):
+    def __init__(self, mode, filepath=None, data=None):
         """Store loop holder."""
-        ### store the given filepath value
+        ### store arguments
+
+        self.mode     = mode
         self.filepath = filepath
+        self.data     = data
 
         ### initialize superclass with custom message
         super().__init__("Reset the app.")

@@ -713,7 +713,7 @@ class FileOperations:
         path_str = get_custom_path_repr(filepath)
 
         ### update caption to show the new loaded path
-        self.update_caption(path_str)
+        self.put_path_on_caption(path_str)
 
         ### notify user by displaying message in the
         ### statusbar
@@ -781,7 +781,7 @@ def clean_loaded_file_data():
     ### delete the swap path if the attribute exists
 
     try:
-        swap_path = APP_REFS.swap_path.unlink()
+        swap_path = APP_REFS.swap_path
     except AttributeError:
         pass
     else:

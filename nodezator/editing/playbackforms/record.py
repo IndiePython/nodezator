@@ -56,6 +56,7 @@ from ...surfsman.render import render_rect
 from ...loopman.exception import (
     QuitAppException,
     SwitchLoopException,
+    ResetAppException,
 )
 
 from ...colorsman.colors import (
@@ -106,8 +107,8 @@ TEXT_TO_WINDOW_SIZE = {
 }
 
 
-### class definition
 
+### class definition
 
 class SessionRecordingForm(Object2D):
     """Form for session recording setting and triggering."""
@@ -204,7 +205,7 @@ class SessionRecordingForm(Object2D):
 
         topleft = recording_title_label.rect.move(0, 5).bottomleft
 
-        recording_title_entry = StringEntry(
+        self.recording_title_entry = StringEntry(
             loop_holder=self,
             value="Type title of recording here",
             width=500,
@@ -213,7 +214,7 @@ class SessionRecordingForm(Object2D):
             coordinates_value=topleft,
         )
 
-        widgets.append(recording_title_entry)
+        widgets.append(self.recording_title_entry)
 
 
         ### update the topleft to a value a bit below
@@ -260,7 +261,7 @@ class SessionRecordingForm(Object2D):
         self.recording_filepath_label = Label(
             text=initial_text,
             name="recording_path",
-            max_width=325,
+            max_width=485,
             ellipsis_at_end=False,
             coordinates_name="midleft",
             coordinates_value=midleft,
@@ -349,7 +350,7 @@ class SessionRecordingForm(Object2D):
         self.filepath_to_load_label = Label(
             text=initial_text,
             name="path_to_load",
-            max_width=325,
+            max_width=445,
             ellipsis_at_end=False,
             coordinates_name="midleft",
             coordinates_value=midleft,
@@ -380,7 +381,7 @@ class SessionRecordingForm(Object2D):
         self.window_size_label_full = Label(
             text="1280x720",
             name="full_window_size",
-            max_width=325,
+            max_width=None,
             ellipsis_at_end=False,
             coordinates_name="midleft",
             coordinates_value=midleft,
@@ -642,24 +643,23 @@ class SessionRecordingForm(Object2D):
 
     def trigger_recording(self):
         """Treat data and, if valid, trigger session recording."""
-        ### instantiate dict to gather form data
-        data = {}
 
-        ### populate dict
+        ### gather data
 
-        for widget in self.widgets:
+        data = {
+            "recording_title" : self.recording_title_entry.get(),
+            "recording_path" : Path(self.recording_filepath_label.get()),
+            "recording_size" : TEXT_TO_WINDOW_SIZE[self.window_size_tray.get()],
+        }
 
-            try:
-                method = widget.get
-            except AttributeError:
-                continue
-            else:
-                value = method()
+        filepath = (
+            Path(self.filepath_to_load_label.get())
+            if self.load_file_checkbutton.get()
+            else None
+        )
 
-            data[widget.name] = value
-
-        ### if data validates, trigger session recording
-        ...
+        ### trigger session recording
+        raise ResetAppException(mode='record', filepath=filepath, data=data)
 
     def draw(self):
         """Draw itself and widgets.

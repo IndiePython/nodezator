@@ -20,7 +20,7 @@ from ..dialog import (
     show_dialog_from_key,
 )
 
-from ..pygamesetup import SCREEN_RECT, blit_on_screen
+from ..pygamesetup import SCREEN_RECT, blit_on_screen, reset_caption
 
 from ..appinfo import (
     FULL_TITLE,
@@ -412,9 +412,9 @@ class WindowManager(
         try:
             APP_REFS.source_path
 
-        ### if not, just pass
+        ### if not, reset caption to its initial state
         except AttributeError:
-            pass
+            reset_caption()
 
         ### otherwise, create the popup menu
         else:
@@ -557,12 +557,12 @@ class WindowManager(
             path_str = get_custom_path_repr(APP_REFS.source_path)
 
         ### update caption to show the loaded path
-        self.update_caption(path_str)
+        self.put_path_on_caption(path_str)
 
         ### also display loaded path on statusbar
         set_status_message("loaded {}".format(path_str))
 
-    def update_caption(self, path_str):
+    def put_path_on_caption(self, path_str):
         """Update caption with custom formated title.
 
         Parameters

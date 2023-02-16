@@ -30,12 +30,10 @@ from pygame.mouse import (
     set_visible as set_mouse_visibility,
 )
 
-from pygame.display import update
+from pygame.display import set_mode, update
 
 
 ### local imports
-
-from ...config import APP_REFS
 
 from ...ourstdlibs.path import get_timestamp
 
@@ -46,7 +44,10 @@ from ...loopman.exception import ResetAppException
 from ..constants import (
 
     SCREEN_RECT, blit_on_screen,
+    GENERAL_SERVICE_NAMES,
     FPS, maintain_fps,
+
+    watch_window_size,
 
     EVENT_KEY_STRIP_MAP,
     EVENT_COMPACT_NAME_MAP,
@@ -88,45 +89,71 @@ REVERSE_KEYS_MAP = {
 
 LABELS = []
 
-def instantiate_and_store_labels():
+LABELS.append(
 
-    topright = SCREEN_RECT.move(-10, 32).topright
+    get_label_object(
+        text = "F9: finish recording & exit",
+        label_fg = 'white',
+        label_bg = 'blue',
+        label_outline = 'white',
+        padding = 6,
+    )
 
-    for text in (
-        getattr(APP_REFS, "recording_title", "Untitled session"),
-        "F9: finish recording & exit",
-    ):
-
-        ### create label object
-
-        label = (
-            get_label_object(
-                text = text,
-                label_fg = 'white',
-                label_bg = 'blue',
-                label_outline = 'white',
-                padding = 6,
-            )
-        )
-
-        ### position label
-        label.rect.topright = topright
-
-        ### store label
-        LABELS.append(label)
-
-        ### update topright
-        topright = label.rect.move(0, 5).bottomright
-
-instantiate_and_store_labels()
+)
 
 
-def set_recording_behaviour(recording_path, recording_size):
+def set_behaviour(services_namespace, data):
+    """Setup record services and data."""
+
+    ### set record services as current ones.
+
+    our_globals = globals()
+
+    for attr_name in GENERAL_SERVICE_NAMES:
+
+        value = our_globals[attr_name]
+        setattr(services_namespace, attr_name, value)
 
     ### store recording path and recording size
 
-    REC_REFS.recording_path = recording_path
-    REC_REFS.recording_size = recording_size
+    for name in (
+        'recording_title',
+        'recording_path',
+        'recording_size',
+    ):
+
+        value = data[name]
+        setattr(REC_REFS, name, value)
+
+    ### reset window mode (pygame.display.set_mode)
+    set_mode(data['recording_size'], 0)
+
+    ### trigger setups related to window size change
+    watch_window_size()
+
+    ### create and store title label, then reposition
+    ### all labels
+
+    new_title_label = (
+        get_label_object(
+            text = data['recording_title'],
+            label_fg = 'white',
+            label_bg = 'blue',
+            label_outline = 'white',
+            padding = 6,
+        )
+    )
+
+    LABELS.insert(0, new_title_label)
+
+    topright = SCREEN_RECT.move(-10, 32).topright
+
+    for label in LABELS:
+
+        label.rect.topright = topright
+        topright = label.rect.move(0, 5).bottomright
+
+    LABELS[0] = new_title_label
 
     ### make it so the frame index routine sets up recording
     REC_REFS.frame_index_routine = setup_recording
@@ -152,7 +179,6 @@ def setup_recording():
 def increment_frame_index():
     """increment frame index by 1"""
     REC_REFS.frame_index += 1
-
 
 
 
@@ -186,11 +212,14 @@ def get_events():
             ### save session data
             save_session_data()
 
-            ### reset app
-            raise ResetAppException
+            ### remove title label
+            del LABELS[0]
 
+            ### reset app
+            raise ResetAppException(mode='normal')
 
         record_event(event)
+
         yield event
 
 ## processing key pressed states
@@ -202,7 +231,7 @@ def get_pressed_keys():
 
 def get_pressed_mod_keys():
     mods_bitmask = get_mods()
-    REC_REFS.record_mod_key_states(mods_bitmask)
+    record_mod_key_states(mods_bitmask)
     return mods_bitmask
 
 ## processing mouse
@@ -211,6 +240,7 @@ def get_mouse_pos():
     pos = get_pos()
     MOUSE_POS_REQUESTS.append(pos)
     return pos
+
 def get_mouse_pressed():
     pressed_tuple = mouse_get_pressed()
     MOUSE_KEY_STATE_REQUESTS.append(pressed_tuple)
@@ -219,8 +249,11 @@ def get_mouse_pressed():
 ## screen updating
 
 def update_screen():
-    ### blit label
-    blit_on_screen(label, label_rect)
+
+    ### blit labels
+
+    for label in LABELS:
+        blit_on_screen(label.image, label.rect)
 
     ### update the screen (pygame.display.update())
     update()
@@ -285,9 +318,7 @@ def save_session_data():
 
     session_data['recording_size'] = REC_REFS.recording_size
 
-    session_data['recording_title'] = (
-        getattr(APP_REFS, "recording_title", "Untitled session")
-    )
+    session_data['recording_title'] = REC_REFS.recording_title
 
     ### save session data in file or its rotated version
 
@@ -298,7 +329,7 @@ def save_session_data():
 
     timestamp = get_timestamp(REC_REFS.session_start_datetime)
 
-    final_path = parent / f"{stem}_{timestamp}.pyl"
+    final_path = parent / f"{stem}.{timestamp}.pyl"
     save_pyl(session_data, final_path, width=125, compact=True)
 
     ### clear collections
