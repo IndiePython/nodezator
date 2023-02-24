@@ -3,6 +3,7 @@
 ### standard library imports
 
 from pathlib import Path
+
 from functools import partial, partialmethod
 
 
@@ -139,11 +140,11 @@ class SessionRecordingForm(Object2D):
         ### center form and also append centering method
         ### as a window resize setup
 
-        self.center_image_export_form()
+        self.center_session_recording_form()
 
-        APP_REFS.window_resize_setups.append(self.center_image_export_form)
+        APP_REFS.window_resize_setups.append(self.center_session_recording_form)
 
-    def center_image_export_form(self):
+    def center_session_recording_form(self):
 
         diff = Vector2(SCREEN_RECT.center) - self.rect.center
 
