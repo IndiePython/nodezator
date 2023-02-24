@@ -23,7 +23,7 @@ def set_session_playing():
     if paths:
 
         ### gather data
-        data = {"playing_data_path" : paths[0]}
+        data = {"input_data_path" : paths[0]}
 
         ### trigger session recording
         raise ResetAppException(mode='play', data=data)

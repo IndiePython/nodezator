@@ -5,7 +5,7 @@ from pygame.locals import RESIZABLE
 
 from pygame.display import set_mode
 
-from pygame.event import get as get_events
+from pygame.event import get as get_events, set_allowed
 
 from pygame.key import (
     get_pressed as get_pressed_keys,
@@ -48,6 +48,9 @@ def set_behaviour(services_namespace, reset_window_mode=True):
 
         value = our_globals[attr_name]
         setattr(services_namespace, attr_name, value)
+
+    ### allow all kinds of events (by passing None to pygame.event.set_allowed)
+    set_allowed(None)
 
     ### reset window mode if requested
 

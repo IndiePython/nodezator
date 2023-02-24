@@ -38,7 +38,7 @@ from pygame.math import Vector2
 
 from pygame.event import Event, get, set_allowed, set_blocked
 
-from pygame.display import update
+from pygame.display import update, set_mode
 
 from pygame.mouse import set_pos, set_visible as set_mouse_visibility
 
@@ -55,7 +55,10 @@ from ...loopman.exception import ResetAppException
 from ..constants import (
 
     SCREEN_RECT, blit_on_screen,
+    GENERAL_SERVICE_NAMES,
     FPS, maintain_fps,
+
+    watch_window_size,
 
     EVENT_KEY_STRIP_MAP,
     EVENT_COMPACT_NAME_MAP,
@@ -64,7 +67,6 @@ from ..constants import (
     MOD_KEYS_MAP,
 
     get_label_object,
-    clean_temp_files,
 
 )
 
@@ -213,10 +215,48 @@ def get_ready_events(events):
 
 
 
-def set_play_behaviour(input_path):
+def set_behaviour(services_namespace, data):
+    """Setup play services and data."""
+
+    ### set play services as current ones
+
+    our_globals = globals()
+
+    for attr_name in GENERAL_SERVICE_NAMES:
+
+        value = our_globals[attr_name]
+        setattr(services_namespace, attr_name, value)
 
     ### load session data
-    SESSION_DATA.update(load_pyl(input_path))
+    SESSION_DATA.update(load_pyl(data['input_data_path']))
+
+    ### reset window mode (pygame.display.set_mode)
+    set_mode(SESSION_DATA['recording_size'], 0)
+
+    ### trigger setups related to window size change
+    watch_window_size()
+
+    ### create and store title label, then reposition
+    ### all labels
+
+    new_title_label = (
+        get_label_object(
+            text = SESSION_DATA['recording_title'],
+            label_fg = 'white',
+            label_bg = 'blue',
+            label_outline = 'white',
+            padding = 6,
+        )
+    )
+
+    LABELS.insert(0, new_title_label)
+
+    topright = SCREEN_RECT.move(-10, 32).topright
+
+    for label in LABELS:
+
+        label.rect.topright = topright
+        topright = label.rect.move(0, 5).bottomright
 
     ### since the app will be playing recorded events, we are not interested
     ### in new ones generated while playing, so we block most of them, leaving
@@ -300,6 +340,9 @@ def set_play_behaviour(input_path):
     MOUSE_PRESSED_TUPLES.extend(SESSION_DATA['mouse_key_state_requests'])
     MOUSE_PRESSED_TUPLES.reverse()
 
+    ### set playing mode setup as the frame index routine
+    PLAY_REFS.frame_index_routine = setup_playing_mode
+
 
 ### constants
 
@@ -309,38 +352,24 @@ MOUSE_EVENTS = frozenset({MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP})
 
 ## label creation
 
-# create labels, their rects, and position them
+# create labels
 
-LABELS = []
+LABELS = [
 
-topright = SCREEN_RECT.move(-10, 32).topright
-
-for text in (
-    SESSION_DATA.get("recording_title", "Untitled session"),
-    "F9: play/pause",
-    "F8: toggle mouse tracing",
-):
-
-    ### create label object
-
-    label = (
-        get_label_object(
-            text = text,
-            label_fg = 'white',
-            label_bg = 'blue',
-            label_outline = 'white',
-            padding = 6,
-        )
+    get_label_object(
+        text = text,
+        label_fg = 'white',
+        label_bg = 'blue',
+        label_outline = 'white',
+        padding = 6,
     )
 
-    ### position label
-    label.rect.topright = topright
+    for text in (
+        "F9: play/pause",
+        "F8: toggle mouse tracing",
+    )
 
-    ### store label
-    LABELS.append(label)
-
-    ### update topright
-    topright = label.rect.move(0, 5).bottomright
+]
 
 
 ### create function to setup playing mode and assign it as the
@@ -352,27 +381,15 @@ def setup_playing_mode():
     PLAY_REFS.frame_index = 0
 
     ### set frame index setup as the frame index routine
-    PLAY_REFS.frame_index_routine = perform_frame_index_setups
-
-### set playing mode setup as the frame index routine
-PLAY_REFS.frame_index_routine = setup_playing_mode
+    PLAY_REFS.frame_index_routine = increment_frame_index
 
 
-### create function to perform setups related to the frame index
+### create function to increment the frame index by 1
 
-def perform_frame_index_setups():
-
-    ### increment frame index by 1
+def increment_frame_index():
+    """Increment frame index by 1."""
     PLAY_REFS.frame_index += 1
 
-    ### reset app if frame is last one
-
-    if PLAY_REFS.frame_index == PLAY_REFS.last_frame_index:
-
-        # TODO must also clean the collections used before
-        # resetting;
-
-        raise ResetAppException
 
 ### function to pause session replaying
 
@@ -404,6 +421,27 @@ def pause():
 ## processing events
 
 def get_events():
+
+    ### reset app if frame is last one
+
+    if PLAY_REFS.frame_index == PLAY_REFS.last_frame_index:
+
+        ### clear collections
+
+        for collection in (
+            EVENTS_MAP,
+            NON_EMPTY_GETTER_FROZENSETS,
+            NO_KMOD_NONE_BITMASKS,
+            MOUSE_POSITIONS,
+            MOUSE_PRESSED_TUPLES,
+        ):
+            collection.clear()
+
+        ### remove title label
+        del LABELS[0]
+
+        ### reset app
+        raise ResetAppException(mode='normal')
 
     ### process QUIT or KEYDOWN event (for the F9 key) if
     ### they are thrown
