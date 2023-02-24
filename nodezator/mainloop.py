@@ -205,7 +205,7 @@ def run_app(filepath=None):
             ### switch mode according to exception info
             switch_mode(obj)
 
-            ### perform startup preparations, retrieveing the chosen
+            ### perform startup preparations, retrieving the chosen
             ### loop holder, just like we did before starting the
             ### mainloop at the beginning of this function
             loop_holder = perform_startup_preparations(obj.filepath)
