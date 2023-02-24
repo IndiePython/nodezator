@@ -387,7 +387,7 @@ class MenuSetup:
                 },
                 {
                     "label": "Play session",
-                    "command": partial(create_and_show_dialog, "Not implemented"),
+                    "command": APP_REFS.ea.set_session_playing,
                 },
                 {"label": "---",},
                 {

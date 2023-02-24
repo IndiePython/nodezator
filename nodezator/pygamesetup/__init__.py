@@ -44,5 +44,8 @@ def switch_mode(mode_info_ns):
     if mode == 'record':
         record.set_behaviour(SERVICES_NS, mode_info_ns.data)
 
+    elif mode == 'play':
+        play.set_behaviour(SERVICES_NS, mode_info_ns.data)
+
     elif mode == 'normal':
         normal.set_behaviour(SERVICES_NS)

@@ -30,8 +30,9 @@ from .nodepacksforms.renaming import (
     present_rename_node_packs_form,
 )
 
-from .playbackforms.record import set_session_recording
 
+from .playback.record import set_session_recording
+from .playback.play import set_session_playing
 
 ## classes for composition
 
@@ -93,6 +94,7 @@ class EditingAssistant(
         self.present_change_node_packs_form = present_change_node_packs_form
 
         self.set_session_recording = set_session_recording
+        self.set_session_playing = set_session_playing
 
         ### create and store popup menus
 
