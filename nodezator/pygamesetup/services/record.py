@@ -44,6 +44,7 @@ from ...loopman.exception import ResetAppException
 from ..constants import (
 
     SCREEN_RECT, blit_on_screen,
+    GENERAL_NS,
     GENERAL_SERVICE_NAMES,
     FPS, maintain_fps,
 
@@ -155,49 +156,33 @@ def set_behaviour(services_namespace, data):
 
     LABELS[0] = new_title_label
 
-    ### make it so the frame index routine sets up recording
-    REC_REFS.frame_index_routine = setup_recording
-
-
-### set behaviors to record session data
-
-def setup_recording():
-
     ## clear any existing events
     clear()
 
     ## record beginning of recording session
     REC_REFS.session_start_datetime = datetime.now()
 
-    ## set frame index to 0
-    REC_REFS.frame_index = 0
-
-    ## set frame index incrementation as the frame index routine
-    REC_REFS.frame_index_routine = increment_frame_index
-
-
-def increment_frame_index():
-    """increment frame index by 1"""
-    REC_REFS.frame_index += 1
-
+    ## set frame index to -1 (so it is set to 0 at the beginning
+    ## of the loop, the first frame)
+    GENERAL_NS.frame_index = -1
 
 
 ### event recording operation
 
 def record_event(event):
 
-    EVENTS_MAP[REC_REFS.frame_index].append([
+    EVENTS_MAP[GENERAL_NS.frame_index].append([
         event.type,
         event.__dict__
     ])
 
 append_key_states = KEY_STATE_REQUESTS.append
 def record_key_states(key_states):
-    append_key_states((REC_REFS.frame_index, key_states))
+    append_key_states((GENERAL_NS.frame_index, key_states))
 
 append_mod_key_states = MOD_KEY_BITMASK_REQUESTS.append
 def record_mod_key_states(mods_bitmask):
-    append_mod_key_states((REC_REFS.frame_index, mods_bitmask))
+    append_mod_key_states((GENERAL_NS.frame_index, mods_bitmask))
 
 ### extended session behaviours
 
@@ -270,16 +255,16 @@ def frame_checkups():
     ### keep constants fps
     maintain_fps(FPS)
 
-    ### execute frame index routine
-    REC_REFS.frame_index_routine()
+    ### increment frame number
+    GENERAL_NS.frame_index += 1
 
 def frame_checkups_with_fps(fps):
     """Same as frame_checkups(), but uses given fps."""
     ### keep constants fps
     maintain_fps(fps)
 
-    ### execute frame index routine
-    REC_REFS.frame_index_routine()
+    ### increment frame number
+    GENERAL_NS.frame_index += 1
 
 
 ### session data saving operations
@@ -312,7 +297,7 @@ def save_session_data():
     session_data['mouse_key_state_requests'] = tuple(MOUSE_KEY_STATE_REQUESTS)
 
     ### store last frame index as well
-    session_data['last_frame_index'] = REC_REFS.frame_index + 1
+    session_data['last_frame_index'] = GENERAL_NS.frame_index + 1
 
     ### store recording size and title
 

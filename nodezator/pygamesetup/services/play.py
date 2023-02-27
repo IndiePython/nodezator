@@ -55,6 +55,7 @@ from ...loopman.exception import ResetAppException
 from ..constants import (
 
     SCREEN_RECT, blit_on_screen,
+    GENERAL_NS,
     GENERAL_SERVICE_NAMES,
     FPS, maintain_fps,
 
@@ -340,8 +341,9 @@ def set_behaviour(services_namespace, data):
     MOUSE_PRESSED_TUPLES.extend(SESSION_DATA['mouse_key_state_requests'])
     MOUSE_PRESSED_TUPLES.reverse()
 
-    ### set playing mode setup as the frame index routine
-    PLAY_REFS.frame_index_routine = setup_playing_mode
+    ### set frame index to -1 (so when it is incremented at the beginning
+    ### of the loop it is set to 0, the first frame)
+    GENERAL_NS.frame_index = -1
 
 
 ### constants
@@ -370,25 +372,6 @@ LABELS = [
     )
 
 ]
-
-
-### create function to setup playing mode and assign it as the
-### frame index routine
-
-def setup_playing_mode():
-
-    ### set frame index to 0
-    PLAY_REFS.frame_index = 0
-
-    ### set frame index setup as the frame index routine
-    PLAY_REFS.frame_index_routine = increment_frame_index
-
-
-### create function to increment the frame index by 1
-
-def increment_frame_index():
-    """Increment frame index by 1."""
-    PLAY_REFS.frame_index += 1
 
 
 ### function to pause session replaying
@@ -424,7 +407,7 @@ def get_events():
 
     ### reset app if frame is last one
 
-    if PLAY_REFS.frame_index == PLAY_REFS.last_frame_index:
+    if GENERAL_NS.frame_index == PLAY_REFS.last_frame_index:
 
         ### clear collections
 
@@ -464,9 +447,9 @@ def get_events():
     ## if there are events for the current frame index in the event map,
     ## iterate over them
 
-    if PLAY_REFS.frame_index in EVENTS_MAP:
+    if GENERAL_NS.frame_index in EVENTS_MAP:
 
-        for event in EVENTS_MAP[PLAY_REFS.frame_index]:
+        for event in EVENTS_MAP[GENERAL_NS.frame_index]:
 
             ## if we have a mouse event, we use it to position the mouse
             if event.type in MOUSE_EVENTS:
@@ -489,8 +472,8 @@ def get_pressed_keys():
 
         ### return a non empty GetterFrozenSet for the current
         ### frame index if there's one
-        NON_EMPTY_GETTER_FROZENSETS[PLAY_REFS.frame_index]
-        if PLAY_REFS.frame_index in NON_EMPTY_GETTER_FROZENSETS
+        NON_EMPTY_GETTER_FROZENSETS[GENERAL_NS.frame_index]
+        if GENERAL_NS.frame_index in NON_EMPTY_GETTER_FROZENSETS
 
         ### otherwise return an empty GetterFrozenSet
         else EMPTY_GETTER_FROZENSET
@@ -509,8 +492,8 @@ def get_pressed_mod_keys():
     return (
 
         ### return a bitmask for the current frame index if there's one
-        NO_KMOD_NONE_BITMASKS[PLAY_REFS.frame_index]
-        if PLAY_REFS.frame_index in NO_KMOD_NONE_BITMASKS
+        NO_KMOD_NONE_BITMASKS[GENERAL_NS.frame_index]
+        if GENERAL_NS.frame_index in NO_KMOD_NONE_BITMASKS
 
         ### otherwise return pygame.locals.KMOD_NONE
         else KMOD_NONE
@@ -577,13 +560,14 @@ def frame_checkups():
     ### keep constants fps
     maintain_fps(FPS)
 
-    ### execute frame index routine
-    PLAY_REFS.frame_index_routine()
+    ### increment frame number
+    GENERAL_NS.frame_index += 1
+
 
 def frame_checkups_with_fps(fps):
     """Same as frame_checkups(), but uses given fps."""
     ### keep constants fps
     maintain_fps(fps)
 
-    ### execute frame index routine
-    PLAY_REFS.frame_index_routine()
+    ### increment frame number
+    GENERAL_NS.frame_index += 1

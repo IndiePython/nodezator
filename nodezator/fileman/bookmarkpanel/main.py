@@ -12,12 +12,13 @@ from collections import deque
 from pygame import Rect
 
 from pygame.math import Vector2
-from pygame.time import get_ticks as get_milliseconds
 
 
 ### local imports
 
 from ...userprefsman.main import BOOKMARKS_FILE
+
+from ...pygamesetup.constants import GENERAL_NS
 
 from ...dialog import create_and_show_dialog
 
@@ -44,7 +45,7 @@ from ..constants import (
     PATH_OBJ_QUANTITY,
     PATH_OBJ_PADDING,
     BKM_PANEL_WIDTH,
-    MAX_MSECS_TO_2ND_MOUSE_EVENT,
+    MAX_FRAMES_TO_2ND_MOUSE_EVENT,
 )
 
 from .surfs import (
@@ -134,9 +135,9 @@ class BookmarkPanel:
             ## store button in attribute
             setattr(self, button_attr_name, button)
 
-        ### create a control variable to keep track of time
-        ### when mouse release events happen
-        self.last_release_msecs = get_milliseconds()
+        ### create a control variable to keep track of frame
+        ### where mouse release events happen
+        self.last_release_frame = 0
 
     def create_bookmark_objects(self):
         """Instantiate and store objects for bookmarks."""
@@ -304,19 +305,17 @@ class BookmarkPanel:
 
             if bookmark_obj.rect.collidepoint(mouse_pos):
 
-                ## get the current millisecond count since
-                ## app was started (since pygame was
-                ## initialized)
-                current_release_msecs = get_milliseconds()
+                ## get the current frame index since
+                ## app was started/reseted
+                frame_index = GENERAL_NS.frame_index
 
-                ## use it to obtain the interval in
-                ## milliseconds since the last mouse release
+                ## use it to obtain the number of frames passed by
+                ## since the last mouse release
+                frames_since_last = frame_index - self.last_release_frame
 
-                msecs_since_last = current_release_msecs - self.last_release_msecs
-
-                ## if such time is less than or equal
-                ## the maximum time defined for a second
-                ## mouse event we consider it as if it
+                ## if such number is less than or equal
+                ## the maximum number of frames defined for
+                ## a second mouse event we consider it as if it
                 ## were a double click on the path object,
                 ## in which case we load its path; since
                 ## this relies on the change_current_dir
@@ -324,14 +323,13 @@ class BookmarkPanel:
                 ## difference if the path is an existing
                 ## directory
 
-                if msecs_since_last <= MAX_MSECS_TO_2ND_MOUSE_EVENT:
+                if frames_since_last <= MAX_FRAMES_TO_2ND_MOUSE_EVENT:
                     bookmark_obj.load()
 
-                ## finally, we store the measured
-                ## milliseconds as the more recent time
-                ## measurement of a mouse release event
-
-                self.last_release_msecs = current_release_msecs
+                ## finally, we store the current frame index
+                ## as the more recent frame where a mouse release event
+                ## occured
+                self.last_release_frame = frame_index
 
                 ## finally since you found the colliding
                 ## path obj, you know the others didn't

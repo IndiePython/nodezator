@@ -1,10 +1,8 @@
 """Syntax highlighting setups and operations."""
 
-### third-party import
-from pygame.time import get_ticks as get_pygame_msecs
-
-
 ### local imports
+
+from ....pygamesetup.constants import GENERAL_NS, FPS
 
 from ....ourstdlibs.behaviour import empty_function
 
@@ -26,10 +24,14 @@ from ..constants import (
 )
 
 
-### number of milliseconds to wait after last text edition
-### before mapping syntax highlighting (and applying it to
-### visible lines)
-MSECS_TO_UPDATE_SYNTAX = 500
+### time to wait after last text edition before mapping syntax
+### highlighting and applying it to visible lines
+###
+### time is defined in milliseconds, but converted to equivalent
+### number of frames
+
+_MSECS_TO_UPDATE_SYNTAX = 500
+FRAMES_TO_UPDATE_SYNTAX = round(FPS * (_MSECS_TO_UPDATE_SYNTAX / 1000))
 
 
 ### class definition
@@ -116,7 +118,7 @@ class SyntaxHighlighting:
 
             ### create a control variable to keep track of
             ### the time when the text was last edited
-            self.last_edition_msecs = 0
+            self.last_edition_frame = 0
 
             ### map and apply the syntax highlighting in the
             ### text
@@ -188,25 +190,25 @@ class SyntaxHighlighting:
 
     def check_syntax_highlighting(self):
         """Trigger syntax highlighting update, if suitable."""
-        ### if the last time when an edition was performed
+        ### if the last frame when an edition was performed
         ### isn't stored (it is set to 0), it indicates
         ### that no changes were performed, so there is no
         ### point in updating the syntax highlighting data;
         ### therefore, we cancel the operation by returning
-        if not self.last_edition_msecs:
+        if not self.last_edition_frame:
             return
 
         ### otherwise, there were changes, so we check
-        ### wether the pre-defined delay between the last
-        ### change and the present time has elapsed;
+        ### wether the pre-defined number of frames between the last
+        ### change and the present frame has passed by;
         ###
-        ### if such time already elapsed, we reset the
-        ### last_edition_msecs to 0, then update the syntax
+        ### if such number already went by, we reset the
+        ### last_edition_frame to 0, then update the syntax
         ### highlighting and apply it in the visible lines
 
-        if get_pygame_msecs() - self.last_edition_msecs > MSECS_TO_UPDATE_SYNTAX:
+        if GENERAL_NS.frame_index - self.last_edition_frame > FRAMES_TO_UPDATE_SYNTAX:
 
-            self.last_edition_msecs = 0
+            self.last_edition_frame = 0
 
             self.update_syntax_highlight_data()
             self.syntax_highlight_visible_lines()
@@ -216,7 +218,7 @@ class SyntaxHighlighting:
         ### mark current time, which represents the time
         ### at which the most recent change was made in the
         ### text
-        self.last_edition_msecs = get_pygame_msecs()
+        self.last_edition_frame = GENERAL_NS.frame_index
 
     def update_syntax_highlight_data(self):
         """Map and store syntax highlight data for text."""
@@ -260,14 +262,14 @@ class SyntaxHighlighting:
 
     def syntax_highlight_visible_lines(self):
         """Apply syntax highlighting to visible lines."""
-        ### if the last_edition_msecs isn't 0, it means
+        ### if the last_edition_frame isn't 0, it means
         ### there are changes yet to be taken into account,
         ### that is, the syntax highlighting data is
         ### outdated;
         ###
         ### in such case,  we abort the execution of
         ### the rest of this method by returning earlier
-        if self.last_edition_msecs:
+        if self.last_edition_frame:
             return
 
         ### otherwise we go on and apply the syntax

@@ -105,6 +105,10 @@ maintain_fps = _CLOCK.tick
 get_fps = _CLOCK.get_fps
 
 
+### anonymous object to keep track of frame index
+GENERAL_NS = type("Object", (), {'frame_index':-1})()
+
+
 ### name of key pygame services used by all different modes
 
 GENERAL_SERVICE_NAMES = (

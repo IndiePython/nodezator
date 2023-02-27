@@ -28,6 +28,7 @@ from ..constants import (
     SCREEN,
     SCREEN_RECT,
     SIZE,
+    GENERAL_NS,
     GENERAL_SERVICE_NAMES,
     FPS,
     maintain_fps,
@@ -73,6 +74,9 @@ def frame_checkups():
     ### keep a constants framerate
     maintain_fps(FPS)
 
+    ### increment frame number
+    GENERAL_NS.frame_index += 1
+
     ### keep an eye on the window size
     watch_window_size()
 
@@ -80,6 +84,9 @@ def frame_checkups_with_fps(fps):
     """Same as frame_checkups(), but uses given fps."""
     ### keep a constants framerate
     maintain_fps(fps)
+
+    ### increment frame number
+    GENERAL_NS.frame_index += 1
 
     ### keep an eye on the window size
     watch_window_size()

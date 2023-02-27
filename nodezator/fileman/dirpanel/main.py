@@ -11,7 +11,6 @@ from functools import partialmethod
 from pygame import Rect
 
 from pygame.draw import rect as draw_rect
-from pygame.time import get_ticks as get_milliseconds
 
 
 ### local imports
@@ -179,9 +178,9 @@ class DirectoryPanel(
             ## store button in attribute
             setattr(self, button_attr_name, button)
 
-        ### create a control variable to keep track of time
-        ### when mouse release events happen
-        self.last_release_msecs = get_milliseconds()
+        ### create a control variable to keep track of frame
+        ### where mouse release events happen
+        self.last_release_frame = 0
 
         ### create path objects
         self.create_path_objects()
