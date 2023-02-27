@@ -496,7 +496,7 @@ class Execution:
 
             with redirect_stdout(custom_stdout):
 
-                print("Graph execution triggered at UTC:" f" {datetime.utcnow()}")
+                print(f"Graph executed at {datetime.now()} (local date/time)")
 
                 self.execute_graph()
 
