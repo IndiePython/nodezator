@@ -9,6 +9,7 @@ from string import digits, ascii_letters
 from pygame.locals import (
     ### event types
     QUIT,
+    TEXTINPUT,
     KEYDOWN,
     KEYUP,
     MOUSEBUTTONUP,
@@ -32,12 +33,18 @@ from pygame.locals import (
 
 from pygame.math import Vector2
 
+from pygame.key import (
+    start_text_input,
+    stop_text_input,
+    set_text_input_rect,
+)
+
 
 ### local imports
 
 from ...pygamesetup import SERVICES_NS, SCREEN_RECT
 
-from ...pygamesetup.constants import WINDOW_RESIZE_EVENT_TYPE
+from ...pygamesetup.constants import GENERAL_NS, WINDOW_RESIZE_EVENT_TYPE
 
 from ...ourstdlibs.behaviour import empty_function
 
@@ -108,7 +115,17 @@ class IntFloatModes(Object2D):
         for event in SERVICES_NS.get_events():
 
             if event.type == QUIT:
+
+                ### disable text editing events
+                stop_text_input()
+
+                ### raise app quitting exception
                 raise QuitAppException
+
+            ### if valid text is input, add it
+
+            elif event.type == TEXTINPUT and event.text in ALLOWED_CHARS:
+                self.cursor.add_text(event.text)
 
             elif event.type == KEYUP:
 
@@ -159,13 +176,6 @@ class IntFloatModes(Object2D):
                 elif event.key == K_e and event.mod & KMOD_CTRL:
                     self.enable_expanded_view()
 
-                ### if the keydown event has a non-empty
-                ### string as its unicode attribute that
-                ### is also an allowed char, add such
-                ### character
-
-                elif event.unicode and event.unicode in ALLOWED_CHARS:
-                    self.cursor.add_text(event.unicode)
 
             ### releasing either the left or right button
             ### of the mouse out of the widget boundaries
@@ -517,10 +527,21 @@ class IntFloatModes(Object2D):
         self.draw = self.standby_draw
 
     def enable_keyboard_edition_mode(self):
-        """Assign behaviours for keyboard edition mode."""
+        """Assign behaviours for keyboard edition mode.
+
+        Also performs additional setups.
+        """
         self.handle_input = self.keyboard_edition_control
         self.update = self.keyboard_edition_update
         self.draw = self.keyboard_edition_draw
+
+        ### if app is not in play mode, enable text editing events
+        ### and set the text input rect
+
+        if GENERAL_NS.mode_name != 'play':
+
+            start_text_input()
+            set_text_input_rect(self.rect.move(0, 20))
 
     def enable_mouse_edition_mode(self):
         """Perform setups to enable mouse edition mode."""

@@ -10,6 +10,7 @@ from pygame.event import get as get_events, set_allowed
 from pygame.key import (
     get_pressed as get_pressed_keys,
     get_mods as get_pressed_mod_keys,
+    stop_text_input,
 )
 
 from pygame.mouse import (
@@ -50,8 +51,13 @@ def set_behaviour(services_namespace, reset_window_mode=True):
         value = our_globals[attr_name]
         setattr(services_namespace, attr_name, value)
 
-    ### allow all kinds of events (by passing None to pygame.event.set_allowed)
+    ### allow all kinds of events (by passing None to
+    ### pygame.event.set_allowed), except text input ones (by
+    ### stopping text input events),
+    ### which should be enabled only when appropriate
+
     set_allowed(None)
+    stop_text_input()
 
     ### reset window mode if requested
 

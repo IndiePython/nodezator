@@ -79,6 +79,8 @@ set_repeat(
 )
 
 
+### create/set screen
+
 SIZE = (
     # this value causes window size to equal screen resolution
     (0, 0)
@@ -105,8 +107,16 @@ maintain_fps = _CLOCK.tick
 get_fps = _CLOCK.get_fps
 
 
-### anonymous object to keep track of frame index
-GENERAL_NS = type("Object", (), {'frame_index':-1})()
+### anonymous object to keep track of general values;
+###
+### values are introduced/update during app's usage:
+### frame index is incremented, reset to -1, mode name
+### is changed as we switch to other modes, etc.
+
+GENERAL_NS = type("Object", (), {})()
+
+GENERAL_NS.frame_index = -1
+GENERAL_NS.mode_name = 'normal'
 
 
 ### name of key pygame services used by all different modes

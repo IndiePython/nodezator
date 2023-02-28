@@ -12,6 +12,8 @@ from pygame.draw import rect as draw_rect
 
 from pygame.math import Vector2
 
+from pygame.key import stop_text_input
+
 
 ### local imports
 
@@ -443,6 +445,12 @@ class TextEditor(Object2D):
 
             ## execute drawing operation from the text editor
             self.draw()
+
+        ### disable text editing events;
+        ###
+        ### this might only be needed if editor was in insert mode
+        ### but it is ok to call regardless of that
+        stop_text_input()
 
         ### blit the self.rect-size semitransparent obj
         ### over the screen to leave the self.rect

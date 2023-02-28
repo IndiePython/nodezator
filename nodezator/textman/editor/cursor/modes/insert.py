@@ -4,6 +4,7 @@
 
 from pygame.locals import (
     QUIT,
+    TEXTINPUT,
     KEYDOWN,
     MOUSEBUTTONUP,
     K_ESCAPE,
@@ -25,10 +26,17 @@ from pygame.locals import (
     K_F1,
 )
 
+from pygame.key import (
+    start_text_input,
+    stop_text_input,
+    set_text_input_rect,
+)
+
 
 ### local imports
 
 from .....pygamesetup import SERVICES_NS
+from .....pygamesetup.constants import GENERAL_NS
 
 from .....loopman.exception import QuitAppException
 
@@ -36,7 +44,7 @@ from .....userprefsman.main import USER_PREFS
 
 from .....htsl.main import open_htsl_link
 
-from ...constants import NUMBER_OF_VISIBLE_LINES
+from ...constants import NUMBER_OF_VISIBLE_LINES, EDITING_AREA_RECT
 
 from ...line import Line
 
@@ -49,7 +57,17 @@ class InsertMode:
         for event in SERVICES_NS.get_events():
 
             if event.type == QUIT:
+
+                ### disable text editing events
+                stop_text_input()
+
+                ### raise app quitting exception
                 raise QuitAppException
+
+            ### if text is input, add such text
+
+            elif event.type == TEXTINPUT:
+                self.add_text(event.text)
 
             elif event.type == KEYDOWN:
 
@@ -58,6 +76,11 @@ class InsertMode:
                 ### set
 
                 if event.key == K_F1:
+
+                    ### disable text editing events
+                    stop_text_input()
+
+                    ### show help text
 
                     if USER_PREFS["TEXT_EDITOR_BEHAVIOR"] == "default":
 
@@ -72,6 +95,18 @@ class InsertMode:
                             "htap://help.nodezator.pysite/"
                             "text-editor-vim-like-behavior.htsl"
                         )
+
+                    ### restore text editing events and set the text input
+                    ### rect, but only if app is not in play mode
+
+                    if GENERAL_NS.mode_name != 'play':
+
+                        start_text_input()
+
+                        text_input_rect = EDITING_AREA_RECT.copy()
+                        text_input_rect.height = 20
+                        text_input_rect.top = EDITING_AREA_RECT.bottom
+                        set_text_input_rect(text_input_rect)
 
                 ### if escape key is pressed...
 
@@ -148,13 +183,6 @@ class InsertMode:
                 ### '\x08', etc.)
                 elif event.mod & KMOD_CTRL:
                     pass
-
-                ### if the keydown event has a non-empty
-                ### string as its unicode attribute, add
-                ### such text (character)
-
-                elif event.unicode:
-                    self.add_text(event.unicode)
 
                 ### snap cursor to different edges of
                 ### text

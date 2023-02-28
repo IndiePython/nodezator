@@ -4,13 +4,22 @@
 from os import linesep
 
 
-### third-party import
+### third-party imports
+
 from pygame.draw import rect as draw_rect
+
+from pygame.key import (
+    start_text_input,
+    stop_text_input,
+    set_text_input_rect,
+)
 
 
 ### local imports
 
 from ....pygamesetup import SCREEN, blit_on_screen
+
+from ....pygamesetup.constants import GENERAL_NS
 
 from ....ourstdlibs.behaviour import had_to_set_new_value
 
@@ -288,6 +297,9 @@ class GeneralOperations:
         ### respective handle_input behaviour
         self.handle_input = self.normal_mode_handling
 
+        ### disable text editing events
+        stop_text_input()
+
         ### admin task: move the cursor one character to
         ### the left if previous mode was 'insert' mode;
         ###
@@ -312,6 +324,18 @@ class GeneralOperations:
 
         ### indicate the insert mode in the statusbar
         self.te.statusbar.set("-- INSERT --")
+
+        ### if app is not in play mode, enable text editing events
+        ### and set the text input rect
+
+        if GENERAL_NS.mode_name != 'play':
+
+            start_text_input()
+
+            text_input_rect = EDITING_AREA_RECT.copy()
+            text_input_rect.height = 20
+            text_input_rect.top = EDITING_AREA_RECT.bottom
+            set_text_input_rect(text_input_rect)
 
     def free_up_memory(self):
         """Free memory by removing all text objects."""

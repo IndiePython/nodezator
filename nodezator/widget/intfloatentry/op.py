@@ -13,6 +13,8 @@ from pygame.math import Vector2
 
 from pygame.draw import rect as draw_rect
 
+from pygame.key import stop_text_input
+
 
 ### local imports
 
@@ -256,6 +258,13 @@ class IntFloatOperations(Object2D):
 
         self.draw = super().draw
         self.update = empty_function
+
+        ### disable text editing events;
+        ###
+        ### they might be disabled already, if we were not
+        ### in the entry's keyboard edition mode (or if the
+        ### app is in session playing mode)
+        stop_text_input()
 
         ### switch to the stored loop holder (if
         ### None, the default loop holder used is

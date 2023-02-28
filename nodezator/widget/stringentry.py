@@ -15,6 +15,7 @@ from pygame import Rect
 from pygame.locals import (
     ## event types
     QUIT,
+    TEXTINPUT,
     KEYUP,
     KEYDOWN,
     MOUSEBUTTONUP,
@@ -34,12 +35,18 @@ from pygame.locals import (
 
 from pygame.math import Vector2
 
+from pygame.key import (
+    start_text_input,
+    stop_text_input,
+    set_text_input_rect,
+)
+
 
 ### local imports
 
 from ..pygamesetup import SERVICES_NS
 
-from ..pygamesetup.constants import WINDOW_RESIZE_EVENT_TYPE
+from ..pygamesetup.constants import GENERAL_NS, WINDOW_RESIZE_EVENT_TYPE
 
 from ..ourstdlibs.behaviour import (
     empty_function,
@@ -445,8 +452,22 @@ class StringEntry(Object2D):
         """Iterate over event queue processing events."""
         for event in SERVICES_NS.get_events():
 
+            ### if user tries quitting the app
+
             if event.type == QUIT:
+
+                ### disable text editing events
+                stop_text_input()
+
+                ### raise app quitting exception
                 raise QuitAppException
+
+            ### if we have text being input, add the text
+
+            elif event.type == TEXTINPUT:
+                self.cursor.add_text(event.text)
+
+            ### KEYUP
 
             elif event.type == KEYUP:
 
@@ -457,16 +478,13 @@ class StringEntry(Object2D):
                 if event.key in (K_ESCAPE, K_RETURN, K_KP_ENTER):
                     self.resume_editing()
 
+            ### KEYDOWN
+
             elif event.type == KEYDOWN:
-
-                ### ignore keys below
-
-                if event.key in (K_ESCAPE, K_RETURN, K_KP_ENTER):
-                    pass
 
                 ### move cursor
 
-                elif event.key == K_LEFT:
+                if event.key == K_LEFT:
                     self.cursor.go_left()
 
                 elif event.key == K_RIGHT:
@@ -512,13 +530,6 @@ class StringEntry(Object2D):
                     ### '\x08', etc.)
                     else:
                         pass
-
-                ### if the keydown event has a non-empty
-                ### string as its unicode attribute, add
-                ### such string as text (character)
-
-                elif event.unicode:
-                    self.cursor.add_text(event.unicode)
 
             ### releasing either the left or right button
             ### of the mouse out of the widget boundaries
@@ -619,6 +630,14 @@ class StringEntry(Object2D):
         self.draw = self.draw_focused
         self.handle_input = self.handle_events
 
+        ### if app is not in play mode, enable text editing events
+        ### and set the text input rect
+
+        if GENERAL_NS.mode_name != 'play':
+
+            start_text_input()
+            set_text_input_rect(self.rect.move(0, 20))
+
         ### align line topleft with self.rect.topleft and
         ### move cursor to the end of the contents
 
@@ -644,6 +663,9 @@ class StringEntry(Object2D):
 
         self.draw = super().draw
         self.update = empty_function
+
+        ### disable text editing events
+        stop_text_input()
 
         ### switch to the stored loop holder (if
         ### None, the default loop holder used is
@@ -721,6 +743,10 @@ class StringEntry(Object2D):
         """Edit the entry text in the text editor."""
         ### retrieve the text in the entry
         entry_text = self.cursor.get()
+
+        ### since we'll not edit text on the entry anymore,
+        ### stop text editing events
+        stop_text_input()
 
         ### edit it on text editor
         text = edit_text(entry_text)

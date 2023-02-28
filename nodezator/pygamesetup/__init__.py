@@ -7,6 +7,7 @@
 from .constants import (
     SCREEN,
     SCREEN_RECT,
+    GENERAL_NS,
     GENERAL_SERVICE_NAMES,
     reset_caption,
     blit_on_screen,
@@ -39,7 +40,7 @@ def switch_mode(mode_info_ns):
         has attributes containing data about mode to be
         switched to.
     """
-    mode = mode_info_ns.mode
+    mode = GENERAL_NS.mode_name = mode_info_ns.mode
 
     if mode == 'record':
         record.set_behaviour(SERVICES_NS, mode_info_ns.data)
