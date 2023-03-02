@@ -253,6 +253,55 @@ EVENT_COMPACT_NAME_MAP = {
     'MOUSEBUTTONDOWN': 'mbd',
 }
 
+### key of events to make compact
+
+EVENT_KEY_COMPACT_NAME_MAP = {
+
+  'MOUSEMOTION': {
+    'pos': 'p',
+    'rel': 'r',
+    'buttons': 'b',
+    'touch': 't',
+    'window': 'w',
+  },
+
+  'MOUSEBUTTONDOWN': {
+    'pos': 'p',
+    'button': 'b',
+    'touch': 't',
+    'window': 'w',
+  },
+
+  'MOUSEBUTTONUP': {
+    'pos': 'p',
+    'button': 'b',
+    'touch': 't',
+    'window': 'w',
+  },
+
+  'KEYUP': {
+    'key': 'k',
+    'scancode': 's',
+    'mod': 'm',
+    'unicode': 'u',
+    'window': 'w',
+  },
+
+  'KEYDOWN': {
+    'key': 'k',
+    'scancode': 's',
+    'mod': 'm',
+    'unicode': 'u',
+    'window': 'w',
+  },
+
+  'TEXTINPUT': {
+    'text': 't',
+    'window': 'w',
+  },
+
+}
+
 
 ### available keys
 

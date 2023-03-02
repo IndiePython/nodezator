@@ -54,6 +54,7 @@ from ..constants import (
 
     EVENT_KEY_STRIP_MAP,
     EVENT_COMPACT_NAME_MAP,
+    EVENT_KEY_COMPACT_NAME_MAP,
     KEYS_MAP,
     SCANCODE_NAMES_MAP,
     MOD_KEYS_MAP,
@@ -469,37 +470,55 @@ def yield_compact_events(events):
 
         yield [
 
+            ## use a compact name if there's one
             EVENT_COMPACT_NAME_MAP.get(name, name),
 
-            (
-                a_dict
-                if name not in EVENT_KEY_STRIP_MAP
-
-                else get_compact_event_dict(EVENT_KEY_STRIP_MAP[name], a_dict)
-
-            )
+            ## use the dict after changing it to be more compact
+            get_compact_event_dict(name, a_dict),
 
         ]
 
-def get_compact_event_dict(map_of_values_to_strip, a_dict):
+def get_compact_event_dict(name, a_dict):
 
-    return {
+    ### strip keys with the most common values;
+    ###
+    ### since they are so common, removing them saves a lot of space;
+    ###
+    ### this doesn't cause loss of info, because since we know which
+    ### values we are stripping, we just put them back when we are
+    ### about to play the session in the session playing mode;
 
-        key: value
+    if name in EVENT_KEY_STRIP_MAP:
 
-        for key, value in a_dict.items()
+        map_of_values_to_strip = EVENT_KEY_STRIP_MAP[name]
 
-        if (
+        for key, value in map_of_values_to_strip.items():
+            
+            if key in a_dict and a_dict[key] == value:
+                a_dict.pop(key)
 
-            key not in map_of_values_to_strip
+    ### replace some keys with compact versions of their names
+    ###
+    ### since they are so common, the extra characters removed by
+    ### using a more compact name saves a lot of space;
+    ###
+    ### again, this doesn't cause loss of info, because since we know
+    ### which keys we are making compact, we just invert the operation
+    ### when we are about to play the session in the session playing
+    ### mode;
 
-            or (
-                key in map_of_values_to_strip
-                and value != map_of_values_to_strip[key]
-            )
+    if name in EVENT_KEY_COMPACT_NAME_MAP:
 
-        )
-    }
+        map_of_keys_to_make_compact = EVENT_KEY_COMPACT_NAME_MAP[name]
+
+        for key, compact_key in map_of_keys_to_make_compact.items():
+            
+            if key in a_dict:
+                a_dict[compact_key] = a_dict.pop(key)
+
+    ### return the dict
+    return a_dict
+
 
 def get_pressed_keys_map(time_obj_pairs):
 

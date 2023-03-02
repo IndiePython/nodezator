@@ -63,6 +63,7 @@ from ..constants import (
 
     EVENT_KEY_STRIP_MAP,
     EVENT_COMPACT_NAME_MAP,
+    EVENT_KEY_COMPACT_NAME_MAP,
     KEYS_MAP,
     SCANCODE_NAMES_MAP,
     MOD_KEYS_MAP,
@@ -116,6 +117,7 @@ EMPTY_GETTER_FROZENSET = GetterFrozenSet()
 
 ### TODO collections defined below lack proper commenting
 
+
 REVERSE_EVENT_COMPACT_NAME_MAP = {
     value: key
     for key, value in EVENT_COMPACT_NAME_MAP.items()
@@ -164,7 +166,20 @@ def get_ready_events(events):
         if event_name in REVERSE_EVENT_COMPACT_NAME_MAP:
             event_name = REVERSE_EVENT_COMPACT_NAME_MAP[event_name]
 
+        ### restore names of keys in the event name if they were in a
+        ### custom compact form
+
+        if event_name in EVENT_KEY_COMPACT_NAME_MAP:
+
+            for full_key, compact_key in (
+                EVENT_KEY_COMPACT_NAME_MAP[event_name].items()
+            ):
+
+                if compact_key in event_dict:
+                    event_dict[full_key] = event_dict.pop(compact_key)
+
         ### restore missing keys in the event using default values
+
         if event_name in EVENT_KEY_STRIP_MAP:
 
             for key, default in EVENT_KEY_STRIP_MAP[event_name].items():
