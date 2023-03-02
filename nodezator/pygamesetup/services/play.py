@@ -85,11 +85,11 @@ EVENTS_MAP = {}
 
 ## create a map to associate each frame index to the keys that were
 ## pressed at that frame
-NON_EMPTY_GETTER_FROZENSETS = {}
+GETTER_FROZENSET_MAP = {}
 
 ### create a map that associates each frame index to the modifier
 ### keys that were pressed in that frame
-NO_KMOD_NONE_BITMASKS = {}
+BITMASK_MAP = {}
 
 ### create a list to hold all mouse position requests;
 MOUSE_POSITIONS = []
@@ -132,16 +132,18 @@ REVERSE_SCANCODE_NAMES_MAP = {
 ##
 
 def get_resulting_bitmask(mod_key_names):
-    """Return bitmask by "bitwise ORing" all named modifier keys."""
-    ### return reduced iterable
+    """Return bitmask by reducing all modifier keys with bitwise OR."""
+
+    ### return iterable reduced to a single value...
 
     return reduce(
 
         ## with the bitwise OR operation
         bitwise_or,
 
-        ## where the iterable contains the values
+        ## where the iterable contained the values
         ## of the named modifier keys
+
         (
             # modifier key value obtained from its name
             getattr(pygame_locals, mod_key_name)
@@ -296,9 +298,21 @@ def set_behaviour(services_namespace, data):
     )
 
 
-    ### prepare key states: update map with non empty frozensets
+    ### prepare key states
 
-    NON_EMPTY_GETTER_FROZENSETS.update(
+    ## convert from compact to suitable format to use
+
+    frame_to_keys_map = defaultdict(list)
+
+    for key_name, frames in SESSION_DATA['key_name_to_frames_map'].items():
+
+        for frame in frames:
+            frame_to_keys_map[frame].append(key_name)
+
+
+    ## update map with frozensets
+
+    GETTER_FROZENSET_MAP.update(
 
         (
             frame_index,
@@ -311,14 +325,25 @@ def set_behaviour(services_namespace, data):
         )
 
         for frame_index, pressed_key_names
-        in SESSION_DATA['pressed_keys_map'].items()
+        in frame_to_keys_map.items()
 
     )
 
 
-    ### prepare modifier key states: update map with bitmasks
+    ### prepare modifier key states
 
-    NO_KMOD_NONE_BITMASKS.update(
+    ## convert from compact to suitable format to use
+
+    frame_to_mod_key_names = defaultdict(list)
+
+    for mod_key_name, frames in SESSION_DATA['mod_key_name_to_frames_map'].items():
+
+        for frame in frames:
+            frame_to_mod_key_names[frame].append(mod_key_name)
+
+    ## update map with bitmasks
+
+    BITMASK_MAP.update(
 
         (
             frame_index,
@@ -339,7 +364,7 @@ def set_behaviour(services_namespace, data):
         )
 
         for frame_index, mod_key_names
-        in SESSION_DATA['mod_key_bitmasks_map'].items()
+        in frame_to_mod_key_names.items()
     )
 
     ### update list containing all mouse position requests;
@@ -428,8 +453,8 @@ def get_events():
 
         for collection in (
             EVENTS_MAP,
-            NON_EMPTY_GETTER_FROZENSETS,
-            NO_KMOD_NONE_BITMASKS,
+            GETTER_FROZENSET_MAP,
+            BITMASK_MAP,
             MOUSE_POSITIONS,
             MOUSE_PRESSED_TUPLES,
         ):
@@ -485,10 +510,10 @@ def get_pressed_keys():
 
     return (
 
-        ### return a non empty GetterFrozenSet for the current
+        ### return a GetterFrozenSet for the current
         ### frame index if there's one
-        NON_EMPTY_GETTER_FROZENSETS[GENERAL_NS.frame_index]
-        if GENERAL_NS.frame_index in NON_EMPTY_GETTER_FROZENSETS
+        GETTER_FROZENSET_MAP[GENERAL_NS.frame_index]
+        if GENERAL_NS.frame_index in GETTER_FROZENSET_MAP
 
         ### otherwise return an empty GetterFrozenSet
         else EMPTY_GETTER_FROZENSET
@@ -507,8 +532,8 @@ def get_pressed_mod_keys():
     return (
 
         ### return a bitmask for the current frame index if there's one
-        NO_KMOD_NONE_BITMASKS[GENERAL_NS.frame_index]
-        if GENERAL_NS.frame_index in NO_KMOD_NONE_BITMASKS
+        BITMASK_MAP[GENERAL_NS.frame_index]
+        if GENERAL_NS.frame_index in BITMASK_MAP
 
         ### otherwise return pygame.locals.KMOD_NONE
         else KMOD_NONE

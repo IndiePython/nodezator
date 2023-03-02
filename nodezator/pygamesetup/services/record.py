@@ -342,15 +342,13 @@ def save_session_data():
 
     ### store data
 
-    session_data['pressed_keys_map'] = (
-        get_pressed_keys_map(KEY_STATE_REQUESTS)
+    session_data['key_name_to_frames_map'] = (
+        get_key_to_frames_map(KEY_STATE_REQUESTS)
     )
 
-    session_data['mod_key_bitmasks_map'] = {
-        frame_index: treated_bitmask
-        for frame_index, treated_bitmask
-        in yield_filtered_frame_bitmask_pairs(MOD_KEY_BITMASK_REQUESTS)
-    }
+    session_data['mod_key_name_to_frames_map'] = (
+        get_mod_key_to_frames_map(MOD_KEY_BITMASK_REQUESTS)
+    )
 
     session_data['mouse_pos_requests'] = tuple(MOUSE_POS_REQUESTS)
 
@@ -460,7 +458,7 @@ def get_treated_key_event_dict(event_dict):
     bitmask = event_dict['mod']
 
     if bitmask != KMOD_NONE:
-        event_dict['mod'] = get_mod_names_tuple(bitmask)
+        event_dict['mod'] = get_mod_key_names_tuple(bitmask)
 
     return event_dict
 
@@ -520,9 +518,11 @@ def get_compact_event_dict(name, a_dict):
     return a_dict
 
 
-def get_pressed_keys_map(time_obj_pairs):
+def get_key_to_frames_map(time_obj_pairs):
 
-    return {
+    ### this format is okay, but it can be more compact
+
+    frame_to_key_names_map = {
         
         item[0]: item[1]
 
@@ -530,8 +530,15 @@ def get_pressed_keys_map(time_obj_pairs):
 
             (
 
+                ## item 0
                 frame_index,
-                tuple(key_name for key_name, key in KEYS_MAP.items() if wrapper[key])
+
+                ## item 1
+                tuple(
+                    key_name # item
+                    for key_name, key in KEYS_MAP.items() # source
+                    if wrapper[key] # filtering condition
+                )
 
 
             )
@@ -544,7 +551,44 @@ def get_pressed_keys_map(time_obj_pairs):
 
     }
 
-def yield_filtered_frame_bitmask_pairs(frame_bitmask_pairs):
+    ### the format below, the one we actually return, is used
+    ### because it is more compact
+
+    key_name_to_frames_map = defaultdict(list)
+
+    for frame, key_names in frame_to_key_names_map.items():
+
+        for key_name in key_names:
+            key_name_to_frames_map[key_name].append(frame)
+
+    ###
+    return dict(key_name_to_frames_map)
+
+def get_mod_key_to_frames_map(frame_bitmask_pairs):
+
+    ### this format is okay, but it can be more compact
+
+    frame_to_mod_key_names_map = {
+        frame_index: mod_key_names
+        for frame_index, mod_key_names
+        in yield_frame_and_mod_keys_names(frame_bitmask_pairs)
+    }
+
+    ### the format below, the one we actually return, is used
+    ### because it is more compact
+
+    mod_key_name_to_frames_map = defaultdict(list)
+
+    for frame, mod_key_names in frame_to_mod_key_names_map.items():
+
+        for key in mod_key_names:
+            mod_key_name_to_frames_map[key].append(frame)
+
+    ###
+    return dict(mod_key_name_to_frames_map)
+
+
+def yield_frame_and_mod_keys_names(frame_bitmask_pairs):
 
     for frame_index, bitmask in frame_bitmask_pairs:
 
@@ -552,11 +596,11 @@ def yield_filtered_frame_bitmask_pairs(frame_bitmask_pairs):
 
             yield (
                 frame_index,
-                get_mod_names_tuple(bitmask),
+                get_mod_key_names_tuple(bitmask),
             )
 
 
-def get_mod_names_tuple(bitmask):
+def get_mod_key_names_tuple(bitmask):
 
     return tuple(
         mod_key_name
