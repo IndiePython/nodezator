@@ -8,6 +8,8 @@ from datetime import datetime
 
 ### third-party imports
 
+from pygame import locals as pygame_locals
+
 from pygame.locals import (
     KEYUP,
     K_F9,
@@ -74,10 +76,16 @@ REC_REFS = type("Object", (), {})()
 EVENTS_MAP = defaultdict(list)
 
 KEY_STATE_REQUESTS = []
+append_key_states = KEY_STATE_REQUESTS.append
+
 MOD_KEY_BITMASK_REQUESTS = []
+append_mod_key_states = MOD_KEY_BITMASK_REQUESTS.append
 
 MOUSE_POS_REQUESTS = []
+append_mouse_pos_request = MOUSE_POS_REQUESTS.append
+
 MOUSE_KEY_STATE_REQUESTS = []
+append_mouse_key_state_request = MOUSE_KEY_STATE_REQUESTS.append
 
 ## reverse keys map
 
@@ -102,6 +110,27 @@ LABELS.append(
 
 )
 
+### events to keep in the recorded data;
+###
+### all other events aren't relevant because it is not possible for
+### them to show up in recorded sessions (like video resizing events
+### or QUIT) or simply because they are not used in the app, so we
+### do not care to record them;
+###
+### this set must be updated whenever the app starts using other
+### events not listed here (for instance, for new features)
+
+NAMES_OF_EVENTS_TO_KEEP = frozenset((
+    'KEYDOWN',
+    'KEYUP',
+    'MOUSEBUTTONDOWN',
+    'MOUSEBUTTONUP',
+    'MOUSEMOTION',
+    'TEXTINPUT',
+))
+
+
+###
 
 def set_behaviour(services_namespace, data):
     """Setup record services and data."""
@@ -167,22 +196,6 @@ def set_behaviour(services_namespace, data):
     GENERAL_NS.frame_index = -1
 
 
-### event recording operation
-
-def record_event(event):
-
-    EVENTS_MAP[GENERAL_NS.frame_index].append([
-        event.type,
-        event.__dict__
-    ])
-
-append_key_states = KEY_STATE_REQUESTS.append
-def record_key_states(key_states):
-    append_key_states((GENERAL_NS.frame_index, key_states))
-
-append_mod_key_states = MOD_KEY_BITMASK_REQUESTS.append
-def record_mod_key_states(mods_bitmask):
-    append_mod_key_states((GENERAL_NS.frame_index, mods_bitmask))
 
 ### extended session behaviours
 
@@ -203,32 +216,59 @@ def get_events():
             ### reset app
             raise ResetAppException(mode='normal')
 
-        record_event(event)
+        ### record event
 
+        EVENTS_MAP[GENERAL_NS.frame_index].append([
+            event.type,
+            event.__dict__
+        ])
+
+        ### yield it
         yield event
 
 ## processing key pressed states
 
 def get_pressed_keys():
-    state = get_pressed()
-    record_key_states(state)
-    return state
+
+    # get key states
+    key_states = get_pressed()
+
+    # record them
+    append_key_states((GENERAL_NS.frame_index, key_states))
+
+    # return them
+    return key_states
 
 def get_pressed_mod_keys():
+    # get mod bistmask
     mods_bitmask = get_mods()
-    record_mod_key_states(mods_bitmask)
+
+    # record it
+    append_mod_key_states((GENERAL_NS.frame_index, mods_bitmask))
+
+    # return it
     return mods_bitmask
 
 ## processing mouse
 
 def get_mouse_pos():
+    # get mouse pos
     pos = get_pos()
-    MOUSE_POS_REQUESTS.append(pos)
+
+    # record it
+    append_mouse_pos_request(pos)
+
+    # return it
     return pos
 
 def get_mouse_pressed():
+    # get mouse pressed tuple
     pressed_tuple = mouse_get_pressed()
-    MOUSE_KEY_STATE_REQUESTS.append(pressed_tuple)
+
+    # record it
+    append_mouse_key_state_request.append(pressed_tuple)
+
+    # return it
     return pressed_tuple
 
 ## screen updating
@@ -275,10 +315,29 @@ def save_session_data():
 
     ### process event map
 
-    session_data['events_map'] = {
+    ## create
+
+    events_map = session_data['events_map'] = {
+
         frame_index : list(yield_treated_events(events))
         for frame_index, events in EVENTS_MAP.items()
+
     }
+
+    ## remove keys whose values (a list of events) ended up empty,
+    ## (if there)
+
+    keys_to_pop = [
+        # item
+        key
+        # source
+        for key, event_list in events_map.items()
+        # filtering condition
+        if not event_list
+    ]
+
+    for key in keys_to_pop:
+        events_map.pop(key)
 
     ### store data
 
@@ -333,38 +392,44 @@ def save_session_data():
 
     ### clear other collections (not really needed, but in our
     ### experience memory is freed faster when collections are
-    ### cleared
-    session_data['events_map'].clear()
+    ### cleared)
+    events_map.clear()
 
     session_data.clear()
 
 
-def yield_treated_events(type_data_pairs):
+
+def yield_treated_events(events_type_and_dict_pairs):
 
     yield from (
+
         yield_compact_events(
             yield_named_keys_and_mod_keys(
-                yield_known_events(
-                    yield_named_events(type_data_pairs)
+                yield_events_to_keep(
+                    yield_named_events(
+                        events_type_and_dict_pairs
+                    )
                 )
             )
         )
+
     )
 
 
-def yield_named_events(events):
+def yield_named_events(events_type_and_dict_pairs):
 
-    for event_type, event_dict in events:
+    for event_type, event_dict in events_type_and_dict_pairs:
     
         yield (
             event_name(event_type).upper(),
             event_dict
         )
 
-def yield_known_events(events):
-    for event in events:
-        if event[0] != 'UNKNOWN':
-            yield event
+def yield_events_to_keep(events_name_and_dict):
+    """Only yield events we are interested in recording."""
+    for name_and_dict in events_name_and_dict:
+        if name_and_dict[0] in NAMES_OF_EVENTS_TO_KEEP:
+            yield name_and_dict
 
 def yield_named_keys_and_mod_keys(events):
 

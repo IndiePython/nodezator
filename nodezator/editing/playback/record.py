@@ -15,6 +15,8 @@ from pygame.locals import (
     K_ESCAPE,
     K_RETURN,
     K_KP_ENTER,
+    KMOD_CAPS,
+    KMOD_NUM,
     MOUSEBUTTONDOWN,
     MOUSEBUTTONUP,
 )
@@ -107,6 +109,7 @@ TEXT_TO_WINDOW_SIZE = {
     "2K (1440p)": (2560, 1440),
 }
 
+TOGGLE_KEYS = frozenset({KMOD_CAPS, KMOD_NUM})
 
 
 ### class definition
@@ -645,6 +648,26 @@ class SessionRecordingForm(Object2D):
     def trigger_recording(self):
         """Treat data and, if valid, trigger session recording."""
 
+        if any_toggle_key_on():
+
+            answer = create_and_show_dialog(
+
+                (
+                    "A toggle key is turned on: (Caps Lock, Num Lock or both)."
+                    " Unless this is your intention, we recommend turning those keys"
+                    " off, since their usage increases the size of the recording data."
+                    " It is okay to leave them on if it is your intention, though."
+                ),
+
+                buttons=(
+                    ("Cancel", False),
+                    ("Start recording", True),
+                ),
+                dismissable=True,
+            )
+
+            if not answer: return
+
         ### gather data
 
         data = {
@@ -677,4 +700,17 @@ class SessionRecordingForm(Object2D):
         SERVICES_NS.update_screen()
 
 
+## utility function
+
+def any_toggle_key_on():
+
+    bitmask = SERVICES_NS.get_pressed_mod_keys()
+
+    return any(
+        toggle_key & bitmask
+        for toggle_key in TOGGLE_KEYS
+    )
+
+
+## instantiating class and referencing relevant method
 set_session_recording = SessionRecordingForm().set_session_recording

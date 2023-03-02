@@ -247,6 +247,7 @@ EVENT_KEY_STRIP_MAP = {
 EVENT_COMPACT_NAME_MAP = {
     'KEYDOWN': 'kd',
     'KEYUP': 'ku',
+    'TEXTINPUT': 'ti',
     'MOUSEMOTION': 'mm',
     'MOUSEBUTTONUP': 'mbu',
     'MOUSEBUTTONDOWN': 'mbd',
