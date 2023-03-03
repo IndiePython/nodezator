@@ -11,7 +11,10 @@ from datetime import datetime
 from pygame import locals as pygame_locals
 
 from pygame.locals import (
+    QUIT,
+    KEYDOWN,
     KEYUP,
+    K_F8,
     K_F9,
     KMOD_NONE,
 )
@@ -49,6 +52,7 @@ from ..constants import (
     GENERAL_NS,
     GENERAL_SERVICE_NAMES,
     FPS, maintain_fps,
+    pause,
 
     watch_window_size,
 
@@ -95,21 +99,34 @@ REVERSE_KEYS_MAP = {
     for key, value in KEYS_MAP.items()
 }
 
-# create labels, their rects, and position them
 
-LABELS = []
+## create labels objects
 
-LABELS.append(
-
+LABELS = [
     get_label_object(
-        text = "F9: finish recording & exit",
+        text = text,
         label_fg = 'white',
         label_bg = 'blue',
         label_outline = 'white',
         padding = 6,
     )
 
+    for text in (
+        "F8: play/pause",
+        "F9: finish recording & exit",
+    )
+]
+
+PAUSED_LABEL = (
+    get_label_object(
+        text = "F8: play/pause",
+        label_fg = 'white',
+        label_bg = 'red3',
+        label_outline = 'white',
+        padding = 6,
+    )
 )
+
 
 ### events to keep in the recorded data;
 ###
@@ -186,6 +203,9 @@ def set_behaviour(services_namespace, data):
 
     LABELS[0] = new_title_label
 
+    ### ensure paused label has same position as the second one
+    PAUSED_LABEL.rect.topleft = LABELS[1].rect.topleft
+
     ## clear any existing events
     clear()
 
@@ -197,7 +217,6 @@ def set_behaviour(services_namespace, data):
     GENERAL_NS.frame_index = -1
 
 
-
 ### extended session behaviours
 
 ## processing events
@@ -206,16 +225,45 @@ def get_events():
 
     for event in get():
 
-        if event.type == KEYUP and event.key == K_F9:
+        if event.type == KEYDOWN:
 
-            ### save session data
-            save_session_data()
+            if event.key == K_F8:
 
-            ### remove title label
-            del LABELS[0]
+                ### indicate pause by blitting paused label
+                blit_on_screen(PAUSED_LABEL.image, PAUSED_LABEL.rect)
 
-            ### reset app
-            raise ResetAppException(mode='normal')
+                ### pause
+                pause()
+
+                ### pressing F8 is part of the session recording,
+                ### not the session per se, so we skip the event
+                ### in order to prevent it to be recorded
+                continue
+
+            elif event.key == K_F9:
+
+                ### save session data
+                save_session_data()
+
+                ### remove title label
+                del LABELS[0]
+
+                ### reset app;
+                ###
+                ### since this stops recording completely there's
+                ### no need to use the "continue" statement as we
+                ### did for the F8 key in the if-block above
+                raise ResetAppException(mode='normal')
+
+        ### pressing F8 is part of the session recording,
+        ### not the session per se, so we skip the event
+        ### in order to prevent it from being recorded;
+        ###
+        ### this also applies to F9, but during the KEYDOWN event
+        ### of the F9 key, the recording stops altogether due to the
+        ### raised exception, so it isn't necessary to watch for it
+        elif event.type == KEYUP and event.key == K_F8:
+            continue
 
         ### record event
 

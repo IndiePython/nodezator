@@ -12,11 +12,20 @@ from pygame import (
     Surface,
 )
 
+from pygame.locals import (
+
+    QUIT,
+    KEYDOWN,
+    K_F8,
+
+    RESIZABLE,
+    KMOD_NONE,
+
+)
+
 from pygame.mixer import pre_init as pre_init_mixer
 
 from pygame.key import set_repeat
-
-from pygame.locals import RESIZABLE, KMOD_NONE
 
 from pygame.time import Clock
 
@@ -24,9 +33,11 @@ from pygame.font import SysFont
 
 from pygame.draw import rect as draw_rect
 
-from pygame.display import set_icon, set_caption, set_mode
+from pygame.display import set_icon, set_caption, set_mode, update
 
 from pygame.image import load as load_image
+
+from pygame.event import get
 
 
 # choose appropriate window resize event type according to
@@ -391,3 +402,29 @@ def watch_window_size():
 
             APP_REFS.draw_after_window_resize_setups()
             del APP_REFS.draw_after_window_resize_setups
+
+
+### function to pause when recording/playing session
+
+def pause():
+
+    running = True
+
+    while running:
+
+        ### keep constants fps
+        maintain_fps(FPS)
+
+        ### process events
+
+        for event in get():
+
+            if event.type == QUIT:
+                print("Tried quitting")
+
+            elif event.type == KEYDOWN and event.key == K_F8:
+                running = False
+
+        ### update the screen
+        update()
+

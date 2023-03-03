@@ -58,6 +58,7 @@ from ..constants import (
     GENERAL_NS,
     GENERAL_SERVICE_NAMES,
     FPS, maintain_fps,
+    pause,
 
     watch_window_size,
 
@@ -276,6 +277,9 @@ def set_behaviour(services_namespace, data):
         label.rect.topright = topright
         topright = label.rect.move(0, 5).bottomright
 
+    ### ensure paused label has same position as the second one
+    PAUSED_LABEL.rect.topleft = LABELS[1].rect.topleft
+
     ### since the app will be playing recorded events, we are not interested
     ### in new ones generated while playing, so we block most of them, leaving
     ### just a few that we may use to during playback
@@ -407,36 +411,21 @@ LABELS = [
     )
 
     for text in (
-        "F9: play/pause",
-        "F8: toggle mouse tracing",
+        "F8: play/pause",
+        "F9: toggle mouse tracing",
     )
 
 ]
 
-
-### function to pause session replaying
-
-def pause():
-
-    running = True
-
-    while running:
-
-        ### keep constants fps
-        maintain_fps(FPS)
-
-        ### process events
-
-        for event in get():
-
-            if event.type == QUIT:
-                print("Tried quitting")
-
-            elif event.type == KEYDOWN and event.key == K_F9:
-                running = False
-
-        ### update the screen
-        update()
+PAUSED_LABEL = (
+    get_label_object(
+        text = "F8: play/pause",
+        label_fg = 'white',
+        label_bg = 'red3',
+        label_outline = 'white',
+        padding = 6,
+    )
+)
 
 
 ### session behaviours
@@ -477,10 +466,15 @@ def get_events():
         elif event.type == KEYDOWN:
 
             if event.key == K_F8:
-                PLAY_REFS.mouse_tracing = not PLAY_REFS.mouse_tracing
+
+                ### indicate pause by blitting paused label
+                blit_on_screen(PAUSED_LABEL.image, PAUSED_LABEL.rect)
+
+                ### pause
+                pause()
 
             elif event.key == K_F9:
-                pause()
+                PLAY_REFS.mouse_tracing = not PLAY_REFS.mouse_tracing
 
     ### play the recorded events
 
