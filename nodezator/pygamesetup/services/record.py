@@ -201,8 +201,6 @@ def set_behaviour(services_namespace, data):
         label.rect.topright = topright
         topright = label.rect.move(0, 5).bottomright
 
-    LABELS[0] = new_title_label
-
     ### ensure paused label has same position as the second one
     PAUSED_LABEL.rect.topleft = LABELS[1].rect.topleft
 
