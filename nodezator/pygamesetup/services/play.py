@@ -57,7 +57,7 @@ from ..constants import (
     SCREEN_RECT, blit_on_screen,
     GENERAL_NS,
     GENERAL_SERVICE_NAMES,
-    FPS, maintain_fps,
+    maintain_fps,
     pause,
 
     watch_window_size,
@@ -248,6 +248,9 @@ def set_behaviour(services_namespace, data):
 
     ### load session data
     SESSION_DATA.update(load_pyl(data['input_data_path']))
+
+    ### store playback speed
+    PLAY_REFS.fps = data['playback_speed']
 
     ### reset window mode (pygame.display.set_mode)
     set_mode(SESSION_DATA['recording_size'], 0)
@@ -592,7 +595,7 @@ def frame_checkups():
     app loop.
     """
     ### keep constants fps
-    maintain_fps(FPS)
+    maintain_fps(PLAY_REFS.fps)
 
     ### increment frame number
     GENERAL_NS.frame_index += 1
