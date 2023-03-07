@@ -11,7 +11,6 @@ from datetime import datetime
 from pygame import locals as pygame_locals
 
 from pygame.locals import (
-    QUIT,
     KEYDOWN,
     KEYUP,
     K_F8,
@@ -220,6 +219,16 @@ def set_behaviour(services_namespace, data):
 ## processing events
 
 def get_events():
+
+    ### handle/yield events;
+    ###
+    ### note that we do not handle the QUIT event here; rather,
+    ### it is handled by whichever object receives the yielded
+    ### event;
+    ###
+    ### it will usually cause a QuitAppException to be raised,
+    ### which causes the app to close immediately when in record
+    ### mode (in play mode as well)
 
     for event in get():
 

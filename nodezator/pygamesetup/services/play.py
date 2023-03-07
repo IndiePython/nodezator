@@ -49,7 +49,7 @@ from ...ourstdlibs.pyl import load_pyl
 
 from ...ourstdlibs.behaviour import empty_function
 
-from ...loopman.exception import ResetAppException
+from ...loopman.exception import ResetAppException, QuitAppException
 
 
 from ..constants import (
@@ -464,7 +464,7 @@ def get_events():
     for event in get():
 
         if event.type == QUIT:
-            print("Tried quitting")
+            raise QuitAppException
 
         elif event.type == KEYDOWN:
 

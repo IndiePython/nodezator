@@ -58,6 +58,8 @@ from ..config import APP_REFS, DATA_DIR
 
 from ..appinfo import FULL_TITLE, ABBREVIATED_TITLE
 
+from ..loopman.exception import QuitAppException
+
 
 
 ### pygame initialization setups
@@ -420,7 +422,7 @@ def pause():
         for event in get():
 
             if event.type == QUIT:
-                print("Tried quitting")
+                raise QuitAppException
 
             elif event.type == KEYDOWN and event.key == K_F8:
                 running = False

@@ -20,6 +20,8 @@ from .pygamesetup import (
     clean_temp_files,
 )
 
+from .pygamesetup.constants import GENERAL_NS
+
 from .colorsman.colors import WINDOW_BG
 
 
@@ -131,9 +133,10 @@ def run_app(filepath=None):
 
             logger.info("User tried closing the app.")
 
-            ## if changes are not saved, ask user what to do
+            ## if we are on normal mode and changes are not saved,
+            ## ask user what to do
 
-            if not are_changes_saved():
+            if GENERAL_NS.mode_name == 'normal' and not are_changes_saved():
 
                 ## ask user
 
