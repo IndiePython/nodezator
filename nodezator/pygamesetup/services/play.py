@@ -417,7 +417,7 @@ LABELS = [
     for text in (
         "F7: leave playing mode",
         "F8: play/pause",
-        "F9: toggle mouse tracing",
+        "F9: toggle mouse control",
     )
 
 ]
