@@ -21,7 +21,7 @@ from pygame.locals import (
     QUIT,
 
     KEYDOWN,
-    K_F8, K_F9,
+    K_F7, K_F8, K_F9,
 
     MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP,
 
@@ -58,7 +58,8 @@ from ..constants import (
     GENERAL_NS,
     GENERAL_SERVICE_NAMES,
     maintain_fps,
-    pause,
+
+    CancelWhenPaused, pause,
 
     watch_window_size,
 
@@ -281,7 +282,7 @@ def set_behaviour(services_namespace, data):
         topright = label.rect.move(0, 5).bottomright
 
     ### ensure paused label has same position as the second one
-    PAUSED_LABEL.rect.topleft = LABELS[1].rect.topleft
+    PAUSED_LABEL.rect.topleft = LABELS[2].rect.topleft
 
     ### since the app will be playing recorded events, we are not interested
     ### in new ones generated while playing, so we block most of them, leaving
@@ -414,6 +415,7 @@ LABELS = [
     )
 
     for text in (
+        "F7: leave playing mode",
         "F8: play/pause",
         "F9: toggle mouse tracing",
     )
@@ -437,26 +439,10 @@ PAUSED_LABEL = (
 
 def get_events():
 
-    ### reset app if frame is last one
+    ### leave playing mode if frame is last one
 
     if GENERAL_NS.frame_index == PLAY_REFS.last_frame_index:
-
-        ### clear collections
-
-        for collection in (
-            EVENTS_MAP,
-            GETTER_FROZENSET_MAP,
-            BITMASK_MAP,
-            MOUSE_POSITIONS,
-            MOUSE_PRESSED_TUPLES,
-        ):
-            collection.clear()
-
-        ### remove title label
-        del LABELS[0]
-
-        ### reset app
-        raise ResetAppException(mode='normal')
+        leave_playing_mode()
 
     ### process QUIT or KEYDOWN event (for the F9 key) if
     ### they are thrown
@@ -468,16 +454,33 @@ def get_events():
 
         elif event.type == KEYDOWN:
 
+            ### pause playing
+
             if event.key == K_F8:
 
                 ### indicate pause by blitting paused label
                 blit_on_screen(PAUSED_LABEL.image, PAUSED_LABEL.rect)
 
                 ### pause
-                pause()
+
+                try:
+                    pause()
+
+                ### if during pause user asks to cancel playing, do
+                ### it here
+
+                except CancelWhenPaused:
+                    leave_playing_mode()
+
+            ### toggle mouse tracing
 
             elif event.key == K_F9:
                 PLAY_REFS.mouse_tracing = not PLAY_REFS.mouse_tracing
+
+            ### leave playing mode
+
+            elif event.key == K_F7:
+                leave_playing_mode()
 
     ### play the recorded events
 
@@ -584,6 +587,31 @@ def update_screen():
 
     ### update the screen
     update()
+
+### other operations
+
+def leave_playing_mode():
+
+    ### clear stored data
+    clear_data()
+
+    ### reset app
+    raise ResetAppException(mode='normal')
+
+def clear_data():
+    ### clear collections
+
+    for collection in (
+        EVENTS_MAP,
+        GETTER_FROZENSET_MAP,
+        BITMASK_MAP,
+        MOUSE_POSITIONS,
+        MOUSE_PRESSED_TUPLES,
+    ):
+        collection.clear()
+
+    ### remove title label
+    del LABELS[0]
 
 
 ### frame checkup operations

@@ -13,6 +13,7 @@ from pygame import locals as pygame_locals
 from pygame.locals import (
     KEYDOWN,
     KEYUP,
+    K_F7,
     K_F8,
     K_F9,
     KMOD_NONE,
@@ -51,7 +52,8 @@ from ..constants import (
     GENERAL_NS,
     GENERAL_SERVICE_NAMES,
     FPS, maintain_fps,
-    pause,
+
+    CancelWhenPaused, pause,
 
     watch_window_size,
 
@@ -111,6 +113,7 @@ LABELS = [
     )
 
     for text in (
+        "F7: cancel recording",
         "F8: play/pause",
         "F9: finish recording & exit",
     )
@@ -201,7 +204,7 @@ def set_behaviour(services_namespace, data):
         topright = label.rect.move(0, 5).bottomright
 
     ### ensure paused label has same position as the second one
-    PAUSED_LABEL.rect.topleft = LABELS[1].rect.topleft
+    PAUSED_LABEL.rect.topleft = LABELS[2].rect.topleft
 
     ## clear any existing events
     clear()
@@ -240,7 +243,15 @@ def get_events():
                 blit_on_screen(PAUSED_LABEL.image, PAUSED_LABEL.rect)
 
                 ### pause
-                pause()
+
+                try:
+                    pause()
+
+                ### if during pause user asks to cancel recording, do
+                ### it here
+
+                except CancelWhenPaused:
+                    cancel_recording()
 
                 ### pressing F8 is part of the session recording,
                 ### not the session per se, so we skip the event
@@ -252,8 +263,8 @@ def get_events():
                 ### save session data
                 save_session_data()
 
-                ### remove title label
-                del LABELS[0]
+                ### clear stored data
+                clear_data()
 
                 ### reset app;
                 ###
@@ -261,6 +272,11 @@ def get_events():
                 ### no need to use the "continue" statement as we
                 ### did for the F8 key in the if-block above
                 raise ResetAppException(mode='normal')
+
+            ### cancel recording
+
+            elif event.key == K_F7:
+                cancel_recording()
 
         ### pressing F8 is part of the session recording,
         ### not the session per se, so we skip the event
@@ -430,6 +446,20 @@ def save_session_data():
     final_path = parent / f"{stem}.{timestamp}.pyl"
     save_pyl(session_data, final_path, width=125, compact=True)
 
+    ### clear collections created in this function (not really needed,
+    ### but in our experience memory is freed faster when collections
+    ### are cleared)
+
+    events_map.clear()
+    session_data.clear()
+
+def cancel_recording():
+
+    clear_data()
+    raise ResetAppException(mode='normal')
+
+def clear_data():
+
     ### clear collections
 
     for a_collection in (
@@ -444,14 +474,8 @@ def save_session_data():
     ):
         a_collection.clear()
 
-    ### clear other collections (not really needed, but in our
-    ### experience memory is freed faster when collections are
-    ### cleared)
-    events_map.clear()
-
-    session_data.clear()
-
-
+    ### remove title label
+    del LABELS[0]
 
 def yield_treated_events(events_type_and_dict_pairs):
 

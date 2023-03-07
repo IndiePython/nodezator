@@ -16,6 +16,8 @@ from pygame.locals import (
 
     QUIT,
     KEYDOWN,
+
+    K_F7,
     K_F8,
 
     RESIZABLE,
@@ -408,6 +410,9 @@ def watch_window_size():
 
 ### function to pause when recording/playing session
 
+class CancelWhenPaused(Exception):
+    """Raised during pause to cancel and return to normal mode."""
+
 def pause():
 
     running = True
@@ -424,8 +429,13 @@ def pause():
             if event.type == QUIT:
                 raise QuitAppException
 
-            elif event.type == KEYDOWN and event.key == K_F8:
-                running = False
+            elif event.type == KEYDOWN:
+
+                if event.key == K_F8:
+                    running = False
+
+                elif event.key == K_F7:
+                    raise CancelWhenPaused
 
         ### update the screen
         update()
