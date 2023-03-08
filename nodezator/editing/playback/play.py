@@ -257,7 +257,7 @@ class SessionPlayingForm(Object2D):
         self.speed_entry = IntFloatEntry(
             value=FPS,
             min_value = 0,
-            numeric_classes_hint='int',
+            numeric_classes_hint='int_float',
             loop_holder=self,
             command=self.check_speed_button_surfs,
             width=100,
@@ -279,7 +279,7 @@ class SessionPlayingForm(Object2D):
             ("1x", FPS),
             ("2x", FPS*2),
             ("4x", FPS*4),
-            ("max", 0),
+            ("max/uncapped", 0),
         ):
 
             speed_button = Button.from_text(
