@@ -42,6 +42,8 @@ from pygame.display import update, set_mode
 
 from pygame.mouse import set_pos, set_visible as set_mouse_visibility
 
+from pygame.draw import rect as draw_rect
+
 
 ### local imports
 
@@ -54,7 +56,7 @@ from ...loopman.exception import ResetAppException, QuitAppException
 
 from ..constants import (
 
-    SCREEN_RECT, blit_on_screen,
+    SCREEN, SCREEN_RECT, blit_on_screen,
     GENERAL_NS,
     GENERAL_SERVICE_NAMES,
     maintain_fps,
@@ -250,8 +252,16 @@ def set_behaviour(services_namespace, data):
     ### load session data
     SESSION_DATA.update(load_pyl(data['input_data_path']))
 
-    ### store playback speed
-    PLAY_REFS.fps = data['playback_speed']
+    ### retrieve playback speed and last frame index
+
+    playback_speed = data['playback_speed']
+    last_frame_index = SESSION_DATA['last_frame_index']
+
+    ### store playback speed, last frame index and recording width
+
+    PLAY_REFS.fps = playback_speed
+    PLAY_REFS.last_frame_index = last_frame_index
+    PLAY_REFS.recording_width = SESSION_DATA['recording_size'][0]
 
     ### reset window mode (pygame.display.set_mode)
     set_mode(SESSION_DATA['recording_size'], 0)
@@ -259,7 +269,7 @@ def set_behaviour(services_namespace, data):
     ### trigger setups related to window size change
     watch_window_size()
 
-    ### create and store title label, then reposition
+    ### create and store title and duration label, then reposition
     ### all labels
 
     new_title_label = (
@@ -272,7 +282,34 @@ def set_behaviour(services_namespace, data):
         )
     )
 
+    if playback_speed:
+
+        duration = (
+
+            get_formatted_duration(
+                frame_quantity=last_frame_index,
+                frames_per_second=playback_speed,
+            )
+
+        )
+
+        duration_text = f"Duration: ~{duration}"
+
+    else:
+        duration_text = "No duration (uncapped speed)"
+
+    duration_label = (
+        get_label_object(
+            text = duration_text,
+            label_fg = 'white',
+            label_bg = 'blue',
+            label_outline = 'white',
+            padding = 6,
+        )
+    )
+
     LABELS.insert(0, new_title_label)
+    LABELS.append(duration_label)
 
     topright = SCREEN_RECT.move(-10, 32).topright
 
@@ -290,9 +327,6 @@ def set_behaviour(services_namespace, data):
 
     set_blocked(None)
     set_allowed([QUIT, KEYDOWN])
-
-    ###
-    PLAY_REFS.last_frame_index = SESSION_DATA['last_frame_index']
 
     ### prepare events
 
@@ -580,6 +614,15 @@ get_mouse_pressed = MOUSE_PRESSED_TUPLES.pop
 
 def update_screen():
     """Extends pygame.display.update()."""
+    ### draw progress
+
+    width = round(
+        abs(GENERAL_NS.frame_index / PLAY_REFS.last_frame_index) # progress
+        * PLAY_REFS.recording_width                              # full width
+    )
+
+    draw_rect(SCREEN, 'red', (0, 0, width, 3))
+
     ### blit labels
 
     for label in LABELS:
@@ -610,8 +653,10 @@ def clear_data():
     ):
         collection.clear()
 
-    ### remove title label
+    ### remove title and duration labels
+
     del LABELS[0]
+    del LABELS[-1]
 
 
 ### frame checkup operations
@@ -636,3 +681,30 @@ def frame_checkups_with_fps(fps):
 
     ### increment frame number
     GENERAL_NS.frame_index += 1
+
+
+### small utility
+
+def get_formatted_duration(frame_quantity, frames_per_second):
+    """Return specially formatted duration."""
+    duration = ""
+
+    total_seconds = round(frame_quantity/frames_per_second)
+
+    minutes, seconds = divmod(total_seconds, 60)
+
+    if minutes >= 1:
+
+        duration += f"{minutes}min"
+
+        if minutes >= 2:
+            duration += "s"
+
+    if seconds >= 1:
+
+        duration += f"{seconds}sec"
+
+        if seconds >= 2:
+            duration += "s"
+
+    return duration
