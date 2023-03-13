@@ -9,7 +9,6 @@ from pygame import (
     init as init_pygame,
     get_sdl_version,
     locals as pygame_locals,
-    Surface,
 )
 
 from pygame.locals import (
@@ -30,10 +29,6 @@ from pygame.mixer import pre_init as pre_init_mixer
 from pygame.key import set_repeat
 
 from pygame.time import Clock
-
-from pygame.font import SysFont
-
-from pygame.draw import rect as draw_rect
 
 from pygame.display import set_icon, set_caption, set_mode, update
 
@@ -155,66 +150,6 @@ GENERAL_SERVICE_NAMES = (
     "frame_checkups_with_fps",
 
 )
-
-### label text rendering operations
-
-render_label_text = SysFont('Arial', 16, bold=True).render
-
-Object = type("Object", (), {})
-
-def get_label_object(text, label_fg, label_bg, label_outline, padding):
-
-    ### render the text itself
-
-    text_surface = render_label_text(
-        text,
-        True,
-        label_fg,
-        label_bg,
-    )
-
-    ### create a surface with the sides incremented by
-    ### double the padding
-
-    label_surface = (
-
-        Surface(
-
-            tuple(
-                v + (padding * 2)
-                for v in text_surface.get_size()
-            )
-
-        ).convert()
-
-    )
-
-    ### fill the surface with the outline color
-    label_surface.fill(label_outline)
-
-    ### draw a slightly smaller rect inside the surface with the
-    ### filling color
-
-    draw_rect(
-        label_surface,
-        label_bg,
-        label_surface.get_rect().inflate(-2, -2),
-    )
-
-    ### blit the text inside the surface where the padding
-    ### ends
-    label_surface.blit(text_surface, (padding, padding))
-
-    ### create label rect
-    label_rect = label_surface.get_rect()
-
-    ### instantiate and populate label object
-
-    label = Object()
-    label.__dict__.update(image=label_surface, rect=label_rect)
-
-    ### finally return the label
-    return label
 
 
 ## event values to strip

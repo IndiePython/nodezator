@@ -29,10 +29,9 @@ from pygame.locals import (
 
 )
 
-from pygame import (
-    Surface,
-    locals as pygame_locals,
-)
+from pygame.color import THECOLORS
+
+from pygame import locals as pygame_locals
 
 from pygame.math import Vector2
 
@@ -53,6 +52,9 @@ from ...ourstdlibs.behaviour import empty_function
 
 from ...loopman.exception import ResetAppException, QuitAppException
 
+from ...classes2d.single import Object2D
+
+from ...textman.render import render_text
 
 from ..constants import (
 
@@ -71,8 +73,6 @@ from ..constants import (
     KEYS_MAP,
     SCANCODE_NAMES_MAP,
     MOD_KEYS_MAP,
-
-    get_label_object,
 
 )
 
@@ -273,12 +273,15 @@ def set_behaviour(services_namespace, data):
     ### all labels
 
     new_title_label = (
-        get_label_object(
-            text = SESSION_DATA['recording_title'],
-            label_fg = 'white',
-            label_bg = 'blue',
-            label_outline = 'white',
-            padding = 6,
+        Object2D.from_surface(
+            render_text(
+                text = SESSION_DATA['recording_title'],
+                padding = 6,
+                foreground_color = THECOLORS['white'],
+                background_color = THECOLORS['blue'],
+                border_color = THECOLORS['white'],
+                border_thickness=2,
+            )
         )
     )
 
@@ -299,12 +302,15 @@ def set_behaviour(services_namespace, data):
         duration_text = "No duration (uncapped speed)"
 
     duration_label = (
-        get_label_object(
-            text = duration_text,
-            label_fg = 'white',
-            label_bg = 'blue',
-            label_outline = 'white',
-            padding = 6,
+        Object2D.from_surface(
+            render_text(
+                text = duration_text,
+                padding = 6,
+                foreground_color = THECOLORS['white'],
+                background_color = THECOLORS['blue'],
+                border_color = THECOLORS['white'],
+                border_thickness=2,
+            )
         )
     )
 
@@ -440,12 +446,15 @@ MOUSE_EVENTS = frozenset({MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP})
 
 LABELS = [
 
-    get_label_object(
-        text = text,
-        label_fg = 'white',
-        label_bg = 'blue',
-        label_outline = 'white',
-        padding = 6,
+    Object2D.from_surface(
+        render_text(
+            text = text,
+            padding = 6,
+            foreground_color = THECOLORS['white'],
+            background_color = THECOLORS['blue'],
+            border_color = THECOLORS['white'],
+            border_thickness=2,
+        )
     )
 
     for text in (
@@ -457,12 +466,15 @@ LABELS = [
 ]
 
 PAUSED_LABEL = (
-    get_label_object(
-        text = "F8: play/pause",
-        label_fg = 'white',
-        label_bg = 'red3',
-        label_outline = 'white',
-        padding = 6,
+    Object2D.from_surface(
+        render_text(
+            text = "F8: play/pause",
+            padding = 6,
+            foreground_color = THECOLORS['white'],
+            background_color = THECOLORS['red3'],
+            border_color = THECOLORS['white'],
+            border_thickness=2,
+        )
     )
 )
 

@@ -19,6 +19,8 @@ from pygame.locals import (
     KMOD_NONE,
 )
 
+from pygame.color import THECOLORS
+
 from pygame.event import clear, get, event_name
 
 from pygame.key import get_pressed, get_mods
@@ -46,6 +48,10 @@ from ...ourstdlibs.pyl import save_pyl
 
 from ...loopman.exception import ResetAppException
 
+from ...classes2d.single import Object2D
+
+from ...textman.render import render_text
+
 from ..constants import (
 
     SCREEN_RECT, blit_on_screen,
@@ -63,8 +69,6 @@ from ..constants import (
     KEYS_MAP,
     SCANCODE_NAMES_MAP,
     MOD_KEYS_MAP,
-
-    get_label_object,
 
 )
 
@@ -104,12 +108,16 @@ REVERSE_KEYS_MAP = {
 ## create labels objects
 
 LABELS = [
-    get_label_object(
-        text = text,
-        label_fg = 'white',
-        label_bg = 'blue',
-        label_outline = 'white',
-        padding = 6,
+
+    Object2D.from_surface(
+        render_text(
+            text=text,
+            foreground_color = THECOLORS['white'],
+            background_color = THECOLORS['blue'],
+            border_color = THECOLORS['white'],
+            border_thickness = 2,
+            padding = 6,
+        )
     )
 
     for text in (
@@ -120,12 +128,16 @@ LABELS = [
 ]
 
 PAUSED_LABEL = (
-    get_label_object(
-        text = "F8: play/pause",
-        label_fg = 'white',
-        label_bg = 'red3',
-        label_outline = 'white',
-        padding = 6,
+
+    Object2D.from_surface(
+        render_text(
+            text = "F8: play/pause",
+            foreground_color = THECOLORS['white'],
+            background_color = THECOLORS['red3'],
+            border_color = THECOLORS['white'],
+            border_thickness = 2,
+            padding = 6,
+        )
     )
 )
 
@@ -185,12 +197,15 @@ def set_behaviour(services_namespace, data):
     ### all labels
 
     new_title_label = (
-        get_label_object(
-            text = data['recording_title'],
-            label_fg = 'white',
-            label_bg = 'blue',
-            label_outline = 'white',
-            padding = 6,
+        Object2D.from_surface(
+            render_text(
+                text = data['recording_title'],
+                foreground_color = THECOLORS['white'],
+                background_color = THECOLORS['blue'],
+                border_color = THECOLORS['white'],
+                border_thickness = 2,
+                padding = 6,
+            )
         )
     )
 
