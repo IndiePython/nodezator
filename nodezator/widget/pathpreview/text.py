@@ -68,12 +68,27 @@ from ...syntaxman.utils import (
 from ...syntaxman.exception import SyntaxMappingError
 
 
+### constants
+
 GENERAL_TEXT_SETTINGS = {
     "font_height": FIRA_MONO_BOLD_FONT_HEIGHT,
     "font_path": FIRA_MONO_BOLD_FONT_PATH,
     "foreground_color": TEXTPREVIEW_FG,
     "background_color": TEXTPREVIEW_BG,
 }
+
+DOT_PATH = Path('.')
+
+CUSTOM_ERROR_MESSAGE_MAP = {
+    IsADirectoryError: "path must be a text-based file, not a directory.",
+    FileNotFoundError: "can't read path, it wasn't found.",
+}
+
+COMMON_READ_ERRORS = (
+    FileNotFoundError,
+    IsADirectoryError,
+    PermissionError,
+)
 
 ### create logger for module
 logger = get_new_logger(__name__)
@@ -136,20 +151,48 @@ class TextPreview(_BasePreview):
         """Preview text from current path."""
         path = Path(self.current_path)
 
+        ### if current path is '.', it can't be read as
+        ### text, so notify user and exit by returning
+
+        if path == DOT_PATH:
+
+            create_and_show_dialog(
+                (
+                    "Can't read text from '.' path."
+                    " The path must point to a text-based file."
+                ),
+                level_name="error",
+            )
+            return
+
+        ### otherwise, try reading the text from it
+
         try:
             text = path.read_text(encoding="utf-8")
 
-        except IsADirectoryError:
+        ### if reading the text fails, display a corresponding
+        ### error message and exit by returning
 
-            view_text("Can't view current path, it is a directory")
+        except Exception as err:
 
+            ## grab/build text message
+
+            error_message = (
+                "An error ocurred while trying to read path's text: "
+            )
+
+            try:
+                error_message += CUSTOM_ERROR_MESSAGE_MAP[err.__class__]
+
+            except KeyError:
+                error_message += f"{err.__class__.__name__}: {err}"
+
+            ## display it and return
+
+            create_and_show_dialog(error_message, level_name="error")
             return
 
-        except FileNotFoundError:
-
-            view_text("Can't view current path, it wasn't found")
-
-            return
+        ### otherwise, display the text from the file
 
         view_text(
             text=text,
@@ -185,11 +228,7 @@ class TextPreview(_BasePreview):
                 errors="ignore",
             )
 
-        except (
-            FileNotFoundError,
-            IsADirectoryError,
-            PermissionError,
-        ):
+        except COMMON_READ_ERRORS:
 
             try:
                 subsurf = self.path_repr_subsurf
@@ -434,7 +473,7 @@ class TextPreview(_BasePreview):
         try:
             text = path.read_text(encoding="utf-8")
 
-        except (FileNotFoundError, IsADirectoryError):
+        except COMMON_READ_ERRORS:
 
             g.append(get_missing_path_repr(rect))
             g.append(super().svg_path_repr())
