@@ -223,7 +223,7 @@ def _enumerate(
 
 
 def _eval1(
-    string_source: "python_literal_string" = "''",
+    string_source: str = "",
     globals=None,
     locals=None,
 ) -> [{"name": "python_obj"}]:
@@ -231,7 +231,7 @@ def _eval1(
 
 
 def _eval2(
-    text_string_source: ("python_literal_text_string") = "''",
+    text_string_source: "text_string" = "",
     globals=None,
     locals=None,
 ) -> [{"name": "python_obj"}]:
