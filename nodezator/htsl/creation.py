@@ -131,6 +131,10 @@ def get_heading(heading, max_width):
     return heading_obj
 
 
+### XXX should probably consider adding <code> tag to use inline;
+### it would be similar to how <mark> is used, but for inline code
+### and with a different style;
+
 class TextBlock(List2D):
     """Represents text blocks."""
 

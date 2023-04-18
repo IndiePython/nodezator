@@ -29,14 +29,23 @@
 
   <h2>Fonts license</h2>
 
-  <p>All fonts, except the nodezator_icons font are licensed under the <a href="https://en.wikipedia.org/wiki/SIL_Open_Font_License">Open Font License</a>.</p>
-
   <p>The nodezator_icons font, which I created and is used in the app for its icons like folder, file, button icons, etc., is dedicated to the public domain using the <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 license</a>.</p>
 
+  <p>All other fonts are not mine and are licensed under the <a href="https://en.wikipedia.org/wiki/SIL_Open_Font_License">Open Font License</a>.</p>
 
-  <h2>My logos and Zenith Green robot mascot</h2>
 
-  <p>Naturally, the Kennedy Richard "KR" logo, Indie Python and Nodezator logos featured in the splash screen and sometimes in other spots in the app are my own. Please, don't use them without permission or for dubious ends. This also applies to the robot in the splash screen, called Zenith Green, which is the mascot of this Nodezator app.</p>
+  <h2>My logos/images</h2>
+
+  <p>The logos/images listed below, featured in Nodezator's splash screen (and sometimes in other spots in the app), are all mine:</p>
+
+  <ul>
+    <li>the Kennedy Richard "KR" logo;</li>
+    <li>the Indie Python project logo;</li>
+    <li>the Nodezator logo;</li>
+    <li>the robot, called Zenith Green, Nodezator's mascot.</li>
+  </ul>
+
+  <p>Please, don't use them for questionable ends. Use them only as references to the stuff they represent.</p>
 
 </body>
 

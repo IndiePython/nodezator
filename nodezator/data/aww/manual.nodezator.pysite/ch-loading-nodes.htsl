@@ -10,49 +10,217 @@
 
 <h1>Loading your nodes</h1>
 
-<p>A common task when editing node layouts in Nodezator is to <b>load nodes</b> so that you can instantiate them. The act of loading nodes actually boils down to <b>selecting node packs</b> so that you can use the nodes from those packs. You only need to do this <b>once</b>, since references to the node packs you select are saved in the file. The next time you open the file the nodes will be already listed for you to use.</p>
-
 <p>Here we'll present different scenarios where you'll be loading nodes into your Nodezator files. By the way, the file extension for Nodezator files is <b>.ndz</b>. For instance, <i>my_node_layout.ndz</i>.</p>
 
-<h2 id="kinds-node-packs">The two kinds of node packs</h2>
+<p>A common task when editing node layouts in your .ndz files is to <b>load nodes</b> so that you can instantiate them in your file.</p>
 
-<p>First of all, to understand how nodes are loaded, you need to understand that node packs are divided into two kinds: <b>local</b> and <b>installed</b>. The only difference between those kind of node packs is that installed node packs can be installed with <i>pip install [node_pack_name]</i>. That is, their distribution is different. Their content and what they can achieve is the same. To know more about those kinds of node packs and their distribution, check the <a href="ch-distributing-nodes.htsl">chapter dedicated to such topic</a>.</p>
+<p>In the chapter about <a href="ch-defining-your-first-node.htsl">creating our first node</a>, we learn that nodes are created and organized within folders that we call <b>node packs</b> and how to create such node packs.</p>
 
-<p>For the purposes of this chapter, you only need to know that <b>to load a local node pack</b> all you need is to specify the location of the node pack folder in your system and <b>to load an installed node pack</b> all you need is to specify the name of the node pack, because since it is installed, it can be imported directly using its name.</p>
+<p>The act of loading nodes actually boils down to <b>selecting the node pack(s) we want to use</b>. The same way you write an import statement in a Python script only once, you also only need to do this <b>once</b> in your .ndz file, and the nodes will be available there for you every time you open that file.</p>
 
-<p>Also, .ndz files may reference node packs of any of those kinds, of both kinds, or no node pack at all.</p>
+<p>In order to load nodes, we need to know 02 things:</p>
+
+<ol>
+    <li>How to obtain node packs;</li>
+    <li>How to reference them in the .ndz file.</li>
+</ol>
+
+<p>If you ever encounter any kind of problem, with those or any other task you are trying to perform in Nodezator, don't hesitate to seek help on the <a href="https://indiepython.com/discord">discord server</a>.</p>
+
+<p>Without further ado, let's learn how to do those things.</p>
 
 
-<h2 id="creating-file-loading-nodes">Creating a file and loading your nodes</h2>
+<h2 id="obtaining-node-packs-kinds">Obtaining node packs (and their different kinds)</h2>
 
-<p>To create a file, just click the <b>New file</b> action in the splash screen or click the menubar command <b>File &gt; New</b>. The <b>&lt;Ctrl+N&gt;</b> keyboard shortcut also access the feature. A new untitled empty file will be automatically created and opened for you, so you can start working right away.</p>
+<p>Node packs can be obtained from 03 different ways:</p>
 
-<p>Right-clicking the screen will bring the popup menu into view, where you'll be able to instantiate nodes. However, only app-defined nodes will be available, that is, the ones already included in the Nodezator. This is so because you didn't load any node packs yet.</p>
+<ul>
+    <li>By installing them with the pip command;</li>
+    <li>By copying the node pack folder anywhere in your system;</li>
+    <li>By creating your own node pack.</li>
+</ul>
 
-<p>To load or remove node packs in any .ndz file, just click the menubar command <b>Graph &gt; Load nodes</b>. You'll be presented with a form to add (or remove) node packs to your file as you wish. The form presents widgets to add node packs and a panel where you can see the node packs already on the file and the ones you add using the widgets. In this panel, one 'x' button sits to the left of each node pack listed and can be clicked to remove the node pack. In this form you can add and remove node packs as much as you want without worrying about the consequences because the node packs are only added/removed if you press the <b>Apply changes</b> button.</p>
+<p>Such ways to obtain node packs are further explained in the following subsections. There are actually 02 different kinds of node packs: <b>local node packs</b> and <b>installable/installed node packs</b>. The difference between them is quite simple, as summarized in the table below:</p>
 
-<p>The form presents 03 different ways to add node packs. First, you can use the option menu listing known node packs, that is, node packs you have successfuly loaded before, both local and installed node packs are listed there. You can also add local node packs by clicking the folder icon button and selecting the node pack folders you want in the file manager dialog that opens. To add installed node packs, just type the name of the node pack (or multiple node packs separated by commas) in the entry and click the '+' (plus) button beside it.</p>
+<table>
 
-<p>You can add node packs using the ways described above multiple times. Every time you add node pack(s), the panel below the entry is updated. Once you are satisfied with your selection of node packs, press the <b>Apply changes</b> button.</p>
+  <thead>
+    <tr>
+      <th class="col-4">-</th>
+      <th class="col-3">Local node pack</th>
+      <th class="col-3">Installed node pack</th>
+    </tr>
+  </thead>
 
-<p>If you remove node packs, if there are nodes from one or more of those packs that are currently instantiated in your node layout the operation will be aborted. If you want those node packs to be removed you'll first need to delete those nodes and try again.</p>
+  <tbody>
+    <tr>
+      <td>Node pack is installed via <i>pip</i></td>
+      <td>No</td>
+      <td>Yes</td>
+    </tr>
+  </tbody>
 
-<p>If everything goes well, after clicking <b>Apply Changes</b> all the selected nodes should be loaded. You can test this by right-clicking the screen and checking whether their categories are now visible in the popup menu that appears. Finish by saving the file, so that the changes are saved.</p>
+</table>
+
+<p>Let's now see the different methods to obtain node packs of both kinds.</p>
+
+
+<h3 id="installing-with-pip">Installing with pip</h3>
+
+<p>The easiest way to obtain a node pack is to install it directly from <a href="https://pypi.org">PyPI</a> (the Python Package Index) with the <b>pip</b> command. It is the easiest because you just need a single command to install it and then it is readily available to be loaded in any .ndz file.</p>
+
+<p>For instance, there is an example node pack called <b>mynodepack</b> that you can install from PyPI with the following command:</p>
+
+<pre>
+pip install mynodepack
+</pre>
+
+<p>Once you install it, the nodes from the <b>mynodepack</b> pack are available for you to load on your .ndz files.</p>
+
+<p>Node packs that can be installed from pip are called <b>installed node packs</b> or <b>installable node packs</b>. So <b>mynodepack</b> is an installable node pack.</p>
+
+<p>If you want, you too can upload your node packs to PyPI for others to download them. The process is explained in the chapter about <a href="ch-distributing-nodes.htsl">distributing node packs</a>.</p>
+
+
+<h3 id="copying-in-your-system">Copying a node pack anywhere in your system</h3>
+
+<p>Since the node packs are just folders containing Python scripts defining nodes, you can just copy the folder representing the node pack anywhere in your system, by downloading them from the internet, or by copying them from a pen drive.</p>
+
+<p>For instance, my profile on github contains an example node pack with generic nodes with the purpose of demonstrating different widgets. It is called <b>examples_node_pack</b>. You can download it from this github link: <a href="https://github.com/KennedyRichard/examples_node_pack">https://github.com/KennedyRichard/examples_node_pack</a>. Just download and unzip the repository and that's it, the folder is a node pack that you can load into your .ndz files.</p>
+
+<p>Node packs that you don't install with pip are called <b>local node packs</b>. Hence, the <b>examples_node_pack</b> is a local node pack.</p>
+
+
+<h3 id="creating-your-own">Creating your own node pack</h3>
+
+<p>Another way to obtain a node pack is to create one yourself, as described in the chapter about <a href="ch-defining-your-first-node.htsl">creating our first node</a>.</p>
+
+<p>A node pack that you create is also called a <b>local node pack</b>, since you didn't install it with pip.</p>
+
+<p>Of course, if you desire, you can also upload it to PyPI for others to install, as described in <a href="ch-distributing-nodes.htsl">this chapter</a>. If you do that, when you or others install your node pack from PyPI, it will also be considered an <b>installed/installable node pack</b>.</p>
+
+
+<h3 id="where-to-look-for-node-packs">Where to look for node packs to install/download?</h3>
+
+<p>We just explained how to obtain node packs, but how do we find them? Well, node packs are created individually by Nodezator users, so the users need to share them with us on <a href="https://pypi.org">PyPI</a> or over the web for us to be able to access them. However, to make it easier to find node packs, I created a website to gather links to them and to allow them to be searched using various criteria.</p>
+
+<p>The address is <a href="https://gallery.nodezator.com">https://gallery.nodezator.com</a>.</p>
+
+<p>The website already lists some node packs created by me to demonstrate the usage of Nodezator in different areas like image editing and data vizualization. You'll also find instructions to share your own node packs there, regardless of whether you'll just make them available for download or upload them for installation with the pip command.</p>
+
+
+<h2 id="loading-node-packs">Loading the node pack(s) you obtained</h2>
+
+<p>Now that we learned the different ways to obtain node packs and the 02 kinds of node packs that exist, we are finally going to learn how to load them.</p>
+
+<p>Loading nodes consists in referencing node packs in the .ndz file where you want to use them. That is, you just need to tell Nodezator where to find the node packs you want and they are automatically referenced in the .ndz file and their nodes are loaded. Any .ndz file can reference one or more node packs of any kind (or no node pack at all).</p>
+
+<p>The first thing to do is to create a .ndz file. Just click the <b>New file</b> action in the splash screen or click the menubar command <b>File &gt; New</b>. The <b>&lt;Ctrl+N&gt;</b> keyboard shortcut also does it. A new untitled empty file will be automatically created and opened for you, so you can start working right away.</p>
+
+<p>Right-clicking the screen will bring the popup menu into view, where you'll be able to instantiate nodes. However, only app-defined nodes will be available, that is, the ones already included in Nodezator. This is so because you didn't load any node packs yet.</p>
+
+<p>To load or remove node packs in any .ndz file, just click the menubar command <b>Graph &gt; Load nodes</b>. You'll be presented with a form to load or remove node packs from the .ndz file. The form is similar to the one in the image below:</p>
+
+<img src="images/ch-loading-nodes_img00.png" alt="Form to load nodes into .ndz file" />
+
+<p>The form presents several controls. In the previous image, I numbered them from 1 to 4 to make it easier to refer to them.</p>
+
+<p>You can freely edit the form without worrying about doing anything wrong because the changes only take effect after you click the "Apply changes" button in the bottom right corner. If you regret any changes made, just click the "Cancel" button beside it.</p>
+
+<p>The controls from 1 to 3 are used to add node packs to your .ndz file.</p>
+
+<p>The control number 4 is a panel that shows which node packs are currently loaded in your .ndz file and the ones that you added using the other controls, the ones that will be loaded once you press the "Apply changes" button. In this panel, the "x" button to the left of each node pack listed is used to remove the node pack from the file (again, the change will only take effect after/if you press "Apply changes").</p>
+
+<p>The form presents 03 different ways to add node packs. First, you can use the control 1, which is an option menu listing known node packs, that is, node packs you have successfuly loaded before. Both local and installed node packs are listed there.</p>
+
+<p>Second, to add local node packs, you can use control 2. clicking the folder icon button and selecting the node pack folders you want in the file manager dialog that opens.</p>
+
+<p>Finally, you can also add installed node packs, using control 3. Just type the name of the node pack (or multiple node packs separated by commas) in the entry and click the '+' (plus) button beside it.</p>
+
+<p>You can add node packs using the ways described above multiple times. Every time you add node pack(s), the panel (control 4) is updated. It can be scrolled further if you add more node packs than can be seen in the panel. Once you are satisfied with your selection of node packs, press the <b>Apply changes</b> button.</p>
+
+<p>If everything goes well, after clicking <b>Apply Changes</b> all the selected nodes should be loaded. You can test this by right-clicking the screen and checking whether their categories are now visible in the popup menu that appears. Don't forget to save the file so the changes persist. You can do it at this point or later after you finish working on it, just make sure to do it before you quit.</p>
+
+<p>Another important thing to keep in mind: if you attempt to remove node packs when there are nodes from any of those packs that are currently instantiated in your graph the operation will be aborted. If you want node packs to be removed you must first make sure that none of their nodes exist in your graph.</p>
+
+<p>The button at the lower left corner of the app that says <b>How to load nodes</b> just opens this page of the manual.</p>
 
 
 <h2 id="opening-file-external-source">Opening a file from an external source</h2>
 
-<p>If you picked a .ndz file from someone else and that file references local node packs, remember you'll also need the <b>local node pack(s) used in the file</b> to be able to open it.</p>
+<p>Now that we learned how to load nodes, I'd just like to share common problems/situations that may happen when opening a .ndz file you got from someone or downloaded online.</p>
 
-<p>But there's a catch: as we told you, references to node packs are saved on the file data, so the next time you open a file it automatically loads the packs. However, when opening that .ndz file which you picked from someone else for the first time, the path(s) to local node pack(s) stored in the file probably won't work, because the paths reference a folder inside the original location, which probably doesn't exist in your system in the same location.</p>
 
-<p>For instance, let's say your friend Jessie sent you a .ndz file and a node pack named <i>jessie_nodes</i> containing the nodes used. When you open the file, inside its data the node pack path will point to <b>C:\Users\Jessie\node_packs\jessie_nodes</b>, even though in your computer, the node pack is actually in <b>C:\Users\Jackie\Downloads\jessie_nodes</b>.</p>
+<h3 id="forgetting-to-install-libraries">Forgetting to install third-party libraries</h3>
 
-<p>Fortunately, the solution is simple: just open the file in Nodezator anyway and, once the app sees that there is no <b>C:\Users\Jessie\node_packs\jessie_nodes</b>, it will notify you with a dialog explaining that the path to the node pack wasn't found (it will show you the missing path) and present you with two options.</p>
+<p>First of all, if the nodes in the pack you are loading use other third-party libraries, you must also install them in order to use the nodes. For instance, if you download <a href="https://github.com/KennedyRichard/pillow_example_node_pack">this local node pack that uses the Pillow library for image editing</a> you must also have the <a href="https://pillow.readthedocs.io/en/stable/">Pillow library</a> installed for it to work properly.</p>
 
-<p>You'll be able to either select new node packs or cancel loading the file. Choose the option to select new node packs and the file manager will be shown to you. From there you just need to browse to the location where the needed node pack is and select it by clicking on it and then pressing the <b>Submit</b> button. Now the .ndz file should load without problems from now on.</p>
+<p>It is expected that you won't have to do this for installed node packs, because people who upload their node packs to PyPI are encouraged to have any third-party library used by their nodes marked as dependencies so that they are installed automatically when users install their node packs with <b>pip</b>. After all, installed node packs are Python packages and can trigger the installation of extra libraries if needed.</p>
 
-<p>Installed node packs don't have this problem, since nodezator only needs the name of the node pack to be able to find it, that is, nodezator only needs to import the node pack, since it is installed. As an analogy, you don't need to know where Python's <i>math</i> module is to be able to use it right, you only know its name and use <i>import math</i> and you automatically have access to it. Installed node packs work this way as well. You only need the name, and the name doesn't change, no matter the actual location of the node pack in the system.</p>
+
+<h3 id="forgetting-to-install-node-packs">Forgetting to install installable node packs</h3>
+
+<p>If you picked a .ndz file from someone else and that file references installed node packs, remember you must first install them in your system using <b>pip</b>. If you don't, a dialogue is presented to you when you try to open the .ndz file, explaining the problem and the operation is aborted.</p>
+
+<p>For instance, if you try to open a .ndz file that references the <b>mynodepack</b> installed node pack, but you don't have it installed, the following dialogue appears:</p>
+
+<img src="images/ch-loading-nodes_img01.png" alt="Dialogue mentioning missing node pack that is supposed to be installed" />
+
+<p>If you see a dialogue like that, just install the missing installable node packs and try opening the .ndz file again.</p>
+
+
+<h3 id="situations-regarding-local-packs">Situations regarding local node packs</h3>
+
+<p>If the .ndz file you are opening references local node packs, you'll also need a copy of the local node pack to be able to open it.</p>
+
+<p>As we explained, references to both local and installed node packs are saved in the .ndz file when you load their nodes. For installed node packs, Nodezator only stores their names. This is so because Nodezator just needs the name of the pack to access it. After all, installed node packs are just Python packages installed on the system, so Nodezator just has to import them. People don't need to know where Python's standard library module <a href="https://docs.python.org/3/library/math.html">math</a> is located in order to use it, right? they can access it just with its name by executing <i>import math</i> in their code. Likewise, Nodezator just need the names of installed node packs.</p>
+
+<p>Local node packs, however, are referenced in .ndz files by their location in the system, that is, the absolute path to the folder containing the nodes. So, if the .ndz file you are opening references local node packs, there's an additional step needed: you'll need to update the node pack's location.</p>
+
+<p>So, for instance, let's say Jessie sent a .ndz file and a local node pack (a folder named <i>jessie_nodes</i> containing the nodes used) to a friend called Jackie. When Jackie opens the .ndz file, inside its data the local node pack path will point to <b>C:\Users\Jessie\node_packs\jessie_nodes</b> which is the original location of the node pack is Jessie's computer. However, that location doesn't exist in Jackie's computer, but instead, the copy of the node pack Jackie received is saved in the <b>C:\Users\Jackie\Downloads\jessie_nodes</b> location.</p>
+
+<p>This means when Jackie attempts to open the .ndz file, Nodezator will notice that there's no <b>jessie_nodes</b> node pack in the original location, so it will ask Jackie to provide the new location using a dialogue similar to the one shown below:</p>
+
+<img src="images/ch-loading-nodes_img02.png" alt="Dialogue to provide new location of local node pack" />
+
+<p>Fortunately, the solution is simple: just click the button that says <b>Select replacement/new path</b> then browse the file manager that will be shown to you to the location where the needed node pack is and select it by clicking on the folder and then pressing the <b>Submit</b> button. If there's no other problems with the new path you provided or other local node packs referenced in the file, the .ndz file should load without problems from now on.</p>
+
+
+<h2 id="other-possible-problems">Other possible problems</h2>
+
+
+<h3 id="bad-node-pack-structure">Bad node pack structure</h3>
+
+<p>Beware that other kinds of problems may be found in both local and installed node packs when opening a new .ndz file or loading them in a newly created .ndz file. They will cause other messages to be displayed. Those problems might be related to requirements of node packs not being met. For instance, the path to the node pack is right but the node pack itself might be structured in the wrong way.</p>
+
+<p>If such an error occurs, replacing the path won't solve the problem, since the path is already right. Instead, you'll have to cancel loading the file (by pressing the corresponding button in the dialogue) and fix the contents of the node pack yourself or ask the creator/maintainer to do this.</p>
+
+<p>When in doubt, read the message on the dialogue carefully and/or check the contents of the <a href="ch-defining-your-first-node.htsl">chapter that explains how node packs are organized</a> to make sure the node pack you are trying to load has no problems.</p>
+
+
+<h3 id="missing-renamed-packs-categories-scripts">Missing/renamed node packs, categories or node scripts</h3>
+
+<p>User-defined nodes are identified in the .ndz file (in the <i>script_id</i> keys) using a combination of the node pack name, the category name and the script folder name where the node script is located. This is so regardless of whether the node pack is local or installed.</p>
+
+<p>As such, if you rename any of those folders and open a .ndz file containing nodes affected by the renaming, Nodezator will look for the old folder names in the identification of the node and won't find them and will thus show a dialogue that says it isn't possible to load the file due to missing node scripts, listing those missing scripts, like in the image below:</p>
+
+<img src="images/ch-loading-nodes_img03.png" alt="Dialogue listing missing node scripts" />
+
+<p>To solve the problems, just open the .ndz file in any text editor of your preference and look for the lines that say <i>script_id</i>, and update the names of the folders you changed. It may be boring but is usually quick work. As Nodezator evolves over time, dedicated UI should be created so the user can perform this task in the app itself.</p>
+
+
+<h3 id="incompatible-function-signature-updates">Incompatible function signature updates</h3>
+
+<p>Updating the source of your nodes is fine, you must always improve them when you can or when it is needed. However, be careful when changing the function/callable signature. If the new signature is incompatible with the previous one, it will create conflicts when trying to open the .ndz file containing instances of that node.</p>
+
+<p>For instance, connections between nodes are stored in .ndz files using the name of the parameters/outputs and other relevant data. If you rename the parameter or output of a node that is in your .ndz file, Nodezator won't be able to find that parameter/output anymore, so it will display a dialogue describing the problem and abort loading the file.</p>
+
+<p>Hence, if you change the name of parameters/outputs or make other changes that result in an incompatible signature, your file will become invalid or you'll have to update the .ndz file by hand yourself.</p>
+
+<p>A feature that consists in a conflict resolution mode for Nodezator, to guide the user in the resolution of such problems is already listed among the <a href="https://github.com/IndiePython/nodezator/discussions/13">planned/requested features for Nodezator</a>.</p>
+
+<p>For now, if you want to update the signature of a node that is in use, it is easier to delete the instances of that node in the related .ndz files, make your changes, than instantiate and reconnect the node again. Or just seek help on the <a href="https://indiepython.com/discord">discord server</a>.</p>
+
 
 <p><a href="ch-more-ways-define-nodes.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch-color-coding-inputs-outputs.htsl">Next chapter</a></p>
 

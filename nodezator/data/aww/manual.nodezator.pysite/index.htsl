@@ -57,9 +57,10 @@
   <li><a href="ch-loading-nodes.htsl">Loading your nodes</a>
 
     <ol>
-      <li><a href="ch-loading-nodes.htsl#kinds-node-packs">The two kinds of node packs</a></li>
-      <li><a href="ch-loading-nodes.htsl#creating-file-loading-nodes">Creating a file and loading your nodes</a></li>
+      <li><a href="ch-loading-nodes.htsl#obtaining-node-packs-kinds">Obtaining node packs (and their different kinds)</a></li>
+      <li><a href="ch-loading-nodes.htsl#loading-node-packs">Loading the node pack(s) you obtained</a></li>
       <li><a href="ch-loading-nodes.htsl#opening-file-external-source">Opening a file from an external source</a></li>
+      <li><a href="ch-loading-nodes.htsl#other-possible-problems">Other possible problems</a></li>
     </ol>
 
   </li>
@@ -145,9 +146,11 @@
   <li><a href="ch-distributing-nodes.htsl">Distributing your nodes</a>
 
     <ol>
-      <li><a href="ch-distributing-nodes.htsl#local-vs-installed">Local vs installed node packs</a></li>
-      <li><a href="ch-distributing-nodes.htsl#combining-node-pack-kinds">Combining node pack kinds</a></li>
-      <li><a href="ch-distributing-nodes.htsl#node-pack-packaging-template">Installed node pack packaging template</a></li>
+      <li><a href="ch-distributing-nodes.htsl#distributing-as-local">Distributing as a local node pack</a></li>
+      <li><a href="ch-distributing-nodes.htsl#distributing-as-installable">Distributing as an installable node pack</a></li>
+      <li><a href="ch-distributing-nodes.htsl#summary-distribution-methods">Summary of distribution methods</a></li>
+      <li><a href="ch-distributing-nodes.htsl#combining-local-installable">Combining local and installable distributions</a></li>
+      <li><a href="ch-distributing-nodes.htsl#template-installable-pack">Template to package and publish an installable node pack</a></li>
     </ol>
 
   </li>

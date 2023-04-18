@@ -82,15 +82,18 @@ from ...surfsman.cache import (
 from ...surfsman.icon import render_layered_icon
 
 from ...surfsman.draw import draw_border, draw_depth_finish
-from ...surfsman.render import render_rect
+from ...surfsman.render import render_rect, combine_surfaces
 
 from ...loopman.exception import (
     QuitAppException,
     SwitchLoopException,
 )
 
+from ...htsl.main import open_htsl_link
+
 from ...colorsman.colors import (
     BLACK,
+    WHITE,
     CONTRAST_LAYER_COLOR,
     WINDOW_FG,
     WINDOW_BG,
@@ -212,7 +215,7 @@ class NodePacksSelectionChangeForm(Object2D):
     def build_form_widgets(self):
         """Build widgets to hold the data for edition."""
         ### create list to hold widgets
-        self.widgets = List2D()
+        widgets = self.widgets = List2D()
 
         ### define an initial topleft
         topleft = (0, 0)
@@ -232,12 +235,12 @@ class NodePacksSelectionChangeForm(Object2D):
             coordinates_value=topleft,
         )
 
-        self.widgets.append(caption_label)
+        widgets.append(caption_label)
 
         ### update the topleft to a value a bit below
         ### the bottomleft corner of the widgets already
         ### in the versatile list
-        topleft = self.widgets.rect.move(0, 20).bottomleft
+        topleft = widgets.rect.move(0, 20).bottomleft
 
         ### instantiate widgets to pick known node packs
 
@@ -254,7 +257,7 @@ class NodePacksSelectionChangeForm(Object2D):
             coordinates_value=topleft,
         )
 
-        self.widgets.append(known_node_packs_label)
+        widgets.append(known_node_packs_label)
 
         ## known node packs option menu
 
@@ -271,12 +274,12 @@ class NodePacksSelectionChangeForm(Object2D):
             coordinates_value=midleft,
         )
 
-        self.widgets.append(self.node_packs_option_menu)
+        widgets.append(self.node_packs_option_menu)
 
         ### update the topleft to a value a bit below
         ### the bottomleft corner of the widgets already
         ### in the versatile list
-        topleft = self.widgets.rect.move(0, 15).bottomleft
+        topleft = widgets.rect.move(0, 15).bottomleft
 
         ### instantiate widgets to add new local node packs
 
@@ -293,7 +296,7 @@ class NodePacksSelectionChangeForm(Object2D):
             coordinates_value=topleft,
         )
 
-        self.widgets.append(add_local_node_packs_label)
+        widgets.append(add_local_node_packs_label)
 
         ## add local node packs button
 
@@ -317,12 +320,12 @@ class NodePacksSelectionChangeForm(Object2D):
             coordinates_value=midleft,
         )
 
-        self.widgets.append(add_local_node_packs_button)
+        widgets.append(add_local_node_packs_button)
 
         ### update the topleft to a value a bit below
         ### the bottomleft corner of the widgets already
         ### in the versatile list
-        topleft = self.widgets.rect.move(0, 15).bottomleft
+        topleft = widgets.rect.move(0, 15).bottomleft
 
         ### instantiate widgets to add new installed node packs
 
@@ -339,7 +342,7 @@ class NodePacksSelectionChangeForm(Object2D):
             coordinates_value=topleft,
         )
 
-        self.widgets.append(add_installed_node_packs_label)
+        widgets.append(add_installed_node_packs_label)
 
         ## add installed node packs entry
 
@@ -354,7 +357,7 @@ class NodePacksSelectionChangeForm(Object2D):
             coordinates_value=midleft,
         )
 
-        self.widgets.append(self.add_installed_node_packs_entry)
+        widgets.append(self.add_installed_node_packs_entry)
 
         ## add installed node packs button
 
@@ -380,10 +383,10 @@ class NodePacksSelectionChangeForm(Object2D):
             coordinates_value=midleft,
         )
 
-        self.widgets.append(add_installed_node_packs_button)
+        widgets.append(add_installed_node_packs_button)
 
         ### obtain a topleft from the widgets' bottomleft
-        topleft = self.widgets.rect.move(0, 20).bottomleft
+        topleft = widgets.rect.move(0, 20).bottomleft
 
         ### instantiate panel to indicate pack list below it
 
@@ -396,7 +399,7 @@ class NodePacksSelectionChangeForm(Object2D):
 
         self.panel_bg = self.pack_list_panel.image.copy()
 
-        self.widgets.append(self.pack_list_panel)
+        widgets.append(self.pack_list_panel)
 
         ### create and store behaviour for cancelling form
         ### edition (equivalent to setting the form data to
@@ -413,34 +416,82 @@ class NodePacksSelectionChangeForm(Object2D):
 
         ## apply changes button
 
-        self.apply_changes_button = Button.from_text(
+        apply_changes_button = Button.from_text(
             text="Apply changes",
             command=self.apply_changes,
             **BUTTON_SETTINGS,
         )
 
-        draw_depth_finish(self.apply_changes_button.image)
+        draw_depth_finish(apply_changes_button.image)
 
-        self.apply_changes_button.rect.topright = self.widgets.rect.move(
+        apply_changes_button.rect.topright = widgets.rect.move(
             0, 20
         ).bottomright
 
         ## cancel button
 
-        self.cancel_button = Button.from_text(
+        cancel_button = Button.from_text(
             text=(t.editing.change_node_packs_form.cancel),
             command=self.cancel,
             **BUTTON_SETTINGS,
         )
 
-        draw_depth_finish(self.cancel_button.image)
+        draw_depth_finish(cancel_button.image)
 
-        self.cancel_button.rect.midright = self.apply_changes_button.rect.move(
+        cancel_button.rect.midright = apply_changes_button.rect.move(
             -5, 0
         ).midleft
 
-        ## store
-        self.widgets.extend((self.cancel_button, self.apply_changes_button))
+        ## store buttons
+        widgets.extend((cancel_button, apply_changes_button))
+
+        ### instantiate help button to display manual chapter about how
+        ### to load nodes
+
+        help_icon = (
+            render_layered_icon(
+                chars=[chr(ordinal) for ordinal in (167, 92, 93, 168)],
+                dimension_name="height",
+                dimension_value=21,
+                colors=[BLACK, BLACK, WHITE, (30, 130, 70)],
+                background_width=21,
+                background_height=21,
+            )
+        )
+
+        text_surf = (
+            render_text(
+                text="How to load nodes",
+                font_height= ENC_SANS_BOLD_FONT_HEIGHT,
+                font_path= ENC_SANS_BOLD_FONT_PATH,
+                foreground_color= BUTTON_FG,
+                background_color= BUTTON_BG,
+            )
+        )
+
+        button_surf = (
+            combine_surfaces(
+                surfaces=[help_icon, text_surf],
+                retrieve_pos_from="midright",
+                assign_pos_to="midleft",
+                offset_pos_by=(5, 0),
+                padding=4,
+                background_color=BUTTON_BG,
+            )
+        )
+
+        draw_depth_finish(button_surf)
+
+        show_loading_nodes_page = partial(
+            open_htsl_link,
+            "htap://manual.nodezator.pysite/ch-loading-nodes.htsl",
+        )
+
+        help_button = Button(button_surf, command=show_loading_nodes_page)
+
+        help_button.rect.bottomleft = widgets.rect.bottomleft
+
+        widgets.append(help_button)
 
     def pick_chosen_node_pack(self):
 
