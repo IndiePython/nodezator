@@ -301,17 +301,37 @@ class NodePackNotImportedError(ModuleNotFoundError):
 class NodePackNotFoundError(Exception):
     """Raised when a node pack isn't found."""
 
+    def __init__(self, message, faulty_pack):
+
+        self.faulty_pack = faulty_pack
+        super().__init__(message)
+
 
 class NodePackNotADirectoryError(NotADirectoryError):
     """Raised when the node pack path isn't a directory."""
+
+    def __init__(self, message, faulty_pack):
+
+        self.faulty_pack = faulty_pack
+        super().__init__(message)
 
 
 class NodePackLackingCategoryError(Exception):
     """Raised when node pack hasn't at least 01 category."""
 
+    def __init__(self, message, faulty_pack):
+
+        self.faulty_pack = faulty_pack
+        super().__init__(message)
+
 
 class CategoryLackingScriptDirectoryError(Exception):
     """Raised when category hasn't at least 01 script dir."""
+
+    def __init__(self, message, faulty_pack):
+
+        self.faulty_pack = faulty_pack
+        super().__init__(message)
 
 
 class ScriptDirectoryLackingScriptError(Exception):
@@ -325,21 +345,16 @@ class ScriptDirectoryLackingScriptError(Exception):
         script_file,
     ):
 
-        if type(node_pack) == str:
-            message = (
-                f"The '{script_dir.name}' script of the"
-                f" '{category_dir.name}' category of the"
-                f" 'installed '{node_pack}' node pack is missing its"
-                f" '{script_file.name}' script file"
-            )
+        pack_kind = 'installed' if type(node_pack) == str else 'local'
 
-        else:
-            message = (
-                f"The '{script_dir.name}' script of the"
-                f" '{category_dir.name}' category of the"
-                f" '{node_pack} node pack is missing its"
-                f" '{script_file.name}' script file"
-            )
+        message = (
+            f"The '{script_dir.name}' script of the"
+            f" '{category_dir.name}' category of the"
+            f" '{node_pack}' {pack_kind} node pack is missing"
+            f" its '{script_file.name}' script file"
+        )
+
+        self.faulty_pack = node_pack
 
         super().__init__(message)
 

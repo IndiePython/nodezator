@@ -80,7 +80,10 @@ def check_local_node_packs(node_packs):
 
         if not path.exists():
 
-            raise NodePackNotFoundError(f"the '{path}' node pack path" " wasn't found")
+            raise NodePackNotFoundError(
+                f"the '{path}' node pack path wasn't found",
+                path,
+            )
 
     ### check whether node packs are directories
 
@@ -89,7 +92,8 @@ def check_local_node_packs(node_packs):
         if not path.is_dir():
 
             raise NodePackNotADirectoryError(
-                f"the '{path}' node pack isn't a" " directory"
+                f"the '{path}' node pack isn't a directory",
+                path,
             )
 
     ### check whether each node pack has at least
@@ -108,7 +112,8 @@ def check_local_node_packs(node_packs):
         if not category_folders:
 
             raise NodePackLackingCategoryError(
-                f"node pack '{node_pack}' must have at least 1 category"
+                f"node pack '{node_pack}' must have at least 1 category",
+                node_pack,
             )
 
         for category_folder in category_folders:
@@ -124,9 +129,12 @@ def check_local_node_packs(node_packs):
             if not script_dirs:
 
                 raise CategoryLackingScriptDirectoryError(
-                    f"category dir '{category_folder}'"
-                    " must have at least 1 script"
-                    " directory"
+                    (
+                        f"category dir '{category_folder}'"
+                        " must have at least 1 script"
+                        " directory"
+                    ),
+                    node_pack,
                 )
 
             for script_dir in script_dirs:
@@ -157,6 +165,7 @@ def check_installed_node_packs(node_packs):
             node_pack_module = import_module(name)
 
         except ModuleNotFoundError:
+
             raise NodePackNotImportedError(
                 f"the '{name}' node pack,"
                 " expected to be installed, could not be imported"
@@ -181,7 +190,8 @@ def check_installed_node_packs(node_packs):
         if not category_folders:
 
             raise NodePackLackingCategoryError(
-                f"installed node pack '{name}' must have at least 1 category"
+                f"installed node pack '{name}' must have at least 1 category",
+                name,
             )
 
         for category_folder in category_folders:
@@ -197,9 +207,12 @@ def check_installed_node_packs(node_packs):
             if not script_dirs:
 
                 raise CategoryLackingScriptDirectoryError(
-                    f"category dir '{category_folder.name}'"
-                    f" from installed node pack '{name}' must have at least 1 script"
-                    " directory"
+                    (
+                        f"category dir '{category_folder.name}'"
+                        f" from installed node pack '{name}' "
+                        "must have at least 1 script directory"
+                    ),
+                    name,
                 )
 
             for script_dir in script_dirs:

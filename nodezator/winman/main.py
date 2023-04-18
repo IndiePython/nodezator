@@ -220,8 +220,10 @@ class WindowManager(
             ### packs don't exist or are somehow faulty
 
             original_local_node_packs = (
-                current_local_node_packs
-            ) = get_formatted_local_node_packs(APP_REFS.source_path)
+                get_formatted_local_node_packs(APP_REFS.source_path)
+            )
+
+            current_local_node_packs = original_local_node_packs.copy()
 
             local_node_packs_are_ok = True
 
@@ -239,7 +241,7 @@ class WindowManager(
                     )
 
                     options = (
-                        ("Select new local node packs", "select"),
+                        ("Select replacement/new path", "select"),
                         ("Cancel loading file", "cancel"),
                     )
 
@@ -251,9 +253,16 @@ class WindowManager(
 
                     if answer == "select":
 
-                        current_local_node_packs = select_paths(
-                            caption="Select new local node packs"
+                        result = select_paths(
+                            caption="Select replacement/new path for local node pack"
                         )
+
+                        if result:
+
+                            current_local_node_packs.remove(err.faulty_pack)
+
+                            replacement = result[0]
+                            current_local_node_packs.append(replacement)
 
                     else:
 
