@@ -467,7 +467,7 @@
 
 <h2>Option tray widget</h2>
 
-<p>Same configuration as the option menu, but remember: all the options must fit within the node's width.</p>
+<p>It has the same configuration as the option menu, but the <i>widget_name</i> must be <i>option_tray</i>. Also remember that all the options must fit within the node's width.</p>
 
 <h2>Sorting button widget</h2>
 
