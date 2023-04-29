@@ -65,7 +65,7 @@ third_party_import_text = 'from numpy import save'
 
 </blockquote>
 
-<p>Fortunately, solving that is trivial and require only a single extra step: that you provide the signature yourself by defining a dummy function. The function doesn't need a body or any code, just the <b>def statement</b> suffices. Here's an example of a __main__.py file where we turn <a href="https://www.pygame.org/docs/ref/image.html#pygame.image.save">pygame.image.save()</a> into a node, even though it is inherently incompatible with inspect.signature():</p>
+<p>Fortunately, solving that is trivial and require only a single extra step: that you provide the signature yourself by defining a dummy function. The function doesn't need a body or any code, just the <b>def statement</b> suffices. Here's an example of a __main__.py file where we turn <a href="https://www.pyga.me/docs/ref/image.html#pygame.image.save">pygame.image.save()</a> into a node, even though it is inherently incompatible with inspect.signature():</p>
 
 <python>
 ### providing a signature for an incompatible callable
@@ -121,7 +121,7 @@ signature_callable = _sqrt
 
 <p>Some callables, besides not being compatible with inspect.signature(), also <b>have more than 01 signature</b>.</p>
 
-<p>For instance, the <a href="https://www.pygame.org/docs/ref/rect.html#pygame.Rect">pygame.Rect</a> class has 03 different signatures:</p>
+<p>For instance, the <a href="https://www.pyga.me/docs/ref/rect.html#pygame.Rect">pygame.Rect</a> class has 03 different signatures:</p>
 
 <ul>
   <li>Rect(top, left, width, height) -&gt; Rect</li>

@@ -323,8 +323,8 @@ def get_powered_link_objs():
         ),
         (
             (IMAGE_SURFS_DB["pygame_logo.png"][{"use_alpha": True}]),
-            "pygame",
-            "https://pygame.org/",
+            "pygame-ce",
+            "https://pyga.me/",
         ),
     )
 

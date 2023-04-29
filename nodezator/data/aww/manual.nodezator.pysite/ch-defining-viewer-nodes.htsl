@@ -56,7 +56,7 @@ main_callable = view_points
 
 <p>By dismissing execution time tracking in viewer nodes we keep our total execution time relevant. Dismissing execution time tracking in viewer nodes is <b>not needed, but highly recommended</b> for the reason we just discussed.</p>
 
-<p>The only thing our viewer node needs now is to implement its own loop. This is actually pretty simple because Nodezator uses <a href="https://pygame.org">pygame</a> as its GUI and pygame either exposes all needed objects to define and run our own loop or at least provides ways to create such objects.</p>
+<p>The only thing our viewer node needs now is to implement its own loop. This is actually pretty simple because Nodezator uses <a href="https://pyga.me">pygame-ce</a> as its GUI and pygame-ce either exposes all needed objects to define and run our own loop or at least provides ways to create such objects.</p>
 
 <p>So, in other words, we'll just <b>create a pygame loop</b> like any other. This has nothing to do with Nodezator, we use pure pygame API. Here's the full code, extensively commented:</p>
 
