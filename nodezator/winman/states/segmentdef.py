@@ -95,7 +95,7 @@ class SegmentDefinitionState:
         ### if you don't break out of the loop, cancel
         ### the segment definition behaviour, this
         ### automatically triggers the restart of the
-        ### loop, so there's the execution flow of this
+        ### loop, so that the execution flow of this
         ### method won't go past this point
         else:
             APP_REFS.gm.cancel_defining_segment()
