@@ -267,29 +267,3 @@ KEYWORD_KEY_SURF = render_layered_icon(
     background_width=16,
     background_height=16,
 )
-
-
-###### create a map to hold body surfaces for nodes whose
-###### signatures don't have variable parameters
-NO_VARPARAM_NODE_BODY_MAP = {}
-
-
-def free_up_memory():
-    """Clear accumulated data that won't be reused.
-
-    Used just before loading a new file, so data
-    accumulated from the edition of the previous file
-    isn't kept around now that another file is being
-    loaded.
-
-    Additionally, it might be possible that the file
-    being loaded is just the current file being reloaded.
-
-    There should be memory saving regardless of whether
-    or not the file being reloaded is the current one,
-    since users may not instantiate the same kind of nodes
-    again in the new session, thus saving space used by
-    the bodies of such nodes.
-    """
-    ### clear map holding surfaces
-    NO_VARPARAM_NODE_BODY_MAP.clear()

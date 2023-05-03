@@ -81,7 +81,6 @@ def create_var_parameter_objs(self, param_obj):
     wl_flmap = self.widget_live_flmap
     sui_flmap = self.subparam_unpacking_icon_flmap
     skl_map = self.subparam_keyword_entry_live_map
-    wab_flmap = self.widget_add_button_flmap
     wrb_flmap = self.widget_remove_button_flmap
     srm_map = self.subparam_rectsman_map
     pab_map = self.placeholder_add_button_map
@@ -96,7 +95,6 @@ def create_var_parameter_objs(self, param_obj):
     sdb_flmap[param_name] = {}
     wl_flmap[param_name] = {}
     sui_flmap[param_name] = {}
-    wab_flmap[param_name] = {}
     wrb_flmap[param_name] = {}
     srm_map[param_name] = {}
 
@@ -223,35 +221,10 @@ def create_var_parameter_objs(self, param_obj):
             widget_data = subwidgets_data[subparam_index]
 
         ## if the data isn't present (KeyError is
-        ## raised), then create an "add button"
-        ## so the user can add a widget if desired
+        ## raised), just pass
 
         except KeyError:
-
-            midleft = input_socket.rect.move(15, 0).midright
-
-            command = partial(
-                (APP_REFS.ea.widget_creation_popup_menu.trigger_simple_widget_picking),
-                self,
-                param_name,
-                input_socket,
-            )
-
-            button = Button(
-                surface=ADD_BUTTON_SURF,
-                command=command,
-                coordinates_name="midleft",
-                coordinates_value=midleft,
-            )
-
-            wab_flmap[param_name][subparam_index] = button
-
-            # this dict subclass need to be updated
-            # whenever it is changed
-            wab_flmap.update()
-
-            # store reference to button's rect
-            subrectsman_rects.append(button.rect)
+            pass
 
         ## otherwise instantiate widget and also a
         ## 'remove widget' button in case the user
@@ -270,18 +243,9 @@ def create_var_parameter_objs(self, param_obj):
             ## instantiating the widget
             kwargs = widget_data["widget_kwargs"]
 
-            ## put together position data for the widget
-            ## (widget topleft is positioned relative to the
-            ## input socket topright)
-
-            topleft_pos = input_socket.rect.move(15, -1).topright
-
-            pos_data = {"coordinates_name": "topleft", "coordinates_value": topleft_pos}
-
             ## instantiate the widget using the keyword
-            ## arguments as well as the position data;
-
-            widget = widget_cls(name=param_name, **kwargs, **pos_data)
+            ## arguments
+            widget = widget_cls(name=param_name, **kwargs)
 
             ## store the widget instance in the live
             ## map and set for widgets
@@ -291,16 +255,7 @@ def create_var_parameter_objs(self, param_obj):
             # updated whenever it is changed
             wl_flmap.update()
 
-            ## store reference to widget's rect
-            subrectsman_rects.append(widget.rect)
-
             ### create "remove widget" button
-
-            ## define midleft coordinates for the button
-
-            x = widget.rect.right
-
-            midleft = x, input_socket.rect.centery
 
             ## define command
 
@@ -311,8 +266,6 @@ def create_var_parameter_objs(self, param_obj):
             button = Button(
                 surface=REMOVE_BUTTON_SURF,
                 command=command,
-                coordinates_name="midleft",
-                coordinates_value=midleft,
             )
 
             wrb_flmap[param_name][subparam_index] = button
@@ -320,9 +273,6 @@ def create_var_parameter_objs(self, param_obj):
             # this dict subclass needs to be update
             # whenever it is changed
             wrb_flmap.update()
-
-            ## store reference to remove button's rect
-            subrectsman_rects.append(button.rect)
 
             ### also define a command to update the
             ### widget value in the node data and
@@ -335,6 +285,40 @@ def create_var_parameter_objs(self, param_obj):
             command = partial(update_with_widget, kwargs, "value", widget, button)
 
             widget.command = command
+
+            ## if the widget is visible (that is, input socket doesn't have
+            ## a parent), perform extra setups
+
+            has_parent = (
+
+                (
+                    (self.id, param_name, subparam_index)
+                    in APP_REFS.gm.parented_sockets
+                )
+                if hasattr(APP_REFS.gm, 'parented_sockets')
+
+                else hasattr(input_socket, 'parent')
+
+            )
+
+            if not has_parent:
+
+                ## put together position data for the widget
+                ## (widget topleft is positioned relative to the
+                ## input socket topright)
+                widget.rect.topleft = input_socket.rect.move(15, -1).topright
+
+                ## define midleft coordinates for the button
+                button.rect.midleft = widget.rect.right, input_socket.rect.centery
+
+                ##
+                self.visible_widgets.append(widget)
+                self.visible_remove_widget_buttons(button)
+
+                ## store references to widget and remove button' rects
+
+                subrectsman_rects.append(widget.rect)
+                subrectsman_rects.append(button.rect)
 
         ## at this point we already need the
         ## rects manager for this subparameter,

@@ -463,7 +463,6 @@ class SubparameterHandling(
             self.subparam_up_button_flmap[param_name],
             self.subparam_down_button_flmap[param_name],
             self.widget_live_flmap[param_name],
-            self.widget_add_button_flmap[param_name],
             self.widget_remove_button_flmap[param_name],
             self.subparam_rectsman_map[param_name],
         )

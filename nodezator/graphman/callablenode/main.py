@@ -12,6 +12,8 @@ from .vizprep.main import VisualRelatedPreparations
 
 from .vizop.main import VisualRelatedOperations
 
+from .paramsegment import ParameterSegmentOps
+
 from .subparam.main import SubparameterHandling
 
 from .execution import Execution
@@ -23,6 +25,7 @@ class CallableNode(
     Preprocessing,
     VisualRelatedPreparations,
     VisualRelatedOperations,
+    ParameterSegmentOps,
     SubparameterHandling,
     Execution,
     Exporting,
@@ -172,3 +175,26 @@ class CallableNode(
 
         ### initialize execution-related objects
         self.create_execution_support_objects()
+
+    def signal_connection(self, input_socket):
+        ### if given socket is from a subparameter,
+        ### perform related setups
+
+        if input_socket.subparameter_index is not None:
+            self.perform_subparam_connection_setups(input_socket)
+
+        ### otherwise, perform setups for regular parameter
+        else:
+            self.perform_param_connection_setups(input_socket)
+
+    def signal_severance(self, input_socket):
+
+        ### if given socket is from a subparameter,
+        ### perform related setups
+
+        if input_socket.subparameter_index is not None:
+            self.perform_subparam_severance_setups(input_socket)
+
+        ### otherwise, perform setups for regular parameter
+        else:
+            self.perform_param_severance_setups(input_socket)

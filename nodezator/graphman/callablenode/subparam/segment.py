@@ -17,7 +17,6 @@ from ....widget.stringentry import StringEntry
 from ....rectsman.main import RectsManager
 
 from ..surfs import (
-    ADD_BUTTON_SURF,
     SUBP_UP_BUTTON_SURF,
     SUBP_DOWN_BUTTON_SURF,
 )
@@ -116,40 +115,6 @@ class SegmentOps:
         # gather the button's rect
         subrectsman_rects.append(subp_down_button.rect)
 
-        ### create a new "add widget" button to be put
-        ### alongside the created socket,
-        ### so that users can optionally create a
-        ### subparameter widget for the input socket
-        ### whenever they want
-
-        midleft = input_socket.rect.move(15, 0).midright
-
-        command = partial(
-            (APP_REFS.ea.widget_creation_popup_menu.trigger_simple_widget_picking),
-            self,
-            param_name,
-            input_socket,
-        )
-
-        button = Button(
-            surface=ADD_BUTTON_SURF,
-            command=command,
-            coordinates_name="midleft",
-            coordinates_value=midleft,
-        )
-
-        wab_flmap = self.widget_add_button_flmap
-
-        wab_flmap[param_name][subparam_index] = button
-
-        ## this custom dict subclass also need its
-        ## "update" method executed whenever it is
-        ## changed
-        wab_flmap.update()
-
-        ## gather the add button's rect
-        subrectsman_rects.append(button.rect)
-
         ## with the gathered rects, we already
         ## create a subrectsman for this subparameter
         ## (even though we may yet need to add the
@@ -226,7 +191,66 @@ class SegmentOps:
         ### socket created
         return input_socket
 
-    def react_to_severance(self, input_socket):
+    def perform_subparam_connection_setups(self, input_socket):
+        """If there's a widget, hide it."""
+        ### obtain parameter name and subparameter index
+        ### from input socket
+
+        param_name = input_socket.parameter_name
+        subparam_index = input_socket.subparameter_index
+
+        ### use the parameter name to obtain a map of
+        ### subparameter widgets
+        subparam_widgets = self.widget_live_flmap[param_name]
+
+        ### try accessing a widget instance for the
+        ### subparameter using its index
+        try:
+            widget = subparam_widgets[subparam_index]
+
+        ### if the attempt fails, no additional measure is
+        ### needed, so we must return right away
+
+        except KeyError:
+            return
+
+        ### otherwise, if the widget is already hidden, we
+        ### return right away as well
+        else:
+
+            if widget not in self.visible_widgets:
+                return
+
+        ### otherwise, the widget and its respective
+        ### remove button must be hidden and additional measures
+        ### must be taken
+
+        ### retrieve button instance
+        button = self.widget_remove_button_flmap[param_name][subparam_index]
+
+        ###
+        self.visible_widgets.remove(widget)
+        self.visible_remove_widget_buttons.remove(button)
+
+        ###
+
+        subrectsman_rects = (
+            self.subparam_rectsman_map[param_name][subparam_index]
+            ._get_all_rects.__self__
+        )
+
+        ###
+        subrectsman_rects.remove(widget.rect)
+        subrectsman_rects.remove(button.rect)
+
+        ## reposition all objects within the node
+        self.reposition_elements()
+
+        ### also perform extra admin tasks, related to
+        ### the change in the node body's height
+        self.perform_body_height_change_setups()
+
+    def perform_subparam_severance_setups(self, input_socket):
         """Check need to react to severance.
 
         Works by checking if input socket which just lost
@@ -257,7 +281,7 @@ class SegmentOps:
         ### try accessing a widget instance for the
         ### subparameter using its index
         try:
-            subparam_widgets[subparam_index]
+            widget = subparam_widgets[subparam_index]
 
         ### if the attempt fails, then the recently severed
         ### input socket must be removed, since it has no
@@ -330,14 +354,6 @@ class SegmentOps:
 
                 (self.data["subparam_keyword_map"].pop(subparam_index))
 
-            ## remove the add widget button for the
-            ## subparameter
-
-            (self.widget_add_button_flmap[param_name].pop(subparam_index))
-
-            # this special dict subclass instance must
-            # be updated whenever it is changed
-            self.widget_add_button_flmap.update()
 
             ## also update the rectsman hierarchy in order
             ## to take the removal of the subparameter into
@@ -367,8 +383,38 @@ class SegmentOps:
             ### the change in the node body's height
             self.perform_body_height_change_setups()
 
-        ### if accessing the widget is sucessful, then no
-        ### additional measure is needed, since the input
-        ### socket is kept because it has a source of data
-        ### (the widget); this is why this try/except clause
-        ### doesn't need an additional 'else' clause;
+        ### if accessing the widget is sucessful...
+
+        else:
+
+            ### retrieve button instance
+            button = self.widget_remove_button_flmap[param_name][subparam_index]
+
+            ### position widget
+            widget.rect.topleft = input_socket.rect.move(15, -1).topright
+
+            ### position button
+            button.rect.midleft = widget.rect.right, input_socket.rect.centery
+
+            ###
+            self.visible_widgets.append(widget)
+
+            ###
+            self.visible_remove_widget_buttons.append(button)
+
+            ###
+            subrectsman_rects = (
+                self.subparam_rectsman_map[param_name][subparam_index]
+                ._get_all_rects.__self__
+            )
+
+            ###
+            subrectsman_rects.append(widget.rect)
+            subrectsman_rects.append(button.rect)
+
+            ## reposition all objects within the node
+            self.reposition_elements()
+
+            ### also perform extra admin tasks, related to
+            ### the change in the node body's height
+            self.perform_body_height_change_setups()

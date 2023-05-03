@@ -179,18 +179,29 @@ class InputSocket(Socket):
             )
         )
 
+    def signal_connection(self):
+        """Signal connection of segment to node.
+
+        Used to make the node aware of connection, so
+        measures can be taken, if needed.
+        """
+        try: method = self.node.signal_connection
+        except AttributeError:
+            pass
+        else:
+            method(self)
+
     def signal_severance(self):
         """Signal severance of segment to node.
-
-        Only applies if this input socket represents
-        a subparameter (in which case its
-        'subparameter_index' attribute is not None).
 
         Used to make the node aware of severance, so
         measures can be taken, if needed.
         """
-        if self.subparameter_index is not None:
-            self.node.react_to_severance(self)
+        try: method = self.node.signal_severance
+        except AttributeError:
+            pass
+        else:
+            method(self)
 
     def receive_input(self, data):
         """Send received input to node.

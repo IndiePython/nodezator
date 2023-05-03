@@ -61,11 +61,10 @@ class VisualRelatedOperations:
         ### object if available
 
         for obj in chain(
-            self.live_widgets,
+            self.visible_widgets,
             self.live_keyword_entries,
             self.placeholder_add_buttons,
-            self.widget_add_buttons,
-            self.widget_remove_buttons,
+            self.visible_remove_widget_buttons,
             self.subparam_up_buttons,
             self.subparam_down_buttons,
             self.input_sockets,
@@ -139,11 +138,10 @@ class VisualRelatedOperations:
 
         for obj in chain(
             self.background_and_text_elements,
-            self.live_widgets,
+            self.visible_widgets,
             self.live_keyword_entries,
             self.placeholder_add_buttons,
-            self.widget_add_buttons,
-            self.widget_remove_buttons,
+            self.visible_remove_widget_buttons,
             self.subparam_up_buttons,
             self.subparam_down_buttons,
             self.unpacking_icons,

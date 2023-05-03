@@ -301,7 +301,6 @@ class VisualRelatedPreparations(BodySetupOperations):
         ### create maps to hold button instances
         ### for subparameters and for placeholder sockets
 
-        self.widget_add_button_flmap = FlatListDict()
         self.widget_remove_button_flmap = FlatListDict()
         self.placeholder_add_button_map = {}
 
@@ -347,8 +346,6 @@ class VisualRelatedPreparations(BodySetupOperations):
 
         self.live_widgets = self.widget_live_flmap.flat_values
 
-        self.widget_add_buttons = self.widget_add_button_flmap.flat_values
-
         self.widget_remove_buttons = self.widget_remove_button_flmap.flat_values
 
         self.unpacking_icons = self.subparam_unpacking_icon_flmap.flat_values
@@ -364,6 +361,14 @@ class VisualRelatedPreparations(BodySetupOperations):
         ### instances for each group of objects related to
         ### a specific subparameter
         self.subparam_rectsman_map = {}
+
+        ### create a list to hold instances of visible widgets (widgets are
+        ### visible when there are no connections to the corresponding
+        ### input socket)
+        self.visible_widgets = []
+
+        ### create a list to hold instances of remove widget buttons
+        self.visible_remove_widget_buttons = []
 
         ### iterate over each parameter, instantiating its
         ### related widgets
@@ -404,7 +409,6 @@ class VisualRelatedPreparations(BodySetupOperations):
         ### update values in flat list dict instances
         ### related to subparameters
 
-        self.widget_add_button_flmap.update()
         self.widget_remove_button_flmap.update()
 
         self.subparam_up_button_flmap.update()

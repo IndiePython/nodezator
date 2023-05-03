@@ -409,10 +409,7 @@ class Exporting:
 
         ### buttons
 
-        for button in chain(
-            self.placeholder_add_buttons,
-            self.widget_add_buttons,
-        ):
+        for button in self.placeholder_add_buttons:
 
             button_rect = button.rect.inflate(-2, -2)
 
@@ -433,7 +430,7 @@ class Exporting:
                 )
             )
 
-        for button in self.widget_remove_buttons:
+        for button in self.visible_remove_widget_buttons:
 
             button_rect = button.rect.inflate(-2, -2)
 
@@ -577,7 +574,10 @@ class Exporting:
 
                 text_y_str = str(
                     value.rect.top - 5
-                    if param_name in widget_live_flmap
+                    if (
+                        param_name in widget_live_flmap
+                        and widget_live_flmap[param_name] in self.visible_widgets
+                    )
                     else value.rect.centery + 4
                 )
 
@@ -697,8 +697,7 @@ class Exporting:
         )
 
         ### widgets
-
-        node_g.extend([widget.svg_repr() for widget in widget_live_flmap.flat_values])
+        node_g.extend([widget.svg_repr() for widget in self.visible_widgets])
 
         ## output
 
@@ -746,12 +745,11 @@ class Exporting:
 
         for obj in chain(
             self.background_and_text_elements,
-            self.live_widgets,
+            self.visible_widgets,
             self.live_keyword_entries,
             self.unpacking_icons,
             self.placeholder_add_buttons,
-            self.widget_add_buttons,
-            self.widget_remove_buttons,
+            self.visible_remove_widget_buttons,
             self.subparam_up_buttons,
             self.subparam_down_buttons,
             self.input_sockets,

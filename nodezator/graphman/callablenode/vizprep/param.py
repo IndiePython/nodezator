@@ -8,6 +8,8 @@ from functools import partial
 
 ### local imports
 
+from ....config import APP_REFS
+
 from ...widget.utils import WIDGET_CLASS_MAP
 
 from ..utils import update_with_widget
@@ -107,19 +109,11 @@ def create_parameter_objs(self, param_obj):
         ## instantiating the widget
         kwargs = param_widget_meta["widget_kwargs"]
 
-        ## put together position data for the widget
-        ## (widget topleft is positioned relative to the
-        ## input socket topright)
-
-        topleft_pos = input_socket.rect.move(8, -1).topright
-
-        pos_data = {"coordinates_name": "topleft", "coordinates_value": topleft_pos}
-
         ## instantiate the widget using the keyword arguments
         ## as well as the position data
 
         try:
-            widget = widget_cls(name=param_name, **kwargs, **pos_data)
+            widget = widget_cls(name=param_name, **kwargs)
 
         except Exception as err:
 
@@ -177,16 +171,36 @@ def create_parameter_objs(self, param_obj):
 
         widget.command = command
 
+        ## if widget is visible (that is, it doesn't a parent)...
+
+        has_parent = (
+
+            (self.id, param_name) in APP_REFS.gm.parented_sockets
+            if hasattr(APP_REFS.gm, 'parented_sockets')
+
+            else hasattr(input_socket, 'parent')
+
+        )
+
+        if not has_parent:
+
+            ## position widget
+            ## (widget topleft is positioned relative to the
+            ## input socket topright)
+            widget.rect.topleft = input_socket.rect.move(8, -1).topright
+
+            ## store widget in list of visible ones
+            self.visible_widgets.append(widget)
+
+            ### gather the widget's rect
+            rectsman_rects.append(widget.rect)
+
         ## store the widget instance in the live map
-        ## and set for widgets
         self.widget_live_flmap[param_name] = widget
 
         # this dict subclass instance must be updated
         # whenever it is changed
         self.widget_live_flmap.update()
-
-        ### gather the widget's rect
-        rectsman_rects.append(widget.rect)
 
     ### instantiate and store a RectsManager for the
     ### gathered rects in this parameter

@@ -53,8 +53,6 @@ from .socketparenthood.main import SocketParenthood
 
 from .execution import Execution
 
-## function for memory freeing
-from .callablenode.surfs import free_up_memory
 
 ## function for representing graph as python code
 from .pythonrepr import python_repr
@@ -104,16 +102,26 @@ class GraphManager(
         ### them as specifications for nodes
         load_scripts(data["node_packs"], data["installed_node_packs"])
 
+        ### store reference to value in the PARENT_SOCKETS_KEY
+        ### key from the native data
+        self.parent_sockets_data = data.setdefault(PARENT_SOCKETS_KEY, [])
+
+        ### create a set containing ids of parented input sockets
+
+        self.parented_sockets = frozenset(
+            child['id']
+            for a_dict in self.parent_sockets_data
+            for child in a_dict['children']
+        )
+
         ### instantiate nodes
         self.instantiate_nodes()
 
-        ### retrieve the value in the PARENT_SOCKETS_KEY
-        ### key from the native data and pass it to related
-        ### method to perform needed setups
+        ### delete the set created previously
+        del self.parented_sockets
 
-        parent_sockets_data = data.setdefault(PARENT_SOCKETS_KEY, [])
-
-        self.setup_parent_sockets_data(parent_sockets_data)
+        ### execute method to perform socket parenting setups
+        self.setup_parent_sockets_data()
 
         ### retrieve the value in the TEXT_BLOCKS_KEY key
         ### from the file data and store in an attribute
@@ -251,9 +259,6 @@ class GraphManager(
         the past session may not be needed anymore in
         the new session.
         """
-        ### free memory from node body surfaces
-        free_up_memory()
-
         ### clear collections containing native file data,
         ### node instances and text block instances
 

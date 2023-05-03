@@ -240,9 +240,6 @@ class SupportOperations:
 
         except AttributeError:
 
-            # make it so socket_a has None as its parent
-            socket_a.parent = None
-
             # add it to self.parents
             self.parents.append(socket_a)
 
@@ -297,9 +294,8 @@ class SupportOperations:
         except AttributeError:
             pass
 
-        ### if it has, though, it is a proxy socket, so use
-        ### the retrieved method to perform extra setups
-        ### needed
+        ### if it has, though, use the retrieved method to
+        ### perform extra setups needed
         else:
             signal_connection()
 

@@ -18,7 +18,7 @@ class SocketParenthood(
     SupportOperations,
     ExportOperations,
 ):
-    def setup_parent_sockets_data(self, parent_sockets_data):
+    def setup_parent_sockets_data(self):
         """Store data and perform setups.
 
         Setups performed:
@@ -33,17 +33,13 @@ class SocketParenthood(
             retrieve data about socket trees whenever
             needed.
         """
-        ### store the socket trees data in a dedicated
-        ### attribute
-        self.parent_sockets_data = parent_sockets_data
-
         ### iterate over the data for each tree in the
-        ### socket trees attribute, grabbing references
-        ### for each socket in each tree and making it
-        ### so parents reference the children and
-        ### vice-versa; the parent of each tree is returned
-        ### in the process and gathered in a list stored
-        ### in the 'parents' attribute
+        ### parent sockets data attribute, grabbing references
+        ### for each socket in each tree and making it so parents
+        ### reference the children and vice-versa;
+        ###
+        ### the parent of each tree is returned in the process and
+        ### gathered in a list stored in the 'parents' attribute
 
         self.parents = [
             self.reference_parent_children(parent_data)
@@ -157,27 +153,23 @@ class SocketParenthood(
 
         ### reference parent and child among themselves
 
-        ## assign parent to socket
-        socket.parent = parent
+        ## if parent is not None...
 
-        ## try storing socket reference in list in
-        ## parent's children attribute
-        try:
-            parent.children.append(socket)
+        if parent is not None:
 
-        ## if list doesn't exist, we create it already
-        ## holding our socket
+            ## assign parent to socket
+            socket.parent = parent
 
-        except AttributeError:
-
-            # try assigning new list
+            ## try storing socket reference in list in
+            ## parent's children attribute
             try:
-                parent.children = [socket]
+                parent.children.append(socket)
 
-            # if this still fails, that's ok; we just
-            # pass, since it means the parent is None;
+            ## if list doesn't exist, we create it already
+            ## holding our socket
+
             except AttributeError:
-                pass
+                parent.children = [socket]
 
         ### if the tree data has a 'children' field,
         ### pass each of them to this method recursively;
