@@ -20,11 +20,11 @@ from ..constants import (
 )
 
 
-def reposition_elements(self):
-    """Reposition objects inside the node.
+def reposition_expanded_elements(self):
+    """Reposition objects inside the node in expanded signature mode.
 
     The repositioning is made from the input
-    downwards (the top rectsman don't need to be
+    downwards (the top rectsman doesn't need to be
     repositioned, it always stays at the same relative
     position within the node).
 
@@ -316,5 +316,12 @@ def reposition_elements(self):
 
     ### perform extra administrative task: updating
     ### the height of self.rect
-
     self.rect.height = bottom_rectsman.bottom - top_rectsman.top
+
+    ###
+
+    left = (self.input_rectsman if parameters else top_rectsman).left
+    right = (self.output_rectsman if osl_map else top_rectsman).right
+
+    self.rect.width = right - left
+    self.rect.midtop = top_rectsman.midtop

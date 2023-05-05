@@ -53,7 +53,7 @@ class Execution:
 
         self.expects_input_map.clear()
 
-        for input_socket in self.input_sockets:
+        for input_socket in self.input_socket_live_flmap.flat_values:
 
             ### use the parameter name as key
             key = input_socket.parameter_name

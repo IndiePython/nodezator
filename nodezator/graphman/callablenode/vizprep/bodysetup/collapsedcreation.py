@@ -1,9 +1,5 @@
 """Facility for visuals related node class extension."""
 
-### standard library import
-from itertools import chain
-
-
 ### third-party imports
 
 from pygame import Rect
@@ -13,6 +9,8 @@ from pygame.draw import line as draw_line
 
 ### local imports
 
+from .....config import APP_REFS
+
 from .....surfsman.draw import blit_aligned
 from .....surfsman.render import render_rect
 
@@ -20,10 +18,7 @@ from .....classes2d.single import Object2D
 
 from .....textman.render import render_text
 
-from ...surfs import (
-    BODY_HEAD_SURFS_MAP,
-    KEYWORD_KEY_SURF,
-)
+from ...surfs import BODY_HEAD_SURFS_MAP
 
 from ...constants import (
     NODE_WIDTH,
@@ -39,12 +34,9 @@ from .....colorsman.colors import (
 )
 
 
-### constant: rect from the keyword key surf
-KEYWORD_KEY_RECT = KEYWORD_KEY_SURF.get_rect()
 
-
-def create_body_surface(self):
-    """Create a surface for the node's body."""
+def get_collapsed_body_surface(self):
+    """Return surface for node's body in collapsed signature mode."""
     ### reference the top rectsman locally
     top_rectsman = self.top_rectsman
 
@@ -59,7 +51,6 @@ def create_body_surface(self):
     )
 
     ### create a surface for the body of the node
-
     body_surf = render_rect(NODE_WIDTH, body_height, node_light_bg_color)
 
     ### obtain body head surf from corresponding map
@@ -89,6 +80,9 @@ def create_body_surface(self):
 
     offset = tuple(-value for value in self.body.rect.topleft)
 
+    ### reference input socket map locally for easier/quick access
+    isl_flmap = self.input_socket_live_flmap
+
     ### iterate over the name of each parameter, blitting
     ### text surfaces representing them on the body of
     ### the node in the appropriate locations
@@ -114,11 +108,23 @@ def create_body_surface(self):
             var_kind = self.var_kind_map[param_name]
 
         ## if a KeyError is raised, then we have a regular
-        ## parameter here, and the position of the text rect
-        ## depend on whether there is a widget accompanying
-        ## the input socket...
+        ## parameter here...
 
         except KeyError:
+
+            ## skip this parameter if it doesn't have a parent
+
+            has_parent = (
+
+                (self.id, param_name) in APP_REFS.gm.parented_sockets_ids
+                if hasattr(APP_REFS.gm, 'parented_sockets_ids')
+
+                else hasattr(isl_flmap[param_name], 'parent')
+
+            )
+
+            if not has_parent:
+                continue
 
             ## position the text rect horizontally,
             ## 10 pixels from the left side of the
@@ -129,39 +135,55 @@ def create_body_surface(self):
             ## position the text rect vertically
 
             # retrieve the list of rects controlled by
-            # the rects manager of the parameter
+            # the rects manager of the parameter;
+            #
+            # the first one is the input socket's rect
             rect_list = param_rectsman._get_all_rects.__self__
+            input_socket_rect = rect_list[0]
 
-            # if there's more than 1 rect controlled by
-            # the parameter rectsman, than we can be sure
-            # it is a widget, in which case the text just
-            # hangs above the parameter rectsman, 2 pixels
-            # separating them
-
-            if len(param_rectsman._get_all_rects.__self__) > 1:
-
-                text_rect.bottom = param_rectsman.top
-                text_rect.top += -2
-
-            # otherwise, there is only the input socket
-            # in the parameters, so the text is positioned
-            # vertically centered on the input socket,
-            # lifted just 2 pixels up
-
-            else:
-
-                input_socket_rect = rect_list[0]
-                text_rect.centery = input_socket_rect.centery
-                text_rect.top += -2
+            # the text is positioned vertically centered on the
+            # input socket, lifted just 2 pixels up
+            text_rect.centery = input_socket_rect.centery
+            text_rect.top += -2
 
             ## define text
             text = param_name
 
         ## otherwise, we have a parameter of variable kind
-        ## here, and in such case the text always hangs
-        ## above the parameter rectsman, lifted 2 pixels up
+        ## here...
 
         else:
+
+            ## skip this parameter if none of its subparameters
+            ## has a parent
+
+            if hasattr(APP_REFS.gm, 'parented_sockets_ids'):
+
+                parented_sockets_ids = APP_REFS.gm.parented_sockets_ids
+
+                for subparam_index in isl_map[param_name]:
+
+                    if (self.id, param_name, subparam_index) in parented_sockets_ids:
+
+                        has_parent = True
+                        break
+
+                else:
+                    has_parent = False
+
+            else:
+
+                for input_socket in isl_flmap[param_name].values():
+
+                    if hasattr(input_socket, 'parent'):
+
+                        has_parent = True
+                        break
+                else:
+                    has_parent = False
+
+            if not has_parent:
+                continue
 
             ## position the text rect horizontally,
             ## 5 pixels from the left side of the node's
@@ -231,14 +253,27 @@ def create_body_surface(self):
     ## the text objects we'll be creating
     coordinates_name = "topright"
 
-    ## iterate over names of output sockets, creating
-    ## the text surface for each name and blitting it
-    ## on the body surface
+    ## iterate over names of output sockets;
+    ##
+    ## for those with children create the text surface
+    ## for their respective names and blit them in the
+    ## body surface
 
     for output_socket_name in ordered_socket_names:
 
         ## grab the output socket
         output_socket = osl_map[output_socket_name]
+
+        ## if the socket has children, skip
+
+        has_parent = (
+            (self.id, output_socket_name) in APP_REFS.gm.parent_sockets_ids
+            if hasattr(APP_REFS.gm, 'parent_sockets_ids')
+            else hasattr(output_socket, 'children')
+        )
+
+        if not has_parent:
+            continue
 
         ## align the text rect vertically with the
         ## output socket and lift the text rect 2 pixels;
@@ -322,58 +357,6 @@ def create_body_surface(self):
     line_y = BODY_HEAD_SURF.get_height()
 
     draw_line(body_surf, NODE_OUTLINE, (0, line_y), (body_surf.get_width(), line_y), 2)
-
-    ### if there's a keyword-variable parameter in the
-    ### node, blit the keyword key icon beside each
-    ### keyword entry or subparameter unpacking icon
-    ### for that parameter (if there's any subparameter);
-    ###
-    ### the motivation is purely aesthetic, but
-    ### from my experience the effect improves readability,
-    ### since it makes it easier to spot keyword entry
-    ### widgets among other entry widgets the node might
-    ### be using
-
-    if "var_key" in self.var_kind_map.values():
-
-        param_name = next(
-            key for key, value in self.var_kind_map.items() if value == "var_key"
-        )
-
-        for obj in chain(
-            self.live_keyword_entries,
-            (self.subparam_unpacking_icon_flmap[param_name].values()),
-        ):
-
-            ## obtain the midleft coordinates of the
-            ## object (a bit offset to left), but
-            ## changed so that it is relative to the origin
-            ## of the body surface
-
-            x, y = (
-                # get object's rect
-                obj.rect
-                # get new rect moved a bit to the left
-                .move(-2, 0)
-                # and yet another one moved from there so its
-                # position is relative to the origin of the
-                # body surface
-                .move(offset)
-                # then grab its midleft coordinates
-                .midleft
-            )
-
-            ## assign the midleft coordinates calculated
-            ## to the midright coordinates of
-            ## the keyword key's rect, then blit it in that
-            ## position
-
-            KEYWORD_KEY_RECT.midright = x, y
-
-            body_surf.blit(
-                KEYWORD_KEY_SURF,
-                KEYWORD_KEY_RECT,
-            )
 
     ### finally return the body surface
     return body_surf

@@ -10,8 +10,11 @@ from ...surfs import (
     UNPACKING_ICON_SURFS_MAP,
 )
 
-## function for injection
-from .creation import create_body_surface
+## functions for injection
+
+from .expandedcreation import get_expanded_body_surface
+from .collapsedcreation import get_collapsed_body_surface
+from .callablecreation import get_callable_body_surface
 
 
 class BodySetupOperations:
@@ -20,7 +23,9 @@ class BodySetupOperations:
     Class extension for the VisualRelatedPreparations class.
     """
 
-    create_body_surface = create_body_surface
+    get_expanded_body_surface = get_expanded_body_surface
+    get_collapsed_body_surface = get_collapsed_body_surface
+    get_callable_body_surface = get_callable_body_surface
 
     ### convenience methods to execute combinations of
     ### modular operations for specific purposes
@@ -57,7 +62,6 @@ class BodySetupOperations:
         ### the body height is equivalent to the interval
         ### between the top rectsman's bottom and the bottom
         ### rectsman's top
-
         new_body_height = self.bottom_rectsman.top - self.top_rectsman.bottom
 
         ### store the current height locally
@@ -104,8 +108,6 @@ class BodySetupOperations:
             ## otherwise, surfaces for uncommented nodes
             else (NORMAL_NODE_FOOT, *NORMAL_BOTTOM_CORNERS)
         )
-
-
 
     def assign_unpacking_icon_surfs(self):
         """Assign proper surfaces to unpacking icons, if any."""

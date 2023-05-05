@@ -8,9 +8,9 @@ from ...config import APP_REFS
 
 from .preproc import Preprocessing
 
-from .vizprep.main import VisualRelatedPreparations
+from .vizprep.main import VisualPreparations
 
-from .vizop.main import VisualRelatedOperations
+from .vizop.main import VisualOperations
 
 from .paramsegment import ParameterSegmentOps
 
@@ -21,10 +21,18 @@ from .execution import Execution
 from .export import Exporting
 
 
+##
+from .surfs import SIGMODE_TOGGLE_BUTTON_MAP
+
+
+
+EMPTY_TUPLE = ()
+
+
 class CallableNode(
     Preprocessing,
-    VisualRelatedPreparations,
-    VisualRelatedOperations,
+    VisualPreparations,
+    VisualOperations,
     ParameterSegmentOps,
     SubparameterHandling,
     Execution,
@@ -170,11 +178,82 @@ class CallableNode(
         ### subject to mouse click
         self.mouse_click_target = False
 
-        ### create visuals of the node
+        ### create visuals for node
         self.create_visual_elements()
+
+        ### perform mode-related setups
+        self.perform_mode_related_setups()
 
         ### initialize execution-related objects
         self.create_execution_support_objects()
+
+    def perform_mode_related_setups(self):
+
+        mode_name = self.data.get('mode', 'expanded_signature')
+
+        if mode_name == 'expanded_signature':
+
+            self.adjust_sigmode_toggle_button(mode_name)
+
+            self.reposition_elements = self.reposition_expanded_elements
+            self.create_body_surface = self.get_expanded_body_surface
+
+            self.input_sockets = self.input_socket_live_flmap.flat_values
+            self.output_sockets = self.output_socket_live_map.values()
+
+            self.yield_mouse_aware_objects = self.yield_mouse_aware_objects_in_expmode
+            self.yield_visible_objects = self.yield_visible_objects_in_expmode
+            self.yield_visible_sockets = self.yield_visible_sockets_in_expmode
+
+            self.rectsman = self.exp_rectsman
+
+        elif mode_name == 'collapsed_signature':
+
+            self.adjust_sigmode_toggle_button(mode_name)
+
+            self.reposition_elements = self.reposition_collapsed_elements
+            self.create_body_surface = self.get_collapsed_body_surface
+
+            self.input_sockets = self.visible_input_sockets
+            self.output_sockets = self.visible_output_sockets
+
+            self.yield_mouse_aware_objects = self.yield_mouse_aware_objects_in_colmode
+            self.yield_visible_objects = self.yield_visible_objects_in_colmode
+            self.yield_visible_sockets = self.yield_visible_sockets_in_colmode
+
+            self.rectsman = self.col_rectsman
+
+            self.collapse_unconnected_elements()
+
+        elif mode_name == 'callable':
+
+            self.create_body_surface = self.get_callable_body_surface
+            self.reposition_elements = self.reposition_callable_elements
+
+            self.input_sockets = EMPTY_TUPLE
+            self.output_sockets = self.callable_output_sockets
+
+            self.yield_mouse_aware_objects = self.yield_mouse_aware_objects_in_calmode
+            self.yield_visible_objects = self.yield_visible_objects_in_calmode
+            self.yield_visible_sockets = self.yield_visible_sockets_in_calmode
+
+            self.rectsman = self.cal_rectsman
+
+        ###
+        self.reposition_elements()
+        self.setup_body()
+
+    def adjust_sigmode_toggle_button(self, mode_name):
+
+        button = self.sigmode_toggle_button
+        button.rect.topleft = self.top_rectsman.move(2, 0).bottomleft
+
+        if mode_name == 'expanded_signature':
+            surf_index = 0
+        elif mode_name == 'collapsed_signature':
+            surf_index = 1
+
+        button.image = SIGMODE_TOGGLE_BUTTON_MAP[self.category_color][surf_index]
 
     def signal_connection(self, input_socket):
         ### if given socket is from a subparameter,
@@ -198,3 +277,7 @@ class CallableNode(
         ### otherwise, perform setups for regular parameter
         else:
             self.perform_param_severance_setups(input_socket)
+
+    def show_popup_menu(self, pos):
+        APP_REFS.ea.callable_node_popup_menu.show(self, pos)
+

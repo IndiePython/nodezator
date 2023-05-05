@@ -163,6 +163,33 @@ for surf in foot_surfs:
 
     draw_line(surf, NODE_OUTLINE, line_start, line_end, NODE_OUTLINE_THICKNESS)
 
+###### create map of surfaces for sigmode toggle button
+
+
+def get_button_surfs(bg_color):
+    """Create 2-tuple of surfaces with given background color."""
+
+    return tuple(
+
+        render_layered_icon(
+            chars=[chr(82)],
+            dimension_name="height",
+            dimension_value=8,
+            colors=[(255, 255, 255)],
+            background_width=10,
+            background_height=10,
+            offset_pos_by=(-1, -1),
+            rotation_degrees=rotation_degrees,
+            background_color=bg_color,
+        )
+
+        for rotation_degrees in (-180, -90)
+
+    )
+
+
+SIGMODE_TOGGLE_BUTTON_MAP = FactoryDict(get_button_surfs)
+
 
 ###### load and store other commonly used surfaces
 

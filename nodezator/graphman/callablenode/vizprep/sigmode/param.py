@@ -8,22 +8,22 @@ from functools import partial
 
 ### local imports
 
-from ....config import APP_REFS
+from .....config import APP_REFS
 
-from ...widget.utils import WIDGET_CLASS_MAP
+from ....widget.utils import WIDGET_CLASS_MAP
 
-from ..utils import update_with_widget
+from ...utils import update_with_widget
 
-from ...socket.surfs import type_to_codename
+from ....socket.surfs import type_to_codename
 
 
 ## classes for composition
 
-from ...socket.input import InputSocket
+from ....socket.input import InputSocket
 
-from ....widget.defaultholder import DefaultHolder
+from .....widget.defaultholder import DefaultHolder
 
-from ....rectsman.main import RectsManager
+from .....rectsman.main import RectsManager
 
 
 def create_parameter_objs(self, param_obj):
@@ -175,8 +175,8 @@ def create_parameter_objs(self, param_obj):
 
         has_parent = (
 
-            (self.id, param_name) in APP_REFS.gm.parented_sockets
-            if hasattr(APP_REFS.gm, 'parented_sockets')
+            (self.id, param_name) in APP_REFS.gm.parented_sockets_ids
+            if hasattr(APP_REFS.gm, 'parented_sockets_ids')
 
             else hasattr(input_socket, 'parent')
 

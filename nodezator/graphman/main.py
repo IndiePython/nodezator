@@ -106,9 +106,15 @@ class GraphManager(
         ### key from the native data
         self.parent_sockets_data = data.setdefault(PARENT_SOCKETS_KEY, [])
 
-        ### create a set containing ids of parented input sockets
+        ### create sets containing ids of parent output sockets and
+        ### parented input sockets
 
-        self.parented_sockets = frozenset(
+        self.parent_sockets_ids = frozenset(
+            a_dict['id']
+            for a_dict in self.parent_sockets_data
+        )
+
+        self.parented_sockets_ids = frozenset(
             child['id']
             for a_dict in self.parent_sockets_data
             for child in a_dict['children']
@@ -117,8 +123,10 @@ class GraphManager(
         ### instantiate nodes
         self.instantiate_nodes()
 
-        ### delete the set created previously
-        del self.parented_sockets
+        ### delete the sets created previously
+
+        del self.parent_sockets_ids
+        del self.parented_sockets_ids
 
         ### execute method to perform socket parenting setups
         self.setup_parent_sockets_data()

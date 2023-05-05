@@ -16,17 +16,25 @@ from ....config import APP_REFS
 
 from ....pygamesetup import SCREEN
 
-## function to extend class
-from .reposition import (
-    reposition_elements,
-)
+## functions to extend class
+
+from .expandedreposition import reposition_expanded_elements
+from .collapsedreposition import reposition_collapsed_elements
+from .callablereposition import reposition_callable_elements
+
+from .collapsing import collapse_unconnected_elements
 
 
-class VisualRelatedOperations:
+class VisualOperations:
     """Manages operations on visual node object."""
 
-    ### function to extend class operations
-    reposition_elements = reposition_elements
+    ### functions to extend class operations
+
+    reposition_expanded_elements = reposition_expanded_elements
+    reposition_collapsed_elements = reposition_collapsed_elements
+    reposition_callable_elements = reposition_callable_elements
+
+    collapse_unconnected_elements = collapse_unconnected_elements
 
     ### method definitions
 
@@ -60,17 +68,7 @@ class VisualRelatedOperations:
         ### calling the on_mouse_click method of the
         ### object if available
 
-        for obj in chain(
-            self.visible_widgets,
-            self.live_keyword_entries,
-            self.placeholder_add_buttons,
-            self.visible_remove_widget_buttons,
-            self.subparam_up_buttons,
-            self.subparam_down_buttons,
-            self.input_sockets,
-            self.output_sockets,
-            self.placeholder_sockets,
-        ):
+        for obj in self.yield_mouse_aware_objects():
 
             if obj.rect.collidepoint(mouse_pos):
 
@@ -118,8 +116,7 @@ class VisualRelatedOperations:
                 APP_REFS.ea.change_selection_state(self)
 
             elif method_name == "on_right_mouse_release":
-
-                (APP_REFS.ea.callable_node_popup_menu.show(self, event.pos))
+                self.show_popup_menu(event.pos)
 
     on_mouse_click = partialmethod(on_mouse_action, "on_mouse_click")
 
@@ -130,13 +127,42 @@ class VisualRelatedOperations:
         "on_right_mouse_release",
     )
 
+    def yield_mouse_aware_objects_in_expmode(self):
+
+        yield from chain(
+            self.visible_widgets,
+            self.live_keyword_entries,
+            self.placeholder_add_buttons,
+            self.visible_remove_widget_buttons,
+            self.subparam_up_buttons,
+            self.subparam_down_buttons,
+            self.input_sockets,
+            self.output_sockets,
+            self.placeholder_sockets,
+        )
+
+        yield self.sigmode_toggle_button
+
+    def yield_mouse_aware_objects_in_colmode(self):
+
+        yield from chain(
+            self.input_sockets,
+            self.output_sockets,
+        )
+
+        yield self.sigmode_toggle_button
+
+    def yield_mouse_aware_objects_in_calmode(self):
+        yield from self.output_sockets
+
     def draw(self):
         """Draw node elements on screen."""
+        for obj in self.yield_visible_objects():
+            obj.draw()
 
-        ### draw background and text elements, then
-        ### widgets, buttons and sockets
+    def yield_visible_objects_in_expmode(self):
 
-        for obj in chain(
+        yield from chain(
             self.background_and_text_elements,
             self.visible_widgets,
             self.live_keyword_entries,
@@ -148,8 +174,26 @@ class VisualRelatedOperations:
             self.input_sockets,
             self.output_sockets,
             self.placeholder_sockets,
-        ):
-            obj.draw()
+        )
+
+        yield self.sigmode_toggle_button
+
+    def yield_visible_objects_in_colmode(self):
+
+        yield from chain(
+            self.background_and_text_elements,
+            self.input_sockets,
+            self.output_sockets,
+        )
+
+        yield self.sigmode_toggle_button
+
+    def yield_visible_objects_in_calmode(self):
+
+        yield from chain(
+            self.background_and_text_elements,
+            self.output_sockets,
+        )
 
     def draw_selection_outline(self, color):
         """Draw outline around to indicate it is selected."""
@@ -169,11 +213,7 @@ class VisualRelatedOperations:
 
         ### iterate over all sockets
 
-        for socket in chain(
-            self.input_sockets,
-            self.output_sockets,
-            self.placeholder_sockets,
-        ):
+        for socket in self.yield_visible_sockets():
 
             if socket.rect.collidepoint(mouse_pos):
                 break
@@ -182,3 +222,35 @@ class VisualRelatedOperations:
             APP_REFS.gm.cancel_defining_segment()
 
         APP_REFS.gm.resume_defining_segment(socket)
+
+    def yield_visible_sockets_in_expmode(self):
+
+        yield from chain(
+            self.input_sockets,
+            self.output_sockets,
+            self.placeholder_sockets,
+        )
+
+    def yield_visible_sockets_in_colmode(self):
+
+        yield from chain(
+            self.input_sockets,
+            self.output_sockets,
+        )
+
+    def yield_visible_sockets_in_calmode(self):
+        yield from self.output_sockets
+
+    def toggle_sigmode(self, event):
+
+        mode_name = self.data.get('mode', 'expanded_signature')
+
+        if mode_name == 'expanded_signature':
+            self.data['mode'] = 'collapsed_signature'
+
+
+        elif mode_name == 'collapsed_signature':
+            self.data['mode'] = 'expanded_signature'
+
+        ### perform mode-related setups
+        self.perform_mode_related_setups()
