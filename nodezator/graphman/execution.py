@@ -62,6 +62,7 @@ class Execution:
         self.nodes_to_visit = set()
         self.nodes_to_execute = set()
         self.nodes_to_direct_data = set()
+        self.nodes_to_reference_callable = set()
         self.executed_nodes = set()
 
         ### create map to track node execution time
@@ -124,7 +125,16 @@ class Execution:
         nodes_to_execute.clear()
 
         nodes_to_execute.update(
-            node for node in nodes_to_visit if hasattr(node, "main_callable")
+
+            node
+            for node in nodes_to_visit
+
+            ## only include nodes with a main callable
+            if hasattr(node, "main_callable")
+
+            ## but exclude those in 'callable' mode
+            if node.data.get('mode') != 'callable'
+
         )
 
         for node in nodes_to_execute:
@@ -145,6 +155,19 @@ class Execution:
             )
         )
 
+        ### let's also separate the nodes to visit into
+        ### nodes used for referencing their callable
+
+        nodes_to_reference_callable = self.nodes_to_reference_callable
+        nodes_to_reference_callable.clear()
+
+        nodes_to_reference_callable.update(
+            node
+            for node in nodes_to_visit
+            if hasattr(node, "main_callable")
+            if node.data.get('mode') == 'callable'
+        )
+
         ### reference and clear set to store references of
         ### executed nodes
 
@@ -157,16 +180,19 @@ class Execution:
         node_exec_time_map = self.node_exec_time_map
         node_exec_time_map.clear()
 
-        ### perform checks and setups related to nodes
-        ### used to direct data
+        ### perform checks and redict data from the corresponding
+        ### set of nodes
 
         try:
-            self.check_and_setup_data_redirection(nodes_to_direct_data)
+            self.check_nodes_and_redirect_data(nodes_to_direct_data)
 
         except ProxyNodesLackingDataError as err:
 
             create_and_show_dialog(str(err))
             return
+
+        ### reference callables from the corresponding set of nodes
+        self.reference_callables(nodes_to_reference_callable)
 
         ### mark the beginning of the node layout execution
         layout_exec_start = time()
@@ -363,10 +389,7 @@ class Execution:
 
             set_status_message(f"Total execution time was {time_for_humans}")
 
-    def check_and_setup_data_redirection(
-        self,
-        nodes_to_direct_data,
-    ):
+    def check_nodes_and_redirect_data(self, nodes_to_direct_data,):
 
         data_sources = set()
         lacking_data = set()
@@ -396,6 +419,23 @@ class Execution:
 
                 for child in children:
                     child.receive_input(value)
+
+    def reference_callables(self, nodes_to_reference_callable):
+
+        for node in nodes_to_reference_callable:
+
+            ### send callable reference to the output socket children, if it has
+
+            try:
+                children = node.callable_output_socket.children
+            except AttributeError:
+                pass
+            else:
+
+                callable_reference = node.main_callable
+
+                for child in children:
+                    child.receive_input(callable_reference)
 
     def send_output_from_executed(self, node, output):
         """Send output to outlinked nodes, if any.

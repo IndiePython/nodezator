@@ -106,11 +106,18 @@ class CapsuleNode(CallableNode):
         ### create visuals of the node
         self.create_visual_elements()
 
-        ### perform mode-related setups
-        self.perform_mode_related_setups()
+        ### set mode
+        self.set_mode(self.data.get('mode', 'expanded_signature'))
 
         ### initialize execution-related objects
         self.create_execution_support_objects()
+
+    def set_mode(self, mode_name):
+        """Extends superclass' method"""
+        if mode_name == 'callable':
+            return
+
+        super().set_mode(mode_name)
 
     def get_signature(self):
         """Return signature for callable used in the node.

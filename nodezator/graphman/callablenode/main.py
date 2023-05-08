@@ -181,17 +181,20 @@ class CallableNode(
         ### create visuals for node
         self.create_visual_elements()
 
-        ### perform mode-related setups
-        self.perform_mode_related_setups()
+        ### set mode
+        self.set_mode(self.data.get('mode', 'expanded_signature'))
 
         ### initialize execution-related objects
         self.create_execution_support_objects()
 
-    def perform_mode_related_setups(self):
+    def set_mode(self, mode_name):
 
-        mode_name = self.data.get('mode', 'expanded_signature')
+        current_mode_name = self.data.get('mode', 'expanded_signature')
 
         if mode_name == 'expanded_signature':
+
+            if current_mode_name == 'callable':
+                APP_REFS.gm.sever_all_connections(self)
 
             self.adjust_sigmode_toggle_button(mode_name)
 
@@ -208,6 +211,9 @@ class CallableNode(
             self.rectsman = self.exp_rectsman
 
         elif mode_name == 'collapsed_signature':
+
+            if current_mode_name == 'callable':
+                APP_REFS.gm.sever_all_connections(self)
 
             self.adjust_sigmode_toggle_button(mode_name)
 
@@ -227,6 +233,9 @@ class CallableNode(
 
         elif mode_name == 'callable':
 
+            if current_mode_name in {'expanded_signature', 'collapsed_signature'}:
+                APP_REFS.gm.sever_all_connections(self)
+
             self.create_body_surface = self.get_callable_body_surface
             self.reposition_elements = self.reposition_callable_elements
 
@@ -238,6 +247,9 @@ class CallableNode(
             self.yield_visible_sockets = self.yield_visible_sockets_in_calmode
 
             self.rectsman = self.cal_rectsman
+
+        ###
+        self.data['mode'] = mode_name
 
         ###
         self.reposition_elements()

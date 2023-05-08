@@ -1,3 +1,8 @@
+
+### standard library import
+from functools import partialmethod
+
+
 ### local imports
 
 from ...config import APP_REFS
@@ -22,9 +27,32 @@ class CallableNodePopupMenu(GeneralPopupCommands):
 
         ###
 
+        mode_switching_submenu = {
+
+            "label": "Change mode to",
+            "children": [
+                {
+                    "label": "Expanded signature",
+                    "command": self.obj_to_expanded_signature,
+                },
+                {
+                    "label": "Collapsed signature",
+                    "command": self.obj_to_collapsed_signature,
+                },
+                {
+                    "label": "Callable",
+                    "command": self.obj_to_callable,
+                },
+            ],
+
+        }
+
+        ###
+
         user_def_node_menu_list = self.NODE_ONLY_SINGLE_COMMANDS.copy()
 
-        for command in (
+        for obj_data in (
+            mode_switching_submenu,
             {
                 "label": "View main callable info",
                 "key_text": "Shift+i",
@@ -39,7 +67,7 @@ class CallableNodePopupMenu(GeneralPopupCommands):
             },
         ):
 
-            user_def_node_menu_list.insert(1, command)
+            user_def_node_menu_list.insert(1, obj_data)
 
         self.user_def_node_only_popup = MenuManager(
             user_def_node_menu_list,
@@ -63,15 +91,16 @@ class CallableNodePopupMenu(GeneralPopupCommands):
 
         app_def_node_menu_list = self.NODE_ONLY_SINGLE_COMMANDS.copy()
 
-        app_def_node_menu_list.insert(
-            1,
+        for obj_data in (
+            mode_switching_submenu,
             {
                 "label": "Get source info",
                 "key_text": "i",
                 "icon": "python_viewing",
                 "command": self.get_node_info,
             },
-        )
+        ):
+            app_def_node_menu_list.insert(1, obj_data)
 
         self.app_def_node_only_popup = MenuManager(
             app_def_node_menu_list,
@@ -136,3 +165,10 @@ class CallableNodePopupMenu(GeneralPopupCommands):
             self.obj_under_mouse,
             "callable_info",
         )
+
+    def obj_to_mode(self, mode_name):
+        self.obj_under_mouse.set_mode(mode_name)
+
+    obj_to_expanded_signature = partialmethod(obj_to_mode, 'expanded_signature')
+    obj_to_collapsed_signature = partialmethod(obj_to_mode, 'collapsed_signature')
+    obj_to_callable = partialmethod(obj_to_mode, 'callable')

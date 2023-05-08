@@ -106,8 +106,8 @@ class StandardLibNode(CallableNode):
         ### create visuals of the node
         self.create_visual_elements()
 
-        ### perform mode-related setups
-        self.perform_mode_related_setups()
+        ### set mode
+        self.set_mode(self.data.get('mode', 'expanded_signature'))
 
         ### initialize execution-related objects
         self.create_execution_support_objects()

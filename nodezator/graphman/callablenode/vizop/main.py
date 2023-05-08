@@ -246,11 +246,8 @@ class VisualOperations:
         mode_name = self.data.get('mode', 'expanded_signature')
 
         if mode_name == 'expanded_signature':
-            self.data['mode'] = 'collapsed_signature'
+            self.set_mode('collapsed_signature')
 
 
         elif mode_name == 'collapsed_signature':
-            self.data['mode'] = 'expanded_signature'
-
-        ### perform mode-related setups
-        self.perform_mode_related_setups()
+            self.set_mode('expanded_signature')
