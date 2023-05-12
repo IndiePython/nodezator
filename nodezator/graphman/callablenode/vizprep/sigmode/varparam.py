@@ -37,7 +37,8 @@ from ...surfs import (
     UNPACKING_ICON_SURFS_MAP,
 )
 
-from ...constants import FONT_HEIGHT
+from ...constants import FONT_HEIGHT, SUBPARAM_KEYWORD_ENTRY_WIDTH
+
 
 
 def create_var_parameter_objs(self, param_obj):
@@ -299,7 +300,7 @@ def create_var_parameter_objs(self, param_obj):
             subparam_keyword_entry = StringEntry(
                 value=keyword_name,
                 font_height=FONT_HEIGHT,
-                width=155,
+                width=SUBPARAM_KEYWORD_ENTRY_WIDTH,
                 command=command,
             )
 

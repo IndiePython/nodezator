@@ -281,7 +281,7 @@ UNPACKING_ICON_SURFS_MAP = {
 }
 
 
-### keyword key icon surf
+### keyword key icon surf and its rect
 
 KEYWORD_KEY_SURF = render_layered_icon(
     chars=[chr(ordinal) for ordinal in (102, 103)],
@@ -294,3 +294,5 @@ KEYWORD_KEY_SURF = render_layered_icon(
     background_width=16,
     background_height=16,
 )
+
+KEYWORD_KEY_RECT = KEYWORD_KEY_SURF.get_rect()

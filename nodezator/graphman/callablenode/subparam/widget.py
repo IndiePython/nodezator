@@ -26,7 +26,8 @@ from ..surfs import (
     SUBP_DOWN_BUTTON_SURF,
 )
 
-from ..constants import FONT_HEIGHT
+from ..constants import FONT_HEIGHT, SUBPARAM_KEYWORD_ENTRY_WIDTH
+
 
 
 class WidgetOps:
@@ -163,7 +164,7 @@ class WidgetOps:
             subparam_keyword_entry = StringEntry(
                 value=keyword_name,
                 font_height=FONT_HEIGHT,
-                width=155,
+                width=SUBPARAM_KEYWORD_ENTRY_WIDTH,
                 command=command,
             )
 

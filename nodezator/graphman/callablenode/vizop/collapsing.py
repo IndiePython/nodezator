@@ -5,14 +5,18 @@ from ....config import APP_REFS
 
 def collapse_unconnected_elements(self):
     """Perform setups so all unconnected elements are collapsed."""
-    ### store visible input sockets and respective unpacking icon
-    ### rects
+    ### reference and clear relevant lists
 
     vis = self.visible_input_sockets
     vis.clear()
 
     vuirs = self.visible_unpacking_icon_rects
     vuirs.clear()
+
+    vws = self.visible_widgets
+    vws.clear()
+
+    ###
 
     isl_flmap = self.input_socket_live_flmap
 
@@ -21,6 +25,7 @@ def collapse_unconnected_elements(self):
     subparam_map = self.data["subparam_map"]
 
     sui_flmap = self.subparam_unpacking_icon_flmap
+    skel_map = self.subparam_keyword_entry_live_map
 
     for param_obj in parameters:
 
@@ -54,8 +59,8 @@ def collapse_unconnected_elements(self):
 
             for subparam_index in sorted(subparams):
 
-                ## if socket has a parent, it must be included as a
-                ## visible one
+                ### if socket has a parent, it must be included as a
+                ### visible one
                 
                 input_socket = isl_flmap[param_name][subparam_index]
 
@@ -71,13 +76,21 @@ def collapse_unconnected_elements(self):
 
                 )
 
-                if has_parent:
-                    vis.append(input_socket)
+                ###
+                if not has_parent:
+                    continue
+
+                ###
+
+                vis.append(input_socket)
 
                 unpacking_icon = sui_flmap[param_name].get(subparam_index)
 
                 if unpacking_icon:
                     vuirs.append(unpacking_icon.rect)
+
+                if kind == 'var_key' and subparam_index in skel_map:
+                    vws.append(skel_map[subparam_index])
 
     ### store visible output sockets
 

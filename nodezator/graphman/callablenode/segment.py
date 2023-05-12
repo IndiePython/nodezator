@@ -40,6 +40,19 @@ class SegmentOperations:
             ):
                 del self.new_subparam_input_socket
 
+            ## if it has a widget which is not visible, pass
+
+            elif (
+                input_socket.subparameter_index in
+                self.widget_live_flmap[input_socket.parameter_name]
+                and (
+                    self.widget_live_flmap[input_socket.parameter_name]
+                    .get(input_socket.subparameter_index, None) in
+                    self.visible_widgets
+                )
+            ):
+                pass
+
             ## otherwise exit right away
             else:
                 return

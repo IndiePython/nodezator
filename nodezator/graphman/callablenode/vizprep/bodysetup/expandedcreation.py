@@ -23,6 +23,7 @@ from .....textman.render import render_text
 from ...surfs import (
     BODY_HEAD_SURFS_MAP,
     KEYWORD_KEY_SURF,
+    KEYWORD_KEY_RECT,
 )
 
 from ...constants import (
@@ -38,9 +39,6 @@ from .....colorsman.colors import (
     NODE_LABELS,
 )
 
-
-### constant: rect from the keyword key surf
-KEYWORD_KEY_RECT = KEYWORD_KEY_SURF.get_rect()
 
 
 def get_expanded_body_surface(self):

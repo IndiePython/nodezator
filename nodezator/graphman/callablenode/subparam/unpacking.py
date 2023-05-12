@@ -16,7 +16,7 @@ from ....widget.stringentry import StringEntry
 
 from ....rectsman.main import RectsManager
 
-from ..constants import FONT_HEIGHT
+from ..constants import FONT_HEIGHT, SUBPARAM_KEYWORD_ENTRY_WIDTH
 
 from ..surfs import (
     UNPACKING_ICON_SURFS_MAP,
@@ -196,7 +196,7 @@ class UnpackingOps:
             subparam_keyword_entry = StringEntry(
                 value=keyword_name,
                 font_height=FONT_HEIGHT,
-                width=155,
+                width=SUBPARAM_KEYWORD_ENTRY_WIDTH,
                 command=command,
                 coordinates_name="bottomleft",
                 coordinates_value=bottomleft,

@@ -17,7 +17,8 @@ from ..surfs import (
     SUBP_DOWN_BUTTON_SURF,
 )
 
-from ..constants import FONT_HEIGHT
+from ..constants import FONT_HEIGHT, SUBPARAM_KEYWORD_ENTRY_WIDTH
+
 
 
 def get_input_socket(self, param_name):
@@ -108,7 +109,7 @@ def get_input_socket(self, param_name):
         subparam_keyword_entry = StringEntry(
             value=keyword_name,
             font_height=FONT_HEIGHT,
-            width=155,
+            width=SUBPARAM_KEYWORD_ENTRY_WIDTH,
             command=command,
         )
 

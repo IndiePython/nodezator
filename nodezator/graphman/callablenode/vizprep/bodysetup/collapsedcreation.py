@@ -1,5 +1,9 @@
 """Facility for visuals related node class extension."""
 
+### standard library import
+from itertools import chain
+
+
 ### third-party imports
 
 from pygame import Rect
@@ -18,7 +22,11 @@ from .....classes2d.single import Object2D
 
 from .....textman.render import render_text
 
-from ...surfs import BODY_HEAD_SURFS_MAP
+from ...surfs import (
+    BODY_HEAD_SURFS_MAP,
+    KEYWORD_KEY_SURF,
+    KEYWORD_KEY_RECT,
+)
 
 from ...constants import (
     NODE_WIDTH,
@@ -351,6 +359,64 @@ def get_collapsed_body_surface(self):
     line_y = BODY_HEAD_SURF.get_height()
 
     draw_line(body_surf, NODE_OUTLINE, (0, line_y), (body_surf.get_width(), line_y), 2)
+
+    ### if there's a keyword-variable parameter in the
+    ### node, only for the subparameters whose input
+    ### socket are visible, blit the keyword key icon beside each
+    ### keyword entry or subparameter unpacking icon
+    ### for that parameter (if there's any subparameter);
+    ###
+    ### the motivation is purely aesthetic, but
+    ### from my experience the effect improves readability,
+    ### since it makes it easier to spot keyword entry
+    ### widgets
+
+    if "var_key" in self.var_kind_map.values():
+
+
+        param_name = next(
+            key for key, value in self.var_kind_map.items() if value == "var_key"
+        )
+
+        subparam_input_sockets_map = isl_flmap[param_name]
+
+        for subparam_index, obj in chain(
+            self.subparam_keyword_entry_live_map.items(),
+            self.subparam_unpacking_icon_flmap[param_name].items(),
+        ):
+
+            if subparam_input_sockets_map[subparam_index] not in vis:
+                continue
+
+            ## obtain the midleft coordinates of the
+            ## object (a bit offset to left), but
+            ## changed so that it is relative to the origin
+            ## of the body surface
+
+            x, y = (
+                # get object's rect
+                obj.rect
+                # get new rect moved a bit to the left
+                .move(-2, 0)
+                # and yet another one moved from there so its
+                # position is relative to the origin of the
+                # body surface
+                .move(offset)
+                # then grab its midleft coordinates
+                .midleft
+            )
+
+            ## assign the midleft coordinates calculated
+            ## to the midright coordinates of
+            ## the keyword key's rect, then blit it in that
+            ## position
+
+            KEYWORD_KEY_RECT.midright = x, y
+
+            body_surf.blit(
+                KEYWORD_KEY_SURF,
+                KEYWORD_KEY_RECT,
+            )
 
     ### finally return the body surface
     return body_surf

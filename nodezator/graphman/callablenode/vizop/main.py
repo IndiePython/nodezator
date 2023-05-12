@@ -150,6 +150,7 @@ class VisualOperations:
         yield from chain(
             self.input_sockets,
             self.output_sockets,
+            self.visible_widgets,
         )
 
         yield self.sigmode_toggle_button
@@ -186,6 +187,7 @@ class VisualOperations:
             self.background_and_text_elements,
             self.input_sockets,
             self.output_sockets,
+            self.visible_widgets,
         )
 
         yield self.sigmode_toggle_button

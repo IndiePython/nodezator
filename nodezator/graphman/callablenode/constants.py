@@ -31,6 +31,9 @@ BODY_CONTENT_OFFSET = NODE_BODY_HEAD_HEIGHT + 2
 ### first subparameter
 SUBPARAM_OFFSET_FROM_LABEL = 2
 
+### width of subparameter keyword entries
+SUBPARAM_KEYWORD_ENTRY_WIDTH = 140
+
 ### distance between parameters
 DISTANCE_BETWEEN_PARAMS = 4
 

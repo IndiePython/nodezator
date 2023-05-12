@@ -61,6 +61,9 @@ def reposition_collapsed_elements(self):
     ### reference map of subparam unpacking icons locally
     sui_flmap = self.subparam_unpacking_icon_flmap
 
+    ### reference map of subparam keyword entries
+    skel_map = self.subparam_keyword_entry_live_map
+
     ### position parameters
 
     ## retrieve parameter objects (they're ordered)
@@ -91,7 +94,7 @@ def reposition_collapsed_elements(self):
         ## try retrieving the variable kind of the
         ## parameter
         try:
-            self.var_kind_map[param_name]
+            kind = self.var_kind_map[param_name]
 
         ## if the retrieval fails, then we have
         ## a regular parameter
@@ -204,10 +207,33 @@ def reposition_collapsed_elements(self):
 
                     unpacking_icon = sui_flmap[param_name][subparam_index]
 
-                    unpacking_icon.rect.midleft = input_socket.rect.move(2, 0).midright
+                    unpacking_icon.rect.midleft = (
+                        input_socket.rect.move(2, 0).midright
+                        if kind == 'var_pos'
+                        else input_socket.rect.move(18, 0).midright
+                    )
 
                     temp_rect_list.append(input_socket.rect)
                     temp_rect_list.append(unpacking_icon.rect)
+
+                    temp_rectsman.top = top
+
+                    top = temp_rectsman.bottom
+
+                    temp_rect_list.clear()
+
+                # if it is of keyword-variable kind...
+
+                elif kind == 'var_key':
+
+                    keyword_entry = skel_map[subparam_index]
+
+                    keyword_entry.rect.midleft = (
+                        input_socket.rect.move(18, 0).midright
+                    )
+
+                    temp_rect_list.append(input_socket.rect)
+                    temp_rect_list.append(keyword_entry.rect)
 
                     temp_rectsman.top = top
 

@@ -292,6 +292,8 @@ def reposition_expanded_elements(self):
 
                         unpacking_icon_rect.midleft = (
                             subp_up_button.rect.move(3, 0).bottomright
+                            if kind == 'var_pos'
+                            else subp_up_button.rect.move(18, 0).bottomright
                         )
 
                         subparam_rects.append(unpacking_icon_rect)
@@ -303,16 +305,16 @@ def reposition_expanded_elements(self):
                         ## position the keyword entry and add its rect to the
                         ## list of rects of the subparameter
 
-                        entry = skl_map[subparam_index]
+                        keyword_entry = skl_map[subparam_index]
 
-                        entry.rect.bottomleft = (
-                            subp_up_button.rect.move(3, -2).topright
+                        keyword_entry.rect.midleft = (
+                            subp_up_button.rect.move(18, 0).bottomright
                         )
 
-                        subparam_rects.append(entry.rect)
+                        subparam_rects.append(keyword_entry.rect)
 
                         ## add it to the list of visible widgets
-                        vws.append(entry)
+                        vws.append(keyword_entry)
 
                 ## if it doesn't have a parent...
 
@@ -355,6 +357,24 @@ def reposition_expanded_elements(self):
                         )
 
                         subparam_rects.append(unpacking_icon_rect)
+
+                    ## if it is of keyword variable kind...
+
+                    elif kind == 'var_key':
+
+                        ## position the keyword entry and add its rect to the
+                        ## list of rects of the subparameter
+
+                        keyword_entry = skl_map[subparam_index]
+
+                        keyword_entry.rect.bottomleft = (
+                            subp_up_button.rect.move(3, -2).topright
+                        )
+
+                        subparam_rects.append(keyword_entry.rect)
+
+                        ## add it to the list of visible widgets
+                        vws.append(keyword_entry)
 
 
                 # assign top
