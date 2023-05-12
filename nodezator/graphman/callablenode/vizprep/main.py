@@ -103,6 +103,7 @@ class VisualPreparations(
         ### create callable mode visuals
         self.create_callable_mode_visual_elements()
 
+
     def store_category_color_data(self):
         """Store category related color data for the node.
 

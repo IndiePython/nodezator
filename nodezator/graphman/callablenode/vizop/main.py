@@ -16,6 +16,8 @@ from ....config import APP_REFS
 
 from ....pygamesetup import SCREEN
 
+from ....our3rdlibs.behaviour import indicate_unsaved
+
 ## functions to extend class
 
 from .expandedreposition import reposition_expanded_elements
@@ -251,3 +253,5 @@ class VisualOperations:
 
         elif mode_name == 'collapsed_signature':
             self.set_mode('expanded_signature')
+
+        indicate_unsaved()

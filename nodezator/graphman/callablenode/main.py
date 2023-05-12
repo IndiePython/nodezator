@@ -12,9 +12,9 @@ from .vizprep.main import VisualPreparations
 
 from .vizop.main import VisualOperations
 
-from .paramsegment import ParameterSegmentOps
-
 from .subparam.main import SubparameterHandling
+
+from .segment import SegmentOperations
 
 from .execution import Execution
 
@@ -33,8 +33,8 @@ class CallableNode(
     Preprocessing,
     VisualPreparations,
     VisualOperations,
-    ParameterSegmentOps,
     SubparameterHandling,
+    SegmentOperations,
     Execution,
     Exporting,
 ):
@@ -229,8 +229,6 @@ class CallableNode(
 
             self.rectsman = self.col_rectsman
 
-            self.collapse_unconnected_elements()
-
         elif mode_name == 'callable':
 
             if current_mode_name in {'expanded_signature', 'collapsed_signature'}:
@@ -266,29 +264,6 @@ class CallableNode(
             surf_index = 1
 
         button.image = SIGMODE_TOGGLE_BUTTON_MAP[self.category_color][surf_index]
-
-    def signal_connection(self, input_socket):
-        ### if given socket is from a subparameter,
-        ### perform related setups
-
-        if input_socket.subparameter_index is not None:
-            self.perform_subparam_connection_setups(input_socket)
-
-        ### otherwise, perform setups for regular parameter
-        else:
-            self.perform_param_connection_setups(input_socket)
-
-    def signal_severance(self, input_socket):
-
-        ### if given socket is from a subparameter,
-        ### perform related setups
-
-        if input_socket.subparameter_index is not None:
-            self.perform_subparam_severance_setups(input_socket)
-
-        ### otherwise, perform setups for regular parameter
-        else:
-            self.perform_param_severance_setups(input_socket)
 
     def show_popup_menu(self, pos):
         APP_REFS.ea.callable_node_popup_menu.show(self, pos)

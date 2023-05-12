@@ -20,7 +20,7 @@ from .callablecreation import get_callable_body_surface
 class BodySetupOperations:
     """Operations to set up body and other related setups.
 
-    Class extension for the VisualRelatedPreparations class.
+    Class extension for the VisualPreparations class.
     """
 
     get_expanded_body_surface = get_expanded_body_surface
@@ -34,7 +34,7 @@ class BodySetupOperations:
 
     def setup_body(self):
         """Performs several adjustments to the body."""
-        self.perform_body_height_change_setups()
+        self.reset_body_height_and_image()
         self.assign_bottom_surfaces()
 
     ## for when node is commented out/uncommented
@@ -52,31 +52,15 @@ class BodySetupOperations:
 
     ### methods representing modular operations
 
-    def perform_body_height_change_setups(self):
-        """Calculate and set body height.
-
-        The body height is obtained from the difference
-        between the top of the node's bottom and the bottom
-        of the node's top.
-        """
+    def reset_body_height_and_image(self):
+        """Calculate and set body height and create new image."""
         ### the body height is equivalent to the interval
         ### between the top rectsman's bottom and the bottom
         ### rectsman's top
-        new_body_height = self.bottom_rectsman.top - self.top_rectsman.bottom
+        self.body.rect.height = self.bottom_rectsman.top - self.top_rectsman.bottom
 
-        ### store the current height locally
-        current_body_height = self.body.rect.height
-
-        ### if the new body height is indeed different than
-        ### the current one...
-
-        if new_body_height != current_body_height:
-
-            ### update the height of the body's rect
-            self.body.rect.height = new_body_height
-
-            ### create and store the body's surface
-            self.body.image = self.create_body_surface()
+        ### create and store a new surface for the body
+        self.body.image = self.create_body_surface()
 
     def assign_bottom_surfaces(self):
         """Assign proper surfaces to node's bottom objects.

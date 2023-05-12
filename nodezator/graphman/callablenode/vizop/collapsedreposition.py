@@ -31,23 +31,35 @@ def reposition_collapsed_elements(self):
     Another administrative task is performed, which is
     updating the height of self.rect.
     """
+    ### determine which paramaters/subparameters/outputs will
+    ### be shown after hiding unconnected ones
+    self.collapse_unconnected_elements()
+
     ### create a rect representing the height of text
     ### surfaces used in the node
     text_rect = Rect(0, 0, 0, FONT_HEIGHT)
 
-    ### reference the top rectsman locally
+    ### reference the top rectsman and its horizontal
+    ### edges locally
+
     top_rectsman = self.top_rectsman
+
+    top_rectsman_left = top_rectsman.left
+    top_rectsman_right = top_rectsman.right
 
     ### define a top coordinate which is the bottom of
     ### the top of the node plus the body content
     ### offset given as a constant
     top = top_rectsman.bottom + BODY_CONTENT_OFFSET
 
-    ### reference list of visible input sockets
+    ### reference list of visible input sockets locally
     vis = self.visible_input_sockets
 
     ### reference map with input sockets locally
     isl_flmap = self.input_socket_live_flmap
+
+    ### reference map of subparam unpacking icons locally
+    sui_flmap = self.subparam_unpacking_icon_flmap
 
     ### position parameters
 
@@ -64,6 +76,9 @@ def reposition_collapsed_elements(self):
 
     temp_rect_list = []
     temp_rectsman = RectsManager(temp_rect_list.__iter__)
+
+    ## reference subparameter unpacking map locally
+    subparam_unpacking_map = self.data["subparam_unpacking_map"]
 
     ## iterate over parameter objects positioning each
     ## of them
@@ -116,6 +131,9 @@ def reposition_collapsed_elements(self):
 
             temp_rect_list.clear()
 
+            # position socket horizontally
+            socket_rect.centerx = top_rectsman_left
+
 
         ## otherwise, we are dealing with a variable
         ## parameter
@@ -162,6 +180,8 @@ def reposition_collapsed_elements(self):
             else:
                 continue
 
+            ## retrieve the list of unpacked subparameter indices
+            subparams_for_unpacking = subparam_unpacking_map[param_name]
 
             ## iterate over each subparameter index in order,
             ## repositioning each subparameter as you go
@@ -175,11 +195,35 @@ def reposition_collapsed_elements(self):
                 if input_socket not in vis:
                     continue
 
-                # assign top
-                input_socket.rect.top = top
+                # position socket horizontally
+                input_socket.rect.centerx = top_rectsman_left
 
-                # define new top
-                top = input_socket.rect.bottom
+                # if subparameter is unpacked...
+
+                if subparam_index in subparams_for_unpacking:
+
+                    unpacking_icon = sui_flmap[param_name][subparam_index]
+
+                    unpacking_icon.rect.midleft = input_socket.rect.move(2, 0).midright
+
+                    temp_rect_list.append(input_socket.rect)
+                    temp_rect_list.append(unpacking_icon.rect)
+
+                    temp_rectsman.top = top
+
+                    top = temp_rectsman.bottom
+
+                    temp_rect_list.clear()
+
+                # otherwise...
+
+                else:
+
+                    # assign top
+                    input_socket.rect.top = top
+
+                    # define new top
+                    top = input_socket.rect.bottom
 
 
                 # if the subparameter isn't the last one,

@@ -86,7 +86,6 @@ def get_expanded_body_surface(self):
     ### in order to blit surfaces in the body surface
     ### relative to the surface's origin, define an offset
     ### equal to the body's topleft coordinates inverted
-
     offset = tuple(-value for value in self.body.rect.topleft)
 
     ### iterate over the name of each parameter, blitting
@@ -130,7 +129,7 @@ def get_expanded_body_surface(self):
 
             # retrieve the list of rects controlled by
             # the rects manager of the parameter
-            rect_list = param_rectsman._get_all_rects.__self__
+            param_rects = param_rectsman._get_all_rects.__self__
 
             # if there's more than 1 rect controlled by
             # the parameter rectsman, than we can be sure
@@ -138,7 +137,7 @@ def get_expanded_body_surface(self):
             # hangs above the parameter rectsman, 2 pixels
             # separating them
 
-            if len(param_rectsman._get_all_rects.__self__) > 1:
+            if len(param_rects) > 1:
 
                 text_rect.bottom = param_rectsman.top
                 text_rect.top += -2
@@ -150,7 +149,7 @@ def get_expanded_body_surface(self):
 
             else:
 
-                input_socket_rect = rect_list[0]
+                input_socket_rect = param_rects[0]
                 text_rect.centery = input_socket_rect.centery
                 text_rect.top += -2
 
@@ -342,7 +341,7 @@ def get_expanded_body_surface(self):
 
         for obj in chain(
             self.live_keyword_entries,
-            (self.subparam_unpacking_icon_flmap[param_name].values()),
+            self.subparam_unpacking_icon_flmap[param_name].values(),
         ):
 
             ## obtain the midleft coordinates of the

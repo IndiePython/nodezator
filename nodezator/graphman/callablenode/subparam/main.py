@@ -19,15 +19,13 @@ from ...socket.surfs import type_to_codename
 ## class extensions
 
 from .widget import WidgetOps
-from .segment import SegmentOps
 from .unpacking import UnpackingOps
 
+## function for injection
+from .segment import get_input_socket
 
-class SubparameterHandling(
-    WidgetOps,
-    SegmentOps,
-    UnpackingOps,
-):
+
+class SubparameterHandling(WidgetOps, UnpackingOps):
     """Methods for handling subparameter operations.
 
     Subparameters have somewhat complex handling. They
@@ -40,6 +38,8 @@ class SubparameterHandling(
     must be rearranged and renamed to reflect the actual
     number of existings subparameters for a parameter.
     """
+
+    get_input_socket = get_input_socket
 
     def create_new_input_socket(self, param_name):
         """Create a new input socket.
@@ -91,9 +91,6 @@ class SubparameterHandling(
         expected_type = self.type_map[param_name]
         type_codename = type_to_codename(expected_type)
 
-        ### define a temporary center for the input socket
-        center = self.top_rectsman.left, 0
-
         ### instantiate input socket
 
         input_socket = InputSocket(
@@ -101,7 +98,6 @@ class SubparameterHandling(
             type_codename=type_codename,
             parameter_name=param_name,
             subparameter_index=subparam_index,
-            center=center,
         )
 
         ### store the input socket instance in the live
@@ -109,8 +105,7 @@ class SubparameterHandling(
         ### dict subclass also need its "update" method
         ### executed whenever it is changed)
 
-        (self.input_socket_live_flmap[param_name][subparam_index]) = input_socket
-
+        self.input_socket_live_flmap[param_name][subparam_index] = input_socket
         self.input_socket_live_flmap.update()
 
     def get_new_keyword_name(self):
@@ -451,7 +446,6 @@ class SubparameterHandling(
 
         ### reference map containing subparam unpacking
         ### icon flmap for the parameter
-
         unpacking_icon_flmap_for_param = self.subparam_unpacking_icon_flmap[param_name]
 
         ### list all maps that need to be fixed in case any
@@ -468,7 +462,11 @@ class SubparameterHandling(
         )
 
         ### iterate over needed changes, performing them
-        ### one by one
+        ### one by one;
+        ###
+        ### it is important that they are iterated in the same order
+        ### in which they are in the 'changes' sequence, to avoid
+        ### shadowing during the fixes;
 
         for current_index, right_index in changes:
 
@@ -479,18 +477,23 @@ class SubparameterHandling(
 
             ## fix maps
 
-            for item in maps_to_fix:
+            for a_map in maps_to_fix:
 
                 # if the current index exists in the
                 # map, pop its value and assign it
                 # to the right name
 
                 try:
-                    value = item.pop(current_index)
+                    value = a_map.pop(current_index)
                 except KeyError:
                     pass
                 else:
-                    item[right_index] = value
+                    a_map[right_index] = value
+
+                # XXX this call to update() below should
+                # perhaps be nested within the else-block
+                # above, but don't move it before being
+                # sure of it
 
                 # using 'update' without arguments
                 # has no effect in built-in dict
@@ -498,7 +501,7 @@ class SubparameterHandling(
                 # effect on a special dict subclass
                 # we use, which needs this operation
                 # whenever it is changed
-                item.update()
+                a_map.update()
 
             ## if the subparameter is marked for
             ## unpacking, fix the index in related
@@ -506,9 +509,9 @@ class SubparameterHandling(
 
             if current_index in subparams_for_unpacking:
 
-                (
-                    unpacking_icon_flmap_for_param[right_index]
-                ) = unpacking_icon_flmap_for_param.pop(current_index)
+                unpacking_icon_flmap_for_param[right_index] = (
+                    unpacking_icon_flmap_for_param.pop(current_index)
+                )
 
                 ## since the flat values list didn't
                 ## actually change, the call which is
@@ -532,16 +535,15 @@ class SubparameterHandling(
 
             elif self.var_kind_map[param_name] == "var_key":
 
-                (
-                    self.subparam_keyword_entry_live_map[right_index]
-                ) = self.subparam_keyword_entry_live_map.pop(current_index)
+                self.subparam_keyword_entry_live_map[right_index] = (
+                    self.subparam_keyword_entry_live_map.pop(current_index)
+                )
 
-                (self.data["subparam_keyword_map"][right_index]) = self.data[
-                    "subparam_keyword_map"
-                ].pop(current_index)
+                self.data["subparam_keyword_map"][right_index] = (
+                    self.data["subparam_keyword_map"].pop(current_index)
+                )
 
             ## retrieve a reference to the input socket
-
             input_socket = self.input_socket_live_flmap[param_name][right_index]
 
             ## store its current custom id and update its

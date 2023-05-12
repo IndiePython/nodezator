@@ -58,12 +58,9 @@ def create_var_parameter_objs(self, param_obj):
     ### retrieve the name of the parameter
     param_name = param_obj.name
 
-    ### create list to gather rects of objects in this
-    ### parameter to use in a RectsManager instance
-    rectsman_rects = []
 
     ### since we'll use their information, let's
-    ### retrieve subparameter-related maps
+    ### reference subparameter-related maps, locally
 
     subparam_map = self.data["subparam_map"]
 
@@ -71,9 +68,8 @@ def create_var_parameter_objs(self, param_obj):
 
     subparam_unpacking_map = self.data["subparam_unpacking_map"]
 
-    ### let's also alias live instances maps using
-    ### variables of low character count, for better
-    ### code layout
+    ### let's also reference maps of live instances locally using
+    ### variables of low character count, for better code layout
 
     isl_flmap = self.input_socket_live_flmap
     sub_flmap = self.subparam_up_button_flmap
@@ -82,9 +78,9 @@ def create_var_parameter_objs(self, param_obj):
     sui_flmap = self.subparam_unpacking_icon_flmap
     skl_map = self.subparam_keyword_entry_live_map
     wrb_flmap = self.widget_remove_button_flmap
-    srm_map = self.subparam_rectsman_map
     pab_map = self.placeholder_add_button_map
     psl_map = self.placeholder_socket_live_map
+    srm_map = self.subparam_rectsman_map
 
     ### create dicts to store instances of objects
     ### related to subparameters, using the parameter
@@ -130,10 +126,6 @@ def create_var_parameter_objs(self, param_obj):
     expected_type = self.type_map[param_name]
     type_codename = type_to_codename(expected_type)
 
-    ## define an initial center coordinate; it will be
-    ## used by the first subparameter, if it exists
-    center = self.top_rectsman.left, 0
-
     ## iterate over each subparameter listed on the
     ## subparameter sockets' data (if there's any)
     ## using the keys to sort the iteration order;
@@ -144,11 +136,6 @@ def create_var_parameter_objs(self, param_obj):
 
     for subparam_index in sorted(subparams):
 
-        ## create list to gather rects of objects in
-        ## this subparameter to use in a RectsManager
-        ## instance
-        subrectsman_rects = []
-
         ## instantiate socket
 
         input_socket = InputSocket(
@@ -156,7 +143,6 @@ def create_var_parameter_objs(self, param_obj):
             type_codename=type_codename,
             parameter_name=param_name,
             subparameter_index=subparam_index,
-            center=center,
         )
 
         ## store the input socket instance in
@@ -168,20 +154,13 @@ def create_var_parameter_objs(self, param_obj):
         # every time it is changed
         isl_flmap.update()
 
-        ## store reference to input socket's rect
-        subrectsman_rects.append(input_socket.rect)
-
         ## instantiate subparam moving buttons
-
-        bottomleft = input_socket.rect.move(2, 0).midright
 
         move_subparam_up = partial(self.move_subparam_up, input_socket)
 
         subp_up_button = Button(
             surface=SUBP_UP_BUTTON_SURF,
             command=move_subparam_up,
-            coordinates_name="bottomleft",
-            coordinates_value=bottomleft,
         )
 
         (sub_flmap[param_name][subparam_index]) = subp_up_button
@@ -190,18 +169,12 @@ def create_var_parameter_objs(self, param_obj):
         # every time it is changed
         sub_flmap.update()
 
-        # store reference to button's rect
-        subrectsman_rects.append(subp_up_button.rect)
-
-        topleft = bottomleft
-
+        #
         move_subparam_down = partial(self.move_subparam_down, input_socket)
 
         subp_down_button = Button(
             surface=SUBP_DOWN_BUTTON_SURF,
             command=move_subparam_down,
-            coordinates_name="topleft",
-            coordinates_value=topleft,
         )
 
         (sdb_flmap[param_name][subparam_index]) = subp_down_button
@@ -209,9 +182,6 @@ def create_var_parameter_objs(self, param_obj):
         # this dict subclass instance must be updated
         # every time it is changed
         sdb_flmap.update()
-
-        # store reference to button's rect
-        subrectsman_rects.append(subp_down_button.rect)
 
         ## check if subparameter has a content widget
         ## (by checking whether the respective data is
@@ -286,69 +256,11 @@ def create_var_parameter_objs(self, param_obj):
 
             widget.command = command
 
-            ## if the widget is visible (that is, input socket doesn't have
-            ## a parent), perform extra setups
-
-            has_parent = (
-
-                (
-                    (self.id, param_name, subparam_index)
-                    in APP_REFS.gm.parented_sockets_ids
-                )
-                if hasattr(APP_REFS.gm, 'parented_sockets_ids')
-
-                else hasattr(input_socket, 'parent')
-
-            )
-
-            if not has_parent:
-
-                ## put together position data for the widget
-                ## (widget topleft is positioned relative to the
-                ## input socket topright)
-                widget.rect.topleft = input_socket.rect.move(15, -1).topright
-
-                ## define midleft coordinates for the button
-                button.rect.midleft = widget.rect.right, input_socket.rect.centery
-
-                ##
-                self.visible_widgets.append(widget)
-                self.visible_remove_widget_buttons(button)
-
-                ## store references to widget and remove button' rects
-
-                subrectsman_rects.append(widget.rect)
-                subrectsman_rects.append(button.rect)
-
-        ## at this point we already need the
-        ## rects manager for this subparameter,
-        ## even though we might yet need to add other
-        ## objects in following steps;
-        ##
-        ## instantiate and store a RectsManager
-        ## for the gathered rects in this subparameter
-
-        subrectsman = RectsManager(subrectsman_rects.__iter__)
-
-        srm_map[param_name][subparam_index] = subrectsman
-
-        ### store reference to the subrectsman, so it is
-        ### part of the rectsman instance controlling the
-        ### entire parameter
-        rectsman_rects.append(subrectsman)
 
         ## if the subparameter is marked to be unpacked,
         ## add an unpacking icon to it
 
         if subparam_index in subparams_for_unpacking:
-
-            # put together a bottomleft coordinate for the
-            # unpacking icon;
-            #
-            # for the bottom use the top of the subrectsman
-            # (3 pixels higher, by subtracting the amount)
-
-            bottomleft = (input_socket.rect.right + 15, subrectsman.top - 3)
 
             icon_surf = UNPACKING_ICON_SURFS_MAP[
                 (
@@ -357,21 +269,14 @@ def create_var_parameter_objs(self, param_obj):
                 )
             ]
 
-            unpacking_icon = Object2D.from_surface(
-                surface=icon_surf,
-                coordinates_name="bottomleft",
-                coordinates_value=bottomleft,
-            )
+            unpacking_icon = Object2D.from_surface(surface=icon_surf)
 
-            # store the subparam keyword entry
+            # store the unpacking icon
             sui_flmap[param_name][subparam_index] = unpacking_icon
 
             # this dict subclass instance must be updated
             # every time it is changed
             sui_flmap.update()
-
-            # store reference to unpacking icon's rect
-            subrectsman_rects.append(unpacking_icon.rect)
 
         ## if otherwise, the parameter is of
         ## keyword-variable kind, we need to instantiate
@@ -385,7 +290,7 @@ def create_var_parameter_objs(self, param_obj):
             # for the bottom use the top of the subrectsman
             # (3 pixels higher, by subtracting the amount)
 
-            bottomleft = (input_socket.rect.right + 15, subrectsman.top - 3)
+            #bottomleft = (input_socket.rect.right + 15, subrectsman.top - 3)
 
             keyword_name = self.data["subparam_keyword_map"][subparam_index]
 
@@ -396,44 +301,33 @@ def create_var_parameter_objs(self, param_obj):
                 font_height=FONT_HEIGHT,
                 width=155,
                 command=command,
-                coordinates_name="bottomleft",
-                coordinates_value=bottomleft,
             )
 
             # store the subparam keyword entry
             skl_map[subparam_index] = subparam_keyword_entry
 
-            # store reference to keyword entry's rect
-            subrectsman_rects.append(subparam_keyword_entry.rect)
+        ## instantiate and store a RectsManager for the rects in this
+        ## subparameter
+        srm_map[param_name][subparam_index] = RectsManager([].__iter__)
 
-        ### assign a new center to be used by
-        ### the next subparameter;
-        ###
-        ### if there isn't one, the placeholder socket
-        ### defined after this loop uses such center
-        center = self.top_rectsman.left, 0
 
     ### instantiate a placeholder socket
     ### (a socket which generates a new subparameter
-    ### when an inlink is stablished with it)
+    ### when a new connection is stablished with it)
 
     ## instantiate socket (notice we used the "center"
     ## variable defined either in the end of the
     ## previous "for" loop or before it)
-
-    placeholder_socket = PlaceholderSocket(self, param_name, center)
+    placeholder_socket = PlaceholderSocket(self, param_name)
 
     ## store the placeholder socket instance in the
     ## live instance map for placeholder sockets
     psl_map[param_name] = placeholder_socket
 
-    ### store reference to placeholder socket rect
-    rectsman_rects.append(placeholder_socket.rect)
-
     ### now, add a button to create new sockets
     ### by instantiating widgets to provide input
 
-    midleft = placeholder_socket.rect.move(5, 0).midright
+    #midleft = placeholder_socket.rect.move(5, 0).midright
 
     command = partial(
         (APP_REFS.ea.widget_creation_popup_menu.trigger_simple_widget_picking),
@@ -441,20 +335,6 @@ def create_var_parameter_objs(self, param_obj):
         param_name,
     )
 
-    button = Button(
-        surface=ADD_BUTTON_SURF,
-        command=command,
-        coordinates_name="midleft",
-        coordinates_value=midleft,
-    )
+    button = Button(surface=ADD_BUTTON_SURF, command=command,)
 
     pab_map[param_name] = button
-
-    ### store reference to button rect
-    rectsman_rects.append(button.rect)
-
-    ### instantiate and store a RectsManager for the
-    ### entire parameter, using the gathered rects
-
-    rectsman = RectsManager(rectsman_rects.__iter__)
-    self.param_rectsman_map[param_name] = rectsman

@@ -1,7 +1,5 @@
 """Class extension for preparation of visual objects."""
 
-
-
 ### local imports
 
 from .....ourstdlibs.collections.fldict.main import FlatListDict
@@ -13,8 +11,11 @@ from .....rectsman.main import RectsManager
 from ....socket.surfs import type_to_codename
 
 
-## class for composition
+## classes for composition
+
 from ....socket.output import OutputSocket
+
+from .....rectsman.main import RectsManager
 
 
 ## functions for injection
@@ -112,11 +113,19 @@ class SignatureModeVisualPreparations():
         ### objects are never collapsed
         self.not_collapsible_rects = all_rects.copy()
 
-        ### create lists to hold visible input and output
-        ### sockets
+        ### create lists to hold visible input and output sockets
 
         self.visible_input_sockets = []
         self.visible_output_sockets = []
+
+        ### create a list to hold rects of visible unpacking icons
+        self.visible_unpacking_icon_rects = []
+
+        ### create lists to temporarily hold references to disconnected
+        ### input sockets
+
+        self.disconnected_param_input_sockets = []
+        self.disconnected_subparam_input_sockets = []
 
     def create_input_related_objects(self):
         """Create objects representing the node' inputs."""
@@ -175,7 +184,7 @@ class SignatureModeVisualPreparations():
         ### create and store a map to hold rects manager
         ### instances for each group of objects related to
         ### a specific parameter
-        self.param_rectsman_map = {}
+        param_rectsman_map = self.param_rectsman_map = {}
 
         ### create and store a map to hold rects manager
         ### instances for each group of objects related to
@@ -206,6 +215,10 @@ class SignatureModeVisualPreparations():
 
             else:
                 self.create_parameter_objs(param_obj)
+
+            ## also create a parameter rectsman to manage rects
+            ## in the parameter
+            param_rectsman_map[param_obj.name] = RectsManager([].__iter__)
 
         ### execute the update method on the maps created,
         ### so the list in their flat_values attribute is

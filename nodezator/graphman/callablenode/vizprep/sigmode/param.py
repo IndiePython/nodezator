@@ -8,8 +8,6 @@ from functools import partial
 
 ### local imports
 
-from .....config import APP_REFS
-
 from ....widget.utils import WIDGET_CLASS_MAP
 
 from ...utils import update_with_widget
@@ -22,8 +20,6 @@ from ....socket.surfs import type_to_codename
 from ....socket.input import InputSocket
 
 from .....widget.defaultholder import DefaultHolder
-
-from .....rectsman.main import RectsManager
 
 
 def create_parameter_objs(self, param_obj):
@@ -44,10 +40,6 @@ def create_parameter_objs(self, param_obj):
     ### retrieve the name of the parameter
     param_name = param_obj.name
 
-    ### create list to gather rects of objects in this
-    ### parameter to use in a RectsManager instance
-    rectsman_rects = []
-
     ### let's also alias the live instances map for
     ### the input sockets using a variable of low
     ### character count, for better code layout
@@ -63,14 +55,10 @@ def create_parameter_objs(self, param_obj):
     expected_type = self.type_map[param_name]
     type_codename = type_to_codename(expected_type)
 
-    ### define a temporary center coordinate for the
-    ### input socket
-    center = self.top_rectsman.left, 0
-
     ### instantiate socket
 
     input_socket = InputSocket(
-        node=self, type_codename=type_codename, parameter_name=param_name, center=center
+        node=self, type_codename=type_codename, parameter_name=param_name,
     )
 
     ### store the input socket instance in the
@@ -81,8 +69,6 @@ def create_parameter_objs(self, param_obj):
     ## every time it is changed
     isl_flmap.update()
 
-    ### gather the input socket's rect
-    rectsman_rects.append(input_socket.rect)
 
     ### try retrieving the widget meta map for the
     ### parameter
@@ -171,39 +157,9 @@ def create_parameter_objs(self, param_obj):
 
         widget.command = command
 
-        ## if widget is visible (that is, it doesn't a parent)...
-
-        has_parent = (
-
-            (self.id, param_name) in APP_REFS.gm.parented_sockets_ids
-            if hasattr(APP_REFS.gm, 'parented_sockets_ids')
-
-            else hasattr(input_socket, 'parent')
-
-        )
-
-        if not has_parent:
-
-            ## position widget
-            ## (widget topleft is positioned relative to the
-            ## input socket topright)
-            widget.rect.topleft = input_socket.rect.move(8, -1).topright
-
-            ## store widget in list of visible ones
-            self.visible_widgets.append(widget)
-
-            ### gather the widget's rect
-            rectsman_rects.append(widget.rect)
-
         ## store the widget instance in the live map
         self.widget_live_flmap[param_name] = widget
 
         # this dict subclass instance must be updated
         # whenever it is changed
         self.widget_live_flmap.update()
-
-    ### instantiate and store a RectsManager for the
-    ### gathered rects in this parameter
-
-    rectsman = RectsManager(rectsman_rects.__iter__)
-    self.param_rectsman_map[param_name] = rectsman

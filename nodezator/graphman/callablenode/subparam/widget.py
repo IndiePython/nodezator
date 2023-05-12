@@ -8,8 +8,6 @@ from functools import partial
 
 from ....config import APP_REFS
 
-from ....ourstdlibs.behaviour import remove_by_identity
-
 from ....our3rdlibs.button import Button
 
 from ....our3rdlibs.behaviour import indicate_unsaved
@@ -85,39 +83,31 @@ class WidgetOps:
 
         ### create and store "move subparam buttons"
 
-        bottomleft = input_socket.rect.move(2, 0).midright
-
         move_subparam_up = partial(self.move_subparam_up, input_socket)
 
         subp_up_button = Button(
             surface=SUBP_UP_BUTTON_SURF,
             command=move_subparam_up,
-            coordinates_name="bottomleft",
-            coordinates_value=bottomleft,
         )
 
         sub_flmap = self.subparam_up_button_flmap
 
-        (sub_flmap[param_name][subparam_index]) = subp_up_button
+        sub_flmap[param_name][subparam_index] = subp_up_button
 
         # this dict subclass instance must be updated
         # every time it is changed
         sub_flmap.update()
-
-        topleft = bottomleft
 
         move_subparam_down = partial(self.move_subparam_down, input_socket)
 
         subp_down_button = Button(
             surface=SUBP_DOWN_BUTTON_SURF,
             command=move_subparam_down,
-            coordinates_name="topleft",
-            coordinates_value=topleft,
         )
 
         sdb_flmap = self.subparam_down_button_flmap
 
-        (sdb_flmap[param_name][subparam_index]) = subp_down_button
+        sdb_flmap[param_name][subparam_index] = subp_down_button
 
         # this dict subclass instance must be updated
         # every time it is changed
@@ -125,8 +115,7 @@ class WidgetOps:
 
         ### store the widget data in the subwidgets data
         ### map for this subparameter
-
-        (self.data["subparam_widget_map"][param_name][subparam_index]) = widget_data
+        self.data["subparam_widget_map"][param_name][subparam_index] = widget_data
 
         ### retrieve widget class using the widget
         ### name from the parameter widget metadata
@@ -137,16 +126,9 @@ class WidgetOps:
         ### retrieve the keyword arguments
         kwargs = widget_data["widget_kwargs"]
 
-        ### put together position data for the widget
-
-        topleft_pos = input_socket.rect.move(15, -1).topright
-
-        pos_data = {"coordinates_name": "topleft", "coordinates_value": topleft_pos}
-
         ### instantiate the widget using the keyword
-        ### arguments from the widget data as well as the
-        ### position data
-        widget = widget_cls(name=param_name, **kwargs, **pos_data)
+        ### arguments from the widget data
+        widget = widget_cls(name=param_name, **kwargs)
 
         ### store the widget instance in the live map
         ### for widgets and execute its update method
@@ -157,57 +139,10 @@ class WidgetOps:
         wl_flmap[param_name][subparam_index] = widget
         wl_flmap.update()
 
-        ### create a list to hold rects related to the
-        ### new subparameter and use it to create a new
-        ### RectsManager instance (we use it elsewhere,
-        ### to position objects collectively whenever needed)
-
-        ### create a list to gather rects which will be
-        ### used to create a rects manager instance to
-        ### control this subparameter
-        subrectsman_rects = []
-
-        ### gather the input socket's rect
-        subrectsman_rects.append(input_socket.rect)
-
-        ### gather the "move subparam" buttons' rects
-
-        subrectsman_rects.append(subp_up_button.rect)
-        subrectsman_rects.append(subp_down_button.rect)
-
-        ### gather the widget's rect
-        subrectsman_rects.append(widget.rect)
-
-        ### with the gathered rects, we already
-        ### create a subrectsman for this subparameter
-        ### (even though we may yet need to add the
-        ### keyword entry and definitely will add the
-        ### remove button rect); we also add it to the
-        ### subparam rectsman map and include it in
-        ### the list of rects retrieved from the
-        ### param rectsman from its
-        ### ('_get_all_rects.__self__' attribute)
-
-        subrectsman = RectsManager(subrectsman_rects.__iter__)
-
-        (self.subparam_rectsman_map[param_name][subparam_index]) = subrectsman
-
-        rect_list = self.param_rectsman_map[param_name]._get_all_rects.__self__
-
-        rect_list.append(subrectsman)
-
         ### if variable is of keyword-variable kind
         ### instantiate a subparam keyword widget
 
         if self.var_kind_map[param_name] == "var_key":
-
-            ## use the left of the widget and the top
-            ## of the subrectsman (3 pixels higher by
-            ## subtracting the amount) to define a
-            ## bottomleft coordinate for the keyword
-            ## entry widget
-
-            bottomleft = (input_socket.rect.right + 15, subrectsman.top - 3)
 
             ## define a name for the keyword
             keyword_name = self.get_new_keyword_name()
@@ -230,33 +165,20 @@ class WidgetOps:
                 font_height=FONT_HEIGHT,
                 width=155,
                 command=command,
-                coordinates_name="bottomleft",
-                coordinates_value=bottomleft,
             )
 
             # store the subparam keyword entry
 
-            (
-                self.subparam_keyword_entry_live_map[subparam_index]
-            ) = subparam_keyword_entry
-
-            # gather the subparam keyword rect
-
-            subrectsman_rects.append(subparam_keyword_entry.rect)
+            self.subparam_keyword_entry_live_map[subparam_index] = (
+                subparam_keyword_entry
+            )
 
             # also store the name of the keyword created
             # in the dedicated map for keyword names
-
-            (self.data["subparam_keyword_map"][subparam_index]) = keyword_name
+            self.data["subparam_keyword_map"][subparam_index] = keyword_name
 
 
         ### create "remove widget" button
-
-        ## define midleft coordinates for the button
-
-        x = widget.rect.right
-
-        midleft = x, input_socket.rect.centery
 
         ## define command
         command = partial(self.remove_subparameter_widget, widget)
@@ -266,8 +188,6 @@ class WidgetOps:
         button = Button(
             surface=REMOVE_BUTTON_SURF,
             command=command,
-            coordinates_name="midleft",
-            coordinates_value=midleft,
         )
 
         ## store the button instance in the respective
@@ -279,32 +199,25 @@ class WidgetOps:
         wrb_flmap[param_name][subparam_index] = button
         wrb_flmap.update()
 
-        ## gather the button rect
-        subrectsman_rects.append(button.rect)
+        ### also define a command to update the widget value in the node
+        ### data and the position of the remove button (because the
+        ### widget may change its size when edited, depending on the
+        ### kind of widget), then assign such command to the 'command'
+        ### attribute of the widget
+        widget.command = partial(update_with_widget, kwargs, "value", widget, button)
 
-        ### also define a command to update the
-        ### widget value in the node data and
-        ### the position of the remove button
-        ### (because the widget may change its width
-        ### when edited, depending on the kind of
-        ### widget), then assign such command to the
-        ### 'command' attribute of the widget
+        ### create a rects manager to control the rects of this
+        ### new subparameter
 
-        command = partial(update_with_widget, kwargs, "value", widget, button)
-
-        widget.command = command
-
-        ### add widget and remove button to respective list of visible objects
-
-        self.visible_widgets.append(widget)
-        self.visible_remove_widget_buttons.append(button)
+        self.subparam_rectsman_map[param_name][subparam_index] = (
+            RectsManager([].__iter__)
+        )
 
         ### reposition all objects within the node
         self.reposition_elements()
 
-        ### also perform setups related to the change in
-        ### the node body's height
-        self.perform_body_height_change_setups()
+        ### reset body's height and image
+        self.reset_body_height_and_image()
 
         ### indicate that changes were made in the data
         indicate_unsaved()
@@ -379,23 +292,7 @@ class WidgetOps:
 
         ### remove the widget data from the subwidgets data
         ### map for this parameter
-        (self.data["subparam_widget_map"][param_name].pop(subparam_index))
-
-        ### remove widget's and remove button's rects from
-        ### rects manager for this parameter
-
-        subrectsman = self.subparam_rectsman_map[param_name][subparam_index]
-
-        subrectsman_rects = subrectsman._get_all_rects.__self__
-
-        remove_by_identity(widget.rect, subrectsman_rects)
-        remove_by_identity(button.rect, subrectsman_rects)
-
-        ### remove widget and button from corresponding list of visible
-        ### objects
-
-        self.visible_widgets.remove(widget)
-        self.visible_remove_widget_buttons.remove(button)
+        self.data["subparam_widget_map"][param_name].pop(subparam_index)
 
         ### reference the list of subparameters for
         ### unpacking locally for easier access
@@ -406,7 +303,7 @@ class WidgetOps:
         ### and perform needed admin tasks
 
         ## remove input socket from live map
-        (self.input_socket_live_flmap[param_name].pop(subparam_index))
+        self.input_socket_live_flmap[param_name].pop(subparam_index)
 
         # this dict subclass instance must be updated
         # whenever it changes
@@ -414,18 +311,16 @@ class WidgetOps:
 
         ## remove the subparam index from the list
         ## in the subparam map
-
-        (self.data["subparam_map"][param_name].remove(subparam_index))
+        self.data["subparam_map"][param_name].remove(subparam_index)
 
         ## remove "move subparam" buttons
-
-        (self.subparam_up_button_flmap[param_name].pop(subparam_index))
+        self.subparam_up_button_flmap[param_name].pop(subparam_index)
 
         # this dict subclass instance must be updated
         # whenever it changes
         self.subparam_up_button_flmap.update()
 
-        (self.subparam_down_button_flmap[param_name].pop(subparam_index))
+        self.subparam_down_button_flmap[param_name].pop(subparam_index)
 
         # this dict subclass instance must be updated
         # whenever it changes
@@ -441,8 +336,7 @@ class WidgetOps:
         if subparam_index in subparams_for_unpacking:
 
             ## remove unpacking icon
-
-            (self.subparam_unpacking_icon_flmap[param_name].pop(subparam_index))
+            self.subparam_unpacking_icon_flmap[param_name].pop(subparam_index)
 
             # this special dict subclass instance must
             # be updated whenever it is changed
@@ -450,8 +344,7 @@ class WidgetOps:
 
             ## remove subparameter index from list
             ## within the subparameter unpacking map
-
-            (self.data["subparam_unpacking_map"][param_name].remove(subparam_index))
+            self.data["subparam_unpacking_map"][param_name].remove(subparam_index)
 
         ## else if the parameter is of keyword-variable
         ## kind remove the keyword entry from the
@@ -461,34 +354,15 @@ class WidgetOps:
         elif self.var_kind_map[param_name] == "var_key":
 
             ## remove keyword entry widget
-
-            (self.subparam_keyword_entry_live_map.pop(subparam_index))
+            self.subparam_keyword_entry_live_map.pop(subparam_index)
 
             ## remove keyword name from subparameter
             ## keyword map
+            self.data["subparam_keyword_map"].pop(subparam_index)
 
-            (self.data["subparam_keyword_map"].pop(subparam_index))
-
-        ## also update the rectsman hierarchy in order
-        ## to take the removal of the subparameter into
-        ## account
-
-        # remove the subparameter rectsman from the
-        # subparameter rectsman map (we don't need
-        # to catch the reference returned, because
-        # we already have a reference from a previous
-        # block in this same method)
-
-        (self.subparam_rectsman_map[param_name].pop(subparam_index))
-
-        # remove the subrectsman from list in the
-        # __self__ attribute of the parameter rectsman
-        # _get_all_rects attribute (it contains the
-        # bound __iter__ method of the list)
-
-        rect_list = self.param_rectsman_map[param_name]._get_all_rects.__self__
-
-        remove_by_identity(subrectsman, rect_list)
+        ## remove the subparameter rectsman from the
+        ## subparameter rectsman map
+        self.subparam_rectsman_map[param_name].pop(subparam_index)
 
         ## fix names of remaining subparameters
         self.fix_subparameter_indices(param_name)
@@ -496,9 +370,8 @@ class WidgetOps:
         ### reposition all objects within the node
         self.reposition_elements()
 
-        ### also perform setups related to the change in
-        ### the node body's height
-        self.perform_body_height_change_setups()
+        ### reset body's height and image
+        self.reset_body_height_and_image()
 
         ### indicate that changes were made in the data
         indicate_unsaved()

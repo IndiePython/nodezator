@@ -5,16 +5,22 @@ from ....config import APP_REFS
 
 def collapse_unconnected_elements(self):
     """Perform setups so all unconnected elements are collapsed."""
-    ### store visible input sockets
+    ### store visible input sockets and respective unpacking icon
+    ### rects
 
     vis = self.visible_input_sockets
     vis.clear()
+
+    vuirs = self.visible_unpacking_icon_rects
+    vuirs.clear()
 
     isl_flmap = self.input_socket_live_flmap
 
     parameters = self.signature_obj.parameters.values()
 
     subparam_map = self.data["subparam_map"]
+
+    sui_flmap = self.subparam_unpacking_icon_flmap
 
     for param_obj in parameters:
 
@@ -68,6 +74,11 @@ def collapse_unconnected_elements(self):
                 if has_parent:
                     vis.append(input_socket)
 
+                unpacking_icon = sui_flmap[param_name].get(subparam_index)
+
+                if unpacking_icon:
+                    vuirs.append(unpacking_icon.rect)
+
     ### store visible output sockets
 
     ##
@@ -87,7 +98,7 @@ def collapse_unconnected_elements(self):
         ## visible one
 
         has_parent = (
-            (self.id, output_socket_name) in APP_REFS.gm.parent_sockets_ids
+            (self.id, output_name) in APP_REFS.gm.parent_sockets_ids
             if hasattr(APP_REFS.gm, 'parent_sockets_ids')
             else hasattr(output_socket, 'children')
         )
@@ -97,15 +108,16 @@ def collapse_unconnected_elements(self):
 
     ###
 
-    rectsman = self.col_rectsman
-
-    rects = rectsman._get_all_rects.__self__
+    rects = self.col_rectsman._get_all_rects.__self__
     rects.clear()
 
     ##
     rects.extend(self.not_collapsible_rects)
 
     ##
+
+    rects.extend(vuirs)
+
     rects.extend(
         socket.rect
         for socket in (vis + vos)

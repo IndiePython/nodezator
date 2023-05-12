@@ -396,11 +396,22 @@ class SupportOperations:
         """Signal severance of gathered sockets."""
         ### while there are sockets kept for signaling, keep
         ### removing them and signaling the severance of
-        ### their segments to their nodes
+        ### their segments individually and then to their
+        ### nodes
 
-        while self.sockets_for_signaling:
+        sockets_for_signaling = self.sockets_for_signaling
 
-            (self.sockets_for_signaling.pop().signal_severance())
+        nodes_for_signaling = self.nodes_for_signaling
+
+        while sockets_for_signaling:
+
+            socket = sockets_for_signaling.pop()
+            socket.signal_severance()
+
+            nodes_for_signaling.add(socket.node)
+
+        while nodes_for_signaling:
+            nodes_for_signaling.pop().signal_severance()
 
     def fix_input_socket_id(self, input_socket, old_id):
         """Fix input socket id on socket tree."""

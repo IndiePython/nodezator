@@ -111,9 +111,8 @@ class UnpackingOps:
         ### reposition all objects within the node
         self.reposition_elements()
 
-        ### also perform setups related to the change in
-        ### the node body's height
-        self.perform_body_height_change_setups()
+        ### reset body's height and image
+        self.reset_body_height_and_image()
 
         ### indicate that changes were made in the data
         indicate_unsaved()
@@ -221,9 +220,8 @@ class UnpackingOps:
         ### reposition all objects within the node
         self.reposition_elements()
 
-        ### also perform setups related to the change in
-        ### the node body's height
-        self.perform_body_height_change_setups()
+        ### reset body's height and image
+        self.reset_body_height_and_image()
 
         ### indicate that changes were made in the data
         indicate_unsaved()

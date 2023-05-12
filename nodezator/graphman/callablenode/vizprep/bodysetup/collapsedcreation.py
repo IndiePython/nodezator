@@ -77,11 +77,18 @@ def get_collapsed_body_surface(self):
     ### in order to blit surfaces in the body surface
     ### relative to the surface's origin, define an offset
     ### equal to the body's topleft coordinates inverted
-
     offset = tuple(-value for value in self.body.rect.topleft)
+
+    ### reference lists of visible input and output sockets locally
+
+    vis = self.visible_input_sockets
+    vos = self.visible_output_sockets
 
     ### reference input socket map locally for easier/quick access
     isl_flmap = self.input_socket_live_flmap
+
+    ### reference unpacking icon map locally
+    sui_flmap = self.subparam_unpacking_icon_flmap
 
     ### iterate over the name of each parameter, blitting
     ### text surfaces representing them on the body of
@@ -112,18 +119,10 @@ def get_collapsed_body_surface(self):
 
         except KeyError:
 
-            ## skip this parameter if it doesn't have a parent
+            ## skip this parameter if it's input socket is not visible
+            input_socket = isl_flmap[param_name]
 
-            has_parent = (
-
-                (self.id, param_name) in APP_REFS.gm.parented_sockets_ids
-                if hasattr(APP_REFS.gm, 'parented_sockets_ids')
-
-                else hasattr(isl_flmap[param_name], 'parent')
-
-            )
-
-            if not has_parent:
+            if input_socket not in vis:
                 continue
 
             ## position the text rect horizontally,
@@ -134,17 +133,9 @@ def get_collapsed_body_surface(self):
 
             ## position the text rect vertically
 
-            # retrieve the list of rects controlled by
-            # the rects manager of the parameter;
-            #
-            # the first one is the input socket's rect
-            rect_list = param_rectsman._get_all_rects.__self__
-            input_socket_rect = rect_list[0]
-
             # the text is positioned vertically centered on the
             # input socket, lifted just 2 pixels up
-            text_rect.centery = input_socket_rect.centery
-            text_rect.top += -2
+            text_rect.centery = input_socket.rect.move(0, -2).centery
 
             ## define text
             text = param_name
@@ -154,36 +145,41 @@ def get_collapsed_body_surface(self):
 
         else:
 
-            ## skip this parameter if none of its subparameters
-            ## has a parent
+            ## retrieve the names of the subparameters sorted
+            sorted_subparam_indices = sorted(self.input_socket_live_flmap[param_name])
 
-            if hasattr(APP_REFS.gm, 'parented_sockets_ids'):
+            ## skip parameter if it has no subparameters
+            if not sorted_subparam_indices:
+                continue
 
-                parented_sockets_ids = APP_REFS.gm.parented_sockets_ids
+            ## skip this parameter if none of its input sockets are visible
 
-                for subparam_index in isl_map[param_name]:
+            for input_socket in isl_flmap[param_name].values():
 
-                    if (self.id, param_name, subparam_index) in parented_sockets_ids:
-
-                        has_parent = True
-                        break
-
-                else:
-                    has_parent = False
+                if input_socket in vis:
+                    break
 
             else:
-
-                for input_socket in isl_flmap[param_name].values():
-
-                    if hasattr(input_socket, 'parent'):
-
-                        has_parent = True
-                        break
-                else:
-                    has_parent = False
-
-            if not has_parent:
                 continue
+
+            ## if the subparameter for the visible socket is marked
+            ## for unpacking, draw the unpacking icon beside the socket
+
+            for subparam_index in sorted_subparam_indices:
+
+                socket = isl_flmap[param_name][subparam_index]
+
+                if socket not in vis:
+                    continue
+
+                unpacking_icon = sui_flmap[param_name].get(subparam_index)
+
+                if not unpacking_icon:
+                    continue
+
+                unpacking_icon.rect.move_ip(offset)
+                unpacking_icon.draw_on_surf(body_surf)
+                unpacking_icon.rect.move_ip(self.body.rect.topleft)
 
             ## position the text rect horizontally,
             ## 5 pixels from the left side of the node's
@@ -192,9 +188,7 @@ def get_collapsed_body_surface(self):
             text_rect.left = top_rectsman.left + 5
 
             ## position vertically
-
-            text_rect.bottom = param_rectsman.top
-            text_rect.top += -2
+            text_rect.bottom = param_rectsman.move(0, -2).top
 
             ## define text (instead of just using the
             ## parameter's name, we add one or two
