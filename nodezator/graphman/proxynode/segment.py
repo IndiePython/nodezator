@@ -30,8 +30,35 @@ class SegmentOps:
 
         self.propagate_output(source_name, type_codename)
 
-    def signal_severance(self):
+    def signal_severance(self, socket=None):
         """Act on severance of incomming connection."""
+        ## if socket is not None, store reference to it and
+        ## exit immediatelly
+
+        if socket is not None:
+            self.severed_sockets.append(socket)
+            return
+
+        ## otherwise..
+        else:
+
+            ## copy the list of severed sockets and clear
+            ## the original one
+
+            sockets = self.severed_sockets.copy()
+            self.severed_sockets.clear()
+
+            ## if the proxy socket isn't present among the
+            ## severed ones, exit the method
+
+            for socket in sockets:
+
+                if socket is self.proxy_socket:
+                    break
+
+            else:
+                return
+
         ## delete source name and type codename
 
         del self.data["source_name"]

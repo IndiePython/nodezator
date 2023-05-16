@@ -72,8 +72,10 @@ class ProxyNode(
             setattr(self, attr_name, self.data[attr_name])
 
         ### store the midtop position
-
         self.midtop = midtop if midtop is not None else self.data["midtop"]
+
+        ### create list to keep track of severed sockets
+        self.severed_sockets = []
 
         ### create control to indicate when the node was
         ### subject to mouse click

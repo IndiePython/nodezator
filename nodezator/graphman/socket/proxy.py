@@ -84,23 +84,16 @@ class ProxySocket(Socket):
 
     def signal_connection(self):
         ## change style as needed
-
         self.update_type_codename(self.parent.type_codename)
-
-        ## signal node
+        ##
         self.node.signal_connection()
 
     def signal_severance(self):
-        """Signal severance of segment to node.
-
-        Used to make the node aware of severance, so
-        measures can be taken, if needed.
-        """
-        ## change style
+        ## change style as needed
         self.update_type_codename(None)
 
-        ## signal node
-        self.node.signal_severance()
+        ##
+        self.node.signal_severance(self)
 
     def receive_input(self, data):
         """Pass data on to output socket children.
