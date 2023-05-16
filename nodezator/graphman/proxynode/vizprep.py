@@ -59,9 +59,9 @@ class VisualRelatedPreparations:
         ### easy access for drawing, positioning and
         ### mouse-related operations
 
-        viz_objs = self.visual_objects = []
-        mouse_aware_objs = self.mouse_aware_objects = []
-        all_rects = []
+        self.visual_objects = []
+        self.mouse_aware_objects = []
+        self.all_rects = []
 
         ### create label
 
@@ -69,49 +69,39 @@ class VisualRelatedPreparations:
             surface=(self.get_new_label_surface()),
         )
 
-        viz_objs.append(label)
-        all_rects.append(label.rect)
+        ### create widget add button
+
+        command = partial(
+            (APP_REFS.ea.widget_creation_popup_menu.trigger_simple_widget_picking),
+            self,
+        )
+
+        self.add_button = Button(
+            surface=ADD_BUTTON_SURF,
+            command=command,
+        )
+
+        ### instantiate remove widget button
+
+        self.remove_button = Button(
+            surface=REMOVE_BUTTON_SURF,
+            command=self.remove_widget,
+        )
+
 
         ### try grabbing widget data
 
         try:
             widget_data = self.data["widget_data"]
 
-        ### if we fail, instantiate widget add button
+        ### if we fail, set output type codename to None
 
         except KeyError:
-
-            command = partial(
-                (APP_REFS.ea.widget_creation_popup_menu.trigger_simple_widget_picking),
-                self,
-            )
-
-            add_button = self.add_button = Button(
-                surface=ADD_BUTTON_SURF,
-                command=command,
-            )
-
-            viz_objs.append(add_button)
-            mouse_aware_objs.append(add_button)
-            all_rects.append(add_button.rect)
-
             output_type_codename = None
 
-        ### if we succeed, instantiate remove_button
-        ### and widget
+        ### if we succeed, instantiate widget
 
         else:
-
-            ### instantiate remove widget button
-
-            remove_button = self.remove_button = Button(
-                surface=REMOVE_BUTTON_SURF,
-                command=self.remove_widget,
-            )
-
-            viz_objs.append(remove_button)
-            mouse_aware_objs.append(remove_button)
-            all_rects.append(remove_button.rect)
 
             ### instantiate widget
 
@@ -127,18 +117,11 @@ class VisualRelatedPreparations:
 
             ## instantiate the widget using the keyword
             ## arguments
-
-            widget = self.widget = widget_cls(
-                **kwargs,
-            )
-
-            viz_objs.append(widget)
-            mouse_aware_objs.append(widget)
-            all_rects.append(widget.rect)
+            widget = self.widget = widget_cls(**kwargs)
 
             ## also define a command to update the widget
             ## value in the node data and perform other
-            ## additional admi tasks and assign such
+            ## additional admin tasks and assign such
             ## command to the 'command' attribute of the
             ## widget
 
@@ -157,8 +140,7 @@ class VisualRelatedPreparations:
 
             widget.command = command
 
-            ## define expected type for proxy socket and
-            ## output socket
+            ## define expected type for output socket
 
             expected_type = widget.get_expected_type()
 
@@ -170,10 +152,6 @@ class VisualRelatedPreparations:
             node=self,
             type_codename=(self.data.get("source_type_codename")),
         )
-
-        viz_objs.append(proxy_socket)
-        mouse_aware_objs.append(proxy_socket)
-        all_rects.append(proxy_socket.rect)
 
         ### the proxy socket is considered a kind of
         ### input socket;
@@ -196,10 +174,6 @@ class VisualRelatedPreparations:
             output_name=self.title,
         )
 
-        viz_objs.append(output_socket)
-        mouse_aware_objs.append(output_socket)
-        all_rects.append(output_socket.rect)
-
         ### all node classes must have an 'output_sockets'
         ### attribute listing all output sockets
         self.output_sockets = (output_socket,)
@@ -213,40 +187,23 @@ class VisualRelatedPreparations:
             self.data.get("commented_out", False),
         )
 
-        header = self.header = Object2D.from_surface(
+        self.header = Object2D.from_surface(
             HEADER_SURF_MAP[key],
             coordinates_name="midtop",
             coordinates_value=self.midtop,
         )
-
-        viz_objs.insert(0, header)
-        all_rects.append(header.rect)
 
         ### create a rect to be used as the boundaries
         ### of the node (its position and size are properly
         ### set in the call to reposition the elements)
         self.rect = Rect(0, 0, 0, 0)
 
-        ### position elements relative to each other
-        self.reposition_elements()
-
         ### also create and store a rects manager to
         ### control all the rects in the node
+        self.rectsman = RectsManager(self.all_rects.__iter__)
 
-        ## create a list containing the rects to be managed
-        ## get the __iter__ method of the list containing
-        ## rects to use as a callable which returns the
-        ## rects to be managed by the rects manager
-        ## instance
-        get_all_rects = all_rects.__iter__
-
-        ## use the callable to instantiate the rects
-        ## manager and then store it
-        self.rectsman = RectsManager(get_all_rects)
-
-        ### also append such rect to the list of the rects
-        ### managed by the rectsman
-        all_rects.append(self.rect)
+        ### position elements relative to each other
+        self.reposition_elements()
 
     def check_header_width(self):
 
@@ -281,7 +238,7 @@ class VisualRelatedPreparations:
 
         width = self.label.rect.width + HEADER_LABEL_WIDTH_INCREMENT
 
-        if hasattr(self, "widget"):
+        if hasattr(self, "widget") and 'source_name' not in self.data:
 
             width = max(
                 (self.widget.rect.width + REMOVE_BUTTON_WIDTH),
@@ -289,9 +246,6 @@ class VisualRelatedPreparations:
             )
 
         return width
-
-    ## alias update label surface method as the one
-    ## to be called for commenting/uncommenting setups
 
     def perform_commenting_uncommenting_setups(self):
 

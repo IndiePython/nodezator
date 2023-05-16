@@ -22,6 +22,10 @@ class SegmentOps:
         ## check header width
         self.check_header_width()
 
+        ## reposition node elements since the label changed and
+        ## the header width probably changed as well
+        self.reposition_elements()
+
         ## update style and output name of output socket
 
         output_socket = self.output_socket
@@ -69,6 +73,10 @@ class SegmentOps:
 
         ## check header width
         self.check_header_width()
+
+        ## reposition node elements since the label changed and
+        ## the header width probably changed as well
+        self.reposition_elements()
 
         ###
 
@@ -130,6 +138,11 @@ class SegmentOps:
                 ## check header width
                 node.check_header_width()
 
+                ## reposition node elements since the label changed and
+                ## the header width probably changed as well
+                node.reposition_elements()
+
+                ##
                 node.propagate_output(source_name, type_codename)
 
 
