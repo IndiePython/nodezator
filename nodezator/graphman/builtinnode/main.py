@@ -103,7 +103,11 @@ class BuiltinNode(CallableNode):
         self.create_visual_elements()
 
         ### set mode
-        self.set_mode(self.data.get('mode', 'expanded_signature'))
+
+        self.set_mode(
+            self.data.get('mode', 'expanded_signature'),
+            indicate_changes=False,
+        )
 
         ### initialize execution-related objects
         self.create_execution_support_objects()

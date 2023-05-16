@@ -4,6 +4,8 @@
 
 from ...config import APP_REFS
 
+from ...our3rdlibs.behaviour import indicate_unsaved
+
 ## class extensions
 
 from .preproc import Preprocessing
@@ -182,12 +184,16 @@ class CallableNode(
         self.create_visual_elements()
 
         ### set mode
-        self.set_mode(self.data.get('mode', 'expanded_signature'))
+
+        self.set_mode(
+            self.data.get('mode', 'expanded_signature'),
+            indicate_changes=False,
+        )
 
         ### initialize execution-related objects
         self.create_execution_support_objects()
 
-    def set_mode(self, mode_name):
+    def set_mode(self, mode_name, indicate_changes=True):
 
         current_mode_name = self.data.get('mode', 'expanded_signature')
 
@@ -252,6 +258,10 @@ class CallableNode(
         ###
         self.reposition_elements()
         self.setup_body()
+
+        ### if requested, indicate that changes were made
+        if indicate_changes:
+            indicate_unsaved()
 
     def adjust_sigmode_toggle_button(self, mode_name):
 

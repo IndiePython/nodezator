@@ -420,7 +420,15 @@ class SupportOperations:
                 nodes_for_signaling.add(socket.node)
 
         while nodes_for_signaling:
-            nodes_for_signaling.pop().signal_severance()
+
+            node = nodes_for_signaling.pop()
+
+            try:
+                method = node.signal_severance
+            except AttributeError:
+                pass
+            else:
+                method()
 
     def fix_input_socket_id(self, input_socket, old_id):
         """Fix input socket id on socket tree."""
