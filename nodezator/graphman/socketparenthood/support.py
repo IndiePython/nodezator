@@ -137,7 +137,8 @@ class SupportOperations:
         self,
         parent,
         child,
-        store_for_signaling=True,
+        signal_parent=True,
+        signal_child=True,
     ):
         """Sever segment between given sockets.
 
@@ -152,20 +153,18 @@ class SupportOperations:
           or graphman.socket.proxy.ProxySocket instance
         )
             child socket.
-        store_for_signaling (boolean)
-            indicates whether a reference of the child must
-            be stored so that the severance of the segment
-            can be signaled to its node (this may be
-            desirable to made the node aware of the
-            segment's severance, in order to perform admin
-            tasks if needed. The reason why the reference
-            is kept for being signaled later is because
-            when a severance is made, its effects can
-            reposition other sockets and their segments,
-            and end up severing other segments accidentally,
-            hence the signaling being made later, so such
-            effects only take place after the severance
-            is performed.
+        signal_parent, signal_child (boolean)
+            indicates whether a reference to the parent or child
+            respectively must be stored so that the severance of
+            the segment can be signaled to its node (this may be
+            desirable to made the node aware of the segment's
+            severance, in order to perform admin tasks if needed.
+            The reason why the reference is kept for being signaled
+            later is because when a severance is made, its effects can
+            reposition other sockets and their segments, and end up
+            severing other segments accidentally, hence the signaling
+            being made later, so such effects only take place after
+            the severance is performed.
         """
         ### begin by removing the child from the parent
         parent.children.remove(child)
@@ -216,6 +215,12 @@ class SupportOperations:
 
             self.parent_sockets_data.remove(parent_data)
 
+            ## if requested, store reference to parent, so its node is
+            ## notified of the severance
+
+            if signal_parent:
+                self.parents_for_signaling.append(parent)
+
         ### the children must then have its 'parent'
         ### attribute removed
         del child.parent
@@ -224,8 +229,8 @@ class SupportOperations:
         ### so that its node can later be signaled about the
         ### severance we just performed
 
-        if store_for_signaling:
-            self.sockets_for_signaling.append(child)
+        if signal_child:
+            self.children_for_signaling.append(child)
 
     def establish_segment(self, socket_a, socket_b):
         """Perform setups to establish new line segment."""
@@ -399,16 +404,20 @@ class SupportOperations:
         ### their segments individually and then to their
         ### nodes
 
-        sockets_for_signaling = self.sockets_for_signaling
+        parents_for_signaling = self.parents_for_signaling
+
+        children_for_signaling = self.children_for_signaling
 
         nodes_for_signaling = self.nodes_for_signaling
 
-        while sockets_for_signaling:
+        for collection in (parents_for_signaling, children_for_signaling):
 
-            socket = sockets_for_signaling.pop()
-            socket.signal_severance()
+            while collection:
 
-            nodes_for_signaling.add(socket.node)
+                socket = collection.pop()
+                socket.signal_severance()
+
+                nodes_for_signaling.add(socket.node)
 
         while nodes_for_signaling:
             nodes_for_signaling.pop().signal_severance()

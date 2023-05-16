@@ -46,12 +46,14 @@ class SocketParenthood(
             for parent_data in self.parent_sockets_data
         ]
 
-        ### create a list and a set to temporarily store sockets and
+        ### create collections to temporarily store sockets and
         ### their nodes to be signaled after the sockets' segments are
         ### severed (check the sever_segment_between_sockets method to
         ### know more about their usage)
 
-        self.sockets_for_signaling = []
+        self.parents_for_signaling = []
+        self.children_for_signaling = []
+
         self.nodes_for_signaling = set()
 
     def reference_parent_children(

@@ -126,6 +126,18 @@ class OutputSocket(Socket):
             event.pos,
         )
 
+    def signal_severance(self):
+        """Signal severance of segment to node.
+
+        Used to make the node aware of severance, so
+        measures can be taken, if needed.
+        """
+        try: method = self.node.signal_severance
+        except AttributeError:
+            pass
+        else:
+            method(self)
+
     def svg_repr(self):
         """"""
 

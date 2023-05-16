@@ -80,8 +80,10 @@ class UserActions:
                 self.sever_segment_between_sockets(
                     parent,
                     socket_b,
-                    store_for_signaling=False,
+                    signal_child=False,
                 )
+
+                self.signal_severance_of_removed_sockets()
 
             ## check whether socket_b has a
             ## 'get_input_socket' method
