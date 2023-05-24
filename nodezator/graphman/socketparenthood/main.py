@@ -83,14 +83,33 @@ class SocketParenthood(
 
             ## TODO review this try/except/else clauses
 
+            ## try retrieving a reference to an
+            ## output socket live map
+
             try:
                 oslm = node.output_socket_live_map
+
+            ## if you are not able to, it means we have
+            ## a proxy node, so we just retrieve its output
+            ## socket
 
             except AttributeError:
                 socket = node.output_socket
 
+            ## otherwise, if try retrieving the socket
+            ## depending on the node's mode
+
             else:
-                socket = oslm[output_name]
+
+                ## if in callable mode, there's only a single
+                ## output socket available, so just reference it
+                if node.data.get('mode', 'expanded_signature') == 'callable':
+                    socket = node.output_sockets[0]
+
+                ## otherwise, the socket is retrieve from the output
+                ## socket live map directly, using the output name
+                else:
+                    socket = oslm[output_name]
 
         elif class_name == "InputSocket":
 
