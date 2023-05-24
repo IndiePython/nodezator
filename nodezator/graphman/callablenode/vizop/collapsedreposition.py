@@ -147,11 +147,11 @@ def reposition_collapsed_elements(self):
             sorted_subparam_indices = sorted(isl_flmap[param_name])
 
             ## if there are indeed subparameters, store a reference to the
-            ## input socket of the last subparameter
+            ## input socket of the last visible subparameter
 
             if sorted_subparam_indices:
 
-                for subparam_index in sorted_subparam_indices:
+                for subparam_index in reversed(sorted_subparam_indices):
 
                     input_socket = isl_flmap[param_name][subparam_index]
 

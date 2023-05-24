@@ -132,6 +132,6 @@ def collapse_unconnected_elements(self):
     rects.extend(vuirs)
 
     rects.extend(
-        socket.rect
-        for socket in (vis + vos)
+        obj.rect
+        for obj in (vis + vos + vws)
     )
