@@ -1,7 +1,13 @@
 """Class extension for preparation of visual objects."""
 
-### standard library import
+### standard library imports
+
 from inspect import _empty
+from collections.abc import Callable
+
+
+### third-party import
+from pygame import Rect
 
 
 ### local imports
@@ -30,6 +36,8 @@ from ..socket.output import OutputSocket
 
 
 TYPE_CODENAME = type_to_codename(_empty)
+CALLABLE_CODENAME = type_to_codename(Callable)
+CALLABLE_OUTPUT_NAME = 'operation'
 
 
 class VisualRelatedPreparations:
@@ -45,97 +53,96 @@ class VisualRelatedPreparations:
             coordinates_value=self.midtop,
         )
 
-        ### create label
+        ### alias body's rect
+        self.body_rect = body.rect
 
-        label = self.label = Object2D.from_surface(
-            surface=(self.get_new_label_surface()),
-            coordinates_name="topleft",
-            coordinates_value=(body.rect.move(6, 4).topleft),
-        )
+        ### create id label
+        label = self.label = Object2D.from_surface(self.get_new_label_surface())
 
-        ### input sockets
-
-        input_sockets = self.input_sockets = []
+        ### signature mode input sockets
 
         operation_id = self.data["operation_id"]
 
         params = [
+
             char
-            for char, flag in zip(operation_id, CHAR_FILTERING_MAP[operation_id])
+
+            for char, flag
+            in zip(operation_id, CHAR_FILTERING_MAP[operation_id])
+
             if flag
+
         ]
 
-        divisions = len(params) + 1
+        signature_input_sockets = self.signature_input_sockets = [
 
-        jump_height = (body.rect.height - (LABEL_AREA_HEIGHT // 2)) // divisions
-
-        centery = body.rect.y + LABEL_AREA_HEIGHT + jump_height
-
-        for char in params:
-
-            input_socket = InputSocket(
+            InputSocket(
                 node=self,
                 type_codename=TYPE_CODENAME,
                 parameter_name=char,
-                center=(
-                    body.rect.left,
-                    centery,
-                ),
             )
 
-            input_sockets.append(input_socket)
+            for char in params
 
-            centery += jump_height
+        ]
 
-        ### output socket
+        ### signature mode output socket
 
-        socket_center = body.rect.move(0, LABEL_AREA_HEIGHT // 2).midright
-
-        output_socket = self.output_socket = OutputSocket(
+        signature_output_socket = self.signature_output_socket = OutputSocket(
             node=self,
             type_codename=TYPE_CODENAME,
-            center=socket_center,
         )
 
-        ### all node classes must have an 'output_sockets'
-        ### attribute listing all output sockets
-        self.output_sockets = (output_socket,)
+        self.signature_output_sockets = (signature_output_socket,)
+
+        ### callable mode output socket
+
+        callable_output_socket = self.callable_output_socket = OutputSocket(
+            node=self,
+            type_codename=CALLABLE_CODENAME,
+            output_name=CALLABLE_OUTPUT_NAME,
+        )
+
+        self.callable_output_sockets = (callable_output_socket,)
 
         ### gather all visual objects in the same
-        ### collection
+        ### collections
 
-        self.visual_objects = (
+        self.signature_visual_objects = (
             body,
             label,
-            output_socket,
-            *(socket for socket in input_sockets),
+            signature_output_socket,
+            *(socket for socket in signature_input_sockets),
         )
 
-        ### also create and store a rects manager to
-        ### control all the rects in the node
+        ###
 
-        ## list containing all rects
+        self.callable_visual_objects = (
+            body,
+            label,
+            callable_output_socket,
+        )
 
-        all_rects = [obj.rect for obj in self.visual_objects]
+        ### create rect representing entire node
+        self.rect = Rect(0, 0, 0, 0)
 
-        ## get the __iter__ method of the tuple containing
-        ## rects to use as a callable which returns the
-        ## rects to be managed by the rects manager
-        ## instance
-        get_all_rects = all_rects.__iter__
+        ### also create and store a rects managers to
+        ### control all the rects in the node in different modes
 
-        ## use the callable to instantiate the rects
-        ## manager and then store it
-        self.rectsman = RectsManager(get_all_rects)
+        self.signature_rectsman = (
+            RectsManager([obj.rect for obj in self.signature_visual_objects].__iter__)
+        )
 
-        ### obtain a copy of the rectsman to represent
-        ### the entire node; note that the copy is
-        ### slightly horizontally inflated and moved
-        self.rect = self.rectsman.inflate(5, 0).move(-5, 0)
+        self.callable_rectsman = (
+            RectsManager([obj.rect for obj in self.callable_visual_objects].__iter__)
+        )
 
-        ### also append such rect to the list of the rects
-        ### managed by the rectsman
-        all_rects.append(self.rect)
+        ### add self.rect to them
+
+        for rectsman in (self.signature_rectsman, self.callable_rectsman):
+
+            ## retrieve and use list's append method to add rect
+            rectsman._get_all_rects.__self__.append(self.rect)
 
     def get_node_surf(self):
 
@@ -143,12 +150,16 @@ class VisualRelatedPreparations:
             COMMENTED_OUT_SURFS
             if self.data.get("commented_out", False)
             else NORMAL_SURFS
-        )[self.data["operation_id"]]
+        )[
+            ## use this tuple to get item from mapping
 
-    ## alias update label surface method as the one
-    ## to be called for commenting/uncommenting setups
+            (
+                self.data["operation_id"],
+                self.data.get('mode', 'expanded_signature')
+            )
 
-    ## TODO write
+        ]
+
     def perform_commenting_uncommenting_setups(self):
 
         self.body.image = self.get_node_surf()

@@ -1,5 +1,6 @@
-### standard library import
-from functools import partial
+
+### standard library imports
+from functools import partial, partialmethod
 
 
 ### local imports
@@ -34,12 +35,27 @@ class OperatorNodePopupMenu(GeneralPopupCommands):
 
         node_replacing_submenu = []
 
+        mode_switching_submenu = {
+            "label": "Change mode to",
+            "children": [
+                {
+                    "label": "Expanded signature",
+                    "command": self.obj_to_expanded_signature,
+                },
+                {
+                    "label": "Callable",
+                    "command": self.obj_to_callable,
+                },
+            ],
+        }
+
         for command in (
             {
                 "label": "Replace operation",
                 "icon": "operations",
                 "children": node_replacing_submenu,
             },
+            mode_switching_submenu,
             {
                 "label": "Get source info",
                 "key_text": "i",
@@ -47,7 +63,6 @@ class OperatorNodePopupMenu(GeneralPopupCommands):
                 "command": self.get_node_info,
             },
         ):
-
             menu_list.insert(1, command)
 
         for operation_id in OPERATIONS_MAP:
@@ -188,3 +203,9 @@ class OperatorNodePopupMenu(GeneralPopupCommands):
         ### report action to user via status bar
 
         set_status_message("Replaced node by one with new operation")
+
+    def obj_to_mode(self, mode_name):
+        self.obj_under_mouse.set_mode(mode_name)
+
+    obj_to_expanded_signature = partialmethod(obj_to_mode, 'expanded_signature')
+    obj_to_callable = partialmethod(obj_to_mode, 'callable')

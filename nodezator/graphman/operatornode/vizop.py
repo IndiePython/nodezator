@@ -17,6 +17,10 @@ from ...config import APP_REFS
 
 from ...pygamesetup import SCREEN
 
+from .surfs import PARAM_DYS_FROM_TOP
+
+from .constants import NODE_OUTLINE_THICKNESS
+
 
 class VisualRelatedOperations:
     """Manages operations on visual node object."""
@@ -121,7 +125,7 @@ class VisualRelatedOperations:
 
     def draw_selection_outline(self, color):
         """Draw outline around to indicate it is selected."""
-        draw_rect(SCREEN, color, self.rect.inflate(-8, 4), 4)
+        draw_rect(SCREEN, color, self.body_rect.inflate(8, 8), 4)
 
     def check_sockets_for_segment_definition(self, event):
         """Check whether any socket collides w/ event.pos.
@@ -148,3 +152,67 @@ class VisualRelatedOperations:
             APP_REFS.gm.cancel_defining_segment()
 
         APP_REFS.gm.resume_defining_segment(socket)
+
+    def update_body_surface(self):
+        """Updates body's surface and rect."""
+        ### update body's surface and size while keeping its midtop
+
+        body = self.body
+
+        midtop = body.rect.midtop
+
+        body.image = self.get_node_surf()
+        body.rect.size = body.image.get_size()
+
+        body.rect.midtop = midtop
+
+    def reposition_elements(self):
+        """Used to reposition elements when setting mode.
+
+        Also updates self.rect's size and position
+        """
+        ###
+        body_rect = self.body.rect
+
+        ###
+
+        dx = NODE_OUTLINE_THICKNESS + 2
+        dy = NODE_OUTLINE_THICKNESS
+
+        self.label.rect.topleft = body_rect.move(dx, dy).topleft
+
+        body_left = body_rect.left
+        body_top  = body_rect.top
+
+        ###
+
+        if self.input_sockets:
+
+            ## dys = delta ys, vertical distances
+            dys = PARAM_DYS_FROM_TOP[self.data['operation_id']]
+
+            for input_socket, dy in zip(self.input_sockets, dys):
+                input_socket.rect.center = body_left, body_top + dy
+
+        ###
+        self.output_socket.rect.center = self.body.rect.midright
+
+        ###
+        rect = self.rect
+
+        rect_left = rect.left = (
+            ##
+            self.input_sockets[0].rect.left
+            if self.input_sockets
+            ##
+            else body_left
+        )
+
+        rect.width = self.output_socket.rect.right - rect_left
+
+        ###
+        rect.height = body_rect.height
+
+        ###
+        rect.top = body_top
+

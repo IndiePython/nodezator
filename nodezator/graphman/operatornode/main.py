@@ -4,6 +4,8 @@ from ...config import APP_REFS
 
 from ...ourstdlibs.meta import initialize_bases
 
+from ...our3rdlibs.behaviour import indicate_unsaved
+
 
 ### class extensions
 
@@ -25,6 +27,10 @@ from .constants import (
     OPERATION_ID_TO_SUBSTITUTION_CALLABLE_MAP,
     OPERATION_ID_TO_SOURCE_VIEW_TEXT,
 )
+
+
+
+EMPTY_TUPLE = ()
 
 
 class OperatorNode(
@@ -91,11 +97,63 @@ class OperatorNode(
         ### create visuals of the node
         self.create_visual_elements()
 
+        ### set mode
+
+        self.set_mode(
+            self.data.get('mode', 'expanded_signature'),
+            indicate_changes=False,
+        )
+
         ### initialize base classes which have an __init__
         ### method of their own
         initialize_bases(self)
 
+    def set_mode(self, mode_name, indicate_changes=True):
+
+        current_mode_name = self.data.get('mode', 'expanded_signature')
+
+        if mode_name == 'expanded_signature':
+
+            if current_mode_name == 'callable':
+                APP_REFS.gm.sever_all_connections(self)
+
+            self.input_sockets = self.signature_input_sockets
+            self.output_sockets = self.signature_output_sockets
+            self.output_socket = self.signature_output_socket
+
+            self.visual_objects = self.signature_visual_objects
+
+            self.rectsman = self.signature_rectsman
+
+        elif mode_name == 'collapsed_signature':
+            ## operator nodes don't have collapsed signature mode
+            return
+
+        elif mode_name == 'callable':
+
+            if current_mode_name == 'expanded_signature': 
+                APP_REFS.gm.sever_all_connections(self)
+
+            self.input_sockets = EMPTY_TUPLE
+            self.output_sockets = self.callable_output_sockets
+            self.output_socket = self.callable_output_socket
+
+            self.visual_objects = self.callable_visual_objects
+
+            self.rectsman = self.callable_rectsman
+
+        ###
+        self.data['mode'] = mode_name
+
+        ###
+        self.update_body_surface()
+        self.update_label_surface()
+        self.reposition_elements()
+
+        ### if requested, indicate that changes were made
+        if indicate_changes:
+            indicate_unsaved()
+
     def get_source_info(self):
         """Return information about node source."""
-
         return OPERATION_ID_TO_SOURCE_VIEW_TEXT[self.data["operation_id"]]

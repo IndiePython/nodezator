@@ -1,5 +1,11 @@
-### standard library import
+### standard library imports
+
 from functools import partial
+from collections import defaultdict
+
+
+### third-party import
+from pygame import Rect
 
 
 ### local imports
@@ -12,6 +18,8 @@ from ...classes2d.collections import List2D
 from ...fontsman.constants import ENC_SANS_BOLD_FONT_PATH
 
 from ...textman.render import render_text
+
+from ...rectsman.main import RectsManager
 
 from ...surfsman.draw import draw_border
 from ...surfsman.render import render_rect, unite_surfaces
@@ -28,10 +36,12 @@ from .constants import (
     AB_CHARS_HEIGHT,
     OP_CHARS_HEIGHT,
     LABEL_AREA_HEIGHT,
-    NODE_PADDING,
     NORMAL_PARAMETER_TEXT_SETTINGS,
     COMMENTED_OUT_PARAMETER_TEXT_SETTINGS,
     NODE_OUTLINE_THICKNESS,
+    RIGHT_PADDING,
+    DY_BETWEEN_INPUT_SOCKETS,
+    DX_BETWEEN_PARAMS_AND_CHARS,
 )
 
 from ...colorsman.colors import (
@@ -64,9 +74,18 @@ PARAM_X_PADDING = (SOCKET_DIAMETER // 2) + 2
 
 CHAR_CENTERXS_MAP = {}
 
+PARAM_DYS_FROM_TOP = {}
+
+
+_get_socket_rect = partial(Rect, (0, 0, SOCKET_DIAMETER, SOCKET_DIAMETER))
+TEMP_RECT_MAP = defaultdict(_get_socket_rect)
+
+TEMP_RECT_LIST = []
+TEMP_RECTSMAN =  RectsManager(TEMP_RECT_LIST.__iter__)
+
 
 def get_node_surface(
-    string,
+    string_mode_pair,
     char_fg,
     operation_char_fg,
     bg_color,
@@ -74,8 +93,19 @@ def get_node_surface(
     param_text_settings,
 ):
 
+    ### retrieve the individual values in the pair
+    string, mode_name = string_mode_pair
+
+    ### create the big characters that are displayed in the node's body
+
     char_objs = List2D(
+
+        ##
+
         Object2D.from_surface(
+
+            ### if the flag is on
+
             render_text(
                 text=char,
                 font_height=AB_CHARS_HEIGHT,
@@ -83,7 +113,9 @@ def get_node_surface(
                 foreground_color=char_fg,
             )
             if flag
-            ###
+
+            ### otherwise
+
             else (
                 get_drawn_subsurf(
                     render_text(
@@ -94,10 +126,18 @@ def get_node_surface(
                     )
                 )
             )
+
         )
+
+        ## data
         for char, flag in zip(string, CHAR_FILTERING_MAP[string])
+
+        ## condition
         if char != " "
+
     )
+
+    ### position the big characters relative to each other
 
     char_objs.rect.snap_rects_ip(
         retrieve_pos_from="bottomright",
@@ -105,34 +145,77 @@ def get_node_surface(
         offset_pos_by=(2, 0),
     )
 
+    ### define width of area wherein the parameters are to be
+    ### blitted (if they are not, the width is zero)
+    param_area_width = 0 if mode_name == 'callable' else PARAM_AREA_WIDTH
+
+    ### define height of parameter area depending on mode
+
+    if mode_name == 'expanded_signature':
+
+        params = [char for char, flag in zip(string, CHAR_FILTERING_MAP[string]) if flag]
+
+        TEMP_RECT_LIST.clear()
+
+        TEMP_RECT_LIST.extend(
+            TEMP_RECT_MAP[index]
+            for index, _ in enumerate(params)
+        )
+
+        TEMP_RECTSMAN.snap_rects_ip(
+            retrieve_pos_from="midbottom",
+            assign_pos_to="midtop",
+            offset_pos_by=(0, DY_BETWEEN_INPUT_SOCKETS),
+        )
+
+        ###
+        param_area_height = max(char_objs.rect.height, TEMP_RECTSMAN.height)
+
+    else:
+        param_area_height = char_objs.rect.height
+
+    ###
+
     param_area_surf = render_rect(
-        PARAM_AREA_WIDTH,
-        char_objs.rect.height,
+        param_area_width,
+        param_area_height,
         color=bg_color,
     )
 
-    param_area_rect = param_area_surf.get_rect()
+    ###
 
-    label_area_width = char_objs.rect.width + param_area_surf.get_width()
+    id_label_area_width = char_objs.rect.width + param_area_width
 
-    label_area_surf = render_rect(
-        label_area_width,
+    id_label_area_surf = render_rect(
+        id_label_area_width,
         LABEL_AREA_HEIGHT,
         color=bg_color,
     )
+    ###
 
-    label_area_rect = label_area_surf.get_rect()
+    right_padding_surf = render_rect(RIGHT_PADDING, 2, color=bg_color)
+    right_padding_area = right_padding_surf.get_rect()
 
-    param_area_rect.topleft = label_area_rect.bottomleft
-    char_objs.rect.topleft = param_area_rect.topright
+    ###
+
+    param_area_rect = param_area_surf.get_rect()
+    id_label_area_rect = id_label_area_surf.get_rect()
+
+    param_area_rect.topleft = id_label_area_rect.bottomleft
+
+    dx = DX_BETWEEN_PARAMS_AND_CHARS
+    char_objs.rect.midleft = param_area_rect.move(dx, 0).midright
+
+    right_padding_area.midleft = char_objs.rect.midright
 
     surf = unite_surfaces(
         [
-            (label_area_surf, label_area_rect),
+            (id_label_area_surf, id_label_area_rect),
             (param_area_surf, param_area_rect),
             *((obj.image, obj.rect) for obj in char_objs),
+            (right_padding_surf, right_padding_area),
         ],
-        padding=NODE_PADDING,
+        padding=NODE_OUTLINE_THICKNESS + 2,
         background_color=bg_color,
     )
 
@@ -144,32 +227,35 @@ def get_node_surface(
 
     node_rect = surf.get_rect()
 
-    CHAR_CENTERXS_MAP[string] = [obj.rect.centerx for obj in char_objs]
+    CHAR_CENTERXS_MAP[string_mode_pair] = [obj.rect.centerx for obj in char_objs]
 
     ###
 
-    params = [char for char, flag in zip(string, CHAR_FILTERING_MAP[string]) if flag]
+    if mode_name == 'expanded_signature':
 
-    divisions = len(params) + 1
-    jump_height = (node_rect.height - (LABEL_AREA_HEIGHT // 2)) // divisions
+        ###
+        TEMP_RECTSMAN.centery = param_area_rect.centery
 
-    centery = LABEL_AREA_HEIGHT + jump_height
+        dys = PARAM_DYS_FROM_TOP[string] = []
 
-    for char in params:
+        ###
 
-        text_obj = Object2D.from_surface(
-            render_text(
-                text=char,
-                **param_text_settings,
+        for rect, char in zip(TEMP_RECT_LIST, params):
+
+            dys.append(rect.centery)
+
+            text_obj = Object2D.from_surface(
+                render_text(
+                    text=char,
+                    **param_text_settings,
+                )
             )
-        )
 
-        text_obj.rect.midleft = (PARAM_X_PADDING, centery)
+            text_obj.rect.midleft = (PARAM_X_PADDING, rect.centery)
 
-        surf.blit(text_obj.image, text_obj.rect)
+            surf.blit(text_obj.image, text_obj.rect)
 
-        centery += jump_height
-
+    ###
     return surf
 
 
