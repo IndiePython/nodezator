@@ -102,15 +102,25 @@ class OperatorNode(
         self.set_mode(
             self.data.get('mode', 'expanded_signature'),
             indicate_changes=False,
+            first_setup=True,
         )
 
         ### initialize base classes which have an __init__
         ### method of their own
         initialize_bases(self)
 
-    def set_mode(self, mode_name, indicate_changes=True):
+    def set_mode(self, mode_name, indicate_changes=True, first_setup=False):
 
         current_mode_name = self.data.get('mode', 'expanded_signature')
+
+        ### if this is not the first mode setup and the requested and
+        ### current mode are the same, prevent the method to execute by
+        ### exiting
+
+        if not first_setup and (mode_name == current_mode_name):
+            return
+
+        ### set mode
 
         if mode_name == 'expanded_signature':
 
@@ -151,6 +161,7 @@ class OperatorNode(
         self.reposition_elements()
 
         ### if requested, indicate that changes were made
+
         if indicate_changes:
             indicate_unsaved()
 

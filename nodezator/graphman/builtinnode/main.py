@@ -107,6 +107,7 @@ class BuiltinNode(CallableNode):
         self.set_mode(
             self.data.get('mode', 'expanded_signature'),
             indicate_changes=False,
+            first_setup=True,
         )
 
         ### initialize execution-related objects
