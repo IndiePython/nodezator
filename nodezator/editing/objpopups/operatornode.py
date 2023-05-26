@@ -13,14 +13,15 @@ from ...ourstdlibs.behaviour import get_suppressing_callable
 
 from ...our3rdlibs.behaviour import set_status_message
 
+from ...loopman.exception import ContinueLoopException
+
+from ...graphman.operatornode.constants import OPERATIONS_MAP
+
 from .constants import (
     GeneralPopupCommands,
     get_node_info,
 )
 
-from ...loopman.exception import ContinueLoopException
-
-from ...graphman.operatornode.constants import OPERATIONS_MAP
 
 
 class OperatorNodePopupMenu(GeneralPopupCommands):
@@ -139,6 +140,9 @@ class OperatorNodePopupMenu(GeneralPopupCommands):
             node for node in APP_REFS.gm.nodes if node not in pre_existing_nodes
         )
 
+        ### set same mode on new node
+        new_node.set_mode(current_node.data['mode'], indicate_changes=False)
+
         ### transfer the connections of the current node
         ### to the new one
 
@@ -195,13 +199,20 @@ class OperatorNodePopupMenu(GeneralPopupCommands):
         ### delete the current node
         self.delete_obj()
 
-        ### there's no need to indicate the file was
-        ### modified (is currently unsaved), because
-        ### APP_REFS.gm.resume_defining_segment does
-        ### it for us;
+        ### XXX
+        ### though there's no need to indicate the file was modified
+        ### (is currently unsaved), since
+        ### APP_REFS.gm.resume_defining_segment does it for us,
+        ### relying on side effects like this is probably not healthy
+        ### (for instance, the delete_obj() method call also does
+        ### that indirectly, via the editing assistant's
+        ### remove_selected() method);
+        ###
+        ### it will probably take time, but I'll leave this comment
+        ### here so this can be scheduled/reviewed/improved in the
+        ### future;
 
         ### report action to user via status bar
-
         set_status_message("Replaced node by one with new operation")
 
     def obj_to_mode(self, mode_name):
