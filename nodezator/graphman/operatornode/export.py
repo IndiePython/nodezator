@@ -146,16 +146,18 @@ class Exporting:
 
         ### big chars
 
+        mode_name = self.data.get('mode', 'expanded_signature')
+
         string = self.data["operation_id"]
-        centerxs = CHAR_CENTERXS_MAP[string]
+        centerxs = CHAR_CENTERXS_MAP[(string, mode_name)]
         flags = CHAR_FILTERING_MAP[string]
 
         char_flag_pairs = [
             (char, flag) for char, flag in zip(string, flags) if char != " "
         ]
 
-        x_offset = self.rect.left + 20
-        bottom = self.rect.bottom - 22
+        left = self.rect.left + (12 if mode_name == 'expanded_signature' else 6)
+        bottom = self.rect.bottom + -11
 
         state = "commented_out_big_" if is_commented_out else "normal_big_"
 
@@ -163,7 +165,7 @@ class Exporting:
 
             class_name = state + ("ab_text" if flag else "op_text")
 
-            tx_str, ty_str = map(str, (centerx + x_offset, bottom))
+            tx_str, ty_str = map(str, (left+centerx, bottom))
 
             char_text = Element(
                 "text",
@@ -183,7 +185,7 @@ class Exporting:
 
         tx_str, ty_str = map(
             str,
-            self.label.rect.move(0, -6).midbottom,
+            self.label.rect.move(2, -4).midbottom,
         )
 
         label = Element(

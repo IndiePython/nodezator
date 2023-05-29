@@ -153,61 +153,67 @@ class Exporting:
         node_g.append(self.output_socket.svg_repr())
 
         ###
+        vos = self.visual_objects
+
+        ###
 
         try:
-            self.widget
+            widget = self.widget
 
         except AttributeError:
 
-            ###
+            if self.add_button in vos:
 
-            button_rect = self.add_button.rect.inflate(-2, -2)
+                ###
+                button_rect = self.add_button.rect.inflate(-2, -2)
 
-            path_directives = "M"
+                path_directives = "M"
 
-            for x, y in cross_from_rect(button_rect, 0.3):
-                path_directives += f"{x} {y} L"
+                for x, y in cross_from_rect(button_rect, 0.3):
+                    path_directives += f"{x} {y} L"
 
-            path_directives = path_directives[:-1] + " Z"
+                path_directives = path_directives[:-1] + " Z"
 
-            node_g.append(
-                Element(
-                    "path",
-                    {
-                        "d": path_directives,
-                        "class": "add_button",
-                    },
+                node_g.append(
+                    Element(
+                        "path",
+                        {
+                            "d": path_directives,
+                            "class": "add_button",
+                        },
+                    )
                 )
-            )
 
         else:
 
-            ### widget
-            node_g.append(self.widget.svg_repr())
+            if widget in vos:
 
-            ### remove button
-            button_rect = self.remove_button.rect.inflate(-2, -2)
+                ### widget
+                node_g.append(widget.svg_repr())
 
-            path_directives = "M"
+                ### remove button
+                button_rect = self.remove_button.rect.inflate(-2, -2)
 
-            for x, y in rotate_points(
-                cross_from_rect(button_rect, 0.3),
-                40,
-                button_rect.center,
-            ):
-                path_directives += f"{x} {y} L"
+                path_directives = "M"
 
-            path_directives = path_directives[:-1] + " Z"
+                for x, y in rotate_points(
+                    cross_from_rect(button_rect, 0.3),
+                    40,
+                    button_rect.center,
+                ):
+                    path_directives += f"{x} {y} L"
 
-            node_g.append(
-                Element(
-                    "path",
-                    {
-                        "d": path_directives,
-                        "class": "remove_button",
-                    },
+                path_directives = path_directives[:-1] + " Z"
+
+                node_g.append(
+                    Element(
+                        "path",
+                        {
+                            "d": path_directives,
+                            "class": "remove_button",
+                        },
+                    )
                 )
-            )
 
         ##
         return node_g

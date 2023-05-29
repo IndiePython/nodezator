@@ -407,6 +407,14 @@ class Exporting:
             )
         )
 
+        ###
+        self.mode_dependent_elements_svg_repr(node_g)
+
+        ###
+        return node_g
+
+    def expanded_elements_svg_repr(self, node_g):
+
         ### buttons
 
         for button in self.placeholder_add_buttons:
@@ -533,6 +541,8 @@ class Exporting:
 
         for param_name, value in self.input_socket_live_flmap.items():
 
+            ## variable parameter
+
             if isinstance(value, dict):
 
                 socket = (
@@ -544,27 +554,13 @@ class Exporting:
                     text_y_str,
                 ) = map(str, socket.rect.move(3, -5).topright)
 
-                if var_kind_map[param_name] == "var_key" and value:
-
-                    if 0 in (self.subparam_keyword_entry_live_map):
-
-                        text_y_str = str(
-                            self.subparam_keyword_entry_live_map[0].rect.move(3, -5).top
-                        )
-
-                    else:
-
-                        text_y_str = str(
-                            self.subparam_unpacking_icon_flmap[param_name][0]
-                            .rect.move(3, -5)
-                            .top
-                        )
-
                 text = (
                     f"*{param_name}"
                     if var_kind_map[param_name] == "var_pos"
                     else f"**{param_name}"
                 )
+
+            ## regular parameter
 
             else:
 
@@ -720,24 +716,233 @@ class Exporting:
             output_label.text = output_name
             node_g.append(output_label)
 
-        return node_g
+    def collapsed_elements_svg_repr(self, node_g):
+
+        ### input/output
+
+        var_kind_map = self.var_kind_map
+
+        vis = self.visible_input_sockets
+
+        ## input sockets
+        node_g.extend([socket.svg_repr() for socket in vis])
+
+        ## parameter names
+
+        isl_flmap = self.input_socket_live_flmap
+
+        for param_name, value in isl_flmap.items():
+
+            ## variable parameter
+
+            if isinstance(value, dict):
+
+                if not value:
+                    continue
+
+                else:
+
+                    for socket in value.values():
+                        if socket in vis:
+                            break
+                    else:
+                        continue
+
+                (
+                    text_x_str,
+                    text_y_str,
+                ) = map(str, socket.rect.move(3, -5).topright)
+
+                text = (
+                    f"*{param_name}"
+                    if var_kind_map[param_name] == "var_pos"
+                    else f"**{param_name}"
+                )
+
+            ## regular parameter
+            else:
+
+                if value not in vis:
+                    continue
+
+                text = param_name
+
+                text_x_str = str(value.rect.right + 3)
+
+                text_y_str = str(
+                    value.rect.top - 5
+                    if (
+                        param_name in widget_live_flmap
+                        and widget_live_flmap[param_name] in self.visible_widgets
+                    )
+                    else value.rect.centery + 4
+                )
+
+            text_element = Element(
+                "text",
+                {
+                    "x": text_x_str,
+                    "y": text_y_str,
+                    "text-anchor": "start",
+                    "class": "label",
+                },
+            )
+
+            text_element.text = text
+
+            node_g.append(text_element)
+
+        ## unpacking icons and subparam keyword widgets
+
+        ##
+
+        key_hole_class_name = (
+            "commented_out_subparam_key_hole"
+            if self.data.get("commented_out", False)
+            else "normal_subparam_key_hole"
+        )
+
+        vws = self.visible_widgets
+        vuirs = self.visible_unpacking_icon_rects
+
+        visible_keyword_objects = [
+            entry for entry in self.live_keyword_entries
+            if entry in vws
+        ]
+
+        for param_name, kind in var_kind_map.items():
+
+            if kind == "var_pos":
+
+                for obj in self.subparam_unpacking_icon_flmap[param_name].values():
+
+                    if obj.rect in vuirs:
+                        UNPACKING_RECTS_MANAGER.topleft = obj.rect.topleft
+                        node_g.append(get_unpacking_icon_group())
+
+            elif kind == "var_key":
+
+                visible_keyword_objects.extend(
+                    obj
+                    for obj in self.subparam_unpacking_icon_flmap[param_name].values()
+                    if obj.rect in vuirs
+                )
+
+        ###
+
+        for obj in visible_keyword_objects:
+
+            (
+                path_x,
+                path_y,
+            ) = obj.rect.move(-6, 5).topleft
+
+            path_directives = (
+                f"M{path_x} {path_y}"
+                " q0 -5 -5 -5"
+                " q-5 0 -5 5"
+                " q0 5 5 5"
+                " l3 0"
+                " l0 3"
+                " l3 0"
+                " l0 3"
+                " l3 0"
+                " l0 -3"
+                " Z"
+            )
+
+            path_element = Element(
+                "path",
+                {
+                    "d": path_directives,
+                    "class": "subparam_key",
+                },
+            )
+
+            node_g.append(path_element)
+
+            node_g.append(
+                Element(
+                    "circle",
+                    {
+                        "cx": str(path_x - 5),
+                        "cy": str(path_y),
+                        "r": "2",
+                        "class": key_hole_class_name,
+                    },
+                )
+            )
+
+            ##
+
+            try:
+                obj.get
+
+            except AttributeError:
+
+                ##
+
+                UNPACKING_RECTS_MANAGER.topleft = obj.rect.topleft
+
+                node_g.append(get_unpacking_icon_group())
+
+                ##
+
+                UNPACKING_RECTS_MANAGER.topleft = UNPACKING_RECTS_MANAGER.move(
+                    3, 0
+                ).topright
+
+                node_g.append(get_unpacking_icon_group())
+
+            else:
+                node_g.append(obj.svg_repr())
+
+        ### keyword entry widgets (if any)
+        #node_g.extend([widget.svg_repr() for widget in self.visible_widgets])
+
+        ## output
+
+        vos = self.visible_output_sockets
+
+        for output_name, socket in self.output_socket_live_map.items():
+
+            if socket not in vos:
+                continue
+
+            node_g.append(socket.svg_repr())
+
+            cx, cy = socket.rect.center
+
+            output_label = Element(
+                "text",
+                {
+                    "x": str(cx - 10),
+                    "y": str(cy + 4),
+                    "text-anchor": "end",
+                    "class": "label",
+                },
+            )
+
+            output_label.text = output_name
+            node_g.append(output_label)
+
+    def callable_elements_svg_repr(self, node_g):
+        node_g.append(self.output_sockets[0].svg_repr())
 
     def get_color_identifier(self):
         """Return string to identify specific node color.
 
         This method is meant to be overridden by
-        subclasse in order to identify the specific color
+        subclasses in order to identify the specific color
         used.
         """
         return str(self.color_index)
 
-    def draw_on_surf(self, surf):
-        """Draw node elements on provided surf.
+    ### methods to draw node in another surface for .png export feature
 
-        Used to draw the node and its elements on another
-        surface when exporting the node graph to an image
-        file.
-        """
+    def expanded_draw_on_surf(self, surf):
+        """Draw expanded signature mode elements on given surf."""
+        ###
         blit_on_surf = surf.blit
 
         ### draw background and text elements, then
@@ -755,6 +960,46 @@ class Exporting:
             self.input_sockets,
             self.output_sockets,
             self.placeholder_sockets,
+        ):
+
+            blit_on_surf(obj.image, obj.rect)
+
+    def collapsed_draw_on_surf(self, surf):
+        """Draw collapsed signature mode elements on given surf."""
+        ###
+        blit_on_surf = surf.blit
+
+        ### draw background and text elements, then
+        ### visible objects
+
+        for obj in chain(
+
+            self.background_and_text_elements,
+
+            (
+                unpacking_icon
+                for unpacking_icon in self.unpacking_icons
+                if unpacking_icon.rect in self.visible_unpacking_icon_rects
+            ),
+
+            self.visible_widgets,
+            self.visible_input_sockets,
+            self.visible_output_sockets,
+        ):
+
+            blit_on_surf(obj.image, obj.rect)
+
+    def callable_draw_on_surf(self, surf):
+        """Draw callable mode elements on given surf."""
+        ###
+        blit_on_surf = surf.blit
+
+        ### draw background and text elements, then
+        ### output socket
+
+        for obj in chain(
+            self.background_and_text_elements,
+            self.output_sockets,
         ):
 
             blit_on_surf(obj.image, obj.rect)

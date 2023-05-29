@@ -226,6 +226,9 @@ class CallableNode(
 
             self.rectsman = self.exp_rectsman
 
+            self.draw_on_surf = self.expanded_draw_on_surf
+            self.mode_dependent_elements_svg_repr = self.expanded_elements_svg_repr
+
         elif mode_name == 'collapsed_signature':
 
             if current_mode_name == 'callable':
@@ -245,6 +248,9 @@ class CallableNode(
 
             self.rectsman = self.col_rectsman
 
+            self.draw_on_surf = self.collapsed_draw_on_surf
+            self.mode_dependent_elements_svg_repr = self.collapsed_elements_svg_repr
+
         elif mode_name == 'callable':
 
             if current_mode_name in {'expanded_signature', 'collapsed_signature'}:
@@ -261,6 +267,9 @@ class CallableNode(
             self.yield_visible_sockets = self.yield_visible_sockets_in_calmode
 
             self.rectsman = self.cal_rectsman
+
+            self.draw_on_surf = self.callable_draw_on_surf
+            self.mode_dependent_elements_svg_repr = self.callable_elements_svg_repr
 
         ###
         self.data['mode'] = mode_name
