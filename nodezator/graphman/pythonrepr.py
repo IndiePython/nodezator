@@ -36,11 +36,58 @@ class WaitingParentException(Exception):
     pass
 
 
-### main function
+### set to store snippet nodes in callable mode temporarily
+###
+### this won't necessarily store the ids of all snippet nodes in
+### callable mode present in the graph, but only those which end up
+### getting used by a node other than a redirect node
+SNIPPET_NODES_IN_CALLABLE_MODE = set()
 
+
+### main function
 
 def python_repr(self, additional_levels=()):
     """Return python representation of graph."""
+
+    ### if there are proxy nodes that don't have a parent (orphan)
+    ### nor a widget (empty), cancel the operation altogether with
+    ### an exception
+
+    orphan_empty_proxies = [
+
+        ## item
+        node
+
+        ## source
+        for node in self.nodes
+
+        ## filtering
+
+        if (
+
+            ## first condition
+            hasattr(node, 'proxy_socket')
+
+            ## second condition
+
+            and (
+                (not hasattr(node.proxy_socket, "parent"))
+                and (not hasattr(node, "widget"))
+            )
+
+        )
+    ]
+
+    if orphan_empty_proxies:
+
+        ids = [node.id for node in orphan_empty_proxies]
+
+        raise RuntimeError(
+             "There are orphan redirect nodes/empty data nodes in the graph"
+             " which probably isn't desired, since they accomplish nothing."
+            f" Here's a list with their ids: {ids}"
+        )
+
     ### create list of standard library imports
 
     stlib_imports = sorted(
@@ -66,7 +113,13 @@ def python_repr(self, additional_levels=()):
     additional_levels = tuple(additional_levels)
 
     node_callable_imports = sorted(
+
+        ## a set: so we end up without duplicates
+
         set(
+
+            # item: a "from ... import ..." statement
+
             (
                 "from "
                 + ".".join(
@@ -77,7 +130,12 @@ def python_repr(self, additional_levels=()):
                 + " import "
                 + node.main_callable.__name__
             )
+
+            # source
             for node in self.nodes
+
+            # filtering
+
             if (
                 "script_id" in node.data
                 and not hasattr(node, "substitution_callable")
@@ -85,12 +143,22 @@ def python_repr(self, additional_levels=()):
                 and not hasattr(node, "third_party_import_text")
             )
         )
+
     )
 
     ### def statement
 
     func_name = "".join(
-        char for char in APP_REFS.source_path.stem if char.isalnum() or char == "_"
+
+        ## item (a character)
+        char
+
+        ## source
+        for char in APP_REFS.source_path.stem
+
+        ## filtering
+        if char.isalnum() or char == "_"
+
     )
 
     if func_name[0].isdigit() or not func_name:
@@ -155,26 +223,33 @@ def python_repr(self, additional_levels=()):
             text_blocks,
         )
 
-    ## for each subgraph, write each node as a call to
+
+    ## for each subgraph, write each node as a call or reference to
     ## a callable object with proper indentation
 
     for subgraph in yield_subgraphs(self.nodes):
 
-        ## filter out redirect nodes
+        ## filter out redirect nodes and nodes in callable mode
 
         subgraph = [
+
+            ## item
             node
+
+            ## source
             for node in subgraph
+
+            ## filtering
+
+            # nodes which are NOT redirect nodes
+
             if not (
                 hasattr(node, "proxy_socket")
-                and (
-                    hasattr(node.proxy_socket, "parent")
-                    # XXX the redirect node doesn't have
-                    # a parent nor a widget, this should
-                    # cause a warning to be logged
-                    or not hasattr(node, "widget")
-                )
+                and hasattr(node.proxy_socket, "parent")
             )
+
+            # nodes which are NOT in callable mode
+            if node.data.get('mode', 'expanded_signature') != 'callable'
         ]
 
         ##
@@ -251,6 +326,20 @@ def python_repr(self, additional_levels=()):
             " " * 4,
         )
 
+    ### gather source of snippets used in callable mode,
+    ### if any;
+    ###
+    ### also clear the collection used to keep track
+    ### of such snippets
+
+    source_of_snippets = (
+        gather_snippets_source()
+        if SNIPPET_NODES_IN_CALLABLE_MODE
+        else ''
+    )
+
+    SNIPPET_NODES_IN_CALLABLE_MODE.clear()
+
     ## now concatenate the python text and return it
 
     return (
@@ -287,6 +376,8 @@ def python_repr(self, additional_levels=()):
         + "\n"
         + docstring
         + graph_function_body
+        + "\n\n"
+        + source_of_snippets
         + "\n\n"
         + "if __name__ == '__main__':\n"
         + f"    {func_name}()\n\n"
@@ -434,15 +525,17 @@ def callable_node_to_text(
 
             insocket = insocket_flmap[param_name]
 
-            ### if it depends on the output of another
-            ### node, we yield content from that
-            ### node first and use its output as the
-            ### argument
+            ### if it does...
 
             if hasattr(insocket, "parent"):
 
+                ### first of all retrieve references to the parent socket
+                ### and parent node
+
                 parent = insocket.parent
                 parent_node = parent.node
+
+                ### ensure the parent node is not a redirect node
 
                 while True:
 
@@ -458,15 +551,43 @@ def callable_node_to_text(
 
                     break
 
-                if parent_node not in visited_nodes:
-                    raise WaitingParentException
+                ### now that we are sure we have a proper parent node,
+                ### check whether it is in callable mode;
+                ###
+                ### it it is...
 
-                argument = "_" + "_".join(
-                    map(
-                        str,
-                        parent.get_id(),
+                if parent_node.data.get('mode', 'expanded_signature') == 'callable':
+
+                    ### if we have an operator node, the incoming data is a lambda
+                    ### representing the node
+                    if 'operation_id' in parent_node.data:
+                        argument = '(' + parent_node.get_lambda_source() + ')'
+
+                    ### otherwise, it is a reference to the nodes callable
+
+                    else:
+
+                        argument = parent_node.title_text
+
+                        ## additionally, if the node is a snippet node,
+                        ## store a reference in a special collection
+
+                        if 'capsule_id' in parent_node.data:
+                            SNIPPET_NODES_IN_CALLABLE_MODE.add(parent_node)
+
+                ### otherwise...
+
+                else:
+
+                    if parent_node not in visited_nodes:
+                        raise WaitingParentException
+
+                    argument = "_" + "_".join(
+                        map(
+                            str,
+                            parent.get_id(),
+                        )
                     )
-                )
 
             ### otherwise check whether there's an embedded
             ### widget with data for the parameter
@@ -492,7 +613,7 @@ def callable_node_to_text(
                     if type(widget) is DefaultHolder:
                         ommit_argument = True
 
-                    ## otherwise we use repr() of the
+                    ## otherwise we use repr() of the value
                     ## it holds as the argument
                     else:
                         argument = repr(widget.get())
@@ -531,11 +652,15 @@ def callable_node_to_text(
                 ### we check whether the subparameter
                 ### depends on other sources of data
 
-                ## another output socket
                 if hasattr(insocket, "parent"):
+
+                    ### first of all retrieve references to the parent socket
+                    ### and parent node
 
                     parent = insocket.parent
                     parent_node = parent.node
+
+                    ### ensure the parent node is not a redirect node
 
                     while True:
 
@@ -551,10 +676,38 @@ def callable_node_to_text(
 
                         break
 
-                    if parent_node not in visited_nodes:
-                        raise WaitingParentException
+                    ### now that we are sure we have a proper parent node,
+                    ### check whether it is in callable mode;
+                    ###
+                    ### it it is...
 
-                    subargument = "_" + "_".join(map(str, parent.get_id()))
+                    if parent_node.data.get('mode', 'expanded_signature') == 'callable':
+
+                        ### if we have an operator node, the incoming data is a lambda
+                        ### representing the node
+                        if 'operation_id' in parent_node.data:
+                            subargument = '(' + parent_node.get_lambda_source() + ')'
+
+                        ### otherwise, it is a reference to the nodes callable
+
+                        else:
+
+                            subargument = parent_node.title_text
+
+                            ## additionally, if the node is a snippet node,
+                            ## store a reference in a special collection
+
+                            if 'capsule_id' in parent_node.data:
+                                SNIPPET_NODES_IN_CALLABLE_MODE.add(parent_node)
+
+                    ### otherwise...
+
+                    else:
+
+                        if parent_node not in visited_nodes:
+                            raise WaitingParentException
+
+                        subargument = "_" + "_".join(map(str, parent.get_id()))
 
                 ## a widget
 
@@ -592,7 +745,7 @@ def callable_node_to_text(
 
     comment_prefix = "# " if node.data.get("commented_out", False) else ""
 
-    output_sockets = node.output_sockets
+    output_sockets = node.output_socket_live_map.values()
 
     if len(output_sockets) > 1:
 
@@ -725,8 +878,13 @@ def operator_node_to_text(
 
         if hasattr(insocket, "parent"):
 
+            ### first of all retrieve references to the parent socket
+            ### and parent node
+
             parent = insocket.parent
             parent_node = parent.node
+
+            ### ensure the parent node is not a redirect node
 
             while True:
 
@@ -742,15 +900,42 @@ def operator_node_to_text(
 
                 break
 
-            if parent_node not in visited_nodes:
-                raise WaitingParentException
+            ### now that we are sure we have a proper parent node,
+            ### check whether it is in callable mode;
+            ###
+            ### it it is...
 
-            argument = "_" + "_".join(
-                map(
-                    str,
-                    parent.get_id(),
+            if parent_node.data.get('mode', 'expanded_signature') == 'callable':
+
+                ### if we have an operator node, the incoming data is a lambda
+                ### representing the node
+                if 'operation_id' in parent_node.data:
+                    argument = '(' + parent_node.get_lambda_source() + ')'
+
+                ### otherwise, it is a reference to the nodes callable
+
+                else:
+
+                    argument = parent_node.title_text
+
+                    ## additionally, if the node is a snippet node,
+                    ## store a reference in a special collection
+
+                    if 'capsule_id' in parent_node.data:
+                        SNIPPET_NODES_IN_CALLABLE_MODE.add(parent_node)
+
+            ### otherwise...
+            else:
+
+                if parent_node not in visited_nodes:
+                    raise WaitingParentException
+
+                argument = "_" + "_".join(
+                    map(
+                        str,
+                        parent.get_id(),
+                    )
                 )
-            )
 
         substitution_map[param_name] = argument
 
@@ -879,8 +1064,13 @@ def snippet_node_to_text(
 
             if hasattr(insocket, "parent"):
 
+                ### first of all retrieve references to the parent socket
+                ### and parent node
+
                 parent = insocket.parent
                 parent_node = parent.node
+
+                ### ensure the parent node is not a redirect node
 
                 while True:
 
@@ -896,15 +1086,43 @@ def snippet_node_to_text(
 
                     break
 
-                if parent_node not in visited_nodes:
-                    raise WaitingParentException
+                ### now that we are sure we have a proper parent node,
+                ### check whether it is in callable mode;
+                ###
+                ### it it is...
 
-                argument = "_" + "_".join(
-                    map(
-                        str,
-                        parent.get_id(),
+                if parent_node.data.get('mode', 'expanded_signature') == 'callable':
+
+                    ### if we have an operator node, the incoming data is a lambda
+                    ### representing the node
+                    if 'operation_id' in parent_node.data:
+                        argument = '(' + parent_node.get_lambda_source() + ')'
+
+                    ### otherwise, it is a reference to the nodes callable
+
+                    else:
+
+                        argument = parent_node.title_text
+
+                        ## additionally, if the node is a snippet node,
+                        ## store a reference in a special collection
+
+                        if 'capsule_id' in parent_node.data:
+                            SNIPPET_NODES_IN_CALLABLE_MODE.add(parent_node)
+
+                ### otherwise...
+
+                else:
+
+                    if parent_node not in visited_nodes:
+                        raise WaitingParentException
+
+                    argument = "_" + "_".join(
+                        map(
+                            str,
+                            parent.get_id(),
+                        )
                     )
-                )
 
             ### otherwise check whether there's an embedded
             ### widget with data for the parameter
@@ -942,12 +1160,15 @@ def snippet_node_to_text(
                 ### we check whether the subparameter
                 ### depends on other sources of data
 
-                ## another output socket
-
                 if hasattr(insocket, "parent"):
+
+                    ### first of all retrieve references to the parent socket
+                    ### and parent node
 
                     parent = insocket.parent
                     parent_node = parent.node
+
+                    ### ensure the parent node is not a redirect node
 
                     while True:
 
@@ -963,10 +1184,38 @@ def snippet_node_to_text(
 
                         break
 
-                    if parent_node not in visited_nodes:
-                        raise WaitingParentException
+                    ### now that we are sure we have a proper parent node,
+                    ### check whether it is in callable mode;
+                    ###
+                    ### it it is...
 
-                    subargument = "_" + "_".join(map(str, parent.get_id()))
+                    if parent_node.data.get('mode', 'expanded_signature') == 'callable':
+
+                        ### if we have an operator node, the incoming data is a lambda
+                        ### representing the node
+                        if 'operation_id' in parent_node.data:
+                            subargument = '(' + parent_node.get_lambda_source() + ')'
+
+                        ### otherwise, it is a reference to the nodes callable
+
+                        else:
+
+                            subargument = parent_node.title_text
+
+                            ## additionally, if the node is a snippet node,
+                            ## store a reference in a special collection
+
+                            if 'capsule_id' in parent_node.data:
+                                SNIPPET_NODES_IN_CALLABLE_MODE.add(parent_node)
+
+                    ### otherwise...
+
+                    else:
+
+                        if parent_node not in visited_nodes:
+                            raise WaitingParentException
+
+                        subargument = "_" + "_".join(map(str, parent.get_id()))
 
                 ## a widget
 
@@ -1003,7 +1252,7 @@ def snippet_node_to_text(
     ###
 
     ###
-    output_sockets = node.output_sockets
+    output_sockets = node.output_socket_live_map.values()
 
     for socket in output_sockets:
 
@@ -1175,3 +1424,22 @@ def data_node_to_text(
     )
 
     return node_text
+
+
+def gather_snippets_source():
+
+    node_map = {
+        node.data['capsule_id']: node
+        for node in SNIPPET_NODES_IN_CALLABLE_MODE
+    }
+
+    source = '\n\n'
+
+    source += '\n\n'.join(
+        node_map[id_str].get_source_to_export()
+        for id_str in sorted(node_map)
+    )
+
+    source += '\n\n'
+
+    return source

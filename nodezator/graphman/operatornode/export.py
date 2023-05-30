@@ -19,6 +19,7 @@ from .constants import (
     NODE_OUTLINE_THICKNESS,
     FONT_HEIGHT,
     CHAR_FILTERING_MAP,
+    OPERATION_ID_TO_LAMBDA_SOURCE,
 )
 
 from .surfs import CHAR_CENTERXS_MAP
@@ -251,3 +252,6 @@ class Exporting:
 
         for obj in self.visual_objects:
             blit_on_surf(obj.image, obj.rect)
+
+    def get_lambda_source(self):
+        return OPERATION_ID_TO_LAMBDA_SOURCE[self.data["operation_id"]]

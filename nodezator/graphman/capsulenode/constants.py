@@ -521,3 +521,10 @@ CAPSULE_IDS_TO_SOURCE_VIEW_TEXT = {
     )
     for capsule_id, callable_obj in CAPSULE_IDS_TO_CALLABLES_MAP.items()
 }
+
+###
+
+CAPSULE_IDS_TO_PYTHON_SOURCE = {
+    capsule_id: getsource(callable_obj)
+    for capsule_id, callable_obj in CAPSULE_IDS_TO_CALLABLES_MAP.items()
+}

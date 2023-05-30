@@ -571,35 +571,73 @@ class Exporting:
         ### otherwise we proceed with the python exporting
         ### operation...
 
-        ### let's measure the time taken to export the
-        ### image
-        start = time()
-
         ### first of all, let's reference the individual
         ### settings
 
         python_file_path = settings["python_file_path"]
         additional_levels = settings["additional_levels"]
 
-        ### grab the python representation from the graph
-        ### manager and save it
+        ### let's measure the time taken to export the
+        ### layout
+        start = time()
 
-        with open(
-            python_file_path,
-            mode="w",
-            encoding="utf-8",
-        ) as f:
+        ### try exporting the python code
 
-            f.write(APP_REFS.gm.python_repr(additional_levels))
+        try:
+            exported_python_code = APP_REFS.gm.python_repr(additional_levels)
 
-        ### finally, compute and display the total time
-        ### taken to export the image on the statusbar
-        ### in a friendly format
+        except Exception as err:
 
-        total = time() - start
+            ## log traceback in regular
+            ## log and and user log
 
-        message = ("File exported as python script in {}").format(
-            friendly_delta_from_secs(total)
-        )
+            msg = (
+                "An unexpected error ocurred"
+                " while trying to export node"
+                " layout as python code."
+            )
 
-        set_status_message(message)
+            logger.exception(msg)
+            USER_LOGGER.exception(msg)
+
+            error_str = str(err)
+
+            ### if there was an error message (an error
+            ### occured), show it to the user via a dialog
+
+            dialog_message = (
+                "An error ocurred while trying to"
+                " export the layout. Check the user log"
+                " for more info (click <Ctrl+Shift+J> after"
+                " leaving the dialog). Here's the error"
+                f" message: {error_str}"
+            )
+
+            create_and_show_dialog(
+                dialog_message,
+                level_name="error",
+            )
+
+        else:
+
+            ### save the python code
+
+            with open(
+                python_file_path,
+                mode="w",
+                encoding="utf-8",
+            ) as f:
+                f.write(exported_python_code)
+
+            ### finally, compute and display the total time
+            ### taken to export the image on the statusbar
+            ### in a friendly format
+
+            total = time() - start
+
+            message = ("File exported as python script in {}").format(
+                friendly_delta_from_secs(total)
+            )
+
+            set_status_message(message)
+

@@ -161,3 +161,16 @@ OPERATION_ID_TO_SOURCE_VIEW_TEXT = {
 """.strip()
     for operation_id, callable_obj in OPERATIONS_MAP.items()
 }
+
+###
+
+def get_treated_source(lambda_obj):
+
+    source = getsource(lambda_obj).strip()
+    start = source.index('lambda')
+    return source[start:-1]
+
+OPERATION_ID_TO_LAMBDA_SOURCE = {
+    operation_id: get_treated_source(callable_obj)
+    for operation_id, callable_obj in OPERATIONS_MAP.items()
+}

@@ -15,12 +15,22 @@ from ...colorsman.colors import CAPSULE_NODES_CATEGORY_COLOR
 ## superclass
 from ..callablenode.main import CallableNode
 
+## function for injection
+from .export import get_source_to_export
+
 
 class CapsuleNode(CallableNode):
     """Handles callables from encapsulation of code."""
 
+    ### class attributes
+
     category_color = CAPSULE_NODES_CATEGORY_COLOR
     available_ids = CAPSULE_IDS_TO_CALLABLES_MAP.keys()
+
+    ### injected function
+    get_source_to_export = get_source_to_export
+
+    ###
 
     def __init__(self, data, midtop=None):
         """Setup attributes for storage and control.
@@ -143,5 +153,4 @@ class CapsuleNode(CallableNode):
 
     def get_source_info(self):
         """Return information about node source."""
-
         return CAPSULE_IDS_TO_SOURCE_VIEW_TEXT[self.data["capsule_id"]]

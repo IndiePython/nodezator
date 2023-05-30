@@ -6,6 +6,9 @@ from ...colorsman.colors import (
     CAPSULE_NODES_CATEGORY_COLOR,
 )
 
+from .constants import CAPSULE_IDS_TO_PYTHON_SOURCE
+
+
 CAPSULE_NODE_CSS = f"""
 g.callable_node > path.header_fill_capsule_node
 {{
@@ -22,3 +25,7 @@ g.callable_node > rect.id_bg_rect_capsule_node
   stroke-width: 1;
 }}
 """
+
+def get_source_to_export(self):
+    """Return callable's source to be exported as python code."""
+    return CAPSULE_IDS_TO_PYTHON_SOURCE[self.data["capsule_id"]]
