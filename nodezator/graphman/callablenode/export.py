@@ -157,6 +157,12 @@ g.callable_node > path.header_outline
   stroke-width : {NODE_OUTLINE_THICKNESS};
 }}
 
+g.callable_node > path.sigmode_toggle_button
+{{
+  fill: white;
+  stroke: none;
+}}
+
 g.callable_node > text
 {{
   font: bold {FONT_HEIGHT}px sans-serif;
@@ -329,27 +335,6 @@ class Exporting:
             )
         )
 
-        ### node's title
-
-        tx_str, ty_str = map(
-            str,
-            title_rect.move(0, -3).midbottom,
-        )
-
-        title = Element(
-            "text",
-            {
-                "x": tx_str,
-                "y": ty_str,
-                "text-anchor": "middle",
-                "class": "title",
-            },
-        )
-
-        title.text = self.title_text
-
-        node_g.append(title)
-
         ### id bg rect
 
         id_text_rect = self.id_text_obj.rect
@@ -410,12 +395,51 @@ class Exporting:
         ###
         self.mode_dependent_elements_svg_repr(node_g)
 
+        ### node's title
+
+        tx_str, ty_str = map(
+            str,
+            title_rect.move(0, -3).midbottom,
+        )
+
+        title = Element(
+            "text",
+            {
+                "x": tx_str,
+                "y": ty_str,
+                "text-anchor": "middle",
+                "class": "title",
+            },
+        )
+
+        title.text = self.title_text
+
+        node_g.append(title)
+
         ###
         return node_g
 
     def expanded_elements_svg_repr(self, node_g):
 
         ### buttons
+
+        ##
+
+        path_rect = self.sigmode_toggle_button.rect.inflate(-2, -2).move(2, 0)
+
+        path_directives = (
+            f"M{path_rect.centerx} {path_rect.bottom}"
+            f" L{path_rect.left} {path_rect.top}"
+            f" L{path_rect.right} {path_rect.top}"
+            " Z"
+        )
+
+
+        node_g.append(
+            Element("path", {"d": path_directives, "class": "sigmode_toggle_button"})
+        )
+
+        ##
 
         for button in self.placeholder_add_buttons:
 
@@ -718,6 +742,21 @@ class Exporting:
 
     def collapsed_elements_svg_repr(self, node_g):
 
+        ### signature mode button
+
+        path_rect = self.sigmode_toggle_button.rect.inflate(-2, -2).move(2, 0)
+
+        path_directives = (
+            f"M{path_rect.left} {path_rect.top}"
+            f" L{path_rect.right} {path_rect.centery}"
+            f" L{path_rect.left} {path_rect.bottom}"
+            " Z"
+        )
+
+        node_g.append(
+            Element("path", {"d": path_directives, "class": "sigmode_toggle_button"})
+        )
+
         ### input/output
 
         var_kind_map = self.var_kind_map
@@ -760,6 +799,7 @@ class Exporting:
                 )
 
             ## regular parameter
+
             else:
 
                 if value not in vis:
@@ -950,6 +990,7 @@ class Exporting:
 
         for obj in chain(
             self.background_and_text_elements,
+            (self.sigmode_toggle_button,),
             self.visible_widgets,
             self.live_keyword_entries,
             self.unpacking_icons,
@@ -975,6 +1016,7 @@ class Exporting:
         for obj in chain(
 
             self.background_and_text_elements,
+            (self.sigmode_toggle_button,),
 
             (
                 unpacking_icon
