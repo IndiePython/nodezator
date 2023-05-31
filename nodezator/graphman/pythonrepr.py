@@ -46,7 +46,7 @@ SNIPPET_NODES_IN_CALLABLE_MODE = set()
 
 ### main function
 
-def python_repr(self, additional_levels=()):
+def python_repr(self):
     """Return python representation of graph."""
 
     ### if there are proxy nodes that don't have a parent (orphan)
@@ -110,8 +110,6 @@ def python_repr(self, additional_levels=()):
 
     ### create list of node callable import statements
 
-    additional_levels = tuple(additional_levels)
-
     node_callable_imports = sorted(
 
         ## a set: so we end up without duplicates
@@ -123,8 +121,7 @@ def python_repr(self, additional_levels=()):
             (
                 "from "
                 + ".".join(
-                    additional_levels
-                    + node.data["script_id"]
+                    node.data["script_id"]
                     + (NODE_SCRIPT_MODULE_NAME,)
                 )
                 + " import "

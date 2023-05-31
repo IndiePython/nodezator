@@ -12,10 +12,12 @@ from .gridlogic import GridHandling
 from .objinsert import ObjectInsertionRemoval
 from .selection import SelectionHandling
 from .reposition import Repositioning
-from .export.main import Exporting
 from .data import DataHandling
 
 ## more operations
+
+from .export.main import export_as_image
+from .pythonexporting import export_as_python, view_as_python
 
 from .categorycolors import (
     rebuild_category_color_form,
@@ -56,12 +58,12 @@ from .socketpopups.proxy import ProxySocketPopupMenu
 from .socketpopups.output import OutputSocketPopupMenu
 
 
+
 class EditingAssistant(
     GridHandling,
     ObjectInsertionRemoval,
     SelectionHandling,
     Repositioning,
-    Exporting,
     DataHandling,
 ):
     """Assist objects operations like selection/positioning.
@@ -88,6 +90,12 @@ class EditingAssistant(
         self.change_category_colors = change_category_colors
 
         self.rebuild_category_color_form = rebuild_category_color_form
+
+        ### store calls to exporting forms
+
+        self.export_as_image = export_as_image
+        self.export_as_python = export_as_python
+        self.view_as_python = view_as_python
 
         ### store calls to present forms
 

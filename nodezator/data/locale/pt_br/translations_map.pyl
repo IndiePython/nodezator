@@ -14,6 +14,7 @@
     'save_as'     : "Salvar como...",
     'export_as_image'  : "Exportar como imagem",
     'export_as_python' : "Exportar como python",
+    'view_as_python' : "Visualizar como python",
     'quit_app' : "Fechar app",
 
     'edit'             : "Editar",

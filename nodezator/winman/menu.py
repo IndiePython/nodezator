@@ -245,7 +245,7 @@ class MenuSetup:
 
             save_as_command_data = {
                 "label": t.menu.save_as,
-                "key_text": "Ctrl+Shift+S",
+                "key_text": "Shift+Ctrl+S",
                 "icon": "save_as",
                 "command": self.save_as,
             }
@@ -277,6 +277,13 @@ class MenuSetup:
                     "Ctrl+P",
                     APP_REFS.ea.export_as_python,
                 ),
+                (
+                    9,
+                    t.menu.view_as_python,
+                    "python_viewing",
+                    "Shift+Ctrl+P",
+                    APP_REFS.ea.view_as_python,
+                ),
             ):
 
                 # create the command data for the
@@ -294,7 +301,7 @@ class MenuSetup:
                 file_children_data.insert(index, command_data)
 
             # also insert separator
-            file_children_data.insert(9, {"label": "----"})
+            file_children_data.insert(10, {"label": "----"})
 
             ## Add new "Edit" top menu with different
             ## commands related to edition

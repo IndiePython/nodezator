@@ -125,7 +125,12 @@ class LoadedFileState:
                     APP_REFS.ea.export_as_image()
 
                 elif event.key == K_p and event.mod & KMOD_CTRL:
-                    APP_REFS.ea.export_as_python()
+
+                    if event.mod & KMOD_SHIFT:
+                        APP_REFS.ea.view_as_python()
+
+                    else:
+                        APP_REFS.ea.export_as_python()
 
                 ## Duplicate selected nodes
 

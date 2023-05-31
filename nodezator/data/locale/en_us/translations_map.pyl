@@ -42,6 +42,7 @@
 
     'export_as_image'  : "Export as image",
     'export_as_python' : "Export as python",
+    'view_as_python' : "View as python",
 
     'quit_app' : "Quit app",
 
@@ -155,21 +156,12 @@
 
     },
 
-    'python_export_form': {
+    'python_exporting': {
 
       # the app will automatically add '.py' at the end of
       # the string
       'default_filename': 'exported_graph',
-
       'pick_new_path': "Pick a path for new python file",
-
-      'caption'           : "Python exporting form",
-      'new_python_file'   : "New python file",
-      'change'            : "Change",
-      'additional_levels' : "Additional levels (optional)",
-
-      'submit': "Submit",
-      'cancel': "Cancel",
 
     },
 
