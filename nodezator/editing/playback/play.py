@@ -381,6 +381,12 @@ class SessionPlayingForm(Object2D):
 
     def set_session_playing(self):
         """Present form to set and trigger playing session."""
+        ### exit with a dialog if feature is not ready for usage yet
+
+        if APP_REFS.wip_lock:
+            create_and_show_dialog("This feature is a work in progress.")
+            return
+
         ### draw screen sized semi-transparent object,
         ### so that screen behind form appears as if
         ### unhighlighted

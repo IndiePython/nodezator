@@ -48,6 +48,9 @@ APP_REFS = SimpleNamespace(
             temp_file_suffix=NATIVE_FILE_EXTENSION,
         )
     ),
+    ## flag to lock work-in-progress features, that is,
+    ## features not ready for regular usage yet
+    wip_lock=True
 )
 
 

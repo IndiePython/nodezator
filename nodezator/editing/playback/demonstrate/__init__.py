@@ -353,6 +353,12 @@ class DemonstrationSessionForm(Object2D):
 
     def set_demonstration_session(self):
         """Present form to set and trigger demonstration session."""
+        ### exit with a dialog if feature is not ready for usage yet
+
+        if APP_REFS.wip_lock:
+            create_and_show_dialog("This feature is a work in progress.")
+            return
+
         ### draw screen sized semi-transparent object, so that screen
         ### behind form appears as if unhighlighted
         blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
