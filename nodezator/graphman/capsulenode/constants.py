@@ -1,6 +1,6 @@
 ### standard library imports
 
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
 
 from json import load, dump
 
@@ -11,6 +11,7 @@ from pprint import pformat
 from string import Template
 
 from inspect import signature, getsource
+
 
 
 def read_text_file(
@@ -223,6 +224,12 @@ def save_as_json_file(
 def print_and_return(obj_in) -> [{"name": "obj_out"}]:
     return print(obj_in) or obj_in
 
+def return_untouched(obj_in) -> [{"name": "obj_out"}]:
+    return obj_in
+
+def for_item_in_obj_pass(obj:Iterator):
+    for _ in obj:
+        pass
 
 def perform_call(
     func: Callable,
@@ -282,6 +289,8 @@ CAPSULE_IDS_TO_CALLABLES_MAP = {
     "load_json_file": load_json_file,
     "save_as_json_file": save_as_json_file,
     "print_and_return": print_and_return,
+    "return_untouched": return_untouched,
+    "for_item_in_obj_pass": for_item_in_obj_pass,
     "perform_call": perform_call,
     "tuple_from_args": tuple_from_args,
     "list_from_args": list_from_args,
@@ -451,6 +460,23 @@ $output = None
         """
 
 $obj_out = print($obj_in) or $obj_in
+
+""".strip()
+    ).substitute,
+    "return_untouched": Template(
+        """
+
+$obj_out = $obj_in
+
+""".strip()
+    ).substitute,
+    "for_item_in_obj_pass": Template(
+        """
+
+for _ in $obj:
+    pass
+
+$output = None
 
 """.strip()
     ).substitute,
