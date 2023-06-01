@@ -63,6 +63,7 @@ class SignatureModeVisualPreparations():
             self.title_text_obj.rect,
             self.body.rect,
             self.id_text_obj.rect,
+            self.output_rectsman,
             self.bottom_rectsman,
         ]
 
@@ -72,11 +73,6 @@ class SignatureModeVisualPreparations():
 
         if self.signature_obj.parameters.values():
             all_rects.append(self.input_rectsman)
-
-        ## if there are output sockets, add the output rectsman to the list
-
-        if self.output_socket_live_map:
-            all_rects.append(self.output_rectsman)
 
         ## use the callable to instantiate the rects
         ## manager and then store it
