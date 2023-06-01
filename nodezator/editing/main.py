@@ -16,7 +16,7 @@ from .data import DataHandling
 
 ## more operations
 
-from .export.main import export_as_image
+from .imageexport.main import export_as_image
 from .pythonexporting import export_as_python, view_as_python
 
 from .categorycolors import (
