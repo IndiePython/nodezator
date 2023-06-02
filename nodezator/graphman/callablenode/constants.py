@@ -25,7 +25,7 @@ NODE_BODY_HEAD_HEIGHT = FONT_HEIGHT - 2
 ### content (either a first parameter or first output);
 ### we position the body content offset two pixels after
 ### the body head area;
-BODY_CONTENT_OFFSET = NODE_BODY_HEAD_HEIGHT + 2
+BODY_CONTENT_OFFSET = NODE_BODY_HEAD_HEIGHT + 4
 
 ### distance from a variable parameter's label to its
 ### first subparameter
@@ -43,7 +43,7 @@ DISTANCE_BETWEEN_SUBPARAMS = 8
 ### distance between last input (including the object with
 ### lowest bottom, whether it is a widget or the label)
 ### and the first output socket
-OUTPUT_OFFSET = 4
+INPUT_OFFSET = 4
 
 ### distance between outputs
 DISTANCE_BETWEEN_OUTPUTS = 4

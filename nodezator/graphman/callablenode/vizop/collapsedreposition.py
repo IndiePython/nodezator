@@ -16,7 +16,7 @@ from ..constants import (
     DISTANCE_BETWEEN_PARAMS,
     DISTANCE_BETWEEN_SUBPARAMS,
     DISTANCE_BETWEEN_OUTPUTS,
-    OUTPUT_OFFSET,
+    INPUT_OFFSET,
 )
 
 
@@ -64,7 +64,69 @@ def reposition_collapsed_elements(self):
     ### reference map of subparam keyword entries
     skel_map = self.subparam_keyword_entry_live_map
 
+    ### create a temporary rectsman with its list of rects
+
+    temp_rect_list = []
+    temp_rectsman = RectsManager(temp_rect_list.__iter__)
+
+
+    ### position visible output sockets
+
+    ## reference list of visible output sockets
+    vos = self.visible_output_sockets
+
+    ## reference the last visible output socket, if any
+    if vos:
+        last_output_socket = vos[-1]
+
+    for output_socket in vos:
+
+        socket_rect = output_socket.rect
+
+        ## align text rect center with the center of the
+        ## socket, then pull text rect 2 pixels up
+        text_rect.centery = socket_rect.move(0, -2).centery
+
+        # position object as one, by appending
+        # text rect temporarily to the rect list
+
+        temp_rect_list.append(socket_rect)
+        temp_rect_list.append(text_rect)
+
+        temp_rectsman.top = top
+
+        top = temp_rectsman.bottom
+
+        temp_rect_list.clear()
+
+        ## if the socket isn't the last one, increment
+        ## the top with the distance between outputs
+        ## given as a constant
+
+        if output_socket != last_output_socket:
+            top += DISTANCE_BETWEEN_OUTPUTS
+
+    ## if there are visible output sockets...
+
+    if vos:
+
+        ## reference the output rectsman locally
+        output_rectsman = self.output_rectsman
+
+        ## align the output rectsman centerx with the
+        ## top rectsman's right, so that the output sockets
+        ## all rest centered on the right corner of the
+        ## node
+        output_rectsman.centerx = top_rectsman.right
+
+
     ### position parameters
+
+    ## offset the defined top by the input offset given as a constant,
+    ## that is, if there are visible input sockets and output sockets;
+
+    if vis and vos:
+        top += INPUT_OFFSET
 
     ## retrieve parameter objects (they're ordered)
     parameters = self.signature_obj.parameters.values()
@@ -74,11 +136,6 @@ def reposition_collapsed_elements(self):
 
     if vis:
         last_input_socket = vis[-1]
-
-    ## create a temporary rectsman with its list of rects
-
-    temp_rect_list = []
-    temp_rectsman = RectsManager(temp_rect_list.__iter__)
 
     ## reference subparameter unpacking map locally
     subparam_unpacking_map = self.data["subparam_unpacking_map"]
@@ -266,60 +323,6 @@ def reposition_collapsed_elements(self):
         if param_name != last_input_socket.parameter_name:
             top += DISTANCE_BETWEEN_PARAMS
 
-    ### position visible output sockets
-
-    ## reference list of visible output sockets
-    vos = self.visible_output_sockets
-
-    ## offset the defined top by the output offset
-    ## given as a constant, that is, if there are visible input
-    ## sockets and output sockets;
-    ##
-    ## also reference the last output socket
-
-    if vis and vos:
-        top += OUTPUT_OFFSET
-
-    if vos:
-        last_output_socket = vos[-1]
-
-    for output_socket in vos:
-
-        socket_rect = output_socket.rect
-
-        ## align text rect center with the center of the
-        ## socket, then pull text rect 2 pixels up
-        text_rect.centery = socket_rect.move(0, -2).centery
-
-        # position object as one, by appending
-        # text rect temporarily to the rect list
-
-        temp_rect_list.append(socket_rect)
-        temp_rect_list.append(text_rect)
-
-        temp_rectsman.top = top
-
-        top = temp_rectsman.bottom
-
-        temp_rect_list.clear()
-
-        ## if the socket isn't the last one, increment
-        ## the top with the distance between outputs
-        ## given as a constant
-
-        if output_socket != last_output_socket:
-            top += DISTANCE_BETWEEN_OUTPUTS
-
-    if vos:
-
-        ## reference the output rectsman locally
-        output_rectsman = self.output_rectsman
-
-        ## align the output rectsman centerx with the
-        ## top rectsman's right, so that the output sockets
-        ## all rest centered on the right corner of the
-        ## node
-        output_rectsman.centerx = top_rectsman.right
 
     ### position the id text object
 

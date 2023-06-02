@@ -1,22 +1,8 @@
 """Function to extend VisualRelatedOperations class."""
 
-### third-party import
-from pygame import Rect
-
-
 ### local imports
+from ..constants import BODY_CONTENT_OFFSET, NODE_OUTLINE_THICKNESS
 
-from ....rectsman.main import RectsManager
-
-from ..constants import (
-    BODY_CONTENT_OFFSET,
-    NODE_OUTLINE_THICKNESS,
-    SUBPARAM_OFFSET_FROM_LABEL,
-    DISTANCE_BETWEEN_PARAMS,
-    DISTANCE_BETWEEN_SUBPARAMS,
-    DISTANCE_BETWEEN_OUTPUTS,
-    OUTPUT_OFFSET,
-)
 
 
 def reposition_callable_elements(self):

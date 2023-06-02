@@ -18,7 +18,7 @@ from ..constants import (
     DISTANCE_BETWEEN_PARAMS,
     DISTANCE_BETWEEN_SUBPARAMS,
     DISTANCE_BETWEEN_OUTPUTS,
-    OUTPUT_OFFSET,
+    INPUT_OFFSET,
 )
 
 
@@ -76,15 +76,67 @@ def reposition_expanded_elements(self):
     ### offset given as a constant
     top = top_rectsman.bottom + BODY_CONTENT_OFFSET
 
+    ### position each output socket
+
+    ## get names of output sockets (their order is defined
+    ## in the node script)
+    socket_names = self.ordered_output_type_map.keys()
+
+    ## get name of last socket
+    last_socket_name = list(socket_names)[-1]
+
+    ## reference the output socket map locally
+    osl_map = self.output_socket_live_map
+
+    ## iterate over socket names, retrieving the rect of
+    ## each socket in order to position it
+
+    for output_name in socket_names:
+
+        ## retrieve socket rect
+        socket_rect = osl_map[output_name].rect
+
+        ## position the socket horizontally
+        socket_rect.centerx = top_rectsman_right
+
+        ## align text rect center with the center of the
+        ## socket, offset 2 pixels up
+        text_rect.centery = socket_rect.move(0, -2).centery
+
+        ## position text rect and socket rect together
+        ## as if they were a single rect by controlling
+        ## them through a temporary rects manager instance
+
+        # instantiate rectsman
+        temp_rectsman = RectsManager((text_rect, socket_rect).__iter__)
+
+        # assign top to the temporary rectsman
+        temp_rectsman.top = top
+
+        # new top is the bottom of the temp rectsman
+        top = temp_rectsman.bottom
+
+        ## if the socket isn't the last one, increment
+        ## the top with the distance between outputs
+        ## given as a constant
+
+        if output_name != last_socket_name:
+            top += DISTANCE_BETWEEN_OUTPUTS
+
     ### position parameters
 
     ## retrieve parameter objects (they're ordered)
     parameters = self.signature_obj.parameters.values()
 
-    ## if there are parameters, store the name of the last
-    ## one (we'll use it soon)
+    ## if there are parameters...
 
     if parameters:
+
+        ## offset the defined top by the input offset
+        ## given as a constant
+        top += INPUT_OFFSET
+
+        ## also store the name of the last one (we'll use it soon)
         last_param_name = list(parameters)[-1].name
 
     ## iterate over parameter objects positioning each
@@ -437,67 +489,13 @@ def reposition_expanded_elements(self):
         if param_name != last_param_name:
             top += DISTANCE_BETWEEN_PARAMS
 
-    ### position each output socket
-
-    ## get names of output sockets (their order is defined
-    ## in the node script)
-    socket_names = self.ordered_output_type_map.keys()
-
-    ## get name of last socket
-    last_socket_name = list(socket_names)[-1]
-
-    ## reference the output socket map locally
-    osl_map = self.output_socket_live_map
-
-    ## also offset the defined top by the output offset
-    ## given as a constant, if there were parameters
-    if parameters:
-        top += OUTPUT_OFFSET
-
-    ## iterate over socket names, retrieving the rect of
-    ## each socket in order to position it
-
-    for output_name in socket_names:
-
-        ## retrieve socket rect
-        socket_rect = osl_map[output_name].rect
-
-        ## position the socket horizontally
-        socket_rect.centerx = top_rectsman_right
-
-        ## align text rect center with the center of the
-        ## socket, offset 2 pixels up
-        text_rect.centery = socket_rect.move(0, -2).centery
-
-        ## position text rect and socket rect together
-        ## as if they were a single rect by controlling
-        ## them through a temporary rects manager instance
-
-        # instantiate rectsman
-        temp_rectsman = RectsManager((text_rect, socket_rect).__iter__)
-
-        # assign top to the temporary rectsman
-        temp_rectsman.top = top
-
-        # new top is the bottom of the temp rectsman
-        top = temp_rectsman.bottom
-
-        ## if the socket isn't the last one, increment
-        ## the top with the distance between outputs
-        ## given as a constant
-
-        if output_name != last_socket_name:
-            top += DISTANCE_BETWEEN_OUTPUTS
-
     ### position the id text object
 
     ## reference the rect of the id text object locally
     id_text_rect = self.id_text_obj.rect
 
-    ## align its top with the last defined top, which
-    ## is the bottom of the pair last output socket
-    ## and the text rect; also push it 4 pixels down
-    ## for extra padding
+    ## align its top with the last defined top; also push it
+    ## 4 pixels down for extra padding
     id_text_rect.top = top + 4
 
     ## align the centerx of the id text object with
