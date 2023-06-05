@@ -17,6 +17,12 @@ from os import linesep
 
 from ..config import APP_REFS
 
+from ..appinfo import (
+    VISUAL_FROM_BACKDOOR_VAR_NAMES,
+    VISUAL_FROM_OUTPUT_VAR_NAME,
+    LOOP_FROM_OUTPUT_VAR_NAME,
+)
+
 from ..userprefsman.main import USER_PREFS
 
 from ..logman.main import get_new_logger
@@ -44,7 +50,7 @@ from .exception import (
     ProxyNodesLackingDataError,
 )
 
-from .utils import lay_arguments_and_execute
+from .utils import lay_arguments_and_execute, yield_upstream_nodes
 
 
 ### create logger for module
@@ -68,7 +74,7 @@ class Execution:
         ### create map to track node execution time
         self.node_exec_time_map = {}
 
-    def execute_graph(self):
+    def execute_graph(self, nodes_to_visit=None):
         """Travel the graph, executing each node.
 
         Works by executing node by node until all of them
@@ -89,37 +95,41 @@ class Execution:
 
             return
 
-        ### also reference, clear and update a set to hold
-        ### references of nodes to be visited, that is, all
+        ### if the nodes to be visited were not specified, we use all
         ### the existing ones minus the commented out ones
 
-        nodes_to_visit = self.nodes_to_visit
-        nodes_to_visit.clear()
+        if nodes_to_visit is None:
 
-        nodes_to_visit.update(
-            node for node in self.nodes if not node.data.get("commented_out", False)
-        )
+            ### reference, clear and update a set to hold
+            ### references of nodes to be visited
 
-        ### if there's no nodes to visit in the graph,
-        ### it means all existing nodes are commented out,
-        ### so notify user via dialog and cancel operation
-        ### by returning
-        ### earlier
+            nodes_to_visit = self.nodes_to_visit
+            nodes_to_visit.clear()
 
-        if not nodes_to_visit:
-
-            create_and_show_dialog(
-                "Can't execute graph because all nodes are"
-                " commented out. We must have at least one"
-                " node not commented out in order to execute"
-                " the graph."
+            nodes_to_visit.update(
+                node for node in self.nodes if not node.data.get("commented_out", False)
             )
 
-            return
+            ### if there's no nodes to visit in the graph,
+            ### it means all existing nodes are commented out,
+            ### so notify user via dialog and cancel operation
+            ### by returning
+            ### earlier
 
-        ### since now we have nodes to visit, let's
-        ### futher separate then into nodes meant for
-        ### execution and perform related setups
+            if not nodes_to_visit:
+
+                create_and_show_dialog(
+                    "Can't execute graph because all nodes are"
+                    " commented out. We must have at least one"
+                    " node not commented out in order to execute"
+                    " the graph."
+                )
+
+                return
+
+        ### since now we have nodes to visit, let's futher separate
+        ### them into nodes meant for execution and perform related
+        ### setups
 
         nodes_to_execute = self.nodes_to_execute
         nodes_to_execute.clear()
@@ -210,52 +220,116 @@ class Execution:
 
                 for node in nodes_to_execute:
 
-                    ## try executing the node in order to
-                    ## obtain the elements needed to
-                    ## execute its callable
+                    ## check whether node is ready for
+                    ## execution
 
                     try:
-                        (main_callable, argument_map, callable_signature) = node()
+                        node.check_pending_parameters()
 
                     ## if a node is just waiting input
                     ## from another one, just pass
                     except WaitingInputException:
                         pass
 
-                    ## if node execution succeeds...
+                    ## if check doesn't raise an error...
 
                     else:
 
-                        ### now try executing the node's
-                        ### callable by passing the needed
-                        ### arguments to a function that
-                        ### will execute it and return the
-                        ### callable's return value
+                        ## check whether node has a callable used as a
+                        ## backdoor to retrieve visuals from it, storing
+                        ## such backdoor if so
+
+                        for var_name in VISUAL_FROM_BACKDOOR_VAR_NAMES:
+
+                            if hasattr(node, var_name):
+                                backdoor = getattr(node, var_name)
+                                break
+
+                        else:
+                            backdoor = None
+
+                        ## pick appropriate callable object depending on
+                        ## whether the backdoor exists
+                        callable_obj = backdoor if backdoor else node.main_callable
+
+                        ### try executing the callable by passing the needed
+                        ### arguments to a function that will execute it and
+                        ### return the callable's return value
 
                         try:
+
+                            ## execute
 
                             node_exec_start = time()
 
                             return_value = lay_arguments_and_execute(
-                                main_callable, argument_map, callable_signature
+                                callable_obj, node.argument_map, node.signature_obj
                             )
 
                             node_exec_time_map[node.id] = time() - node_exec_start
+
+                            output_to_send = return_value
 
                         ### if an unexpected error occurs,
                         ### raise a custom error from the
                         ### original one
 
                         except Exception as err:
-
                             raise NodeCallableError(node) from err
+
+                        ### if needed:
+                        ###   - redefine output to be sent to downstream nodes
+                        ###   - set visuals/looping
+
+                        try:
+
+                            if backdoor:
+
+                                node.set_visual(return_value['visual'])
+
+                                if 'loop_data' in return_value:
+
+                                    node.loop_data = return_value['loop_data']
+
+                                    if node.preview_toolbar.check_button.get():
+                                        node.enter_custom_loop()
+
+                                output_to_send = return_value['output']
+
+                            elif hasattr(node, VISUAL_FROM_OUTPUT_VAR_NAME):
+
+                                node.set_visual(
+                                    node.get_visual_from_output(return_value)
+                                )
+
+                                ###
+
+                                loop_data_retrieval_op = (
+                                    getattr(node, LOOP_FROM_OUTPUT_VAR_NAME, None)
+                                )
+
+                                if loop_data_retrieval_op:
+
+                                    node.loop_data = loop_data_retrieval_op(return_value)
+
+                                    if node.preview_toolbar.check_button.get():
+                                        node.enter_loop()
+
+                        except Exception as err:
+
+                            raise RuntimeError(
+                                "Error while setting visual/looping/output."
+                            ) from err
+
+
+                        ###
 
                         # send its return value to
                         # other nodes as needed
 
                         self.send_output_from_executed(
                             node,
-                            return_value,
+                            output_to_send,
                         )
 
                         # TODO should we perform exec
@@ -559,3 +633,6 @@ class Execution:
                 text_viewer_rect="custom_stdout",
                 index_to_jump_to=-1,
             )
+
+    def execute_node_after_upstream_ones(self, node):
+        self.execute_graph(set(yield_upstream_nodes(node)))

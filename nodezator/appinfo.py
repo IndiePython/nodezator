@@ -68,13 +68,53 @@ NODE_SCRIPT_NAME = "__main__.py"
 
 MAIN_CALLABLE_VAR_NAME = "main_callable"
 
+VIEWER_NODE_RELATED_VAR_NAMES = (
+
+    VISUAL_AND_OUTPUT_FROM_BACKDOOR_VAR_NAME,
+    VISUAL_LOOP_AND_OUTPUT_FROM_BACKDOOR_VAR_NAME,
+
+    VISUAL_FROM_OUTPUT_VAR_NAME,
+    LOOP_FROM_OUTPUT_VAR_NAME,
+
+    CUSTOM_VIEWER_LOOP_VAR_NAME,
+
+) = (
+
+    "get_visual_and_output_from_backdoor",
+    "get_visual_loop_and_output_from_backdoor",
+
+    "get_visual_from_output",
+    "get_loop_data_from_output",
+
+    "enter_viewer_loop",
+
+)
+
+LOOP_INDICATIVE_VAR_NAMES = (
+    VISUAL_LOOP_AND_OUTPUT_FROM_BACKDOOR_VAR_NAME,
+    LOOP_FROM_OUTPUT_VAR_NAME,
+)
+
+VISUAL_FROM_BACKDOOR_VAR_NAMES = (
+    VISUAL_AND_OUTPUT_FROM_BACKDOOR_VAR_NAME,
+    VISUAL_LOOP_AND_OUTPUT_FROM_BACKDOOR_VAR_NAME,
+)
+
+OUTPUT_INSPECTING_VAR_NAMES = (
+    VISUAL_FROM_OUTPUT_VAR_NAME,
+    LOOP_FROM_OUTPUT_VAR_NAME,
+)
+
+
 NODE_DEF_VAR_NAMES = (
-    "main_callable",
+
+    MAIN_CALLABLE_VAR_NAME,
     "signature_callable",
     "substitution_callable",
     "call_format",
     "stlib_import_text",
     "third_party_import_text",
+    *VIEWER_NODE_RELATED_VAR_NAMES,
 )
 
 ### node packs constants

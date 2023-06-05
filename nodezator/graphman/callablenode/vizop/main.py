@@ -14,7 +14,7 @@ from pygame.draw import rect as draw_rect
 
 from ....config import APP_REFS
 
-from ....pygamesetup import SCREEN
+from ....pygamesetup import SCREEN, SCREEN_RECT
 
 ## functions to extend class
 
@@ -23,6 +23,7 @@ from .collapsedreposition import reposition_collapsed_elements
 from .callablereposition import reposition_callable_elements
 
 from .collapsing import collapse_unconnected_elements
+
 
 
 class VisualOperations:
@@ -253,3 +254,29 @@ class VisualOperations:
 
         elif mode_name == 'collapsed_signature':
             self.set_mode('expanded_signature')
+
+    def anchor_viewer_objects_to_node(self):
+
+        pos = self.get_anchor_pos()
+        toolbar_rect = self.preview_toolbar.rect
+
+        toolbar_rect.topleft = pos
+        self.preview_panel.rect.topleft = toolbar_rect.bottomleft
+
+    def get_anchor_below_output(self):
+        return self.top_rectsman.right, self.output_rectsman.bottom + 5
+
+    def get_anchor_below_visible_output(self):
+
+        return self.top_rectsman.right, (
+            self.visible_output_sockets[-1].rect.bottom
+            if self.visible_output_sockets
+            else self.top_rectsman.bottom
+        ) + 5
+
+    def viewer_objects_drawing(self):
+
+        for obj in self.viewer_objects:
+
+            if obj.rect.colliderect(SCREEN_RECT):
+                obj.draw()

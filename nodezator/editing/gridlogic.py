@@ -149,6 +149,8 @@ class GridHandling:
         By corner we mean one of the rect coordinates
         like 'topleft', 'center', 'midright', etc.
         """
+        gm = APP_REFS.gm
+
         ### create a rectsman with rects from all objects
 
         rectsman = RectsManager(
@@ -162,7 +164,17 @@ class GridHandling:
             ## the position of the objects with the rectsman:
             ## we are creating it only for the purpose of
             ## reading the position of one of its corners;
-            [obj.rect for obj in chain(APP_REFS.gm.nodes, APP_REFS.gm.text_blocks)]
+
+            [
+                obj.rect
+                for obj in chain(
+                    gm.nodes,
+                    gm.preview_toolbars,
+                    gm.preview_panels,
+                    gm.text_blocks,
+                )
+            ]
+
             ## now grab the __iter__ method of the created
             ## list
             .__iter__
@@ -193,7 +205,6 @@ class GridHandling:
         ### finally align the objects' corner with the
         ### center of the screen, by scrolling the
         ### difference between the positions
-
         self.scroll(*(SCREEN_RECT.center - Vector2(objs_corner)))
 
     def scroll(self, dx, dy):
@@ -201,20 +212,26 @@ class GridHandling:
         ### scroll grids
         self.scroll_grids(dx, dy)
 
+        gm = APP_REFS.gm
+
         ### scroll objects
 
         ## origin rect
-        APP_REFS.gm.origin_rect.move_ip(dx, dy)
+        gm.origin_rect.move_ip(dx, dy)
 
         ## nodes
 
-        for node in APP_REFS.gm.nodes:
+        for node in gm.nodes:
             node.rectsman.move_ip(dx, dy)
 
-        ## text blocks
+        ## other objects
 
-        for block in APP_REFS.gm.text_blocks:
-            block.rect.move_ip(dx, dy)
+        for obj in chain(
+            gm.preview_toolbars,
+            gm.preview_panels,
+            gm.text_blocks,
+        ):
+            obj.rect.move_ip(dx, dy)
 
     scroll_up = partialmethod(scroll, 0, 25)
     scroll_down = partialmethod(scroll, 0, -25)

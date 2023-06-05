@@ -82,39 +82,6 @@ class Execution:
         ### set a state as 'ready
         self.state = "ready"
 
-    def __call__(self):
-        """Return objects needed to execute node's callable.
-
-        This method always have one of three effects:
-
-        1) return elements needed to execute the node's
-        callable if the node don't need to wait for data
-        from other nodes.
-
-        2) raises a WaitingInputException, meaning the node's
-        callable is not ready to be executed because it is
-        waiting for input from other nodes.
-
-        3) raises a MissingInputError, if a required
-        argument cannot be provided (the argument has
-        no source of data, either from another node or
-        from an embedded widget).
-        """
-        ### check whether there are pending parameters,
-        ### performing measures to obtain the needed data
-        self.check_pending_parameters()
-
-        ### if an exception is not raised by the call above,
-        ### we can safely assume we received every argument
-        ### needed to execute the node's callable, so we
-        ### return all elements needed
-
-        return (
-            self.main_callable,
-            self.argument_map,
-            self.signature_obj,
-        )
-
     def check_pending_parameters(self):
         """Perform checks on pending parameters.
 

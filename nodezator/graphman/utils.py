@@ -197,16 +197,17 @@ def yield_subgraph_nodes(node, visited_nodes=None):
     """Yield all nodes in subgraph.
 
     Works by recursively yielding nodes connected with
-    the given one until all connected nodes are yielded.
+    the given one.
 
     Parameters
     ==========
     node (graphman.callablenode.CallableNode instance)
         a node from the subgraph; start from it, we yield
         all nodes in the subgraph.
-    visited_nodes (built-in class 'set' instance)
+    visited_nodes (None or set)
         set used to keep track of nodes already visited,
-        so we avoid revisiting them.
+        so we avoid revisiting them. If it is None, a new
+        set is created.
     """
     ### create a "visited nodes" set if it doesn't exist
     ### already
@@ -342,3 +343,69 @@ def yield_subgraphs(nodes):
         ## will be checked again, since we are removing
         ## them from the set of nodes to be checked
         nodes_to_check.difference_update(subgraph)
+
+
+### generator function to yield nodes which are upstream
+### from the given one
+
+def yield_upstream_nodes(node, visited_nodes=None):
+    """Yield all upstream nodes from given one.
+
+    Works by recursively yielding upstream nodes connected
+    with the given one.
+
+    Parameters
+    ==========
+    node (graphman.callablenode.CallableNode instance)
+        a node from the subgraph; start from it, we yield
+        all nodes in the subgraph.
+    visited_nodes (None or set)
+        set used to keep track of nodes already visited,
+        so we avoid revisiting them. If it is None, a new
+        set is created.
+    """
+    ### create a "visited nodes" set if it doesn't exist
+    ### already
+    if visited_nodes is None:
+        visited_nodes = set()
+
+    ### since we are visiting the given node, mark it
+    ### as visited by adding it to the corresponding set
+    visited_nodes.add(node)
+
+    ### let's start the visit by yielding the node
+    yield node
+
+    ### now let's visit each upstream node recursively,
+    ### that is, the ones we didn't visit yet
+
+    for input_socket in node.input_sockets:
+
+        ## try retrieving the value of the socket's
+        ## 'parent' attribute, which, if exists,
+        ## should contain a reference to an output
+        ## socket which is the parent of the socket
+        ## (the output socket is from another node)
+        try:
+            parent_output_socket = input_socket.parent
+
+        ## if such attribute doesn't exits, just pass
+        except AttributeError:
+            pass
+
+        ## otherwise, reference the node of such
+        ## parent socket and visit it if not visited
+        ## already, by passing it to this same
+        ## function and yielding from it
+        ##
+        ## you must also pass along the set of visited
+        ## nodes, so that the function knows whether
+        ## a node has already been visited or not
+
+        else:
+
+            parent_node = parent_output_socket.node
+
+            if parent_node not in visited_nodes:
+
+                yield from yield_upstream_nodes(parent_node, visited_nodes)

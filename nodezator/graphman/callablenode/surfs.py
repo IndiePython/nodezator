@@ -1,17 +1,17 @@
 """Common surfaces for nodes."""
 
-### third-party import
+### third-party imports
+
 from pygame.draw import line as draw_line
+
+from pygame.transform import rotate as rotate_surface
 
 
 ### local imports
 
 from ...ourstdlibs.collections.general import FactoryDict
 
-from ...surfsman.render import (
-    render_rect,
-    combine_surfaces,
-)
+from ...surfsman.render import render_rect, combine_surfaces
 
 from ...surfsman.icon import render_layered_icon
 
@@ -31,6 +31,7 @@ from ...colorsman.colors import (
     SUBP_MOVE_BUTTON_BG,
     NODE_CATEGORY_COLORS,
     UNPACKING_ICON_COLOR,
+    BLACK,
 )
 
 from .constants import (
@@ -296,3 +297,26 @@ KEYWORD_KEY_SURF = render_layered_icon(
 )
 
 KEYWORD_KEY_RECT = KEYWORD_KEY_SURF.get_rect()
+
+
+### reload icon for preview toolbar button 
+
+_arrow_up = render_layered_icon(
+    chars=[chr(ordinal) for ordinal in (52, 53)],
+    dimension_name="width",
+    dimension_value=18,
+    colors=[BLACK, (30, 130, 70)],
+    background_width=20,
+    background_height=20,
+    retrieve_pos_from="midbottom",
+    assign_pos_to="midbottom",
+    offset_pos_by=(0, -2),
+)
+
+_arrow_down = rotate_surface(_arrow_up, 180)
+
+RELOAD_PREVIEW_BUTTON_SURF = combine_surfaces(
+    [_arrow_up, _arrow_down],
+    retrieve_pos_from="center",
+    assign_pos_to="center",
+)

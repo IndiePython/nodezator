@@ -338,10 +338,14 @@ class LoadedFileState:
 
         ### check objects on screen for collision
 
+        gm = APP_REFS.gm
+
         for obj in chain(
             self.switches,
-            APP_REFS.gm.text_blocks.get_on_screen(),
-            APP_REFS.gm.nodes.get_on_screen(),
+            gm.text_blocks.get_on_screen(),
+            gm.nodes.get_on_screen(),
+            gm.preview_toolbars.get_on_screen(),
+            gm.preview_panels.get_on_screen(),
         ):
 
             if obj.rect.collidepoint(mouse_pos):
@@ -495,10 +499,14 @@ class LoadedFileState:
 
         ### check different groups of objects for collision
 
+        gm = APP_REFS.gm
+
         for obj in chain(
             self.switches,
-            APP_REFS.gm.text_blocks.get_on_screen(),
-            APP_REFS.gm.nodes.get_on_screen(),
+            gm.text_blocks.get_on_screen(),
+            gm.nodes.get_on_screen(),
+            gm.preview_toolbars.get_on_screen(),
+            gm.preview_panels.get_on_screen(),
         ):
 
             if obj.rect.collidepoint(mouse_pos):

@@ -93,6 +93,9 @@ class Repositioning:
             except AttributeError:
                 obj.rect.midtop = final_deltas
 
+            if hasattr(obj, 'anchor_viewer_objects'):
+                obj.anchor_viewer_objects()
+
     def constrain_axes(self, relative_to_x):
         """Constrain amount of translation to axis.
 
@@ -178,6 +181,9 @@ class Repositioning:
                 obj.rectsman.midtop = absolute_midtop
             except AttributeError:
                 obj.rect.midtop = absolute_midtop
+
+            if hasattr(obj, 'anchor_viewer_objects'):
+                obj.anchor_viewer_objects()
 
         ### admin task: restore controls/behaviours
 

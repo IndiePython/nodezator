@@ -65,6 +65,10 @@ from ..colorsman.colors import NODE_CATEGORY_COLORS
 ### same id (from id()), the callable will still have the
 ### same id attribute
 
+### XXX node_def_map and node_def_dict are names used to
+### refer the different data, so that names shouldn't be
+### so similar; schedule and fix this when opportune;
+
 ### XXX
 ###
 ### I believe errors in the node scripts and also other

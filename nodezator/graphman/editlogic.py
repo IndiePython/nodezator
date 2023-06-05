@@ -62,6 +62,18 @@ class DataEdition:
         ### using its id
         self.nodes_data.pop(node.id)
 
+        ### if the node has preview objects, remove them as well
+
+        for attr_name, collection in zip(
+            ('preview_toolbar', 'preview_panel'),
+            (self.preview_toolbars, self.preview_panels),
+        ):
+
+            obj = getattr(node, attr_name, None)
+
+            if obj and (obj in collection):
+                collection.remove(obj)
+
     def create_text_block(
         self,
         text_block_data,

@@ -84,6 +84,11 @@ class GraphManager(
         ### create rect to mark origin of 2d space
         self.origin_rect = Rect(0, 0, 100, 100)
 
+        ### create special lists to hold viewer objects
+
+        self.preview_toolbars = List2D()
+        self.preview_panels = List2D()
+
         ### initialize each base class which has its own
         ### init method
         initialize_bases(self)
@@ -101,6 +106,11 @@ class GraphManager(
         ### load scripts to use callables provided by
         ### them as specifications for nodes
         load_scripts(data["node_packs"], data["installed_node_packs"])
+
+        ### clear lists of viewer objects
+
+        self.preview_toolbars.clear()
+        self.preview_panels.clear()
 
         ### store reference to value in the PARENT_SOCKETS_KEY
         ### key from the native data
@@ -243,6 +253,12 @@ class GraphManager(
 
     def draw(self):
         """Draw node layout elements."""
+        ### preview panels
+        self.preview_panels.call_draw_on_screen()
+
+        ### preview toolbars
+        self.preview_toolbars.call_draw_on_screen()
+
         ### lines
         self.draw_lines()
 

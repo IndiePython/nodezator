@@ -4,7 +4,9 @@
 
 from ...config import APP_REFS
 
+from ...ourstdlibs.behaviour import empty_function
 from ...our3rdlibs.behaviour import indicate_unsaved
+
 
 ## class extensions
 
@@ -21,6 +23,8 @@ from .segment import SegmentOperations
 from .execution import Execution
 
 from .export import Exporting
+
+from .outputviz import OutputVisualization
 
 
 ##
@@ -39,6 +43,7 @@ class CallableNode(
     SegmentOperations,
     Execution,
     Exporting,
+    OutputVisualization,
 ):
     """Stores and manages a callable state.
 
@@ -165,7 +170,6 @@ class CallableNode(
         self.set_data_defaults()
 
         ### store script id on node's data
-
         data["script_id"] = node_defining_object["script_id"]
 
         ### store the id in its own attribute for easy
@@ -182,6 +186,10 @@ class CallableNode(
 
         ### create visuals for node
         self.create_visual_elements()
+
+        ### perform additional setups, if functions from one of the
+        ### viewer node protocols are available
+        self.check_preview_objects()
 
         ### set mode
 
@@ -277,6 +285,13 @@ class CallableNode(
         ###
         self.reposition_elements()
         self.setup_body()
+        ###
+
+        self.perform_mode_related_viewer_setups(
+            mode_name,
+            current_mode_name,
+            first_setup
+        )
 
         ### if requested, indicate that changes were made
 
@@ -294,6 +309,53 @@ class CallableNode(
             surf_index = 1
 
         button.image = SIGMODE_TOGGLE_BUTTON_MAP[self.category_color][surf_index]
+
+    def perform_mode_related_viewer_setups(
+        self,
+        mode_name,
+        previous_mode_name,
+        first_setup,
+    ):
+
+        ###
+
+        if not hasattr(self, 'preview_panel'):
+            return
+
+        ###
+
+        self.anchor_viewer_objects = (
+
+            ##
+            empty_function
+            if mode_name == 'callable'
+
+            ##
+            else self.anchor_viewer_objects_to_node
+
+        )
+
+        ###
+
+        if mode_name == 'expanded_signature':
+            self.get_anchor_pos = self.get_anchor_below_output
+
+        elif mode_name == 'collapsed_signature':
+            self.get_anchor_pos = self.get_anchor_below_visible_output
+
+        ###
+
+        if mode_name == 'callable':
+
+            if not first_setup:
+                self.hide_preview_objects()
+
+        else:
+
+            self.anchor_viewer_objects()
+
+            if first_setup or (previous_mode_name == 'callable'):
+                self.show_preview_objects()
 
     def show_popup_menu(self, pos):
         APP_REFS.ea.callable_node_popup_menu.show(self, pos)
