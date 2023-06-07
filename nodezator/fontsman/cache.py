@@ -45,8 +45,8 @@ class FontsDatabase(dict):
         """
         ### we create a font map for the key, store and
         ### return it
-        font_map = self[key] = FontsMap(key)
-
+        font_map = FontsMap(key)
+        self[key] = font_map
         return font_map
 
 
@@ -75,6 +75,7 @@ class FontsMap(dict):
             define at which height the font must be rendered.
         """
         font = get_font(self.font_path, height)
+        self[height] = font
         return font
 
 
@@ -118,6 +119,16 @@ def get_font(font_path, desired_height):
     surpass the desired height, that is, the font with
     surfaces of height 35.
     """
+    def raise_if_unreachable(desired, attempted):
+        """Detect when technical limitations of font interpolation
+        will prevent creation of certain font sizes.
+        """
+        sizes = [desired, attempted]
+
+        if True in list(map(lambda s: s < 0 or s >= 65536, sizes)):
+
+            raise UnattainableFontHeight(font_path, desired_height)
+
     ### create a set to keep track of the attempted sizes
     attempted_sizes = set()
 
@@ -134,6 +145,8 @@ def get_font(font_path, desired_height):
     ### into account the difference between the value used
     ### for the font size (here we use the desired height)
     ### and the actual height of a produced surface
+
+    raise_if_unreachable(desired_height, desired_height)
 
     font = Font(font_path, desired_height)
     _, surf_height = font.size(" ")
@@ -160,6 +173,8 @@ def get_font(font_path, desired_height):
         ### create font and calculate the height of the
         ### surface of an arbitrary character (space) when
         ### rendered
+
+        raise_if_unreachable(desired_height, size)
 
         font = Font(font_path, size)
         _, surf_height = font.size(" ")
