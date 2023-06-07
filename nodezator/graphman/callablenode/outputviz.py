@@ -39,9 +39,16 @@ from ...surfsman.draw import (
     draw_depth_finish,
 )
 
+from ...surfsman.cache import CHECKERED_SURF_MAP
+
 from ...widget.checkbutton import CheckButton
 
-from ...colorsman.colors import BLACK, NODE_LABELS, NODE_BODY_BG
+from ...colorsman.colors import (
+    PREVIEW_PANEL_CHECKER_A,
+    PREVIEW_PANEL_CHECKER_B,
+    NODE_LABELS,
+    NODE_BODY_BG,
+)
 
 from .constants import FONT_HEIGHT
 
@@ -289,7 +296,7 @@ class OutputVisualization:
         self.preview_panel.on_mouse_release = on_mouse_release
 
     def set_visual(self, visual):
-        """
+        """Store visual in preview panel and update rect's size
 
         Parameters
         ==========
@@ -299,8 +306,28 @@ class OutputVisualization:
             In the future maybe it could receive other kinds of data
             that could be turned into a surface, like text.
         """
-        self.preview_panel.image = visual
-        self.preview_panel.rect.size = visual.get_size()
+        ### get visual size
+        size = visual.get_size()
+
+        ### get a new surface which is a copy of a checkered surf
+        ### with the same size as the visual
+
+        new_surf = CHECKERED_SURF_MAP[(
+            size,  # surf size
+            PREVIEW_PANEL_CHECKER_A, # checker color a
+            PREVIEW_PANEL_CHECKER_B, # checker color b
+            10,    # checker rect width
+            10,    # checker rect height
+        )].copy()
+
+        ### blit visual over new surface
+        new_surf.blit(visual, (0, 0))
+
+        ### update preview panel's image and rect's size
+        ### taking new surface into account
+
+        self.preview_panel.image = new_surf
+        self.preview_panel.rect.size = size
 
     def enter_custom_loop(self):
 

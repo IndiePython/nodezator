@@ -14,7 +14,7 @@ from ..ourstdlibs.collections.general import FactoryDict
 
 from .render import render_rect
 
-from .draw import draw_not_found_icon
+from .draw import draw_not_found_icon, draw_checker_pattern
 
 from ..colorsman.colors import (
     CONTRAST_LAYER_COLOR,
@@ -83,3 +83,18 @@ def get_draw_not_found_surface(size_tuple):
 
 ## map
 NOT_FOUND_SURF_MAP = FactoryDict(get_draw_not_found_surface)
+
+### general map to store checkered surfaces for reuse
+
+## factory function for map
+
+def checkered_surface_from_tuple_args(tuple_args):
+    size, color_a, color_b, rect_width, rect_height = tuple_args
+
+    surf = Surface(size).convert()
+    draw_checker_pattern(surf, color_a, color_b, rect_width, rect_height)
+
+    return surf
+
+## map
+CHECKERED_SURF_MAP = FactoryDict(checkered_surface_from_tuple_args)
