@@ -332,12 +332,6 @@ class Execution:
                             output_to_send,
                         )
 
-                        # TODO should we perform exec
-                        # setup as well if the node has
-                        # an error (in case we go into
-                        # the 'exception' clause above)?
-                        # ponder
-
                         # perform its execution setup
                         node.perform_execution_setup()
 
@@ -355,17 +349,8 @@ class Execution:
 
             except Exception as err:
 
-                ## regardless of the kind of error...
-
-                # remove executed_nodes from the
-                # remaining ones
-                nodes_to_execute -= executed_nodes
-
-                # the remaining nodes have their execution
-                # setup performed
-
-                for node in nodes_to_execute:
-                    node.perform_execution_setup()
+                ## clear all stored arguments
+                self.clear_arguments()
 
                 ## if the error is among the ones listed
                 ## below, just notify the user via dialog,
@@ -439,11 +424,15 @@ class Execution:
                 ## break out of the "while loop"
                 break
 
-        ### provided everything went ok, report the
-        ### time taken to execute the layout in the
-        ### status label
+        ### provided everything went ok...
 
         else:
+
+            ### clear all stored arguments
+            self.clear_arguments()
+
+            ### report the time taken to execute the layout in the
+            ### status label
 
             ## XXX both layout execution time and indivual
             ## node time (as well as their sum) should also
@@ -452,8 +441,14 @@ class Execution:
             layout_exec_time = time() - layout_exec_start
 
             tracked_nodes_total = sum(
+
+                ## item
                 node_exec_time_map[node.id]
+
+                ## source
                 for node in executed_nodes
+
+                ## filter
                 if not getattr(
                     node.signature_callable, "dismiss_exec_time_tracking", False
                 )
@@ -463,7 +458,7 @@ class Execution:
 
             set_status_message(f"Total execution time was {time_for_humans}")
 
-    def check_nodes_and_redirect_data(self, nodes_to_direct_data,):
+    def check_nodes_and_redirect_data(self, nodes_to_direct_data):
 
         data_sources = set()
         lacking_data = set()
@@ -636,3 +631,51 @@ class Execution:
 
     def execute_node_after_upstream_ones(self, node):
         self.execute_graph(set(yield_upstream_nodes(node)))
+
+    def clear_arguments(self):
+        """Clear arguments from nodes.
+
+        After a node is executed, its arguments are already cleared
+        indirectly in the call to their perform_execution_setup()
+        method. However, when it has other connected nodes downstream,
+        such connected nodes will receive and store the output as
+        argument(s).
+
+        However, if an error happens and the graph execution is
+        cancelled, this method is important to ensure those other
+        nodes which didn't get to be called have the arguments received
+        cleared.
+
+        Additionally, if we are only executing a portion of the
+        existing nodes, for instance, when we use the
+        execute_node_after_upstream_ones() method, the connected
+        nodes downstream will receive the arguments as well, even
+        though they won't be executed. Rather than set complex checks
+        to prevent such nodes to receive the arguments it is simpler
+        to just clear everything anyway.
+
+        The cleared data doesn't affect viewer nodes as well, because
+        the outputs sent away as arguments to other nodes is also
+        referenced in the viewer node anyway, so it is not lost when
+        the arguments are cleared.
+        """
+
+        for node in self.nodes:
+
+            if (
+                not hasattr(node, 'argument_map')
+                or node.data.get("commented_out", False)
+                or node.data.get('mode') == 'callable'
+            ):
+                continue
+
+            ### clear the argument map
+            node.argument_map.clear()
+
+            ### also insert empty dicts for subparameters if node allows
+            ### them
+
+            if hasattr(node, 'var_kind_map'):
+
+                for param_name in node.var_kind_map:
+                    node.argument_map[param_name] = {}
