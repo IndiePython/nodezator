@@ -22,6 +22,8 @@ from ...dialog import create_and_show_dialog
 
 from ...ourstdlibs.behaviour import get_oblivious_callable
 
+from ...our3rdlibs.behaviour import indicate_unsaved
+
 from ...classes2d.single import Object2D
 from ...classes2d.collections import List2D
 
@@ -202,7 +204,12 @@ class OutputVisualization:
                 )
             )
 
-            check_button = toolbar.check_button = CheckButton(value=False)
+            check_button = toolbar.check_button = (
+                CheckButton(
+                    value=self.data.get('loop_on_execution', False),
+                    command = self.update_loop_on_execution_flag,
+                )
+            )
 
             toolbar.extend((
                 reload_button,
@@ -294,6 +301,17 @@ class OutputVisualization:
                 pass
 
         self.preview_panel.on_mouse_release = on_mouse_release
+
+    def update_loop_on_execution_flag(self):
+
+        ###
+
+        self.data['loop_on_execution'] = (
+            self.preview_toolbar.check_button.get()
+        )
+
+        ###
+        indicate_unsaved()
 
     def set_visual(self, visual):
         """Store visual in preview panel and update rect's size
