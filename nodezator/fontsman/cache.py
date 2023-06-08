@@ -125,7 +125,7 @@ def get_font(font_path, desired_height):
         """
         sizes = [desired, attempted]
 
-        if True in list(map(lambda s: s < 0 or s >= 65536, sizes)):
+        if any(map(lambda s: s < 0 or s >= 65536, sizes)):
 
             raise UnattainableFontHeight(font_path, desired_height)
 
