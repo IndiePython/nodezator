@@ -119,16 +119,6 @@ def get_font(font_path, desired_height):
     surpass the desired height, that is, the font with
     surfaces of height 35.
     """
-    def raise_if_unreachable(desired, attempted):
-        """Detect when technical limitations of font interpolation
-        will prevent creation of certain font sizes.
-        """
-        sizes = [desired, attempted]
-
-        if any(map(lambda s: s < 0 or s >= 65536, sizes)):
-
-            raise UnattainableFontHeight(font_path, desired_height)
-
     ### create a set to keep track of the attempted sizes
     attempted_sizes = set()
 
@@ -226,3 +216,13 @@ def get_font(font_path, desired_height):
 
     ### finally return the chosen font
     return chosen_font
+
+def raise_if_unreachable(desired, attempted):
+    """Detect when technical limitations of font interpolation
+    will prevent creation of certain font sizes.
+    """
+    sizes = [desired, attempted]
+
+    if any(map(lambda s: s < 0 or s >= 65536, sizes)):
+
+        raise UnattainableFontHeight(font_path, desired_height)
