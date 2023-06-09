@@ -136,7 +136,7 @@ def get_font(font_path, desired_height):
     ### for the font size (here we use the desired height)
     ### and the actual height of a produced surface
 
-    raise_if_unreachable(desired_height, desired_height)
+    raise_if_unattainable(desired_height, desired_height, font_path)
 
     font = Font(font_path, desired_height)
     _, surf_height = font.size(" ")
@@ -164,7 +164,7 @@ def get_font(font_path, desired_height):
         ### surface of an arbitrary character (space) when
         ### rendered
 
-        raise_if_unreachable(desired_height, size)
+        raise_if_unattainable(desired_height, size, font_path)
 
         font = Font(font_path, size)
         _, surf_height = font.size(" ")
@@ -217,11 +217,12 @@ def get_font(font_path, desired_height):
     ### finally return the chosen font
     return chosen_font
 
-def raise_if_unreachable(desired, attempted):
+
+def raise_if_unattainable(desired_height, attempted_size, font_path):
     """Detect when technical limitations of font interpolation
     will prevent creation of certain font sizes.
     """
-    sizes = [desired, attempted]
+    sizes = [desired_height, attempted_size]
 
     if any(map(lambda s: s < 0 or s >= 65536, sizes)):
 

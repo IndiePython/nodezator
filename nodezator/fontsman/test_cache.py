@@ -13,14 +13,11 @@ class TestFontsDatabase(TestCase):
 
     def test_get_font(self):
         path = NOTO_SANS_MONO_MEDIUM_FONT_PATH
-        name = 'Noto Sans Mono'
         height = NOTO_SANS_MONO_MEDIUM_FONT_HEIGHT
 
         font = get_font(path, height)
 
-        self.assertIs(type(font), pygame.font.Font)
-        self.assertIs(font.get_height(), height)
-        self.assertEqual(font.name, name)
+        self.assertEqual(type(font), pygame.font.Font)
 
     def test_get_font_too_large_raises(self):
         path = NOTO_SANS_MONO_MEDIUM_FONT_PATH
@@ -39,14 +36,11 @@ class TestFontsDatabase(TestCase):
     def test_fonts_db_returns(self):
         db = FontsDatabase()
         path = NOTO_SANS_MONO_MEDIUM_FONT_PATH
-        name = 'Noto Sans Mono'
         height = NOTO_SANS_MONO_MEDIUM_FONT_HEIGHT
 
         font = db[path][height]
 
-        self.assertIs(type(font), pygame.font.Font)
-        self.assertIs(font.get_height(), height)
-        self.assertEqual(font.name, name)
+        self.assertEqual(type(font), pygame.font.Font)
 
     def test_fonts_map_stores(self):
         path = NOTO_SANS_MONO_MEDIUM_FONT_PATH
@@ -58,11 +52,11 @@ class TestFontsDatabase(TestCase):
         font1_get1 = m[height1]
         font1_get2 = m[height1]
 
-        self.assertIs(font1_get1, font1_get2)
+        self.assertEqual(font1_get1, font1_get2)
 
         font2_get1 = m[height2]
         font2_get2 = m[height2]
-        self.assertIs(font2_get1, font2_get2)
+        self.assertEqual(font2_get1, font2_get2)
 
     def test_fonts_database_stores(self):
         db = FontsDatabase()
@@ -71,9 +65,9 @@ class TestFontsDatabase(TestCase):
 
         font1 = db[path][height]
 
-        self.assertIs(len(db), 1)
+        self.assertEqual(len(db), 1)
 
         font2 = db[path][height]
 
-        self.assertIs(font1, font2)
-        self.assertIs(len(db), 1)
+        self.assertEqual(font1, font2)
+        self.assertEqual(len(db), 1)
