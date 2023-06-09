@@ -248,6 +248,9 @@
     "ITERATOR_TYPE_OUTLINE" : (  0,   0,   0),
     "ITERATOR_TYPE_FILL"    : (246, 133,   0),
 
+    "CALLABLE_TYPE_OUTLINE" : (  0,   0,   0),
+    "CALLABLE_TYPE_FILL"    : (64, 224, 208),
+
     ### when the type is inspect._empty, that is, when it
     ### isn't specified, use socket w/ these colors
 

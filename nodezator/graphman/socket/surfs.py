@@ -4,7 +4,7 @@
 
 from inspect import Parameter
 
-from collections.abc import Iterable, Iterator
+from collections.abc import Iterable, Iterator, Callable
 
 
 ### local imports
@@ -31,6 +31,8 @@ from ...colorsman.colors import (
     ITERABLE_TYPE_FILL,
     ITERATOR_TYPE_OUTLINE,
     ITERATOR_TYPE_FILL,
+    CALLABLE_TYPE_OUTLINE,
+    CALLABLE_TYPE_FILL,
     NOT_SPECIFIED_TYPE_OUTLINE,
     NOT_SPECIFIED_TYPE_FILL,
     OTHER_TYPE_OUTLINE,
@@ -78,6 +80,8 @@ TYPE_TO_CODENAME_MAP = {
     # iterable and iterator
     Iterable: "iterable",
     Iterator: "iterator",
+    # callable
+    Callable: "callable",
     # parameter not specified
     Parameter.empty: "not_specified",
 }
@@ -123,6 +127,11 @@ CODENAME_TO_STYLE_MAP = {
     "iterator": (
         ITERATOR_TYPE_OUTLINE,
         ITERATOR_TYPE_FILL,
+    ),
+    # callable
+    "callable": (
+        CALLABLE_TYPE_OUTLINE,
+        CALLABLE_TYPE_FILL,
     ),
     # parameter not specified
     "not_specified": (
