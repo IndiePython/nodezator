@@ -17,7 +17,7 @@ class TestFontsDatabase(TestCase):
 
         font = get_font(path, height)
 
-        self.assertEqual(type(font), pygame.font.Font)
+        self.assertIsInstance(font, pygame.font.Font)
 
     def test_get_font_too_large_raises(self):
         path = NOTO_SANS_MONO_MEDIUM_FONT_PATH
@@ -40,7 +40,7 @@ class TestFontsDatabase(TestCase):
 
         font = db[path][height]
 
-        self.assertEqual(type(font), pygame.font.Font)
+        self.assertIsInstance(font, pygame.font.Font)
 
     def test_fonts_map_stores(self):
         path = NOTO_SANS_MONO_MEDIUM_FONT_PATH
@@ -52,11 +52,11 @@ class TestFontsDatabase(TestCase):
         font1_get1 = m[height1]
         font1_get2 = m[height1]
 
-        self.assertEqual(font1_get1, font1_get2)
+        self.assertIs(font1_get1, font1_get2)
 
         font2_get1 = m[height2]
         font2_get2 = m[height2]
-        self.assertEqual(font2_get1, font2_get2)
+        self.assertIs(font2_get1, font2_get2)
 
     def test_fonts_database_stores(self):
         db = FontsDatabase()
@@ -69,5 +69,5 @@ class TestFontsDatabase(TestCase):
 
         font2 = db[path][height]
 
-        self.assertEqual(font1, font2)
+        self.assertIs(font1, font2)
         self.assertEqual(len(db), 1)
