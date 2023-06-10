@@ -6,16 +6,15 @@ objects not meant to be imported/touched in any way.
 
 The one you want to import is:
 
-The FontsDatabase instance called FONTS_DB, which is
-created and stored near the end of the module;
+The FontsDatabase instance called FONTS_DB.
 
-   This is an example of its usage:
+This is an example of its usage:
 
-   font = FONTS_DB[font_path][size]
+font = FONTS_DB[font_path][height]
 
-   In other words, here we obtain a cached image surface
-   for the image in the given path, rendered according to
-   the given image settings.
+In other words, here we obtain a cached font for the
+font file in the given path, which renders text
+surfaces with the given height in pixels.
 """
 
 ### third-party import
@@ -82,17 +81,18 @@ class FontsMap(dict):
 def get_font(font_path, desired_height):
     """Return font obj whose surfaces are of desired height.
 
-    Or as close as possible without surpassing it.
+    Otherwise raises a custom exception notifying that the
+    height couldn't be obtained for the font.
 
     The font object is a pygame.font.Font instance.
 
     This is achieved by trial and error, that is,
     instantiating fonts and using their 'size' method.
     This is so because each font has a different ratio
-    between the size provided and the height in pixels
-    of its rendered text surfaces. Such ratio even
-    changes within the font itself depending on the
-    specific size used.
+    between the size argument provided and the actual
+    height in pixels of its rendered text surfaces.
+    Such ratio even changes within the font itself
+    depending on the specific size used.
 
     Since instantiating pygame.font.Font and using its
     'size' method is very quick, this is fast enough as
@@ -100,13 +100,11 @@ def get_font(font_path, desired_height):
 
     Furthermore, this is done only once per font and
     desired height, since the resulting font object
-    is stored for future reference (as can be seen in
-    the get_font function).
+    is stored for future reference in the FontsMap
+    object that makes use of this funtion.
 
     Coming up with a font which renders text surfaces
     of the exact desired height is not always possible.
-    This is why sometimes we have to use the one which
-    gets closer.
 
     For instance, you cannot have a pygame.font.Font
     from an "ubuntu medium" font file with surfaces of
@@ -115,9 +113,21 @@ def get_font(font_path, desired_height):
     height 35 and when instantiated with size 32
     renders surfaces with height 37.
 
-    In such case, we'll use the closest one which doesn't
-    surpass the desired height, that is, the font with
-    surfaces of height 35.
+    In such case, as explained above, we raise a custom
+    error so the person can choose another height and
+    try checking whether it is possible to obtain a
+    font which renders surface of that height.
+
+    However, it must be noted that obtaining a font
+    for a specific height doesn't mean all rendered
+    text surfaces will have that height. It depends
+    on the characters being rendered.
+
+    Also note that we don't use pygame.font.Font.get_height()
+    because it returns the average of the height of each
+    glyph in the font. We, on the other hand, prefer to
+    measure the height based on the height of a space
+    character.
     """
     ### create a set to keep track of the attempted sizes
     attempted_sizes = set()
