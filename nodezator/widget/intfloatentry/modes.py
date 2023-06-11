@@ -311,19 +311,26 @@ class IntFloatModes(Object2D):
                 raise QuitAppException
 
             ### enable the next mode depending on the event
-            ### that happens first
+            ### that happens first; once the mode is enabled,
+            ### we must exit the for-loop with a "break" statement
+            ### to prevent additional events to cause another
+            ### mode to be set as well
 
             ## moving the mouse
 
             elif event.type == MOUSEMOTION:
+
                 self.enable_mouse_edition_mode()
+                break
 
             ## releasing the mouse left button
 
             elif event.type == MOUSEBUTTONUP:
 
                 if event.button == 1:
+
                     self.enable_keyboard_edition_mode()
+                    break
 
             ## if window is resized, set the movement watch
             ## out routine
