@@ -19,7 +19,7 @@ from ...imagesman.cache import (
     update_cache_for_image,
 )
 
-from ...imagesman.viewer.main import view_images
+from ...imagesman.previewer.main import preview_images
 
 from ...surfsman.icon import render_layered_icon
 
@@ -98,7 +98,7 @@ class ImagePreview(_BasePreview):
 
     def preview_paths(self):
         """Preview image(s) from path(s)."""
-        view_images(self.value)
+        preview_images(self.value)
 
     def update_previews(self):
         """"""

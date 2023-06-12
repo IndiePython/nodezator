@@ -63,9 +63,9 @@ class ImagesPreviewer(PreviewerOperations):
 
         ### store the centering method as a
         ### window resize setup
-        APP_REFS.window_resize_setups.append(self.center_images_viewer)
+        APP_REFS.window_resize_setups.append(self.center_images_previewer)
 
-    def center_images_viewer(self):
+    def center_images_previewer(self):
 
         diff = Vector2(SCREEN_RECT.center) - self.rect.center
 
@@ -83,8 +83,8 @@ class ImagesPreviewer(PreviewerOperations):
             self.thumb_objects.rect.move_ip(diff)
         ##
 
-    def view_images(self, image_paths):
-        """Display images from the given paths."""
+    def preview_images(self, image_paths):
+        """Display previews of images from the given paths."""
         ###
         cache_screen_state()
 
@@ -145,6 +145,6 @@ class ImagesPreviewer(PreviewerOperations):
 
 
 ### instantiate the images previewer and store a reference
-### to its 'view_images' method in this module so
+### to its 'preview_images' method in this module so
 ### it can be easily imported
-view_images = ImagesPreviewer().view_images
+preview_images = ImagesPreviewer().preview_images
