@@ -45,6 +45,8 @@ from pygame.draw import rect as draw_rect
 
 from ...pygamesetup import SERVICES_NS
 
+from ...dialog import create_and_show_dialog
+
 from ...surfsman.draw import (
     draw_border,
     draw_border_on_area,
@@ -52,13 +54,18 @@ from ...surfsman.draw import (
 
 from ...surfsman.cache import draw_cached_screen_state
 
+from ...surfsman.viewer.main import view_surface
+
 from ...classes2d.single import Object2D
 
 from ...loopman.exception import QuitAppException
 
 from ...colorsman.colors import IMAGES_PREVIEWER_BORDER
 
+from ..cache import IMAGE_SURFS_DB
+
 from .constants import PREVIEWER_BORDER_THICKNESS, LARGE_THUMB, PATH_LABEL
+
 
 
 class PreviewerOperations(Object2D):
@@ -99,7 +106,7 @@ class PreviewerOperations(Object2D):
                     self.go_to_last()
 
                 elif event.key == K_f:
-                    pass # TODO view image in full size
+                    self.try_visualizing_full_image()
 
             elif event.type == MOUSEBUTTONUP:
                 self.on_mouse_release(event)
@@ -134,6 +141,28 @@ class PreviewerOperations(Object2D):
 
     go_to_last = partialmethod(browse_thumbs, INFINITY)
     go_to_first = partialmethod(browse_thumbs, -INFINITY)
+
+    def try_visualizing_full_image(self):
+
+        image_path = self.image_paths[self.thumb_index]
+
+        try:
+            full_image_surface = (
+                IMAGE_SURFS_DB[image_path]
+                [{
+                    "use_alpha": True,
+                    "checkered_alpha": True,
+                    "not_found_width": 300,
+                    "not_found_height": 300,
+                }]
+            )
+
+        except FileNotFoundError:
+            create_and_show_dialog("Couldn't find the image")
+
+        else:
+            view_surface(full_image_surface)
+            self.response_draw()
 
     def on_mouse_release(self, event):
         """"""
@@ -191,6 +220,10 @@ class PreviewerOperations(Object2D):
 
     def response_draw(self):
         """Redraw viewer in response to user action."""
+        ###
+        draw_cached_screen_state()
+
+        ###
         image = self.image
         rect = self.rect
 
