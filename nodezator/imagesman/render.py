@@ -18,19 +18,15 @@ from pygame.transform import smoothscale as smoothscale_surface
 
 ### local imports
 
-from ..surfsman.draw import (
-    blit_aligned,
-    draw_checker_pattern,
-    draw_not_found_icon,
-)
+from ..surfsman.draw import blit_aligned
 
 from ..surfsman.render import render_rect
+
+from ..surfsman.cache import NOT_FOUND_SURF_MAP, CHECKERED_SURF_MAP
 
 from ..our3rdlibs.userlogger import USER_LOGGER
 
 from ..colorsman.colors import (
-    IMAGE_NOT_FOUND_FG,
-    IMAGE_NOT_FOUND_BG,
     TRANSP_IMAGE_A,
     TRANSP_IMAGE_B,
 )
@@ -112,7 +108,7 @@ def render_image_from_original(
 
             if not_found_width and not_found_height:
 
-                final_width, final_height = get_final_size(
+                size = get_final_size(
                     not_found_width,
                     not_found_height,
                     not_found_width,
@@ -124,11 +120,7 @@ def render_image_from_original(
                     keep_size_ratio,
                 )
 
-                surf = render_rect(final_width, final_height, IMAGE_NOT_FOUND_BG)
-
-                draw_not_found_icon(surf, IMAGE_NOT_FOUND_FG)
-
-                return surf
+                return NOT_FOUND_SURF_MAP[size]
 
             ### otherwise raise a new exception from the existing one
 
@@ -167,18 +159,25 @@ def render_image_from_original(
 
     if use_alpha and checkered_alpha:
 
-        bg_surf = Surface(surf.get_size()).convert()
+        ## copy cached surface with checker pattern
 
-        draw_checker_pattern(
-            bg_surf,
-            color_a=TRANSP_IMAGE_A,
-            color_b=TRANSP_IMAGE_B,
-            rect_width=10,
-            rect_height=10,
-        )
+        bg_surf = (
 
+            # cached checkered surface
+            CHECKERED_SURF_MAP[(
+                surf.get_size(), # size
+                TRANSP_IMAGE_A, # color_a
+                TRANSP_IMAGE_B, # color_b
+                10, # rect_width
+                10, # rect_height
+            )]
+
+        ).copy()
+
+        ## blit surface over it
         bg_surf.blit(surf, (0, 0))
 
+        ## alias new surface
         surf = bg_surf
 
     ### if requested, create a background for the image,
