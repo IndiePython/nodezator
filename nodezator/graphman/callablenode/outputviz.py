@@ -35,13 +35,9 @@ from ...surfsman.render import (
     combine_surfaces,
 )
 
-from ...surfsman.draw import (
-    draw_border,
-    draw_not_found_icon,
-    draw_depth_finish,
-)
+from ...surfsman.draw import draw_border, draw_depth_finish
 
-from ...surfsman.cache import CHECKERED_SURF_MAP
+from ...surfsman.cache import CHECKERED_SURF_MAP, NOT_FOUND_SURF_MAP
 
 from ...widget.checkbutton import CheckButton
 
@@ -266,8 +262,7 @@ class OutputVisualization:
 
     def create_preview_panel(self):
 
-        self.preview_panel = Object2D.from_surface(render_rect(256, 256, (0, 0, 0)))
-        draw_not_found_icon(self.preview_panel.image, (235, 0, 0))
+        self.preview_panel = Object2D.from_surface(NOT_FOUND_SURF_MAP[(256, 256)])
 
         ###
 
