@@ -54,6 +54,9 @@ class ImagesPreviewer(PreviewerOperations):
         PREVIEWER_CAPTION.draw_relative(self)
 
         ###
+        self.running = False
+
+        ###
 
         self.background = self.image.copy()
 
@@ -82,6 +85,11 @@ class ImagesPreviewer(PreviewerOperations):
         else:
             self.thumb_objects.rect.move_ip(diff)
         ##
+
+        ### if the loop is running, ask to redraw
+
+        if self.running:
+            APP_REFS.draw_after_window_resize_setups = self.response_draw
 
     def preview_images(self, image_paths):
         """Display previews of images from the given paths."""
