@@ -13,7 +13,7 @@ from pygame import Rect, Surface, error as PygameError
 
 from pygame.image import load as load_image
 
-from pygame.transform import scale as scale_surf
+from pygame.transform import smoothscale as smoothscale_surface
 
 
 ### local imports
@@ -155,7 +155,7 @@ def render_image_from_original(
 
     if (final_width, final_height) != (actual_width, actual_height):
 
-        surf = scale_surf(surf, (final_width, final_height))
+        surf = smoothscale_surface(surf, (final_width, final_height))
 
     ### if image has alpha and it must be checkered, blit
     ### the surface over a checker pattern
