@@ -1,8 +1,5 @@
 """Facility for viewing images from given paths."""
 
-### standard library import
-from functools import partialmethod
-
 
 ### third-party import
 from pygame.math import Vector2
@@ -25,40 +22,36 @@ from ...surfsman.cache import cache_screen_state, draw_cached_screen_state
 
 from ..cache import IMAGE_SURFS_DB
 
-from ...colorsman.colors import IMAGES_VIEWER_FG, IMAGES_VIEWER_BG, THUMB_BG
+from ...colorsman.colors import IMAGES_PREVIEWER_FG, IMAGES_PREVIEWER_BG, THUMB_BG
 
 
 from .constants import (
-    VIEWER_RECT,
-    VIEWER_ICON,
-    VIEWER_CAPTION,
-    VIEWER_OBJS,
+    PREVIEWER_RECT,
+    PREVIEWER_ICON,
+    PREVIEWER_CAPTION,
+    PREVIEWER_OBJS,
     SMALL_THUMB,
     SMALL_THUMB_SETTINGS,
-    VIEWER_BORDER_THICKNESS,
-    VIEWER_PADDING,
+    PREVIEWER_BORDER_THICKNESS,
+    PREVIEWER_PADDING,
 )
 
-from .normalop import NormalModeOperations
-from .fullop import FullModeOperations
+from .op import PreviewerOperations
 
 
-### TODO finish subpackage (implementing viewer)
-
-
-class ImagesViewer(NormalModeOperations, FullModeOperations):
-    """loop holder for viewing images from given paths."""
+class ImagesPreviewer(PreviewerOperations):
+    """loop holder for previewing images from given paths."""
 
     def __init__(self):
         """Create/store useful objects."""
-        self.rect = VIEWER_RECT
+        self.rect = PREVIEWER_RECT
 
-        image = self.image = render_rect(*self.rect.size, color=IMAGES_VIEWER_BG)
+        image = self.image = render_rect(*self.rect.size, color=IMAGES_PREVIEWER_BG)
 
         ###
 
-        VIEWER_ICON.draw_relative(self)
-        VIEWER_CAPTION.draw_relative(self)
+        PREVIEWER_ICON.draw_relative(self)
+        PREVIEWER_CAPTION.draw_relative(self)
 
         ###
 
@@ -68,13 +61,8 @@ class ImagesViewer(NormalModeOperations, FullModeOperations):
 
         self.hovered_index = None
 
-        self.should_draw_full_rect = False
-
-        self.should_move_with_mouse = False
-
         ### store the centering method as a
         ### window resize setup
-
         APP_REFS.window_resize_setups.append(self.center_images_viewer)
 
     def center_images_viewer(self):
@@ -82,8 +70,7 @@ class ImagesViewer(NormalModeOperations, FullModeOperations):
         diff = Vector2(SCREEN_RECT.center) - self.rect.center
 
         ##
-
-        VIEWER_OBJS.rect.center = self.rect.center = SCREEN_RECT.center
+        PREVIEWER_OBJS.rect.center = self.rect.center = SCREEN_RECT.center
 
         ##
 
@@ -98,12 +85,8 @@ class ImagesViewer(NormalModeOperations, FullModeOperations):
 
     def view_images(self, image_paths):
         """Display images from the given paths."""
-
-        cache_screen_state()
-
         ###
-
-        draw_cached_screen_state()
+        cache_screen_state()
 
         ### reset thumb index
         self.thumb_index = 0
@@ -117,7 +100,7 @@ class ImagesViewer(NormalModeOperations, FullModeOperations):
         self.create_image_surfaces()
 
         ###
-        self.enable_normal_mode()
+        self.prepare()
 
         ###
 
@@ -132,12 +115,6 @@ class ImagesViewer(NormalModeOperations, FullModeOperations):
 
             self.handle_input()
             self.draw()
-
-        for name in ("full_image", "full_rect"):
-            try:
-                delattr(self, name)
-            except AttributeError:
-                pass
 
     def create_image_surfaces(self):
         """Create surfaces/objects representing images.
@@ -154,7 +131,7 @@ class ImagesViewer(NormalModeOperations, FullModeOperations):
         ]
 
         self.thumb_objects = List2D(
-            Object2D(image=surf, rect=surf.get_rect()) for surf in thumb_surfs
+            Object2D.from_surface(surf) for surf in thumb_surfs
         )
 
         (
@@ -166,29 +143,8 @@ class ImagesViewer(NormalModeOperations, FullModeOperations):
 
         self.thumb_objects.rect.topleft = SMALL_THUMB.rect.topleft
 
-    def set_mode(self, mode_name):
-        """Enable mode by assigning related operations."""
 
-        for operation_name in (
-            "handle_input",
-            "draw",
-            "on_mouse_release",
-            "on_mouse_motion",
-        ):
-
-            full_name = mode_name + "_" + operation_name
-
-            operation = getattr(self, full_name, empty_function)
-
-            setattr(self, operation_name, operation)
-
-        getattr(self, mode_name + "_prepare", empty_function)()
-
-    enable_normal_mode = partialmethod(set_mode, "normal")
-    enable_full_mode = partialmethod(set_mode, "full")
-
-
-### instantiate the images viewer and store a reference
+### instantiate the images previewer and store a reference
 ### to its 'view_images' method in this module so
 ### it can be easily imported
-view_images = ImagesViewer().view_images
+view_images = ImagesPreviewer().view_images

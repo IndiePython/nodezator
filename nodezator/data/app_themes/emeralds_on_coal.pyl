@@ -412,11 +412,11 @@
   "TEXT_VIEWER_HELP_BG"     : ( 30, 130,  70),
   "TEXT_VIEWER_HELP_BORDER" : (228, 228, 228),
 
-  ### images viewer
+  ### images previewer
 
-  "IMAGES_VIEWER_FG"     : (238, 238, 238),
-  "IMAGES_VIEWER_BG"     : (100, 100, 128),
-  "IMAGES_VIEWER_BORDER" : (  0,   0,   0),
+  "IMAGES_PREVIEWER_FG"     : (238, 238, 238),
+  "IMAGES_PREVIEWER_BG"     : (100, 100, 128),
+  "IMAGES_PREVIEWER_BORDER" : (  0,   0,   0),
 
   ### colors viewer
 

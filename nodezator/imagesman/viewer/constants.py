@@ -22,14 +22,14 @@ from ...surfsman.icon import render_layered_icon
 from ...colorsman.colors import (
     BLACK,
     WHITE,
-    IMAGES_VIEWER_FG,
-    IMAGES_VIEWER_BG,
+    IMAGES_PREVIEWER_FG,
+    IMAGES_PREVIEWER_BG,
     THUMB_BG,
 )
 
 
-VIEWER_BORDER_THICKNESS = 2
-VIEWER_PADDING = 5
+PREVIEWER_BORDER_THICKNESS = 2
+PREVIEWER_PADDING = 5
 
 LARGE_THUMB_WIDTH = 800
 LARGE_THUMB_HEIGHT = 424
@@ -40,7 +40,7 @@ SMALL_THUMB_HEIGHT = 153
 
 ###
 
-VIEWER_OBJS = List2D()
+PREVIEWER_OBJS = List2D()
 
 image_icon = render_layered_icon(
     chars=[chr(ordinal) for ordinal in (38, 40, 41, 39)],
@@ -56,7 +56,7 @@ eye_icon = render_layered_icon(
     colors=[BLACK, WHITE, (115, 40, 30)],
 )
 
-VIEWER_ICON = Object2D.from_surface(
+PREVIEWER_ICON = Object2D.from_surface(
     combine_surfaces(
         surfaces=[image_icon, eye_icon],
         retrieve_pos_from="bottomright",
@@ -66,23 +66,23 @@ VIEWER_ICON = Object2D.from_surface(
     )
 )
 
-VIEWER_OBJS.append(VIEWER_ICON)
+PREVIEWER_OBJS.append(PREVIEWER_ICON)
 
-VIEWER_CAPTION = Object2D.from_surface(
+PREVIEWER_CAPTION = Object2D.from_surface(
     render_text(
-        text="Images Viewer",
+        text="Images Previewer",
         font_height=ENC_SANS_BOLD_FONT_HEIGHT,
         font_path=ENC_SANS_BOLD_FONT_PATH,
         padding=5,
-        foreground_color=IMAGES_VIEWER_FG,
-        background_color=IMAGES_VIEWER_BG,
+        foreground_color=IMAGES_PREVIEWER_FG,
+        background_color=IMAGES_PREVIEWER_BG,
     )
 )
 
 
-VIEWER_OBJS.append(VIEWER_CAPTION)
+PREVIEWER_OBJS.append(PREVIEWER_CAPTION)
 
-VIEWER_OBJS.rect.snap_rects_ip(
+PREVIEWER_OBJS.rect.snap_rects_ip(
     retrieve_pos_from="midright", assign_pos_to="midleft", offset_pos_by=(2, 0)
 )
 
@@ -106,8 +106,8 @@ LARGE_THUMB_SETTINGS = {
 
 LARGE_THUMB = CachedImageObject(image_path=".", image_settings=LARGE_THUMB_SETTINGS)
 
-LARGE_THUMB.rect.topleft = VIEWER_OBJS.rect.move(0, 5).bottomleft
-VIEWER_OBJS.append(LARGE_THUMB)
+LARGE_THUMB.rect.topleft = PREVIEWER_OBJS.rect.move(0, 5).bottomleft
+PREVIEWER_OBJS.append(LARGE_THUMB)
 
 
 SMALL_THUMB_SETTINGS = {
@@ -129,9 +129,9 @@ SMALL_THUMB_SETTINGS = {
 SMALL_THUMB = CachedImageObject(image_path=".", image_settings=SMALL_THUMB_SETTINGS)
 
 
-SMALL_THUMB.rect.topleft = VIEWER_OBJS.rect.move(0, 5).bottomleft
+SMALL_THUMB.rect.topleft = PREVIEWER_OBJS.rect.move(0, 5).bottomleft
 
-VIEWER_OBJS.append(SMALL_THUMB)
+PREVIEWER_OBJS.append(SMALL_THUMB)
 
 
 PATH_LABEL = Label(
@@ -140,18 +140,18 @@ PATH_LABEL = Label(
     font_path=ENC_SANS_BOLD_FONT_PATH,
     padding=2,
     max_width=LARGE_THUMB_WIDTH,
-    foreground_color=IMAGES_VIEWER_FG,
-    background_color=IMAGES_VIEWER_BG,
+    foreground_color=IMAGES_PREVIEWER_FG,
+    background_color=IMAGES_PREVIEWER_BG,
     ellipsis_at_end=False,
 )
 
-PATH_LABEL.rect.topleft = VIEWER_OBJS.rect.bottomleft
-VIEWER_OBJS.append(PATH_LABEL)
+PATH_LABEL.rect.topleft = PREVIEWER_OBJS.rect.bottomleft
+PREVIEWER_OBJS.append(PATH_LABEL)
 
 ##
 
-VIEWER_OBJS.rect.center = SCREEN_RECT.center
+PREVIEWER_OBJS.rect.center = SCREEN_RECT.center
 
-AMOUNT_TO_INFLATE = (VIEWER_BORDER_THICKNESS + VIEWER_PADDING) * 2
+AMOUNT_TO_INFLATE = (PREVIEWER_BORDER_THICKNESS + PREVIEWER_PADDING) * 2
 
-VIEWER_RECT = VIEWER_OBJS.rect.inflate(AMOUNT_TO_INFLATE, AMOUNT_TO_INFLATE)
+PREVIEWER_RECT = PREVIEWER_OBJS.rect.inflate(AMOUNT_TO_INFLATE, AMOUNT_TO_INFLATE)

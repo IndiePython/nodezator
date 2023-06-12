@@ -56,18 +56,19 @@ from ...classes2d.single import Object2D
 
 from ...loopman.exception import QuitAppException
 
-from ...colorsman.colors import IMAGES_VIEWER_BORDER
+from ...colorsman.colors import IMAGES_PREVIEWER_BORDER
 
-from .constants import VIEWER_BORDER_THICKNESS, LARGE_THUMB, PATH_LABEL
+from .constants import PREVIEWER_BORDER_THICKNESS, LARGE_THUMB, PATH_LABEL
 
 
-class NormalModeOperations(Object2D):
-    def normal_prepare(self):
+class PreviewerOperations(Object2D):
+
+    def prepare(self):
         """"""
         draw_cached_screen_state()
-        self.normal_response_draw()
+        self.response_draw()
 
-    def normal_handle_input(self):
+    def handle_input(self):
 
         for event in SERVICES_NS.get_events():
 
@@ -98,19 +99,13 @@ class NormalModeOperations(Object2D):
                     self.go_to_last()
 
                 elif event.key == K_f:
-
-                    try:
-                        self.enable_full_mode()
-
-                    except FileNotFoundError:
-                        print("Couldn't find image.")
-                        self.enable_normal_mode()
+                    pass # TODO view image in full size
 
             elif event.type == MOUSEBUTTONUP:
-                self.normal_on_mouse_release(event)
+                self.on_mouse_release(event)
 
             elif event.type == MOUSEMOTION:
-                self.normal_on_mouse_motion(event)
+                self.on_mouse_motion(event)
 
     def browse_thumbs(self, steps):
         """"""
@@ -129,7 +124,7 @@ class NormalModeOperations(Object2D):
             self.thumb_objects.rect.move_ip(x_difference, 0)
 
         ###
-        self.normal_response_draw()
+        self.response_draw()
 
     go_right = partialmethod(browse_thumbs, 1)
     go_left = partialmethod(browse_thumbs, -1)
@@ -140,7 +135,7 @@ class NormalModeOperations(Object2D):
     go_to_last = partialmethod(browse_thumbs, INFINITY)
     go_to_first = partialmethod(browse_thumbs, -INFINITY)
 
-    def normal_on_mouse_release(self, event):
+    def on_mouse_release(self, event):
         """"""
         mouse_pos = event.pos
         rect = self.rect
@@ -162,11 +157,11 @@ class NormalModeOperations(Object2D):
             x_difference = clamped_rect.x - thumb_rect.x
             self.thumb_objects.rect.move_ip(x_difference, 0)
             self.thumb_index = index
-            self.normal_response_draw()
+            self.response_draw()
 
             break
 
-    def normal_on_mouse_motion(self, event):
+    def on_mouse_motion(self, event):
         """"""
         mouse_pos = event.pos
         rect = self.rect
@@ -192,9 +187,9 @@ class NormalModeOperations(Object2D):
         if new_hovered_index != current_hovered_index:
 
             self.hovered_index = new_hovered_index
-            self.normal_response_draw()
+            self.response_draw()
 
-    def normal_response_draw(self):
+    def response_draw(self):
         """Redraw viewer in response to user action."""
         image = self.image
         rect = self.rect
@@ -242,11 +237,11 @@ class NormalModeOperations(Object2D):
         ###
 
         draw_border(
-            image, color=IMAGES_VIEWER_BORDER, thickness=VIEWER_BORDER_THICKNESS
+            image, color=IMAGES_PREVIEWER_BORDER, thickness=PREVIEWER_BORDER_THICKNESS
         )
 
         super().draw()
 
-    def normal_draw(self):
+    def draw(self):
         """Update screen."""
         SERVICES_NS.update_screen()
