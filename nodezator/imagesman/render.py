@@ -90,7 +90,7 @@ def render_image_from_original(
 
         ### in case an error occurs...
 
-        except (FileNotFoundError, PygameError):
+        except (FileNotFoundError, PygameError) as err:
 
             ### log it in the user log
 
@@ -130,9 +130,14 @@ def render_image_from_original(
 
                 return surf
 
-            ### otherwise reraise the exception
+            ### otherwise raise a new exception from the existing one
+
             else:
-                raise
+
+                raise RuntimeError(
+                    "Couldn't load the image and instructions"
+                    " to draw a 'not found' surface were not given"
+                ) from err
 
     ### perform size transformations as needed
 
