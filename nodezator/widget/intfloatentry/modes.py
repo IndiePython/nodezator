@@ -91,9 +91,6 @@ ALLOWED_CHARS = (
 )
 
 
-## screen center coordinates
-SCREEN_CENTERX, SCREEN_CENTERY = SCREEN_RECT.center
-
 ## number with which to divide the amount of mouse movement
 ## before converting it into incremented/decremented value;
 ## this must be >= 1;
@@ -470,7 +467,7 @@ class IntFloatModes(Object2D):
         ## of this method
 
         if clamped_value == value:
-            self.dragging_origin_x += SCREEN_CENTERX - x_pos
+            self.dragging_origin_x += SCREEN_RECT.centerx - x_pos
 
         ## otherwise, set the clamped value as the new
         ## base value and reset the mouse dragging origin
@@ -479,10 +476,10 @@ class IntFloatModes(Object2D):
         else:
 
             self.base_value = clamped_value
-            self.dragging_origin_x = SCREEN_CENTERX
+            self.dragging_origin_x = SCREEN_RECT.centerx
 
         ### finally center the mouse in the screen
-        SERVICES_NS.set_mouse_pos(SCREEN_CENTERX, SCREEN_CENTERY)
+        SERVICES_NS.set_mouse_pos(SCREEN_RECT.center)
 
     def change_shift_influence(self, shift_pressed):
         """Perform setups according to state of shift key.
@@ -514,7 +511,7 @@ class IntFloatModes(Object2D):
 
         ### set the origin of the mouse dragging movement
         ### to the center of the screen
-        self.dragging_origin_x = SCREEN_CENTERX
+        self.dragging_origin_x = SCREEN_RECT.centerx
 
     def mouse_edition_draw(self):
         """Draw objects in mouse edition mode."""
@@ -562,7 +559,7 @@ class IntFloatModes(Object2D):
         SERVICES_NS.set_mouse_visibility(False)
 
         ### position the mouse at the center of the screen
-        SERVICES_NS.set_mouse_pos(SCREEN_CENTERX, SCREEN_CENTERY)
+        SERVICES_NS.set_mouse_pos(SCREEN_RECT.center)
 
         ### define the influence of the state of the
         ### shift key in how the value displayed is
