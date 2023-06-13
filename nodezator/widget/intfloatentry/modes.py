@@ -380,11 +380,11 @@ class IntFloatModes(Object2D):
                 if event.key in (K_LSHIFT, K_RSHIFT):
                     self.change_shift_influence(False)
 
-            ### if the mouse moves, change the value
-            ### displayed in the widget
+            ### if the mouse moves, pass the mouse position
+            ### in the x axis to the mouse motion routine
 
             elif event.type == MOUSEMOTION:
-                self.change_value_by_mouse_motion(event.pos)
+                self.mouse_motion_routine(event.pos[0])
 
             ### if the left button of the mouse is
             ### released, perform exit setups for the
@@ -407,7 +407,43 @@ class IntFloatModes(Object2D):
 
         self.movement_watch_out_routine()
 
-    def change_value_by_mouse_motion(self, mouse_pos):
+    def switch_on_reasonable_motion(self, mouse_x):
+        """Switch mouse motion routine once a reasonable motion is made.
+
+        After entering mouse edition mode, the first one or two mouse
+        motion events might have been generated before moving the mouse
+        to the center of screen, which would cause a big jump in the
+        value not caused by the user's movement and therefore undesirable.
+
+        Because of that, this method is set as the initial mouse motion
+        routine to watch out for the positions of the mouse in the x axis.
+
+        As soon as we detect a reasonable motion, we pass the value to
+        the regular mouse motion routine and set such routine as the one
+        to be used from now on.
+
+        Parameters
+        ==========
+        mouse_x (integer)
+            represents the position of the mouse on the screen,
+            in the x axis.
+        """
+        ### the number 30 in this if-block is arbitrary; it must be a
+        ### a small number and higher than 0 though, since it is
+        ### compared with an absolute value (the result of abs());
+        ###
+        ### there are actually more nuances about this value, but I don't
+        ### believe it is worthy studying it in depth; in summary, the
+        ### higher this value, the higher the initial jump can be; since
+        ### we don't want the initial jump to affect the value, we only
+        ### allow the first small difference to be used.
+
+        if abs(mouse_x - SCREEN_RECT.centerx) < 30:
+
+            self.change_value_by_mouse_motion(mouse_x)
+            self.mouse_motion_routine = self.change_value_by_mouse_motion
+
+    def change_value_by_mouse_motion(self, mouse_x):
         """Change current value according to mouse motion.
 
         That is, the value displayed for the widget is
@@ -417,13 +453,10 @@ class IntFloatModes(Object2D):
 
         Parameters
         ==========
-        mouse_pos (2-tuple of integers)
-            integers represent the position of the mouse
-            in the screen.
+        mouse_x (integer)
+            represents the position of the mouse on the screen,
+            in the x axis.
         """
-        ### retrieve the position of the mouse in the x axis
-        x_pos, _ = mouse_pos
-
         ### calculate the distance between the position of
         ### the mouse in x and the position x from where
         ### the dragging movement began
@@ -431,7 +464,7 @@ class IntFloatModes(Object2D):
         ### the amount incremented/decremented from the
         ### value of the widget is proportional to such
         ### distance;
-        delta_x_in_pixels = x_pos - self.dragging_origin_x
+        delta_x_in_pixels = mouse_x - self.dragging_origin_x
 
         ### however, before we use it, we attenuate it
         ### a bit, to compensate for the massive number
@@ -467,7 +500,7 @@ class IntFloatModes(Object2D):
         ## of this method
 
         if clamped_value == value:
-            self.dragging_origin_x += SCREEN_RECT.centerx - x_pos
+            self.dragging_origin_x += SCREEN_RECT.centerx - mouse_x
 
         ## otherwise, set the clamped value as the new
         ## base value and reset the mouse dragging origin
@@ -554,6 +587,8 @@ class IntFloatModes(Object2D):
         self.update = self.update_behind
         self.draw = self.mouse_edition_draw
         self.handle_input = self.mouse_edition_control
+
+        self.mouse_motion_routine = self.switch_on_reasonable_motion
 
         ### disable the mouse visibility
         SERVICES_NS.set_mouse_visibility(False)
