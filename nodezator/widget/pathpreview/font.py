@@ -35,6 +35,8 @@ from ...surfsman.cache import NOT_FOUND_SURF_MAP
 
 from ...surfsman.icon import render_layered_icon
 
+from ...surfsman.svgexport import get_not_found_surface_svg_repr
+
 from ...colorsman.colors import (
     BLACK,
     WHITE,
@@ -50,7 +52,6 @@ from .constants import (
     BUTTON_WIDTH,
     BUTTON_HEIGHT,
     SP_BUTTON_SVG_REPRS,
-    get_missing_path_repr,
 )
 
 ### constant
@@ -196,7 +197,7 @@ class FontPreview(_BasePreview):
 
         if not Path(current_path).exists() or Path(current_path).is_dir():
 
-            g.append(get_missing_path_repr(rect))
+            g.append(get_not_found_surface_svg_repr(rect))
             g.append(super().svg_path_repr())
             return g
 

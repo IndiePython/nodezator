@@ -28,6 +28,8 @@ from ...surfsman.draw import (
 
 from ...surfsman.icon import render_layered_icon
 
+from ...surfsman.svgexport import get_not_found_surface_svg_repr
+
 from ...fontsman.constants import (
     FIRA_MONO_BOLD_FONT_PATH,
     FIRA_MONO_BOLD_FONT_HEIGHT,
@@ -57,7 +59,6 @@ from .constants import (
     BUTTON_HEIGHT,
     SP_BUTTON_SVG_REPRS,
     SP_BUTTON_CALLABLE_NAMES,
-    get_missing_path_repr,
 )
 
 from ...syntaxman.utils import (
@@ -475,7 +476,7 @@ class TextPreview(_BasePreview):
 
         except COMMON_READ_ERRORS:
 
-            g.append(get_missing_path_repr(rect))
+            g.append(get_not_found_surface_svg_repr(rect))
             g.append(super().svg_path_repr())
             return g
 

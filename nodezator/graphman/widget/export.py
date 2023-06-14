@@ -1,23 +1,5 @@
 WIDGET_CSS = """
 
-
-g.file_not_found_shapes > rect {
-  fill: rgb(15, 15, 15);
-  stroke: none;
-}
-
-g.file_not_found_shapes > ellipse {
-  stroke: rgb(200, 0, 0);
-  stroke-width: 15px;
-  fill:none;
-}
-
-g.file_not_found_shapes > line {
-  stroke: rgb(200, 0, 0);
-  stroke-width: 15px;
-}
-
-
 g.default_holder > rect {
   fill: rgb(200, 200, 200);
   stroke:black;

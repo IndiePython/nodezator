@@ -23,6 +23,8 @@ from ...imagesman.previewer.main import preview_images
 
 from ...surfsman.icon import render_layered_icon
 
+from ...surfsman.svgexport import get_not_found_surface_svg_repr
+
 from ...colorsman.colors import (
     BLACK,
     WHITE,
@@ -39,7 +41,6 @@ from .constants import (
     BUTTON_HEIGHT,
     SP_BUTTON_SVG_REPRS,
     SP_BUTTON_CALLABLE_NAMES,
-    get_missing_path_repr,
 )
 
 
@@ -169,7 +170,7 @@ class ImagePreview(_BasePreview):
 
         if current_path not in ORIGINAL_IMAGE_SURFS_MAP:
 
-            g.append(get_missing_path_repr(rect))
+            g.append(get_not_found_surface_svg_repr(rect))
             g.append(super().svg_path_repr())
             return g
 

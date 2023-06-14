@@ -15,6 +15,8 @@ from ...surfsman.render import render_rect, combine_surfaces
 
 from ...surfsman.icon import render_layered_icon
 
+from ...surfsman.cache import NOT_FOUND_SURF_MAP
+
 from ...fontsman.constants import FIRA_MONO_BOLD_FONT_PATH
 
 from ...colorsman.colors import (
@@ -320,3 +322,5 @@ RELOAD_PREVIEW_BUTTON_SURF = combine_surfaces(
     retrieve_pos_from="center",
     assign_pos_to="center",
 )
+
+PREVIEW_PANEL_NOT_FOUND_SURFACE = NOT_FOUND_SURF_MAP[(256, 256)]

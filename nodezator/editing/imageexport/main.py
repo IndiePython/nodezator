@@ -47,6 +47,8 @@ from ...our3rdlibs.behaviour import set_status_message
 
 from ...rectsman.main import RectsManager
 
+from ...surfsman.svgexport import GENERAL_SURFACES_CSS
+
 from ...graphman.callablenode.export import CALLABLE_NODE_CSS
 from ...graphman.proxynode.export import PROXY_NODE_CSS
 from ...graphman.stlibnode.export import STLIB_NODE_CSS
@@ -56,6 +58,8 @@ from ...graphman.operatornode.export import OPERATOR_NODE_CSS
 from ...graphman.textblock.export import TEXT_BLOCK_CSS
 from ...graphman.socket.surfs import SOCKET_AND_LINE_CSS
 from ...graphman.widget.export import WIDGET_CSS
+
+from ...graphman.callablenode.outputviz import PREVIEW_OBJECTS_CSS
 
 from .form import get_image_exporting_settings
 
@@ -71,11 +75,14 @@ def export_as_image():
     the objects currently alive, regardless of whether
     they are saved or not in the disk.
     """
+    ###
+    gm = APP_REFS.gm
+
     ### if there are no live objects at all in the
     ### file, notify user via dialog and cancel
     ### operation by returning earlier
 
-    if not APP_REFS.gm.nodes and not APP_REFS.gm.text_blocks:
+    if not gm.nodes and not gm.text_blocks:
 
         create_and_show_dialog(
             "To export the loaded file as an image there"
@@ -94,9 +101,13 @@ def export_as_image():
     all_rects = list(
         chain(
             # rects (rectsmans) from nodes
-            (node.rectsman for node in APP_REFS.gm.nodes),
+            (node.rectsman for node in gm.nodes),
+            # rects from preview toolbars
+            (obj.rect for obj in gm.preview_toolbars),
+            # rects from preview panels
+            (obj.rect for obj in gm.preview_panels),
             # rects from text blocks
-            (block.rect for block in APP_REFS.gm.text_blocks),
+            (block.rect for block in gm.text_blocks),
         )
     )
 
@@ -217,10 +228,6 @@ def export_as_image():
 
         set_status_message(message)
 
-### TODO integrate the raster_for_previews
-### functionality into the method; think about how
-### to communicate the setting to other objecs,
-### probably via a temporary attribute on APP_REFS?
 
 def export_file_as_web_markup(
     width,
@@ -281,6 +288,7 @@ def export_file_as_web_markup(
       }}
       """
         )
+        + GENERAL_SURFACES_CSS
         + CALLABLE_NODE_CSS
         + PROXY_NODE_CSS
         + STLIB_NODE_CSS
@@ -290,6 +298,7 @@ def export_file_as_web_markup(
         + SOCKET_AND_LINE_CSS
         + TEXT_BLOCK_CSS
         + WIDGET_CSS
+        + PREVIEW_OBJECTS_CSS
     )
 
     ### if we are to export an html page, create
@@ -377,9 +386,6 @@ def export_file_as_web_markup(
 
     svg.append(pattern)
 
-    ## append lines
-    svg.extend(list(APP_REFS.gm.yield_lines_as_svg()))
-
     ##
 
     if raster_for_previews:
@@ -394,14 +400,32 @@ def export_file_as_web_markup(
             parent.name,
         )
 
+    ###
+    gm = APP_REFS.gm
+
+    ## append preview panels and toolbars
+
+    svg.extend(
+        [
+            obj.svg_repr()
+            for obj in chain(
+                gm.preview_panels,
+                gm.preview_toolbars,
+            )
+        ]
+    )
+
+    ## append lines
+    svg.extend(list(gm.yield_lines_as_svg()))
+
     ## append nodes and text blocks
 
     svg.extend(
         [
             obj.svg_repr()
             for obj in chain(
-                APP_REFS.gm.nodes,
-                APP_REFS.gm.text_blocks,
+                gm.nodes,
+                gm.text_blocks,
             )
         ]
     )
@@ -409,8 +433,6 @@ def export_file_as_web_markup(
     ### save raster previews
 
     if raster_for_previews:
-
-        ### TODO implement missing blocks below
 
         if parent.is_file():
 
@@ -435,9 +457,9 @@ def export_file_as_web_markup(
 
         # save
 
-        for (previewed_path, surf) in preview_surf_map.items():
+        for (key, surf) in preview_surf_map.items():
 
-            name = preview_name_map[previewed_path]
+            name = preview_name_map[key]
             save_image(surf, str(parent / name))
 
         ## clear collections and delete preview

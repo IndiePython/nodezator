@@ -31,6 +31,8 @@ from ...surfsman.draw import blit_aligned
 
 from ...surfsman.icon import render_layered_icon
 
+from ...surfsman.svgexport import get_not_found_surface_svg_repr
+
 from ...textman.render import render_multiline_text
 
 from ...colorsman.colors import BLACK, PATHPREVIEW_BG
@@ -44,7 +46,6 @@ from .constants import (
     BUTTON_HEIGHT,
     SP_BUTTON_SVG_REPRS,
     SP_BUTTON_CALLABLE_NAMES,
-    get_missing_path_repr,
 )
 
 NO_FFMPEG_TEXT = """
@@ -200,7 +201,7 @@ class VideoPreview(_BasePreview):
 
         if current_path not in VIDEO_METADATA_MAP:
 
-            g.append(get_missing_path_repr(rect))
+            g.append(get_not_found_surface_svg_repr(rect))
             g.append(super().svg_path_repr())
             return g
 

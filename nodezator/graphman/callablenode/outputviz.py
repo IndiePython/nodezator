@@ -1,7 +1,12 @@
 """Facility with factory function for creating viewer objects."""
 
-### standard library import
+### standard library imports
+
+from pathlib import Path
+
 from functools import partial
+
+from xml.etree.ElementTree import Element
 
 
 ### local imports
@@ -22,6 +27,8 @@ from ...dialog import create_and_show_dialog
 
 from ...ourstdlibs.behaviour import get_oblivious_callable
 
+from ...ourstdlibs.path import get_new_filename
+
 from ...our3rdlibs.behaviour import indicate_unsaved
 
 from ...classes2d.single import Object2D
@@ -37,7 +44,9 @@ from ...surfsman.render import (
 
 from ...surfsman.draw import draw_border, draw_depth_finish
 
-from ...surfsman.cache import CHECKERED_SURF_MAP, NOT_FOUND_SURF_MAP
+from ...surfsman.cache import CHECKERED_SURF_MAP
+
+from ...surfsman.svgexport import get_not_found_surface_svg_repr
 
 from ...widget.checkbutton import CheckButton
 
@@ -50,7 +59,10 @@ from ...colorsman.colors import (
 
 from .constants import FONT_HEIGHT
 
-from .surfs import RELOAD_PREVIEW_BUTTON_SURF
+from .surfs import (
+    RELOAD_PREVIEW_BUTTON_SURF,
+    PREVIEW_PANEL_NOT_FOUND_SURFACE,
+)
 
 
 
@@ -259,10 +271,16 @@ class OutputVisualization:
         ###
         self.preview_toolbar = toolbar
 
+        ###
+        self.preview_toolbar.node = self
+        self.preview_toolbar.svg_repr = partial(
+            preview_toolbar_svg_repr, self.preview_toolbar
+        )
+
 
     def create_preview_panel(self):
 
-        self.preview_panel = Object2D.from_surface(NOT_FOUND_SURF_MAP[(256, 256)])
+        self.preview_panel = Object2D.from_surface(PREVIEW_PANEL_NOT_FOUND_SURFACE)
 
         ###
 
@@ -296,6 +314,13 @@ class OutputVisualization:
                 pass
 
         self.preview_panel.on_mouse_release = on_mouse_release
+
+        ###
+
+        self.preview_panel.node = self
+        self.preview_panel.svg_repr = partial(
+            preview_panel_svg_repr, self.preview_panel
+        )
 
     def update_loop_on_execution_flag(self):
 
@@ -365,3 +390,362 @@ class OutputVisualization:
                 "Node needs to be executed at least once"
                 " to be able to display visual in loop."
             )
+
+
+
+### svg export utilities
+
+PREVIEW_OBJECTS_CSS = f"""
+
+.preview_toolbar_bg {{
+  fill         : rgb{NODE_BODY_BG};
+  stroke       : black;
+  stroke-width : 2;
+}}
+
+.preview_toolbar_reload_button {{
+  fill         : rgb{NODE_BODY_BG};
+  stroke       : white;
+  stroke-width : 1;
+}}
+
+.preview_toolbar_text
+{{
+  font: bold {FONT_HEIGHT-4}px sans-serif;
+  fill : rgb{NODE_LABELS};
+}}
+
+
+"""
+
+RELOAD_ICON_PATH_DIRECTIVES = (
+    (
+        " m 2  1"
+        " m 0  6"
+        " l 0 -3"
+        " q 0 -3 3 -3"
+        " l 8  0"
+        " q 3  0 3 3"
+        " l 0  4"
+        " l 3  0"
+        " l-5  4"
+        " l-5 -4"
+        " l 3  0"
+        " l 0 -4"
+        " l-6  0"
+        " l 0  3"
+        " Z"
+    ),
+    (
+        " m 0   1"
+        " m 0  11"
+        " l 5  -4"
+        " l 5   4"
+        " l-3   0"
+        " l 0   4"
+        " l 6   0"
+        " l 0  -3"
+        " l 4   0"
+        " l 0   3"
+        " q 0   3  -3  3"
+        " l-8   0"
+        " q-3   0  -3 -3"
+        " l 0  -4"
+        " Z"
+    )
+)
+
+RELOAD_ICON_STYLE = (
+"fill:rgb(30, 130, 70);stroke:black;stroke-width:2;stroke-linejoin:round;"
+)
+
+def preview_toolbar_svg_repr(toolbar):
+
+    rect = toolbar.rect
+
+    g = Element('g')
+
+    ###
+    is_single_object = isinstance(toolbar, Object2D)
+
+    ###
+
+    g.append(
+        Element(
+            "rect",
+            {
+
+                **{
+                    attr_name: str(getattr(rect, attr_name))
+                    for attr_name in ("x", "y", "width", "height")
+                },
+
+                "class": (
+                    "preview_toolbar_reload_button"
+                    if is_single_object
+                    else "preview_toolbar_bg"
+                )
+            },
+        ),
+    )
+
+    ###
+
+    if not is_single_object:
+
+        g.append(
+            Element(
+                "rect",
+                {
+                    **{
+                        attr_name: str(getattr(toolbar[1].rect, attr_name))
+                        for attr_name in ("x", "y", "width", "height")
+                    },
+                    "class": "preview_toolbar_reload_button"
+                },
+            ),
+        )
+
+    ###
+
+    reload_button_rect = (
+        rect
+        if is_single_object
+        else toolbar[1].rect
+    )
+
+    ###
+
+    x, y = map(str, reload_button_rect.move(0, -8).bottomleft)
+
+    reload_text = Element(
+        "text",
+        {
+            "x": x,
+            "y": y,
+            "text-anchor": "start",
+            "class": "preview_toolbar_text",
+        },
+    )
+
+    reload_text.text = 'Reload'
+    g.append(reload_text)
+
+
+    ###
+
+    x, y = reload_button_rect.move(-20, 1).topright
+
+    first_directive = f"M {x} {y} "
+
+    for directives in RELOAD_ICON_PATH_DIRECTIVES:
+
+        path_directives = first_directive + directives
+
+        g.append(
+            Element(
+                "path",
+                {
+                    "d": path_directives,
+                    "style": RELOAD_ICON_STYLE,
+                },
+            )
+        )
+
+    ###
+
+    if not is_single_object:
+
+        ### separator
+
+        rect_copy = toolbar[1].rect.move(4, 0)
+
+        x1, y1 = map(str, rect_copy.topright)
+        x2, y2 = map(str, rect_copy.bottomright)
+
+        g.append(
+            Element(
+                "line",
+                {
+                    "x1": x1,
+                    "y1": y1,
+                    "x2": x2,
+                    "y2": y2,
+                    "style":"stroke:white;stroke-width:1",
+                },
+            )
+        )
+
+        ### "loop on execution" text
+
+        x, y = map(str, toolbar[2].rect.move(-8, -8).bottomleft)
+
+        loop_on_execution_text = Element(
+            "text",
+            {
+                "x": x,
+                "y": y,
+                "text-anchor": "start",
+                "class": "preview_toolbar_text",
+            },
+        )
+
+        loop_on_execution_text.text = 'Loop on execution'
+        g.append(loop_on_execution_text)
+
+        ### check button
+        g.append(toolbar[3].svg_repr())
+
+    ###
+    return g
+
+def preview_panel_svg_repr(panel):
+
+    rect = panel.rect
+    ###
+
+    if panel.image is PREVIEW_PANEL_NOT_FOUND_SURFACE:
+        return get_not_found_surface_svg_repr(rect)
+
+    ###
+    g = Element("g")
+
+    try:
+
+        (
+            preview_surf_map,
+            preview_name_map,
+            parent_dirname,
+        ) = APP_REFS.preview_handling_kit
+
+    except AttributeError:
+
+        ##
+
+        g.append(
+            Element(
+                "rect",
+                {
+                    **{
+                        attr_name: str(getattr(rect, attr_name))
+                        for attr_name in ("x", "y", "width", "height")
+                    },
+                    "style": "fill: rgb(30, 130, 70);",
+                },
+            ),
+        )
+
+        ### big mountain
+
+        big_mountain_rect = rect.copy()
+        big_mountain_rect.width *= .7
+        big_mountain_rect.height *= .7
+
+        big_mountain_rect.bottom = rect.bottom
+
+        bmr = big_mountain_rect
+
+        directives = f"M{bmr.x} {bmr.y} q{(bmr.w//4)*3} 0 {bmr.w} {bmr.h} l-{bmr.w} 0 Z"
+
+        g.append(
+            Element(
+                "path",
+                {
+                    "d": directives,
+                    "style": "fill: white;",
+                }
+            )
+        )
+
+        ### small mountain
+
+        small_mountain_rect = rect.copy()
+        small_mountain_rect.width *= .3
+        small_mountain_rect.height *= .4
+
+        small_mountain_rect.bottomright = rect.bottomright
+
+        smr = small_mountain_rect
+
+        directives = f"M{smr.right} {smr.y} q-{(smr.w//4)*3} 0 -{smr.w} {smr.h} l{smr.w} 0 Z"
+
+        g.append(
+            Element(
+                "path",
+                {
+                    "d": directives,
+                    "style": "fill: white;",
+                }
+            )
+        )
+
+        ### small white sun
+
+        d1 = round(rect.width * 1/8)
+        d2 = round(rect.height * 1/8)
+
+        d = min(d1, d2)
+
+        small_sun_rect = rect.copy()
+
+        small_sun_rect.size = (d*3, d*3)
+
+        small_sun_rect.topright = rect.move(-d*2, d).topright
+
+        ssr = small_sun_rect
+
+        g.append(
+            Element(
+                "circle",
+                {
+
+                    "cx":f"{ssr.centerx}",
+                    "cy":f"{ssr.centery}",
+                    "r":f"{ssr.w//2}",
+                    "style": "fill: white;",
+                }
+            )
+        )
+
+
+        return g
+
+    else:
+
+        preview_surf_map[panel] = panel.image
+
+        name = f'_node_id_{panel.node.id}_preview.png'
+
+        if name in preview_name_map.values():
+
+            for key, value in preview_name_map.items():
+
+                if value == name and key != panel:
+
+                    ## change value of name variable
+                    ## so the name is different
+
+                    name = get_new_filename(name, preview_name_map.values())
+
+                    break
+
+        preview_name_map[panel] = name
+
+        href = str(Path(parent_dirname) / name)
+
+        image_element = (
+            Element(
+                "image",
+                {
+                    "href": href,
+                    "xlink:href": href,
+                    **{
+                        attr_name: str(getattr(rect, attr_name))
+                        for attr_name in ("x", "y", "width", "height")
+                    },
+                },
+            )
+        )
+
+        return image_element
+
