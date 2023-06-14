@@ -552,18 +552,29 @@ def export_file_as_png(width, height, background_color, image_path):
     ## fill surface with chosen color
     surf.fill(background_color)
 
+    ###
+    gm = APP_REFS.gm
+
     ### draw objects on the surface we just created
 
+    ## preview objects
+
+    for obj in chain(
+        gm.preview_panels,
+        gm.preview_toolbars,
+    ):
+        obj.draw_on_surf(surf)
+
     ## lines
-    APP_REFS.gm.draw_lines_on_surf(surf)
+    gm.draw_lines_on_surf(surf)
 
     ## nodes
 
-    for node in APP_REFS.gm.nodes:
+    for node in gm.nodes:
         node.draw_on_surf(surf)
 
     ## text blocks
-    APP_REFS.gm.text_blocks.draw_on_surf(surf)
+    gm.text_blocks.draw_on_surf(surf)
 
     ### then save the image in the given path
     save_image(surf, image_path)

@@ -273,6 +273,11 @@ class OutputVisualization:
 
         ###
         self.preview_toolbar.node = self
+
+        self.preview_toolbar.draw_on_surf = partial(
+            draw_toolbar_on_surf, self.preview_toolbar
+        )
+
         self.preview_toolbar.svg_repr = partial(
             preview_toolbar_svg_repr, self.preview_toolbar
         )
@@ -318,6 +323,11 @@ class OutputVisualization:
         ###
 
         self.preview_panel.node = self
+
+        self.preview_panel.draw_on_surf = partial(
+            draw_panel_on_surf, self.preview_panel
+        )
+
         self.preview_panel.svg_repr = partial(
             preview_panel_svg_repr, self.preview_panel
         )
@@ -391,6 +401,21 @@ class OutputVisualization:
                 " to be able to display visual in loop."
             )
 
+
+
+### png export utilities
+
+def draw_toolbar_on_surf(toolbar, surf):
+
+    if isinstance(toolbar, Object2D):
+        surf.blit(toolbar.image, toolbar.rect)
+
+    else:
+        for obj in toolbar:
+            surf.blit(obj.image, obj.rect)
+
+def draw_panel_on_surf(panel, surf):
+    surf.blit(panel.image, panel.rect)
 
 
 ### svg export utilities
