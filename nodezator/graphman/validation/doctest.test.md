@@ -1,38 +1,27 @@
-"""Doctests for the graphman/validation/main.py module 
+# Doctests for the graphman/validation/main.py module 
 
-Introduction
-============
-The module being tested here contains a function
-to validate function metadata called
-check_return_annotation_mini_lang().
+## Introduction
+
+The module being tested here contains a function to validate function metadata called `check_return_annotation_mini_lang()`.
 
 
-Imports and utilities
-=====================
+## Imports and data loaded from external files
 
-Before presenting the doctests, let's import the objects
-to be tested in this module and import/define other
-utilities for our tests.
+Note that the doctests contain no import statements or data being loaded from other files, since the needed objects are imported, loaded and fed to the namespace automatically in the sibling `testmarkdown.py` module (using the `globs` parameter of `doctest.DocFileSuite()`). In the case of this doctest document in particular, the only import needed is the function we want to test: `check_return_annotation_mini_lang`. We also load a dictionary containing test data, which we call `TEST_DATA` in the doctests in this document.
 
->>> ### let's start by loading the function we want to
->>> ### test
->>> from .main import check_return_annotation_mini_lang
+## Utilities
 
->>> ### define an exception class map to convert strings into
->>> ### the exception classes to which they refer
+Here we define some extra utilities to assist us in our tests.
 
+```python
+### an exception class map to convert strings into the exception classes
+### to which they refer
 >>> exception_class_map = {
 ...   "TypeError"  : TypeError,
 ...   "ValueError" : ValueError
 ... }
 
->>> ### XXX maybe I could search for a way to automatically
->>> ### prepend '... ' at the beginning of lines, so that
->>> ### I can properly indent code blocks with doctests,
->>> ### like the body of the function below (I more or less
->>> ### manually type the dots in some lines)
-
->>> ### function to test given function using given test data
+>>> ### a function to test another given function using given test data
 >>> def test_function_with_test_data(function, test_data):
 ...     
 ...     ### store the function name
@@ -138,35 +127,15 @@ utilities for our tests.
 ...             ).format(case_name, func_name)
 ... 
 ...             print(msg)
->>> 
 
+```
 
-Doctests for check_return_annotation_mini_lang function
-=======================================================
+## Doctests for `check_return_annotation_mini_lang` function
 
->>> ### load test data for the the function and test it
->>> from .fixtures import TEST_DATA
->>> 
->>> ## pass function along with test data to the function
->>> ## used to test them together; no output must be
->>> ## generated
->>> 
+```python
+## pass function along with test data to the function used to test them
+## together; no output must be generated
 >>> test_function_with_test_data(
 ...   check_return_annotation_mini_lang, TEST_DATA)
->>> 
 
-"""
-
-from doctest import DocTestSuite
-
-
-def load_tests(loader, tests, pattern):
-    """Return a test suite.
-
-    This function is used for test discovery and its name,
-    signature and return value are defined by the load_tests
-    protocol described in the standard library unittest
-    module online documentation.
-    """
-    ### return a test suite from the doctests in this module
-    return DocTestSuite()
+```

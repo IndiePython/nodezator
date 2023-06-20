@@ -1,4 +1,4 @@
-TEST_DATA = {
+{
     "compliant_cases": {
         "compliant_case00": [{"name": "output_name01"}, {"name": "output_name02"}],
         "compliant_case01": [
