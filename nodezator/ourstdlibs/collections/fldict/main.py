@@ -21,8 +21,7 @@ class FlatListDict(dict):
     The list in question is found in the "flat_values"
     read-only attribute.
 
-    Check the full docstring along with doctests in
-    the fltests.py module.
+    Check the documentation and tests in the doctest.test.md file.
     """
 
     ### list names of the builtin list methods so you can
