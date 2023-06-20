@@ -1,1 +1,2 @@
 graft nodezator/data
+recursive-include nodezator *.md *.pyl
