@@ -3,28 +3,34 @@
 from xml.etree.ElementTree import Element
 
 
-### local import
+### local imports
+
+from ..colorsman.colors import (
+    IMAGE_NOT_FOUND_FG,
+    IMAGE_NOT_FOUND_BG,
+)
+
 from .mathutils import get_segment_points_cutting_ellipse
 
 
 
-GENERAL_SURFACES_CSS = """
+GENERAL_SURFACES_CSS = f"""
 
-g.file_not_found_shapes > rect {
-  fill: rgb(15, 15, 15);
+g.file_not_found_shapes > rect {{
+  fill: rgb{IMAGE_NOT_FOUND_BG};
   stroke: none;
-}
+}}
 
-g.file_not_found_shapes > ellipse {
-  stroke: rgb(200, 0, 0);
+g.file_not_found_shapes > ellipse {{
+  stroke: rgb{IMAGE_NOT_FOUND_FG};
   stroke-width: 15px;
   fill:none;
-}
+}}
 
-g.file_not_found_shapes > line {
-  stroke: rgb(200, 0, 0);
+g.file_not_found_shapes > line {{
+  stroke: rgb{IMAGE_NOT_FOUND_FG};
   stroke-width: 15px;
-}
+}}
 
 """
 

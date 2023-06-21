@@ -24,7 +24,7 @@ from ..config import FFMPEG_AVAILABLE
 
 from .constants import get_video_metadata
 
-from ..surfsman.draw import draw_not_found_icon
+from ..surfsman.cache import NOT_FOUND_SURF_MAP
 
 
 ### TODO review/refactor
@@ -60,11 +60,9 @@ def render_video_data(
 
         else:
 
-            surf = Surface((not_found_width, not_found_height)).convert()
-
-            draw_not_found_icon(surf, (255, 0, 0))
-
-            return [surf]
+            return [
+                NOT_FOUND_SURF_MAP[(not_found_width, not_found_height)]
+            ]
 
     else:
 

@@ -21,14 +21,13 @@ from ...our3rdlibs.userlogger import USER_LOGGER
 
 from ...textman.viewer.main import view_text
 
-from ...surfsman.draw import (
-    draw_depth_finish,
-    draw_not_found_icon,
-)
+from ...surfsman.draw import draw_depth_finish
 
 from ...surfsman.icon import render_layered_icon
 
 from ...surfsman.svgexport import get_not_found_surface_svg_repr
+
+from ...surfsman.cache import NOT_FOUND_SURF_MAP
 
 from ...fontsman.constants import (
     FIRA_MONO_BOLD_FONT_PATH,
@@ -238,7 +237,7 @@ class TextPreview(_BasePreview):
 
                 subsurf = self.path_repr_subsurf = image.subsurface(rect)
 
-            draw_not_found_icon(subsurf, (255, 0, 0))
+            subsurf.blit(NOT_FOUND_SURF_MAP[subsurf.get_size()], (0, 0))
 
             super().blit_path_representation()
             return
@@ -278,7 +277,7 @@ class TextPreview(_BasePreview):
 
                 subsurf = self.path_repr_subsurf = image.subsurface(rect)
 
-            draw_not_found_icon(subsurf, (255, 0, 0))
+            subsurf.blit(NOT_FOUND_SURF_MAP[subsurf.get_size()], (0, 0))
 
             super().blit_path_representation()
             return
