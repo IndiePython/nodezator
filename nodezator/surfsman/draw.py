@@ -3,15 +3,13 @@
 ### standard library imports
 
 from colorsys import rgb_to_hls, hls_to_rgb
+
 from itertools import cycle
-from math import sqrt
 
 
 ### third-party imports
 
 from pygame import Surface, Rect
-
-from pygame.math import Vector2
 
 from pygame.transform import rotate as rotate_surface
 
@@ -27,6 +25,9 @@ from pygame.draw import (
 ### local imports
 
 from ..colorsman.colors import BLACK, WHITE, SHADOW_COLOR, HIGHLIGHT_COLOR
+
+from .mathutils import get_segment_points_cutting_ellipse
+
 
 
 HIGHLIGHT_POINT_NAMES = ("bottomleft", "topleft", "topright")
@@ -411,7 +412,7 @@ def draw_linear_gradient(
 def draw_not_found_icon(surf, color):
     """Draw icon representing an image not found.
 
-    Draws a circle with a diagonal slash on given surf.
+    Draws an ellipse with a diagonal slash on given surf.
 
     Parameters
     ==========
@@ -424,7 +425,7 @@ def draw_not_found_icon(surf, color):
     """
     rect = surf.get_rect()
 
-    ### draw circle (uses pygame.draw.ellipse())
+    ### draw ellipse
 
     ## define ellipse thickness
 
@@ -435,42 +436,17 @@ def draw_not_found_icon(surf, color):
     ## draw
     draw_ellipse(surf, color, rect, ellipse_thickness)
 
-    ### draw diagonal
+    ## find points of segment cutting ellipse
 
-    ## find diagonal points
+    if ellipse_thickness > 1:
 
-    v1 = Vector2(rect.bottomleft)
-    v2 = Vector2(rect.topright)
+        deflation = -(ellipse_thickness - 1)
+        rect.inflate_ip(deflation, deflation)
 
-    d1 = v1.lerp(v2, 0.175)
-    d2 = v2.lerp(v1, 0.175)
+    p1, p2 = get_segment_points_cutting_ellipse(rect)
 
-    ## draw diagonal based on ellipse thickness
-
-    if ellipse_thickness >= 3:
-
-        dimension_size = round(ellipse_thickness / sqrt(2))
-
-        small_rect = Rect(0, 0, dimension_size, dimension_size)
-
-        coordinate_names = ("topleft", "bottomright")
-
-        small_rect.center = d1
-
-        p1, p2 = (
-            getattr(small_rect, coordinate_name) for coordinate_name in coordinate_names
-        )
-
-        small_rect.center = d2
-
-        p3, p4 = (
-            getattr(small_rect, coordinate_name) for coordinate_name in coordinate_names
-        )
-
-        draw_polygon(surf, color, (p1, p3, p4, p2))
-
-    else:
-        draw_line(surf, color, d1, d2, ellipse_thickness)
+    ### draw segment
+    draw_line(surf, color, p1, p2, ellipse_thickness)
 
 
 def blit_aligned(

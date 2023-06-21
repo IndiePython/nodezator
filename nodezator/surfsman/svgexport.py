@@ -3,6 +3,11 @@
 from xml.etree.ElementTree import Element
 
 
+### local import
+from .mathutils import get_segment_points_cutting_ellipse
+
+
+
 GENERAL_SURFACES_CSS = """
 
 g.file_not_found_shapes > rect {
@@ -54,10 +59,9 @@ def get_not_found_surface_svg_repr(rect):
         ),
     )
 
-    slash_rect = rect.inflate(-60, -60)
-
-    p1 = slash_rect.bottomleft
-    p2 = slash_rect.topright
+    ###
+    p1, p2 = get_segment_points_cutting_ellipse(ellipse_rect)
+    ###
 
     g.append(
         Element(
@@ -85,4 +89,5 @@ def get_not_found_surface_svg_repr(rect):
         ),
     )
 
+    ###
     return g
