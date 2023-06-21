@@ -288,9 +288,12 @@ def python_repr(self):
 
     ###
 
-    if not self.nodes:
+    if (not self.nodes) and text_blocks:
 
-        for text_block in sorted(text_blocks, key=get_lowest_dist_to_origin):
+        get_lowest_dist_to_origin = get_minimum_distance_function(self.origin_rect)
+        min_distance_to_origin = lambda block: get_lowest_dist_to_origin(block.rect)
+
+        for text_block in sorted(text_blocks, key=min_distance_to_origin):
 
             ##
             graph_function_body += "\n" * 2
