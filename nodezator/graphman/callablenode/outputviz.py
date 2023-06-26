@@ -44,7 +44,9 @@ from ...surfsman.render import (
 
 from ...surfsman.draw import draw_border, draw_depth_finish
 
-from ...surfsman.cache import CHECKERED_SURF_MAP
+from ...surfsman.cache import CHECKERED_SURF_MAP, cache_screen_state
+
+from ...surfsman.viewer.main import view_surface
 
 from ...surfsman.svgexport import get_not_found_surface_svg_repr
 
@@ -392,7 +394,8 @@ class OutputVisualization:
     def enter_loop(self):
 
         if hasattr(self, 'loop_data'):
-            raise NotImplemented
+            cache_screen_state()
+            view_surface(self.loop_data)
 
         else:
 
