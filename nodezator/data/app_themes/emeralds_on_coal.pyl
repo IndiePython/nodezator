@@ -22,7 +22,7 @@
 
     "THUMB_BG"           : (  77,  77,  90),
     "IMAGE_NOT_FOUND_FG" : ( 255,  70,  70),
-    "IMAGE_NOT_FOUND_BG" : (  40,  40,  40),
+    "IMAGE_NOT_FOUND_BG" : (  60,  60,  85),
 
   },
 
