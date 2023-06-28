@@ -294,7 +294,7 @@ class Execution:
                                     if node.preview_toolbar.check_button.get():
                                         node.enter_custom_loop()
 
-                                output_to_send = return_value['output']
+                                output_to_send = return_value.get('output')
 
                             elif hasattr(node, VISUAL_FROM_OUTPUT_VAR_NAME):
 
