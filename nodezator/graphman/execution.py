@@ -285,7 +285,7 @@ class Execution:
 
                             if backdoor:
 
-                                node.set_visual(return_value['visual'])
+                                node.set_visual(return_value['in_graph_visual'])
 
                                 if 'loop_data' in return_value:
 
