@@ -10,7 +10,7 @@ from ..classes2d.collections import List2D
 
 from ..surfdef import surfdef_obj_from_element
 
-from .constants import KNOWN_TAGS
+from .constants import BROWSER_TITLE, KNOWN_TAGS
 
 from .creation import (
     TextBlock,
@@ -57,7 +57,7 @@ class Preparation:
         except IndexError:
             title = "Untitled document"
 
-        self.title_label.set(f"HTSL Browser - {title}")
+        self.title_label.set(f"{title} - {BROWSER_TITLE}")
 
         self.title_cache[resource_path] = title
 
@@ -174,7 +174,7 @@ class Preparation:
         self.objs.clear()
         self.objs.extend(self.cache[key])
 
-        self.title_label.set(f"HTSL Browser - {self.title_cache[key]}")
+        self.title_label.set(f"{self.title_cache[key]} - {BROWSER_TITLE}")
 
 
 def get_extension(src):

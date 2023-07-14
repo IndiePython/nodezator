@@ -16,6 +16,11 @@ from ..colorsman.colors import (
     HTSL_MARKED_TEXT_BG,
 )
 
+
+
+### browser title
+BROWSER_TITLE = "Local Pages Browser"
+
 ### tags used in htsl
 
 HEADING_TAGS = tuple(f"h{i}" for i in range(1, 7))

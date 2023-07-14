@@ -70,6 +70,8 @@ from ..colorsman.colors import (
     BLACK,
 )
 
+from .constants import BROWSER_TITLE
+
 ## extension class
 from .prep import Preparation
 
@@ -159,7 +161,7 @@ class HTSLBrowser(
         label_max_width = self.rect.inflate(-40, 0).width
 
         self.title_label = Label(
-            "HTSL Browser - Untitled document",
+            f"Untitled document - {BROWSER_TITLE}",
             font_height=20,
             font_path=ENC_SANS_BOLD_FONT_PATH,
             foreground_color=HTSL_DOCUMENT_TITLE_TEXT_FG,
