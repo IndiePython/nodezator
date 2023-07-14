@@ -53,7 +53,12 @@
 
     <tr>
       <td><b>&lt;Ctrl+p&gt;</b></td>
-      <td>Brings up form to export node layout as python code</td>
+      <td>Brings up file manager to export node layout as Python code</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Ctrl+Shift+p&gt;</b></td>
+      <td>Brings up the text viewer where you can preview your node layout as Python code</td>
     </tr>
 
     <tr>
