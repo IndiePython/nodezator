@@ -34,16 +34,19 @@ main_callable = function_name
 
 <h2 id="node-pack">A node pack and its purpose</h2>
 
-<p>Let's define our first node. The first thing to do when defining one or more nodes is to think of the purpose for which you are creating the node(s). I'd like to create nodes to generate 2d points representing movement (for instance, for game characters).</p>
+<p>The first thing to do when defining one or more nodes is to think of the purpose for which you are creating the node(s). I'd like to create nodes to generate 2d points representing movement (for instance, for game characters).</p>
 
 <p>With that in mind, we'll create a folder wherein to store all the nodes we are going to create. Let's name it <i>points2d</i>. In Nodezator, we consider that folder to be a <i>node pack</i>. Think of a node pack like a set of cards for a specific kind of game.</p>
 
 <p>The same way a set of cards is suitable for playing specific kinds of games, node packs contain nodes used for a specific purpose. <a href="https://en.wikipedia.org/wiki/Uno_(card_game)">Uno</a> cards are designed for playing Uno, <a href="https://en.wikipedia.org/wiki/Yu-Gi-Oh!">Yugi-Oh</a> cards for playing fictional monster battles. Just like that, each node pack should be designed for a specific purpose.</p>
 
+<p>Also, avoid using names that are too generic for your node pack, or a name that is used by another library you plan to use. Node packs are treated similar to modules inside Nodezator and may thus shadow existing libraries. Finally, since the name of your node pack is used in <i>import</i> statements whenever you want to export your graphs as pure Python code, make sure the name of your node pack is a valid Python identifier (you can verify that by checking whether the name returns True when passed to <a href="https://docs.python.org/3/library/stdtypes.html#str.isidentifier">str.isidentifier()</a>).</p>
+
 <h2 id="category-folder">Categories within a node pack</h2>
 
 <p>Just like playing cards are organized in categories, your nodes must be too. In Uno, cards are categorized as Number cards, Draw 2 cards, Reverse cards, and so on. You can categorize your nodes as you see fit. Let's create another folder inside points2d called <i>point_creation</i> wherein we'll store nodes responsible for creating new points. This folder is what we call a <b>category folder</b></p>
 
+<p>The name of your category folders are also used in <i>import</i> statements whenever you want to export your graphs as pure Python code, so make sure they are valid Python identifiers as well.</p>
 
 <h2 id="script-folder">The script folder</h2>
 
@@ -54,6 +57,9 @@ main_callable = function_name
 <p>That's why a whole folder is used to store your script. Internally, this folder is actually treated as a subpackage of your node pack. You can think of this folder as an entire package wherein you define your node even if it ends up only needing a single file containing a single function. Moreover, even if your node starts as a single file it may grow over time as you further extend it.</p>
 
 <p>You can go as simple or as complex as you'd need/like. Think of the folder containing your node script as the personal limitless playground of your node. In our case, though, the first node we'll create, due to its simplicity, will need just a single Python file inside its folder.</p>
+
+<p>Just like the names of node packs and category folders, the names of your script folders are also used in <i>import</i> statements whenever you want to export your graphs as pure Python code, so also make sure they are valid Python identifiers.</p>
+
 
 <h2 id="defining-node">Defining the node</h2>
 
@@ -139,7 +145,7 @@ main_callable = get_circle
 
 <h2 id="node-pack-anatomy">The anatomy of a node pack</h2>
 
-<p>Before we end the chapter, here's a review of the anatomy of a node pack so you don't forget it:</p>
+<p>Here's a review of the anatomy of a node pack so you don't forget it:</p>
 
 <surfdef width="460" height="285">
 
@@ -216,20 +222,19 @@ main_callable = get_circle
     <tr>
       <td><span class="big-icon">1</span></td>
       <td>Node pack</td>
-      <td>single folder at top of hierarchy; holds all nodes within
-categories; must have at least one category folder</td>
+      <td>single folder at top of hierarchy; holds all nodes within categories; must have at least one category folder; name must be a valid Python identifier</td>
     </tr>
 
     <tr>
       <td><span class="big-icon">2</span></td>
       <td>Category folder</td>
-      <td>node pack can have as many category folders as needed; must have at least one node script folder</td>
+      <td>node pack can have as many category folders as needed; each category folder must have at least one node script folder; name of category folder must be a valid Python identifier</td>
     </tr>
 
     <tr>
       <td><span class="big-icon">3</span></td>
       <td>Node script folder</td>
-      <td>category folder can have as many node script folders as needed; each node script folder represents a node; must have at least a __main__.py script</td>
+      <td>category folder can have as many node script folders as needed; each node script folder represents a node; each node script folder must have a __main__.py script (and optionally other local modules as well); name of node script folder must be a valid Python identifier</td>
     </tr>
 
     <tr>
@@ -239,7 +244,35 @@ categories; must have at least one category folder</td>
     </tr>
 
   </tbody>
+
 </table>
+
+
+<h2 id="expanded-collapsed-callable-modes">Expanded, collapsed and callable mode for nodes</h2>
+
+<p>Starting from Nodezator version 1.4.0, <b>all user-defined nodes</b> and <b>some app-defined nodes</b> can exist in 01 of 03 different modes:</p>
+
+<ul>
+    <li>Expanded signature mode;</li>
+    <li>Collapsed signature mode; and</li>
+    <li>Callable mode.</li>
+</ul>
+
+<p>User-defined nodes are always instantiated in <b>expanded signature mode</b> (<b>expanded mode</b> for short). In this mode, the node represents a function call, that is, it expects inputs and returns outputs when it is executed. It is said that the node is "expanded" because in this mode the node shows all of its signature elements, that is, the parameters and outputs defined in its signature. It is the largest representation among the existing modes.</p>
+
+<p>In <b>collapsed signature mode</b>, the node also represents a function call and works just like in expanded mode, but instead of showing all the signature elements, it only shows those which are connected via sockets, hiding everything else. This is why we say the node is "collapsed".</p>
+
+<p>Regardless of whether a node is in expanded or collapsed signature mode, widgets attached to parameters/subparameters that have a connection to their sockets will be hidden. This is so because incoming data via connections have priority over data provided by widgets. So widgets shadowed by connections are hidden, since they serve no purpose while the socket is connected. If the socket is disconnected, the widgets becomes visible again.</p>
+
+<p>Users can quickly switch between the two signature modes (expanded and collapsed) by clicking in the small arrow icon shown in the upper left corner of user-defined nodes.</p>
+
+<p>You can also switch modes by right-clicking a node and accessing the <b>Change mode to</b> submenu, from which you can pick the mode you desire. You must use this method if you want to switch into or from the <b>callable mode</b>, since the small arrow icon only switches between expanded and collapsed modes.</p>
+
+<p>In <b>callable mode</b>, rather than representing a call, the node represents the underlying callable itself. That is, when the graph is executed, instead of the node being executed directly, it just passes along a reference to its underlying callable. In other words, the node doesn't have inputs or outputs, since it is not a call. It has only a single socket beside its title that can be used to pass the reference to other nodes.</p>
+
+<p>Used wisely, this mode is quite powerful, since it brings a lot of versatility, allowing you to achieve complex tasks with a smaller amount of nodes while retaining total control over the end result. Understanding this requires extra knowledge on concepts such as <b>functions as first-class citizens</b> and <b>higher order functions</b> and on programming paradigms like <b>functional programming</b>. Though it is not the purpose/responsibility of this manual to teach/explain those concepts/paradigms, it is our desire to offer users as much useful knowledge as possible on how to make most out of Nodezator, so in the future we'll be including an appendix to our manual dedicated to this.</p>
+
+<p>For now, the callable mode is revisited only in a section of a future chapter, where we briefly <a href="ch-other-objects.htsl#callable-mode-app-defined-nodes">present an example on how the callable mode can be used to achieve complex tasks with fewer nodes</a>.</p>
 
 <p><a href="index.htsl">Table of contents</a> | <a href="ch-defining-viewer-nodes.htsl">Next chapter</a></p>
 

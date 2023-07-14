@@ -10,9 +10,24 @@
 
 <h1>Defining viewer nodes</h1>
 
-<p>Of course, we could just print the output of our get_circle node from the previous chapter using an app-defined node representing the print() built-in function. However, since we may find ourselves working with more complex data as we further develop our nodes and node layouts, being able to define our own viewer nodes will come in handy.</p>
+<p>Of course, we could just print the output of our get_circle node from the previous chapter using the print() node. However, since we may find ourselves working with more complex data as we further develop our nodes and node layouts, being able to define our own viewer nodes will be useful.</p>
 
-<p>Let's create another folder inside points2d called <i>viewer</i> wherein we'll store nodes responsible for viewing points. This is just another <b>category folder</b>, just like point_creation.</p>
+<p>Since version 1.4.0, viewer nodes in Nodezator became even more versatile. They now vary greatly in what they can provide as visualizations. It all depends on what you want to provide as visualization features for your viewer nodes. You can make very simple viewer nodes that just provide an image to be displayed beside your node in the graph or you can make viewer nodes that have their own application loop where complex visualizations and even additional controls are presented.</p>
+
+<p>In this chapter, we'll present the simplest way to define viewer nodes. Your viewer node will be able to display an image in the graph itself and also in a dedicated viewer provided by Nodezator by simply returning such images as pygame.Surface objects from your node.</p>
+
+<p>The ability to define viewer nodes featuring custom application loops with complex visualizations and even additional controls will be presented in future chapters far ahead in the manual, since they are more advanced.</p>
+
+<p>Also, do not let the terms <b>simple</b> and <b>complex/advanced</b> give you the false impression that simpler viewer nodes are less powerful though. More advanced viewer node features exist to tackle specific needs that the simpler viewer nodes can't, but it doesn't make them more powerful or desirable. As we'll explain in future chapters handling the more advanced features, more complex viewer nodes only exist because of extra requirements of the data to be visualized.</p>
+
+<p>Without further ado, let's define our simple yet powerful viewer node.</p>
+
+<p>Begin by creating another folder inside points2d called <i>viewer</i> wherein we'll store a node responsible for viewing points. This is just another <b>category folder</b>, just like point_creation.</p>
+
+
+<h2 id="returning-visual-beside-node">Returning a visual to be displayed beside your node</h2>
+
+<p>The simplest way by which you can display visuals with your viewer node, is by returning a pygame surface from it that can be displayed in the graph itself beside the node, when the node is executed.</p>
 
 <p>Before we delve into the full implementation of our viewer node, I present below a first draft of the function that will generate our viewer node.</p>
 
@@ -21,214 +36,298 @@
 
 ### function definition
 
-def view_points(points):
+def view_drawn_points(points):
     ...
 
 ### function aliasing as 'main_callable'
-main_callable = view_points
+main_callable = view_drawn_points
 </python>
 
-<p>As you can see, our viewer node is just a regular node like any other. It has a single parameter where we'll receive the given points to display them on the screen. It is also aliased as <i>main_callable</i> like any other node, so that Nodezator can fetch it and turn it into a node.</p>
+<p>As you can see, our viewer node is just a regular node like any other. It has a single parameter where we'll receive the given points that we want to visualize. It is also aliased as <i>main_callable</i> like any other node, so that Nodezator can fetch it and turn it into a node.</p>
 
-<p>The difference from other nodes, however, is that instead of just processing the input and returning the output, our viewer node will <b>define and run its own loop</b> until the user decides to exit the visualization.</p>
+<p>Now, all you need is a way to inform Nodezator of two things:</p>
 
-<p>Before we delve into the full code still, I'd like to make yet a small addition, a single line at the end that will make our node even more useful. That is, setting our callable's <i>dismiss_exec_time_tracking</i> to True. Here's how we'd do:</p>
+<ul>
+    <li>that your node will provide a surface to display in the graph; and</li>
+    <li>where to pick the surface from your node's output</li>
+</ul>
 
+<p>To do that, all you need is to add a small function in your script called (or aliased as) <i>get_visual_from_output</i>. The function must receive a single argument, which is the output of the node, and return the surface it gets from it.</p>
+
+<p>Since in our case, the surface is the node's output itself, that function just needs to return the argument received. Here's the script defining our viewer node:</p>
+ 
 <python>
-### viewer node second draft
 
-### function definition
+### third-party imports
 
-def view_points(points):
-    ...
+from pygame import Rect, Surface
 
-### setting view_point's dismiss_exec_time_tracking
-### attribute to True
-view_points.dismiss_exec_time_tracking = True
+from pygame.draw import rect as draw_rect
 
-### function aliasing as 'main_callable'
-main_callable = view_points
+
+def view_drawn_points(points):
+
+    ### ensure our points are stored in a list
+    points = list(points)
+
+    ### define size of the bounding box of our points, that is, the size
+    ### of the rectangle that contains all of them
+
+    left = min(p[0] for p in points)
+    right = max(p[0] for p in points)
+
+    top = min(p[1] for p in points)
+    bottom = max(p[1] for p in points)
+
+    width = right - left
+    height = bottom - top
+
+    ### let's increment the size by 20 pixels in each dimension, so
+    ### we have a bit of padding around the points that will be
+    ### drawn in the surface
+
+    width += 10
+    height += 10
+
+    ### now create a surface with such dimensions, filled with white,
+    ### and also store coordinates representing the center of such
+    ### surface
+
+    surface = Surface((width, height)).convert()
+    surface.fill('white')
+
+    centerx, centery = surface.get_rect().center
+
+    ### now draw the points one by one in the surface with the color
+    ### blue, as small rects;
+    ###
+    ### note that before drawing, we offset the points by the distance
+    ### to the center of the surface, so they are drawn in the surface
+    ### as though the center of the surface was the origin of the 2D
+    ### space
+
+    small_rect = Rect(0, 0, 3, 3)
+
+    for x, y in points:
+
+        offset_point = x + centerx, y + centery
+
+        small_rect.center = offset_point
+
+        draw_rect(surface, 'blue', small_rect)
+
+
+    ### finally, return the surface
+    return surface
+
+
+### alias the function defining the node as main_callable
+main_callable = view_drawn_points
+
+### define a get_visual_from_output function that just returns
+### the data received (the name of the parameter isn't important)
+get_visual_from_output = lambda node_output: node_output
 </python>
 
-<p>The consequence of this small change is just what the name suggests: the <b>execution time of the node won't be tracked</b>. All nodes, by default, have their execution time tracked. The total time taken to execute a node layout is calculated as the sum of the execution time of all nodes and displayed in the Nodezator's status bar.</p>
+<p>And now your viewer node will look like this when instantiated:</p>
 
-<p>However, time spent in a viewer node is irrelevant because it doesn't measure the efficiency of the node, just how much time the user decides to spend within the viewer node loop. The user may choose to spend a few seconds or several minutes examining the visualization shown by the node during its loop and that says nothing about its efficiency.</p>
+<img src="images/ch-defining-viewer-nodes_img00.png" alt="view_drawn_points node when instantiated" />
 
-<p>By dismissing execution time tracking in viewer nodes we keep our total execution time relevant. Dismissing execution time tracking in viewer nodes is <b>not needed, but highly recommended</b> for the reason we just discussed.</p>
+<p>And like this after we execute it:</p>
 
-<p>The only thing our viewer node needs now is to implement its own loop. This is actually pretty simple because Nodezator uses <a href="https://pyga.me">pygame-ce</a> as its GUI and pygame-ce either exposes all needed objects to define and run our own loop or at least provides ways to create such objects.</p>
+<img src="images/ch-defining-viewer-nodes_img01.png" alt="view_drawn_points node after execution" />
 
-<p>So, in other words, we'll just <b>create a pygame loop</b> like any other. This has nothing to do with Nodezator, we use pure pygame API. Here's the full code, extensively commented:</p>
+<p>The visualization that appears beside the viewer node is called an <b>in-graph visual</b> or <b>in-graph surface</b>, or even <b>in-graph visual data</b>. Note that the in-graph visual has a button on top that says <b>Reload</b>. As expected, clicking that button causes the node to execute so the visualization is updated. Of course, in order for the node to be executed, the upstream nodes from it are executed as well, so it receives up-to-date inputs.</p>
+
+<p>That's it! At this point, you should be able to test the node pack you created with your get_circle and view_drawn_points nodes.</p>
+
+
+<h2 id="returning-larger-visual">Returning a larger visual to be displayed in a Nodezator viewer</h2>
+
+<p>In the previous subsection, you might have asked yourself why we needed to tell Nodezator where specifically to grab the in-graph surface from the node's output. That is, if there's only one surface, why provide a function to grab it instead of just using a flag that says the output itself is the surface we want? The answer is that the output of the node might contain yet another surface of interest.</p>
+
+<p>As with any application, the more graphics you display on the screen, the more the performance of the app is impacted. For most cases, the method we described before to provide a surface to be displayed in-graph is more than enough and will result in no harm to the performance, even if you use many viewer nodes like that.</p>
+
+<p>However, what if you wanted to use Nodezator to edit 4K or 8K images, or any kind of data whose visualization resulted in a excessively large surface? In such cases, rather than showing the full visualization in the graph, you may instead want to show a smaller preview, but still provide the full visualization (the larger surface) so that Nodezator can show it in a dedicated viewer that is invoked when the user clicks the in-graph surface.</p>
+
+<p>This way, you don't need to worry about the size of the surfaces your viewer nodes return. When you create a surface within your node, you just need to ensure it fits a maximum size arbitrarily defined by you and, if the surface is larger than that size, you create a downsized copy of it (using the <a href="https://pyga.me/docs/ref/transform.html#pygame.transform.smoothscale">smoothscale()</a> or <a href="https://pyga.me/docs/ref/transform.html#pygame.transform.scale">scale()</a> function from pygame-ce's <i>pygame.transform</i> module). If the surface is smaller than that, you can use it as-is for the in-graph visualization.</p>
+
+<p>To tell Nodezator that you are providing a surface that is meant to appear in a dedicated viewer instead of in the graph itself, you just need to create another function called (or aliased as) <i>get_loop_data_from_output</i>, in addition to your existing <i>get_visual_from_output</i> function. This <i>get_loop_data_from_output</i> also receives a single input, which is the output of the node and must return the surface that Nodezator will display whenever the user clicks the in-graph visual.</p>
+
+<p>Providing this new <i>get_loop_data_from_output</i> callable requires that a <i>get_visual_from_output</i> callable exist as well, otherwise Nodezator won't acknowledge the existence of your node as a viewer node. In other words, providing a full visual requires that you also provide a preview visual.</p>
+
+<p>This time, to demonstrate this, we'll define a completely different viewer node that receives an image object from the <a href="https://pillow.readthedocs.io/en/stable/">Pillow</a> library in order to visualize it. We'll call it view_image node. Here's the script defining the node:</p>
+
 
 <python>
-### full viewer node source
-### points2d/viewer/view_points/__main__.py file
-
-### standard library import
-from collections import deque
 
 
 ### third-party imports
 
-from pygame import (
+## pygame
 
-              QUIT,
-              KEYUP, K_ESCAPE,
-
-              Surface,
-
-            )
-
-from pygame.display import get_surface, update
-
-from pygame.event import get as get_events
-
-from pygame.time import Clock
-
-from pygame.draw import circle as draw_circle
+from pygame import Surface
 
 from pygame.math import Vector2
 
+from pygame.image import fromstring as image_from_string
 
-### setup code: creation/reference of objects to be reused
-### by the node as needed
-
-## reference existing screen instance
-SCREEN = get_surface()
-
-## create a background filled with grey
-
-background = Surface(SCREEN.get_size()).convert()
-background.fill('grey')
-
-## create a clock and reference its tick() method which
-## will be used to maintain a steady framerate
-maintain_fps = Clock().tick
-
-## callable to offset points to center of the screen;
-##
-## this is needed because points are generated from the
-## origin of the 2d space, which is the topleft corner
-## of the screen, but we want them to appear near the
-## center
-move_to_center = Vector2(SCREEN.get_rect().center).__add__
-
-## define colors
-
-RED  = (255, 0,   0)
-BLUE = (  0, 0, 255)
+from pygame.transform import smoothscale as smoothscale_surface
 
 
-### below we define the function to be turned into our
-### viewer node
+## Pillow
+from PIL.Image import Image
 
-def view_points(points):
 
-    ### create a special collection with the points
-    ### moved to the center
 
-    points_deque = deque(
+### 2D vector representing origin
+ORIGIN = Vector2()
 
-                     move_to_center(point)
 
-                     for point in points
+### main callable
 
-                   )
+def view_image(
 
-    ### shift the points one position to the right;
+    image: Image,
+    max_preview_size: 'natural_number' = 600,
+
+) -&gt; [
+
+    {'name': 'full_surface', 'type': Surface},
+    {'name': 'preview_surface', 'type': Surface},
+
+]:
+    """Return dict with pygame-ce surfaces representing given image.
+
+    Parameters
+    ==========
+    image
+        Pillow image from which to create surfaces.
+    max_preview_size
+        maximum diagonal length of the preview surface. Must be &gt;= 0.
+        If 0, just use the full surface.
+    """
+
+    ### obtain surface from pillow image
+
+    mode = image.mode
+    size = image.size
+    data = image.tobytes()
+
+    full_surface = image_from_string(data, size, mode)
+
+    ### if the max preview size is 0, it means the preview doesn't need
+    ### to be below a specific size, so we can use the full surface
+    ### as the preview
+
+    if not max_preview_size:
+
+        preview_surface = full_surface
+
+        return {
+            'full_surface': full_surface,
+            'preview_surface': preview_surface,
+        }
+
+    ### otherwise, we must create a preview surface within the allowed size,
+    ### if the full surface surpasses such allowed size
+
+    ## obtain the bottom right coordinate of the image, which is
+    ## equivalent to its size
+    bottomright = full_surface.get_size()
+
+    ## use the bottom right to calculate its diagonal length
+    diagonal_length = ORIGIN.distance_to(bottomright)
+
+    ## if the diagonal length of the full surface is higher than the
+    ## maximum allowed size, we create a new smaller surface within
+    ## the allowed size to use as the preview
+
+    if diagonal_length &gt; max_preview_size:
+
+        size_proportion = max_preview_size / diagonal_length
+        new_size = ORIGIN.lerp(bottomright, size_proportion)
+
+        preview_surface = smoothscale_surface(full_surface, new_size)
+
+
+    ### otherwise, just alias the full surface as the preview surface;
     ###
-    ### from now on the points will be continually shifted
-    ### to the left one position each loop; we shift them
-    ### here to the right only this once, so that the first
-    ### time they are shifted to the left they assume the
-    ### original order;
-    points_deque.rotate(1)
+    ### that is, since the full surface didn't need to be downscaled,
+    ### it means it is small enough to be used as an in-graph visual
+    ### already
 
-    ### blit the background on the screen to clean it;
+    else:
+        preview_surface = full_surface
+
+    ### finally, return a dict containing both surfaces;
     ###
-    ### we only need to this once in this case, because
-    ### the points don't actually move, only their colors
-    ### are changed to give the illusion of movement,
-    ### so we only need to clean the screen this time;
-    SCREEN.blit(background, (0, 0))
+    ### you can return the surfaces in any way you want, inside a list,
+    ### inside a tuple or a dictionary, etc.; the format isn't important,
+    ### because we specify functions further below in the script to fetch
+    ### them for us regardless of where we placed them anyway
 
-    ### create a variable indicating to keep running the
-    ### loop
-    running = True
-
-    ### run the loop
-
-    while running:
-        
-        ### ensure framerate is kept at 60 fps
-        maintain_fps(60)
-        
-        ### handle inputs
-
-        for event in get_events():
-
-            ## if user tries to close the window
-            ## or presses the escape key we set the
-            ## 'running' variable to False, therefore
-            ## causing the loop to be exited
-
-            if (
-
-               event.type == QUIT
-
-               or (
-                     event.type == KEYUP
-                 and event.key  == K_ESCAPE
-               )
-
-            ):
-                running = False
-
-        ### shift points one position to the left
-        points_deque.rotate(-1)
-
-        ### draw objects
-
-        ## points
-
-        # draw all points with blue
-
-        for point in points_deque:
-
-            draw_circle(
-              SCREEN,
-              BLUE,
-              point,
-              3,
-            )
-
-        # then only the first point with red
-
-        draw_circle(
-          SCREEN,
-          RED,
-          points_deque[0],
-          3,
-        )
-
-        ### update the screen (pygame.display.update)
-        update()
+    return {
+        'full_surface': full_surface,
+        'preview_surface': preview_surface,
+    }
 
 
-### setting view_point's dismiss_exec_time_tracking
-### attribute to True
-view_points.dismiss_exec_time_tracking = True
+### alias the function defining the node as main_callable
+main_callable = view_image
 
-### finally, alias our function as the 'main_callable'
-main_callable = view_points
+### define a get_visual_from_output function;
+###
+### since we store our in-graph visual in the 'preview_surface' key
+### of the node's output (the dict returned), this function just
+### returns the value in that key
+get_visual_from_output = lambda node_output: node_output['preview_surface']
+
+### define a get_loop_data_from_output function;
+###
+### again, because our full surface (the loop data) is stored as
+### the 'full_surface' key of the node's output, this function just 
+### returns the value in such key
+get_loop_data_from_output = lambda node_output: node_output['full_surface']
 </python>
 
-<img src="images/ch-defining-viewer-nodes_img00.png" alt="Node generated from the function" />
+<p>And now this viewer node will look like this when instantiated:</p>
 
-<p>That's it! At this point, you should be able to test the node pack you created with your get_circle and view_points nodes. Also, don't forget to check the next two chapters, where I present other important ways of defining nodes, like defining nodes with more than one output.</p>
+<img src="images/ch-defining-viewer-nodes_img02.png" alt="view_image node when instantiated" />
+
+<p>And like this after we execute it:</p>
+
+<img src="images/ch-defining-viewer-nodes_img03.png" alt="view_image node after execution" />
+
+<p>Clicking the in-graph surface showing the strawberry basket in the image above will cause the full surface to be shown using a special surface viewer provided by Nodezator. This viewer has other features as well, like allowing the user to scroll the image using the keyboard or to drag the image around using the mouse.</p>
+
+<p>Just like the in-graph surface is also called in-graph visual, we also call this full surface, <b>full visual</b>. It is also called <b>loop data</b>, since it is data shown in a visualization loop. It just happens that such data is a surface. In the future though, this loop data may be of other types, like a string to be visualized as text, in case you are working with textual data. For instance, natural language, code or text-based data formats like python literals or JSON.</p>
+
+<p>Note that, in addition to the <b>Reload</b> button, the viewer node now also has a check button labeled <b>Loop on execution</b>. If the check button is marked, whenever the node is executed the app will also enter the loop of the surface viewer. You'll probably leave this button unmarked most of the time, since the in-graph visual will likely be enough.</p>
+
+<p>However, whenever you are fine-tuning the inputs in your graph to obtain a more accurate visualization, you'll probably leave the button marked so that you can inspect the full visual right away, instead of having to click the in-graph visual to access the full view. We'll also demonstrate in a future chapter how to provide a custom visualization loop for your viewer node, in which case leaving this button marked may be useful as well, so you can run your custom visualization when the node is executed.</p>
+
+<p>Another benefit of limiting the size of the surface displayed in the graph is that it makes it easier to organize your graph. That is, when your viewer node can create an in-graph surface of arbitrary size, such surface could end up too large and overlap with neighboring nodes. There's no need to worry if this happens, though, because in-graph visualizations are always drawn behind everything else in the graph, in order to avoid hiding other nodes. However, this is still a undesirable situation, because the other nodes would appear in front of the in-graph visual and you'd have to move the nodes out of the way every time this overlap occurs. Even worse, if the graph is large and has many nodes, you might end up having to move other nodes as well along the graph to make extra space. This is why it is extra useful to use smaller previews for in-graph visuals, instead of full visuals.</p>
 
 
-<p><a href="ch-defining-your-first-node.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch-defining-complex-viewer-nodes.htsl">Next chapter</a></p>
+<h2 id="in-graph-only-vs-full-visual">Brief note: in-graph only vs full visual</h2>
+
+<p>Note that a viewer node that only provides an in-graph visual is not necessarily inferior to one that also provides a full visual. As we said earlier, the full visual is just an additional resource that can be useful when you need to display visuals that are too large (or, as we'll see in other chapters, need to be customized, animated or have additional controls). If you don't need those things and the visuals you produce are not super large images, then you are probably better off just displaying the visuals in-graph.</p>
+
+<p>For instance, if you are working with pixel art (still images), you'll probably only create tiny/small images. If you are only generating static visualizations with <a href="https://matplotlib.org">matplotlib</a> for a paper, the visuals created won't probably get so large.</p>
+
+<p>Well, in the end, it is up to you which combination of visual features you think you'll need.</p>
+
+
+<h2 id="callable-mode-and-visuals">Callable mode and visuals</h2>
+
+<p>As you already know, when a node is in callable mode, a reference to its main callable is passed only the graph. When this is the case, Nodezator has no control over the execution of the node. Because of that Nodezator also cannot store the in-graph visual and the loop data, so the image beside the node cannot be updated, and its stored loop data cannot be updated as well. In fact, that wouldn't even make sense if you think about it. In callable mode, the node represents its behaviour, not a call with its inputs and outputs. It represents an action, that is, the action of grabing inputs and producing outputs (including the visuals). So it can in fact be executed many times along the graph, resulting in varied inputs and outputs. In other words, the action itself (the main callable being passed along) has no particular association with any visualization/outputs produced. That's why, like any other viewer node, simpler viewer nodes like the ones shown in this chapter, that is, viewer nodes that produce in-graph visual and loop data (or just in-graph visuals) have the in-graph visual taken away from them when they are in callable mode.</p>
+
+<p>This is not a bad thing, it is just something that is worth mentioning so that you are not caught by surprise.</p>
+
+<p>In later chapters we'll discover even more ways to provide visualizations with viewer nodes.</p>
+
+<p><a href="ch-defining-your-first-node.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch-nodes-variable-parameters-custom-outputs.htsl">Next chapter</a></p>
 
 </body>
 

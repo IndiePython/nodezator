@@ -1,0 +1,220 @@
+<htsl>
+
+<head>
+  <title>Nodezator Manual | Defining a custom visualization loop for viewer nodes</title>
+</head>
+
+<body>
+
+<p><a href="index.htsl">Table of contents</a> &gt; Defining a custom visualization loop for viewer nodes</p>
+
+
+<h1>Defining a custom visualization loop for viewer nodes</h1>
+
+<p>In the <a href="ch-defining-viewer-nodes.htsl">introductory chapter on viewer nodes</a> we learned how to tell Nodezator to use surfaces from a node's output to display in-graph visual or a full visual to be displayed by Nodezator in a dedicated surface viewer. There's still much to explore regarding viewer nodes though. For instance, not all data can be precisely visualized as an static image. In the case of the point generation node pack we have been using as an example in the first and second chapters, since the points represent movement, wouldn't it be more suitable if we had a way to see the generated points being animated?</p>
+
+<p>In previous versions of Nodezator, there was no in-graph visual, nor dedicated viewer provided by Nodezator, so the user actually had to create its own visualization loop inside their nodes in order to visualize the data when the node was executed. This is still something that you are encouraged to do if you are working with data that is more accurately represented when animated or if you want to add controls to your visualization, turning your viewer node into some sort of mini app.</p>
+
+<p>In other words, if your data can be visualized as an still image, then it is better to use the solution presented on the viewer nodes' introductory chapther, otherwise you'll likely benefit from defining your own visualization loop.</p>
+
+<p>In this chapter we'll set aside the in-graph visual and full visual/loop data described before to focus solely in defining a node with a custom visualization loop. This is exactly how users of previous versions would create viewer nodes. Such "old" viewer nodes would provide no visual to be displayed in-graph. In a subsequent chapter we'll see how to do both: define a custom visualization loop and provide an in-graph visual (surface) to display beside the node (usually as a preview of the full visual, as we learned before in the introductory chapter).</p>
+
+
+<h2 id="defining-node">Defining the node</h2>
+
+<p>The difference from the previous nodes we defined is that instead of just processing the input and returning the output, our viewer node will <b>define and run its own loop</b> until the user decides to exit the visualization.</p>
+
+<p>The only thing our viewer node needs now is to implement its own loop. This is actually pretty simple because Nodezator uses <a href="https://pyga.me">pygame-ce</a> as its GUI and pygame-ce provides all needed objects to define and run our own loop.</p>
+
+<p>So, in other words, we'll just <b>create a pygame loop</b> like any other. This has nothing to do with Nodezator, we use pure pygame-ce. Here's the full code, extensively commented:</p>
+
+<python>
+### points2d/viewer/view_points/__main__.py file
+
+### standard library import
+from collections import deque
+
+
+### third-party imports
+
+from pygame import (
+
+              QUIT,
+              KEYUP, K_ESCAPE,
+
+              Surface,
+
+            )
+
+from pygame.display import get_surface, update
+
+from pygame.event import get as get_events
+
+from pygame.time import Clock
+
+from pygame.draw import circle as draw_circle
+
+from pygame.math import Vector2
+
+
+### setup code: creation/reference of objects to be reused
+### by the node as needed
+
+## reference existing screen instance
+SCREEN = get_surface()
+
+## create a background filled with grey
+
+background = Surface(SCREEN.get_size()).convert()
+background.fill('grey')
+
+## create a clock and reference its tick() method which
+## will be used to maintain a steady framerate
+maintain_fps = Clock().tick
+
+## callable to offset points to center of the screen;
+##
+## this is needed because points are generated from the
+## origin of the 2d space, which is the topleft corner
+## of the screen, but we want them to appear near the
+## center
+move_to_center = Vector2(SCREEN.get_rect().center).__add__
+
+## define colors
+
+RED  = (255, 0,   0)
+BLUE = (  0, 0, 255)
+
+
+### below we define the function to be turned into our
+### viewer node
+
+def view_points(points):
+
+    ### create a special collection with the points
+    ### moved to the center
+
+    points_deque = deque(
+
+                     move_to_center(point)
+
+                     for point in points
+
+                   )
+
+    ### shift the points one position to the right;
+    ###
+    ### from now on the points will be continually shifted
+    ### to the left one position each loop; we shift them
+    ### here to the right only this once, so that the first
+    ### time they are shifted to the left they assume the
+    ### original order;
+    points_deque.rotate(1)
+
+    ### blit the background on the screen to clean it;
+    ###
+    ### we only need to this once in this case, because
+    ### the points don't actually move, only their colors
+    ### are changed to give the illusion of movement,
+    ### so we only need to clean the screen this time;
+    SCREEN.blit(background, (0, 0))
+
+    ### create a variable indicating to keep running the
+    ### loop
+    running = True
+
+    ### run the loop
+
+    while running:
+        
+        ### ensure framerate is kept at 60 fps
+        maintain_fps(60)
+        
+        ### handle inputs
+
+        for event in get_events():
+
+            ## if user tries to close the window
+            ## or presses the escape key we set the
+            ## 'running' variable to False, therefore
+            ## causing the loop to be exited
+
+            if (
+
+               event.type == QUIT
+
+               or (
+                     event.type == KEYUP
+                 and event.key  == K_ESCAPE
+               )
+
+            ):
+                running = False
+
+        ### shift points one position to the left
+        points_deque.rotate(-1)
+
+        ### draw objects
+
+        ## points
+
+        # draw all points with blue
+
+        for point in points_deque:
+
+            draw_circle(
+              SCREEN,
+              BLUE,
+              point,
+              3,
+            )
+
+        # then only the first point with red
+
+        draw_circle(
+          SCREEN,
+          RED,
+          points_deque[0],
+          3,
+        )
+
+        ### update the screen (pygame.display.update)
+        update()
+
+
+### setting view_point's dismiss_exec_time_tracking
+### attribute to True
+view_points.dismiss_exec_time_tracking = True
+
+### finally, alias our function as the 'main_callable'
+main_callable = view_points
+</python>
+
+<img src="images/ch-viewer-nodes-with-custom-visualization-loops_img00.png" alt="Node generated from the function" />
+
+<p>You can now visualize the points generated by the get_circle node as animated points in the custom visualization loop of this view_point node!</p>
+
+<p>However, since the loop is entered only when the node is executed, you can only visualize anything when that happens. As we said before, for now we still won't worry about creating an in-graph visual to be displayed beside the node. There's still more to learn about custom visualization loops before we revisit in-graph visuals.</p>
+
+
+<h2 id="dismissing-execution-time-tracking">Dismissing execution time tracking</h2>
+
+<p>The line of code near the end of the script presented earlier shows a <i>dismiss_exec_time_tracking</i> attribute being set to True in the callable. This line of code disables execution time tracking for a node. This feature is totally optional. It can be set with a single line of code. Just create an attribute in our callable named <i>dismiss_exec_time_tracking</i>, setting it to True.</p>
+
+<p>As the name of the feature suggests, the <b>execution time of the node won't be tracked</b>. All nodes, by default, have their execution time tracked. The total time taken to execute a node layout is calculated as the sum of the execution time of all nodes and displayed in the Nodezator's status bar.</p>
+
+<p>However, time spent in a viewer node may be irrelevant for 02 reasons. First, you might be primarily interested in the efficiency of your nodes that generate and transform data. To some, preparing the visualization or visualizing the data may not be considered critical parts of the graph. Second, in viewer nodes with custom visualization loops like the one we defined in this chapter, the user will spend an undefined extra amount of time on the loop inspecting the visualization, so the time executing it won't be meaningful to determine its efficiency, it is just an arbitrary amount of time the user decided to spend in the node.</p>
+
+<p>Again, dismissing execution time tracking in viewer nodes is <b>not needed, but may be useful in some cases</b> for the reasons we just discussed. Also, although I don't think you'd have any reason to do that, this feature actually works for any other node you define as well, not only viewer nodes.</p>
+
+<h2 id="callable-mode-custom-visualization-loops">Callable mode in nodes with custom visualization loops</h2>
+
+<p>It is worth reminding you that, just like any other user-defined node, viewer nodes like the one we defined in this chapter can also be used in the graph in callable mode. As such, whenever your viewer node in callable mode passes along a reference to it main callable, if this reference is used to execute the node further down in the graph, you'll naturally enter the visualization loop of the viewer node. This is not a bad thing, it is just something that is worth mentioning so that you are not caught by surprise.</p>
+
+<p>In the next chapter we'll focus on improving our custom visualization loop even more.</p>
+
+<p><a href="ch-distributing-nodes.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch-defining-complex-viewer-nodes.htsl">Next chapter</a></p>
+
+</body>
+
+</htsl>

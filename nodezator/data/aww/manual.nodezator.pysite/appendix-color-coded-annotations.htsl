@@ -14,13 +14,14 @@
 
 <ul>
 
-  <li><i>str</i>;</li>
-  <li><i>bool</i>;</li>
-  <li><i>dict</i>;</li>
-  <li><i>list;</i></li>
-  <li><i>tuple;</i></li>
-  <li><i>collections.abc.Iterable;</i></li>
-  <li><i>collections.abc.Iterator;</i></li>
+  <li>str;</li>
+  <li>bool;</li>
+  <li>dict;</li>
+  <li>list;</li>
+  <li>tuple;</li>
+  <li>collections.abc.Iterable;</li>
+  <li>collections.abc.Iterator;</li>
+  <li>collections.abc.Callable;</li>
 
   <li>all these number-related types and combinations have the same dedicated color:
 
@@ -39,10 +40,11 @@
     </ul>
 
   </li>
-  <li>sockets without a type hint also have a color associated with them (in the default theme the color is grey);</li>
-  <li>all other type hints that don't belong to one of the types/combinations mentioned above are associated with the same color (in the default theme the is color is light pink);</li>
-
 </ul>
+
+<p>Sockets without a type hint also have a color associated with them (in the default theme the color is grey);</p>
+
+<p>All other type hints that don't belong to one of the types/combinations mentioned above are associated with the same color (in the default theme the is color is a light pink);</p>
 
 <p>Dedicated colors for other types like <i>set</i> and <i>frozenset</i> might be added in the future.</p>
 

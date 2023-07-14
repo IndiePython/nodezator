@@ -26,13 +26,21 @@
       <li><a href="ch-defining-your-first-node.htsl#defining-node">Defining the node</a></li>
       <li><a href="ch-defining-your-first-node.htsl#loading-testing-first-node">Loading and testing your first node</a></li>
       <li><a href="ch-defining-your-first-node.htsl#node-pack-anatomy">The anatomy of a node pack</a></li>
+      <li><a href="ch-defining-your-first-node.htsl#expanded-collapsed-callable-modes">Expanded, collapsed and callable mode for nodes</a></li>
     </ol>
 
   </li>
 
-  <li><a href="ch-defining-viewer-nodes.htsl">Defining viewer nodes</a></li>
+  <li><a href="ch-defining-viewer-nodes.htsl">Defining viewer nodes</a>
 
-  <li><a href="ch-defining-complex-viewer-nodes.htsl">Defining a more complex viewer node</a></li>
+    <ol>
+      <li><a href="ch-defining-viewer-nodes.htsl#returning-visual-beside-node">Returning a visual to be displayed beside your node</a></li>
+      <li><a href="ch-defining-viewer-nodes.htsl#returning-larger-visual">Returning a larger visual to be displayed in a Nodezator viewer</a></li>
+      <li><a href="ch-defining-viewer-nodes.htsl#in-graph-only-vs-full-visual">Brief note: in-graph only vs full visual</a></li>
+      <li><a href="ch-defining-viewer-nodes.htsl#callable-mode-and-visuals">Callable mode and visuals</a></li>
+    </ol>
+
+  </li>
 
   <li><a href="ch-nodes-variable-parameters-custom-outputs.htsl">Nodes with variable parameters and custom outputs</a>
 
@@ -139,6 +147,7 @@
       <li><a href="ch-other-objects.htsl#data-nodes">Data nodes</a></li>
       <li><a href="ch-other-objects.htsl#redirect-nodes">Redirect nodes</a></li>
       <li><a href="ch-other-objects.htsl#relationship-data-redirect-nodes">Relationship between data nodes and redirect nodes</a></li>
+      <li><a href="ch-other-objects.htsl#callable-mode-app-defined-nodes">Callable mode in app-defined nodes</a></li>
     </ol>
 
   </li>
@@ -155,7 +164,42 @@
 
   </li>
 
-  <li>Different ways of using Nodezator (Soon)
+  <li><a href="ch-viewer-nodes-with-custom-visualization-loops.htsl">Defining a custom visualization loop for viewer nodes</a>
+
+    <ol>
+      <li><a href="ch-viewer-nodes-with-custom-visualization-loops.htsl#defining-node">Defining the node</a></li>
+      <li><a href="ch-viewer-nodes-with-custom-visualization-loops.htsl#dismissing-execution-time-tracking">Dismissing execution time tracking</a></li>
+      <li><a href="ch-viewer-nodes-with-custom-visualization-loops.htsl#callable-mode-custom-visualization-loops">Callable mode in nodes with custom visualization loops</a></li>
+    </ol>
+
+  </li>
+
+  <li><a href="ch-defining-complex-viewer-nodes.htsl">Defining a more complex viewer node</a></li>
+
+  <li><a href="ch-more-advanced-viewer-node-features-part1.htsl">More advanced viewer node features - Part 1</a>
+
+    <ol>
+      <li><a href="ch-more-advanced-viewer-node-features-part1.htsl#separating-into-processing-looping">Separating the main callable into processing and looping</a></li>
+      <li><a href="ch-more-advanced-viewer-node-features-part1.htsl#note-on-output-key">Brief note on "output" key in backdoor dictionary</a></li>
+      <li><a href="ch-more-advanced-viewer-node-features-part1.htsl#callable-mode-backdoor">Callable mode and the backdoor</a></li>
+    </ol>
+
+  </li>
+
+  <li><a href="ch-more-advanced-viewer-node-features-part2.htsl">More advanced viewer node features - Part 2</a>
+
+    <ol>
+      <li><a href="ch-more-advanced-viewer-node-features-part2.htsl#instructional-vs-practical-value">On instructional vs practical value of previous example</a></li>
+      <li><a href="ch-more-advanced-viewer-node-features-part2.htsl#backdoor-without-loop">Using the backdoor without a custom visualization loop</a></li>
+      <li><a href="ch-more-advanced-viewer-node-features-part2.htsl#only-in-graph-via-backdoor">Providing only in-graph visual via backdoor</a></li>
+      <li><a href="ch-more-advanced-viewer-node-features-part2.htsl#final-comment-on-backdoors">Final comment on backdoors</a></li>
+      <li><a href="ch-more-advanced-viewer-node-features-part2.htsl#final-optional-change">A final optional change to nodes with custom visualization loops</a></li>
+      <li><a href="ch-more-advanced-viewer-node-features-part2.htsl#visualization-for-still-images">Small advice on visualization for still images</a></li>
+    </ol>
+
+  </li>
+
+  <li>Different ways of using Nodezator (chapter not written yet)
 
     <ol>
       <li>As a standalone application</li>

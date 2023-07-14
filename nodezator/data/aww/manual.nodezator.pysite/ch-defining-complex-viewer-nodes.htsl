@@ -1,7 +1,7 @@
 <htsl>
 
 <head>
-  <title>Nodezator Manual | Defining a more comples viewer node</title>
+  <title>Nodezator Manual | Defining a more complex viewer node</title>
 </head>
 
 <body>
@@ -13,180 +13,195 @@
 
 <p>As we have been stressing so far, Nodezator doesn't require any kind of style or specific syntax to define nodes. As long as you point nodezator to the callable you want to use with the <i>main_callable</i> variable, it will take care of turning it into a node for you. As we also discussed, the callable doesn't even need to be a function. It can be a method, a class, or even a lambda. As long as you provide a callable, Nodezator can turn it into a node.</p>
 
-<p>Furthermore, because <a href="https://pyga.me">pygame-ce</a> (the library used for Nodezator's GUI) allows you to define and execute your own loop, you can actually go as complex as you want. You have complete control. For instance, you can make your viewer node responsive to window resizing and allow the user to scroll the visualization shown with both the keyboard and by dragging the mouse. None of this is related or dependent on Nodezator, it is all due to pygame's versatility.</p>
+<p>Furthermore, because <a href="https://pyga.me">pygame-ce</a> (the library used for Nodezator's GUI) allows you to define and execute your own loop, you can actually go as complex as you want. You have complete control. For instance, you can make your viewer node responsive to window resizing and allow the user to scroll the visualization shown with both the keyboard and by dragging the mouse. None of this is related or dependent on Nodezator, it is all due to pygame-ce's versatility.</p>
 
-<p>As an example, we'll compare 02 versions of the <a href="https://github.com/KennedyRichard/pillow_example_node_pack/blob/main/feedback/view_image/__main__.py">view_image</a> node from the <a href="https://github.com/KennedyRichard/pillow_example_node_pack">pillow example node pack</a>. The first version, when the repository was first uploaded, consists of a function that just displays the image centered on the screen, which is our main callable used for the node, and another support function which just serves to blit a checker pattern on the background for aesthetics. Here's the code:</p>
+<p>In this chapter we'll present a more complex viewer node. That is, one that can handle keyboard and mouse events and is responsive to window resizing. We still won't worry about in-graph visuals, just focus on improving our custom visualization loop.</p>
+
+<p>As an example, we'll compare the <i>view_points()</i> node presented in the previous chapter with an alternative version of it.</p>
+
+<p>Before we start, let's revisit the version presented in the previous chapter. Here's the code:</p>
 
 <python>
-"""Facility for image visualization."""
+### points2d/viewer/view_points/__main__.py file
 
 ### standard library import
-from itertools import cycle
+from collections import deque
 
 
 ### third-party imports
 
-## pygame
+from pygame import (
 
-from pygame import QUIT, KEYUP, K_ESCAPE, Surface, Rect
+              QUIT,
+              KEYUP, K_ESCAPE,
+
+              Surface,
+
+            )
 
 from pygame.display import get_surface, update
-from pygame.time    import Clock
-from pygame.math    import Vector2
-from pygame.event   import get as get_events
-from pygame.image   import fromstring as image_from_string
-from pygame.draw    import rect as draw_rect
+
+from pygame.event import get as get_events
+
+from pygame.time import Clock
+
+from pygame.draw import circle as draw_circle
+
+from pygame.math import Vector2
 
 
-## Pillow
-from PIL.Image import Image
+### setup code: creation/reference of objects to be reused
+### by the node as needed
+
+## reference existing screen instance
+SCREEN = get_surface()
+
+## create a background filled with grey
+
+background = Surface(SCREEN.get_size()).convert()
+background.fill('grey')
+
+## create a clock and reference its tick() method which
+## will be used to maintain a steady framerate
+maintain_fps = Clock().tick
+
+## callable to offset points to center of the screen;
+##
+## this is needed because points are generated from the
+## origin of the 2d space, which is the topleft corner
+## of the screen, but we want them to appear near the
+## center
+move_to_center = Vector2(SCREEN.get_rect().center).__add__
+
+## define colors
+
+RED  = (255, 0,   0)
+BLUE = (  0, 0, 255)
 
 
+### below we define the function to be turned into our
+### viewer node
 
-### get screen and its rect
+def view_points(points):
 
-screen      = get_surface()
-screen_rect = screen.get_rect()
+    ### create a special collection with the points
+    ### moved to the center
 
-### get a vector for the center of the screen
-screen_center = Vector2(screen_rect.center)
+    points_deque = deque(
 
-### instantiate background
-background = Surface(screen.get_size()).convert()
+                     move_to_center(point)
 
-### create a flag to determine whether we must draw a
-### a checker pattern on the background (in case we didn't
-### do so yet)
-MUST_DRAW_CHECKER_PATTERN = [None]
+                     for point in points
 
+                   )
 
-def blit_checker_pattern(surf):
-    """Blit checker pattern on surf with colors and rect."""
-    ### define settings
+    ### shift the points one position to the right;
+    ###
+    ### from now on the points will be continually shifted
+    ### to the left one position each loop; we shift them
+    ### here to the right only this once, so that the first
+    ### time they are shifted to the left they assume the
+    ### original order;
+    points_deque.rotate(1)
 
-    color_a = (235, 235, 235)
-    color_b = (120, 120, 120)
+    ### blit the background on the screen to clean it;
+    ###
+    ### we only need to this once in this case, because
+    ### the points don't actually move, only their colors
+    ### are changed to give the illusion of movement,
+    ### so we only need to clean the screen this time;
+    SCREEN.blit(background, (0, 0))
 
-    rect_width  = 40
-    rect_height = 40
-
-    ### retrieve a rect from the surf
-    surf_rect = surf.get_rect()
-
-    ### create a color cycler from the received colors
-    next_color = cycle((color_a, color_b)).__next__
-
-    ### create a rect with the provided dimensions, called
-    ### unit rect, since it represents an unit or tile in
-    ### the checker pattern
-    unit_rect = Rect(0, 0, rect_width, rect_height)
-
-    ### use the unit rect width and height as offset
-    ### amounts in the x and y axes
-
-    x_offset = rect_width
-    y_offset = rect_height
-
-    ### "walk" the surface while blitting the checker
-    ### pattern until the surface the entire area of
-    ### the surface is covered by the checker pattern
-
-    while True:
-
-        ## if the unit rect isn't touching the
-        ## surface area, invert the x_offset,
-        ## move it back using such new x_offset and
-        ## move it down using the y_offset
-
-        if not surf_rect.colliderect(unit_rect):
-            x_offset = -x_offset
-            unit_rect.move_ip(x_offset, y_offset)
-
-        ## if even after the previous if block the
-        ## unit rect still doesn't touch the surface
-        ## area, break out of the while loop
-        if not surf_rect.colliderect(unit_rect): break
-
-        ## draw the rect
-        draw_rect(surf, next_color(), unit_rect)
-
-        ## move the unit rect in the x axis using the
-        ## x_offset
-        unit_rect.move_ip(x_offset, 0)
-
-
-def view_image(image: Image):
-    """Display image centered on screen.
-    To stop displaying the image just press &lt;Escape&gt;.
-    This will trigger the exit of the inner loop.
-    """
-    ### if check pattern wasn't draw yet on background,
-    ### do so now
-
-    if MUST_DRAW_CHECKER_PATTERN:
-
-        blit_checker_pattern(background)
-        MUST_DRAW_CHECKER_PATTERN.pop()
-
-    ### obtain surface from pillow image
-
-    mode = image.mode
-    size = image.size
-    data = image.tobytes()
-
-    surf = image_from_string(data, size, mode)
-
-    ### clean the screen
-    screen.blit(background, (0, 0))
-
-    ### get rect for image and center it on the screen
-
-    rect        = surf.get_rect()
-    rect.center = screen_center
-
-    ### blit image center on the screen using the rect
-    screen.blit(surf, rect)
-
-    ### timing support
-
-    clock = Clock()
+    ### create a variable indicating to keep running the
+    ### loop
     running = True
 
-    ### start loop
+    ### run the loop
 
     while running:
-
-        clock.tick(30)
+        
+        ### ensure framerate is kept at 60 fps
+        maintain_fps(60)
+        
+        ### handle inputs
 
         for event in get_events():
 
-            if event.type == QUIT: running = False
+            ## if user tries to close the window
+            ## or presses the escape key we set the
+            ## 'running' variable to False, therefore
+            ## causing the loop to be exited
 
-            elif event.type == KEYUP:
-                if event.key == K_ESCAPE:
-                    running = False
+            if (
 
-        ### update screen
+               event.type == QUIT
+
+               or (
+                     event.type == KEYUP
+                 and event.key  == K_ESCAPE
+               )
+
+            ):
+                running = False
+
+        ### shift points one position to the left
+        points_deque.rotate(-1)
+
+        ### draw objects
+
+        ## points
+
+        # draw all points with blue
+
+        for point in points_deque:
+
+            draw_circle(
+              SCREEN,
+              BLUE,
+              point,
+              3,
+            )
+
+        # then only the first point with red
+
+        draw_circle(
+          SCREEN,
+          RED,
+          points_deque[0],
+          3,
+        )
+
+        ### update the screen (pygame.display.update)
         update()
 
 
-view_image.dismiss_exec_time_tracking = True
+### setting view_point's dismiss_exec_time_tracking
+### attribute to True
+view_points.dismiss_exec_time_tracking = True
 
-main_callable = view_image
+### finally, alias our function as the 'main_callable'
+main_callable = view_points
 </python>
 
-<p>However, such version <b>has limitations</b>. The loop doesn't react to window resizing, which means resizing the window will make the screen go blank (the correct response to window resizing should be redrawing the surfaces and in some cases repositioning objects before doing so). Also, if the image is larger than the screen, you won't be able to see what's beyond the screen.</p>
+<p>However, such version <b>has limitations</b>. The loop doesn't react to window resizing, which means resizing the window will leave some problems. The correct response to window resizing should be (depending on each case, of course) repositioning and redrawing objects. Another problem is that the points can't be moved, so if the area covered by the points is larger than the screen, you won't be able to see the points that are beyond the screen area.</p>
 
-<p>From now on we'll be looking into the new version of the view_image node script. I divided the code into smaller sections to help convey the different roles of each section of the code. As you look into each excerpt I'll provide brief comments, since the code itself is already commented in detail.</p>
+<p>From now on we'll be looking into an alternative definition of this view_points node. I divided the code into smaller sections to help convey the different roles of each section of the code. As you look into each excerpt I'll provide brief comments, since the code itself is already commented in detail.</p>
 
 <p>Before you delve into the code, however, I'd like to point out that <b>there is no perfect or correct way of defining loops in pygame</b>. You can use functions or classes, but even when using classes there are different ways to do it. I could even have split the node script into different modules to make the separation between the different parts even more clear.</p>
 
 <p>Do not stress over the details. The code to be presented is just what I thought was the best solution for what was needed. As long as you understand the purpose of the individual pieces you'll be able to come up with your own solutions. You are also always welcome to ask on <a href="https://indiepython.com/discord">discord</a> or <a href="https://github.com/IndiePython/nodezator/discussions">github discussions</a> every time you have questions.</p>
 
-<p>First of all, we have the imports and the definition of constants. Note that, only for the sake of making things a bit more organized, I relocated the definition of the <i>blit_checker_pattern()</i> function (and all related import statements) to a local module called <i>utils.py</i>:</p>
+<p>First of all, we have the imports and the definition of constants:</p>
 
 <python>
-"""Facility for image visualization."""
+"""Facility for points visualization."""
+
+### standard library imports
+
+from collections.abc import Iterable
+
+from itertools import cycle
+
 
 
 ### third-party imports
@@ -210,30 +225,41 @@ from pygame import (
               MOUSEBUTTONDOWN,
               MOUSEMOTION,
 
-              Surface,
+              Surface, Rect
 
             )
 
 from pygame.display import get_surface, update
 from pygame.time    import Clock
 from pygame.event   import get as get_events
-from pygame.image   import fromstring as image_from_string
 
 from pygame.key import get_pressed as get_pressed_keys
 
+from pygame.math import Vector2
 
-## Pillow
-from PIL.Image import Image
+from pygame.draw import (
+    rect as draw_rect,
+    line as draw_line,
+)
 
-
-### local import
-from .utils import blit_checker_pattern
 
 
 ### get screen reference and a rect for it
 
 SCREEN      = get_surface()
 SCREEN_RECT = SCREEN.get_rect()
+
+### store center of the screen as origin of 2D space
+ORIGIN = Vector2(SCREEN_RECT.center)
+
+### create vector representing extra offset for points
+EXTRA_OFFSET = Vector2()
+
+### create rect representing a point
+POINT_RECT = Rect(0, 0, 5, 5)
+
+### create another representing a bigger point
+BIG_POINT_RECT = Rect(0, 0, 9, 9)
 
 ### define scrolling speeds in different 2D axes
 
@@ -243,13 +269,14 @@ Y_SCROLLING_SPEED = 20
 ### obtain fps maintaining operation
 maintain_fps = Clock().tick
 
-### define the framerate
-FPS = 30
+### define colors for support elements
+BG_COLOR = (220, 220, 220)
+
 </python>
 
 <p>Then, we start defining a class. Yes, this time we'll use a class to hold all needed methods to manage our node and its loop, including the method we'll be using as the main callable for our viewer node.</p>
 
-<python linenofrom="63">
+<python linenofrom="80">
 ### now here comes the first big change on our script:
 ###
 ### rather than using a single function as our main
@@ -261,49 +288,24 @@ FPS = 30
 ### with a lot state (different objects, values and
 ### behaviours) and classes are a great tool for such job
 
-class ImageViewer:
-    """Manages the loop of the view_image() node."""
+class PointsViewer:
+    """Manages the loop of the view_points() node."""
 
     def __init__(self):
         """Create support objects/flags."""
-
-        ### create a scroll area so the image can be moved
-        ### around
-        self.scroll_area = SCREEN_RECT.inflate(-80, -80)
-
         ### instantiate background
 
         self.background = (
           Surface(SCREEN.get_size()).convert()
         )
 
-        ### create flag to indicate whether the checker
-        ### pattern must be drawn on the background;
-        ###
-        ### the first time the node is executed the
-        ### checker pattern is draw on the background
-        ### and then this flag is set to False; it will
-        ### remain False for the lifetime of the node,
-        ### that is, it is used only that time;
-        ###
-        ### it is actually optional: we could draw the
-        ### checker pattern right away if we wanted; we
-        ### just avoid doing so because though it happens
-        ### practically in an instant, there's no telling
-        ### whether other nodes will also perform setups
-        ### that take time when the node pack is loaded
-        ### and the sum of the time taken by all nodes
-        ### might end up resulting in a non-trivial amount
-        ### of time to load the node pack;
-        ###
-        ### maybe we are just being overly cautious,
-        ### though;
-        self.must_draw_checker_pattern = True
+        self.background.fill(BG_COLOR)
+
 </python>
 
-<p>We then define the methods for the keyboard mode, that is, for when we use the keyboard to move our image around.</p>
+<p>We then define the methods for the keyboard mode, that is, for when we use the keyboard to move the points around.</p>
 
-<python linenofrom="113">
+<python linenofrom="104">
     def keyboard_mode_event_handling(self):
         """Event handling for the keyboard mode."""
 
@@ -320,10 +322,7 @@ class ImageViewer:
             elif event.type == KEYUP:
 
                 if event.key == K_HOME:
-
-                    self.image_rect.center = (
-                      SCREEN_RECT.center
-                    )
+                    EXTRA_OFFSET.xy = (0, 0)
 
                 elif event.key == K_ESCAPE:
                     self.running = False
@@ -335,138 +334,66 @@ class ImageViewer:
 
         ### calculate x movement
 
-        ## calculate x movement if the "moves_horizontally"
-        ## flag is set
+        ## check whether "go left" and "go right"
+        ## buttons were pressed
 
-        if self.moves_horizontally:
+        go_left = any(
+          key_input[key] for key in (K_a, K_LEFT)
+        )
 
-            ## check whether "go left" and "go right"
-            ## buttons were pressed
+        go_right = any(
+          key_input[key] for key in (K_d, K_RIGHT)
+        )
 
-            go_left = any(
-              key_input[key] for key in (K_a, K_LEFT)
-            )
+        ## assign amount of movement on x axis
+        ## depending on whether "go left" and "go right"
+        ## buttons were pressed
 
-            go_right = any(
-              key_input[key] for key in (K_d, K_RIGHT)
-            )
+        if go_left and not go_right:
+            dx = -1 * X_SCROLLING_SPEED
 
-            ## assign amount of movement on x axis
-            ## depending on whether "go left" and "go right"
-            ## buttons were pressed
+        elif go_right and not go_left:
+            dx = 1 * X_SCROLLING_SPEED
 
-            if go_left and not go_right:
-                dx = -1 * X_SCROLLING_SPEED
-
-            elif go_right and not go_left:
-                dx = 1 * X_SCROLLING_SPEED
-
-            else: dx = 0
-
-        ## if the "moves_horizontally" flag is not set,
-        ## it means the image's width is smaller than
-        ## the screen's width, so there's no need to
-        ## move/scroll horizontally anyway, so the
-        ## movement is 0
         else: dx = 0
+
 
         ### perform the same checks/calculations for
         ### the y axis
 
-        if self.moves_vertically:
+        go_up = any(
+          key_input[key] for key in (K_w, K_UP)
+        )
 
-            go_up = any(
-              key_input[key] for key in (K_w, K_UP)
-            )
+        go_down = any(
+          key_input[key] for key in (K_s, K_DOWN)
+        )
 
-            go_down = any(
-              key_input[key] for key in (K_s, K_DOWN)
-            )
+        if (
 
-            if (
+             (go_up and go_down)
+          or (not go_up and not go_down)
 
-                 (go_up and go_down)
-              or (not go_up and not go_down)
+        ):
+            dy = 0
 
-            ):
-                dy = 0
+        elif go_up and not go_down:
+            dy = -1 * Y_SCROLLING_SPEED
 
-            elif go_up and not go_down:
-                dy = -1 * Y_SCROLLING_SPEED
+        elif go_down and not go_up:
+            dy = 1 * Y_SCROLLING_SPEED
 
-            elif go_down and not go_up:
-                dy = 1 * Y_SCROLLING_SPEED
-
-        else: dy = 0
 
         ### if there is movement in the x or y
-        ### axis, move the image
-        if dx or dy: self.move_image(dx, dy)
+        ### axis, increment the extra offset
+        if dx or dy:
+            EXTRA_OFFSET.xy += (dx, dy)
 
 </python>
 
-<p>Then, we define the <i>move_image()</i> method, which we used to move the image regardless of the active mode.</p>
+<p>Then comes the methods for the mouse mode, that is, for when we use the mouse to move the points around.</p>
 
-<python linenofrom="212">
-    def move_image(self, dx, dy):
-        """Move image in x and/or y axis.
-
-        It performs extra checks/movement relative to
-        a scroll area to ensure the image never leaves
-        the screen completely.
-        """
-
-        image_rect  = self.image_rect
-        scroll_area = self.scroll_area
-
-        ### apply x movement if != 0
-
-        if dx &lt; 0:
-
-            if (
-              (image_rect.right + dx)
-              &lt; scroll_area.right
-            ):
-                image_rect.right = scroll_area.right
-
-            else: image_rect.x += dx
-
-        elif dx &gt; 0:
-
-            if (
-              (image_rect.left + dx)
-              &gt; scroll_area.left
-            ):
-                image_rect.left = scroll_area.left
-
-            else: image_rect.x += dx
-
-        ### apply y movement if != 0
-
-        if dy &lt; 0:
-
-            if (
-              (image_rect.bottom + dy)
-              &lt; scroll_area.bottom
-            ):
-                image_rect.bottom = scroll_area.bottom
-
-            else: image_rect.y += dy
-
-        elif dy &gt; 0:
-
-            if (
-              (image_rect.top + dy)
-              &gt; scroll_area.top
-            ):
-                image_rect.top = scroll_area.top
-
-            else: image_rect.y += dy
-</python>
-
-<p>Then comes the methods for the mouse mode, that is, for when we use the mouse to move the image around.</p>
-
-<python linenofrom="267">
+<python linenofrom="187">
     def mouse_mode_event_handling(self):
         """Event handling for the mouse mode."""
 
@@ -476,7 +403,7 @@ class ImageViewer:
                 self.running = False
 
             elif event.type == MOUSEMOTION:
-                self.move_according_to_mouse(*event.rel)
+                EXTRA_OFFSET.xy += event.rel
 
             elif event.type == MOUSEBUTTONUP:
 
@@ -488,27 +415,17 @@ class ImageViewer:
                 if event.key == K_ESCAPE:
                     self.running = False
 
-    def move_according_to_mouse(self, dx, dy):
-        """Support method for the mouse mode."""
-
-        if not self.moves_horizontally:
-            dx = 0
-
-        if not self.moves_vertically:
-            dy = 0
-
-        self.move_image(dx, dy)
-
     def mouse_mode_key_state_handling(self):
         """Mouse mode doesn't handle key pressed state.
 
         So this method does nothing.
         """
+
 </python>
 
-<p>The <i>watch_window_size()</i> method is used on the loop to watch out for changes in the window (screen) size. When it is found that the screen changed size, it performs setups to ensure the objects are positioned and drawn correctly.</p>
+<p>The <i>watch_window_size()</i> method is used on the loop to watch out for changes in the window (screen) size. When it is found that the screen changed size, it performs setups to ensure the points are repositioned correctly.</p>
 
-<python linenofrom="305">
+<python linenofrom="214">
     def watch_window_size(self):
         """Perform setups if window was resized."""
 
@@ -522,53 +439,29 @@ class ImageViewer:
         ### otherwise, we keep executing the function,
         ### performing the needed setups
 
-        ## reference image surf and rect locally
-
-        image_surf = self.image_surf
-        image_rect = self.image_rect
-
         ## update the screen rect's size
         SCREEN_RECT.size = SCREEN.get_size()
 
-        ## center the image on the screen
-        image_rect.center = SCREEN_RECT.center
+        ## reset the extra offset
+        EXTRA_OFFSET.xy = (0, 0)
 
-        ## update the moving flags
+        ## update the origin
+        ORIGIN.xy = SCREEN_RECT.center
 
-        self.moves_horizontally = (
-          image_rect.width &gt; SCREEN_RECT.width
-        )
-
-        self.moves_vertically = (
-          image_rect.height &gt; SCREEN_RECT.height
-        )
-
-        ## recreate the background and redraw the checker
-        ## pattern on it
+        ## recreate the background
 
         self.background = (
-
           Surface(SCREEN.get_size()).convert()
-
         )
 
-        blit_checker_pattern(self.background)
-
-        ## draw the background on the screen
-        SCREEN.blit(self.background, (0, 0))
-
-        ## blit image on the screen using its rect
-        SCREEN.blit(image_surf, image_rect)
-
-        ## replace the scroll area
-        self.scroll_area = SCREEN_RECT.inflate(-80, -80)
+        self.background.fill(BG_COLOR)
 </python>
 
-<p>We then have more support methods: to enable different modes, to start and manage the loop and to (re)draw the objects when the image is moved.</p>
+<p>We then have more support methods: to enable different modes, to start and manage the loop and to (re)draw the objects when the points are moved.</p>
 
-<python linenofrom="359">
+<python linenofrom="244">
     def enable_keyboard_mode(self):
-        """Set behaviours to move image with keyboard."""
+        """Set behaviours to move points with keyboard."""
 
         self.handle_events = (
           self.keyboard_mode_event_handling
@@ -579,7 +472,7 @@ class ImageViewer:
         )
 
     def enable_mouse_mode(self):
-        """Set behaviours to move image with the mouse.
+        """Set behaviours to move points with the mouse.
 
         That is, by dragging.
         """
@@ -593,25 +486,141 @@ class ImageViewer:
         )
 
     def draw(self):
-        """If image moved, redraw."""
-
-        ### if the image is in the same position,
-        ### do nothing by returning early
-
-        if (
-          self.last_topleft == self.image_rect.topleft
-        ): return
-
-        ### otherwise store the current position and
-        ### redraw background and image
-
-        self.last_topleft = self.image_rect.topleft
-
+        """If points area moved, redraw."""
+        ### background
         SCREEN.blit(self.background, (0, 0))
 
-        SCREEN.blit(
-                 self.image_surf, self.image_rect
-               )
+        ### define total offset
+        total_offset = ORIGIN + EXTRA_OFFSET
+
+        ### draw grid
+
+        ## define needed variables
+
+        x, y = total_offset
+
+        top = left = 0
+        right, bottom = SCREEN_RECT.bottomright
+
+        ## draw vertical grid lines
+
+        if x &gt;= right:
+
+            dx = x - right
+
+            t = dx // 80
+            nx = x - (t * 80)
+
+            while nx &gt; 0:
+
+                nx -= 80
+
+                draw_line(SCREEN, 'black', (nx, top), (nx, bottom), 1)
+
+        elif x &lt; 0:
+
+            dx = -x
+
+            t = dx // 80
+
+            nx = x + (t * 80)
+
+            while nx &lt; right:
+
+                nx += 80
+
+                draw_line(SCREEN, 'black', (nx, top), (nx, bottom), 1)
+
+        else:
+
+            nx = x
+
+            while nx &gt; 0:
+                nx -= 80
+                draw_line(SCREEN, 'black', (nx, top), (nx, bottom), 1)
+
+            nx = x
+
+            while nx &lt; right:
+                nx += 80
+                draw_line(SCREEN, 'black', (nx, top), (nx, bottom), 1)
+
+        ## draw horizontal grid lines
+
+        if y &gt;= bottom:
+
+            dy = y - bottom
+
+            t = dy // 80
+            ny = y - (t * 80)
+
+            while ny &gt; 0:
+
+                ny -= 80
+
+                draw_line(SCREEN, 'black', (left, ny), (right, ny), 1)
+
+        elif y &lt; 0:
+
+            dy = -y
+
+            t = dy // 80
+
+            ny = y + (t * 80)
+
+            while ny &lt; bottom:
+
+                ny += 80
+
+                draw_line(SCREEN, 'black', (left, ny), (right, ny), 1)
+
+        else:
+
+            ny = y
+
+            while ny &gt; 0:
+                ny -= 80
+                draw_line(SCREEN, 'black', (left, ny), (right, ny), 1)
+
+            ny = y
+
+            while ny &lt; bottom:
+                ny += 80
+                draw_line(SCREEN, 'black', (left, ny), (right, ny), 1)
+
+        ## draw axes lines
+
+        x_in = left &lt;= x &lt; right
+        y_in = top &lt;= y &lt; bottom
+
+        if x_in:
+            draw_line(SCREEN, 'red', (x, 0), (x, bottom), 1)
+
+        if y_in:
+            draw_line(SCREEN, 'red', (0, y), (right, y), 1)
+
+
+        ### draw points
+
+        ## all points
+
+        for point in self.points:
+
+            POINT_RECT.center = point + total_offset
+
+            draw_rect(SCREEN, 'blue', POINT_RECT)
+
+        ## one point
+
+        # if needed, update next point
+        if self.update_next_point():
+            self.next_point = self.get_next_point()
+
+        # draw it
+
+        BIG_POINT_RECT.center = self.next_point + total_offset
+
+        draw_rect(SCREEN, 'red', BIG_POINT_RECT)
 
     def loop(self):
         """Start and keep a loop.
@@ -619,13 +628,12 @@ class ImageViewer:
         The loop is only exited when the running flag
         is set to False.
         """
-
         self.running = True
 
         while self.running:
 
             ## maintain a constant fps
-            maintain_fps(FPS)
+            maintain_fps(self.fps)
 
             ## watch out for change in the window size,
             ## performing needed setups if such change
@@ -644,13 +652,13 @@ class ImageViewer:
             update()
 </python>
 
-<p>Finally we define the method we'll be using as our main callable: the <i>view_image()</i> method. Note that once the method is defined and still in the body of our class definition we set the <i>dismiss_exec_time_tracking</i> attribute on the method. Also note that after leaving the class definition we instantiate the ImageViewer class and assign the view_image method as the main_callable.</p>
+<p>Finally we define the method we'll be using as our main callable: the <i>view_points()</i> method. Note that once the method is defined and still in the body of our class definition we set the <i>dismiss_exec_time_tracking</i> attribute on the method. Also note that after leaving the class definition we instantiate the PointsViewer class and assign the view_points method as the main_callable.</p>
 
 <python linenofrom="435">
     ### the method below is the main callable we'll use
     ### for our node;
     ###
-    ### that is, we'll instantiate the ImageViewer class
+    ### that is, we'll instantiate the PointsViewer class
     ### and use this method from the instance as the
     ### main callable;
     ###
@@ -659,118 +667,93 @@ class ImageViewer:
     ### one is inspect.signature(), the responsible for
     ### such behaviour)
 
-    def view_image(self, image: Image):
-        """Display image on screen.
+    def view_points(
+        self,
 
-        To stop displaying the image just press &lt;Escape&gt;.
+        points: Iterable,
+
+        framerate: {
+          'widget_name': 'int_float_entry',
+          'widget_kwargs' : {'min_value': 0},
+          'type': int
+        } = 30,
+
+        frames_delay: {
+          'widget_name'   : 'int_float_entry',
+          'widget_kwargs' : {'min_value': 0},
+          'type'          : int
+        } = 0,
+    ):
+        """Display points on screen.
+
+        To stop displaying the points just press &lt;Escape&gt;.
         This will trigger the exit of the inner loop.
         """
+        ### store points in a list
+        self.points = list(points)
+
+        ### store the framerate
+        self.fps = framerate
+
+        ### define an operation that tells when to
+        ### update the next point
+
+        self.update_next_point = (
+            cycle((True,) + ((False,) * frames_delay)).__next__
+        )
+
+        ### also store the __next__ operation of a cycle iterator
+        ### created from the points; this way you'll get a new
+        ### point whenever it is executed
+        self.get_next_point = cycle(self.points).__next__
+
+        ### reset the extra offset of the points
+        EXTRA_OFFSET.xy = (0, 0)
+
         ### enable keyboard mode
         self.enable_keyboard_mode()
-
-        ### draw the checker pattern on the background if
-        ### needed; this flag is only used once for the
-        ### lifetime of this node (check the comment on
-        ### the __init__ method about this flag)
-
-        if self.must_draw_checker_pattern:
-
-            ### draw the checker pattern on the background
-            blit_checker_pattern(self.background)
-
-            ### set flag to false
-            self.must_draw_checker_pattern = False
-
-
-        ### obtain surface from pillow image
-
-        mode = image.mode
-        size = image.size
-        data = image.tobytes()
-
-        surf = image_from_string(data, size, mode)
-
-        ### draw the background on the screen
-        SCREEN.blit(self.background, (0, 0))
-
-        ### get rect for image and center it on the screen
-
-        rect = surf.get_rect()
-
-        rect.center = SCREEN_RECT.center
-
-        ### update the moving flags;
-        ###
-        ### such flags just indicate whether moving the
-        ### image makes sense horizontally and
-        ### vertically, depending on whether the image
-        ### is larger than the screen or not;
-        ###
-        ### for instance, if the screen is wider than
-        ### the image, then there is no need to move
-        ### the image horizontally, so the corresponding
-        ### flag is set to false
-
-        self.moves_horizontally = (
-          rect.width &gt; SCREEN_RECT.width
-        )
-
-        self.moves_vertically = (
-          rect.height &gt; SCREEN_RECT.height
-        )
-
-        ### store image surface and rect
-
-        self.image_surf = surf
-        self.image_rect = rect
-
-        ### blit image on the screen using its rect
-        SCREEN.blit(surf, rect)
-
-        ### create attribute to track topleft position
-        self.last_topleft = rect.topleft
 
         ### loop
         self.loop()
 
-        ### remove image surf and rect references
 
-        del self.image_surf
-        del self.image_rect
-
-    ### set attribute on view_image method so the
+    ### set attribute on view_points method so the
     ### execution time tracking is dismissed for this
     ### node;
     ###
     ### we need to do this here rather than after
-    ### instantiating ImageViewer because after
-    ### instantiating the class the view_image method
+    ### instantiating PointsViewer because after
+    ### instantiating the class the view_points method
     ### doesn't allow new attributes to be set on it
-    view_image.dismiss_exec_time_tracking = True
+    view_points.dismiss_exec_time_tracking = True
 
 
-### finally, we just need to instantiate the ImageViewer
-### and use the view_image method as the main callable;
+### finally, we just need to instantiate the PointsViewer
+### and alias its view_points() method as the main callable
 ###
 ### note that we also make it so the callable can be found in
-### this module using its own name, that is, 'view_image';
+### this module using its own name, that is, 'view_points';
 ###
 ### we do so because when the node layout is exported as a python
 ### script, its name is used to find the callable
-main_callable = view_image = ImageViewer().view_image
+main_callable = view_points = PointsViewer().view_points
 </python>
 
 
-<p>This new version of the node script, including the <i>utils.py</i> local module from where it imports the  <i>blit_checker_pattern()</i> function, has only <b>600 lines</b>. It is a small number of lines and yet with just that we defined a viewer tool that can display an image, move it around using the keyboard and mouse and reposition/redraw the image automatically when the window is resized.</p>
+<p>This new version of the node script has only <b>516 lines</b>, and that's because we are counting the comments as well. It is a small number of lines and yet with just that we defined a viewer tool that can display animated points, move them around using the keyboard and mouse and reposition them automatically when the window is resized. We could even have reduced this number even further by refactoring the <i>draw()</i> method to reduce the number of conditional blocks.</p>
 
-<p>Also note that in addition to referencing the main callable to be used in the <i>main_callable</i> variable, we also created a variable called <i>view_image</i> at the same time. As explained in the code comment, if we use this node in a .ndz file and we want to export the file as Python code, we must ensure the main callable can be found on the node script module <i>__main__.py</i> using its name (in this case, <i>view_image</i>). The first version using a function doesn't need this extra step because the <i>def</i> statement already stores the function in the module using its name.</p>
+<p>Also note that in addition to referencing the main callable to be used in the <i>main_callable</i> variable, we also created a variable called <i>view_points</i> at the same time. As explained in the code comment, if we use this node in a .ndz file and we want to export the file as Python code, we must ensure the main callable can be found on the node script module <i>__main__.py</i> using its name (in this case, <i>view_points</i>). The first version using a function doesn't need this extra step because the <i>def</i> statement already stores the function in the module in a variable with its name.</p>
 
-<p>Moreover, no syntax or api is ever enforced by Nodezator, it is all plain pygame and its power in action. Of all the 598 lines of code the only change required by Nodezator was to point out the main callable using the <i>main_callable</i> variable. We also set the <i>dismiss_exec_time_tracking</i> attribute on the view_image method, but even this is a very small change and optional.</p>
+<p>Moreover, no syntax or API is ever enforced by Nodezator, it is all plain pygame-ce and its power in action. Of all the 516 lines of code the only change required by Nodezator was to point out the main callable using the <i>main_callable</i> variable. We also set the <i>dismiss_exec_time_tracking</i> attribute on the view_image method, but even this is a very small change and optional. That is, you only had to add 02 lines, and one of them was optional.</p>
 
-<p>I hope this example gave you a tiny glimpse of pygame's power to create real-time visualization tools that are easy to develop and maintain, combined with Nodezator to integrate all of this in a node editing interface.</p>
+<p>I hope this example gave you a tiny glimpse of pygame-ce's power to create real-time visualization tools that are easy to develop and maintain, combined with Nodezator to integrate all of this in a node editing interface.</p>
+
+<p>Also, just cause we are highlighting the small number of lines used to achieve this visualization, it doesn't mean you have to worry about keeping the line count of your viewer node scripts small (or any other kind of node). You should only focus on making things work. Only after that you should worry about refactoring. Again, remember that there's multiple ways to achieve things. Just do what's best for your use case.</p>
+
+<p>In the following chapters we'll learn how to improve integration of this custom visualization loop with Nodezator and revisit the topic about how to set a pygame surface to use as an in-graph visual. We'll also learn yet another way to provide in-graph visual and the full visual without having to return them from our viewer node. Finally, we'll also briefly discuss yet another optional improvement to our script to make our custom visualization loop even more versatile.</p>
 
 
-<p><a href="ch-defining-viewer-nodes.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch-nodes-variable-parameters-custom-outputs.htsl">Next chapter</a></p>
+<p><a href="ch-viewer-nodes-with-custom-visualization-loops.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch-more-advanced-viewer-node-features-part1.htsl">Next chapter</a></p>
 
 </body>
 

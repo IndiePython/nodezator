@@ -35,9 +35,9 @@ def get_double(number:int=1):
 
 <img src="images/ch-basic-way-define-widgets_img00.png" alt="Node generated from the function" />
 
-<p>It is also important to note that widgets do not limit the freedom of your nodes, they do not prevent the parameter to receive other kinds of values if so desired. The value in the widget will only be used if there's no incomming data from another node to the parameter.</p>
+<p>It is also important to note that widgets do not limit the freedom of your nodes, they do not prevent the parameter to receive other kinds of values if so desired. The value in the widget will only be used if there's no incoming data from another node to the parameter.</p>
 
-<p>For instance, in the image below, the widget to the left will have its value used, since the socket doesn't receive a value from a connection, but the widget to the right will be ignored and the value received will be the one from the connection instead. It will be as if the widget didn't exist.</p>
+<p>For instance, in the image below, the widget in the <i>number</i> parameter of the node to the left will have its value used, since the socket doesn't receive a value from a connection, but the <i>number</i> parameter of the node to the right will receive incoming data via the connection to the socket. That's why the widget is hidden, since it is as if it doesn't exist. If the connection to the <i>number</i> parameter in the node to the right is severed, the widget will appear again.</p>
 
 <img src="images/ch-basic-way-define-widgets_img01.png" alt="Two nodes with widgets; the second one has a connection in the input socket as well." />
 

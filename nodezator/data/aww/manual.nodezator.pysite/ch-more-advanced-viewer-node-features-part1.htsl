@@ -1,0 +1,802 @@
+<htsl>
+
+<head>
+  <title>Nodezator Manual | More advanced viewer node features - Part 1</title>
+</head>
+
+<body>
+
+<p><a href="index.htsl">Table of contents</a> &gt; More advanced viewer node features - Part 1</p>
+
+
+<h1>More advanced viewer node features - Part 1</h1>
+
+<p>In the previous chapter we presented a <i>view_points()</i> viewer node with a custom visualization loop with many features. However, that node can still be improved. Wouldn't it be more convenient if we could have a preview to be shown in the graph instead of entering the visualization loop every time the node is executed? One of the simpler viewer nodes that were shown to us in the <a href="ch-defining-viewer-nodes.htsl">introductory chapter on viewer nodes</a> at the beginning of the manual could do that already.</p>
+
+<p>Wouldn't it be convenient if our viewer node also had all of that? In this chapter we'll demonstrate how you can do that.</p>
+
+
+<h2 id="separating-into-processing-looping">Separating the main callable into processing and looping</h2>
+
+<p>Our viewer node from the previous chapther did 02 different things: process the data and visualize the data in the loop.</p>
+
+<p>First, it processed the received data, though the processing in this case was rather simple, that is, it ensured the given points were stored in a list. In this context, we could say that the list of points, the framerate and the frames delay received are the loop data. In other words, they are all the information needed to enable our custom visualization loop. When presenting a simple viewer node in the <a href="ch-defining-viewer-nodes.htsl">introductory chapter about viewer nodes</a>, the full surface it marked to be viewed in the dedicated viewer was also called <b>loop data</b>. And that's just what the list of points and the other data are: data needed to run the visualization loop.</p>
+
+<p>Second, it proceeds to use the data to setup the loop and begins looping, that is, it stores the points, the framerate, and stores the <i>__next__</i> method of an iterator obtained from a<a href="docs.python.org/3/library/itertools.html#itertools.cycle">cycle</a>.</p>
+
+<p>These 02 things are just what Nodezator needs to be able to execute your node without entering the loop. You just need to split the logic of your main callable into 02 new different callables, one to handle each task described above. That is, one to process the input(s) and generate the loop data (and maybe outputs of the node), and another one to use the loop data to setup and enter the custom visualization loop. Your main callable will still be needed, but it's body will be simplified to 02 calls, one to each callable. Don't worry, we'll only need to change the very ending of our node script, and we'll give you a full example of all of this.</p>
+
+<p>From now on in this chapter, the first callable will be called <b>processing backdoor</b> or just <b>backdoor</b>, since it represents a backdoor from which we can retrieve the loop data (and other relevant data, like the output of the node) without having to enter the loop. The second callable will be called <b>custom looper</b> or just <b>looper</b>, since it is the part responsible to show the data in the custom visualization loop.</p>
+
+<p>This way, Nodezator can execute just the backdoor when your node is executed. The custom looper will be executed only when you want to enter the custom visualization loop of your node.</p>
+
+<p>Because the backdoor represents the step where the inputs of the node are received, it must have the same parameters as our viewer node's main callable.</p>
+
+<p>The return value is different, though. Our backdoor callable must return a dictionary containing relevant data for our purposes. Here's the data that must be available in the dictionary returned by the backdoor:</p>
+
+<table class="table">
+
+    <thead>
+
+        <tr>
+            <th class="col-4">Key</th>
+            <th class="col-6">Value</th>
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        <tr>
+            <td><i>in_graph_visual</i></td>
+            <td>a pygame.Surface to use as the in-graph visual;</td>
+        </tr>
+
+        <tr>
+            <td><i>loop_data</i></td>
+            <td>the loop data (possibly another pygame.Surface) to use when executing the looper; and</td>
+        </tr>
+
+        <tr>
+            <td><i>output</i> (optional)</td>
+            <td>output to pass along to other nodes.</td>
+        </tr>
+
+    </tbody>
+
+</table>
+
+<p>To tell Nodezator which callable is the backdoor, just name it (or alias it as) <i>visual_loop_and_output_backdoor</i>. The custom looper callable must be named (or aliased as) <i>enter_viewer_loop</i>.</p>
+
+<p>The custom looper callable must accept a single argument, which is the loop data. That is, all the data needed to be shown in the custom visualization loop must be delivered through this single argument. If your loop data consists of more than one object, you can use a collection to deliver the data, like a tuple or a dictionary for instance, as well demonstrate in our example.</p>
+
+<p>Before we demonstrate how to implement this, let's revisit the main callable of our node as we last saw it in the previous chapter, that is, the <i>view_points()</i> method of the PointsViewer class:</p>
+
+<python linenofrom="447">
+    def view_points(
+        self,
+
+        points: Iterable,
+
+        framerate: {
+          'widget_name': 'int_float_entry',
+          'widget_kwargs' : {'min_value': 0},
+          'type': int
+        } = 30,
+
+        frames_delay: {
+          'widget_name'   : 'int_float_entry',
+          'widget_kwargs' : {'min_value': 0},
+          'type'          : int
+        } = 0,
+    ):
+        """Display points on screen.
+
+        To stop displaying the points just press &lt;Escape&gt;.
+        This will trigger the exit of the inner loop.
+        """
+        ### store points in a list
+        self.points = list(points)
+
+        ### store the framerate
+        self.fps = framerate
+
+        ### define an operation that tells when to
+        ### update the next point
+
+        self.update_next_point = (
+            cycle((True,) + ((False,) * frames_delay)).__next__
+        )
+
+        ### also store the __next__ operation of a cycle iterator
+        ### created from the points; this way you'll get a new
+        ### point whenever it is executed
+        self.get_next_point = cycle(self.points).__next__
+
+        ### reset the extra offset of the points
+        EXTRA_OFFSET.xy = (0, 0)
+
+        ### enable keyboard mode
+        self.enable_keyboard_mode()
+
+        ### loop
+        self.loop()
+
+
+    ### set attribute on view_points method so the
+    ### execution time tracking is dismissed for this
+    ### node;
+    ###
+    ### we need to do this here rather than after
+    ### instantiating PointsViewer because after
+    ### instantiating the class the view_points method
+    ### doesn't allow new attributes to be set on it
+    view_points.dismiss_exec_time_tracking = True
+
+
+### finally, we just need to instantiate the PointsViewer
+### and alias its view_points() method as the main callable
+###
+### note that we also make it so the callable can be found in
+### this module using its own name, that is, 'view_points';
+###
+### we do so because when the node layout is exported as a python
+### script, its name is used to find the callable
+main_callable = view_points = PointsViewer().view_points
+</python>
+
+<p>Now, what part of this method is responsible for processing the data and generating the visualization data for the loop, that is, the loop data (the pygame.Surface to be shown in the custom visualization)? It is actually a very small portion of this method. It is this portion here:</p>
+
+<python linenofrom="469">
+    ### store points in a list
+    self.points = list(points)
+</python>
+
+<p>In fact, we can state that the vast majority of the code in the node script, exists to serve the custom visualization loop. Only this tiny bit is actual processing to convert the input (an iterable with points) into part of the loop data (the list of points). The rest of the loop data doesn't require processing. The framerate is used as-is, it is just stored. The frames delay also doesn't require processing. That is, although the frames delay is used to produce a cycle object in order to grab its <i>__next__</i> method, this step is not considered processing, but a later step that belongs in the looper method, because the <i>__next__</i> method must be created anew every time the loop is entered.</p>
+
+<p>This tiny processing part will thus be part of the body of our <b>processing backdoor</b> callable. Also, note that our callable doesn't even need to keep any state, that is, attributes, etc. It just needs to receive the points, the framerate and frames delay and can process the data right away to generate our loop data. Because of that, the backdoor callable doesn't need to be a method in the PointsViewer class to which the view_points method belongs. It can just be a simple function. Last, we add quite a bit of code, but is just code to generate a surface to use as a preview beside our node, that is, our in-graph visual. This added code to generate a preview is similar to the one presented in the <a href="ch-defining-viewer-nodes.htsl">introductory chapter about viewer nodes</a> (we even included the <i>max_preview_size</i> parameter as well). The difference is that the process here is a bit more complex because we are dealing with points drawn on a surface, rather than just converting a Pillow image to a surface. Here's the resulting definition of our processing backdoor:</p>
+
+<python>
+
+ORIGIN = Vector2()
+
+def prepare_data_from_points(
+
+    points: Iterable,
+    framerate: int = 30,
+    frames_delay: int = 0,
+    max_preview_size: 'natural_number' = 0,
+
+    ):
+    """Return dict with data representing visuals and outputs.
+
+    The 'in_graph_visual' key must contain data representing a preview
+    of the visualization within the viewer loop. Though it represents
+    a preview, it can be the whole visual if you desire. It is expected
+    to be a pygame.Surface object, but more data might be accepted in
+    the future to provide more advanced previews
+
+    The 'loop_data' item contains data to be delivered to the function used
+    to enter the viewer loop. This function uses such data to update
+    its inner visualization machinery
+
+    The 'output' key (optional) is any interesting data you may want to return
+    back after generating all the preview and loop data
+    """
+    ### ensure the points are stored in a list
+    points = list(points)
+
+    ### that was all processing need for our loop data; we'll store the
+    ### loop data in a dict now
+
+    loop_data = {
+        'points': points,
+        'framerate': framerate,
+        'frames_delay': frames_delay,
+    }
+
+    ### the rest of the method will deal solely with creation of a preview
+    ### surface
+
+    ## grab the __next__ operation from a cycle object so we grab a new point
+    ## whenever we execute it
+    get_next_point = cycle(points).__next__
+
+    ## create a rectangle representing the area occupied by the points with
+    ## its center being the origin of the 2D space
+
+    half_width = max(abs(x) for x, _ in points)
+    half_height = max(abs(y) for _, y in points)
+
+    width = half_width*2
+    height = half_height*2
+
+    # we also add 10 to each dimension, to serve as padding
+    points_area = Rect(0, 0, width + 10, height + 10)
+
+    ## create preview surface for in-graph visual
+
+    # create the surface
+
+    full_surface = Surface(points_area.size).convert()
+    full_surface.fill(BG_COLOR)
+
+    # define midpoints
+
+    midleft = points_area.midleft
+    midright = points_area.midright
+    midtop = points_area.midtop
+    midbottom = points_area.midbottom
+
+    # draw grid
+
+    for dx in (80, -80):
+
+        midtopv = Vector2(midtop)
+        midbottomv = Vector2(midbottom)
+
+        while True:
+
+            if points_area.collidepoint(midtopv):
+                draw_line(full_surface, 'black', midtopv, midbottomv, 1)
+
+            else:
+                break
+
+            midtopv.x += dx
+            midbottomv.x += dx
+
+    for dy in (80, -80):
+
+        midleftv = Vector2(midleft)
+        midrightv = Vector2(midright)
+
+        while True:
+
+            if points_area.collidepoint(midleftv):
+                draw_line(full_surface, 'black', midleftv, midrightv, 1)
+
+            else:
+                break
+
+            midleftv.y += dy
+            midrightv.y += dy
+
+    # draw x and y axes
+
+    draw_line(full_surface, 'red', midleft, midright, 1)
+    draw_line(full_surface, 'red', midtop, midbottom, 1)
+
+
+    # create a offset to move all the points as though the center
+    # of that surface was the origin of the 2d space
+
+    offset = Vector2(points_area.center)
+
+    for point in points:
+
+
+        POINT_RECT.center = point + offset
+
+        draw_rect(
+            full_surface,
+            'blue',
+            POINT_RECT,
+        )
+
+    ## crop the surface so only the points and the origin appear
+
+    left = min((point + offset).x for point in points)
+    right = max((point + offset).x for point in points)
+
+    top = min((point + offset).y for point in points)
+    bottom = max((point + offset).y for point in points)
+
+    bounding_box = Rect(left, top, right-left, bottom-top)
+
+    POINT_RECT.center = offset
+
+    bounding_box.union_ip(POINT_RECT.inflate(10, 10))
+
+    bounding_box.inflate_ip(20, 20)
+
+    cropper_rect = bounding_box.clip(points_area)
+
+    cropped_surface = full_surface.subsurface(cropper_rect)
+    cropped_area = cropped_surface.get_rect()
+
+    ## if the max preview size is 0, we can use the cropped surface
+    ## as the preview
+
+    if not max_preview_size:
+
+        preview_surface = cropped_surface
+
+        return {
+            'in_graph_visual': preview_surface,
+            'loop_data': loop_data,
+        }
+
+    ## otherwise, we must check whether the size of the cropped surface
+    ## is within the maximum size allowed, creating a smaller preview
+    ## surface if it is not
+
+    # grab the bottom right coordinate of the cropped surface, which is
+    # equivalent to its size
+    bottomright = cropped_surface.get_size()
+
+    # calculate the diagonal length
+    diagonal_length = ORIGIN.distance_to(bottomright)
+
+    # if the diagonal length is larger than the allowed size, we create
+    # a smaller surface to use as the preview
+
+    if diagonal_length &gt; max_preview_size:
+
+        size_proportion = max_preview_size / diagonal_length
+        new_size = ORIGIN.lerp(bottomright, size_proportion)
+
+        preview_surface = scale_surface(cropped_surface, new_size)
+
+    ## otherwise, just alias the cropped surface as the preview surface;
+    ##
+    ## that is, since the cropped surface didn't need to be downscaled,
+    ## it means it is small enough to be used as an in-graph visual
+    ## already
+
+    else:
+        preview_surface = cropped_surface
+
+    ### return data
+
+    return {
+        'in_graph_visual': preview_surface,
+        'loop_data': loop_data,
+    }
+
+visual_loop_and_output_backdoor = prepare_data_from_points
+</python>
+
+<p>The function created is aliased as <i>visual_loop_and_output_backdoor</i>, just as required. It returns a dictionary with both <i>in_graph_visual</i> and <i>loop_data</i> keys. The dictionary doesn't contain an <i>output</i> key, because this key is optional and only relevant when our node returns any meaningful output, which is not the case here. In other words, since our viewer node only returns None, we ommit the key.</p>
+
+<p>Note that very little was needed to produce our loop data. The vast majority of the code consists in the creation of a preview surface to use as our in-graph visual.</p>
+
+<p>If the backdoor callable is our main callable minus the looping part, that is, just the processing part, the <b>custom looper</b> callable is the opposite. That is, it is just the looping part of the main callable. So, if we remove the processing part of our main callable, here's the remaining code that we use as our custom looper callable, as a method called <i>display_points()</i> and its signature now receives the loop data:</p>
+
+<python>
+    def display_points(self, data):
+        """Display points on screen.
+
+        To stop displaying the points just press &lt;Escape&gt;.
+        This will trigger the exit of the inner loop.
+        """
+        ### store points, framerate
+
+        self.points = data['points']
+
+        self.fps = data['framerate']
+
+        ### define an operation that tells when to
+        ### update the next point
+
+        delay = data['frames_delay']
+
+        self.update_next_point = cycle((True,) + ((False,) * delay)).__next__
+
+        ### also store the __next__ operation of a cycle iterator
+        ### created from the points; this way you'll get a new
+        ### point whenever it is executed
+        self.get_next_point = cycle(self.points).__next__
+
+        ### reset the extra offset of the points
+        EXTRA_OFFSET.xy = (0, 0)
+
+        ### enable keyboard mode
+        self.enable_keyboard_mode()
+
+        ### loop
+        self.loop()
+</python>
+
+<p>Remember that we'll also need to alias this looper callable as <i>enter_viewer_loop</i>, as required. Note that it is a method of the PointsViewer class, rather than a function, because it does use a lot of state and other methods defined in the class. In fact, the class exists for the sole purpose of providing the custom visualization loop.</p>
+
+<p>Here's another relevant question: Since our backdoor and looper callables were made with parts of our main callable, that is, our original view_points() method, what became of it then? The answer is, since the functionality of our main callable was split into 02 callables, we can reproduce its entire behaviour by reducing the body of our main callable to 02 function calls:</p>
+
+<python>
+    def view_points(
+        self,
+
+        points: Iterator,
+
+        framerate: {
+          'widget_name': 'int_float_entry',
+          'widget_kwargs' : {'min_value': 0},
+          'type': int
+        } = 30,
+
+        frames_delay: {
+          'widget_name'   : 'int_float_entry',
+          'widget_kwargs' : {'min_value': 0},
+          'type'          : int
+        } = 0,
+
+        max_preview_size: 'natural_number' = 0,
+    ):
+        """Prepare and display given points on screen."""
+        loop_data = prepare_data_from_points(
+            points, framerate, frames_delay, max_preview_size
+        )['loop_data']
+
+        self.display_points(loop_data)
+</python>
+
+<p>In view_point()'s body, we retrieve the loop data from our backdoor callable, which is the dictionary containing the points we want to visualize in our custom visualization loop as well as the framerate and delay. We then pass the loop data along to the display_points() method, which proceeds to display the animated points in the loop. It is the same thing the view_points method did originally, but now its functionality was split into 02 callables. If the dictionary returned by the backdoor callable had an <i>output</i> key, we would also return the value in the <i>output</i> key at the end of the view_points method.</p>
+
+<p>Because we provided a backdoor callable to Nodezator, whenever our node is executed, Nodezator actually executes the backdoor. That's why, as we said before, they must have the same parameters. Now, when our node executes, instead of the main callable receiving the <i>points</i>, <i>framerate</i> and <i>frames_delay</i> arguments, they are given to the backdoor instead, which is executed and returns the dictionary we mentioned earlier. From that dictionary Nodezator...:</p>
+
+<ul>
+    <li>retrieves the loop data from its <i>loop_data</i> key and stores it for when we want to visualize it;</li>
+    <li>retrieves the in-graph surface from its <i>in_graph_visual</i> key and sets it in the panel beside the viewer node; and</li>
+    <li>if the dictionary has an <i>output</i> key, passes the output along to other nodes.</li>
+</ul>
+
+<p>Now let's put all the code together. Note that we only had to change the very ending of our original script and, even so, we mostly just used existing code from the original view_points() method that was split into 02 new callables, our <b>backdoor</b> and the <b>looper</b>. In fact, the only new piece of code is the portion were we generate a preview surface from the points, to use as the in-graph visual.</p>
+
+<p>In other words, exposing a backdoor in order to better integrate the custom visualization loop with Nodezator requires careful work, but it doesn't actually increase the complexity of the code itself. All you have to do is to divide the logic into procesing backdoor and looping logic and name/alias everything as required in order to inform Nodezator. Of course, the step to create the preview surface does take extra code.</p>
+
+<p>As always, Nodezator doesn't require any imports, and thus doesn't polute your code with unnecessary foreign objects. All the code in your node is relevant to your purpose: run a custom visualization loop. You don't need to import boilerplate or otherwise mysterious/enigmatic code into your node script. It is all GUI-related pygame-ce services and sometimes special return formats (like the dictionary that must be returned by the backdoor callable).</p>
+
+<p>As a result, here's all the code that has changed from the original script (we actually also add another import at the top of the file, <i>from pygame.transform import scale as scale_surface</i>, just to help creating the in-graph visual, but that's the only extra change needed before this point in the file):</p>
+
+<python linenofrom="451">
+    def view_points(
+        self,
+
+        points: Iterator,
+
+        framerate: {
+          'widget_name': 'int_float_entry',
+          'widget_kwargs' : {'min_value': 0},
+          'type': int
+        } = 30,
+
+        frames_delay: {
+          'widget_name'   : 'int_float_entry',
+          'widget_kwargs' : {'min_value': 0},
+          'type'          : int
+        } = 0,
+
+        max_preview_size: 'natural_number' = 0,
+    ):
+        """Prepare and display given points on screen."""
+        loop_data = prepare_data_from_points(
+            points, framerate, frames_delay, max_preview_size
+        )['loop_data']
+
+        self.display_points(loop_data)
+
+    ### set attribute on view_points method so the
+    ### execution time tracking is dismissed for this
+    ### node;
+    ###
+    ### we need to do this here rather than after
+    ### instantiating PointsViewer because after
+    ### instantiating the class the view_points method
+    ### doesn't allow new attributes to be set on it
+    view_points.dismiss_exec_time_tracking = True
+
+    def display_points(self, data):
+        """Display points on screen.
+
+        To stop displaying the points just press &lt;Escape&gt;.
+        This will trigger the exit of the inner loop.
+        """
+        ### store points, framerate
+
+        self.points = data['points']
+
+        self.fps = data['framerate']
+
+        ### define an operation that tells when to
+        ### update the next point
+
+        delay = data['frames_delay']
+
+        self.update_next_point = cycle((True,) + ((False,) * delay)).__next__
+
+        ### also store the __next__ operation of a cycle iterator
+        ### created from the points; this way you'll get a new
+        ### point whenever it is executed
+        self.get_next_point = cycle(self.points).__next__
+
+        ### reset the extra offset of the points
+        EXTRA_OFFSET.xy = (0, 0)
+
+        ### enable keyboard mode
+        self.enable_keyboard_mode()
+
+        ### loop
+        self.loop()
+
+
+
+### finally, we just need to instantiate the PointsViewer
+### and reference/alias/define the relevant operations
+
+## instantiate
+points_viewer = PointsViewer()
+
+## use the view_points method as the main callable;
+##
+## note that we also make it so the callable can be found in
+## this module using its own name, that is, 'view_points';
+##
+## we do so because when the node layout is exported as a python
+## script, its name is used to find the callable
+main_callable = view_points = points_viewer.view_points
+
+## alias the display_points method as the function to enter the
+## viewer loop
+enter_viewer_loop = points_viewer.display_points
+
+
+## define a function to process and return data related to visuals
+## and output of the main callable;
+##
+## it must:
+##
+## - have a signature compatible with the signature of the main callable;
+## - be called or aliased visual_loop_and_output_backdoor;
+## - return a dict with specific keys, as described in its docstring.
+
+# define a 2D vector representing the origin
+ORIGIN = Vector2()
+
+def prepare_data_from_points(
+
+    points: Iterable,
+    framerate: int = 30,
+    frames_delay: int = 0,
+    max_preview_size: 'natural_number' = 0,
+
+    ):
+    """Return dict with data representing visuals and outputs.
+
+    The 'in_graph_visual' key must contain data representing a preview
+    of the visualization within the viewer loop. Though it represents
+    a preview, it can be the whole visual if you desire. It is expected
+    to be a pygame.Surface object, but more data might be accepted in
+    the future to provide more advanced previews
+
+    The 'loop_data' item contains data to be delivered to the function used
+    to enter the viewer loop. This function uses such data to update
+    its inner visualization machinery
+
+    The 'output' key (optional) is any interesting data you may want to return
+    back after generating all the preview and loop data
+    """
+    ### ensure the points are stored in a list
+    points = list(points)
+
+    ### that was all processing need for our loop data; we'll store the
+    ### loop data in a dict now
+
+    loop_data = {
+        'points': points,
+        'framerate': framerate,
+        'frames_delay': frames_delay,
+    }
+
+    ### the rest of the method will deal solely with creation of a preview
+    ### surface
+
+    ## grab the __next__ operation from a cycle object so we grab a new point
+    ## whenever we execute it
+    get_next_point = cycle(points).__next__
+
+    ## create a rectangle representing the area occupied by the points with
+    ## its center being the origin of the 2D space
+
+    half_width = max(abs(x) for x, _ in points)
+    half_height = max(abs(y) for _, y in points)
+
+    width = half_width*2
+    height = half_height*2
+
+    # we also add 10 to each dimension, to serve as padding
+    points_area = Rect(0, 0, width + 10, height + 10)
+
+    ## create preview surface for in-graph visual
+
+    # create the surface
+
+    full_surface = Surface(points_area.size).convert()
+    full_surface.fill(BG_COLOR)
+
+    # define midpoints
+
+    midleft = points_area.midleft
+    midright = points_area.midright
+    midtop = points_area.midtop
+    midbottom = points_area.midbottom
+
+    # draw grid
+
+    for dx in (80, -80):
+
+        midtopv = Vector2(midtop)
+        midbottomv = Vector2(midbottom)
+
+        while True:
+
+            if points_area.collidepoint(midtopv):
+                draw_line(full_surface, 'black', midtopv, midbottomv, 1)
+
+            else:
+                break
+
+            midtopv.x += dx
+            midbottomv.x += dx
+
+    for dy in (80, -80):
+
+        midleftv = Vector2(midleft)
+        midrightv = Vector2(midright)
+
+        while True:
+
+            if points_area.collidepoint(midleftv):
+                draw_line(full_surface, 'black', midleftv, midrightv, 1)
+
+            else:
+                break
+
+            midleftv.y += dy
+            midrightv.y += dy
+
+    # draw x and y axes
+
+    draw_line(full_surface, 'red', midleft, midright, 1)
+    draw_line(full_surface, 'red', midtop, midbottom, 1)
+
+
+    # create a offset to move all the points as though the center
+    # of that surface was the origin of the 2d space
+
+    offset = Vector2(points_area.center)
+
+    for point in points:
+
+
+        POINT_RECT.center = point + offset
+
+        draw_rect(
+            full_surface,
+            'blue',
+            POINT_RECT,
+        )
+
+    ## crop the surface so only the points and the origin appear
+
+    left = min((point + offset).x for point in points)
+    right = max((point + offset).x for point in points)
+
+    top = min((point + offset).y for point in points)
+    bottom = max((point + offset).y for point in points)
+
+    bounding_box = Rect(left, top, right-left, bottom-top)
+
+    POINT_RECT.center = offset
+
+    bounding_box.union_ip(POINT_RECT.inflate(10, 10))
+
+    bounding_box.inflate_ip(20, 20)
+
+    cropper_rect = bounding_box.clip(points_area)
+
+    cropped_surface = full_surface.subsurface(cropper_rect)
+    cropped_area = cropped_surface.get_rect()
+
+    ## if the max preview size is 0, we can use the cropped surface
+    ## as the preview
+
+    if not max_preview_size:
+        preview_surface = cropped_surface
+
+    ## otherwise, we must check whether the size of the cropped surface
+    ## is within the maximum size allowed, creating a smaller preview
+    ## surface if it is not
+
+    # grab the bottom right coordinate of the cropped surface, which is
+    # equivalent to its size
+    bottomright = cropped_surface.get_size()
+
+    # calculate the diagonal length
+    diagonal_length = ORIGIN.distance_to(bottomright)
+
+    # if the diagonal length is larger than the allowed size, we create
+    # a smaller surface to use as the preview
+
+    if diagonal_length &gt; max_preview_size:
+
+        size_proportion = max_preview_size / diagonal_length
+        new_size = ORIGIN.lerp(bottomright, size_proportion)
+
+        preview_surface = scale_surface(cropped_surface, new_size)
+
+    ## otherwise, just alias the cropped surface as the preview surface;
+    ##
+    ## that is, since the cropped surface didn't need to be downscaled,
+    ## it means it is small enough to be used as an in-graph visual
+    ## already
+
+    else:
+        preview_surface = cropped_surface
+
+    ### return data
+
+    return {
+        'in_graph_visual': preview_surface,
+        'loop_data': loop_data,
+    }
+
+visual_loop_and_output_backdoor = prepare_data_from_points
+</python>
+
+<p>And that's it, now the custom visualization loop of the view_points node is integrated with Nodezator! As explained before, whenever your node is executed, Nodezator will store the loop data and in-graph visual returned by the backdoor and set the in-graph visual in the panel beside your viewer node. After this, whenever you click that image beside the node, Nodezator will pass the stored loop data to the custom looper you provided, which will cause Nodezator to enter the custom visualization loop defined in your node.</p>
+
+<p>Again, this node script definition has a line count of <b>742 lines</b>. With this relatively small line count you get a viewer node with keyboard controls, mouse dragging and you can visualize the data both as a preview beside your node or as a full visualization in your own custom visualization loop!</p>
+
+<p>Add to this the versatility of the node-based interface provided by Nodezator and you have a very powerful and flexible visualization tool at your hands. In the case of our example view_points node, you can create additional regular nodes to produce very complex sets of points and have all of them easily visualized in this viewer node.</p>
+
+
+<h2 id="note-on-output-key">Brief note on "output" key in backdoor dictionary</h2>
+
+<p>This brief subsection is just a quick reminder that, since the backdoor is executed instead of the main callable when the node is executed, any outputs the main callable returns should be produced by the backdoor and included in the <i>output</i> key of the dictionary by the backdoor. That is, if the main callable returns anything other than <b>None</b>. For instance, if our viewer node returned any specific output, here's how the body of our main callable would be:</p>
+
+<python linenofrom="447">
+    def view_points(
+        self,
+
+        points: Iterator,
+
+        framerate : {
+          'widget_name': 'int_float_entry',
+          'widget_kwargs' : {'min_value': 0},
+          'type': int
+        } = 30,
+
+        frames_delay: {
+          'widget_name'   : 'int_float_entry',
+          'widget_kwargs' : {'min_value': 0},
+          'type'          : int
+        } = 0,
+
+        max_preview_size: 'natural_number' = 0,
+    ):
+        """Prepare and display given points on screen."""
+        data = prepare_data_from_points(points, framerate, frames_delay)
+
+        self.display_points(data['loop_data'])
+
+        return data['output']
+</python>
+
+<p>In other words, when the backdoor is executed instead of the main callable, Nodezator just needs to retrieve the output from the <i>output</i> key and pass it along to the other nodes. Since it is optional, it is okay if the dictionary returned by the backdoor doesn't have an <i>output</i> key, though. It just means the node returns <b>None</b>.</p>
+
+
+<h2 id="callable-mode-backdoor">Callable mode and the backdoor</h2>
+
+<p>As you already know, Nodezator executes the backdoor instead of the main callable for viewer nodes that define a backdoor. However, this doesn't apply when the viewer node is in callable mode. When this is the case, Nodezator has no control over the execution of the node. As expected, when a node is in callable mode, a reference to its main callable is passed along the graph. So naturally, in case it is executed elsewhere further down the graph, you'll enter the visualization loop of the viewer node (because, as we know, the main callable calls the custom looper inside its body).</p>
+
+<p>This is not a bad thing, it is just something that is worth mentioning so that you are not caught by surprise.</p>
+
+<p>In addition to this, because Nodezator has no control over the execution of the node, it also cannot store the in-graph visual and the loop data, so the image beside the node cannot be updated, and its stored loop data cannot be updated as well. In fact, that wouldn't even make sense if you think about it. In callable mode, the node represents its behaviour, not a call with its inputs and outputs. It represents an action, that is, the action of grabing inputs and displaying a visualization (and returning None or other outputs). So it can in fact be executed many times along the graph, resulting in varied inputs, visualizations and outputs. In other words, the action itself (the main callable being passed along) has no particular association with any visualization/outputs produced. That's why, like any other viewer node, viewer nodes with a backdoor have the in-graph visual taken away from them when they are in callable mode.</p>
+
+<p>The next chapter will keep the discussion about advanced features of viewer nodes, providing additional notes/commentary.</p>
+
+<p><a href="ch-defining-complex-viewer-nodes.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch-more-advanced-viewer-node-features-part2.htsl">Next chapter</a></p>
+
+</body>
+
+</htsl>

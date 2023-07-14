@@ -75,7 +75,7 @@
 
 <p>To instantiate them, just right-click an empty space on the canvas and click one of the commands inside the <b>New data node</b> submenu within the popup menu that appears to pick the kind of widget/data to be held by the node, including an option that presents a more complex form to specify the widget more precisely.</p>
 
-<p>The default title on the data node can be changed, but it doesn't accept spaces or punctuation other than the underscore ("_") and it must start with a letter or underscore. This is so because the title of the data node is used as the variable name when the layout is exported as a Python script.</p>
+<p>The default title on the data node can be changed, but it doesn't accept spaces or punctuation other than the underscore ("_"). This is so because the title of the data node is used as part of the variable name when the layout is exported as a Python script. The id of the node is used as part of the variable name as well, that is, the number to the left of the title that is assigned automatically by Nodezator.</p>
 
 
 <h2 id="redirect-nodes">Redirect nodes</h2>
@@ -88,11 +88,31 @@
 
 <h2 id="relationship-data-redirect-nodes">Relationship between data nodes and redirect nodes</h2>
 
-<p>If you connect data to the input socket of a data node the data node loses its meaning (it doesn't represents a variable anymore) and becomes a redirect node. In such case, the node serves only to redirect the received input and it is as though the widget doesn't exist, even though it is kept there. It remains there just for the case you sever the input, making the node a data node again.</p>
+<p>If you connect data to the input socket of a data node the data node changes its meaning (it doesn't represents a variable anymore) and becomes a redirect node. In such case, the node serves only to redirect the received input and it is as though the widget doesn't exist (the widget is hidden). If you sever the connection to the input socket, the node becomes a data node again and the widget reappears (unless there was no widget to begin with, in which case a button shaped like a plus sign "<b>+</b>" appears, which you can use to add a widget to the node).</p>
 
-<p>If you are using a data node as a redirect node you can delete the widget if you want, by clicking the small "x" icon to the right of the widget.</p>
+<p>If you delete the widget of a data node by clicking the small "x" icon to the right of the widget, it will be useless until you add a widget again or turns it into a redirect node by connection data to its input socket.</p>
 
-<p>If you want to turn the redirect node back into a data node again just sever the connection to its input and create a widget for it by pressing the "+" (plus sign) icon on its bottomleft corner. That is, if the node doesn't have a widget already.</p>
+
+<h2 id="callable-mode-app-defined-nodes">Callable mode in app-defined nodes</h2>
+
+<p>As explained before, <a href="ch-defining-your-first-node.htsl#expanded-collapsed-callable-modes">user-defined nodes have 03 different modes</a>, that is, <b>expanded signature</b>, <b>collapsed signature</b> and <b>callable</b> modes. Just like user-defined nodes, app-defined nodes also have such modes. The only expection are operation nodes, which don't have a collapsed mode, because they are too tiny already.</p>
+
+<p>The callable mode in particular can be used to achieve complex tasks with fewer nodes. In other words, they can simplify your graph a lot while still providing you power and versatility. In this section we'll just present a tiny example so you can see this in practice. Look at the graph in the image below, where multiple <b>a+b</b> operation nodes are used to add values together:</p>
+
+<img src="images/ch-other-objects_img07.png" alt="Graph representing several additions by chained '+' operation nodes" />
+
+<p>For now the graph is relatively small, but every time you need to add another value, you have to duplicate the operation node and so the graph will gradually become larger and larger.</p>
+
+<p>If you use the <b>a+b</b> node in callable mode, though (by right-clicking it and, inside the <b>Change mode to</b> submenu, picking <b>callable</b>), you would only need a single one. Then you can use it in conjuntion with a <a href="https://docs.python.org/3/library/functools.html#functools.reduce">functools.reduce()</a> standard library node and a <b>tuple_from_args</b> snippet node to add as many values as you want without having to create several instances of the operator node. The tuple_from_args node is used to gather all values to be added into a single collection (in this case a tuple). Then we pass a reference to the a+b operation as the first argument of functools.reduce() and the collections as the second argument. Here's an alternative version of the graph in the previous image, but using the a+b node in callable mode with the other nodes we just described:</p>
+
+<img src="images/ch-other-objects_img08.png" alt="Graph representing several additions by using a single '+' operation node in callable mode" />
+
+<p>In other words, with just these 03 nodes (a+b, tuple_from_args and functools.reduce()) we can add as many values as we want! In the first version of this graph, if we wanted to add 10 more values, we would need at least 20 more nodes (one node with each new value and another a+b node). In this new version, we'd just need 10 more nodes, which would be the values we'd add to the tuple_from_args node.</p>
+
+<p>You can use this to repeate many different kinds of operations at once. For instance, instead of a+b, you could have used an a*b operation node so all the values would be multiplied.</p>
+
+<p>This is just a tiny example of how the callable mode can be used to achieve complex tasks with a very simple graph.</p>
+
 
 <p><a href="ch-preview-widgets.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch-distributing-nodes.htsl">Next chapter</a></p>
 

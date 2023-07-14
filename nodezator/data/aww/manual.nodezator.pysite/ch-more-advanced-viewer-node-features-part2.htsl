@@ -1,0 +1,342 @@
+<htsl>
+
+<head>
+  <title>Nodezator Manual | More advanced viewer node features - Part 2</title>
+</head>
+
+<body>
+
+<p><a href="index.htsl">Table of contents</a> &gt; More advanced viewer node features - Part 2</p>
+
+
+<h1>More advanced viewer node features - Part 2</h1>
+
+<p>This chapter presents more possibilities regarding viewer nodes and also additional notes/commentary.</p>
+
+
+<h2 id="instructional-vs-practical-value">On instructional vs practical value of previous example</h2>
+
+<p>The definition of the view_points script we just studied in the previous chapter has plenty instructional value since it presents a lot of needed concepts and tools needed to work with custom visualization loops and their integration with Nodezator.</p>
+
+<p>As a practical example, though, it is limited to the specific task it aims to achieve, that is, presenting animated points. The purpose of the previous chapter was fulfilled, since it consisted in presenting how to integrate a custom visualization loop with Nodezator. All you needed to do so was presented there</p>
+
+<p>Of course, if your cneeds are different, the <a href="https://pyga.me">pygame-ce</a> specifics to produce the specific visualization you need will be different.</p>
+
+<p>Such pygame-ce specifics are beyond our purpose/responsibility, since this is not a pygame-ce manual, but instead aims only to connect your pygame-ce knowledge with Nodezator tools. Still, when possible, we do want to offer additional guidance, even if outside the scope of our activities/responsibilities. Just keep going forward with your studies and reach out for help whenever needed in our <a href="https://indiepython.com/discord">discord server</a> or <a href="https://github.com/IndiePython/nodezator/discussions">Nodezator GitHub discussions</a>.</p>
+
+<p>Nonetheless, keep in mind that no amount of examples will ever be enough to demonstrate all that you can achieve with pygame-ce for your custom visualizations. There simply isn't a single right way to do everything. This is not a bad thing, it only means pygame-ce is that much versatile (or more precisely, it provides bindings for the versatile underlying <a href="https://www.libsdl.org/">SDL</a> library). It all depends on factors like your proficiency with pygame-ce and the type of visualization you want for the data with which you are dealing.</p>
+
+
+<h2 id="backdoor-without-loop">Using the backdoor without a custom visualization loop</h2>
+
+<p>The backdoor callable's original purpose was just to bypass execution of the custom visualization loop. However, as we'll see in this subsection, it can be useful even when there is no custom visualization loop to be bypassed.</p>
+
+<p>In the <a href="ch-defining-viewer-nodes.htsl">introductory chapter about viewer nodes</a>, we saw that we could retrieve the in-graph visual and full visual/loop data from our node output (return value). Since such visuals were returned by the viewer node, they could also travel the graph to other nodes.</p>
+
+<p>If you think about it, the backdoor callable presented in the previous chapter represents an alternative way to retrieve such visuals from the node. The difference is that when using the backdoor, the visuals don't need to be returned from the node if you don't want. In other words, by providing a backdoor your node doesn't even need to expose the visual data to the graph itself, that is, to be passed to other nodes.</p>
+
+<p>This means that an additional optional behaviour/feature of the backdoor is to <b>hide the visualization data</b> from other nodes. The visuals are only produced inside the node, and intercepted by Nodezator via the backdoor.</p>
+
+<p><b>Why would you want that, though?</b> Well, that's an excellent question. This feature is actually a consequence of how backdoors work, not an intended feature per se. Even so, there may be legitimate reasons to hide the visualization data from other nodes. For instance, if you are working with a node pack the processes/edits images as numpy arrays, you might not want to expose the images as pygame surfaces, in order to keep the users of your nodes focused on editing the images as numpy arrays, since the underlying C code is super fast. Instead, you might just want the data converted into pygame surfaces when visualizing them in-graph or inside a visualization loop. It is up to you.</p>
+
+<p>Because backdoors are useful on their own like this, you can use backdoors even in viewer nodes that don't provide a custom visualization loop. In other words, if we wanted to integrate a custom visualization loop with Nodezator we would need a backdoor but we even if we don't have a custom visualization loop we can still use a backdoor to deliver in-graph visual to be displayed beside our node and a full visual to be displayed in Nodezator's dedicated surface viewer. All of this without needing to return the visual, and thus not exposing them. In other words, the backdoor can be used as an independent feature.</p>
+
+<p>So, suppose you want a simple viewer node (one without a custom visualization loop) that produces an in-graph surface and a full visual, but don't want them to be returned from your node. All you have to do is define a backdoor exactly like demonstrated in the previous chapter and ommit all the extra code used for looping. Just like any viewer node with a custom visualization loop integrated to Nodezator, when the node is executed, the backdoor will be executed instead and provide the visual data (and optionally outputs as well).</p>
+
+<p>When the in-graph visual beside the viewer node is clicked, since we didn't provide a custom visualization, Nodezator will use its dedicated surface viewer to display the full visual/loop data from your backdoor. Because of that, when using the backdoor like this, without a custom visualization loop, the loop data must be a pygame surface.</p>
+
+<p>When this happens, and if the backdoor produces no output to be passed along, the main callable actually becomes empty. Why this is so will be explained further below. Let's actually jump right into an example where we can observe that.</p>
+
+<p>Here's what yet another version of a view_image() node script would look like with we did just that (this is the full script, not a portion):</p>
+
+<python>
+
+### third-party imports
+
+## pygame
+
+from pygame import Surface
+
+from pygame.math import Vector2
+
+from pygame.image import fromstring as image_from_string
+
+from pygame.transform import smoothscale as smoothscale_surface
+
+
+## Pillow
+from PIL.Image import Image
+
+
+
+## define and alias the function to be used as the backdoor, that is,
+## to process and return data related to visuals (and optionally output)
+## of the main callable;
+
+# define a 2D vector representing the origin
+ORIGIN = Vector2()
+
+def get_data_from_pillow_image(
+    image: Image,
+    max_preview_size: 'natural_number' = 600,
+):
+
+    ### obtain surface from pillow image
+
+    mode = image.mode
+    size = image.size
+    data = image.tobytes()
+
+    full_surface = image_from_string(data, size, mode)
+
+    ### if the max preview size is 0, it means the preview doesn't need
+    ### to be below a specific size, so we can use the full surface
+    ### as the preview
+
+    if not max_preview_size:
+
+        preview_surface = full_surface
+
+        return {
+            'in_graph_visual': preview_surface,
+            'loop_data': full_surface,
+        }
+
+    ### otherwise, we must create a preview surface within the allowed size,
+    ### if the full surface surpasses such allowed size
+
+    ## obtain the bottom right coordinate of the image, which is
+    ## equivalent to its size
+    bottomright = full_surface.get_size()
+
+    ## use the bottom right to calculate its diagonal length
+    diagonal_length = ORIGIN.distance_to(bottomright)
+
+    ## if the diagonal length of the full surface is higher than the
+    ## maximum allowed size, we create a new smaller surface within
+    ## the allowed size to use as the preview
+
+    if diagonal_length &gt; max_preview_size:
+
+        size_proportion = max_preview_size / diagonal_length
+        new_size = ORIGIN.lerp(bottomright, size_proportion)
+
+        preview_surface = smoothscale_surface(full_surface, new_size)
+
+
+    ### otherwise, just alias the full surface as the preview surface;
+    ###
+    ### that is, since the full surface didn't need to be downscaled,
+    ### it means it is small enough to be used as an in-graph visual
+    ### already
+
+    else:
+        preview_surface = full_surface
+
+
+    ### return dictionary
+
+    return {
+        'in_graph_visual': preview_surface,
+        'loop_data': full_surface,
+    }
+
+visual_loop_and_output_backdoor = get_data_from_pillow_image
+
+
+def view_image(image: Image):
+    """Acts like a viewer node.
+
+    Despite being empty, represents production of visualization data
+    from given image.
+
+    For more info check get_data_from_pillow_image() function above.
+    """
+
+### alias the function defining the node as main_callable
+main_callable = view_image
+</python>
+
+<p>The first thing to be noticed is that our node script is very short, having less than 90 lines, since we don't need to provide a custom visualization loop. That is, we don't need to keep and manage state nor other looping services. Most of this code is actually very similar to the view_image node defined at the end of the <a href="ch-defining-viewer-nodes.htsl">introductory chapter on viewer nodes</a>. The difference being that here we use a backdoor instead of inserting the logic in the main callable itself.</p>
+
+<p>All node scripts without exception need a main callable. This node script is no exception, even if the body of the main callable is empty. This main callable is still needed in order to provide metadata for Nodezator so it can build the node, that is, the name of the node and information about its signature.</p>
+
+<p>Again, remember that the parameters of the main callable and backdoor callable must be the same, since Nodezator feeds the inputs of the node to the backdoor.</p>
+
+<p>Also, the main callable in the viewer node from the previous chapter had the responsibility to both generate the visual data (for which it used the backdoor) and to enter the custom visualization loop (for which it used the looper callable). The main callable of this node here, in contrast, doesn't need to produce visuals because it won't use them in a custom visualization loop neither will return any other data, which is why it is empty. When the node is executed, as always, Nodezator will execute the backdoor instead and retrieve the needed visual data.</p>
+
+<p>Still, you may ask: since the main callable is empty anyway, but has the same parameters as the backdoor (the <b>get_data_from_pillow_image()</b> function), shouldn't we use the backdoor as the main callable instead? The answer is no, because that would defeat the purpose of using a backdoor. That is, if the backdoor was used as the main callable, then the dictionary returned by it, containing the visuals, would be available for other nodes in the graph, so it would not hide the visual data in the end. Our node would end up pretty similar to the node defined at the end of the <a href="ch-defining-viewer-nodes.htsl">introductory chapter on viewer nodes</a>, the only difference is that it would return a dictionary with the visual data rather than a tuple.</p>
+
+<p>Even so, this doesn't mean the main callable body is useless. Its body just happens to be useless in this instance where we are not interested in returning anything else. In case you were interested in returning additional data, then you could indeed use the backdoor inside the main callable and return its output. Here's an example of that, presented as yet another alternative version of the view_image() node:</p>
+
+<python>
+
+### third-party imports
+
+## pygame
+
+from pygame import Surface
+
+from pygame.math import Vector2
+
+from pygame.image import fromstring as image_from_string
+
+from pygame.transform import smoothscale as smoothscale_surface
+
+
+## Pillow
+from PIL.Image import Image
+
+
+## define and alias the function to be used as the backdoor, that is,
+## to process and return data related to visuals (and optionally output)
+## of the main callable;
+
+# define a 2D vector representing the origin
+ORIGIN = Vector2()
+
+def get_data_from_pillow_image(
+    image: Image,
+    max_preview_size: 'natural_number' = 600,
+):
+
+    ### obtain surface from pillow image
+
+    mode = image.mode
+    size = image.size
+    data = image.tobytes()
+
+    full_surface = image_from_string(data, size, mode)
+
+    ### also obtain a bounding rect from the full surface
+    bounding_rect = full_surface.get_bounding_rect()
+
+    ### if the max preview size is 0, it means the preview doesn't need
+    ### to be below a specific size, so we can use the full surface
+    ### as the preview
+
+    if not max_preview_size:
+
+        preview_surface = full_surface
+
+        return {
+            'in_graph_visual': preview_surface,
+            'loop_data': full_surface,
+            'output': bounding_rect,
+        }
+
+    ### otherwise, we must create a preview surface within the allowed size,
+    ### if the full surface surpasses such allowed size
+
+    ## obtain the bottom right coordinate of the image, which is
+    ## equivalent to its size
+    bottomright = full_surface.get_size()
+
+    ## use the bottom right to calculate its diagonal length
+    diagonal_length = ORIGIN.distance_to(bottomright)
+
+    ## if the diagonal length of the full surface is higher than the
+    ## maximum allowed size, we create a new smaller surface within
+    ## the allowed size to use as the preview
+
+    if diagonal_length &gt; max_preview_size:
+
+        size_proportion = max_preview_size / diagonal_length
+        new_size = ORIGIN.lerp(bottomright, size_proportion)
+
+        preview_surface = smoothscale_surface(full_surface, new_size)
+
+
+    ### otherwise, just alias the full surface as the preview surface;
+    ###
+    ### that is, since the full surface didn't need to be downscaled,
+    ### it means it is small enough to be used as an in-graph visual
+    ### already
+
+    else:
+        preview_surface = full_surface
+
+    ### return dictionary
+
+    return {
+        'in_graph_visual': preview_surface,
+        'loop_data': full_surface,
+        'output': bounding_rect,
+    }
+
+visual_loop_and_output_backdoor = get_data_from_pillow_image
+
+
+def view_image(image: Image) -&gt; Rect:
+    """Return bounding box of image as rect and acts like a viewer node.
+
+    Represents production of visualization data from given image.
+
+    For more info check get_data_from_pillow_image() function above.
+    """
+    return get_data_from_pillow_image(image)['output']
+
+### alias the function defining the node as main_callable
+main_callable = view_image
+</python>
+
+<p>As can be seen in the code above, in addition to producing the visuals, the backdoor also produces output to be returned by the main callable. This means the backdoor is now integral part of the main callable and thus appears in its body. The main callable now uses the backdoor to produce its output which is a bounding box representing the area of the image that has content, that is, the original image's content minus the transparency in its edges (if it has transparency).</p>
+
+<p>This is actually a natural responsibility of the backdoor, as explained in the very end of the previous chapter. Viewer nodes that use backdoors have the backdoors executed instead of the node's main callables in order to avoid the custom visualization loops (when they have one) to be executed. Even though this node doesn't have a custom visualization loop, since it defines a backdoor, the backdoor is executed instead of the main callable, which means the backdoor is responsible for producing the output and delivering it in the <i>output</i> key of the dictionary it returns.</p>
+
+
+<h2 id="only-in-graph-via-backdoor">Providing only in-graph visual via backdoor</h2>
+
+<p>As we saw in the <a href="ch-defining-viewer-nodes.htsl">introductory chapter on viewer nodes</a>, there was a way to provide only the in-graph visual for a viewer node, that is, without also having to provide a full visual to be looped in a custom viewer or Nodezator surface viewer. So, naturally, using the backdoor solely to provide visuals should also present this possibility. This is actually simple. The only thing you'll have to do is change the name/alias of the backdoor to <i>visual_and_output_backdoor</i>, instead of <i>visual_loop_and_output_backdoor</i>. By doing this, Nodezator will not look for the <i>loop_data</i> key in the dictionary returned by your backdoor.</p>
+
+
+<h2 id="final-comment-on-backdoors">Final comment on backdoors</h2>
+
+<p>In summary, the backdoor has many different purposes and you can use it as you see fit. The key is to understand its roles.</p>
+
+<p>For instance, here's another usage that we didn't discuss yet: you could use a backdoor to bypass the custom visualization loop (which is the original purpose of the backdoor) and at the same time still expose the visuals by also returning them via the <i>output</i> key of the dictionary returned by the backdoor. As we said before, backdoors were originally created just to bypass the custom visualization loops, you don't need to hide the visualization data from other nodes if don't want.</p>
+
+
+<h2 id="final-optional-change">A final optional change to nodes with custom visualization loops</h2>
+
+<p>As you probably already know, Nodezator can export Python scripts from its graphs. You also know that Nodezator uses callables provided by you to define nodes. All of this reflects the original creator's idea that an application should not keep their users hostage. Since the nodes you write are just pure Python code not dependent on Nodezator, they are useful per se and can be reused in other applications as well with some effort or even executed by themselves without the need of a GUI.</p>
+
+<p>Even so, since this manual aims to teach usage of Nodezator, we naturally presented node scripts with the expectation of them being executed in Nodezator. However, there's still an optional change that can be made in nodes with custom visualization loops to make then even more independent of Nodezator: you can change the code such that it it also initializes the app and screen if they are not initialized already.</p>
+
+<p>As we have been saying throughout the manual, pygame-ce is a very versatile library. As we've been demonstrating, you can do a lot with a relatively tiny amount of code. In fact, viewer nodes with custom visualizations like the view_points node presented in the previous chapters can do a lot with just a few hundred lines. Still, their source assumes the pygame library and screen are already initialized, which means you would have to execute them in Nodezator or any other pygame app that is already running.</p>
+
+<p>Thus, the only thing needed for them to be even more independent of Nodezator would implementing extra logic to ensure this is done if not already. That is, by adding this to the top of your viewer nodes with custom visualization loops:</p>
+
+<python>
+from pygame import init, get_init
+from pygame.display import get_surface, set_mode
+
+if not get_init():
+    init()
+
+SCREEN = get_surface()
+
+if SCREEN is None:
+
+    # using (0, 0) as the sole argument to set_mode results in a
+    # screen in widowed mode whose size uses all screen space available
+    SCREEN = set_mode((0, 0))
+</python>
+
+<p>By doing this, the exported Python code from your graphs could be executed even outside Nodezator and still display your custom visualization, all independent of Nodezator.</p>
+
+<p>This is why even when we use backdoors the main callables are still defined with a call to the custom looper inside them. That is, so that executing the main callable triggers the main loop even when executing the graph outside Nodezator. All of this is done with the intent of giving all freedom and flexibility possible to Nodezator users.</p>
+
+
+<h2 id="visualization-for-still-images">Small advice on visualization for still images</h2>
+
+<p>As presented in the <a href="ch-defining-viewer-nodes.htsl">introductory chapter about viewer nodes</a>, if your visualization consists of still images only, then you could delegate all this custom visualization loop work to Nodezator. All your node would need is the processing logic to turn the inputs into surfaces, return such surfaces from your node and use the tools presented in the introductory chapter to have such returned surfaces used as the in-graph visual and full visual/loop data (for which Nodezator would provide a dedicated viewer with all the features presented earlier, that is, keyboard and mouse controls). Alternatively, instead of returning the surfaces, you can provide them via a backdoor as demonstrated in this chapter.</p>
+
+<p>Providing a custom visualization just to display a still image would be a waste of time and effort to do something that Nodezator can already provide for you. Unless, of course, you want your custom visualization to be shown independent of Nodezator, as demonstrated in the subsection above.</p>
+
+
+<p><a href="ch-more-advanced-viewer-node-features-part1.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> </p>
+
+</body>
+
+</htsl>
