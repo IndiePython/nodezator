@@ -1,0 +1,27 @@
+<htsl>
+
+<head>
+  <title>What's new in Nodezator 1.3.14?</title>
+</head>
+
+<body>
+
+<p><a href="whats-new/index.htsl">All "What's new" pages (since 1.3.14)</a></p>
+
+<h1>What's new in Nodezator 1.3.14?</h1>
+
+<p><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.3.14">[v1.3.14] Performance fix</a></p>
+
+<p>It has an important performance fix provided by Mr. Richards <a href="https://github.com/nrichards">@nrichards</a> via pull request. In summary, specific pygame.font.Font objects defined after many calculations were not being stored back for later use in the dictionary used for font caching due to a missing dictionary item asignment. The font caching system can be found in the nodezator/fontsman/cache.py module.</p>
+
+<p>This was causing the calculations to be needlessly carried out over and over, whenever text had to be rendered, rather than only once. This was harming the performance of any service that relies in text rendering, specially on startup where most of the interface is rendered and when displaying text in the text viewer or displaying hypertext.</p>
+
+<p>Despite the apparent simplicity of the fix, spotting the performance problem required careful profiling, investigation and testing, all of which were diligently carried out by Mr. Richards. He even wrote unit tests in order to better understand the system.</p>
+
+<p>As a result of the fix, Nodezator is even faster and the speed improvement can be perceived in many common tasks, like launching the app, loading a file, rendering text to be displayed, rendering hypertext like in the in-app manual and many other tasks.</p>
+
+<p>Other commits consist of slight changes to his original fix and tests. I also updated obsolete docstrings in the font caching module.</p>
+
+</body>
+
+</htsl>

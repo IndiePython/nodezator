@@ -61,6 +61,7 @@ from .factoryfuncs import (
     get_action_objs,
     get_recent_file_objs,
     get_license_declaration_obj,
+    get_whats_new_obj,
 )
 
 from .animsetup import (
@@ -172,6 +173,10 @@ class SplashScreen(SplashScreenOperations):
         self.recent_files = get_recent_files()
 
         self.recent_file_objs = get_recent_file_objs(self.recent_files)
+
+        ### create and store an object representing an action to open
+        ### a "what's new?" local page
+        self.whats_new_obj = get_whats_new_obj()
 
         ### create and store an object representing
         ### the license declaration
@@ -409,6 +414,12 @@ class SplashScreen(SplashScreenOperations):
         ).midright
 
         header.append(self.release_level_label)
+
+        ## position the "what's new?" object relative to the title lable and
+        ## append it to the header
+
+        self.whats_new_obj.rect.midleft = self.title_label.rect.move(10, 0).midright
+        header.append(self.whats_new_obj)
 
         ### create custom list representing objects
         ### inside the splash screen body and use it to

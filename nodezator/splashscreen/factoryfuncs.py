@@ -146,6 +146,15 @@ NODES_GALLERY_ICON = combine_surfaces(
     offset_pos_by=(5, 5),
 )
 
+FIRE_ICON = render_layered_icon(
+    chars=[chr(ordinal) for ordinal in (67, 68)],
+    dimension_name="width",
+    dimension_value=28,
+    colors=[BLACK, (255, 255, 0)],
+    background_width=30,
+    background_height=30,
+)
+
 
 ### main functions
 
@@ -609,3 +618,48 @@ def get_license_declaration_obj():
         on_mouse_release=(get_oblivious_callable(partial(open_url, url))),
         href=url,
     )
+
+
+def get_whats_new_obj():
+    """Return object representing button to open a "what's new?" local page."""
+    text_surfs = [
+
+        render_text(
+            text=text,
+            **TEXT_SETTINGS,
+        )
+
+        for text in "What's new?".split()
+
+    ]
+
+    text_surf = combine_surfaces(
+        text_surfs,
+        retrieve_pos_from="bottomleft",
+        assign_pos_to="topleft",
+        offset_pos_by=(0, 5),
+        padding=0,
+        background_color=SPLASH_BG,
+    )
+
+    surf = combine_surfaces(
+        [text_surf, FIRE_ICON],
+        retrieve_pos_from="midright",
+        assign_pos_to="midleft",
+        offset_pos_by=(5, 0),
+        padding=10,
+        background_color=SPLASH_BG,
+    )
+
+    command = get_oblivious_callable(
+        partial(open_htsl_link, "htap://nodezator.pysite/whats-new/v1-3-14.htsl")
+    )
+
+    return Object2D.from_surface(
+
+                        surf,
+
+                        ## set 'on_mouse_release' command to perform the action
+                        on_mouse_release = command,
+
+                    )
