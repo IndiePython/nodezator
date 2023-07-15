@@ -33,7 +33,7 @@ MULTIPLICAND = 12
 QUANTITY = MULTIPLICAND * OBJECTS_NO
 
 # radius of the circle
-RADIUS = 20
+RADIUS = 24
 
 # create the points forming a circle
 
@@ -59,7 +59,7 @@ POINTS = sum(
 
 
 ## define a general offset for the nodes
-NODES_OFFSET = Vector2(-30, -15)
+NODES_OFFSET = Vector2(-72, 70)
 
 ## node animation setting function
 
@@ -79,7 +79,6 @@ def set_node_animation(index, node, parent):
     def update():
 
         ## calculate and assign new center for node
-
         node_rect.center = parent_rect.topright + NODES_OFFSET + d[0]
 
         ## rotate points in deque
@@ -126,7 +125,7 @@ ys = sum(
 ## robot animation setting function
 
 
-def set_robot_animation(robot, parent):
+def set_robot_animation(robot, robot_arms, parent):
     """Set objects and assign anim. behaviour to robot."""
     ### create/reference objects to assist in animation
 
@@ -139,13 +138,19 @@ def set_robot_animation(robot, parent):
     parent_rect = parent.rect
     robot_rect = robot.rect
 
+    arm_a, arm_b = robot_arms
+
     ### define animation behaviour
 
     def update():
 
         ## calculate and assign new center for robot
-
         robot_rect.center = parent_rect.center + robot_offset + (0, d[0])
+
+        ## position robot arms relative to robot's body
+
+        arm_a.rect.midleft = robot_rect.move(0, -55).midleft
+        arm_b.rect.midright = robot_rect.move(0, -55).midright
 
         ## rotate points in deque
         d.rotate(1)

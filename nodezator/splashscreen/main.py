@@ -223,10 +223,6 @@ class SplashScreen(SplashScreenOperations):
             {"use_alpha": True},
         )
 
-        ### define a reference center position for the
-        ### nodes
-        center = self.robot.rect.move(-20, -5).topright
-
         ### create objects representing nodes
 
         ## build a custom list of objects representing
@@ -267,12 +263,30 @@ class SplashScreen(SplashScreenOperations):
 
             node.update()
 
+        ### create objects whose image attribute represents
+        ### a robot arm
+
+        self.robot_arms = List2D(
+
+            ## obj
+            CachedImageObject(img_filename, {"use_alpha": True})
+
+            ## image file names
+            for img_filename in (
+                "splash_nodezator_robot_arm_a.png",
+                "splash_nodezator_robot_arm_b.png",
+            )
+
+        )
+
+
         ### reference all objects in the same custom list
 
         self.animation_objects = List2D(
             [
                 self.robot,
                 *self.floating_nodes,
+                *self.robot_arms,
             ]
         )
 
@@ -280,16 +294,16 @@ class SplashScreen(SplashScreenOperations):
         ### be used as a background for the animation,
         ### representing a gradient
 
-        ## define the size of the object starting from
-        ## the area occupied by the existing objects,
-        ## incremented 60 and 30 pixels in width and
-        ## height, respectively
+        ## reference the animated objects' rect
+        rect = self.animation_objects.rect
 
-        width, height = self.animation_objects.rect.inflate(30, 40).size
+        ## define the size of the object relative to the
+        ## area occupied by the existing objects
+        width, height = rect.inflate(-10, -40).size
 
-        ## use the center of the existing objects as
-        ## the center for this gradient object
-        center = self.animation_objects.rect.center
+        ## define a center for the gradient relative to
+        ## the existing objects center
+        center = rect.move(-20, -40).center
 
         ## create the object with a surface made of
         ## a solid color (default is black), already
@@ -324,6 +338,7 @@ class SplashScreen(SplashScreenOperations):
 
         set_robot_animation(
             robot=self.robot,
+            robot_arms=self.robot_arms,
             parent=gradient_bg,
         )
 
@@ -338,7 +353,15 @@ class SplashScreen(SplashScreenOperations):
         ## then we extend the list with the nodes' update
         ## operations
 
-        self.anim_update_operations.extend(node.update for node in self.floating_nodes)
+        self.anim_update_operations.extend(
+
+            ## update method of each node
+            node.update
+
+            ## for each floating node
+            for node in self.floating_nodes
+
+        )
 
     def position_and_define_boundaries(self):
         """Position objs, defining splash screen boundaries.
