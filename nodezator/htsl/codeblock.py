@@ -1,16 +1,31 @@
-### standard library import
+
+### standard library imports
+
 from os import linesep
 
+from functools import partial
 
-### third-party import
+
+### third-party imports
+
+from pygame import Surface
+
 from pygame.draw import rect as draw_rect
+
+try:
+    from pygame.scrap import put_text
+except ImportError:
+    pass
+
 
 
 ### local imports
 
+from ..our3rdlibs.button import Button
+
 from ..classes2d.single import Object2D
 
-from ..surfsman.render import render_rect
+from ..surfsman.render import combine_surfaces, render_rect
 
 from ..surfsman.draw import draw_border
 
@@ -25,8 +40,11 @@ from ..syntaxman.exception import SyntaxMappingError
 
 from ..syntaxman.utils import get_ready_theme
 
+from ..colorsman.colors import HTSL_GENERAL_TEXT_FG, HTSL_CANVAS_BG
+
 from .constants import (
     GENERAL_CODE_TEXT_SETTINGS,
+    NORMAL_TEXT_SETTINGS,
     PRE_TEXT_SETTINGS,
     PRE_TEXT_BORDER,
 )
@@ -44,8 +62,51 @@ DIGIT_WIDTH, _ = get_text_size(
     font_path=GENERAL_CODE_TEXT_SETTINGS["font_path"],
 )
 
+###
+
+def _get_clipboard_button_surf():
+    """Create and return surface representing clipboard button."""
+
+    ## text
+    text_surf = render_text(text='Copy to clipboard', **NORMAL_TEXT_SETTINGS)
+
+    ## icon
+
+    icon_surf = Surface((20, 24)).convert()
+
+    icon_surf.fill(HTSL_CANVAS_BG)
+
+    _smaller_rect = icon_surf.get_rect().inflate(-8, -8)
+
+    draw_rect(icon_surf, HTSL_CANVAS_BG, _smaller_rect)
+    draw_rect(icon_surf, HTSL_GENERAL_TEXT_FG, _smaller_rect, 2)
+
+    _smaller_rect.move_ip(4, 4)
+
+    draw_rect(icon_surf, HTSL_CANVAS_BG, _smaller_rect)
+    draw_rect(icon_surf, HTSL_GENERAL_TEXT_FG, _smaller_rect, 2)
+
+    ## final combination
+
+    surf = combine_surfaces(
+        (text_surf, icon_surf),
+        retrieve_pos_from="midright",
+        assign_pos_to="midleft",
+        offset_pos_by=(4, 0),
+        padding=6,
+        background_color=HTSL_CANVAS_BG,
+    )
+
+    draw_border(surf, color=HTSL_GENERAL_TEXT_FG, thickness=2)
+
+    return surf
+
+COPY_TO_CLIPBOARD_SURF =  _get_clipboard_button_surf()
+
+
+
 ### TODO ponder: should the code block surfaces be cached
-### accross different .htsl pages? they probably should.
+### across different .htsl pages? they probably should.
 
 
 def get_python_codeblock(python_code_element):
@@ -70,6 +131,7 @@ def get_python_codeblock(python_code_element):
         )
 
     ## if a syntax mapping error occurs...
+
     except SyntaxMappingError:
 
         background_color = GENERAL_CODE_TEXT_SETTINGS["background_color"]
@@ -160,7 +222,13 @@ def get_python_codeblock(python_code_element):
 
     ###
 
-    return Object2D.from_surface(surf)
+    obj = Object2D.from_surface(surf)
+    obj.tag_name = 'python'
+    obj.text = text
+
+    ###
+
+    return obj
 
 def get_pre_textblock(pre_element):
 
@@ -268,4 +336,24 @@ def get_pre_textblock(pre_element):
 
     draw_border(surf, PRE_TEXT_BORDER)
     ###
-    return Object2D.from_surface(surf)
+
+    obj = Object2D.from_surface(surf)
+    obj.tag_name = 'pre'
+    obj.text = text
+
+    return obj
+
+def get_copy_button(text, bottomright):
+
+    return Button(
+
+        ## surf
+        COPY_TO_CLIPBOARD_SURF,
+
+        ## other arguments
+
+        command = (partial(put_text, text)),
+        coordinates_name='bottomright',
+        coordinates_value= bottomright,
+
+    )

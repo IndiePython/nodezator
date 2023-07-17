@@ -390,7 +390,7 @@ class HTSLBrowser(
                     self.draw_once()
 
     def on_mouse_release(self, event):
-        """Open link if collides.
+        """Execute method of same name or open link if collides.
 
         Parameters
         ==========
@@ -413,6 +413,9 @@ class HTSLBrowser(
 
             if obj.rect.collidepoint(mouse_pos):
 
+                ### check if object is a link (has an href attribute),
+                ### opening the link if it is the case
+
                 try:
                     href = self.href
 
@@ -423,6 +426,9 @@ class HTSLBrowser(
 
                     self.open_link(href)
                     break
+
+                ### otherwise check if object has links and whether one
+                ### of them collided, opening the link if it is the case
 
                 try:
                     anchors = obj.anchor_list
@@ -439,6 +445,22 @@ class HTSLBrowser(
                             self.open_link(anchor.href)
                             break
 
+                ### otherwise check whether the object has an on_mouse_release,
+                ### executing it and breaking out of the for-loop if it is the
+                ### case
+
+                try:
+                    method = obj.on_mouse_release
+
+                except AttributeError:
+                    pass
+
+                else:
+                    method(event)
+                    break
+
+                ### regardless of what happened or not, break out of the
+                ### for-loop if this point in the if-block is reached
                 break
 
     def handle_keyboard_input(self):

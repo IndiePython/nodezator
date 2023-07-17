@@ -4,7 +4,19 @@
 from pathlib import Path
 
 
+### third-party import verification
+
+try:
+    from pygame.scrap import put_text
+except ImportError:
+    PUT_TEXT_AVAILABLE = False
+else:
+    PUT_TEXT_AVAILABLE = True
+
+
 ### local imports
+
+from ..classes2d.single import Object2D
 
 from ..classes2d.collections import List2D
 
@@ -25,8 +37,10 @@ from .creation import (
 from .image import get_image_obj
 
 from .codeblock import (
+    COPY_TO_CLIPBOARD_SURF,
     get_python_codeblock,
     get_pre_textblock,
+    get_copy_button,
 )
 
 from ..colorsman.colors import HTSL_CANVAS_BG
@@ -66,6 +80,8 @@ class Preparation:
         self.objs = List2D()
         append_obj = self.objs.append
 
+        pre_or_python_tags = 0
+
         max_width = self.content_area_obj.rect.inflate(-10, -10).width
 
         ELEMENT_NODE = body.ELEMENT_NODE
@@ -80,14 +96,7 @@ class Preparation:
             if tag_name not in KNOWN_TAGS:
                 continue
 
-            if tag_name in (
-                "h6",
-                "h5",
-                "h4",
-                "h3",
-                "h2",
-                "h1",
-            ):
+            elif tag_name in ("h6", "h5", "h4", "h3", "h2", "h1"):
                 append_obj(get_heading(child, max_width))
 
             elif tag_name == "p":
@@ -98,24 +107,22 @@ class Preparation:
 
             elif tag_name == "python":
                 append_obj(get_python_codeblock(child))
+                pre_or_python_tags += 1
 
             elif tag_name == "pre":
                 append_obj(get_pre_textblock(child))
+                pre_or_python_tags += 1
 
             elif tag_name == "ol":
-
                 append_obj(get_ordered_items(child, max_width))
 
             elif tag_name == "ul":
-
                 append_obj(get_unordered_items(child, max_width))
 
             elif tag_name == "dl":
-
                 append_obj(get_defined_items(child, max_width))
 
             elif tag_name == "surfdef":
-
                 append_obj(surfdef_obj_from_element(child, HTSL_CANVAS_BG))
 
             elif tag_name == "img":
@@ -163,11 +170,50 @@ class Preparation:
             elif tag_name == "table":
                 append_obj(Table(child, max_width))
 
-        self.objs.rect.topleft = self.content_area_obj.rect.move(5, 5).topleft
 
-        self.objs.rect.snap_rects_ip(
+        ### position objects relative to each other
+
+        rect = self.objs.rect
+
+        rect.topleft = self.content_area_obj.rect.move(5, 5).topleft
+
+        rect.snap_rects_ip(
             retrieve_pos_from="bottom", assign_pos_to="top", offset_pos_by=(0, 14)
         )
+
+        ### if clipboard functionality is available and there are pre/python
+        ### tags in the page, add "copy to clipboard" button to each pre/python
+        ### tag
+
+        if PUT_TEXT_AVAILABLE and pre_or_python_tags:
+
+            ##
+
+            index_button_pairs = []
+
+            y_offset = 0
+            offset_increment = COPY_TO_CLIPBOARD_SURF.get_height()
+
+            for index, obj in enumerate(self.objs):
+
+                if getattr(obj, 'tag_name', '') in {'pre', 'python'}:
+
+                    y_offset += offset_increment
+
+                    obj.rect.y += y_offset
+
+                    button = get_copy_button(obj.text, bottomright=obj.rect.topright)
+
+                    index_button_pairs.append((index, button))
+
+                else:
+                    obj.rect.y += y_offset
+
+            ##
+            insert_obj = self.objs.insert
+
+            for index, button in reversed(index_button_pairs):
+                insert_obj(index, button)
 
     def set_htsl_objects_from_cache(self, key):
 
