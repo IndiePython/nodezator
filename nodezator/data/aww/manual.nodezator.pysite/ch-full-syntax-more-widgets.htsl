@@ -25,6 +25,8 @@ def get_word_count(text:str=''):
              len(line.split())
              for line in text.splitlines()
            )
+
+main_callable = get_word_count
 </python>
 
 <p>Even though single-line strings are fine, considering the name of the parameter ("text") and the body of the function we can see that the function can handle multiline string as well. The string entry widget is not suited for displaying a multiline string, though.</p>
@@ -110,6 +112,8 @@ def get_word_count(
              len(line.split())
              for line in text.splitlines()
            )
+
+main_callable = get_word_count
 </python>
 
 <p>The text display widget, as the name implies, is much more suited for displaying text. Here's what our node looks like now:</p>
@@ -161,6 +165,8 @@ def get_solid_color_surface(
     surf.fill(fill_color)
 
     return surf
+
+main_callable = get_solid_color_surface
 </python>
 
 <p>And here's the resulting node:</p>
@@ -198,6 +204,8 @@ def pygame_color_by_name(
 
     ):
     return THECOLORS[color_name.islower()]
+
+main_callable = pygame_color_by_name
 </python>
 
 <p>Look at the <i>return</i> statement of the function above. Note that we use a lowercase version of the received <i>color_name</i> argument. In addition to make that lowercase transformation, if we wanted to also ensure the value in the string entry was lowercase, we could also provide an extra option to format the values typed in the string entry:</p>
@@ -225,9 +233,11 @@ def pygame_color_by_name(
 
     ):
     return THECOLORS[color_name.islower()]
+
+main_callable = pygame_color_by_name
 </python>
 
-<p>Adding the extra option here might be overkill though, since the function already does the lowercase conversion in the <i>return</i> statement. We just wanted to show you that you could do it if you wanted.</p>
+<p>Adding the extra option here might be overkill though, since the function already does the lowercase conversion in the <i>return</i> statement. We just wanted to show you that you could do it if you wanted. The conversion in the <i>return</i> statement should not be removed in this case though, regardless of whether you use the extra <i>formatting_command</i> option or not, because the node might receive the value via the input socket rather than from the widget, in which case the extra formatting would not be applied. The formatting option can be a very useful tool or nice convenience in some cases, though.</p>
 
 
 <h2 id="revisiting-int-float">Revisiting the intfloat entry widget</h2>
@@ -255,6 +265,8 @@ def get_zero_list(
 
     ):
     return [0 for _ in range(quantity_of_zeros)]
+
+main_callable = get_zero_list
 </python>
 
 <p>As we said, the maximum value can be provided as well. Here's another example where we provide it:</p>
@@ -284,6 +296,8 @@ def hue_is_near_red(
 
     ):
     return True if hue &gt; 350 or hue &lt; 10 else False
+
+main_callable = hue_is_near_red
 </python>
 
 <p><a href="ch-basic-way-define-widgets.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch-widget-presets-more-widgets.htsl">Next chapter</a></p>

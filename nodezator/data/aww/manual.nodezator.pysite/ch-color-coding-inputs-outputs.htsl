@@ -28,6 +28,8 @@
 
 def function_name(parameter):
     return str(parameter)
+
+main_callable = function_name
 </python>
 
 <img src="images/ch-color-coding_img00.png" alt="Node generated from function" />
@@ -40,6 +42,8 @@ def function_name(parameter):
 
 def function_name(parameter: int) -&gt; str:
     return str(parameter)
+
+main_callable = function_name
 </python>
 
 <img src="images/ch-color-coding_img01.png" alt="Node generated from function" />
@@ -51,6 +55,8 @@ def function_name(parameter: int) -&gt; str:
 
 def sum_integers(*integers: int) -&gt; int:
     return sum(integers)
+
+main_callable = sum_integers
 </python>
 
 <p>You can see the the resulting node below. Note that we added 02 widgets to node in order to make it create an input socket for each widget. As you can see, the input sockets are red (in the default colors). If we hadn't assigned the type hint to the <i>integers</i> parameter the input socket would not have a special color and would be grey instead (in the default colors).</p>
@@ -74,6 +80,8 @@ def function_name() -&gt; [
       {'name': 'pi'},
     ]:
     return 3.14159
+
+main_callable = function_name
 </python>
 
 <img src="images/ch-color-coding_img03.png" alt="Node generated from function" />
@@ -89,6 +97,8 @@ def function_name() -&gt; [
 
     ]:
     return 3.14159
+
+main_callable = function_name
 </python>
 
 <img src="images/ch-color-coding_img04.png" alt="Node generated from function" />
@@ -115,6 +125,8 @@ def function_name() -&gt; [
       'second_output': True,
       'third_output': 100,
     }
+
+main_callable = function_name
 </python>
 
 <img src="images/ch-color-coding_img05.png" alt="Node generated from function" />

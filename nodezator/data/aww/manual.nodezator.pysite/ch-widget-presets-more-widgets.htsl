@@ -39,6 +39,8 @@ def get_random_colors(quantity:'natural_number'=1):
       for _ in range(quantity)
 
     ]
+
+main_callable = get_random_colors
 </python>
 
 <p>To make life even easier, there are also equivalent alternatives to <i>'natural_number'</i> like <i>'non_negative_int'</i> and <i>'non_negative_integer'</i>.</p>
@@ -150,6 +152,8 @@ def get_line_points(
         percentage += increment
 
     return points
+
+main_callable = get_line_points
 </python>
 
 <img src="images/ch-widget-presets_img00.png" alt="Node generated from function" />
@@ -204,6 +208,8 @@ def process_age_info(
     processed_data['oldest_person'] = ordered[-1][0]
 
     return processed_data
+
+main_callable = process_age_info
 </python>
 
 <img src="images/ch-widget-presets_img01.png" alt="Node generated from function" />
@@ -248,6 +254,8 @@ def greet(
 
     ):
     print(f"{greeting}, {name}!")
+
+main_callable = greet
 </python>
 
 <img src="images/ch-widget-presets_img02.png" alt="Node generated from function" />
@@ -302,6 +310,8 @@ def get_channel_value(
                 )
 
     return color[index]
+
+main_callable = get_channel_value
 </python>
 
 <img src="images/ch-widget-presets_img03.png" alt="Node generated from function" />
@@ -376,6 +386,8 @@ def get_sorted_colors(
              colors,
              key = indices_getter,
            )
+
+main_callable = get_sorted_colors
 </python>
 
 <img src="images/ch-widget-presets_img04.png" alt="Node generated from function" />
@@ -431,6 +443,8 @@ def get_sorted_colors(
              colors,
              key = indices_getter,
            )
+
+main_callable = get_sorted_colors
 </python>
 
 <img src="images/ch-widget-presets_img05.png" alt="Node generated from function" />

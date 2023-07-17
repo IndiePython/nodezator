@@ -29,6 +29,8 @@
 
 def get_double(number:int=1):
     return number * 2
+
+main_callable = get_double
 </python>
 
 <p>The resulting node:</p>
@@ -54,6 +56,8 @@ def get_double(number:int=1):
 
 def get_double(number=2):
     return number * 2
+
+main_callable = get_double
 </python>
 
 <p>Resulting node:</p>
@@ -85,6 +89,8 @@ def get_favorite_color(include_alpha:bool=False):
 
     else:
         return (0, 0, 255)
+
+main_callable = get_favorite_color
 </python>
 
 <img src="images/ch-basic-way-define-widgets_img03.png" alt="Node generated from the function" />
@@ -102,6 +108,8 @@ def get_favorite_color(include_alpha:bool=False):
 
 def get_hello_message(name:str='Martha'):
     return f"Hello, {name}"
+
+main_callable = get_hello_message
 </python>
 
 <img src="images/ch-basic-way-define-widgets_img04.png" alt="Node generated from the function" />
@@ -119,6 +127,8 @@ def get_hello_message(name:str='Martha'):
 
 def get_multiple_spaces(quantity:int=0):
     return ' ' * quantity
+
+main_callable = get_multiple_spaces
 </python>
 
 <img src="images/ch-basic-way-define-widgets_img05.png" alt="Node generated from the function" />
@@ -142,6 +152,8 @@ def get_multiple_spaces(quantity:int=0):
 
 def get_half(value:float=0.0):
     return value / 2
+
+main_callable = get_half
 </python>
 
 <img src="images/ch-basic-way-define-widgets_img06_and_07.png" alt="Node generated from the function" />
@@ -154,6 +166,8 @@ def get_half(value:float=0.0):
 
 def get_half(value:(int, float)=0.0):
     return value / 2
+
+main_callable = get_half
 </python>
 
 <p>As you can see, the resulting node below is identical to the previous one (we even used the same image). The only difference is that we now can type both integers and floats.</p>
@@ -192,6 +206,8 @@ def function_name(
 
     ):
     return
+
+main_callable = function_name
 </python>
 
 <img src="images/ch-basic-way-define-widgets_img08.png" alt="Node generated from the function" />
