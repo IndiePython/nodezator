@@ -542,9 +542,9 @@ class HTSLBrowser(
         self.objs.rect.move_ip(x, y)
 
     go_up = partialmethod(move_objs, 0, 20)
-    go_left = partialmethod(move_objs, -20, 0)
+    go_left = partialmethod(move_objs, 20, 0)
     go_down = partialmethod(move_objs, 0, -20)
-    go_right = partialmethod(move_objs, 20, 0)
+    go_right = partialmethod(move_objs, -20, 0)
 
     def draw_once(self):
         """"""
