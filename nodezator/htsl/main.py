@@ -35,6 +35,7 @@ from pygame.locals import (
     K_PAGEDOWN,
     K_HOME,
     K_END,
+    KMOD_SHIFT,
     MOUSEBUTTONUP,
 )
 
@@ -380,12 +381,20 @@ class HTSLBrowser(
 
                 elif event.button == 4:
 
-                    self.go_up()
+                    if SERVICES_NS.get_pressed_mod_keys() & KMOD_SHIFT:
+                        self.go_left()
+                    else:
+                        self.go_up()
+
                     self.draw_once()
 
                 elif event.button == 5:
 
-                    self.go_down()
+                    if SERVICES_NS.get_pressed_mod_keys() & KMOD_SHIFT:
+                        self.go_right()
+                    else:
+                        self.go_down()
+
                     self.draw_once()
 
     def on_mouse_release(self, event):
