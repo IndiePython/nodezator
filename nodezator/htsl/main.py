@@ -137,6 +137,7 @@ class HTSLBrowser(
             *content_area.size,
             HTSL_CANVAS_BG,
         )
+
         self.canvas_copy = content_canvas.copy()
 
         self.content_area_obj = Object2D(
@@ -144,10 +145,8 @@ class HTSLBrowser(
             rect=content_area,
         )
 
-        ### XXX
-        ### also probably create a scroll area by
-        ### slightly smaller than the content area to
-        ### be used for scrolling
+        self.scroll_area = content_area.inflate(-120, -40)
+
 
         ### set initial pysite attribute (default pysite
         ### opened in the htsl browser)
@@ -185,6 +184,7 @@ class HTSLBrowser(
 
         ###
         self.content_area_obj.rect.move_ip(diff)
+        self.scroll_area.center = self.content_area_obj.rect.center
 
         ###
 
@@ -202,7 +202,6 @@ class HTSLBrowser(
         ### to be drawn
 
         if hasattr(self, "running") and self.running:
-
             APP_REFS.draw_after_window_resize_setups = self.draw_once
 
     def open_htsl_link(self, link):
@@ -495,13 +494,13 @@ class HTSLBrowser(
     def move_objs(self, x, y):
 
         objs_rect = self.objs.rect.copy()
-        content_area = self.content_area_obj.rect
+        scroll_area = self.scroll_area
 
         if x and self.horizontal_scrolling_enabled:
 
             if x > 0:
 
-                max_left = content_area.left
+                max_left = scroll_area.left
                 resulting_left = objs_rect.move(x, 0).left
 
                 if resulting_left > max_left:
@@ -509,7 +508,7 @@ class HTSLBrowser(
 
             else:
 
-                min_right = content_area.right
+                min_right = scroll_area.right
                 resulting_right = objs_rect.move(x, 0).right
 
                 if resulting_right < min_right:
@@ -522,7 +521,7 @@ class HTSLBrowser(
 
             if y > 0:
 
-                max_top = content_area.top
+                max_top = scroll_area.top
                 resulting_top = objs_rect.move(0, y).top
 
                 if resulting_top > max_top:
@@ -530,7 +529,7 @@ class HTSLBrowser(
 
             else:
 
-                min_bottom = content_area.bottom
+                min_bottom = scroll_area.bottom
                 resulting_bottom = objs_rect.move(0, y).bottom
 
                 if resulting_bottom < min_bottom:

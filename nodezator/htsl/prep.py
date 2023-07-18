@@ -82,7 +82,7 @@ class Preparation:
 
         pre_or_python_tags = 0
 
-        max_width = self.content_area_obj.rect.inflate(-10, -10).width
+        max_width = self.scroll_area.width
 
         ELEMENT_NODE = body.ELEMENT_NODE
 
@@ -175,7 +175,7 @@ class Preparation:
 
         rect = self.objs.rect
 
-        rect.topleft = self.content_area_obj.rect.move(5, 5).topleft
+        rect.topleft = self.scroll_area.topleft
 
         rect.snap_rects_ip(
             retrieve_pos_from="bottom", assign_pos_to="top", offset_pos_by=(0, 14)
