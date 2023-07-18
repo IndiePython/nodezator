@@ -277,12 +277,6 @@ class TextBlock(List2D):
             last_left = -1
             same_line_anchors.clear()
 
-            underline_color = (
-                HTTP_ANCHOR_TEXT_FG
-                if group[0].href.lower().startswith("http")
-                else HTSL_ANCHOR_TEXT_FG
-            )
-
             for anchor in group:
 
                 left = anchor.rect.left
@@ -295,15 +289,7 @@ class TextBlock(List2D):
                     length = len(same_line_anchors)
 
                     if length > 1:
-
                         self.unite_anchors(same_line_anchors)
-
-                    elif length == 1:
-
-                        underline(
-                            same_line_anchors[0].image,
-                            underline_color,
-                        )
 
                     same_line_anchors.clear()
                     same_line_anchors.append(anchor)
@@ -314,13 +300,6 @@ class TextBlock(List2D):
 
             if length > 1:
                 self.unite_anchors(same_line_anchors)
-
-            elif length == 1:
-
-                underline(
-                    same_line_anchors[0].image,
-                    underline_color,
-                )
 
         ###
 
@@ -433,31 +412,19 @@ class TextBlock(List2D):
 
     def unite_anchors(self, anchors):
 
-        first_anchor = anchors[0]
-
-        topleft = first_anchor.rect.topleft
-        href = first_anchor.href
-
-        for index, obj in enumerate(self):
-            if obj is first_anchor:
-                break
-
         union_surf = unite_surfaces(
             [(anchor.image, anchor.rect) for anchor in anchors],
             background_color=HTSL_CANVAS_BG,
         )
 
-        underline(
-            union_surf,
-            (
-                HTTP_ANCHOR_TEXT_FG
-                if href.lower().startswith("http")
-                else HTSL_ANCHOR_TEXT_FG
-            ),
-        )
+        first_anchor = anchors[0]
 
-        new_anchor = Anchor(union_surf, href)
-        new_anchor.rect.topleft = topleft
+        new_anchor = Anchor(union_surf, first_anchor.href)
+        new_anchor.rect.topleft = first_anchor.rect.topleft
+
+        for index, obj in enumerate(self):
+            if obj is first_anchor:
+                break
 
         for anchor in anchors:
             self.remove(anchor)
