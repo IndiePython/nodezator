@@ -382,18 +382,18 @@ class HTSLBrowser(
                 elif event.button == 4:
 
                     if SERVICES_NS.get_pressed_mod_keys() & KMOD_SHIFT:
-                        self.go_left()
+                        self.mouse_wheel_go_left()
                     else:
-                        self.go_up()
+                        self.mouse_wheel_go_up()
 
                     self.draw_once()
 
                 elif event.button == 5:
 
                     if SERVICES_NS.get_pressed_mod_keys() & KMOD_SHIFT:
-                        self.go_right()
+                        self.mouse_wheel_go_right()
                     else:
-                        self.go_down()
+                        self.mouse_wheel_go_down()
 
                     self.draw_once()
 
@@ -553,6 +553,11 @@ class HTSLBrowser(
     go_left = partialmethod(move_objs, 20, 0)
     go_down = partialmethod(move_objs, 0, -20)
     go_right = partialmethod(move_objs, -20, 0)
+
+    mouse_wheel_go_up = partialmethod(move_objs, 0, 80)
+    mouse_wheel_go_left = partialmethod(move_objs, 80, 0)
+    mouse_wheel_go_down = partialmethod(move_objs, 0, -80)
+    mouse_wheel_go_right = partialmethod(move_objs, -80, 0)
 
     def draw_once(self):
         """"""
