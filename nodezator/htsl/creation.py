@@ -10,9 +10,12 @@ from xml.dom.minidom import (
 
 ### third-party imports
 
-from pygame import Rect
+from pygame import Surface, Rect
 
-from pygame.draw import line as draw_line
+from pygame.draw import (
+    line as draw_line,
+    rect as draw_rect,
+)
 
 
 ### local imports
@@ -29,11 +32,18 @@ from ..rectsman.main import RectsManager
 
 from ..surfsman.render import render_rect, unite_surfaces
 
+from ..fontsman.constants import (
+    NOTO_SANS_MONO_MEDIUM_FONT_PATH,
+    NOTO_SANS_MONO_MEDIUM_FONT_HEIGHT,
+)
+
 from ..colorsman.colors import (
     HTSL_CANVAS_BG,
     HTSL_MARKED_TEXT_BG,
     HTTP_ANCHOR_TEXT_FG,
     HTSL_ANCHOR_TEXT_FG,
+    HTSL_GENERAL_TEXT_FG,
+    HTSL_INLINE_CODE_TEXT_BG,
 )
 
 from .constants import (
@@ -131,10 +141,6 @@ def get_heading(heading, max_width):
     return heading_obj
 
 
-### XXX should probably consider adding <code> tag to use inline;
-### it would be similar to how <mark> is used, but for inline code
-### and with a different style;
-
 class TextBlock(List2D):
     """Represents text blocks."""
 
@@ -174,7 +180,8 @@ class TextBlock(List2D):
 
         for data in substrings_data:
 
-            words = data["text"].split()
+            text = data['text']
+            words = text.split()
 
             href = data.get("href")
             tag_name = data.get("tag_name")
@@ -215,6 +222,9 @@ class TextBlock(List2D):
                     append_to_marked_group(marked_word)
 
                 marked_groups.append(marked_group)
+
+            elif tag_name == "code":
+                append_to_text(Object2D.from_surface(render_inline_code(text)))
 
             elif tag_name in ("s", "del", "u", "ins"):
 
@@ -478,6 +488,33 @@ class TextBlock(List2D):
             self.remove(linecut)
 
         self.insert(index, new_linecut)
+
+
+def render_inline_code(text):
+    """Return text surface representing given text as inline code."""
+
+    text_surf = render_text(
+        text=text,
+        font_height = NOTO_SANS_MONO_MEDIUM_FONT_HEIGHT,
+        font_path = NOTO_SANS_MONO_MEDIUM_FONT_PATH,
+        foreground_color = HTSL_GENERAL_TEXT_FG,
+    )
+
+    text_rect = text_surf.get_rect()
+
+    bg = Surface(text_rect.inflate(6, 0).size).convert()
+    bg.fill(HTSL_CANVAS_BG)
+
+    draw_rect(
+        bg,
+        HTSL_INLINE_CODE_TEXT_BG,
+        bg.get_rect().inflate(0, -2).move(0, 1),
+        border_radius=5,
+    )
+
+    bg.blit(text_surf, (3, 0))
+
+    return bg
 
 
 def get_ordered_items(
