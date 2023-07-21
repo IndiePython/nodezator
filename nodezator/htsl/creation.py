@@ -522,12 +522,15 @@ def get_ordered_items(
     max_width,
     text_list=None,
     level=0,
+    prefix='',
 ):
 
     if text_list is None:
 
         text_list = List2D()
         text_list.anchor_list = []
+
+    text_list.offset_y = True if level else False
 
     current_index = int(list_element.getAttribute("start") or "1")
 
@@ -543,10 +546,14 @@ def get_ordered_items(
             max_width,
             text_list,
             level,
-            icon_chars=f"{current_index}.",
+            prefix,
+            icon_chars=str(current_index),
         )
 
         current_index += 1
+
+    if level != 0:
+        text_list.offset_y = True
 
     return text_list
 
@@ -563,6 +570,7 @@ def get_unordered_items(
     list_element,
     max_width,
     text_list=None,
+    prefix='',
     level=0,
 ):
 
@@ -571,9 +579,14 @@ def get_unordered_items(
         text_list = List2D()
         text_list.anchor_list = []
 
+    text_list.offset_y = True if level else False
+
     ul_icon = BULLET_CHARS[level % NO_OF_BULLET_CHARS]
 
     ELEMENT_NODE = list_element.ELEMENT_NODE
+
+    if level != 0:
+        text_list.offset_y = True
 
     for child in list_element.childNodes:
 
@@ -585,8 +598,12 @@ def get_unordered_items(
             max_width,
             text_list,
             level,
+            prefix,
             icon_chars=ul_icon,
         )
+
+    if level != 0:
+        text_list.offset_y = True
 
     return text_list
 
@@ -596,12 +613,26 @@ def insert_list_item(
     max_width,
     text_list,
     level,
+    prefix,
     icon_chars,
 ):
 
-    indent = (level + 1) * 30
+    indent = (level + 1) * 40
 
     max_width += -indent
+
+    ###
+
+    digit_in_chars = any(char.isdigit() for char in icon_chars)
+
+    if digit_in_chars:
+
+        if prefix:
+            icon_chars = prefix + icon_chars
+
+        icon_chars += '.'
+
+    ###
 
     icon = CachedTextObject(
         icon_chars,
@@ -611,7 +642,14 @@ def insert_list_item(
     icon.rect.right = indent
 
     if text_list:
-        icon.rect.top = text_list.rect.bottom
+
+        if text_list.offset_y:
+
+            icon.rect.top = text_list.rect.move(0, 20).bottom
+            text_list.offset_y = False
+
+        else:
+            icon.rect.top = text_list.rect.bottom
 
     text_list.append(icon)
 
@@ -628,6 +666,8 @@ def insert_list_item(
         if item.nodeType == ELEMENT_NODE
     ):
 
+        ### list child elements before the sublist
+
         children_before_list = []
 
         for child in item_element.childNodes:
@@ -638,9 +678,6 @@ def insert_list_item(
 
                 if child.data.strip():
                     children_before_list.append(child)
-
-                else:
-                    continue
 
             elif node_type == ELEMENT_NODE:
 
@@ -686,25 +723,26 @@ def insert_list_item(
 
         if sublist_tag_name == "ol":
 
-            ordered_list = get_ordered_items(
+            get_ordered_items(
                 sublist_element,
                 max_width,
                 text_list,
                 level=level + 1,
+                prefix = (
+                    icon_chars
+                    if digit_in_chars
+                    else ''
+                ),
             )
-
-            ordered_list.rect.top = text_list.rect.bottom
 
         elif sublist_tag_name == "ul":
 
-            unordered_list = get_unordered_items(
+            get_unordered_items(
                 sublist_element,
                 max_width,
                 text_list,
                 level=level + 1,
             )
-
-            unordered_list.rect.top = text_list.rect.bottom
 
     else:
 
