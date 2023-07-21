@@ -19,11 +19,12 @@ from io import StringIO
 
 ## modules from where to retrieve callables to turn
 ## into nodes
-import ast, functools, importlib, itertools, json, pprint
+import ast, functools, importlib, itertools, json, operator, pathlib, pprint
 
 
 STLIB_IDS_TO_MODULE = {
     "accumulate": itertools,
+    "attrgetter": operator,
     "chain": itertools,
     "chain.from_iterable": itertools,
     "combinations": itertools,
@@ -37,9 +38,12 @@ STLIB_IDS_TO_MODULE = {
     "groupby": itertools,
     "import_module": importlib,
     "islice": itertools,
+    "itemgetter": operator,
     "literal_eval(node_or_string)": ast,
     "literal_eval(node_or_text_string)": ast,
     "loads": json,
+    "methodcaller": operator,
+    "Path": pathlib,
     "partial": functools,
     "pprint": pprint,
     "pformat": pprint,
@@ -88,6 +92,10 @@ def _accumulate(
     *,
     initial: int = None,
 ) -> "iterator":
+    pass
+
+
+def _attrgetter(*attrs:str) -> [{"name": "attribute_getter", "type": Callable}]:
     pass
 
 
@@ -156,6 +164,8 @@ def _islice(
 ) -> "iterator":
     pass
 
+def _itemgetter(*items) -> [{"name": "item_getter", "type": Callable}]:
+    pass
 
 def _literal_eval1(
     node_or_string: "python_literal_string" = "''",
@@ -183,11 +193,18 @@ def _loads(
     pass
 
 
+def _methodcaller(name:str="method_name", *args, **kwargs) -> [
+    {"name": "method_caller", "type": Callable}
+    ]:
+    pass
+
 def _partial(
     func: Callable, *args, **keywords
 ) -> [{"name": "partial_obj", "type": Callable}]:
     pass
 
+def _pathlib_path(*pathsegments) -> [{"name": "path_obj"}]:
+    pass
 
 def _pprint(
     object,
@@ -272,6 +289,7 @@ def _zip_longest(
 
 STLIB_IDS_TO_SIGNATURE_CALLABLES_MAP = {
     "accumulate": _accumulate,
+    "attrgetter": _attrgetter,
     "chain": _chain,
     "chain.from_iterable": (_get_iterable_return_iterator),
     "combinations": (_combinations_with_and_without_replacement),
@@ -285,9 +303,12 @@ STLIB_IDS_TO_SIGNATURE_CALLABLES_MAP = {
     "groupby": _groupby,
     "import_module": _import_module,
     "islice": _islice,
+    "itemgetter": _itemgetter,
     "literal_eval(node_or_string)": (_literal_eval1),
     "literal_eval(node_or_text_string)": (_literal_eval2),
     "loads": _loads,
+    "methodcaller": _methodcaller,
+    "Path": _pathlib_path,
     "partial": _partial,
     "pprint": _pprint,
     "pformat": _pformat,
@@ -305,6 +326,7 @@ STLIB_IDS_TO_SIGNATURE_CALLABLES_MAP = {
 
 STLIB_IDS_TO_SIGNATURES_MAP = {
     "accumulate": signature(_accumulate),
+    "attrgetter": signature(_attrgetter),
     "chain": signature(_chain),
     "chain.from_iterable": (signature(_get_iterable_return_iterator)),
     "combinations": signature(_combinations_with_and_without_replacement),
@@ -320,9 +342,12 @@ STLIB_IDS_TO_SIGNATURES_MAP = {
     "groupby": signature(_groupby),
     "import_module": signature(_import_module),
     "islice": signature(_islice),
+    "itemgetter": signature(_itemgetter),
     "literal_eval(node_or_string)": (signature(_literal_eval1)),
     "literal_eval(node_or_text_string)": (signature(_literal_eval2)),
     "loads": signature(_loads),
+    "methodcaller": signature(_methodcaller),
+    "Path": signature(_pathlib_path),
     "partial": signature(_partial),
     "pprint": signature(_pprint),
     "pformat": signature(_pformat),
@@ -345,6 +370,7 @@ STLIB_IDS_TO_SIGNATURES_MAP = {
 
 STLIB_IDS_TO_STLIB_IMPORT_TEXTS = {
     "accumulate": "from itertools import accumulate",
+    "attrgetter": "from operator import attrgetter",
     "chain": "from itertools import chain",
     "chain.from_iterable": "from itertools import chain",
     "combinations": ("from itertools import combinations"),
@@ -360,9 +386,12 @@ STLIB_IDS_TO_STLIB_IMPORT_TEXTS = {
     "groupby": "from itertools import groupby",
     "import_module": "from importlib import import_module",
     "islice": "from itertools import islice",
+    "itemgetter": "from operator import itemgetter",
     "literal_eval(node_or_string)": "from ast import literal_eval",
     "literal_eval(node_or_text_string)": "from ast import literal_eval",
     "loads": "from json import loads",
+    "methodcaller": "from operator import methodcaller",
+    "Path": "from pathlib import Path",
     "partial": "from functools import partial",
     "pprint": "from pprint import pprint",
     "pformat": "from pprint import pformat",
