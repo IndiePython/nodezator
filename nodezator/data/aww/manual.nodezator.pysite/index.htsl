@@ -139,13 +139,16 @@
 
     <ol>
       <li><a href="ch-other-objects.htsl#text-blocks">Text blocks</a></li>
-      <li><a href="ch-other-objects.htsl#app-defined-nodes">App-defined nodes</a></li>
-      <li><a href="ch-other-objects.htsl#operation-nodes">Operation nodes</a></li>
-      <li><a href="ch-other-objects.htsl#builtin-nodes">Built-in nodes</a></li>
-      <li><a href="ch-other-objects.htsl#standard-library-nodes">Standard library nodes</a></li>
-      <li><a href="ch-other-objects.htsl#snippet-nodes">Snippet nodes</a></li>
-      <li><a href="ch-other-objects.htsl#data-nodes">Data nodes</a></li>
-      <li><a href="ch-other-objects.htsl#redirect-nodes">Redirect nodes</a></li>
+      <li><a href="ch-other-objects.htsl#app-defined-nodes">App-defined nodes</a>
+          <ol>
+              <li><a href="ch-other-objects.htsl#operation-nodes">Operation nodes</a></li>
+              <li><a href="ch-other-objects.htsl#builtin-nodes">Built-in nodes</a></li>
+              <li><a href="ch-other-objects.htsl#standard-library-nodes">Standard library nodes</a></li>
+              <li><a href="ch-other-objects.htsl#snippet-nodes">Snippet nodes</a></li>
+              <li><a href="ch-other-objects.htsl#data-nodes">Data nodes</a></li>
+              <li><a href="ch-other-objects.htsl#redirect-nodes">Redirect nodes</a></li>
+          </ol>
+      </li>
       <li><a href="ch-other-objects.htsl#relationship-data-redirect-nodes">Relationship between data nodes and redirect nodes</a></li>
       <li><a href="ch-other-objects.htsl#callable-mode-app-defined-nodes">Callable mode in app-defined nodes</a></li>
     </ol>
@@ -160,6 +163,31 @@
       <li><a href="ch-distributing-nodes.htsl#summary-distribution-methods">Summary of distribution methods</a></li>
       <li><a href="ch-distributing-nodes.htsl#combining-local-installable">Combining local and installable distributions</a></li>
       <li><a href="ch-distributing-nodes.htsl#template-installable-pack">Template to package and publish an installable node pack</a></li>
+    </ol>
+
+  </li>
+
+  <li><a href="ch-conditional-execution.htsl">Conditional execution (branching) in Nodezator</a>
+
+    <ol>
+      <li><a href="ch-conditional-execution.htsl#analyzing-problem-presenting-solution">Analyzing a problem and presenting a solution</a></li>
+      <li><a href="ch-conditional-execution.htsl#solution-efficiency">Quick note on the efficiency of our solution</a></li>
+      <li><a href="ch-conditional-execution.htsl#extending-problem-solution">Extending the problem and our solution</a></li>
+      <li><a href="ch-conditional-execution.htsl#dict-based-simplification">A dict-based simplification</a></li>
+      <li><a href="ch-conditional-execution.htsl#different-signatures-arguments">Different signatures and arguments</a></li>
+      <li><a href="ch-conditional-execution.htsl#crucial-missing-piece-subgraphs">A crucial missing piece: subgraphs/group nodes</a></li>
+      <li><a href="ch-conditional-execution.htsl#other-missing-pieces">Other missing pieces</a></li>
+    </ol>
+
+  </li>
+
+  <li><a href="ch-looping.htsl">Looping/iterating in Nodezator</a>
+
+    <ol>
+      <li><a href="ch-looping.htsl#looping-with-functions">Looping with functions</a></li>
+      <li><a href="ch-looping.htsl#map-for-item-in-obj-pass">map() and for_item_in_obj_pass()</a></li>
+      <li><a href="ch-looping.htsl#other-nodes">Other nodes</a></li>
+      <li><a href="ch-looping.htsl#crucial-missing-piece-subgraphs">A crucial missing piece: subgraphs/group nodes</a></li>
     </ol>
 
   </li>
@@ -219,6 +247,7 @@
   <li><a href="appendix-intfloat-words.htsl">Appendix: Words available inside intfloat entries</a></li>
   <li><a href="appendix-widget-configurations.htsl">Appendix: All widget configurations</a></li>
   <li><a href="appendix-widget-presets.htsl">Appendix: Widget presets</a></li>
+  <li><a href="appendix-recipes.htsl">Appendix: Recipes</a></li>
 
 </ul>
 

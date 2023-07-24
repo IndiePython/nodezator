@@ -213,7 +213,7 @@ main_callable = view_points
 
 <p>In the next chapter we'll focus on improving our custom visualization loop even more.</p>
 
-<p><a href="ch-distributing-nodes.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch-defining-complex-viewer-nodes.htsl">Next chapter</a></p>
+<p><a href="ch-looping.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch-defining-complex-viewer-nodes.htsl">Next chapter</a></p>
 
 </body>
 

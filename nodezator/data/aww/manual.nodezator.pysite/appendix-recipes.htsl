@@ -1,0 +1,102 @@
+<htsl>
+
+<head>
+  <title>Nodezator Manual | Appendix: Recipes</title>
+</head>
+
+<body>
+
+<p><a href="index.htsl">Table of contents</a> &gt; Appendix: Recipes</p>
+
+
+
+<h1>Appendix: Recipes</h1>
+
+<p>This appendix contains recipes for performing common tasks in a smart/efficient way.</p>
+
+
+
+
+<h2>Multiple operations at once with functools.reduce() standard library node</h2>
+
+<p>As presented in the chapter on <a href="ch-defining-your-first-node.htsl#expanded-collapsed-callable-modes">defining your first node</a>, nodes have different modes.</p>
+
+<p>The callable mode in particular can be used to achieve complex tasks with fewer nodes. In other words, nodes in callable mode can simplify your graph a lot while still providing power and versatility. We'll present a tiny example so you can see this in practice. Look at the graph in the image below, where multiple <code>a+b</code> operation nodes are used to add values together:</p>
+
+<img src="images/appendix-recipes_img00.png" alt="Graph representing several additions by chained '+' operation nodes" />
+
+<p>For now the graph is relatively small, but every time you need to add another value, you have to duplicate the operation node and so the graph will gradually become larger and larger.</p>
+
+<p>If you use the <code>a+b</code> node in callable mode, though (by right-clicking it and, inside the <b>Change mode to</b> submenu, picking <b>callable</b>), you would only need a single one. Then you can use it in conjuntion with a <a href="https://docs.python.org/3/library/functools.html#functools.reduce">functools.reduce()</a> standard library node and a <code>tuple_from_args</code> snippet node to add as many values as you want without having to create several instances of the operator node. The <code>tuple_from_args</code> node is used to gather all values to be added into a single collection (in this case a tuple). Then we pass a reference to the <code>a+b</code> operation as the first argument of <code>functools.reduce()</code> and the collection as the second argument. Here's an alternative version of the graph in the previous image, but using the <code>a+b</code> node in callable mode with the other nodes we just described:</p>
+
+<img src="images/appendix-recipes_img01.png" alt="Graph representing several additions by using a single '+' operation node in callable mode" />
+
+<p>In other words, with just these 03 nodes (<code>a+b</code>, <code>tuple_from_args</code> and <code>functools.reduce()</code>) we can add as many values as we want! In the first version of this graph, if we wanted to add 10 more values, we would need at least 20 more nodes (one node with each new value and another a+b node). In this new version, we'd just need 10 more nodes, which would be the values we'd add to the tuple_from_args node.</p>
+
+<p>You can use this to repeat many different kinds of operations at once. For instance, instead of <code>a+b</code>, you could have used an <code>a*b</code> operation node so all the values would be multiplied.</p>
+
+<p>This is just a tiny example of how the callable mode can be used to achieve complex tasks with a very simple graph.</p>
+
+
+
+<h2>Importing values/objects, getting attributes, executing callable objects</h2>
+
+<p>This section presents a few nodes available by default that can be used alone or in combination to perform many common tasks.</p>
+
+<p>You don't need to define a new node every time you want to grab a value/callable from another module. Nodezator has the <a href="https://docs.python.org/3/library/importlib.html#importlib.import_module">importlib.import_module()</a> function available as a standard library node. You can use this node in conjunction with other nodes available by default to grab objects from a module and just pass them along to other nodes or, if it is callable, to execute them.</p>
+
+<p>For instance, a lot of programming problems require the usage of mathematical constants. You can grab them from the <a href="https://docs.python.org/3/library/math.html">math</a> like this:</p>
+
+<img src="images/appendix-recipes_img02.png" alt="Graph representing usage of importlib.import_module() and getattr() nodes." />
+
+<p>That is, with <code>import_module()</code> you grab the <code>math</code> module and with <a href="https://docs.python.org/3/library/functions.html#getattr">getattr()</a>, available in Nodezator as a built-in node, you grab the <code>pi</code> attribute from the <code>math</code> module.</p>
+
+<p>You can also grab a callable object using the same nodes, and execute it using the <code>perform_call</code> snippet node. This node just executes a given callable with given arguments and returns the return-value of the call. The node's source is roughly equivalent to this:</p>
+
+
+<python>
+def perform_call(func, *args, **kwargs):
+    return func(*args, **kwargs)
+</python>
+
+<p>Here's how you'd use it in conjunction with <code>importlib.import_module()</code> and <code>getattr()</code> to grab and execute the <a href="https://docs.python.org/3/library/math.html#math.factorial">math.factorial()</a> function:</p>
+
+<img src="images/appendix-recipes_img03.png" alt="Graph representing usage of importlib.import_module(), getattr() and perform_call() nodes to grab and executed math.factorial()." />
+
+<p>Of course, you can grab as many objects as you want from the imported module. Here we grab a function to convert an angle from degrees to radians and another function to obtain the cosine of the converted angle:</p>
+
+<img src="images/appendix-recipes_img04.png" alt="Graph representing usage of importlib.import_module(), getattr() and perform_call() nodes to grab and execute 02 functions from the math module." />
+
+<p>And here we create an array of integers with the <a href="https://numpy.org">numpy</a> library:</p>
+
+<img src="images/appendix-recipes_img05.png" alt="Graph representing usage of importlib.import_module(), getattr() and perform_call() nodes to grab and instantiate an array from the numpy library." />
+
+<p>Naturally, whenever importing from a third-party library, make sure it is installed in the Python instance running Nodezator.</p>
+
+
+
+
+<h2>The namespace_from_exec() snippet node</h2>
+
+<p>Frequently, we may find ourselves in the need of some small temporary custom code or maybe we just want to experiment with some ideas before we create a new node for some specific purpose. Whenever one of such scenarios arise you can use the <code>namespace_from_exec()</code> node. It allows you to write and execute custom Python code. You can pass it data via keyword arguments and the new names and respective values defined in that code are returned from the node as a dictionary.</p>
+
+<p>Here's a small example of how it can be used:</p>
+
+<img src="images/appendix-recipes_img06.png" alt="Graph representing usage of namespace_from_exec() node to provide and execute code in the graph." />
+
+<p>The <code>namespace</code> dictionary returned has all the names defined/referenced in the code:</p>
+
+<python>
+{'b': 20, 'c': 20, 'math': &lt;module 'math' (built-in)&gt;, 'a': 43.1415926535898}
+</python>
+
+<p>You can grab any or many of such values using nodes like the <code>a[b]</code> operation node or the <code>get_at_string</code> snippet node (which works the same way as <code>a[b]</code>, but has a StringEntry widget attached for convenience):</p>
+
+<img src="images/appendix-recipes_img07.png" alt="Graph representing values being accessed from the namespace dictionary returned by the namespace_from_exec() node." />
+
+
+<p><a href="index.htsl">Table of contents</a></p>
+
+</body>
+
+</htsl>

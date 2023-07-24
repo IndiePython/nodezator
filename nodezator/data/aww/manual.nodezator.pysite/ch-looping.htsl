@@ -1,0 +1,80 @@
+<htsl>
+
+<head>
+  <title>Nodezator Manual | Looping/iterating in Nodezator</title>
+</head>
+
+<body>
+
+<p><a href="index.htsl">Table of contents</a> &gt; Looping/iterating in Nodezator</p>
+
+
+<h1>Looping/iterating in Nodezator</h1>
+
+
+
+<h2 id="looping-with-functions">Looping with functions</h2>
+
+<p>In text-based programming with Python, we usually perform looping using a <code>for-loop</code> or <code>while-loop</code>, and with good reason, since they are practical and very readable.</p>
+
+<p>On the other hand, in a node-based programming application like Nodezator, whose graphs represent chained function calls, looping is also performed with calls to functions.</p>
+
+<p>Many Python built-in and standard library functions that help with looping/iteration are available by default in Nodezator.</p>
+
+
+
+<h2 id="map-for-item-in-obj-pass">map() and for_item_in_obj_pass()</h2>
+
+<p>Perhaps chief among them is the <code>map()</code> node, which represents Python's <a href="https://docs.python.org/3/library/functions.html#map">map()</a> built-in. With it, you can apply a given callable to items in one or more iterable objects. For instance, if you want to loop over numbers in a range object, producing a list containing numbers which are the double of the numbers in the range, you can do it like so:</p>
+
+<img src="images/ch-looping_img00.png" alt="map() node demonstration" />
+
+<p>In the image above we begin by creating a callable that returns the given numbers multiplied by 2, by passing the <code>a*b</code> node in callable mode to the <code>partial()</code> node along with the number 2 as one of the arguments. Next, we create a range node to produce our range object. Then, we pass the callable used to double numbers and the range object to the <code>map()</code> node. And finally, we pass the resulting map object to the <code>list()</code> node.</p>
+
+<p>Note that, since we are interested in the outputs of our callable that doubles numbers, we must build a collection to hold these numbers, regardless of whether we use a list, set, tuple or other kind of collection.</p>
+
+<p>This is so because many of the functions used to loop in Python are <b>lazily evaluated</b>. Their underlying operations are only carried out when needed, that is, when <b>building a collection</b> or when <b>being iterated over in a for-loop</b>. Just passing the callable that doubles and the range to <code>map()</code> is not enough to trigger the execution of the callable that doubles the range items. This is why we need to connect our <code>map</code> node to the <code>list()</code> node for the doubled numbers to be produced.</p>
+
+<p>However, what if you were not interested in the outputs produced, just wanted an action to be carried out many times over? You could of course use a <code>list()</code> node as well, or any other node producing a collection, but at the end it would produce a needless collection of meaningless values. For cases like this, Nodezator offers an app-defined node that emulates an empty for-loop for you, the <code>for_item_in_obj_pass()</code> node. As we just said, being iterated over in a for-loop is one way to carry out the underlying operations of a lazily evaluated object (like the map object returned by our map node). The source code of this node, as can be inferred by its name, is roughly equivalent to this:</p>
+
+<python>
+def for_item_in_obj_pass(obj):
+    for item in obj:
+        pass
+</python>
+
+<p>Just connect your map node to it and it will trigger the execution of the underlying operation in your <code>map()</code> node. For instance, to print each item in a range in its own line, you can do this:</p>
+
+<img src="images/ch-looping_img01.png" alt="for_item_in_obj_pass() + map() nodes demonstration" />
+
+<p>As we said before, you could also have connected the <code>map()</code> node to a <code>list()</code> node or other collection, but it would have created and populated a collection with the output of the calls. Since the calls performed in our map object are calls to the <code>print()</code> function, which always returns <code>None</code>, you would end up with a useless collection full of <code>None</code> objects.</p>
+
+<p>The <code>for_item_in_obj_pass()</code> node on the other hand ignores the items. Its only purpose is to trigger the execution.</p>
+
+
+
+<h2 id="other-nodes">Other nodes</h2>
+
+<p>Applying callables to items isn't the only useful way of looping/iterating. You may also want to filter, group, slice, reduce to a single item and do many other things with items. To perform or assist in those things and many more, Nodezator provides many other nodes by default, like the built-in <code>filter()</code> and functions from the standard library modules <a href="https://docs.python.org/3/library/itertools.html">itertools</a>, <a href="https://docs.python.org/3/library/functools.html">functools</a> and <a href="https://docs.python.org/3/library/operator.html">operator</a>.</p>
+
+<img src="images/ch-looping_img02.png" alt="built-in filter() node and some nodes from standard library modules" />
+
+
+
+<h2 id="crucial-missing-piece-subgraphs">A crucial missing piece: subgraphs/group nodes</h2>
+
+<p>It is no coincidence that this section has the same title of <a href="ch-conditional-execution#crucial-missing-piece-subgraphs">a section from the chapter on conditional execution</a>. Just like for conditional execution, subgraphs (group nodes) are also a crucial missing piece for looping in Nodezator.</p>
+
+<p>The <code>print()</code> function passed to the <code>map()</code> node in this chapter represents an atomic operation: printing a value. The callable used to double numbers was relatively simple as well, and required only 02 nodes, the <b>a+b</b> node and the <code>partial()</code> node. However, in practice, callables we would apply to items using <code>map()</code> or use in other kinds of iteration with other nodes other than <code>map()</code> will often be the result of the combination of many nodes. This is precisely why we use a node-based interface to program, so we can combine different nodes to achieve a certain result.</p>
+
+<p>That's where subgraphs (similar to group nodes in Blender3D) are useful. As said in the chapter about conditional execution, this is something that will still take a while to land on Nodezator, but is something indispensable in order to tackle more complex looping/iteration in Nodezator.</p>
+
+<p>Once subgraphs/group nodes are implemented, whenever we need to represent a complex operation that requires the usage of multiple nodes, all we'll have to do is create the nodes, group them together, select which inputs and outputs we want to expose, and use the resulting group node as demonstrated in our examples in this chapther: in callable mode, and with help of nodes like <code>map()</code> and many others.</p>
+
+
+
+<p><a href="ch-conditional-execution.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> | <a href="ch-viewer-nodes-with-custom-visualization-loops.htsl">Next chapter</a></p>
+
+</body>
+
+</htsl>

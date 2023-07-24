@@ -67,7 +67,7 @@ main_callable = function_name
 
 <p>Our first node will <b>create the points of a circle</b>. This may be useful for instance, to define circular movements for game characters. We'll name its folder <i>get_circle</i>. Below is the code defining our node in the __main__.py file within our get_circle folder. Note that the name of the function to be turned into a node also is get_circle.</p>
 
-<python>
+<python uselineno="true">
 ### function defining the get_circle node
 ### points2d/point_creation/get_circle/__main__.py file
 
@@ -272,7 +272,7 @@ main_callable = get_circle
 
 <p>Used wisely, this mode is quite powerful, since it brings a lot of versatility, allowing you to achieve complex tasks with a smaller amount of nodes while retaining total control over the end result. Understanding this requires extra knowledge on concepts such as <b>functions as first-class citizens</b> and <b>higher order functions</b> and on programming paradigms like <b>functional programming</b>. Though it is not the purpose/responsibility of this manual to teach/explain those concepts/paradigms, it is our desire to offer users as much useful knowledge as possible on how to make most out of Nodezator, so in the future we'll be including an appendix to our manual dedicated to this.</p>
 
-<p>For now, the callable mode is revisited only in a section of a future chapter, where we briefly <a href="ch-other-objects.htsl#callable-mode-app-defined-nodes">present an example on how the callable mode can be used to achieve complex tasks with fewer nodes</a>.</p>
+<p>For now, the callable mode is mentioned in a few future chapters regarding conditional execution and looping in Nodezator and also in the <a href="appendix-recipes.htsl">appendix with useful recipes</a> to execute common tasks in Nodezator, since its very useful for many purposes.</p>
 
 <p><a href="index.htsl">Table of contents</a> | <a href="ch-defining-viewer-nodes.htsl">Next chapter</a></p>
 

@@ -1,0 +1,202 @@
+<htsl>
+
+<head>
+  <title>Nodezator Manual | Conditional execution (branching) in Nodezator</title>
+</head>
+
+<body>
+
+<p><a href="index.htsl">Table of contents</a> &gt; Conditional execution (branching) in Nodezator</p>
+
+
+<h1>Conditional execution (branching) in Nodezator</h1>
+
+<p>Nodezator still has a long way to go before fully supporting conditional execution/branching, but much can already be done regarding this with its current features/design. In this chapter we'll explore different ways in which conditional execution can be achieved and what's missing for it to be fully achievable.</p>
+
+
+
+<h2 id="analyzing-problem-presenting-solution">Analyzing a problem and presenting our solution</h2>
+
+<p>Let's jump straight into action by analyzing how a real problem requiring conditional execution can be solved with Nodezator.</p>
+
+<p>Suppose we have data representing a 3D box model and want the model to be changed depending on the requested kind of lid (hinged, sawn or sliding). To keep the problem as fundamental/representative as possible, let's reduce the possibilities to 02 options: either "hinged" or "no lid" (the box without a lid could be used as a <a href="https://en.wikipedia.org/wiki/Prop">prop</a>, for instance). Once we solve the problem, we can then extend our solution to include more options as needed.</p>
+
+<p>The image below depicts a dummy node that returns data representing a box. At this point we still didn't decide whether the box will have lids or not, the node just returns general data describing a box.</p>
+
+<img src="images/ch-conditional-execution_img00.png" alt="img" />
+
+<p>The image below depicts 02 different dummy nodes that represent operations that result in the simplified possibilities: a box with a hinged lid or the same initial box with no lid added to it. As you can see, they take exactly one input and return a single value.</p>
+
+<img src="images/ch-conditional-execution_img01.png" alt="img" />
+
+<p>The <code>add_hinged_lid</code> node takes the box data and returns the box data changed to include data describing the hinged lid. The <code>return_untouched</code> node doesn't change the input at all, returning it exactly as it is. That is, the same object that goes in, goes out as well. In mathematics, this kind of function is called an <b>identity function</b>. It is a node I want to add as an app-defined node to Nodezator, that is, one that is available by default (it would probably be added in the "Useful encapsulations" menu).</p>
+
+<p>Finally, the image below shows a viable solution to our branching problem.</p>
+
+<img src="images/ch-conditional-execution_img02.png" alt="img" />
+
+<p>At the center of our solution is the <code>a if c else b</code> operator node. It just represents a conditional expression or ternary operator in Python (it is also called an "inline if-else statement" and other similar names). <code>a</code> and <code>b</code> represent the alternatives and <code>c</code> represents a condition. So, in plain English, what the operation represents is clear: use <u>a</u> if <u>c</u>ondition is true, else use <u>b</u>.</p>
+
+<p>Everything to the left of the <code>a if c else b</code> node represents the alternatives and condition being passed to the node. The leftmost node, the <code>requested_lid</code> variable just holds a string representing the kind of node that is requested. Then, this requested_lid variable is compared to the <code>hinged_name</code> variable using equality (the <code>a==b</code> node) and the result is fed to the <code>c</code> parameter of the <code>a if c else b</code> node.</p>
+
+<p>If the requested lid equals <code>'hinged'</code>, then <b>a</b> is used, that is, the <code>add_hinged_lid</code> node in callable mode, that is, a reference to the callable that receives the box data and returns the changed data describing a box with a hinged lid. If otherwise, the requested lid is different, than <b>b</b> is used, that is, the <code>return_untouched</code> node in callable mode, which receives the box data and returns it untouched.</p>
+
+<p>The output of <code>a if c else b</code> is then passed to the <code>perform_call</code> node (you can found it in the "Useful encapsulations" submenu of the popup menu) as the argument for its <code>func</code> parameter. The <code>perform_call</code> node just performs a call with the given callable object and additional arguments given to it and returns the return-value of the call. The <code>perform_call</code> node also takes the <code>box_data</code> output from our <code>get_box</code> node as an argument. In other words, whichever callable comes from the <code>a if c else b</code> node will be called with the box data as an argument and will then return either the box data describing a box with a hinged lid or our original box.</p>
+
+<p>This solved problem represents the most atomic/fundamental/basic problem in conditional execution/branching: choosing between an option or doing nothing.</p>
+
+<p>In text-based Python programming this would often appear in a script as a single if-block without an else-block accompanying it. Something like this:</p>
+
+<python>
+box_data = get_box(...)
+
+if requested_lid == 'hinged':
+    box_data = add_hinged_lid(box_data)
+</python>
+
+<p>The exported Python code from our solution will instead represent a text-based script using FP. The code below is a simplified representation of how the graph from our solution would be exported as Python code:</p>
+
+<python>
+chosen_func = add_hinged_lid if requested_lid == 'hinged' else return_untouched
+box_data = get_box()
+box_data = perform_call(chosen_func, box_data)
+</python>
+
+
+
+
+<h2 id="solution-efficiency">Quick note on the efficiency of our solution</h2>
+
+<p>Despite the fact that within a node-based interface like Nodezator the <code>a if c else b</code> node doesn't short-circuit because the alternatives must be evaluated before being passed to the node, the solution still doesn't waste any resources. This is so for 02 reasons:</p>
+
+<ul>
+    <li>only references to the callables are passed to the ternary operator, so there's actually nothing to be evaluated; and</li>
+    <li>only the reference to the chosen callable reaches the <code>perform_call</code> node and only then the callable is executed.</li>
+</ul>
+
+<p>In other words, our solution is efficient.</p>
+
+
+
+
+<h2 id="extending-problem-solution">Extending the problem and our solution</h2>
+
+<p>Now let's extend this problem to work with an additional option: a box with a sawn lid. The image below depicts the solution:</p>
+
+<img src="images/ch-conditional-execution_img03.png" alt="img" />
+
+<p>The solution above shows how versatile the ternary operator (the <code>a if c else b</code> node) is.</p>
+
+<p>In this solution, the first ternary operator (the one closer to the center, in the bottom half of the image) executes and, if the requested lid was a sawed-off one, it passes a reference to the <code>add_sawn_lid</code> callable to the next ternary operator. Otherwise, it passes a reference to our identify function, the <code>return_untouched</code> node.</p>
+
+<p>The next ternary operator checks whether the requested lid is a hinged one and, if it is, it passes a reference to <code>add_hinged_lid</code> to the <code>perform_call</code> node. Otherwise, whichever reference is received in its <code>b</code> parameter is passed on, that is, either <code>add_sawn_lid</code> or <code>return_untouched</code>. The call is then performed in the <code>perform_call</code> node with the box data from the <code>get_box</code> node.</p>
+
+<p>Just as shown in the image, this solution can be extended indefinitely, regardless of how much alternatives there are. We just need to chain as much ternary operators as needed.</p>
+
+
+
+<h2 id="dict-based-simplification">A dict-based simplification</h2>
+
+<p>Our solution can still be further simplified in some cases. Whenever the conditions to be evaluated are simple values that correspond to specific options, such different values and respective options can be stored in a dictionary, like demonstrated in the image below:</p>
+
+<img src="images/ch-conditional-execution_img04.png" alt="img" />
+
+<table>
+
+  <thead>
+    <tr>
+      <th class="col-1">Step</th>
+      <th class="col-8">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+
+    <tr>
+      <td><span class="big-icon">1</span></td>
+      <td>Build a dict and retrieve its .get() method</td>
+    </tr>
+
+    <tr>
+      <td><span class="big-icon">2</span></td>
+      <td>Execute the .get() method with the requested_lid, using return_untouched() as a value to be returned in case requested_lid isn't found in the dictionary</td>
+    </tr>
+
+    <tr>
+      <td><span class="big-icon">3</span></td>
+      <td>Finally, execute the received callable with the box data from get_box()</td>
+    </tr>
+
+  </tbody>
+
+</table>
+
+<p>As seen in the image, the dict is populated with our options, using the respective lid type name. We then retrieve it's <code>.get()</code> method and call it with the <code>perform_call</code> node, passing the name of our requested lid to it and our identify function <code>return_untouched</code>. If the name of the requested lid corresponds to one of the alternatives stored in the dict (the callable objects), it is returned, otherwise <code>return_untouched</code> is returned instead. Finally, the returned callable is executed in the next <code>perform_call</code> node with our <code>box_data</code>.</p>
+
+<p>This solution is actually not innovative. It works similarly to <b>match/case</b> statements and in fact people have been using it in Python before match/case was implemented and some (maybe many) still use it instead.</p>
+
+
+
+<h2 id="different-signatures-arguments">Different signatures and arguments</h2>
+
+<p>There is one case that our solution still needs to address. What if...</p>
+
+<ul>
+    <li>the alternatives had different signatures?</li>
+    <li>regardless of the signatures, we wanted to pass different arguments to the chosen callable, depending on which one is chosen?</li>
+</ul>
+
+<p>In the problems we just explored, the alternatives had the same signature and we only wanted to pass our <code>box_data</code> to them. That is, both our <code>return_untouched</code> identity function and the other alternatives like <code>add_hinged_lid</code>, etc., all accepted a single argument.</p>
+
+<p>However, what if each of the callables required different arguments or we just wanted to pass different arguments to them of our own volition?</p>
+
+<p>The answer is actually simple: we would only need to pass each reference of the callables through a <code>partial</code> node along with the additional arguments. Such node is a representation of the standard library's <a href="https://docs.python.org/3/library/functools.html#functools.partial">functools.partial()</a> function. The <code>partial</code> node can be found in the popup menua mong the standard library nodes.</p>
+
+<p>This way we could feed the required/desired arguments to the callables even before the chosen one reaches the <code>perform_call</code> node.</p>
+
+<p>As an example, let's pretend our <code>add_sliding_lid</code> accepts an optional <code>lid_color</code> parameter and we wanted our call to <code>add_sliding_lid</code> (in case it is the requested lid), to include such an argument for the <code>lid_color</code> parameter. All we'd have to do is to pass the reference to our <code>add_sliding_lid</code> callable through the <code>partial</code> node along with the <code>lid_color</code> argument, as demonstrated in the image below:</p>
+
+<img src="images/ch-conditional-execution_img05.png" alt="img" />
+
+<p>The resulting <code>partial_obj</code> returned by the <code>partial</code> node would then be passed to the ternary operator as usual and, if it were to reach the <code>perform_call</code> node, where it would receive the <code>box_data</code> argument, it would be properly executed with both the <code>box_data</code> and <code>lid_color</code> arguments.</p>
+
+<p>Alternatively, if the order of the arguments was important, we could feed both the <code>box_data</code> and <code>lid_color</code> arguments to the partial node as well. In this case, we'd also need to add partial nodes to the other alternatives and also feed the <code>box_data</code> to them. Also, since we'd be feeding the <code>box_data</code> argument to all alternatives from the very beginning, we wouldn't need to pass the <code>box_data</code> to the <code>perform_call</code> node at the end.</p>
+
+<p>This ability to work with alternatives that have different signatures is actually crucial, because it allow us not only to use alternatives that require different sets of data, but also alternatives that require no data at all.</p>
+
+<p>Our solution so far has been addressing a problem with similar alternatives, that is, different kinds of lids (or no lid at all). All of them require some data to be passed to the chosen alternative. Even in the alternative where no lid is added, the identity function used receives the <code>box_data</code>. However, there are also cases when no data is passed on at all. For instance, if no lid is required, you might instead want to do something completely unrelated, like sending an email or creating an entirely new 3D model. In such cases, we'll be ignoring the existence of the box data entirely. Here's the resulting graph:</p>
+
+<img src="images/ch-conditional-execution_img06.png" alt="img" />
+
+<p>In other words, the <code>get_bag</code> alternative doesn't care about the box data. Also notice that any additional argument needed was fed to the alternative beforehand when turning them into partial objects. All of what we demonstrated guarantees that the alternatives, though sometimes similar to each other, can also represent completely different operations/paths of execution.</p>
+
+<p>Note that the steps are almost the same as in the graph shown in a previous image (the one where we presented the dict-based approach). The main difference is that in the step where we build the dict, we create partial objects before feeding them to the dictionary. In step 03 where we use the <code>perform_call</code> to execute <code>dict.get()</code>, we pass a reference to the callable of the <code>get_bag()</code> node to be returned in case a requested key is not in the dictionary. Whichever callable is returned by <code>dict.get()</code> in step 03, is executed in step 04 by yet another instance of the <code>perform_call</code> node.</p>
+
+
+
+<h2 id="crucial-missing-piece-subgraphs">A crucial missing piece: subgraphs/group nodes</h2>
+
+<p>There's still a final crucial missing piece for the completion of our solution: subgraphs (group nodes).</p>
+
+<p>Subgraphs are actually an integral part of the solution. Notice that the nodes representing the different alternatives (<code>add_hinged_lid</code>, <code>add_sawn_lid</code>, etc.) we presented in the explored problems are only dummy nodes that represent an atomic operation: adding a lid to a node (or other atomic operation). However, in practice, each different alternative/branch from which we'll be choosing can't always be represented by a single node.</p>
+
+<p>In fact, it often won't, which is precisely why we use a node-based interface to program, so we can combine different nodes to achieve a certain result. For instance, the alternative to create a 3D bag instead would probably be followed by other operations related to that alternative. As such, we'd probably use multiple nodes, not only the one to just create the bag. The options where a lid is added and we keep using the box data, would, in practice, maybe require many nodes to be combined and executed in order to add such lid to our box.</p>
+
+<p>That's where subgraphs (like group nodes in Blender3D) are useful. This is something that will still take a while to land on Nodezator, but is something indispensable in order to be able to fully tap into conditional execution/branching in Nodezator (and also looping).</p>
+
+<p>Once subgraphs/group nodes are implemented, whenever we need to represent a branch/option/alternative that requires the usage of multiple nodes, all we'll have to do is create the nodes, group them together, select which inputs and outputs we want to expose, and use the resulting group node as demonstrated in our solutions: in callable mode, and with help of ternary operators or dictionaries (and <code>partial</code> nodes, to provide dedicated arguments).</p>
+
+
+
+<h2 id="other-missing-pieces">Other missing pieces</h2>
+
+<p><code>match/case</code> and/or <code>if/elif/else</code> nodes would be useful additions, but they are not as urgent, because the ternary operator and the dictionaries can help us already while we implement other more urgent features first. The ternary operator, in particular, being just an application of an if/else clause, can already solve any conditional execution use-case, regardless of the complexity, by being chained. However, <code>match/case</code> and/or <code>if/elif/else</code> nodes could be really useful to simplify part of these use-cases in a way that ternary operators and dictionaries could not.</p>
+
+<p>However, they will probably land in Nodezator only after subgraphs are implemented, since subgraphs are a more crucial and urgent tool to enable the full power of conditional execution/branching.</p>
+
+
+<p><a href="ch-distributing-nodes.htsl">Previous chapter</a> | <a href="index.htsl">Table of contents</a> | <a href="looping.htsl">Next chapter</a></p>
+
+</body>
+
+</htsl>

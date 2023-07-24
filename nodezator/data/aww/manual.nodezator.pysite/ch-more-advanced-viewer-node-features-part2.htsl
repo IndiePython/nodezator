@@ -335,7 +335,7 @@ if SCREEN is None:
 <p>Providing a custom visualization just to display a still image would be a waste of time and effort to do something that Nodezator can already provide for you. Unless, of course, you want your custom visualization to be shown independent of Nodezator, as demonstrated in the subsection above.</p>
 
 
-<p><a href="ch-more-advanced-viewer-node-features-part1.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a> </p>
+<p><a href="ch-more-advanced-viewer-node-features-part1.htsl">Previous chapter</a> |  <a href="index.htsl">Table of contents</a></p>
 
 </body>
 
