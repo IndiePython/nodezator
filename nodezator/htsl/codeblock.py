@@ -111,15 +111,12 @@ COPY_TO_CLIPBOARD_SURF =  _get_clipboard_button_surf()
 
 def get_python_codeblock(python_code_element):
 
-    ### TODO include <python> tag attributes:
-    ###
-    ### 1) hidelineno: to hide line numbers
-    ### 2) includefirst: to include first line,
-    ###    which is otherwise stripped by default;
-
     text = python_code_element.childNodes[0].data
 
     ### by default, first line is stripped
+
+    ## XXX maybe include <python> tag attribute "includefirst", to include
+    ## first line, which is otherwise stripped by default;
     text = linesep.join(text.splitlines()[1:])
 
     ###
@@ -157,68 +154,86 @@ def get_python_codeblock(python_code_element):
         except KeyError:
             lineno_settings = text_settings["normal"]
 
-    ### position text objects representing lines one
-    ### below the other
-
+    ### position text objects representing lines one below the other
     lines.rect.snap_rects_ip(retrieve_pos_from="bottomleft", assign_pos_to="topleft")
 
-    ### lineno
+    ### if line numbers must be used, create surface with them
 
-    first_lineno = int(python_code_element.getAttribute("linenofrom") or "1")
+    uselineno = python_code_element.getAttribute("uselineno") or "false"
 
-    ## calculate the number of digits needed to
-    ## display the number of the last line
-    max_chars = len(str((first_lineno - 1) + len(lines)))
+    if uselineno == 'true':
 
-    ## width of panel is total width occupied
-    ## by max_chars plus 2 additional characters
-    ## used as padding
-    lineno_width = (max_chars + 2) * DIGIT_WIDTH
+        first_lineno = int(python_code_element.getAttribute("linenofrom") or "1")
 
-    ### areas
+        ## calculate the number of digits needed to
+        ## display the number of the last line
+        max_chars = len(str((first_lineno - 1) + len(lines)))
 
-    code_area = lines.rect.copy()
-    code_area.width += 15
-    code_area.height += 10
+        ## width of panel is total width occupied
+        ## by max_chars plus 2 additional characters
+        ## used as padding
+        lineno_width = (max_chars + 2) * DIGIT_WIDTH
 
-    lineno_area = lines.rect.copy()
-    lineno_area.width = lineno_width
-    lineno_area.height += 10
+        ### areas
 
-    code_area.topleft = lineno_area.topright
+        code_area = lines.rect.copy()
+        code_area.width += 10
+        code_area.height += 10
 
-    total_area = lineno_area.union(code_area)
+        lineno_area = lines.rect.copy()
+        lineno_area.width = lineno_width
+        lineno_area.height += 10
 
-    surf = render_rect(*total_area.size)
+        code_area.topleft = lineno_area.topright
 
-    for bg_color, area in (
-        (
-            lineno_settings["background_color"],
-            lineno_area,
-        ),
-        (
-            background_color,
-            code_area,
-        ),
-    ):
+        total_area = lineno_area.union(code_area)
 
-        draw_rect(surf, bg_color, area)
+        surf = render_rect(*total_area.size)
 
-    ###
+        for bg_color, area in (
+            (
+                lineno_settings["background_color"],
+                lineno_area,
+            ),
+            (
+                background_color,
+                code_area,
+            ),
+        ):
 
-    lines.rect.topleft = lineno_area.topright
-    lines.rect.move_ip(5, 5)
+            draw_rect(surf, bg_color, area)
 
-    for lineno, line in enumerate(lines, first_lineno):
+        ###
 
-        surf.blit(line.image, line.rect)
+        lines.rect.topleft = lineno_area.topright
+        lines.rect.move_ip(5, 5)
 
-        lineno_surf = render_text(
-            str(lineno).rjust(max_chars, "0"),
-            **lineno_settings,
-        )
+        for lineno, line in enumerate(lines, first_lineno):
 
-        surf.blit(lineno_surf, (DIGIT_WIDTH, line.rect.top))
+            surf.blit(line.image, line.rect)
+
+            lineno_surf = render_text(
+                str(lineno).rjust(max_chars, "0"),
+                **lineno_settings,
+            )
+
+            surf.blit(lineno_surf, (DIGIT_WIDTH, line.rect.top))
+
+    ### otherwise ignore them
+
+    else:
+
+        code_area = lines.rect.copy()
+        code_area.width += 10
+        code_area.height += 10
+
+        surf = render_rect(*code_area.size, background_color)
+
+        lines.rect.move_ip(5, 5)
+
+        for line in lines:
+            surf.blit(line.image, line.rect)
+
 
     ###
 
@@ -229,6 +244,7 @@ def get_python_codeblock(python_code_element):
     ###
 
     return obj
+
 
 def get_pre_textblock(pre_element):
 
@@ -253,9 +269,9 @@ def get_pre_textblock(pre_element):
 
     ### lineno
 
-    use_lineno = pre_element.getAttribute("use_lineno") or "false"
+    uselineno = pre_element.getAttribute("uselineno") or "false"
 
-    if use_lineno != "false":
+    if uselineno == "true":
 
         first_lineno = int(pre_element.getAttribute("linenofrom") or "1")
 
