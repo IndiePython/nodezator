@@ -276,7 +276,7 @@ BG_COLOR = (220, 220, 220)
 
 <p>Then, we start defining a class. Yes, this time we'll use a class to hold all needed methods to manage our node and its loop, including the method we'll be using as the main callable for our viewer node.</p>
 
-<python linenofrom="80">
+<python uselineno="true" linenofrom="80">
 ### now here comes the first big change on our script:
 ###
 ### rather than using a single function as our main
@@ -305,7 +305,7 @@ class PointsViewer:
 
 <p>We then define the methods for the keyboard mode, that is, for when we use the keyboard to move the points around.</p>
 
-<python linenofrom="104">
+<python uselineno="true" linenofrom="104">
     def keyboard_mode_event_handling(self):
         """Event handling for the keyboard mode."""
 
@@ -393,7 +393,7 @@ class PointsViewer:
 
 <p>Then comes the methods for the mouse mode, that is, for when we use the mouse to move the points around.</p>
 
-<python linenofrom="187">
+<python uselineno="true" linenofrom="187">
     def mouse_mode_event_handling(self):
         """Event handling for the mouse mode."""
 
@@ -425,7 +425,7 @@ class PointsViewer:
 
 <p>The <i>watch_window_size()</i> method is used on the loop to watch out for changes in the window (screen) size. When it is found that the screen changed size, it performs setups to ensure the points are repositioned correctly.</p>
 
-<python linenofrom="214">
+<python uselineno="true" linenofrom="214">
     def watch_window_size(self):
         """Perform setups if window was resized."""
 
@@ -459,7 +459,7 @@ class PointsViewer:
 
 <p>We then have more support methods: to enable different modes, to start and manage the loop and to (re)draw the objects when the points are moved.</p>
 
-<python linenofrom="244">
+<python uselineno="true" linenofrom="244">
     def enable_keyboard_mode(self):
         """Set behaviours to move points with keyboard."""
 
@@ -654,7 +654,7 @@ class PointsViewer:
 
 <p>Finally we define the method we'll be using as our main callable: the <i>view_points()</i> method. Note that once the method is defined and still in the body of our class definition we set the <i>dismiss_exec_time_tracking</i> attribute on the method. Also note that after leaving the class definition we instantiate the PointsViewer class and assign the view_points method as the main_callable.</p>
 
-<python linenofrom="435">
+<python uselineno="true" linenofrom="435">
     ### the method below is the main callable we'll use
     ### for our node;
     ###

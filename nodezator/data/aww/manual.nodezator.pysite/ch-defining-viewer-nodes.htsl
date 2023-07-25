@@ -56,8 +56,7 @@ main_callable = view_drawn_points
 
 <p>Since in our case, the surface is the node's output itself, that function just needs to return the argument received. Here's the script defining our viewer node:</p>
  
-<python>
-
+<python uselineno="true">
 ### third-party imports
 
 from pygame import Rect, Surface
@@ -159,7 +158,7 @@ get_visual_from_output = lambda node_output: node_output
 <p>This time, to demonstrate this, we'll define a completely different viewer node that receives an image object from the <a href="https://pillow.readthedocs.io/en/stable/">Pillow</a> library in order to visualize it. We'll call it view_image node. Here's the script defining the node:</p>
 
 
-<python>
+<python uselineno="true">
 
 
 ### third-party imports

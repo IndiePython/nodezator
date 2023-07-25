@@ -72,7 +72,7 @@
 
 <p>Before we demonstrate how to implement this, let's revisit the main callable of our node as we last saw it in the previous chapter, that is, the <i>view_points()</i> method of the PointsViewer class:</p>
 
-<python linenofrom="447">
+<python uselineno="true" linenofrom="447">
     def view_points(
         self,
 
@@ -147,7 +147,7 @@ main_callable = view_points = PointsViewer().view_points
 
 <p>Now, what part of this method is responsible for processing the data and generating the visualization data for the loop, that is, the loop data (the pygame.Surface to be shown in the custom visualization)? It is actually a very small portion of this method. It is this portion here:</p>
 
-<python linenofrom="469">
+<python uselineno="true" linenofrom="469">
     ### store points in a list
     self.points = list(points)
 </python>
@@ -448,7 +448,7 @@ visual_loop_and_output_backdoor = prepare_data_from_points
 
 <p>As a result, here's all the code that has changed from the original script (we actually also add another import at the top of the file, <i>from pygame.transform import scale as scale_surface</i>, just to help creating the in-graph visual, but that's the only extra change needed before this point in the file):</p>
 
-<python linenofrom="451">
+<python uselineno="true" linenofrom="451">
     def view_points(
         self,
 
@@ -754,7 +754,7 @@ visual_loop_and_output_backdoor = prepare_data_from_points
 
 <p>This brief subsection is just a quick reminder that, since the backdoor is executed instead of the main callable when the node is executed, any outputs the main callable returns should be produced by the backdoor and included in the <i>output</i> key of the dictionary by the backdoor. That is, if the main callable returns anything other than <b>None</b>. For instance, if our viewer node returned any specific output, here's how the body of our main callable would be:</p>
 
-<python linenofrom="447">
+<python uselineno="true" linenofrom="447">
     def view_points(
         self,
 

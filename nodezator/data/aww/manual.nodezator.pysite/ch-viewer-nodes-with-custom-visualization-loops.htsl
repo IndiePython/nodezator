@@ -28,7 +28,7 @@
 
 <p>So, in other words, we'll just <b>create a pygame loop</b> like any other. This has nothing to do with Nodezator, we use pure pygame-ce. Here's the full code, extensively commented:</p>
 
-<python>
+<python uselineno="true">
 ### points2d/viewer/view_points/__main__.py file
 
 ### standard library import

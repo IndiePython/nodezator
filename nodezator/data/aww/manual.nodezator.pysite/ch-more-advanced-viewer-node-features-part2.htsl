@@ -49,7 +49,7 @@
 
 <p>Here's what yet another version of a view_image() node script would look like with we did just that (this is the full script, not a portion):</p>
 
-<python>
+<python uselineno="true">
 
 ### third-party imports
 
@@ -169,7 +169,7 @@ main_callable = view_image
 
 <p>Even so, this doesn't mean the main callable body is useless. Its body just happens to be useless in this instance where we are not interested in returning anything else. In case you were interested in returning additional data, then you could indeed use the backdoor inside the main callable and return its output. Here's an example of that, presented as yet another alternative version of the view_image() node:</p>
 
-<python>
+<python uselineno="true">
 
 ### third-party imports
 
