@@ -40,13 +40,21 @@ main_callable = function_name
 
 <p>The same way a set of cards is suitable for playing specific kinds of games, node packs contain nodes used for a specific purpose. <a href="https://en.wikipedia.org/wiki/Uno_(card_game)">Uno</a> cards are designed for playing Uno, <a href="https://en.wikipedia.org/wiki/Yu-Gi-Oh!">Yugi-Oh</a> cards for playing fictional monster battles. Just like that, each node pack should be designed for a specific purpose.</p>
 
-<p>Also, avoid using names that are too generic for your node pack, or a name that is used by another library you plan to use. Node packs are treated similar to modules inside Nodezator and may thus shadow existing libraries. Finally, since the name of your node pack is used in <i>import</i> statements whenever you want to export your graphs as pure Python code, make sure the name of your node pack is a valid Python identifier (you can verify that by checking whether the name returns True when passed to <a href="https://docs.python.org/3/library/stdtypes.html#str.isidentifier">str.isidentifier()</a>).</p>
+<p>Also, avoid using names that are too generic for your node pack, or a name that is used by another library you plan to use. Node packs are treated similar to modules inside Nodezator and may thus shadow existing libraries. Finally, since the name of your node pack is used in <i>import</i> statements (it is treated like a package) whenever you want to export your graphs as pure Python code, make sure the name of your node pack is a valid Python identifier, that is, it must be comprised only by letters, digits and underscores and it must start with either a letter or an underscore. You can verify that by checking whether the name returns True when passed to <a href="https://docs.python.org/3/library/stdtypes.html#str.isidentifier">str.isidentifier()</a>):</p>
+
+<python>
+&gt;&gt;&gt; str.isidentifier('nameofmynodepack')
+True
+</python>
+
+<p>Finally, though not required, it is recommended that you don't use only lowercase letters and digits and no underscores at all, since this is how packages/modules are used named in Python.</p>
+
 
 <h2 id="category-folder">Categories within a node pack</h2>
 
 <p>Just like playing cards are organized in categories, your nodes must be too. In Uno, cards are categorized as Number cards, Draw 2 cards, Reverse cards, and so on. You can categorize your nodes as you see fit. Let's create another folder inside points2d called <i>point_creation</i> wherein we'll store nodes responsible for creating new points. This folder is what we call a <b>category folder</b></p>
 
-<p>The name of your category folders are also used in <i>import</i> statements whenever you want to export your graphs as pure Python code, so make sure they are valid Python identifiers as well.</p>
+<p>The name of your category folders are also used in <i>import</i> statements whenever you want to export your graphs as pure Python code, so make sure they are valid Python identifiers as well (preferably comprised only of lowercase letters or lowercase letters and digits).</p>
 
 <h2 id="script-folder">The script folder</h2>
 
@@ -58,7 +66,7 @@ main_callable = function_name
 
 <p>You can go as simple or as complex as you'd need/like. Think of the folder containing your node script as the personal limitless playground of your node. In our case, though, the first node we'll create, due to its simplicity, will need just a single Python file inside its folder.</p>
 
-<p>Just like the names of node packs and category folders, the names of your script folders are also used in <i>import</i> statements whenever you want to export your graphs as pure Python code, so also make sure they are valid Python identifiers.</p>
+<p>Just like the names of node packs and category folders, the names of your script folders are also used in <i>import</i> statements whenever you want to export your graphs as pure Python code, so also make sure they are valid Python identifiers (preferably comprised only of lowercase letters or lowercase letters and digits).</p>
 
 
 <h2 id="defining-node">Defining the node</h2>
