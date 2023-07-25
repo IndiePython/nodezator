@@ -127,6 +127,31 @@ class Execution:
 
                 return
 
+        ### if the nodes to be visited were specified, though, we filter out
+        ### the commented out ones before using the remaining ones (if any)
+
+        else:
+
+            nodes_to_visit = {
+                node
+                for node in nodes_to_visit
+                if not node.data.get("commented_out", False)
+            }
+
+            ### if there's no remaining nodes to visit among the given ones,
+            ### it means they were all commented out, so notify user via
+            ### dialog and cancel operation by returning earlier
+
+            if not nodes_to_visit:
+
+                create_and_show_dialog(
+                    "Can't execute given nodes because they are all"
+                    " commented out."
+                )
+
+                return
+
+
         ### since now we have nodes to visit, let's futher separate
         ### them into nodes meant for execution and perform related
         ### setups
