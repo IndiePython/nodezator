@@ -10,6 +10,8 @@ from ....config import APP_REFS
 
 from ....rectsman.main import RectsManager
 
+from ...socket.surfs import SOCKET_DIAMETER
+
 from ..constants import (
     FONT_HEIGHT,
     BODY_CONTENT_OFFSET,
@@ -20,6 +22,10 @@ from ..constants import (
     DISTANCE_BETWEEN_OUTPUTS,
     INPUT_OFFSET,
 )
+
+
+
+SOCKET_RADIUS = SOCKET_DIAMETER // 2
 
 
 def reposition_expanded_elements(self):
@@ -527,8 +533,26 @@ def reposition_expanded_elements(self):
 
     ## width
 
-    left = (self.input_rectsman if parameters else top_rectsman).left
-    right = (self.output_rectsman if osl_map else top_rectsman).right
+    left = (
+
+        ## if there are parameters...
+        self.input_rectsman.left
+        if parameters
+
+        ## otherwise...
+        else top_rectsman.move(-SOCKET_RADIUS, 0).left
+
+    )
+
+    right = (
+
+        ## if there are outputs (always the case, at least for now)
+        self.output_rectsman.right
+        if osl_map
+
+        ## otherwise...
+        else top_rectsman.move(SOCKET_RADIUS, 0).right
+    )
 
     self.rect.width = right - left
 
