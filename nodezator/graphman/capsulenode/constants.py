@@ -277,6 +277,21 @@ def namespace_from_exec(
     return {k: v for k, v in variables.items() if k not in _d}
 
 
+def get_constant_returner(constant_value) -> [
+        {"name": "constant_returner", "type": Callable}
+    ]:
+    """Return function that returns same value, no matter the argument given.
+
+    Alternative implementation of a K combinator in Python.
+    """
+
+    def constant_returner(ignored_value):
+        """Return same value regardless of given one."""
+        return constant_value
+
+    return constant_returner
+
+
 CAPSULE_IDS_TO_CALLABLES_MAP = {
     "read_text_file": read_text_file,
     "write_text_file": write_text_file,
@@ -299,6 +314,7 @@ CAPSULE_IDS_TO_CALLABLES_MAP = {
     "get_at_string": get_at_string,
     "get_at_literal": get_at_literal,
     "namespace_from_exec": namespace_from_exec,
+    "get_constant_returner": get_constant_returner,
 }
 
 CAPSULE_IDS_TO_SIGNATURES_MAP = {
@@ -523,6 +539,13 @@ exec($python_source, _vars)
 _d = {}
 exec('', _d)
 $namespace = {k:v for k, v in _vars.items() if k not in _d}
+
+""".strip()
+    ).substitute,
+    "get_constant_returner": Template(
+        """
+
+$constant_returner = (lambda x: lambda y: x)($constant_value)
 
 """.strip()
     ).substitute,
