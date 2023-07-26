@@ -23,6 +23,8 @@ from ...appinfo import (
     OUTPUT_INSPECTING_VAR_NAMES,
 )
 
+from ...logman.main import get_new_logger
+
 from ...dialog import create_and_show_dialog
 
 from ...ourstdlibs.behaviour import get_oblivious_callable
@@ -30,6 +32,8 @@ from ...ourstdlibs.behaviour import get_oblivious_callable
 from ...ourstdlibs.path import get_new_filename
 
 from ...our3rdlibs.behaviour import indicate_unsaved
+
+from ...our3rdlibs.userlogger import USER_LOGGER
 
 from ...classes2d.single import Object2D
 from ...classes2d.collections import List2D
@@ -66,6 +70,10 @@ from .surfs import (
     PREVIEW_PANEL_NOT_FOUND_SURFACE,
 )
 
+
+
+### create logger for module
+logger = get_new_logger(__name__)
 
 
 class OutputVisualization:
@@ -382,7 +390,28 @@ class OutputVisualization:
     def enter_custom_loop(self):
 
         if hasattr(self, 'loop_data'):
-            self.enter_viewer_loop(self.loop_data)
+
+            try:
+                self.enter_viewer_loop(self.loop_data)
+
+            except Exception as err:
+
+                ## log traceback
+
+                log_message = (
+                    "An error occurred when trying to visualize"
+                    " the loop data in the custom visualization loop."
+                    f" of {self.title_text} node of id {self.id}"
+                )
+
+                logger.exception(log_message)
+                USER_LOGGER.exception(log_message)
+
+                ## notify user
+
+                create_and_show_dialog(
+                    f"{log_message}: ({type(err).__name__}) {str(err)}"
+                )
 
         else:
 
@@ -394,8 +423,29 @@ class OutputVisualization:
     def enter_loop(self):
 
         if hasattr(self, 'loop_data'):
+
             cache_screen_state()
-            view_surface(self.loop_data)
+
+            try:
+                view_surface(self.loop_data)
+
+            except TypeError as err:
+
+                ## log traceback
+
+                log_message = (
+                    "An error occurred when trying to visualize"
+                    " loop data (surface) in the surface viewer."
+                )
+
+                logger.exception(log_message)
+                USER_LOGGER.exception(log_message)
+
+                ## notify user
+
+                create_and_show_dialog(
+                    f"{log_message}: (TypeError) {str(err)}"
+                )
 
         else:
 

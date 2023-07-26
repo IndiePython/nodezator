@@ -5,7 +5,7 @@ from functools import partialmethod
 
 
 ### third-party import
-from pygame import Rect
+from pygame import Rect, Surface
 
 
 ### local imports
@@ -61,8 +61,12 @@ class SurfaceViewer(ViewerOperations):
         if self.running:
             APP_REFS.draw_after_window_resize_setups = self.response_draw
 
-    def view_surface(self, surface):
+    def view_surface(self, surface: Surface):
         """Display given surface."""
+
+        if not isinstance(surface, Surface):
+            return TypeError("given argument must be a pygame.Surface.")
+
         ###
 
         self.image = surface
