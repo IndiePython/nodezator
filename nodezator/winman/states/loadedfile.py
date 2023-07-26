@@ -170,7 +170,7 @@ class LoadedFileState:
 
                 elif event.key == K_F1:
 
-                    open_htsl_link("htap://help.nodezator.pysite")
+                    open_htsl_link("nodezator://help.nodezator.pysite")
 
                 ## reload file
                 elif event.key == K_F5:

@@ -97,7 +97,7 @@ class MenuSetup:
                         "key_text": "F1",
                         "icon": "question",
                         "command": (
-                            partial(open_htsl_link, "htap://help.nodezator.pysite")
+                            partial(open_htsl_link, "nodezator://help.nodezator.pysite")
                         ),
                     },
                     {
@@ -107,7 +107,7 @@ class MenuSetup:
                             partial(
                                 open_htsl_link,
                                 (
-                                    "htap://help.nodezator.pysite"
+                                    "nodezator://help.nodezator.pysite"
                                     "/general-controls.htsl"
                                 ),
                             )
@@ -117,7 +117,7 @@ class MenuSetup:
                         "label": "Read manual",
                         "icon": "aww_icon",
                         "command": (
-                            partial(open_htsl_link, "htap://manual.nodezator.pysite")
+                            partial(open_htsl_link, "nodezator://manual.nodezator.pysite")
                         ),
                     },
                     {
@@ -139,7 +139,7 @@ class MenuSetup:
                         "icon": "badge",
                         "command": (
                             partial(
-                                open_htsl_link, "htap://nodezator.pysite/license.htsl"
+                                open_htsl_link, "nodezator://nodezator.pysite/license.htsl"
                             )
                         ),
                     },
@@ -155,7 +155,7 @@ class MenuSetup:
                         "icon": "info",
                         "command": (
                             partial(
-                                open_htsl_link, "htap://nodezator.pysite/about.htsl"
+                                open_htsl_link, "nodezator://nodezator.pysite/about.htsl"
                             )
                         ),
                     },

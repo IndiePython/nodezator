@@ -85,14 +85,14 @@ class InsertMode:
                     if USER_PREFS["TEXT_EDITOR_BEHAVIOR"] == "default":
 
                         open_htsl_link(
-                            "htap://help.nodezator.pysite/"
+                            "nodezator://help.nodezator.pysite/"
                             "text-editor-default-behavior.htsl"
                         )
 
                     elif USER_PREFS["TEXT_EDITOR_BEHAVIOR"] == "vim-like":
 
                         open_htsl_link(
-                            "htap://help.nodezator.pysite/"
+                            "nodezator://help.nodezator.pysite/"
                             "text-editor-vim-like-behavior.htsl"
                         )
 

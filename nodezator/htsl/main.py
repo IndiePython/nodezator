@@ -297,8 +297,8 @@ class HTSLBrowser(
     def resolve_htsl_path(self, path_string):
 
         for string in (
-            "htap://aww.",
-            "htap://",
+            "nodezator://aww.",
+            "nodezator://",
             "aww.",
         ):
 

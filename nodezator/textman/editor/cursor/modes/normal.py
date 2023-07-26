@@ -65,7 +65,7 @@ class NormalMode:
                 if event.key == K_F1:
 
                     open_htsl_link(
-                        "htap://help.nodezator.pysite/"
+                        "nodezator://help.nodezator.pysite/"
                         "text-editor-vim-like-behavior.htsl"
                     )
 

@@ -474,7 +474,7 @@ class NodePacksSelectionChangeForm(Object2D):
 
         show_loading_nodes_page = partial(
             open_htsl_link,
-            "htap://manual.nodezator.pysite/ch-loading-nodes.htsl",
+            "nodezator://manual.nodezator.pysite/ch-loading-nodes.htsl",
         )
 
         help_button = Button(button_surf, command=show_loading_nodes_page)

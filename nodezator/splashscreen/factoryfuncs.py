@@ -423,7 +423,7 @@ def get_action_objs():
         (
             AWW_ICON,
             "Read manual",
-            partial(open_htsl_link, "htap://manual.nodezator.pysite"),
+            partial(open_htsl_link, "nodezator://manual.nodezator.pysite"),
         ),
     )
 
@@ -652,7 +652,7 @@ def get_whats_new_obj():
     )
 
     command = get_oblivious_callable(
-        partial(open_htsl_link, "htap://nodezator.pysite/whats-new/v1-3-14.htsl")
+        partial(open_htsl_link, "nodezator://nodezator.pysite/whats-new/v1-3-14.htsl")
     )
 
     return Object2D.from_surface(
