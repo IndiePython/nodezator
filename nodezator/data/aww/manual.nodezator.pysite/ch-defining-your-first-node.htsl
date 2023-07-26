@@ -258,7 +258,7 @@ main_callable = get_circle
 
 <h2 id="expanded-collapsed-callable-modes">Expanded, collapsed and callable mode for nodes</h2>
 
-<p>Starting from Nodezator version 1.4.0, <b>all user-defined nodes</b> and <b>some app-defined nodes</b> can exist in 01 of 03 different modes:</p>
+<p>Starting from Nodezator version 1.4.0, nodes related to callable objects, that is, <b>all user-defined nodes</b> and <b>some app-defined nodes</b> exist in 01 of 03 different modes:</p>
 
 <ul>
     <li>Expanded signature mode;</li>
@@ -266,7 +266,13 @@ main_callable = get_circle
     <li>Callable mode.</li>
 </ul>
 
-<p>User-defined nodes are always instantiated in <b>expanded signature mode</b> (<b>expanded mode</b> for short). In this mode, the node represents a function call, that is, it expects inputs and returns outputs when it is executed. It is said that the node is "expanded" because in this mode the node shows all of its signature elements, that is, the parameters and outputs defined in its signature. It is the largest representation among the existing modes.</p>
+<p>The image below shows the same node in different modes:</p>
+
+<img src="images/ch-defining-your-first_img02.png" alt="Same node in different modes" />
+
+<p>The node to the left is in expanded signature mode. The one in the upper right corner is in collapsed signature mode and the one below it is in callable mode.</p>
+
+<p>Nodes are instantiated in <b>expanded signature mode</b> (<b>expanded mode</b> for short). In this mode, the node represents a function call, that is, it expects inputs and returns outputs when it is executed. It is said that the node is "expanded" because in this mode the node shows all of its signature elements, that is, the parameters and outputs defined in its signature. It is the largest representation among the existing modes.</p>
 
 <p>In <b>collapsed signature mode</b>, the node also represents a function call and works just like in expanded mode, but instead of showing all the signature elements, it only shows those which are connected via sockets, hiding everything else. This is why we say the node is "collapsed".</p>
 
