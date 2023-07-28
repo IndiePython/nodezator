@@ -29,7 +29,7 @@
 
 <img src="images/ch-conditional-execution_img01.png" alt="img" />
 
-<p>The <code>add_hinged_lid</code> node takes the box data and returns the box data changed to include data describing the hinged lid. The <code>return_untouched</code> node doesn't change the input at all, returning it exactly as it is. That is, the same object that goes in, goes out as well. In mathematics, this kind of function is called an <b>identity function</b>. It is a node I want to add as an app-defined node to Nodezator, that is, one that is available by default (it would probably be added in the "Useful encapsulations" menu).</p>
+<p>The <code>add_hinged_lid</code> node takes the box data and returns the box data changed to include data describing the hinged lid. The <code>return_untouched</code> node doesn't change the input at all, returning it exactly as it is. That is, the same object that goes in, goes out as well. In mathematics, this kind of function is called an <b>identity function</b>. It is a node I want to add as an app-defined node to Nodezator, that is, one that is available by default (it would probably be added in the "Encapsulations" menu).</p>
 
 <p>Finally, the image below shows a viable solution to our branching problem.</p>
 
@@ -41,7 +41,7 @@
 
 <p>If the requested lid equals <code>'hinged'</code>, then <b>a</b> is used, that is, the <code>add_hinged_lid</code> node in callable mode, that is, a reference to the callable that receives the box data and returns the changed data describing a box with a hinged lid. If otherwise, the requested lid is different, than <b>b</b> is used, that is, the <code>return_untouched</code> node in callable mode, which receives the box data and returns it untouched.</p>
 
-<p>The output of <code>a if c else b</code> is then passed to the <code>perform_call</code> node (you can found it in the "Useful encapsulations" submenu of the popup menu) as the argument for its <code>func</code> parameter. The <code>perform_call</code> node just performs a call with the given callable object and additional arguments given to it and returns the return-value of the call. The <code>perform_call</code> node also takes the <code>box_data</code> output from our <code>get_box</code> node as an argument. In other words, whichever callable comes from the <code>a if c else b</code> node will be called with the box data as an argument and will then return either the box data describing a box with a hinged lid or our original box.</p>
+<p>The output of <code>a if c else b</code> is then passed to the <code>perform_call</code> node (you can found it in the "Encapsulations" submenu of the popup menu) as the argument for its <code>func</code> parameter. The <code>perform_call</code> node just performs a call with the given callable object and additional arguments given to it and returns the return-value of the call. The <code>perform_call</code> node also takes the <code>box_data</code> output from our <code>get_box</code> node as an argument. In other words, whichever callable comes from the <code>a if c else b</code> node will be called with the box data as an argument and will then return either the box data describing a box with a hinged lid or our original box.</p>
 
 <p>This solved problem represents the most atomic/fundamental/basic problem in conditional execution/branching: choosing between an option or doing nothing.</p>
 

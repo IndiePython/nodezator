@@ -129,7 +129,7 @@ main_callable = get_circle
 
     <li>go straight to the chapter about <a href="ch-loading-nodes.htsl">loading your nodes</a>;</li>
     <li>open nodezator and, following the instructions in the chapter, create a new file and load your node;</li>
-    <li>instantiate your <i>get_circle</i>node by right-clicking the canvas and selecting <b>New point_creation node &gt; get_circle</b> in the popup menu that appears;</li>
+    <li>instantiate your <i>get_circle</i>node by right-clicking the canvas and selecting <b>point_creation &gt; get_circle</b> in the popup menu that appears;</li>
 
     <li>before executing the graph, we need a way to see the output of your node; the simplest way to do this is by printing it; here's how to do this:
 

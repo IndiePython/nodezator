@@ -15,7 +15,7 @@
 
 <h2 id="text-blocks">Text blocks</h2>
 
-<p>Text blocks represent comments within the node layout. To create one, just right-click an empty space on the canvas and click the <b>New text block</b> command on the popup menu that appears.</p>
+<p>Text blocks represent comments within the node layout. To create one, just right-click an empty space on the canvas and click the <b>Text block</b> command on the popup menu that appears.</p>
 
 <p>To edit the text, just click the text block and press <b>&lt;Ctrl+T&gt;</b>. The text blocks automatically adjust their sizes to fit the typed text, including new lines. Also, if you type "todo" words like TODO, XXX and FIXME inside the text block they are automatically highlighted. Here are some examples of text blocks in the image below:</p>
 
@@ -64,7 +64,7 @@
 
 <img src="images/ch-other-objects_img04.png" alt="Snippet node" />
 
-<p>To instantiate them, just right-click an empty space on the canvas and click one of the commands inside the <b>Useful encapsulations</b> submenu within the popup menu that appears.</p>
+<p>To instantiate them, just right-click an empty space on the canvas and click one of the commands inside the <b>Encapsulations</b> submenu within the popup menu that appears.</p>
 
 
 <h3 id="data-nodes">Data nodes</h3>
@@ -73,7 +73,7 @@
 
 <img src="images/ch-other-objects_img05.png" alt="Data node" />
 
-<p>To instantiate them, just right-click an empty space on the canvas and click one of the commands inside the <b>New data node</b> submenu within the popup menu that appears to pick the kind of widget/data to be held by the node, including an option that presents a more complex form to specify the widget more precisely.</p>
+<p>To instantiate them, just right-click an empty space on the canvas and click one of the commands inside the <b>Data node</b> submenu within the popup menu that appears to pick the kind of widget/data to be held by the node, including an option that presents a more complex form to specify the widget more precisely.</p>
 
 <p>The default title on the data node can be changed, but it doesn't accept spaces or punctuation other than the underscore ("_"). This is so because the title of the data node is used as part of the variable name when the layout is exported as a Python script. The id of the node is used as part of the variable name as well, that is, the number to the left of the title that is assigned automatically by Nodezator.</p>
 
@@ -84,7 +84,7 @@
 
 <img src="images/ch-other-objects_img06.png" alt="Redirect node" />
 
-<p>To instantiate them, just right-click an empty space on the canvas and click the command <b>New redirect node</b> in the popup menu that appears.</p>
+<p>To instantiate them, just right-click an empty space on the canvas and click the command <b>Redirect node</b> in the popup menu that appears.</p>
 
 <h2 id="relationship-data-redirect-nodes">Relationship between data nodes and redirect nodes</h2>
 
