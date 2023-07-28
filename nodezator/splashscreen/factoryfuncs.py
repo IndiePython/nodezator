@@ -11,6 +11,8 @@ from webbrowser import open as open_url
 
 from ..config import APP_REFS
 
+from ..appinfo import APP_VERSION
+
 from ..translation import TRANSLATION_HOLDER as t
 
 from ..logman.main import get_new_logger
@@ -651,9 +653,18 @@ def get_whats_new_obj():
         background_color=SPLASH_BG,
     )
 
-    command = get_oblivious_callable(
-        partial(open_htsl_link, "nodezator://nodezator.pysite/whats-new/v1-3-14.htsl")
+    filename = (
+        f"v{'-'.join(map(str, APP_VERSION[:2]))}.htsl"
+        + (
+            f"#v{'-'.join(map(str, APP_VERSION[:3]))}"
+            if APP_VERSION[3]
+            else ""
+        )
     )
+
+    link_text = "nodezator://nodezator.pysite/whats-new/" + filename
+
+    command = get_oblivious_callable(partial(open_htsl_link, link_text))
 
     return Object2D.from_surface(
 
