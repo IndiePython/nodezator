@@ -43,7 +43,8 @@ STLIB_IDS_TO_MODULE = {
     "literal_eval(node_or_text_string)": ast,
     "loads": json,
     "methodcaller": operator,
-    "Path": pathlib,
+    "Path(*pathsegments)": pathlib,
+    "Path(path_string)": pathlib,
     "partial": functools,
     "pprint": pprint,
     "pformat": pprint,
@@ -203,7 +204,10 @@ def _partial(
 ) -> [{"name": "partial_obj", "type": Callable}]:
     pass
 
-def _pathlib_path(*pathsegments) -> [{"name": "path_obj"}]:
+def _path_from_segments(*pathsegments) -> [{"name": "path_obj"}]:
+    pass
+
+def _path_from_string(path_string : 'path' = '.') -> [{"name": "path_obj"}]:
     pass
 
 def _pprint(
@@ -308,7 +312,8 @@ STLIB_IDS_TO_SIGNATURE_CALLABLES_MAP = {
     "literal_eval(node_or_text_string)": (_literal_eval2),
     "loads": _loads,
     "methodcaller": _methodcaller,
-    "Path": _pathlib_path,
+    "Path(*pathsegments)": _path_from_segments,
+    "Path(path_string)": _path_from_string,
     "partial": _partial,
     "pprint": _pprint,
     "pformat": _pformat,
@@ -347,7 +352,8 @@ STLIB_IDS_TO_SIGNATURES_MAP = {
     "literal_eval(node_or_text_string)": (signature(_literal_eval2)),
     "loads": signature(_loads),
     "methodcaller": signature(_methodcaller),
-    "Path": signature(_pathlib_path),
+    "Path(*pathsegments)": signature(_path_from_segments),
+    "Path(path_string)": signature(_path_from_string),
     "partial": signature(_partial),
     "pprint": signature(_pprint),
     "pformat": signature(_pformat),
@@ -391,7 +397,8 @@ STLIB_IDS_TO_STLIB_IMPORT_TEXTS = {
     "literal_eval(node_or_text_string)": "from ast import literal_eval",
     "loads": "from json import loads",
     "methodcaller": "from operator import methodcaller",
-    "Path": "from pathlib import Path",
+    "Path(*pathsegments)": "from pathlib import Path",
+    "Path(path_string)": "from pathlib import Path",
     "partial": "from functools import partial",
     "pprint": "from pprint import pprint",
     "pformat": "from pprint import pformat",
