@@ -424,7 +424,7 @@ class MenuSetup:
 
         menu_list.append(
             {
-                "label": t.menu.new_text_block,
+                "label": t.menu.text_block,
                 "icon": "new_text_block",
                 "command": APP_REFS.ea.insert_text_block,
             }
@@ -434,7 +434,7 @@ class MenuSetup:
 
         menu_list.append(
             {
-                "label": "New redirect node",
+                "label": "Redirect node",
                 "icon": "new_redirect_node",
                 "command": partial(APP_REFS.ea.insert_node, None),
             }
@@ -443,7 +443,7 @@ class MenuSetup:
         ### add a submenu to add data nodes
 
         add_data_node_menu = {
-            "label": "New data node",
+            "label": "Data node",
             "icon": "new_data_node",
             "children": [],
         }
@@ -645,7 +645,7 @@ class MenuSetup:
         ### add a submenu to add useful encapsulations
 
         add_capsule_node_menu = {
-            "label": "Useful encapsulations",
+            "label": "Encapsulations",
             "children": [],
         }
 
@@ -678,8 +678,9 @@ class MenuSetup:
             menu_list.append({"label": "-----"})
 
         ### iterate over the node defining map sorted keys
-        ### using them to add "New [category name] node"
-        ### submenus and their commands
+        ### using them to add submenus using the category
+        ### name as their label text and also add their respective
+        ### commands;
 
         for (
             (node_pack_name, category_name, script_name),
@@ -689,10 +690,6 @@ class MenuSetup:
             key=lambda i: i[0],
         ):
 
-            ### define the label text
-
-            label_text = t.menu.new_category_node.format(category_name)
-
             ## check whether a submenu for that category
             ## already exists and reference it if so,
             ## otherwise create it and append it to the
@@ -700,7 +697,7 @@ class MenuSetup:
 
             for item in menu_list:
 
-                if item["label"] == label_text:
+                if item["label"] == category_name:
 
                     category_submenu = item
                     break
@@ -722,7 +719,7 @@ class MenuSetup:
                 icon_key = "new_color_index_" + str(color_index) + "_node"
 
                 category_submenu = {
-                    "label": label_text,
+                    "label": category_name,
                     "icon": icon_key,
                     "children": [],
                 }

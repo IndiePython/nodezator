@@ -29,8 +29,7 @@
     'change_category_colors' : "Mudar cores das categorias",
     'execute_graph'          : "Executar grafo",
 
-    'new_text_block'    : "Novo bloco de texto",
-    'new_category_node' : "Novo nó {}",
+    'new_text_block'    : "Bloco de texto",
 
   },
 

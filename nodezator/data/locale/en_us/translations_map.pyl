@@ -66,10 +66,7 @@
 
     'execute_with_custom_stdout' : "Execute with custom stdout",
 
-    'new_text_block'    : "New text block",
-
-    # e.g.: "New creation node"
-    'new_category_node' : "New {} node",
+    'text_block' : "Text block",
 
   },
 
