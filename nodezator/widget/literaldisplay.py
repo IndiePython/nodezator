@@ -298,7 +298,7 @@ class LiteralDisplay(Object2D):
         else:
             lineno_width = 0
 
-        text = pformat(self.value, width=20)
+        text = pformat(self.value, width=15)
 
         lines = text.splitlines()[:no_of_visible_lines]
 
@@ -582,7 +582,7 @@ class LiteralDisplay(Object2D):
 
         syntax_highlighting = ("python",)
 
-        text = pformat(self.value, width=20)
+        text = pformat(self.value, width=15)
 
         if show_line_number:
 
