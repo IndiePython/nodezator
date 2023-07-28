@@ -86,12 +86,6 @@ WIDGET_CLASS_MAP = {
 ### main function
 
 
-### TODO check whether type for widgets in the mini-language
-### are all strictly json compatible (be as strict as
-### possible; for instance, use lists, not tuples, since
-### tuples are converted to lists anyway);
-
-
 def get_widget_metadata(annotation, default):
     """Return dict w/ instructions for widget instantiation.
 
