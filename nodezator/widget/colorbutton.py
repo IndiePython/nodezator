@@ -571,13 +571,7 @@ class ColorButton(Object2D):
             self.set(value)
 
     def get_expected_type(self):
-
-        classes = set((tuple,))
-
-        if self.alone_when_single and self.color_format == "hex_string":
-            classes.add(str)
-
-        return classes.pop() if len(classes) == 1 else tuple(classes)
+        return str if self.color_format == "hex_string" else tuple
 
     def svg_repr(self):
 

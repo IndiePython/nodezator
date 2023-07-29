@@ -442,13 +442,7 @@ class _BasePreview(Object2D):
         )
 
     def get_expected_type(self):
-
-        classes = set((tuple,))
-
-        if self.string_when_single:
-            classes.add(str)
-
-        return classes.pop() if len(classes) == 1 else tuple(classes)
+        return str
 
     def svg_repr(self):
 
