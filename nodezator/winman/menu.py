@@ -33,10 +33,7 @@ from ..recentfile import get_recent_files
 
 from ..userprefsman.editionform import edit_user_preferences
 
-from ..graphman.presets import (
-    WIDGET_DATA_PRESET_MAP,
-    WIDGET_PRESET_MENU_LABEL_MAP,
-)
+from ..graphman.widget.popupdefinition import WIDGET_POPUP_STRUCTURE
 
 from ..graphman.operatornode.constants import OPERATIONS_MAP
 
@@ -454,23 +451,46 @@ class MenuSetup:
 
         children = add_data_node_menu["children"]
 
-        for preset_name, widget_data in WIDGET_DATA_PRESET_MAP.items():
+        for label_text, data in WIDGET_POPUP_STRUCTURE:
 
-            label_text = WIDGET_PRESET_MENU_LABEL_MAP[preset_name]
+            if isinstance(data, dict):
 
-            children.append(
-                {
-                    "label": label_text,
-                    "command": partial(
-                        (APP_REFS.ea.insert_node),
-                        widget_data,
-                    ),
-                }
-            )
+                children.append(
+                    {
+                        "label": label_text,
+                        "command": partial(
+                            (APP_REFS.ea.insert_node),
+                            data,
+                        ),
+                    }
+                )
+
+            elif isinstance(data, list):
+
+                grandchildren = [
+
+                    {
+                        "label": sublabel,
+                        "command": partial(
+                            (APP_REFS.ea.insert_node),
+                            subdata,
+                        ),
+                    }
+
+                    for sublabel, subdata in data
+
+                ]
+
+                children.append(
+                    {
+                        "label": label_text,
+                        "children": grandchildren,
+                    }
+                )
 
         children.append(
             {
-                "label": "More options...",
+                "label": "All available widgets...",
                 "command": (APP_REFS.ea.pick_widget_for_proxy_node),
             }
         )

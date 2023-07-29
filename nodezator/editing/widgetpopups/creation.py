@@ -12,10 +12,7 @@ from ...pygamesetup import SERVICES_NS
 
 from ...menu.main import MenuManager
 
-from ...graphman.presets import (
-    WIDGET_DATA_PRESET_MAP,
-    WIDGET_PRESET_MENU_LABEL_MAP,
-)
+from ...graphman.widget.popupdefinition import WIDGET_POPUP_STRUCTURE
 
 from ..widgetpicker.main import pick_widget
 
@@ -27,23 +24,46 @@ class WidgetCreationPopupMenu(MenuManager):
 
         command = self.trigger_subparameter_widget_instantiation
 
-        for preset_name, widget_data in WIDGET_DATA_PRESET_MAP.items():
+        for label_text, data in WIDGET_POPUP_STRUCTURE:
 
-            label_text = WIDGET_PRESET_MENU_LABEL_MAP[preset_name]
+            if isinstance(data, dict):
 
-            menu_list.append(
-                {
-                    "label": label_text,
-                    "command": partial(
-                        command,
-                        widget_data,
-                    ),
-                }
-            )
+                menu_list.append(
+                    {
+                        "label": label_text,
+                        "command": partial(
+                            command,
+                            data,
+                        ),
+                    }
+                )
+
+            elif isinstance(data, list):
+
+                grandchildren = [
+
+                    {
+                        "label": sublabel,
+                        "command": partial(
+                            command,
+                            subdata,
+                        ),
+                    }
+
+                    for sublabel, subdata in data
+
+                ]
+
+                menu_list.append(
+                    {
+                        "label": label_text,
+                        "children": grandchildren,
+                    }
+                )
 
         menu_list.append(
             {
-                "label": "More options...",
+                "label": "All available widgets...",
                 "command": command,
             }
         )
