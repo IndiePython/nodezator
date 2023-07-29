@@ -391,8 +391,8 @@ def reposition_expanded_elements(self):
                     ## position them and add their rects as part of the
                     ## subparameter
 
-                    widget.rect.midleft = (
-                        subp_up_button.rect.move(3, 0).bottomright
+                    widget.rect.topleft = (
+                        subp_up_button.rect.move(3, 0).topright
                     )
 
                     remove_button.rect.midleft = (
