@@ -225,9 +225,14 @@ def print_and_return(obj_in) -> [{"name": "obj_out"}]:
     return print(obj_in) or obj_in
 
 def return_untouched(obj_in) -> [{"name": "obj_out"}]:
+    """Return given object.
+
+    Alternative implementation of an identity function in Python.
+    """
     return obj_in
 
 def for_item_in_obj_pass(obj:Iterator):
+    """Exhaust given iterator by iterating over it."""
     for _ in obj:
         pass
 
