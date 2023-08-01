@@ -317,7 +317,7 @@ class Execution:
                                     node.loop_data = return_value['loop_data']
 
                                     if node.preview_toolbar.check_button.get():
-                                        node.enter_custom_loop()
+                                        node.loop_entering_command()
 
                                 output_to_send = return_value.get('output')
 
@@ -338,7 +338,7 @@ class Execution:
                                     node.loop_data = loop_data_retrieval_op(return_value)
 
                                     if node.preview_toolbar.check_button.get():
-                                        node.enter_loop()
+                                        node.loop_entering_command()
 
                         except Exception as err:
 

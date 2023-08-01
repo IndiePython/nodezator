@@ -309,7 +309,7 @@ class OutputVisualization:
 
         ):
 
-            loop_entering_command = (
+            self.loop_entering_command = (
 
                 ##
                 self.enter_custom_loop
@@ -321,7 +321,7 @@ class OutputVisualization:
             )
 
             on_mouse_release = (
-                get_oblivious_callable(loop_entering_command)
+                get_oblivious_callable(self.loop_entering_command)
             )
 
         else:
