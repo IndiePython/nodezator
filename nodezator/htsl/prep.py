@@ -22,7 +22,7 @@ from ..classes2d.collections import List2D
 
 from ..surfdef import surfdef_obj_from_element
 
-from .constants import BROWSER_TITLE, KNOWN_TAGS
+from .constants import BROWSER_TITLE, KNOWN_TAGS, HEADING_TAGS
 
 from .creation import (
     TextBlock,
@@ -96,7 +96,7 @@ class Preparation:
             if tag_name not in KNOWN_TAGS:
                 continue
 
-            elif tag_name in ("h6", "h5", "h4", "h3", "h2", "h1"):
+            elif tag_name in HEADING_TAGS:
                 append_obj(get_heading(child, max_width))
 
             elif tag_name == "p":
@@ -175,8 +175,6 @@ class Preparation:
 
         rect = self.objs.rect
 
-        rect.topleft = self.scroll_area.topleft
-
         rect.snap_rects_ip(
             retrieve_pos_from="bottom", assign_pos_to="top", offset_pos_by=(0, 14)
         )
@@ -214,6 +212,21 @@ class Preparation:
 
             for index, button in reversed(index_button_pairs):
                 insert_obj(index, button)
+
+        ### add top padding to all headings
+
+        y_offset = 0
+        offset_increment = 40
+
+        for obj in self.objs:
+
+            if getattr(obj, 'tag_name', '') in HEADING_TAGS:
+                y_offset += offset_increment
+
+            obj.rect.y += y_offset
+
+        ### position objects on the topleft of the scroll area
+        rect.topleft = self.scroll_area.topleft
 
     def set_htsl_objects_from_cache(self, key):
 

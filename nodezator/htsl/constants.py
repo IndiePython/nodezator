@@ -23,7 +23,7 @@ BROWSER_TITLE = "Local Pages Browser"
 
 ### tags used in htsl
 
-HEADING_TAGS = tuple(f"h{i}" for i in range(1, 7))
+HEADING_TAGS = frozenset(f"h{i}" for i in range(1, 7))
 
 KNOWN_TAGS = (
     "p",

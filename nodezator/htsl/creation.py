@@ -50,7 +50,6 @@ from .constants import (
     ANCHOR_TEXT_SETTINGS_MINUS_FG,
     HEADING_TEXT_SETTINGS_MINUS_HEIGHT,
     HEADING_TO_FONT_HEIGHT,
-    HEADING_TAGS,
     TAG_TO_TEXT_SETTINGS,
     NORMAL_TEXT_SETTINGS,
     MARKED_TEXT_SETTINGS,
@@ -130,6 +129,8 @@ def get_heading(heading, max_width):
     )
 
     obj_list.clear()
+
+    heading_obj.tag_name = tag_name
 
     ###
 
