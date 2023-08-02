@@ -408,6 +408,15 @@ class SubparameterHandling(WidgetOps, UnpackingOps):
         ### reposition all objects within the node
         self.reposition_elements()
 
+        ### if parameters is of keyword-variable kind, also
+        ### recreate body's surface;
+        ###
+        ### this is needed because the key icon will have to be redrawn
+        ### as well
+
+        if self.var_kind_map[param_name] == "var_key":
+            self.reset_body_height_and_image()
+
         ### indicate that changes were made in the data
         indicate_unsaved()
 
