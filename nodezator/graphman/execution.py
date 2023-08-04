@@ -312,7 +312,7 @@ class Execution:
 
                                 node.set_visual(return_value['in_graph_visual'])
 
-                                if 'loop_data' in return_value:
+                                if hasattr(node, 'loop_entering_command'):
 
                                     node.loop_data = return_value['loop_data']
 
