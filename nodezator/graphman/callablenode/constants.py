@@ -1,7 +1,15 @@
 """Constants for the callable node class."""
 
-### local import
-from ...fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
+### local imports
+
+from ...fontsman.constants import (
+    ENC_SANS_BOLD_FONT_HEIGHT,
+    NOTO_SANS_REGULAR_FONT_PATH,
+    NOTO_SANS_FONT_HEIGHT,
+    NOTO_SANS_MONO_MEDIUM_FONT_PATH,
+    NOTO_SANS_MONO_MEDIUM_FONT_HEIGHT,
+)
+
 
 
 FONT_HEIGHT = ENC_SANS_BOLD_FONT_HEIGHT
@@ -47,3 +55,27 @@ INPUT_OFFSET = 4
 
 ### distance between outputs
 DISTANCE_BETWEEN_OUTPUTS = 4
+
+
+### side visualization text
+
+SIDEVIZ_TEXT_SETTINGS = {
+    "font_height": NOTO_SANS_FONT_HEIGHT,
+    "font_path": NOTO_SANS_REGULAR_FONT_PATH,
+    "foreground_color": (15, 15, 15),
+    "background_color": (230, 230, 235),
+}
+
+SIDEVIZ_MONOSPACED_TEXT_SETTINGS = {
+    "font_height": NOTO_SANS_MONO_MEDIUM_FONT_HEIGHT,
+    "font_path": NOTO_SANS_MONO_MEDIUM_FONT_PATH,
+    "foreground_color": (15, 15, 15),
+    "background_color": (230, 230, 235),
+}
+
+SIDEVIZ_PYTHON_SOURCE_SETTINGS = {
+    "font_height": NOTO_SANS_MONO_MEDIUM_FONT_HEIGHT,
+    "font_path": NOTO_SANS_MONO_MEDIUM_FONT_PATH,
+    "foreground_color": (235, 235, 235),
+    "background_color": (15, 15, 15),
+}

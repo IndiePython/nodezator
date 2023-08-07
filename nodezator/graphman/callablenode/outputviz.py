@@ -9,6 +9,10 @@ from functools import partial
 from xml.etree.ElementTree import Element
 
 
+### third-party import
+from pygame import Surface
+
+
 ### local imports
 
 from ...config import APP_REFS
@@ -28,17 +32,20 @@ from ...logman.main import get_new_logger
 from ...dialog import create_and_show_dialog
 
 from ...ourstdlibs.behaviour import get_oblivious_callable
-
 from ...ourstdlibs.path import get_new_filename
 
 from ...our3rdlibs.behaviour import indicate_unsaved
-
 from ...our3rdlibs.userlogger import USER_LOGGER
 
 from ...classes2d.single import Object2D
 from ...classes2d.collections import List2D
 
 from ...textman.render import render_text
+from ...textman.viewer.main import view_text
+from ...textman.text import get_normal_lines, get_highlighted_lines
+
+from ...syntaxman.utils import get_ready_theme
+from ...syntaxman.exception import SyntaxMappingError
 
 from ...surfsman.render import (
     render_rect,
@@ -63,7 +70,12 @@ from ...colorsman.colors import (
     NODE_BODY_BG,
 )
 
-from .constants import FONT_HEIGHT
+from .constants import (
+    FONT_HEIGHT,
+    SIDEVIZ_TEXT_SETTINGS,
+    SIDEVIZ_MONOSPACED_TEXT_SETTINGS,
+    SIDEVIZ_PYTHON_SOURCE_SETTINGS,
+)
 
 from .surfs import (
     RELOAD_PREVIEW_BUTTON_SURF,
@@ -75,6 +87,13 @@ from .surfs import (
 ### create logger for module
 logger = get_new_logger(__name__)
 
+
+### create theme map to render syntax-highlighted python source
+THEME_MAP = get_ready_theme("python", SIDEVIZ_PYTHON_SOURCE_SETTINGS)
+
+
+
+### class definition
 
 class OutputVisualization:
 
@@ -353,39 +372,78 @@ class OutputVisualization:
         ###
         indicate_unsaved()
 
-    def set_visual(self, visual):
+    def set_visual(self, visual_data):
         """Store visual in preview panel and update rect's size
 
         Parameters
         ==========
-        visual (pygame.Surface)
-            A surface to use in the preview panel.
-
-            In the future maybe it could receive other kinds of data
-            that could be turned into a surface, like text.
+        visual_data (string, pygame.Surface or dict)
+            Data used for displaying visual in the preview panel.
         """
-        ### get visual size
-        size = visual.get_size()
 
-        ### get a new surface which is a copy of a checkered surf
-        ### with the same size as the visual
+        if isinstance(visual_data, Surface):
 
-        new_surf = CHECKERED_SURF_MAP[(
-            size,  # surf size
-            PREVIEW_PANEL_CHECKER_A, # checker color a
-            PREVIEW_PANEL_CHECKER_B, # checker color b
-            10,    # checker rect width
-            10,    # checker rect height
-        )].copy()
+            ### get a new surface which is a copy of a checkered surf
+            ### with the same size as the visual
 
-        ### blit visual over new surface
-        new_surf.blit(visual, (0, 0))
+            new_surf = CHECKERED_SURF_MAP[(
+                visual_data.get_size(),  # surf size
+                PREVIEW_PANEL_CHECKER_A, # checker color a
+                PREVIEW_PANEL_CHECKER_B, # checker color b
+                10,    # checker rect width
+                10,    # checker rect height
+            )].copy()
+
+            ### blit visual over new surface
+            new_surf.blit(visual_data, (0, 0))
+
+        elif isinstance(visual_data, str):
+            new_surf = get_text_surf(visual_data, SIDEVIZ_TEXT_SETTINGS)
+
+        elif isinstance(visual_data, dict):
+
+            try:
+
+                data = visual_data['data']
+                hint = visual_data['hint']
+
+            except KeyError:
+
+                raise RuntimeError(
+                    "Can't set side visual because"
+                    " 'data' and/or 'hint' key can't"
+                    " be found"
+                )
+
+            else:
+
+                if hint == 'text':
+                    new_surf = get_text_surf(data, SIDEVIZ_TEXT_SETTINGS)
+
+                elif hint == 'monospaced_text':
+                    new_surf = get_text_surf(data, SIDEVIZ_MONOSPACED_TEXT_SETTINGS)
+
+                elif hint == 'python_source':
+                    new_surf = get_python_source_surf(data)
+
+                else:
+
+                    raise RuntimeError(
+                        "side visual data 'hint' must be"
+                        " 'text' or 'python_source'"
+                    )
+
+        else:
+
+            raise RuntimeError(
+                "Can't set side visual because type is not supported"
+            )
 
         ### update preview panel's image and rect's size
         ### taking new surface into account
 
         self.preview_panel.image = new_surf
-        self.preview_panel.rect.size = size
+        self.preview_panel.rect.size = new_surf.get_size()
 
     def enter_custom_loop(self):
 
@@ -427,15 +485,88 @@ class OutputVisualization:
             cache_screen_state()
 
             try:
-                view_surface(self.loop_data)
+                loop_data = self.loop_data
 
-            except TypeError as err:
+                if isinstance(loop_data, Surface):
+                    view_surface(loop_data)
+
+                elif isinstance(loop_data, str):
+
+                    view_text(
+                        text=loop_data,
+                        general_text_settings=SIDEVIZ_TEXT_SETTINGS,
+                        show_line_number=True,
+                    )
+
+                elif isinstance(loop_data, dict):
+
+                    try:
+
+                        data = loop_data['data']
+                        hint = loop_data['hint']
+
+                    except KeyError:
+
+                        create_and_show_dialog(
+                            (
+                                "Can't display loop data because"
+                                " 'data' and/or 'hint' key can't"
+                                " be found"
+                            ),
+                            level_name='error',
+                        )
+
+                    else:
+
+                        if hint == 'text':
+
+                            view_text(
+                                text=data,
+                                general_text_settings=SIDEVIZ_TEXT_SETTINGS,
+                                show_line_number=True,
+                            )
+
+                        elif hint == 'monospaced_text':
+
+                            view_text(
+                                text=data,
+                                general_text_settings=SIDEVIZ_MONOSPACED_TEXT_SETTINGS,
+                                show_line_number=True,
+                            )
+
+                        elif hint == 'python_source':
+
+                            view_text(
+                                text=data,
+                                syntax_highlighting='python',
+                                show_line_number=True,
+                            )
+
+                        else:
+
+                            create_and_show_dialog(
+                                (
+                                    "loop data 'hint' must be "
+                                    "'text' or 'python_source'"
+                                ),
+                                level_name='error',
+                            )
+
+                else:
+
+                    create_and_show_dialog(
+                        "Can't display loop data because type is not supported",
+                        level_name='error',
+                    )
+
+            except Exception as err:
 
                 ## log traceback
 
                 log_message = (
                     "An error occurred when trying to visualize"
-                    " loop data (surface) in the surface viewer."
+                    " loop data. Check user log for details (Shift+Ctrl+J)"
+                    " once you leave this dialog."
                 )
 
                 logger.exception(log_message)
@@ -444,7 +575,7 @@ class OutputVisualization:
                 ## notify user
 
                 create_and_show_dialog(
-                    f"{log_message}: (TypeError) {str(err)}"
+                    f"{log_message}: {type(err)} {str(err)}"
                 )
 
         else:
@@ -827,3 +958,84 @@ def preview_panel_svg_repr(panel):
 
         return image_element
 
+
+### utility functions
+
+def get_text_surf(text, text_settings):
+
+    lines = get_normal_lines(text, text_settings)
+
+    ### position text objects representing lines one
+    ### below the other
+    lines.rect.snap_rects_ip(retrieve_pos_from="bottomleft", assign_pos_to="topleft")
+
+    ### text area
+
+    text_area = lines.rect.copy()
+    text_area.width += 10
+    text_area.height += 10
+
+    surf = render_rect(*text_area.size, text_settings["background_color"])
+
+    ###
+
+    lines.rect.move_ip(5, 5)
+
+    blit_on_surf = surf.blit
+
+    for line in lines:
+        blit_on_surf(line.image, line.rect)
+
+    ###
+    draw_border(surf, text_settings["foreground_color"])
+
+    ###
+    return surf
+
+def get_python_source_surf(python_source):
+
+    try:
+
+        lines = get_highlighted_lines(
+            "python",
+            python_source,
+            syntax_settings_map=THEME_MAP["text_settings"],
+        )
+
+    ## if a syntax mapping error occurs...
+
+    except SyntaxMappingError:
+        lines = get_normal_lines(python_source, SIDEVIZ_PYTHON_SOURCE_SETTINGS)
+
+        foreground_color = SIDEVIZ_PYTHON_SOURCE_SETTINGS["foreground_color"]
+        background_color = SIDEVIZ_PYTHON_SOURCE_SETTINGS["background_color"]
+
+    ##
+    else:
+        foreground_color = THEME_MAP["text_settings"]["normal"]["foreground_color"]
+        background_color = THEME_MAP["background_color"]
+
+
+    ### position text objects representing lines one below the other
+    lines.rect.snap_rects_ip(retrieve_pos_from="bottomleft", assign_pos_to="topleft")
+
+    ###
+
+    code_area = lines.rect.copy()
+    code_area.width += 10
+    code_area.height += 10
+
+    surf = render_rect(*code_area.size, background_color)
+
+    lines.rect.move_ip(5, 5)
+
+    blit_on_surf = surf.blit
+
+    for line in lines:
+        blit_on_surf(line.image, line.rect)
+
+    ###
+    draw_border(surf, foreground_color)
+    ###
+
+    return surf
