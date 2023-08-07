@@ -18,9 +18,9 @@ from os import linesep
 from ..config import APP_REFS
 
 from ..appinfo import (
-    VISUAL_FROM_BACKDOOR_VAR_NAMES,
-    VISUAL_FROM_OUTPUT_VAR_NAME,
-    LOOP_FROM_OUTPUT_VAR_NAME,
+    BACKDOOR_INDICATIVE_VAR_NAMES,
+    SIDEVIZ_FROM_OUTPUT_VAR_NAME,
+    LOOPVIZ_FROM_OUTPUT_VAR_NAME,
 )
 
 from ..userprefsman.main import USER_PREFS
@@ -264,7 +264,7 @@ class Execution:
                         ## backdoor to retrieve visuals from it, storing
                         ## such backdoor if so
 
-                        for var_name in VISUAL_FROM_BACKDOOR_VAR_NAMES:
+                        for var_name in BACKDOOR_INDICATIVE_VAR_NAMES:
 
                             if hasattr(node, var_name):
                                 backdoor = getattr(node, var_name)
@@ -321,16 +321,16 @@ class Execution:
 
                                 output_to_send = return_value.get('output')
 
-                            elif hasattr(node, VISUAL_FROM_OUTPUT_VAR_NAME):
+                            elif hasattr(node, SIDEVIZ_FROM_OUTPUT_VAR_NAME):
 
                                 node.set_visual(
-                                    node.get_visual_from_output(return_value)
+                                    node.get_sideviz_from_output(return_value)
                                 )
 
                                 ###
 
                                 loop_data_retrieval_op = (
-                                    getattr(node, LOOP_FROM_OUTPUT_VAR_NAME, None)
+                                    getattr(node, LOOPVIZ_FROM_OUTPUT_VAR_NAME, None)
                                 )
 
                                 if loop_data_retrieval_op:

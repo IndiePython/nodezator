@@ -15,11 +15,11 @@ from ...config import APP_REFS
 
 from ...appinfo import (
     VIEWER_NODE_RELATED_VAR_NAMES,
-    VISUAL_FROM_OUTPUT_VAR_NAME,
-    LOOP_FROM_OUTPUT_VAR_NAME,
+    SIDEVIZ_FROM_OUTPUT_VAR_NAME,
+    LOOPVIZ_FROM_OUTPUT_VAR_NAME,
     LOOP_INDICATIVE_VAR_NAMES,
     CUSTOM_VIEWER_LOOP_VAR_NAME,
-    VISUAL_FROM_BACKDOOR_VAR_NAMES,
+    BACKDOOR_INDICATIVE_VAR_NAMES,
     OUTPUT_INSPECTING_VAR_NAMES,
 )
 
@@ -98,8 +98,8 @@ class OutputVisualization:
         ### must be provided as well
 
         if (
-            (LOOP_FROM_OUTPUT_VAR_NAME in viewer_related_var_names)
-            and not (VISUAL_FROM_OUTPUT_VAR_NAME in viewer_related_var_names)
+            (LOOPVIZ_FROM_OUTPUT_VAR_NAME in viewer_related_var_names)
+            and not (SIDEVIZ_FROM_OUTPUT_VAR_NAME in viewer_related_var_names)
         ):
             return
 
@@ -122,7 +122,7 @@ class OutputVisualization:
 
             any(
                 var_name in viewer_related_var_names
-                for var_name in VISUAL_FROM_BACKDOOR_VAR_NAMES
+                for var_name in BACKDOOR_INDICATIVE_VAR_NAMES
             )
 
             and any(
