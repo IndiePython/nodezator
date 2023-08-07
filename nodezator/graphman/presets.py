@@ -33,6 +33,14 @@ PARAM_ANNOTATION_PRESET_MAP = {
         },
         "type": str,
     },
+    ('python_source',): {
+        "widget_name": "text_display",
+        "widget_kwargs": {
+            "syntax_highlighting": "python",
+            "font_path": "mono_bold",
+        },
+        "type": str,
+    },
     ("non_negative_int", "non_negative_integer", "natural_number",): {
         "widget_name": "int_float_entry",
         "widget_kwargs": {
