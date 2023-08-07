@@ -52,7 +52,7 @@ main_callable = view_drawn_points
     <li>where to pick the surface from your node's output</li>
 </ul>
 
-<p>To do that, all you need is to add a small function in your script called (or aliased as) <i>get_visual_from_output</i>. The function must receive a single argument, which is the output of the node, and return the surface it gets from it.</p>
+<p>To do that, all you need is to add a small function in your script called (or aliased as) <i>get_sideviz_from_output</i>. The function must receive a single argument, which is the output of the node, and return the surface it gets from it.</p>
 
 <p>Since in our case, the surface is the node's output itself, that function just needs to return the argument received. Here's the script defining our viewer node:</p>
  
@@ -123,9 +123,9 @@ def view_drawn_points(points):
 ### alias the function defining the node as main_callable
 main_callable = view_drawn_points
 
-### define a get_visual_from_output function that just returns
+### define a get_sideviz_from_output function that just returns
 ### the data received (the name of the parameter isn't important)
-get_visual_from_output = lambda node_output: node_output
+get_sideviz_from_output = lambda node_output: node_output
 </python>
 
 <p>And now your viewer node will look like this when instantiated:</p>
@@ -151,9 +151,9 @@ get_visual_from_output = lambda node_output: node_output
 
 <p>This way, you don't need to worry about the size of the surfaces your viewer nodes return. When you create a surface within your node, you just need to ensure it fits a maximum size arbitrarily defined by you and, if the surface is larger than that size, you create a downsized copy of it (using the <a href="https://pyga.me/docs/ref/transform.html#pygame.transform.smoothscale">smoothscale()</a> or <a href="https://pyga.me/docs/ref/transform.html#pygame.transform.scale">scale()</a> function from pygame-ce's <i>pygame.transform</i> module). If the surface is smaller than that, you can use it as-is for the in-graph visualization.</p>
 
-<p>To tell Nodezator that you are providing a surface that is meant to appear in a dedicated viewer instead of in the graph itself, you just need to create another function called (or aliased as) <i>get_loop_data_from_output</i>, in addition to your existing <i>get_visual_from_output</i> function. This <i>get_loop_data_from_output</i> also receives a single input, which is the output of the node and must return the surface that Nodezator will display whenever the user clicks the in-graph visual.</p>
+<p>To tell Nodezator that you are providing a surface that is meant to appear in a dedicated viewer instead of in the graph itself, you just need to create another function called (or aliased as) <i>get_loopviz_from_output</i>, in addition to your existing <i>get_sideviz_from_output</i> function. This <i>get_loopviz_from_output</i> also receives a single input, which is the output of the node and must return the surface that Nodezator will display whenever the user clicks the in-graph visual.</p>
 
-<p>Providing this new <i>get_loop_data_from_output</i> callable requires that a <i>get_visual_from_output</i> callable exist as well, otherwise Nodezator won't acknowledge the existence of your node as a viewer node. In other words, providing a full visual requires that you also provide a preview visual.</p>
+<p>Providing this new <i>get_loopviz_from_output</i> callable requires that a <i>get_sideviz_from_output</i> callable exist as well, otherwise Nodezator won't acknowledge the existence of your node as a viewer node. In other words, providing a full visual requires that you also provide a preview visual.</p>
 
 <p>This time, to demonstrate this, we'll define a completely different viewer node that receives an image object from the <a href="https://pillow.readthedocs.io/en/stable/">Pillow</a> library in order to visualize it. We'll call it view_image node. Here's the script defining the node:</p>
 
@@ -275,19 +275,19 @@ def view_image(
 ### alias the function defining the node as main_callable
 main_callable = view_image
 
-### define a get_visual_from_output function;
+### define a get_sideviz_from_output function;
 ###
 ### since we store our in-graph visual in the 'preview_surface' key
 ### of the node's output (the dict returned), this function just
 ### returns the value in that key
-get_visual_from_output = lambda node_output: node_output['preview_surface']
+get_sideviz_from_output = lambda node_output: node_output['preview_surface']
 
-### define a get_loop_data_from_output function;
+### define a get_loopviz_from_output function;
 ###
 ### again, because our full surface (the loop data) is stored as
 ### the 'full_surface' key of the node's output, this function just 
 ### returns the value in such key
-get_loop_data_from_output = lambda node_output: node_output['full_surface']
+get_loopviz_from_output = lambda node_output: node_output['full_surface']
 </python>
 
 <p>And now this viewer node will look like this when instantiated:</p>

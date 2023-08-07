@@ -66,7 +66,7 @@
 
 </table>
 
-<p>To tell Nodezator which callable is the backdoor, just name it (or alias it as) <i>visual_loop_and_output_backdoor</i>. The custom looper callable must be named (or aliased as) <i>enter_viewer_loop</i>.</p>
+<p>To tell Nodezator which callable is the backdoor, just name it (or alias it as) <i>loopviz_sideviz_and_output_backdoor</i>. The custom looper callable must be named (or aliased as) <i>enter_viewer_loop</i>.</p>
 
 <p>The custom looper callable must accept a single argument, which is the loop data. That is, all the data needed to be shown in the custom visualization loop must be delivered through this single argument. If your loop data consists of more than one object, you can use a collection to deliver the data, like a tuple or a dictionary for instance, as well demonstrate in our example.</p>
 
@@ -354,10 +354,10 @@ def prepare_data_from_points(
         'loop_data': loop_data,
     }
 
-visual_loop_and_output_backdoor = prepare_data_from_points
+loopviz_sideviz_and_output_backdoor = prepare_data_from_points
 </python>
 
-<p>The function created is aliased as <i>visual_loop_and_output_backdoor</i>, just as required. It returns a dictionary with both <i>in_graph_visual</i> and <i>loop_data</i> keys. The dictionary doesn't contain an <i>output</i> key, because this key is optional and only relevant when our node returns any meaningful output, which is not the case here. In other words, since our viewer node only returns None, we ommit the key.</p>
+<p>The function created is aliased as <i>loopviz_sideviz_and_output_backdoor</i>, just as required. It returns a dictionary with both <i>in_graph_visual</i> and <i>loop_data</i> keys. The dictionary doesn't contain an <i>output</i> key, because this key is optional and only relevant when our node returns any meaningful output, which is not the case here. In other words, since our viewer node only returns None, we ommit the key.</p>
 
 <p>Note that very little was needed to produce our loop data. The vast majority of the code consists in the creation of a preview surface to use as our in-graph visual.</p>
 
@@ -546,7 +546,7 @@ enter_viewer_loop = points_viewer.display_points
 ## it must:
 ##
 ## - have a signature compatible with the signature of the main callable;
-## - be called or aliased visual_loop_and_output_backdoor;
+## - be called or aliased loopviz_sideviz_and_output_backdoor;
 ## - return a dict with specific keys, as described in its docstring.
 
 # define a 2D vector representing the origin
@@ -740,7 +740,7 @@ def prepare_data_from_points(
         'loop_data': loop_data,
     }
 
-visual_loop_and_output_backdoor = prepare_data_from_points
+loopviz_sideviz_and_output_backdoor = prepare_data_from_points
 </python>
 
 <p>And that's it, now the custom visualization loop of the view_points node is integrated with Nodezator! As explained before, whenever your node is executed, Nodezator will store the loop data and in-graph visual returned by the backdoor and set the in-graph visual in the panel beside your viewer node. After this, whenever you click that image beside the node, Nodezator will pass the stored loop data to the custom looper you provided, which will cause Nodezator to enter the custom visualization loop defined in your node.</p>

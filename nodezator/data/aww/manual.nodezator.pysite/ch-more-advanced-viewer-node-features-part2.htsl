@@ -141,7 +141,7 @@ def get_data_from_pillow_image(
         'loop_data': full_surface,
     }
 
-visual_loop_and_output_backdoor = get_data_from_pillow_image
+loopviz_sideviz_and_output_backdoor = get_data_from_pillow_image
 
 
 def view_image(image: Image):
@@ -264,7 +264,7 @@ def get_data_from_pillow_image(
         'output': bounding_rect,
     }
 
-visual_loop_and_output_backdoor = get_data_from_pillow_image
+loopviz_sideviz_and_output_backdoor = get_data_from_pillow_image
 
 
 def view_image(image: Image) -&gt; Rect:
@@ -287,7 +287,7 @@ main_callable = view_image
 
 <h2 id="only-in-graph-via-backdoor">Providing only in-graph visual via backdoor</h2>
 
-<p>As we saw in the <a href="ch-defining-viewer-nodes.htsl">introductory chapter on viewer nodes</a>, there was a way to provide only the in-graph visual for a viewer node, that is, without also having to provide a full visual to be looped in a custom viewer or Nodezator surface viewer. So, naturally, using the backdoor solely to provide visuals should also present this possibility. This is actually simple. The only thing you'll have to do is change the name/alias of the backdoor to <i>visual_and_output_backdoor</i>, instead of <i>visual_loop_and_output_backdoor</i>. By doing this, Nodezator will not look for the <i>loop_data</i> key in the dictionary returned by your backdoor.</p>
+<p>As we saw in the <a href="ch-defining-viewer-nodes.htsl">introductory chapter on viewer nodes</a>, there was a way to provide only the in-graph visual for a viewer node, that is, without also having to provide a full visual to be looped in a custom viewer or Nodezator surface viewer. So, naturally, using the backdoor solely to provide visuals should also present this possibility. This is actually simple. The only thing you'll have to do is change the name/alias of the backdoor to <i>sideviz_and_output_backdoor</i>, instead of <i>loopviz_sideviz_and_output_backdoor</i>. By doing this, Nodezator will not look for the <i>loop_data</i> key in the dictionary returned by your backdoor.</p>
 
 
 <h2 id="final-comment-on-backdoors">Final comment on backdoors</h2>
