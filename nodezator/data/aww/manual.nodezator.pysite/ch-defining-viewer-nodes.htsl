@@ -22,7 +22,7 @@
 
 <p>Without further ado, let's define our simple yet powerful viewer node.</p>
 
-<p>Begin by creating another folder inside points2d called <i>viewer</i> wherein we'll store a node responsible for viewing points. This is just another <b>category folder</b>, just like point_creation.</p>
+<p>Begin by creating another folder inside points2d called <code>viewer</code> wherein we'll store a node responsible for viewing points. This is just another <b>category folder</b>, just like point_creation.</p>
 
 
 <h2 id="returning-visual-beside-node">Returning a visual to be displayed beside your node</h2>
@@ -43,7 +43,7 @@ def view_drawn_points(points):
 main_callable = view_drawn_points
 </python>
 
-<p>As you can see, our viewer node is just a regular node like any other. It has a single parameter where we'll receive the given points that we want to visualize. It is also aliased as <i>main_callable</i> like any other node, so that Nodezator can fetch it and turn it into a node.</p>
+<p>As you can see, our viewer node is just a regular node like any other. It has a single parameter where we'll receive the given points that we want to visualize. It is also aliased as <code>main_callable</code> like any other node, so that Nodezator can fetch it and turn it into a node.</p>
 
 <p>Now, all you need is a way to inform Nodezator of two things:</p>
 
@@ -52,7 +52,7 @@ main_callable = view_drawn_points
     <li>where to pick the surface from your node's output</li>
 </ul>
 
-<p>To do that, all you need is to add a small function in your script called (or aliased as) <i>get_sideviz_from_output</i>. The function must receive a single argument, which is the output of the node, and return the surface it gets from it.</p>
+<p>To do that, all you need is to add a small function in your script called (or aliased as) <code>get_sideviz_from_output</code>. The function must receive a single argument, which is the output of the node, and return the surface it gets from it.</p>
 
 <p>Since in our case, the surface is the node's output itself, that function just needs to return the argument received. Here's the script defining our viewer node:</p>
  
@@ -151,9 +151,9 @@ get_sideviz_from_output = lambda node_output: node_output
 
 <p>This way, you don't need to worry about the size of the surfaces your viewer nodes return. When you create a surface within your node, you just need to ensure it fits a maximum size arbitrarily defined by you and, if the surface is larger than that size, you create a downsized copy of it (using the <a href="https://pyga.me/docs/ref/transform.html#pygame.transform.smoothscale">smoothscale()</a> or <a href="https://pyga.me/docs/ref/transform.html#pygame.transform.scale">scale()</a> function from pygame-ce's <i>pygame.transform</i> module). If the surface is smaller than that, you can use it as-is for the in-graph visualization.</p>
 
-<p>To tell Nodezator that you are providing a surface that is meant to appear in a surface viewer instead of in the graph itself, you just need to create another function called (or aliased as) <i>get_loopviz_from_output</i>, in addition to your existing <i>get_sideviz_from_output</i> function. This <i>get_loopviz_from_output</i> also receives a single input, which is the output of the node and must return the surface that Nodezator will display whenever the user clicks the in-graph visual.</p>
+<p>To tell Nodezator that you are providing a surface that is meant to appear in a surface viewer instead of in the graph itself, you just need to create another function called (or aliased as) <code>get_loopviz_from_output</code>, in addition to your existing <code>get_sideviz_from_output</code> function. This <code>get_loopviz_from_output</code> also receives a single input, which is the output of the node and must return the surface that Nodezator will display whenever the user clicks the in-graph visual.</p>
 
-<p>Providing this new <i>get_loopviz_from_output</i> callable requires that a <i>get_sideviz_from_output</i> callable exist as well, otherwise Nodezator won't acknowledge the existence of your node as a viewer node. In other words, providing a full visual requires that you also provide a preview visual.</p>
+<p>Providing this new <code>get_loopviz_from_output</code> callable requires that a <code>get_sideviz_from_output</code> callable exist as well, otherwise Nodezator won't acknowledge the existence of your node as a viewer node. In other words, providing a full visual requires that you also provide a preview visual.</p>
 
 <p>This time, to demonstrate this, we'll define a completely different viewer node that receives an image object from the <a href="https://pillow.readthedocs.io/en/stable/">Pillow</a> library in order to visualize it. We'll call it view_image node. Here's the script defining the node:</p>
 

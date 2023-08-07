@@ -22,7 +22,7 @@
 
 <p>First, it processed the received data, though the processing in this case was rather simple, that is, it ensured the given points were stored in a list. In this context, we could say that the list of points, the framerate and the frames delay received are the loop data. In other words, they are all the information needed to enable our custom visualization loop. When presenting a simple viewer node in the <a href="ch-defining-viewer-nodes.htsl">introductory chapter about viewer nodes</a>, the full surface it marked to be viewed in the dedicated viewer was also called <b>loop data</b>. And that's just what the list of points and the other data are: data needed to run the visualization loop.</p>
 
-<p>Second, it proceeds to use the data to setup the loop and begins looping, that is, it stores the points, the framerate, and stores the <i>__next__</i> method of an iterator obtained from a<a href="docs.python.org/3/library/itertools.html#itertools.cycle">cycle</a>.</p>
+<p>Second, it proceeds to use the data to setup the loop and begins looping, that is, it stores the points, the framerate, and stores the <code>__next__</code> method of an iterator obtained from a<a href="docs.python.org/3/library/itertools.html#itertools.cycle">cycle</a>.</p>
 
 <p>These 02 things are just what Nodezator needs to be able to execute your node without entering the loop. You just need to split the logic of your main callable into 02 new different callables, one to handle each task described above. That is, one to process the input(s) and generate the loop data (and maybe outputs of the node), and another one to use the loop data to setup and enter the custom visualization loop. Your main callable will still be needed, but it's body will be simplified to 02 calls, one to each callable. Don't worry, we'll only need to change the very ending of our node script, and we'll give you a full example of all of this.</p>
 
@@ -66,7 +66,7 @@
 
 </table>
 
-<p>To tell Nodezator which callable is the backdoor, just name it (or alias it as) <i>loopviz_sideviz_and_output_backdoor</i>. The custom looper callable must be named (or aliased as) <i>enter_viewer_loop</i>.</p>
+<p>To tell Nodezator which callable is the backdoor, just name it (or alias it as) <code>loopviz_sideviz_and_output_backdoor</code>. The custom looper callable must be named (or aliased as) <code>enter_viewer_loop</code>.</p>
 
 <p>The custom looper callable must accept a single argument, which is the loop data. That is, all the data needed to be shown in the custom visualization loop must be delivered through this single argument. If your loop data consists of more than one object, you can use a collection to deliver the data, like a tuple or a dictionary for instance, as well demonstrate in our example.</p>
 
@@ -152,9 +152,9 @@ main_callable = view_points = PointsViewer().view_points
     self.points = list(points)
 </python>
 
-<p>In fact, we can state that the vast majority of the code in the node script, exists to serve the custom visualization loop. Only this tiny bit is actual processing to convert the input (an iterable with points) into part of the loop data (the list of points). The rest of the loop data doesn't require processing. The framerate is used as-is, it is just stored. The frames delay also doesn't require processing. That is, although the frames delay is used to produce a cycle object in order to grab its <i>__next__</i> method, this step is not considered processing, but a later step that belongs in the looper method, because the <i>__next__</i> method must be created anew every time the loop is entered.</p>
+<p>In fact, we can state that the vast majority of the code in the node script, exists to serve the custom visualization loop. Only this tiny bit is actual processing to convert the input (an iterable with points) into part of the loop data (the list of points). The rest of the loop data doesn't require processing. The framerate is used as-is, it is just stored. The frames delay also doesn't require processing. That is, although the frames delay is used to produce a cycle object in order to grab its <code>__next__</code> method, this step is not considered processing, but a later step that belongs in the looper method, because the <code>__next__</code> method must be created anew every time the loop is entered.</p>
 
-<p>This tiny processing part will thus be part of the body of our <b>processing backdoor</b> callable. Also, note that our callable doesn't even need to keep any state, that is, attributes, etc. It just needs to receive the points, the framerate and frames delay and can process the data right away to generate our loop data. Because of that, the backdoor callable doesn't need to be a method in the PointsViewer class to which the view_points method belongs. It can just be a simple function. Last, we add quite a bit of code, but is just code to generate a surface to use as a preview beside our node, that is, our in-graph visual. This added code to generate a preview is similar to the one presented in the <a href="ch-defining-viewer-nodes.htsl">introductory chapter about viewer nodes</a> (we even included the <i>max_preview_size</i> parameter as well). The difference is that the process here is a bit more complex because we are dealing with points drawn on a surface, rather than just converting a Pillow image to a surface. Here's the resulting definition of our processing backdoor:</p>
+<p>This tiny processing part will thus be part of the body of our <b>processing backdoor</b> callable. Also, note that our callable doesn't even need to keep any state, that is, attributes, etc. It just needs to receive the points, the framerate and frames delay and can process the data right away to generate our loop data. Because of that, the backdoor callable doesn't need to be a method in the PointsViewer class to which the view_points method belongs. It can just be a simple function. Last, we add quite a bit of code, but is just code to generate a surface to use as a preview beside our node, that is, our in-graph visual. This added code to generate a preview is similar to the one presented in the <a href="ch-defining-viewer-nodes.htsl">introductory chapter about viewer nodes</a> (we even included the <code>max_preview_size</code> parameter as well). The difference is that the process here is a bit more complex because we are dealing with points drawn on a surface, rather than just converting a Pillow image to a surface. Here's the resulting definition of our processing backdoor:</p>
 
 <python>
 
@@ -357,7 +357,7 @@ def prepare_data_from_points(
 loopviz_sideviz_and_output_backdoor = prepare_data_from_points
 </python>
 
-<p>The function created is aliased as <i>loopviz_sideviz_and_output_backdoor</i>, just as required. It returns a dictionary with both <i>in_graph_visual</i> and <i>loop_data</i> keys. The dictionary doesn't contain an <i>output</i> key, because this key is optional and only relevant when our node returns any meaningful output, which is not the case here. In other words, since our viewer node only returns None, we ommit the key.</p>
+<p>The function created is aliased as <code>loopviz_sideviz_and_output_backdoor</code>, just as required. It returns a dictionary with both <i>in_graph_visual</i> and <i>loop_data</i> keys. The dictionary doesn't contain an <i>output</i> key, because this key is optional and only relevant when our node returns any meaningful output, which is not the case here. In other words, since our viewer node only returns None, we ommit the key.</p>
 
 <p>Note that very little was needed to produce our loop data. The vast majority of the code consists in the creation of a preview surface to use as our in-graph visual.</p>
 
@@ -398,7 +398,7 @@ loopviz_sideviz_and_output_backdoor = prepare_data_from_points
         self.loop()
 </python>
 
-<p>Remember that we'll also need to alias this looper callable as <i>enter_viewer_loop</i>, as required. Note that it is a method of the PointsViewer class, rather than a function, because it does use a lot of state and other methods defined in the class. In fact, the class exists for the sole purpose of providing the custom visualization loop.</p>
+<p>Remember that we'll also need to alias this looper callable as <code>enter_viewer_loop</code>, as required. Note that it is a method of the PointsViewer class, rather than a function, because it does use a lot of state and other methods defined in the class. In fact, the class exists for the sole purpose of providing the custom visualization loop.</p>
 
 <p>Here's another relevant question: Since our backdoor and looper callables were made with parts of our main callable, that is, our original view_points() method, what became of it then? The answer is, since the functionality of our main callable was split into 02 callables, we can reproduce its entire behaviour by reducing the body of our main callable to 02 function calls:</p>
 
@@ -432,7 +432,7 @@ loopviz_sideviz_and_output_backdoor = prepare_data_from_points
 
 <p>In view_point()'s body, we retrieve the loop data from our backdoor callable, which is the dictionary containing the points we want to visualize in our custom visualization loop as well as the framerate and delay. We then pass the loop data along to the display_points() method, which proceeds to display the animated points in the loop. It is the same thing the view_points method did originally, but now its functionality was split into 02 callables. If the dictionary returned by the backdoor callable had an <i>output</i> key, we would also return the value in the <i>output</i> key at the end of the view_points method.</p>
 
-<p>Because we provided a backdoor callable to Nodezator, whenever our node is executed, Nodezator actually executes the backdoor. That's why, as we said before, they must have the same parameters. Now, when our node executes, instead of the main callable receiving the <i>points</i>, <i>framerate</i> and <i>frames_delay</i> arguments, they are given to the backdoor instead, which is executed and returns the dictionary we mentioned earlier. From that dictionary Nodezator...:</p>
+<p>Because we provided a backdoor callable to Nodezator, whenever our node is executed, Nodezator actually executes the backdoor. That's why, as we said before, they must have the same parameters. Now, when our node executes, instead of the main callable receiving the <code>points</code>, <code>framerate</code> and <code>frames_delay</code> arguments, they are given to the backdoor instead, which is executed and returns the dictionary we mentioned earlier. From that dictionary Nodezator...:</p>
 
 <ul>
     <li>retrieves the loop data from its <i>loop_data</i> key and stores it for when we want to visualize it;</li>
