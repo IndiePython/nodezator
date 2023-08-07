@@ -49,12 +49,12 @@
 
         <tr>
             <td><i>in_graph_visual</i></td>
-            <td>a pygame.Surface to use as the in-graph visual;</td>
+            <td>a string, dict or pygame.Surface, as shown in the introductory chapter on viewer nodes, to use as the in-graph visual;</td>
         </tr>
 
         <tr>
             <td><i>loop_data</i></td>
-            <td>the loop data (possibly another pygame.Surface) to use when executing the looper; and</td>
+            <td>the loop data to use when executing the looper; and</td>
         </tr>
 
         <tr>

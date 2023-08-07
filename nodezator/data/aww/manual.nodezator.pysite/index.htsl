@@ -36,6 +36,7 @@
     <ol>
       <li><a href="ch-defining-viewer-nodes.htsl#returning-visual-beside-node">Returning a visual to be displayed beside your node</a></li>
       <li><a href="ch-defining-viewer-nodes.htsl#returning-larger-visual">Returning a larger visual to be displayed in a Nodezator viewer</a></li>
+      <li><a href="ch-defining-viewer-nodes.htsl#visualizing-text">Visualizing text</a></li>
       <li><a href="ch-defining-viewer-nodes.htsl#in-graph-only-vs-full-visual">Brief note: in-graph only vs full visual</a></li>
       <li><a href="ch-defining-viewer-nodes.htsl#callable-mode-and-visuals">Callable mode and visuals</a></li>
     </ol>
