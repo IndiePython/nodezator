@@ -160,7 +160,7 @@ class CallableNode(
         ### instance; maps are related to the signature
         ### callable and are shared accross all node
         ### instances which such signature callable obj
-        self.reference_related_maps(signature_callable)
+        self.reference_related_data(signature_callable)
 
         ### store the instance data argument in its own
         ### attribute and check whether there's data needed

@@ -281,11 +281,10 @@ class Preprocessing:
         ## processed again
         cls.preprocessed_callables.add(signature_callable)
 
-    def reference_related_maps(self, signature_callable):
-        """Reference maps from class attributes in instance.
+    def reference_related_data(self, signature_callable):
+        """Reference maps/objects related to the signature in the instance.
 
-        The maps are related to the callable obj of the
-        node instance and are referenced for easier access.
+        Such maps/objects are referenced for easier access.
         """
         ### reference class locally, since it is accessed
         ### multiple times

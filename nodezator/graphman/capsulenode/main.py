@@ -95,7 +95,7 @@ class CapsuleNode(CallableNode):
         ### callable obj and are shared accross all node
         ### instances which use the same signature callable
         ### obj
-        self.reference_related_maps(signature_callable)
+        self.reference_related_data(signature_callable)
 
         ### check whether there's data needed
         ### to be set in the instance data
