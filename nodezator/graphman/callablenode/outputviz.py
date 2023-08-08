@@ -99,22 +99,85 @@ class OutputVisualization:
 
     def check_preview_objects(self):
 
-        ###
-        node_defining_object = self.node_defining_object
+        ### gather viewer related var names from node defining object
+        ### namespace
 
-        ###
+        node_defining_object = self.node_defining_object
 
         viewer_related_var_names = (
             set(node_defining_object)
             .intersection(VIEWER_NODE_RELATED_VAR_NAMES)
         )
 
+        ### gather viewer related var names from preexistent attributes
+
+        preexistent_attr_names = {
+            name
+            for name in OUTPUT_INSPECTING_VAR_NAMES
+            if hasattr(self, name)
+        }
+
+        ### check preexistent attributes
+
+        if (
+
+            ## sideviz is present alone
+
+            (
+                (SIDEVIZ_FROM_OUTPUT_VAR_NAME in preexistent_attr_names)
+                and (LOOPVIZ_FROM_OUTPUT_VAR_NAME not in preexistent_attr_names)
+            )
+
+            ## both sideviz and loop viz are present
+            or set(OUTPUT_INSPECTING_VAR_NAMES) == preexistent_attr_names
+
+        ):
+
+            ## since we now know that there are preexistent attributes
+            ## related to providing visualization data, there must not
+            ## be any viewer related var names in the node defining object,
+            ## except if it is a callable for entering a custom visualization
+            ## loop;
+            ##
+
+            n = len(viewer_related_var_names)
+
+            if (
+                (n == 1)
+                and (CUSTOM_VIEWER_LOOP_VAR_NAME not in viewer_related_var_names)
+            ):
+                return
+
+            elif n > 1:
+                return
+
+            ## create preview objects and exit method by returning earlier
+
+            self.create_preview_toolbar()
+            self.create_preview_panel()
+
+            return
+
+        elif (
+
+            ## loopviz alone is not allowed, so return earlier
+
+            (LOOPVIZ_FROM_OUTPUT_VAR_NAME in preexistent_attr_names)
+            and (SIDEVIZ_FROM_OUTPUT_VAR_NAME not in preexistent_attr_names)
+
+        ):
+            return
+
+
+        ### if by this point there are no viewer related var names from the
+        ### node defining object, return earlier
+
         if not viewer_related_var_names:
             return
 
-        ### if callable to grab full surface/visual from node output
-        ### is specified, a callable to grab the preview surface/visual
-        ### must be provided as well
+        ## if callable to grab full surface/visual from node output
+        ## is specified, a callable to grab the preview surface/visual
+        ## must be provided as well
 
         if (
             (LOOPVIZ_FROM_OUTPUT_VAR_NAME in viewer_related_var_names)
@@ -122,8 +185,8 @@ class OutputVisualization:
         ):
             return
 
-        ### if a custom visualization loop is provided, must ensure loop data
-        ### will be provided by either of the available methods
+        ## if a custom visualization loop is provided, must ensure loop data
+        ## will be provided by either of the available methods
 
         if CUSTOM_VIEWER_LOOP_VAR_NAME in viewer_related_var_names:
 
@@ -133,9 +196,9 @@ class OutputVisualization:
             ):
                 return
 
-        ### methods for grabbing visuals must not be mixed, that is, we
-        ### either grab visuals for the viewer node from the backdoor
-        ### or from the node's output
+        ## methods for grabbing visuals must not be mixed, that is, we
+        ## either grab visuals for the viewer node from the backdoor
+        ## or from the node's output
 
         if (
 
@@ -152,12 +215,12 @@ class OutputVisualization:
 
             return
 
-        ### store viewer related functions
+        ## store viewer related functions
 
         for var_name in viewer_related_var_names:
             setattr(self, var_name, node_defining_object[var_name])
 
-        ### create preview objects
+        ## create preview objects
 
         self.create_preview_toolbar()
         self.create_preview_panel()

@@ -8,10 +8,17 @@ from copy import deepcopy
 
 from inspect import Parameter
 
+from operator import itemgetter
+
 
 ### local imports
 
 from ...config import APP_REFS
+
+from ...appinfo import (
+    SIDEVIZ_FROM_OUTPUT_VAR_NAME,
+    LOOPVIZ_FROM_OUTPUT_VAR_NAME,
+)
 
 from ..presets import (
     PARAM_ANNOTATION_PRESET_MAP,
@@ -52,6 +59,12 @@ class Preprocessing:
     ### create a map to store output name/output type pairs
     ### of data in the order they appear on the node
     callables_ordered_output_types = {}
+
+    ### create a map to store attribute name/function pairs
+    ### representing names of attributes meant to store functions
+    ### for retrieving visualizatio data from the node's output
+    ### and the respective functions
+    callables_viz_attrs_funcs_pairs = {}
 
     def inspect_callable_object(self, signature_callable):
         """Inspect callable object, storing resulting data.
@@ -254,11 +267,17 @@ class Preprocessing:
             ### metadata for an output;
             outputs_metadata = return_annotation
 
-            ### populate the ordered output with the
-            ### names (as keys) and types (as values)
-            ### in the provided order
+            ### iterate over the dictionaries in the
+            ### outputs metadata performing multiple
+            ### tasks
+
+            viz_pairs = []
 
             for output_data in outputs_metadata:
+
+                ### populate the ordered output with the
+                ### names (as keys) and types (as values)
+                ### in the provided order
 
                 ## retrieve name
                 name = output_data["name"]
@@ -266,8 +285,65 @@ class Preprocessing:
                 ## store type using name as key and
                 ## Parameter.empty as default value in
                 ## case the type wasn't specified
-
                 oot_map[name] = output_data.get("type", Parameter.empty)
+
+                ### if the output data has a 'viz' key, store the
+                ### name of the output along with the value of the
+                ### 'viz' key
+                if 'viz' in output_data:
+                    viz_pairs.append((name, output_data['viz']))
+
+            ### if there are outputs meant for providing visualization
+            ### data, create appropriate functions to retrieve such
+            ### data, according to whether there are 01 or 02 outputs
+            ### like this
+
+            n = len(viz_pairs)
+
+            if n == 0:
+                pass
+
+            elif n == 1:
+
+                name = viz_pairs[0]
+
+                cls.callables_viz_attrs_funcs_pairs[signature_callable] = {
+                    SIDEVIZ_FROM_OUTPUT_VAR_NAME: lambda output: output
+                }
+
+            elif n == 2:
+
+                viz_dict = {}
+
+                for name, viz_kind in viz_pairs:
+
+                    if viz_kind == 'side':
+                        key = SIDEVIZ_FROM_OUTPUT_VAR_NAME
+
+                    elif viz_kind == 'loop':
+                        key = LOOPVIZ_FROM_OUTPUT_VAR_NAME
+
+                    else:
+
+                        ### this block should never be reached cause the
+                        ### return annotation is checked at an earlier step
+                        ### for compliance (that is, the value of the 'viz'
+                        ### key should only be 'side' or 'loop')
+                        raise RuntimeError(
+                            "this logic block should never be reached"
+                        )
+
+                    viz_dict[key] = itemgetter(name)
+
+                cls.callables_viz_attrs_funcs_pairs[signature_callable] = viz_dict
+
+            else:
+
+                ### this block should never be reached cause the return
+                ### annotation is check at an earlier step for compliance
+                ### (that is, there should only be 0, 1 or 2 instances of
+                ### the 'viz' key)
+                raise RuntimeError("this logic block should never be reached")
 
         ## store the ordered output type map in another
         ## map from a class attribute, so other
@@ -310,6 +386,18 @@ class Preprocessing:
         self.ordered_output_type_map = cls.callables_ordered_output_types[
             signature_callable
         ]
+
+        ## attribute names / functions pairs for retrieving visualization
+        ## data (if present)
+
+        if signature_callable in cls.callables_viz_attrs_funcs_pairs:
+
+            attr_name_func_map = (
+                cls.callables_viz_attrs_funcs_pairs[signature_callable]
+            )
+
+            for attr_name, func in attr_name_func_map.items():
+                setattr(self, attr_name, func)
 
     def set_data_defaults(self):
         """Set default values for missing node data.

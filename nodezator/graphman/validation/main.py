@@ -86,3 +86,41 @@ def check_return_annotation_mini_lang(return_annotation):
             "items of 'return_annotation' must not have"
             " 'name' fields with the same value"
         )
+
+    ### viewer node indication
+    ###
+    ### if the node is meant to be a viewer node, than
+    ### it can have 01 or 02 outputs with a 'viz' key, which means
+    ### those outputs will be used to retrieve visualization data;
+    ###
+    ### if 01, it must be 'side', and if 02, one must be 'side' and
+    ### the other must be 'loop';
+
+    viz_values = [
+        a_dict['viz']
+        for a_dict in return_annotation
+        if 'viz' in a_dict
+    ]
+
+    if viz_values:
+
+        count = len(viz_values)
+
+        if count == 1 and viz_values[0] != 'side':
+
+            raise ValueError(
+                "if only one 01 output is marked to be used as"
+                " visualization data, the value of 'viz' must be 'side',"
+                " so the visualization data is used as the in-graph visual"
+                " (beside the node)"
+            )
+
+        elif count == 2 and set(viz_values) != {'side', 'loop'}:
+
+            raise ValueError(
+                "if 02 outputs are marked to be used as visualization data,"
+                " the value of 'viz' must be 'side' in one and 'loop' in the"
+                " other (the order isn't important, but only those values"
+                " are allowed), to indicate they provide visualization to be"
+                " displayed beside the node and within a visualization loop"
+            )
