@@ -30,7 +30,7 @@ def check_return_annotation_mini_lang(return_annotation):
 
     if not isinstance(return_annotation, list):
 
-        raise TypeError("return annotation must be of class" " 'list' or 'tuple'")
+        raise TypeError("return annotation must be of class 'list'")
 
     ### items must all be dictionaries
 
