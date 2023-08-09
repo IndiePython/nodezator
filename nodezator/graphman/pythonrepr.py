@@ -43,6 +43,9 @@ class WaitingParentException(Exception):
 ### getting used by a node other than a redirect node
 SNIPPET_NODES_IN_CALLABLE_MODE = set()
 
+### set to store general viewer nodes temporarily
+GENVIEWER_NODES = set()
+
 
 ### main function
 
@@ -88,6 +91,11 @@ def python_repr(self):
             f" Here's a list with their ids: {ids}"
         )
 
+    ### clear temporary collections
+
+    SNIPPET_NODES_IN_CALLABLE_MODE.clear()
+    GENVIEWER_NODES.clear()
+
     ### create list of standard library imports
 
     stlib_imports = sorted(
@@ -99,14 +107,37 @@ def python_repr(self):
     )
 
     ### create list of third-party imports
+    ###
+    ### also, while iterating over general viewer nodes,
+    ### gather references to them in a special collection
+    ### for future usage
 
-    third_party_imports = sorted(
-        set(
-            node.third_party_import_text
-            for node in self.nodes
-            if hasattr(node, "third_party_import_text")
-        )
+    ## gather from general viewer nodes (if any)
+
+    from_genviewer_nodes = set()
+
+    for node in self.nodes:
+
+        if 'genviewer_id' not in node.data:
+            continue
+
+        GENVIEWER_NODES.add(node)
+
+        if not hasattr(node, 'thirdlib_import_texts'):
+            continue
+
+        from_genviewer_nodes.update(node.thirdlib_import_texts)
+
+    ## gather from other nodes (if any)
+
+    from_others = set(
+      node.third_party_import_text
+      for node in self.nodes
+      if hasattr(node, "third_party_import_text")
     )
+
+    ## create sorted list from their union
+    third_party_imports = sorted(from_genviewer_nodes.union(from_others))
 
     ### create list of node callable import statements
 
@@ -142,6 +173,12 @@ def python_repr(self):
         )
 
     )
+
+    # XXX: the 'substitution_callable' check a few lines above
+    # probably isn't needed, since only some app-defined nodes are
+    # supposed to use substitution callables; ponder, review and decide
+    # what to do about this when convenient; there is at least another
+    # check like this in this module that need reviewing as well;
 
     ### def statement
 
@@ -330,7 +367,7 @@ def python_repr(self):
     ### if any;
     ###
     ### also clear the collection used to keep track
-    ### of such snippets
+    ### of them
 
     source_of_snippets = (
         gather_snippets_source()
@@ -339,6 +376,20 @@ def python_repr(self):
     )
 
     SNIPPET_NODES_IN_CALLABLE_MODE.clear()
+
+    ### gather source of general viewer nodes used,
+    ### regardless of the mode, if any;
+    ###
+    ### also clear the collection used to keep track
+    ### of them
+
+    source_of_general_viewer_nodes = (
+        gather_genviewer_source()
+        if GENVIEWER_NODES
+        else ''
+    )
+
+    GENVIEWER_NODES.clear()
 
     ## now concatenate the python text and return it
 
@@ -377,8 +428,16 @@ def python_repr(self):
         + docstring
         + graph_function_body
         + "\n\n"
-        + source_of_snippets
-        + "\n\n"
+        + (
+            source_of_snippets + "\n\n"
+            if source_of_snippets
+            else ''
+        )
+        + (
+            source_of_general_viewer_nodes + "\n\n"
+            if source_of_general_viewer_nodes 
+            else ''
+        )
         + "if __name__ == '__main__':\n"
         + f"    {func_name}()\n\n"
     )
@@ -464,7 +523,10 @@ def node_to_text(
     ###
 
     if (
-        "script_id" in node.data or "stlib_id" in node.data or "builtin_id" in node.data
+        "script_id" in node.data
+        or "stlib_id" in node.data
+        or "builtin_id" in node.data
+        or "genviewer_id" in node.data
     ) and not hasattr(node, "substitution_callable"):
         node_text_yielding_function = callable_node_to_text
 
@@ -1433,13 +1495,23 @@ def gather_snippets_source():
         for node in SNIPPET_NODES_IN_CALLABLE_MODE
     }
 
-    source = '\n\n'
-
-    source += '\n\n'.join(
+    source = '\n\n'.join(
         node_map[id_str].get_source_to_export()
         for id_str in sorted(node_map)
     )
 
-    source += '\n\n'
+    return source
+
+def gather_genviewer_source():
+
+    node_map = {
+        node.data['genviewer_id']: node
+        for node in GENVIEWER_NODES
+    }
+
+    source = '\n\n'.join(
+        node_map[id_str].get_source_to_export()
+        for id_str in sorted(node_map)
+    )
 
     return source

@@ -46,9 +46,9 @@ from ..graphman.stlibnode.constants import (
     STLIB_IDS_TO_MODULE,
 )
 
-from ..graphman.capsulenode.constants import (
-    CAPSULE_IDS_TO_CALLABLES_MAP,
-)
+from ..graphman.genviewernode.constants import GENVIEWER_IDS_TO_CALLABLES_MAP
+
+from ..graphman.capsulenode.constants import CAPSULE_IDS_TO_CALLABLES_MAP
 
 
 ### class definition
@@ -659,6 +659,31 @@ class MenuSetup:
                         }
                         for stlib_id in stlib_ids
                     ],
+                }
+            )
+
+        ### add a submenu to add general viewer nodes
+
+        add_genviewer_node_menu = {
+            "label": "General viewer nodes",
+            "children": [],
+        }
+
+        menu_list.append(add_genviewer_node_menu)
+
+        ## populate it
+
+        children = add_genviewer_node_menu["children"]
+
+        for genviewer_id in sorted(GENVIEWER_IDS_TO_CALLABLES_MAP):
+
+            children.append(
+                {
+                    "label": genviewer_id,
+                    "command": partial(
+                        (APP_REFS.ea.insert_node),
+                        genviewer_id,
+                    ),
                 }
             )
 

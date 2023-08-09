@@ -31,6 +31,7 @@ from ..graphman.operatornode.main import OperatorNode
 from ..graphman.builtinnode.main import BuiltinNode
 from ..graphman.stlibnode.main import StandardLibNode
 from ..graphman.capsulenode.main import CapsuleNode
+from ..graphman.genviewernode.main import GeneralViewerNode
 from ..graphman.proxynode.main import ProxyNode
 from ..graphman.textblock.main import TextBlock
 
@@ -172,6 +173,7 @@ class ObjectInsertionRemoval:
                     (BuiltinNode, "builtin_id"),
                     (StandardLibNode, "stlib_id"),
                     (CapsuleNode, "capsule_id"),
+                    (GeneralViewerNode, "genviewer_id"),
                 ):
 
                     if node_hint in cls.available_ids:
@@ -412,6 +414,7 @@ class ObjectInsertionRemoval:
                         (BuiltinNode, "builtin_id"),
                         (StandardLibNode, "stlib_id"),
                         (CapsuleNode, "capsule_id"),
+                        (GeneralViewerNode, "genviewer_id"),
                     ):
 
                         if type(obj) is cls:

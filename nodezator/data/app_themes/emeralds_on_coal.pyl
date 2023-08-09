@@ -162,6 +162,7 @@
   "BUILTIN_NODES_CATEGORY_COLOR"      : ( 20,  20,  25),
   "STANDARD_LIB_NODES_CATEGORY_COLOR" : ( 20,  20,  25),
   "CAPSULE_NODES_CATEGORY_COLOR"      : ( 20,  20,  25),
+  "GENVIEWER_NODES_CATEGORY_COLOR"    : ( 20,  20,  25),
 
   ### graph colors: temporary line
   ### (when cutting segments)

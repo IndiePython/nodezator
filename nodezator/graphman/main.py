@@ -39,6 +39,7 @@ from .callablenode.main import CallableNode
 from .builtinnode.main import BuiltinNode
 from .stlibnode.main import StandardLibNode
 from .capsulenode.main import CapsuleNode
+from .genviewernode.main import GeneralViewerNode
 
 from .operatornode.main import OperatorNode
 from .proxynode.main import ProxyNode
@@ -212,6 +213,9 @@ class GraphManager(
 
             elif "capsule_id" in node_data:
                 node_map[node_data["id"]] = CapsuleNode(node_data)
+
+            elif "genviewer_id" in node_data:
+                node_map[node_data["id"]] = GeneralViewerNode(node_data)
 
             else:
                 node_map[node_data["id"]] = ProxyNode(node_data)

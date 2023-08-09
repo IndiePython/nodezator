@@ -54,6 +54,7 @@ from ...graphman.proxynode.export import PROXY_NODE_CSS
 from ...graphman.stlibnode.export import STLIB_NODE_CSS
 from ...graphman.builtinnode.export import BUILTIN_NODE_CSS
 from ...graphman.capsulenode.export import CAPSULE_NODE_CSS
+from ...graphman.genviewernode.export import GENVIEWER_NODE_CSS
 from ...graphman.operatornode.export import OPERATOR_NODE_CSS
 from ...graphman.textblock.export import TEXT_BLOCK_CSS
 from ...graphman.socket.surfs import SOCKET_AND_LINE_CSS
@@ -294,6 +295,7 @@ def export_file_as_web_markup(
         + STLIB_NODE_CSS
         + BUILTIN_NODE_CSS
         + CAPSULE_NODE_CSS
+        + GENVIEWER_NODE_CSS
         + OPERATOR_NODE_CSS
         + SOCKET_AND_LINE_CSS
         + TEXT_BLOCK_CSS
