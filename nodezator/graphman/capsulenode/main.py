@@ -7,7 +7,10 @@ from .constants import (
     CAPSULE_IDS_TO_SIGNATURES_MAP,
     CAPSULE_IDS_TO_SUBSTITUTION_CALLABLE_MAP,
     CAPSULE_IDS_TO_STLIB_IMPORT_MAP,
+    CAPSULE_IDS_TO_3RDLIB_IMPORT_MAP,
     CAPSULE_IDS_TO_SOURCE_VIEW_TEXT,
+    CAPSULE_IDS_TO_STLIB_ANNOTATION_IMPORTS,
+    CAPSULE_IDS_TO_3RDLIB_ANNOTATION_IMPORTS,
 )
 
 from ...colorsman.colors import CAPSULE_NODES_CATEGORY_COLOR
@@ -46,6 +49,9 @@ class CapsuleNode(CallableNode):
             (the default None is used), then the midtop
             information is retrieved from the node data.
         """
+        ### reference the capsule id locally for easy and quick access
+        capsule_id = data['capsule_id']
+
         ### retrieve and store the callable obj, aliasing
         ### it with different names, according to its
         ### roles in the node (both the main and signature
@@ -53,25 +59,60 @@ class CapsuleNode(CallableNode):
 
         signature_callable = (
             self.signature_callable
-        ) = self.main_callable = CAPSULE_IDS_TO_CALLABLES_MAP[data["capsule_id"]]
+        ) = self.main_callable = CAPSULE_IDS_TO_CALLABLES_MAP[capsule_id]
 
-        ### retrieve and store the substitution callable
-
-        self.substitution_callable = CAPSULE_IDS_TO_SUBSTITUTION_CALLABLE_MAP[
-            data["capsule_id"]
-        ]
-
-        ### if there's an stlib import associated with
-        ### the id, store it
+        ### retrieve and store the substitution callable, if available
 
         try:
-            self.stlib_import_text = CAPSULE_IDS_TO_STLIB_IMPORT_MAP[data["capsule_id"]]
+            substitution_callable = (
+                CAPSULE_IDS_TO_SUBSTITUTION_CALLABLE_MAP[capsule_id]
+            )
 
         except KeyError:
             pass
 
+        else:
+            self.substitution_callable = substitution_callable
+
+        ### if there's an stlib import associated with the id, store it
+
+        try:
+            self.stlib_import_text = (
+                CAPSULE_IDS_TO_STLIB_IMPORT_MAP[capsule_id]
+            )
+
+        except KeyError:
+            pass
+
+        ### if there's an third-party library import associated with
+        ### the id, store it
+
+        try:
+            self.third_party_import_text = (
+                CAPSULE_IDS_TO_3RDLIB_IMPORT_MAP[capsule_id]
+            )
+
+        except KeyError:
+            pass
+
+        ### if there's annotation-related imports, store them as well
+
+        try:
+            self.stlib_annotation_import_text = (
+                CAPSULE_IDS_TO_STLIB_ANNOTATION_IMPORTS[capsule_id]
+            )
+        except KeyError:
+            pass
+
+        try:
+            self.third_party_annotation_import_text = (
+                CAPSULE_IDS_TO_3RDLIB_ANNOTATION_IMPORTS[capsule_id]
+            )
+        except KeyError:
+            pass
+
         ### use the capsule_id as the title text
-        self.title_text = data["capsule_id"]
+        self.title_text = capsule_id
 
         ### store the instance data argument in its own
         ### attribute

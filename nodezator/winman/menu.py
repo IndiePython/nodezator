@@ -48,8 +48,10 @@ from ..graphman.stlibnode.constants import (
 
 from ..graphman.genviewernode.constants import GENVIEWER_IDS_TO_CALLABLES_MAP
 
-from ..graphman.capsulenode.constants import CAPSULE_IDS_TO_CALLABLES_MAP
-
+from ..graphman.capsulenode.constants import (
+    CAPSULE_IDS_TO_CALLABLES_MAP,
+    PYGAME_RELATED_CAPSULE_IDS,
+)
 
 ### class definition
 
@@ -687,7 +689,32 @@ class MenuSetup:
                 }
             )
 
-        ### add a submenu to add useful encapsulations
+        ### add a submenu to add Pygame-related nodes
+
+        add_pygame_related_node_menu = {
+            "label": "Pygame-related nodes",
+            "children": [],
+        }
+
+        menu_list.append(add_pygame_related_node_menu)
+
+        ## populate it
+
+        children = add_pygame_related_node_menu["children"]
+
+        for capsule_id in sorted(PYGAME_RELATED_CAPSULE_IDS):
+
+            children.append(
+                {
+                    "label": capsule_id,
+                    "command": partial(
+                        (APP_REFS.ea.insert_node),
+                        capsule_id,
+                    ),
+                }
+            )
+
+        ### add a submenu to add encapsulations
 
         add_capsule_node_menu = {
             "label": "Encapsulations",
@@ -701,6 +728,9 @@ class MenuSetup:
         children = add_capsule_node_menu["children"]
 
         for capsule_id in sorted(CAPSULE_IDS_TO_CALLABLES_MAP):
+
+            if capsule_id in PYGAME_RELATED_CAPSULE_IDS:
+                continue
 
             children.append(
                 {

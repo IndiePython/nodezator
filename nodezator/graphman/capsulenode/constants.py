@@ -1,325 +1,54 @@
+
 ### standard library imports
-
-from collections.abc import Callable, Iterator
-
-from json import load, dump
-
-from ast import literal_eval
-
-from pprint import pformat
 
 from string import Template
 
 from inspect import signature, getsource
 
 
+### local imports
+from . import generaldefs, pygamedefs
 
-def read_text_file(
-    filepath: "text_filepath" = ".",
-    encoding: str = "utf-8",
-    errors: {
-        "widget_name": "option_menu",
-        "widget_kwargs": {
-            "options": [
-                None,
-                "strict",
-                "ignore",
-                "replace",
-                "surrogateescape",
-                "xmlcharrefreplace",
-                "backslashreplace",
-                "namereplace",
-            ],
-        },
-    } = None,
-) -> [{"name": "string", "type": str}]:
-
-    with open(
-        filepath,
-        mode="r",
-        encoding=encoding,
-        errors=errors,
-    ) as f:
-        return f.read()
-
-
-def write_text_file(
-    text: "text_string" = "",
-    filepath: "text_filepath" = ".",
-    encoding: str = "utf-8",
-    errors: {
-        "widget_name": "option_menu",
-        "widget_kwargs": {
-            "options": [
-                None,
-                "strict",
-                "ignore",
-                "replace",
-                "surrogateescape",
-                "xmlcharrefreplace",
-                "backslashreplace",
-                "namereplace",
-            ],
-        },
-    } = None,
-):
-
-    with open(
-        filepath,
-        mode="w",
-        encoding=encoding,
-        errors=errors,
-    ) as f:
-        f.write(text)
-
-
-def append_to_text_file(
-    text: "text_string" = "",
-    filepath: "text_filepath" = ".",
-    encoding: str = "utf-8",
-    errors: {
-        "widget_name": "option_menu",
-        "widget_kwargs": {
-            "options": [
-                None,
-                "strict",
-                "ignore",
-                "replace",
-                "surrogateescape",
-                "xmlcharrefreplace",
-                "backslashreplace",
-                "namereplace",
-            ],
-        },
-    } = None,
-):
-
-    with open(
-        filepath,
-        mode="a",
-        encoding=encoding,
-        errors=errors,
-    ) as f:
-        f.write(text)
-
-
-def read_binary_file(
-    filepath: "filepath" = ".",
-) -> [{"name": "bytes_obj", "type": bytes}]:
-    with open(filepath, mode="rb") as f:
-        return f.read()
-
-
-def write_binary_file(
-    binary_data: bytes,
-    filepath: "filepath" = ".",
-):
-    with open(filepath, mode="wb") as f:
-        f.write(binary_data)
-
-
-def append_to_binary_file(
-    binary_data: bytes,
-    filepath: "filepath" = ".",
-):
-
-    with open(filepath, mode="ab") as f:
-        f.write(text)
-
-
-def load_pyl_file(
-    filepath: "text_filepath" = ".",
-    encoding: str = "utf-8",
-):
-
-    with open(filepath, mode="r", encoding=encoding) as f:
-        return literal_eval(f.read())
-
-
-def load_json_file(
-    filepath: "text_filepath" = ".",
-    encoding: str = "utf-8",
-    cls: type = None,
-    object_hook: Callable = None,
-    parse_float: Callable = None,
-    parse_int: Callable = None,
-    parse_constant: Callable = None,
-    object_pairs_hook: Callable = None,
-    **kw,
-) -> [{"name": "obj"}]:
-
-    with open(filepath, mode="r", encoding=encoding) as f:
-
-        return load(
-            f,
-            cls=cls,
-            object_hook=object_hook,
-            parse_float=parse_float,
-            parse_int=parse_int,
-            parse_constant=parse_constant,
-            object_pairs_hook=object_pairs_hook,
-            **kw,
-        )
-
-
-def save_as_pyl_file(
-    obj,
-    filepath: "text_filepath" = ".",
-    encoding: str = "utf-8",
-    indent: "natural_number" = 1,
-    width: "positive_integer" = 80,
-    depth: "positive_integer_or_none" = None,
-    *,
-    compact: bool = False,
-):
-
-    with open(filepath, mode="w", encoding=encoding) as f:
-
-        f.write(
-            pformat(
-                obj,
-                indent=indent,
-                width=width,
-                depth=depth,
-                compact=compact,
-            )
-        )
-
-
-def save_as_json_file(
-    obj,
-    filepath: "text_filepath" = ".",
-    encoding: str = "utf-8",
-    *,
-    skipkeys: bool = False,
-    ensure_ascii: bool = True,
-    check_circular: bool = True,
-    allow_nan: bool = True,
-    cls: type = None,
-    indent: "python_literal" = None,
-    separators: {"widget_name": "literal_entry", "type": tuple} = None,
-    default: Callable = None,
-    sort_keys: bool = False,
-    **kw,
-):
-
-    with open(filepath, mode="w", encoding=encoding) as f:
-
-        dump(
-            obj,
-            f,
-            skipkeys=skipkeys,
-            ensure_ascii=ensure_ascii,
-            check_circular=check_circular,
-            allow_nan=allow_nan,
-            cls=cls,
-            indent=indent,
-            separators=separators,
-            default=default,
-            sort_keys=sort_keys,
-            **kw,
-        )
-
-
-def print_and_return(obj_in) -> [{"name": "obj_out"}]:
-    return print(obj_in) or obj_in
-
-def return_untouched(obj_in) -> [{"name": "obj_out"}]:
-    """Return given object.
-
-    Alternative implementation of an identity function in Python.
-    """
-    return obj_in
-
-def for_item_in_obj_pass(obj:Iterator):
-    """Exhaust given iterator by iterating over it."""
-    for _ in obj:
-        pass
-
-def perform_call(
-    func: Callable,
-    *args,
-    **kwargs,
-) -> [{"name": "func_return_value"}]:
-    return func(*args, **kwargs)
-
-
-def tuple_from_args(*args) -> [{"name": "a_tuple", "type": tuple}]:  # (a, b, c...)
-    return args
-
-
-def list_from_args(*args) -> [{"name": "a_list", "type": list}]:  # [a, b, c]
-    return list(args)
-
-
-def set_from_args(*args) -> [{"name": "a_set", "type": set}]:  # {a, b, c}
-    return set(args)
-
-
-def get_at_int(obj, integer: int = 0) -> [{"name": "item"}]:
-    return obj[integer]
-
-
-def get_at_string(obj, string: str = "") -> [{"name": "item"}]:
-    return obj[string]
-
-
-def get_at_literal(obj, literal: "python_literal" = None) -> [{"name": "item"}]:
-    return obj[literal]
-
-
-def namespace_from_exec(
-    python_source: {
-        "widget_name": "text_display",
-        "widget_kwargs": {"syntax_highlighting": "python", "font_path": "mono_bold"},
-        "type": str,
-    } = "",
-    **variables,
-) -> [{"name": "namespace", "type": dict}]:
-    exec(python_source, variables)
-    _d = {}
-    exec("", _d)
-    return {k: v for k, v in variables.items() if k not in _d}
-
-
-def get_constant_returner(constant_value) -> [
-        {"name": "constant_returner", "type": Callable}
-    ]:
-    """Return function that returns same value, no matter the argument given.
-
-    Alternative implementation of a K combinator in Python.
-    """
-
-    def constant_returner(ignored_value):
-        """Return same value regardless of given one."""
-        return constant_value
-
-    return constant_returner
 
 
 CAPSULE_IDS_TO_CALLABLES_MAP = {
-    "read_text_file": read_text_file,
-    "write_text_file": write_text_file,
-    "append_to_text_file": append_to_text_file,
-    "read_binary_file": read_binary_file,
-    "write_binary_file": write_binary_file,
-    "append_to_binary_file": append_to_binary_file,
-    "load_pyl_file": load_pyl_file,
-    "save_as_pyl_file": save_as_pyl_file,
-    "load_json_file": load_json_file,
-    "save_as_json_file": save_as_json_file,
-    "print_and_return": print_and_return,
-    "return_untouched": return_untouched,
-    "for_item_in_obj_pass": for_item_in_obj_pass,
-    "perform_call": perform_call,
-    "tuple_from_args": tuple_from_args,
-    "list_from_args": list_from_args,
-    "set_from_args": set_from_args,
-    "get_at_int": get_at_int,
-    "get_at_string": get_at_string,
-    "get_at_literal": get_at_literal,
-    "namespace_from_exec": namespace_from_exec,
-    "get_constant_returner": get_constant_returner,
+
+    ### general definitions
+
+    "read_text_file": generaldefs.read_text_file,
+    "write_text_file": generaldefs.write_text_file,
+    "append_to_text_file": generaldefs.append_to_text_file,
+    "read_binary_file": generaldefs.read_binary_file,
+    "write_binary_file": generaldefs.write_binary_file,
+    "append_to_binary_file": generaldefs.append_to_binary_file,
+    "load_pyl_file": generaldefs.load_pyl_file,
+    "save_as_pyl_file": generaldefs.save_as_pyl_file,
+    "load_json_file": generaldefs.load_json_file,
+    "save_as_json_file": generaldefs.save_as_json_file,
+    "print_and_return": generaldefs.print_and_return,
+    "return_untouched": generaldefs.return_untouched,
+    "for_item_in_obj_pass": generaldefs.for_item_in_obj_pass,
+    "perform_call": generaldefs.perform_call,
+    "tuple_from_args": generaldefs.tuple_from_args,
+    "list_from_args": generaldefs.list_from_args,
+    "set_from_args": generaldefs.set_from_args,
+    "get_at_int": generaldefs.get_at_int,
+    "get_at_string": generaldefs.get_at_string,
+    "get_at_literal": generaldefs.get_at_literal,
+    "namespace_from_exec": generaldefs.namespace_from_exec,
+    "get_constant_returner": generaldefs.get_constant_returner,
+
+    ### pygame-related definitions
+
+    'color_surf_from_size': pygamedefs.color_surf_from_size,
+    'color_surf_from_wh': pygamedefs.color_surf_from_wh,
+    'get_pygame_constant': pygamedefs.get_pygame_constant,
+    'blit_surf_a_onto_b': pygamedefs.blit_surf_a_onto_b,
+    'get_positioned_rects': pygamedefs.get_positioned_rects,
+    'unite_surfaces': pygamedefs.unite_surfaces,
+    #'fill_surface': pygamedefs.fill_surface,
+    'increase_surf_border': pygamedefs.increase_surf_border,
+    'draw_border_on_surf': pygamedefs.draw_border_on_surf,
 }
 
 CAPSULE_IDS_TO_SIGNATURES_MAP = {
@@ -563,20 +292,122 @@ CAPSULE_IDS_TO_STLIB_IMPORT_MAP = {
     "save_as_json_file": "from json import dump",
 }
 
-CAPSULE_IDS_TO_SOURCE_VIEW_TEXT = {
-    capsule_id: (
-        (
-            CAPSULE_IDS_TO_STLIB_IMPORT_MAP[capsule_id]
-            + ("\n" * 2)
-            + getsource(callable_obj)
-        )
-        if capsule_id in CAPSULE_IDS_TO_STLIB_IMPORT_MAP
-        else getsource(callable_obj)
-    )
-    for capsule_id, callable_obj in CAPSULE_IDS_TO_CALLABLES_MAP.items()
+
+CAPSULE_IDS_TO_3RDLIB_IMPORT_MAP = {
+    'color_surf_from_size': "from pygame import Surface",
+    'color_surf_from_wh': "from pygame import Surface",
+    'get_pygame_constant': "from pygame import locals as pygame_ce_locals",
+    'increase_surf_border': 'from pygame import Surface',
+    'draw_border_on_surf': 'from pygame.draw import rect as draw_rect_on_surf',
 }
 
-###
+CAPSULE_IDS_TO_STLIB_ANNOTATION_IMPORTS = {
+    'load_json_file': 'from collections.abc import Callable',
+    'save_as_json_file': 'from collections.abc import Callable',
+    'for_item_in_obj_pass': 'from collections.abc import Iterator',
+    'get_positioned_rects': 'from collections.abc import Iterable',
+    'unite_surfaces': 'from collections.abc import Iterable',
+}
+
+CAPSULE_IDS_TO_3RDLIB_ANNOTATION_IMPORTS = {
+    'color_surf_from_size': 'from pygame import Surface',
+    'color_surf_from_wh': 'from pygame import Surface',
+    'blit_surf_a_onto_b':  'from pygame import Surface',
+    'unite_surfaces': 'from pygame import Surface',
+    #'fill_surface': 'from pygame import Surface',
+    #'fill_surface': 'from pygame import Rect',
+    'increase_surf_border': 'from pygame import Surface',
+    'draw_border_on_surf': 'from pygame import Surface',
+}
+
+PYGAME_RELATED_CAPSULE_IDS = frozenset((
+    'color_surf_from_size',
+    'color_surf_from_wh',
+    'get_pygame_constant',
+    'blit_surf_a_onto_b',
+    'get_positioned_rects',
+    'unite_surfaces',
+    #'fill_surface',
+    'increase_surf_border',
+    'draw_border_on_surf',
+))
+
+
+CAPSULE_IDS_TO_SOURCE_VIEW_TEXT = {
+
+    ## key: value pair
+
+    capsule_id: (
+
+        (
+            (
+                CAPSULE_IDS_TO_STLIB_IMPORT_MAP[capsule_id]
+                + ("\n" * 2)
+            )
+            if capsule_id in CAPSULE_IDS_TO_STLIB_IMPORT_MAP
+            else ''
+        )
+        + (
+            (
+                CAPSULE_IDS_TO_STLIB_ANNOTATION_IMPORTS[capsule_id]
+                + ("\n" * 2)
+            )
+            if capsule_id in CAPSULE_IDS_TO_STLIB_ANNOTATION_IMPORTS
+            else ''
+        )
+        + getsource(callable_obj)
+
+    )
+
+    ## source
+    for capsule_id, callable_obj in CAPSULE_IDS_TO_CALLABLES_MAP.items()
+
+    ## filtering
+    if capsule_id not in PYGAME_RELATED_CAPSULE_IDS
+
+}
+
+
+CAPSULE_IDS_TO_SOURCE_VIEW_TEXT.update(
+
+    ## (key, value) tuple
+
+    (
+        capsule_id,
+
+        (
+            (
+                (
+                    CAPSULE_IDS_TO_3RDLIB_IMPORT_MAP[capsule_id]
+                    + ("\n" * 2)
+                )
+                if capsule_id in CAPSULE_IDS_TO_3RDLIB_IMPORT_MAP
+                else ''
+            )
+
+            + (
+                (
+                    CAPSULE_IDS_TO_3RDLIB_ANNOTATION_IMPORTS[capsule_id]
+                    + ("\n" * 2)
+                )
+                if capsule_id in CAPSULE_IDS_TO_3RDLIB_ANNOTATION_IMPORTS
+                else ''
+            )
+
+            + getsource(callable_obj)
+        )
+
+    )
+
+    ## source
+    for capsule_id, callable_obj in CAPSULE_IDS_TO_CALLABLES_MAP.items()
+
+    ## filtering
+    if capsule_id in PYGAME_RELATED_CAPSULE_IDS
+
+)
+
+### when exporting/viewing graph as as the Python code equivalent
 
 CAPSULE_IDS_TO_PYTHON_SOURCE = {
     capsule_id: getsource(callable_obj)

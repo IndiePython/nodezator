@@ -36,12 +36,12 @@ class WaitingParentException(Exception):
     pass
 
 
-### set to store snippet nodes in callable mode temporarily
+### set to store snippet nodes whose source will be included in
+### the Python representation of the graph
 ###
 ### this won't necessarily store the ids of all snippet nodes in
-### callable mode present in the graph, but only those which end up
-### getting used by a node other than a redirect node
-SNIPPET_NODES_IN_CALLABLE_MODE = set()
+### the graph
+SNIPPET_NODES = set()
 
 ### set to store general viewer nodes temporarily
 GENVIEWER_NODES = set()
@@ -93,16 +93,42 @@ def python_repr(self):
 
     ### clear temporary collections
 
-    SNIPPET_NODES_IN_CALLABLE_MODE.clear()
+    SNIPPET_NODES.clear()
     GENVIEWER_NODES.clear()
 
     ### create list of standard library imports
 
     stlib_imports = sorted(
+
         set(
+
+            ### item
             node.stlib_import_text
+            ### source
             for node in self.nodes
+
+            ### filtering
             if hasattr(node, "stlib_import_text")
+
+        ).union(
+
+            set(
+
+                ### item
+                node.stlib_annotation_import_text
+
+                ### source
+                for node in self.nodes
+
+                ### filtering
+
+                if hasattr(node, "stlib_annotation_import_text")
+                if (
+                    not hasattr(node, 'substitution_callable')
+                    or node.data['mode'] == 'callable'
+                )
+            )
+
         )
     )
 
@@ -131,9 +157,25 @@ def python_repr(self):
     ## gather from other nodes (if any)
 
     from_others = set(
+      ### item
       node.third_party_import_text
+      ### source
       for node in self.nodes
+      ### filtering
       if hasattr(node, "third_party_import_text")
+    ).union(
+        set(
+            ### item
+            node.third_party_annotation_import_text
+            ### source
+            for node in self.nodes
+            ### filtering
+            if hasattr(node, "third_party_annotation_import_text")
+            if (
+                not hasattr(node, 'substitution_callable')
+                or node.data['mode'] == 'callable'
+            )
+        )
     )
 
     ## create sorted list from their union
@@ -301,7 +343,7 @@ def python_repr(self):
             for node in nodes_to_visit:
 
                 try:
-                    node_text = node_to_text(
+                    node_source = node_to_python_source(
                         node,
                         nodes_to_visit,
                         visited_nodes,
@@ -313,7 +355,7 @@ def python_repr(self):
 
                 else:
 
-                    subgraph_calls_text += node_text
+                    subgraph_calls_text += node_source
                     visited_nodes.add(node)
 
             nodes_to_visit -= visited_nodes
@@ -363,19 +405,28 @@ def python_repr(self):
             " " * 4,
         )
 
-    ### gather source of snippets used in callable mode,
-    ### if any;
+    ### gather source of snippets used
     ###
     ### also clear the collection used to keep track
     ### of them
 
+    for node in self.nodes:
+
+        if (
+            'capsule_id' not in node.data
+            or hasattr(node, 'substitution_callable')
+        ):
+            continue
+
+        SNIPPET_NODES.add(node)
+
     source_of_snippets = (
         gather_snippets_source()
-        if SNIPPET_NODES_IN_CALLABLE_MODE
+        if SNIPPET_NODES
         else ''
     )
 
-    SNIPPET_NODES_IN_CALLABLE_MODE.clear()
+    SNIPPET_NODES.clear()
 
     ### gather source of general viewer nodes used,
     ### regardless of the mode, if any;
@@ -505,7 +556,7 @@ def set_text_block_refs(
         refs.append(text_block)
 
 
-def node_to_text(
+def node_to_python_source(
     node,
     nodes_to_visit,
     visited_nodes,
@@ -527,17 +578,18 @@ def node_to_text(
         or "stlib_id" in node.data
         or "builtin_id" in node.data
         or "genviewer_id" in node.data
+        or "capsule_id" in node.data
     ) and not hasattr(node, "substitution_callable"):
-        node_text_yielding_function = callable_node_to_text
+        node_text_yielding_function = callable_node_to_call_text
 
     elif hasattr(node, "widget"):
-        node_text_yielding_function = data_node_to_text
+        node_text_yielding_function = data_node_to_variable_assignment
 
     elif "operation_id" in node.data:
-        node_text_yielding_function = operator_node_to_text
+        node_text_yielding_function = operator_node_to_call_text
 
     else:
-        node_text_yielding_function = snippet_node_to_text
+        node_text_yielding_function = node_to_code_snippet
 
     return node_text_yielding_function(
         node,
@@ -548,7 +600,7 @@ def node_to_text(
     )
 
 
-def callable_node_to_text(
+def callable_node_to_call_text(
     node,
     cluster,
     nodes_to_visit,
@@ -635,7 +687,7 @@ def callable_node_to_text(
                         ## store a reference in a special collection
 
                         if 'capsule_id' in parent_node.data:
-                            SNIPPET_NODES_IN_CALLABLE_MODE.add(parent_node)
+                            SNIPPET_NODES.add(parent_node)
 
                 ### otherwise...
 
@@ -760,7 +812,7 @@ def callable_node_to_text(
                             ## store a reference in a special collection
 
                             if 'capsule_id' in parent_node.data:
-                                SNIPPET_NODES_IN_CALLABLE_MODE.add(parent_node)
+                                SNIPPET_NODES.add(parent_node)
 
                     ### otherwise...
 
@@ -919,7 +971,7 @@ def callable_node_to_text(
     return node_text
 
 
-def operator_node_to_text(
+def operator_node_to_call_text(
     node,
     cluster,
     nodes_to_visit,
@@ -984,7 +1036,7 @@ def operator_node_to_text(
                     ## store a reference in a special collection
 
                     if 'capsule_id' in parent_node.data:
-                        SNIPPET_NODES_IN_CALLABLE_MODE.add(parent_node)
+                        SNIPPET_NODES.add(parent_node)
 
             ### otherwise...
             else:
@@ -1087,7 +1139,7 @@ def operator_node_to_text(
     return node_text
 
 
-def snippet_node_to_text(
+def node_to_code_snippet(
     node,
     cluster,
     nodes_to_visit,
@@ -1170,7 +1222,7 @@ def snippet_node_to_text(
                         ## store a reference in a special collection
 
                         if 'capsule_id' in parent_node.data:
-                            SNIPPET_NODES_IN_CALLABLE_MODE.add(parent_node)
+                            SNIPPET_NODES.add(parent_node)
 
                 ### otherwise...
 
@@ -1268,7 +1320,7 @@ def snippet_node_to_text(
                             ## store a reference in a special collection
 
                             if 'capsule_id' in parent_node.data:
-                                SNIPPET_NODES_IN_CALLABLE_MODE.add(parent_node)
+                                SNIPPET_NODES.add(parent_node)
 
                     ### otherwise...
 
@@ -1396,7 +1448,7 @@ def snippet_node_to_text(
     return node_text
 
 
-def data_node_to_text(
+def data_node_to_variable_assignment(
     node,
     cluster,
     nodes_to_visit,
@@ -1492,7 +1544,7 @@ def gather_snippets_source():
 
     node_map = {
         node.data['capsule_id']: node
-        for node in SNIPPET_NODES_IN_CALLABLE_MODE
+        for node in SNIPPET_NODES
     }
 
     source = '\n\n'.join(
