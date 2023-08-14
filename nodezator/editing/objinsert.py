@@ -30,6 +30,7 @@ from ..graphman.callablenode.main import CallableNode
 from ..graphman.operatornode.main import OperatorNode
 from ..graphman.builtinnode.main import BuiltinNode
 from ..graphman.stlibnode.main import StandardLibNode
+from ..graphman.thirdlibnode.main import ThirdLibNode
 from ..graphman.capsulenode.main import CapsuleNode
 from ..graphman.genviewernode.main import GeneralViewerNode
 from ..graphman.proxynode.main import ProxyNode
@@ -172,6 +173,7 @@ class ObjectInsertionRemoval:
                     (OperatorNode, "operation_id"),
                     (BuiltinNode, "builtin_id"),
                     (StandardLibNode, "stlib_id"),
+                    (ThirdLibNode, "thirdlib_id"),
                     (CapsuleNode, "capsule_id"),
                     (GeneralViewerNode, "genviewer_id"),
                 ):
@@ -413,6 +415,7 @@ class ObjectInsertionRemoval:
                         (OperatorNode, "operation_id"),
                         (BuiltinNode, "builtin_id"),
                         (StandardLibNode, "stlib_id"),
+                        (ThirdLibNode, "thirdlib_id"),
                         (CapsuleNode, "capsule_id"),
                         (GeneralViewerNode, "genviewer_id"),
                     ):

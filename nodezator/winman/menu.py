@@ -37,20 +37,20 @@ from ..graphman.widget.popupdefinition import WIDGET_POPUP_STRUCTURE
 
 from ..graphman.operatornode.constants import OPERATIONS_MAP
 
-from ..graphman.builtinnode.constants import (
-    BUILTIN_IDS_TO_CALLABLES_MAP,
-)
+from ..graphman.builtinnode.constants import BUILTIN_IDS_TO_CALLABLES_MAP
 
-from ..graphman.stlibnode.constants import (
-    STLIB_IDS_TO_CALLABLES_MAP,
-    STLIB_IDS_TO_MODULE,
-)
+from ..graphman.stlibnode.constants import STLIB_IDS_TO_MODULE
 
 from ..graphman.genviewernode.constants import GENVIEWER_IDS_TO_CALLABLES_MAP
 
 from ..graphman.capsulenode.constants import (
     CAPSULE_IDS_TO_CALLABLES_MAP,
     PYGAME_RELATED_CAPSULE_IDS,
+)
+
+from ..graphman.thirdlibnode.constants import (
+    THIRDLIB_SORTED_CATEGORIES,
+    THIRDLIB_CATEGORY_TO_SORTED_ITEMS,
 )
 
 ### class definition
@@ -689,10 +689,10 @@ class MenuSetup:
                 }
             )
 
-        ### add a submenu to add Pygame-related nodes
+        ### add a submenu to add Pygame-ce nodes
 
         add_pygame_related_node_menu = {
-            "label": "Pygame-related nodes",
+            "label": "pygame-ce",
             "children": [],
         }
 
@@ -702,9 +702,19 @@ class MenuSetup:
 
         children = add_pygame_related_node_menu["children"]
 
+        # with specialized encapsulations...
+
+        encapsu_submenu = {
+            'label': "Encapsulations",
+            'children': [],
+        }
+
+        children.append(encapsu_submenu)
+        encapsu_children = encapsu_submenu['children']
+
         for capsule_id in sorted(PYGAME_RELATED_CAPSULE_IDS):
 
-            children.append(
+            encapsu_children.append(
                 {
                     "label": capsule_id,
                     "command": partial(
@@ -713,6 +723,33 @@ class MenuSetup:
                     ),
                 }
             )
+
+        # with callable imports...
+
+        for categ_name in THIRDLIB_SORTED_CATEGORIES:
+
+            categ_submenu = {
+                'label': categ_name,
+                'children': [],
+            }
+
+            children.append(categ_submenu)
+
+            cat_children = categ_submenu['children']
+
+            items = THIRDLIB_CATEGORY_TO_SORTED_ITEMS[categ_name]
+
+            for thirdlib_id in items:
+
+                cat_children.append(
+                    {
+                        "label": thirdlib_id,
+                        "command": partial(
+                            (APP_REFS.ea.insert_node),
+                            thirdlib_id,
+                        ),
+                    }
+                )
 
         ### add a submenu to add encapsulations
 

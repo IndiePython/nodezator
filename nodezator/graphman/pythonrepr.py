@@ -579,6 +579,7 @@ def node_to_python_source(
         or "builtin_id" in node.data
         or "genviewer_id" in node.data
         or "capsule_id" in node.data
+        or "thirdlib_id" in node.data
     ) and not hasattr(node, "substitution_callable"):
         node_text_yielding_function = callable_node_to_call_text
 

@@ -38,6 +38,7 @@ from .scriptloading import load_scripts
 from .callablenode.main import CallableNode
 from .builtinnode.main import BuiltinNode
 from .stlibnode.main import StandardLibNode
+from .thirdlibnode.main import ThirdLibNode
 from .capsulenode.main import CapsuleNode
 from .genviewernode.main import GeneralViewerNode
 
@@ -210,6 +211,9 @@ class GraphManager(
 
             elif "stlib_id" in node_data:
                 node_map[node_data["id"]] = StandardLibNode(node_data)
+
+            elif "thirdlib_id" in node_data:
+                node_map[node_data["id"]] = ThirdLibNode(node_data)
 
             elif "capsule_id" in node_data:
                 node_map[node_data["id"]] = CapsuleNode(node_data)
