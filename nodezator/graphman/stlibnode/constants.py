@@ -330,46 +330,6 @@ STLIB_IDS_TO_SIGNATURE_CALLABLES_MAP = {
 }
 
 STLIB_IDS_TO_SIGNATURES_MAP = {
-    "accumulate": signature(_accumulate),
-    "attrgetter": signature(_attrgetter),
-    "chain": signature(_chain),
-    "chain.from_iterable": (signature(_get_iterable_return_iterator)),
-    "combinations": signature(_combinations_with_and_without_replacement),
-    "combinations_with_replacement": (
-        signature(_combinations_with_and_without_replacement)
-    ),
-    "compress": signature(_compress),
-    "count": signature(_count),
-    "cycle": signature(_get_iterable_return_iterator),
-    "dropwhile": signature(_dropwhile_and_takewhile),
-    "dumps": signature(_dumps),
-    "filterfalse": signature(_filterfalse),
-    "groupby": signature(_groupby),
-    "import_module": signature(_import_module),
-    "islice": signature(_islice),
-    "itemgetter": signature(_itemgetter),
-    "literal_eval(node_or_string)": (signature(_literal_eval1)),
-    "literal_eval(node_or_text_string)": (signature(_literal_eval2)),
-    "loads": signature(_loads),
-    "methodcaller": signature(_methodcaller),
-    "Path(*pathsegments)": signature(_path_from_segments),
-    "Path(path_string)": signature(_path_from_string),
-    "partial": signature(_partial),
-    "pprint": signature(_pprint),
-    "pformat": signature(_pformat),
-    "product": signature(_product),
-    "permutations": signature(_permutations),
-    "reduce(function, iterable)": signature(_reduce1),
-    "reduce(function, iterable, initializer)": (signature(_reduce2)),
-    "repeat(obj)": signature(_repeat1),
-    "repeat(obj, times)": signature(_repeat2),
-    "starmap": signature(_starmap),
-    "takewhile": signature(_dropwhile_and_takewhile),
-    "tee": signature(_tee),
-    "zip_longest": signature(_zip_longest),
-}
-
-STLIB_IDS_TO_SIGNATURES_MAP = {
     stlib_id: signature(callable_obj)
     for stlib_id, callable_obj in STLIB_IDS_TO_SIGNATURE_CALLABLES_MAP.items()
 }
