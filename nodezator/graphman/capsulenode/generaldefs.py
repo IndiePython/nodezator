@@ -241,6 +241,16 @@ def perform_call(
     return func(*args, **kwargs)
 
 
+def perform_attr_call(
+    obj,
+    attr_name: str = 'attr_name',
+    *args,
+    **kwargs,
+) -> [{"name": "call_return_value"}]:
+    """Call attribute/method from object and return the return value"""
+    return getattr(obj, attr_name)(*args, **kwargs)
+
+
 def tuple_from_args(*args) -> [{"name": "a_tuple", "type": tuple}]:  # (a, b, c...)
     return args
 

@@ -29,6 +29,7 @@ CAPSULE_IDS_TO_CALLABLES_MAP = {
     "return_untouched": generaldefs.return_untouched,
     "for_item_in_obj_pass": generaldefs.for_item_in_obj_pass,
     "perform_call": generaldefs.perform_call,
+    "perform_attr_call": generaldefs.perform_attr_call,
     "tuple_from_args": generaldefs.tuple_from_args,
     "list_from_args": generaldefs.list_from_args,
     "set_from_args": generaldefs.set_from_args,
@@ -233,6 +234,11 @@ $output = None
     "perform_call": Template(
         """
 $func_return_value = $func(*$args, **$kwargs)
+""".strip()
+    ).substitute,
+    "perform_attr_call": Template(
+        """
+$call_return_value = getattr($obj, $attr_name)(*$args, **$kwargs)
 """.strip()
     ).substitute,
     "tuple_from_args": Template(
