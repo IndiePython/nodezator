@@ -13,13 +13,16 @@
 <p>Besides the user-define nodes, Nodezator provides other objects to help make your node layout more versatile. Here we'll present each of them.</p>
 
 
+
 <h2 id="text-blocks">Text blocks</h2>
 
 <p>Text blocks represent comments within the node layout. To create one, just right-click an empty space on the canvas and click the <b>Text block</b> command on the popup menu that appears.</p>
 
-<p>To edit the text, just click the text block and press <b>&lt;Ctrl+T&gt;</b>. The text blocks automatically adjust their sizes to fit the typed text, including new lines. Also, if you type "todo" words like TODO, XXX and FIXME inside the text block they are automatically highlighted. Here are some examples of text blocks in the image below:</p>
+<p>To edit the text, just click the text block and press <b>&lt;Ctrl+T&gt;</b>. The text blocks automatically adjust their sizes to fit the typed text, including new lines. Also, if you type "todo" words like <b>TODO</b>, <b>XXX</b> and <b>FIXME</b> inside the text block they are automatically highlighted. Here are some examples of text blocks in the image below:</p>
 
 <img src="images/ch-other-objects_img00.png" alt="Text blocks" />
+
+
 
 
 <h2 id="app-defined-nodes">App-defined nodes</h2>
@@ -27,6 +30,8 @@
 <p>Nodezator has a number of app-defined nodes, that is, nodes the user doesn't need to define, which come by default with Nodezator.</p>
 
 <p>In the next few subsections we'll be presenting each of these nodes.</p>
+
+
 
 
 <h3 id="operation-nodes">Operation nodes</h3>
@@ -41,6 +46,9 @@
 
 <p>To instantiate them, just right-click an empty space on the canvas and click one of the commands inside the <b>Common operations</b> submenu within the popup menu that appears. These commands are labeled according to the operation they represent, like <b>a + b</b>, <b>a * b</b>, etc.</p>
 
+
+
+
 <h3 id="builtin-nodes">Built-in nodes</h3>
 
 <p>They are just app-defined nodes which represent Python built-in functions/classes, like <i>print</i>, <i>sum</i>, etc. They look just like user-defined nodes, some even have widgets and all, but their header has a distinct color to tell them apart from user-defined nodes (by default this color is black). Here are some examples of built-in nodes:</p>
@@ -48,6 +56,9 @@
 <img src="images/ch-other-objects_img02.png" alt="Built-in nodes" />
 
 <p>To instantiate them, just right-click an empty space on the canvas and click one of the commands inside the <b>Built-in picks</b> submenu (and further separated according to their first letter) within the popup menu that appears.</p>
+
+
+
 
 <h3 id="standard-library-nodes">Standard library nodes</h3>
 
@@ -58,6 +69,9 @@
 <p>To instantiate them, just right-click an empty space on the canvas and click one of the commands inside the <b>Standard lib picks</b> submenu (and further separated by the standard library module to which the callable belongs) within the popup menu that appears.</p>
 
 
+
+
+
 <h3 id="snippet-nodes">Snippet nodes</h3>
 
 <p>App-defined nodes which represent useful Python snippets like "with blocks" for loading or saving files. They also look like user-defined nodes, widgets and all, and their header also have a distinct color (by default this color is black, like built-in and standard library nodes). Here are some examples of snippet nodes:</p>
@@ -65,6 +79,9 @@
 <img src="images/ch-other-objects_img04.png" alt="Snippet node" />
 
 <p>To instantiate them, just right-click an empty space on the canvas and click one of the commands inside the <b>Encapsulations</b> submenu within the popup menu that appears.</p>
+
+
+
 
 
 <h3 id="data-nodes">Data nodes</h3>
@@ -78,6 +95,8 @@
 <p>The default title on the data node can be changed, but it doesn't accept spaces or punctuation other than the underscore ("_"). This is so because the title of the data node is used as part of the variable name when the layout is exported as a Python script. The id of the node is used as part of the variable name as well, that is, the number to the left of the title that is assigned automatically by Nodezator.</p>
 
 
+
+
 <h3 id="redirect-nodes">Redirect nodes</h3>
 
 <p>App-defined nodes whose only purpose is to connect the output of a node with the input of other node(s). They are useful for helping organize the node layout. Here's a redirect node being used to connect data between two nodes.</p>
@@ -86,6 +105,36 @@
 
 <p>To instantiate them, just right-click an empty space on the canvas and click the command <b>Redirect node</b> in the popup menu that appears.</p>
 
+
+
+
+<h3 id="general-viewer-nodes">General viewer nodes</h3>
+
+<p>Viewer nodes are nodes that can be used to visualize data in the graph itself, beside the node, or, in addition to that, in visualization loops (either provided by the user or by Nodezator). <b>General viewer nodes</b> are app-defined nodes provided as a convenience to users. They provide visualizations for text or pygame-ce surfaces, both beside the nodes and in a text viewer or surface viewer provided by Nodezator.</p>
+
+<p>To instantiate them, just right-click an empty space on the canvas and click one of the commands inside the <b>General viewer nodes</b> submenu within the popup menu that appears to pick a general viewer node. The image below shows all 04 general viewer nodes available.</p>
+
+<img src="images/ch-other-objects_img07.png" alt="General viewer nodes" />
+
+<p>You can learn more about viewer nodes in the <a href="ch-defining-viewer-nodes.htsl">introductory chapter on viewer nodes</a>. The appendix with recipes for common tasks in Nodezator also has a <a href="appendix-recipes.htsl#images-into-pygame-ce">recipe regarding viewer nodes</a>.</p>
+
+
+
+
+
+<h3 id="pygame-ce-nodes">Pygame-ce nodes</h3>
+
+
+<p>Pygame-ce nodes are nodes that represent callables imported from <a href="">pygame-ce</a> or encapsulations of custom actions performed with them. All of them represent actions to create or manipulate surfaces, or to help is such actions.</p>
+
+<p>To instantiate them, just right-click an empty space on the canvas and click one of the commands inside the <b>pygame-ce</b> submenu within the popup menu that appears to pick a pygame-ce node from the available submenus. The image below show some of them, but there are many more.</p>
+
+<img src="images/ch-other-objects_img08.png" alt="Some pygame-ce nodes" />
+
+
+
+
+
 <h2 id="relationship-data-redirect-nodes">Relationship between data nodes and redirect nodes</h2>
 
 <p>If you connect data to the input socket of a data node the data node changes its meaning (it doesn't represents a variable anymore) and becomes a redirect node. In such case, the node serves only to redirect the received input and it is as though the widget doesn't exist (the widget is hidden). If you sever the connection to the input socket, the node becomes a data node again and the widget reappears (unless there was no widget to begin with, in which case a button shaped like a plus sign "<b>+</b>" appears, which you can use to add a widget to the node).</p>
@@ -93,9 +142,12 @@
 <p>If you delete the widget of a data node by clicking the small "x" icon to the right of the widget, it will be useless until you add a widget again or turns it into a redirect node by connection data to its input socket.</p>
 
 
+
+
+
 <h2 id="callable-mode-app-defined-nodes">Callable mode in app-defined nodes</h2>
 
-<p>As explained before, <a href="ch-defining-your-first-node.htsl#expanded-collapsed-callable-modes">user-defined nodes have 03 different modes</a>, that is, <b>expanded signature</b>, <b>collapsed signature</b> and <b>callable</b> modes. Just like user-defined nodes, app-defined nodes also have such modes. The only expection are operation nodes, which don't have a collapsed mode, because they are too tiny already.</p>
+<p>As explained before, <a href="ch-defining-your-first-node.htsl#expanded-collapsed-callable-modes">user-defined nodes have 03 different modes</a>, that is, <b>expanded signature</b>, <b>collapsed signature</b> and <b>callable</b> modes. Just like user-defined nodes, app-defined nodes based on callable objects also have such modes. The only expection are operation nodes, which don't have a collapsed mode, because they are too tiny already.</p>
 
 
 

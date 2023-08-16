@@ -59,7 +59,7 @@ from pygame import Surface
 
 from pygame.math import Vector2
 
-from pygame.image import fromstring as image_from_string
+from pygame.image import frombytes as surface_from_bytes
 
 from pygame.transform import smoothscale as smoothscale_surface
 
@@ -87,7 +87,7 @@ def get_data_from_pillow_image(
     size = image.size
     data = image.tobytes()
 
-    full_surface = image_from_string(data, size, mode)
+    full_surface = surface_from_bytes(data, size, mode)
 
     ### if the max preview size is 0, it means the preview doesn't need
     ### to be below a specific size, so we can use the full surface
@@ -179,7 +179,7 @@ from pygame import Surface
 
 from pygame.math import Vector2
 
-from pygame.image import fromstring as image_from_string
+from pygame.image import frombytes as surface_from_bytes
 
 from pygame.transform import smoothscale as smoothscale_surface
 
@@ -206,7 +206,7 @@ def get_data_from_pillow_image(
     size = image.size
     data = image.tobytes()
 
-    full_surface = image_from_string(data, size, mode)
+    full_surface = surface_from_bytes(data, size, mode)
 
     ### also obtain a bounding rect from the full surface
     bounding_rect = full_surface.get_bounding_rect()

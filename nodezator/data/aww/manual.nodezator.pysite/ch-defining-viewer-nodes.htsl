@@ -14,7 +14,7 @@
 
 <p>Since version 1.4.0, viewer nodes in Nodezator became even more versatile. They now vary greatly in what they can provide as visualizations. It all depends on what you want to provide as visualization features for your viewer nodes. You can make very simple viewer nodes that just provide an image to be displayed beside your node in the graph or you can make viewer nodes that have their own application loop where complex visualizations and even additional controls are presented.</p>
 
-<p>In this chapter, we'll present the simplest way to define viewer nodes. Your viewer node will be able to display an image in the graph itself and also in a surface viewer provided by Nodezator by simply returning such images as pygame.Surface objects from your node. Visualization of text is also supported and will be demonstrated as well.</p>
+<p>In this chapter, we'll present the simplest way to define viewer nodes. Your viewer node will be able to display an image in the graph itself and also in a surface viewer provided by Nodezator by simply returning such images as pygame.Surface objects from your node. Visualization of text is also supported and will be demonstrated further in the chapter.</p>
 
 <p>The ability to define viewer nodes featuring custom application loops with complex visualizations and even additional controls will be presented in future chapters far ahead in the manual, since they are more advanced.</p>
 
@@ -22,41 +22,19 @@
 
 <p>Without further ado, let's define our simple yet powerful viewer node.</p>
 
-<p>Begin by creating another folder inside points2d called <code>viewer</code> wherein we'll store a node responsible for viewing points. This is just another <b>category folder</b>, just like point_creation.</p>
+<p>Begin by creating another folder inside points2d called <code>viewer</code> (you can use another name if you want) wherein we'll store a node responsible for viewing points. This is just another <b>category folder</b>, just like <code>point_creation</code> from the previous chapter.</p>
+
+
 
 
 <h2 id="returning-visual-beside-node">Returning a visual to be displayed beside your node</h2>
 
 <p>The simplest way by which you can display visuals with your viewer node, is by returning a pygame surface from it that can be displayed in the graph itself beside the node, when the node is executed.</p>
 
-<p>Before we delve into the full implementation of our viewer node, I present below a first draft of the function that will generate our viewer node.</p>
+<p>Below we present the definition of a node that returns a surface depicting the given points, but we didn't turn it into a viewer node yet:</p>
 
 <python>
-### viewer node first draft
 
-### function definition
-
-def view_drawn_points(points):
-    ...
-
-### function aliasing as 'main_callable'
-main_callable = view_drawn_points
-</python>
-
-<p>As you can see, our viewer node is just a regular node like any other. It has a single parameter where we'll receive the given points that we want to visualize. It is also aliased as <code>main_callable</code> like any other node, so that Nodezator can fetch it and turn it into a node.</p>
-
-<p>Now, all you need is a way to inform Nodezator of two things:</p>
-
-<ul>
-    <li>that your node will provide a surface to display in the graph; and</li>
-    <li>where to pick the surface from your node's output</li>
-</ul>
-
-<p>To do that, all you need is to add a small function in your script called (or aliased as) <code>get_sideviz_from_output</code>. The function must receive a single argument, which is the output of the node, and return the surface it gets from it.</p>
-
-<p>Since in our case, the surface is the node's output itself, that function just needs to return the argument received. Here's the script defining our viewer node:</p>
- 
-<python uselineno="true">
 ### third-party imports
 
 from pygame import Rect, Surface
@@ -64,7 +42,7 @@ from pygame import Rect, Surface
 from pygame.draw import rect as draw_rect
 
 
-def view_drawn_points(points):
+def view_drawn_points(points) -&gt; Surface:
 
     ### ensure our points are stored in a list
     points = list(points)
@@ -122,11 +100,24 @@ def view_drawn_points(points):
 
 ### alias the function defining the node as main_callable
 main_callable = view_drawn_points
-
-### define a get_sideviz_from_output function that just returns
-### the data received (the name of the parameter isn't important)
-get_sideviz_from_output = lambda node_output: node_output
 </python>
+
+<p>As you can see, this is just a regular node like any other. It has a single parameter where we'll receive the given points that we want to visualize. It is also aliased as <code>main_callable</code> like any other node, so that Nodezator can fetch it and turn it into a node.</p>
+
+<p>Now, all you need to turn this node into a viewer node is a way to inform Nodezator of 02 things:</p>
+
+<ul>
+    <li>that your node will provide a visual data (in this case a surface) that you want to display in the graph; and</li>
+    <li>where to pick the visual data from your node's output</li>
+</ul>
+
+<p>There are actually 02 different ways to do that, both are very simple and usually require the edition or addition of a single line. The simplest one just requires you to add/change a single line, the return annotation of your main callable:</p>
+
+<python>
+def view_drawn_points(points) -&gt; [{'name': 'a_surface', 'type': Surface, 'viz': 'side'}]:
+</python>
+
+<p>In other words, you just need to use the return annotation of the node to indicate that the output you are returning must be used as a visualization to be displayed beside the node. This special return annotation has actually many uses and is properly presented in a <a href="ch-nodes-variable-parameters-custom-outputs.htsl#naming-output">section of a future chapter</a> and subsequent sections. To us, what is important here is the <code>'viz'</code> key with the <code>'side'</code> value. This indicates to Nodezator that this output should be used as a visual to be displayed beside the node. The <code>'type'</code> key isn't mandatory and the value of the <code>'name'</code> key can be any name you want for your output as long as it is a valid Python identifier (that is, it must not have spaces, only letters, digits and underscores and must not start with a digit). We arbitrarily decided to use <b>a_surface</b> as the name of our output.</p>
 
 <p>And now your viewer node will look like this when instantiated:</p>
 
@@ -136,30 +127,40 @@ get_sideviz_from_output = lambda node_output: node_output
 
 <img src="images/ch-defining-viewer-nodes_img01.png" alt="view_drawn_points node after execution" />
 
-<p>The visualization that appears beside the viewer node is called an <b>in-graph visual</b> or <b>in-graph surface</b>. Note that the in-graph visual has a button on top that says <b>Reload</b>. As expected, clicking that button causes the node to execute so the visualization is updated. Of course, in order for the node to be executed, the upstream nodes from it are executed as well, so it receives up-to-date inputs.</p>
+<p>The visualization that appears beside the viewer node is called an <b>in-graph visual</b>, <b>side visual</b> or <b>in-graph surface</b>. Note that the in-graph visual has a button on top that says <b>Reload</b>. As expected, clicking that button causes the node to execute so the visualization is updated. Of course, in order for the node to be executed, the upstream nodes from it are executed as well, so it receives up-to-date inputs.</p>
 
 <p>That's it! At this point, you should be able to test the node pack you created with your get_circle and view_drawn_points nodes.</p>
 
+<p>The <b>alternative way</b> to indicate that your node has a visual to be display beside it is to add a small function in your script called (or aliased as) <code>get_sideviz_from_output</code>. The function must receive a single argument, which is the output of the node, and return the visual data it gets from it (which in our case is a surface). The body of the function can be anything you need to do in order to get the surface from the output of the node that it receives.</p>
+
+<p>Since in our case, the node's output itself is the surface we want to use, that function just needs to return the very argument it receives. Instead of changing the return annotation of our node, we could then just add this line of code to the end of the script and it would have the same effect:</p>
+ 
+<python>
+get_sideviz_from_output = lambda node_output: node_output
+</python>
+
+<p>Note that we arbitrarily decided to call the parameter of our (lambda) function <code>node_output</code>, but you can call it whatever you want. As long as it receives a single argument and returns the surface, it is fine.</p>
+
+<p>When you use the first way (adding/editing the return annotation), Nodezator actually creates this function for you automatically.</p>
+
+<p>Regardless of the method you use to indicate to Nodezator the existence and location of your surface, you might have asked yourself why we need to tell Nodezator where specifically to grab the in-graph surface from the node's output. That is, if there's only one surface, why provide a function to grab it instead of just using a flag that says the output itself is the surface we want? There are 02 answers to that. First, your surface might be nested within the output if you want. In other words, we don't want to impose how your function should work, this is for you to decide. As always, Nodezator tries to get out of your way as much as possible. The second and final reason is that, as we'll see in the next section, the output of the node might contain yet another surface of interest, so we do have to reference each specific surface.</p>
+
+
+
 
 <h2 id="returning-larger-visual">Returning a larger visual to be displayed in a Nodezator viewer</h2>
-
-<p>In the previous subsection, you might have asked yourself why we needed to tell Nodezator where specifically to grab the in-graph surface from the node's output. That is, if there's only one surface, why provide a function to grab it instead of just using a flag that says the output itself is the surface we want? The answer is that the output of the node might contain yet another surface of interest.</p>
 
 <p>As with any application, the more graphics you display on the screen, the more the performance of the app is impacted. For most cases, the method we described before to provide a surface to be displayed in-graph is more than enough and will result in no harm to the performance, even if you use many viewer nodes like that.</p>
 
 <p>However, what if you wanted to use Nodezator to edit 4K or 8K images, or any kind of data whose visualization resulted in a excessively large surface? In such cases, rather than showing the full visualization in the graph, you may instead want to show a smaller preview, but still provide the full visualization (the larger surface) so that Nodezator can show it in a surface viewer that is invoked when the user clicks the in-graph surface.</p>
 
-<p>This way, you don't need to worry about the size of the surfaces your viewer nodes return. When you create a surface within your node, you just need to ensure it fits a maximum size arbitrarily defined by you and, if the surface is larger than that size, you create a downsized copy of it (using the <a href="https://pyga.me/docs/ref/transform.html#pygame.transform.smoothscale">smoothscale()</a> or <a href="https://pyga.me/docs/ref/transform.html#pygame.transform.scale">scale()</a> function from pygame-ce's <i>pygame.transform</i> module). If the surface is smaller than that, you can use it as-is for the in-graph visualization.</p>
+<p>This way, you don't need to worry about the size of the surfaces your viewer nodes return. When you create a surface within your node, you just need to ensure it fits a maximum size arbitrarily defined by you and, if the surface is larger than that size, you create a downsized copy of it (probably using the <a href="https://pyga.me/docs/ref/transform.html#pygame.transform.smoothscale">smoothscale()</a> or <a href="https://pyga.me/docs/ref/transform.html#pygame.transform.scale">scale()</a> function from pygame-ce's <code>pygame.transform</code> module). If the surface is smaller than that, you can use it as-is for the in-graph visualization.</p>
 
-<p>To tell Nodezator that you are providing a surface that is meant to appear in a surface viewer instead of in the graph itself, you just need to create another function called (or aliased as) <code>get_loopviz_from_output</code>, in addition to your existing <code>get_sideviz_from_output</code> function. This <code>get_loopviz_from_output</code> also receives a single input, which is the output of the node and must return the surface that Nodezator will display whenever the user clicks the in-graph visual.</p>
+<p>Just like the visual data to be displayed beside the node is called in-graph visual, we call this visual data to be visualized in a special viewer <b>full visual</b> or <b>full surface</b> (when it is a surface). We also call it <b>loop data</b> sometimes, since it is data shown in a visualization loop. It just happens that in our demonstration here such data is a surface, but it can be of other types as well, as we'll see in the next section.</p>
 
-<p>Providing this new <code>get_loopviz_from_output</code> callable requires that a <code>get_sideviz_from_output</code> callable exist as well, otherwise Nodezator won't acknowledge the existence of your node as a viewer node. In other words, providing a full visual requires that you also provide a preview visual.</p>
-
-<p>This time, to demonstrate this, we'll define a completely different viewer node that receives an image object from the <a href="https://pillow.readthedocs.io/en/stable/">Pillow</a> library in order to visualize it. We'll call it view_image node. Here's the script defining the node:</p>
-
+<p>As we did previously, before showing how to tell Nodezator that our node provides visual data to be displayed in a dedicated viewer, we'll start by showing a node definition in which the node wasn't turned into a viewer node yet. Here's the definition of a viewer node that receives an image object from the <a href="https://pillow.readthedocs.io/en/stable/">Pillow</a> library in order to visualize it:</p>
 
 <python uselineno="true">
-
 
 ### third-party imports
 
@@ -169,7 +170,7 @@ from pygame import Surface
 
 from pygame.math import Vector2
 
-from pygame.image import fromstring as image_from_string
+from pygame.image import frombytes as surface_from_bytes
 
 from pygame.transform import smoothscale as smoothscale_surface
 
@@ -213,7 +214,7 @@ def view_image(
     size = image.size
     data = image.tobytes()
 
-    full_surface = image_from_string(data, size, mode)
+    full_surface = surface_from_bytes(data, size, mode)
 
     ### if the max preview size is 0, it means the preview doesn't need
     ### to be below a specific size, so we can use the full surface
@@ -274,21 +275,22 @@ def view_image(
 
 ### alias the function defining the node as main_callable
 main_callable = view_image
-
-### define a get_sideviz_from_output function;
-###
-### since we store our in-graph visual in the 'preview_surface' key
-### of the node's output (the dict returned), this function just
-### returns the value in that key
-get_sideviz_from_output = lambda node_output: node_output['preview_surface']
-
-### define a get_loopviz_from_output function;
-###
-### again, because our full surface (the loop data) is stored as
-### the 'full_surface' key of the node's output, this function just 
-### returns the value in such key
-get_loopviz_from_output = lambda node_output: node_output['full_surface']
 </python>
+
+<p>For now, the definition above just describes a regular node. Again, the special return annotation used by this node has many uses and will be properly presented in a <a href="ch-nodes-variable-parameters-custom-outputs.htsl#defining-node-more-output">section of a future chapter</a>. Here it doesn't have <code>'viz'</code> keys, so it is just being used to indicate that this function will return 02 outputs, one named <b>preview_surface</b> and the other <b>full_surface</b>. When this kind of return annotation is used and lists more than 01 output, it means the function must return a dictionary containing the outputs and the names will be used as keys to hold the respective outputs. In other words, this regular node returns a dictionary with a <code>'preview_surface'</code> and a <code>'full_surface'</code> key. Now let's see how to turn it into a viewer node.</p>
+
+<p>Just like in the previous section, there are also 02 ways to tell Nodezator that you are providing visual data that is meant to appear in a specialized viewer instead of in the graph itself. They are very similar to the ways shown in the previous section, so pay close attention to the nomenclature.</p>
+
+<p>The first way is by <b>adding/editing the return annotation</b> like this:</p>
+
+<python>
+{'name': 'full_surface', 'type': Surface, 'viz': 'loop'},
+{'name': 'preview_surface', 'type': Surface, 'viz': 'side'},
+</python>
+
+<p>In other words, we just added the <code>'viz'</code> key to the outputs used for the in-graph visual and the loop data. The output meant to be used as the in-graph visual, as we saw in the previous section, must have the value <code>'side'</code> assigned to its <code>'viz'</code> key. The output meant to be used as the loop data/full visual must have the value <code>'loop'</code> assigned to its <code>'viz'</code> key. Again, the <code>'type'</code> keys are optional and the <code>'name'</code> keys can have any names you want, as long as it is a valid Python identifier. The outputs can also be in any order you want.</p>
+
+<p>Also, bear in mind that if your node provides loop data/a full visual, it is mandatory that it also provides an side/in-graph visual, like we did here, providing both. Otherwise, Nodezator won't acknowledge the existence of your node as a viewer node.</p>
 
 <p>And now this viewer node will look like this when instantiated:</p>
 
@@ -300,42 +302,51 @@ get_loopviz_from_output = lambda node_output: node_output['full_surface']
 
 <p>Clicking the in-graph surface showing the strawberry basket in the image above will cause the full surface to be shown using a special surface viewer provided by Nodezator. This viewer has other features as well, like allowing the user to scroll the image using the keyboard or to drag the image around using the mouse.</p>
 
-<p>Just like the in-graph surface is also called in-graph visual, we also call this full surface, <b>full visual</b>. It is also called <b>loop data</b>, since it is data shown in a visualization loop. It just happens that such data is a surface, but it can be of other types as well, as we'll see in the next section.</p>
-
 <p>Note that, in addition to the <b>Reload</b> button, the viewer node now also has a check button labeled <b>Loop on execution</b>. If the check button is marked, whenever the node is executed the app will also enter the loop of the surface viewer. You'll probably leave this button unmarked most of the time, since the in-graph visual will likely be enough.</p>
 
 <p>However, whenever you are fine-tuning the inputs in your graph to obtain a more accurate visualization, you'll probably leave the button marked so that you can inspect the full visual right away, instead of having to click the in-graph visual to access the full view. We'll also demonstrate in a future chapter how to provide a custom visualization loop for your viewer node, in which case leaving this button marked may be useful as well, so you can run your custom visualization when the node is executed.</p>
 
 <p>Another benefit of limiting the size of the surface displayed in the graph is that it makes it easier to organize your graph. That is, when your viewer node can create an in-graph surface of arbitrary size, such surface could end up too large and overlap with neighboring nodes. There's no need to worry if this happens, though, because in-graph visualizations are always drawn behind everything else in the graph, in order to avoid hiding other nodes. However, this is still a undesirable situation, because the other nodes would appear in front of the in-graph visual and you'd have to move the nodes out of the way every time this overlap occurs. Even worse, if the graph is large and has many nodes, you might end up having to move other nodes as well along the graph to make extra space. This is why it is extra useful to use smaller previews for in-graph visuals, instead of full visuals.</p>
 
+<p>As for the <b>second and final way to define a viewer node like this one</b>, you just need to create another function called (or aliased as) <code>get_loopviz_from_output</code>, in addition to your existing <code>get_sideviz_from_output</code> function. This <code>get_loopviz_from_output</code> also receives a single input, which is the output of the node and must return the surface that Nodezator will display whenever the user clicks the in-graph visual.</p>
+
+<python>
+get_sideviz_from_output = lambda node_output: node_output['preview_surface']
+get_loopviz_from_output = lambda node_output: node_output['full_surface']
+</python>
+
+<p>Again, providing the new <code>get_loopviz_from_output</code> callable requires that a <code>get_sideviz_from_output</code> callable exist as well, in order for Nodezator to acknowledge the existence of your node as a viewer node.</p>
+
 
 
 <h2 id="visualizing-text">Visualizing text</h2>
 
-<p>The data used as the in-graph visual data or the loop data doesn't need to be a pygame surface. For instance, you can return a string, and it will appear like this after it is executed:</p>
+<p>The data used as the side visual data or the loop data doesn't need to be a pygame-ce surface. You can use strings as well. For instance, if you use a string as a side visual, Nodezator will automatically render the text for you and display it like this after the node is executed:</p>
 
-<img src="images/ch-defining-viewer-nodes_img04.png" alt="view_text2 node after execution" />
+<img src="images/ch-defining-viewer-nodes_img04.png" alt="view_text node after execution" />
 
-<p>There is actually a custom format that you can use as well. If instead of a string you provide a dictionary like the one below...</p>
+<p>If a string is provided as the loop data, it will be displayed in a text viewer. In other words, just like you can use a smaller surface as the side visual and a full-sized surface as the loop data, you can also display a smaller portion of a text in the graph as a side visual and visualize the full text in a dedicated viewer.</p>
+
+<p>There is actually a custom format that you can use as well. If instead of a string, you provide a dictionary like the one below...</p>
 
 <python>
 {
-    "hint": "text",
-    "data": "Your text here"
+    'hint': 'text',
+    'data': 'Your text here'
 }
 </python>
 
 <p>...the text in the <code>data</code> key will also be rendered like in the previous image shown.</p>
 
-<p>If instead of <code>"text"</code>, the value of the <code>hint</code> key is <code>"monospaced_text"</code>, it will be rendered with a monospaced font, like in the HTML text visualized in the image below:</p>
+<p>This format can be used to specified different kinds of text so they are rendered differently. For instance, if instead of <code>'text'</code>, the value of the <code>'hint'</code> key is <code>'monospaced_text'</code>, it will be rendered with a monospaced font, like in the HTML text visualized in the image below:</p>
 
 <img src="images/ch-defining-viewer-nodes_img05.png" alt="view_monospaced_text node after execution" />
 
-<p>If instead of <code>"text"</code>, the value of the <code>hint</code> key is <code>"python_source"</code>, it will be rendered with a monospaced font and syntax-highlighted as Python code, like the Python code visualized in the image below:</p>
+<p>If instead of <code>'text'</code>, the value of the <code>'hint'</code> key is <code>'python_source'</code>, it will be rendered with a monospaced font and syntax-highlighted as Python code, like the Python code visualized in the image below:</p>
 
 <img src="images/ch-defining-viewer-nodes_img06.png" alt="view_python_source node after execution" />
 
-<p>The table below summarizes the values of the <code>hint</code> key that can be used and how the text will be rendered as a result:</p>
+<p>The table below summarizes the values of the <code>'hint'</code> key that can be used and how the text will be rendered as a result:</p>
 
 <table>
 
@@ -373,6 +384,15 @@ get_loopviz_from_output = lambda node_output: node_output['full_surface']
 
 
 
+<h2 id="available-by-default">Viewer nodes available by default</h2>
+
+<p>Because some viewer nodes are too general, Nodezator comes with a few of them available by default. This way users don't have to copy the same viewer nodes again and again every time they create a new node pack.</p>
+
+<p>Since we have a dedicated chapter on nodes and other objects available by default in Nodezator, we list such general viewer nodes <a href="ch-other-objects.htsl#general-viewer-nodes">there</a>.</p>
+
+
+
+
 <h2 id="in-graph-only-vs-full-visual">Brief note: in-graph only vs full visual</h2>
 
 <p>Note that a viewer node that only provides an in-graph visual is not necessarily inferior to one that also provides a full visual. As we said earlier, the full visual is just an additional resource that can be useful when you need to display visuals that are too large (or, as we'll see in other chapters, need to be customized, animated or have additional controls). If you don't need those things and the visuals you produce are not super large images, then you are probably better off just displaying the visuals in-graph.</p>
@@ -380,6 +400,9 @@ get_loopviz_from_output = lambda node_output: node_output['full_surface']
 <p>For instance, if you are working with pixel art (still images), you'll probably only create tiny/small images. If you are only generating static visualizations with <a href="https://matplotlib.org">matplotlib</a> for a paper, the visuals created won't probably get so large.</p>
 
 <p>Well, in the end, it is up to you which combination of visual features you think you'll need.</p>
+
+
+
 
 
 <h2 id="callable-mode-and-visuals">Callable mode and visuals</h2>

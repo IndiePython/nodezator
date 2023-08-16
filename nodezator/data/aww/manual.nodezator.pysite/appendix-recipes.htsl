@@ -17,7 +17,7 @@
 
 
 
-<h2>Multiple operations at once with functools.reduce() standard library node</h2>
+<h2 id="functools-reduce">Multiple operations at once with functools.reduce() standard library node</h2>
 
 <p>As presented in the chapter on <a href="ch-defining-your-first-node.htsl#expanded-collapsed-callable-modes">defining your first node</a>, nodes have different modes.</p>
 
@@ -39,7 +39,8 @@
 
 
 
-<h2>Importing values/objects, getting attributes, executing callable objects</h2>
+
+<h2 id="importing-getattr-executing">Importing values/objects, getting attributes, executing callable objects</h2>
 
 <p>This section presents a few nodes available by default that can be used alone or in combination to perform many common tasks.</p>
 
@@ -71,12 +72,15 @@ def perform_call(func, *args, **kwargs):
 
 <img src="images/appendix-recipes_img05.png" alt="Graph representing usage of importlib.import_module(), getattr() and perform_call() nodes to grab and instantiate an array from the numpy library." />
 
-<p>Naturally, whenever importing from a third-party library, make sure it is installed in the Python instance running Nodezator.</p>
+<p>Whenever using <code>import_module</code> to import from a third-party library, remember to make sure that library is installed in the Python instance running Nodezator.</p>
+
+<p>The few graphs shown above could be further simplified by using the <code>perform_attr_call</code> node, which you can find in the <b>Encapsulations &gt; perform_attr_call</b> command from the popup menu. This node just encapsulates the behaviour of the <code>getattr</code> and <code>perform_call</code> nodes. It is available by default in Nodezator because grabbing a method or other callable from an attribute in order to execute it is a very common task.</p>
 
 
 
 
-<h2>The namespace_from_exec() snippet node</h2>
+
+<h2 id="namespace-from-exec">The namespace_from_exec() snippet node</h2>
 
 <p>Frequently, we may find ourselves in the need of some small temporary custom code or maybe we just want to experiment with some ideas before we create a new node for some specific purpose. Whenever one of such scenarios arise you can use the <code>namespace_from_exec()</code> node. It allows you to write and execute custom Python code. You can pass it data via keyword arguments and the new names and respective values defined in that code are returned from the node as a dictionary.</p>
 
@@ -93,6 +97,96 @@ def perform_call(func, *args, **kwargs):
 <p>You can grab any or many of such values using nodes like the <code>a[b]</code> operation node or the <code>get_at_string</code> snippet node (which works the same way as <code>a[b]</code>, but has a StringEntry widget attached for convenience):</p>
 
 <img src="images/appendix-recipes_img07.png" alt="Graph representing values being accessed from the namespace dictionary returned by the namespace_from_exec() node." />
+
+
+
+
+<h2 id="images-into-pygame-ce">Converting images into pygame-ce surfaces for easy visualization and saving</h2>
+
+<p>As you may already know, Nodezator provides some viewer nodes by default to visualize pygame-ce surfaces or text.</p>
+
+<p>Although users can also create their own custom viewer nodes, sometimes what they need to visualize can be easily converted into or represented as an image. When this is the case, rather than creating a custom viewer node by themselves, it may actually be better to just convert the data into a pygame-ce surface (or create a regular node to do so). Then, the user can pass the created surface to the <code>view_surface</code> node that is provided by default in Nodezator.</p>
+
+<p>By doing this, your operations will be even more modular and you'll avoid some extra steps that you would otherwise need to tackle yourself if you had to define a custom viewer node, like checking whether a scaled down version of the surface is needed (in order to use it as a preview), and actually creating such extra surface, etc. (although such steps are relatively simple as well).</p>
+
+<p>It is usually straightforward to convert some sort of data into a pygame-ce surface. Below we demonstrate how to convert a <a href="https://github.com/python-pillow/Pillow">Pillow</a> image into a pygame-ce surface using pygame-ce's <a href="https://pyga.me/docs/ref/image.html#pygame.image.frombytes">pygame.image.frombytes</a>:</p>
+
+<python>
+mode = image.mode
+size = image.size
+data = image.tobytes()
+
+surface = frombytes(data, size, mode)
+</python>
+
+<p>Code adapted from this <a href="https://stackoverflow.com/a/64182629">stackoverflow answer</a>.</p>
+
+<p>And below, using the same function, we convert a <a href="https://github.com/matplotlib/matplotlib">matplotlib</a> figure:</p>
+
+<python>
+canvas = figure.canvas
+canvas.draw()
+
+raw_data = canvas.tostring_rgb()
+size = canvas.get_width_height()
+
+surface = frombytes(raw_data, size, 'RGB')
+</python>
+
+<p>Code adapted from several sources, including this <a href="https://stackoverflow.com/a/48093809">stackoverflow answer</a>.</p>
+
+<p>This <code>frombytes</code> function is available by default in Nodezator as the <code>surf_from_bytes</code> node, which you can access via the <b>pygame-ce &gt; pygame.image &gt; surf_from_bytes</b> command in the popup menu.</p>
+
+<p>The image below illustrates how a Pillow image could be converted into a surface that would then be visualized with the <code>view_surface</code>. A preview of the surface would appear beside the viewer node and if that preview is clicked, the surface is displayed in full size in a surface viewer.</p>
+
+<img src="images/appendix-recipes_img08.png" alt="Portion of a graph where a Pillow image is converted into a surface and visualized in the view_surface node." />
+
+<p>Note that in the case of Pillow images, we didn't even need to create a custom node to convert a Pillow image into a pygame-ce surface. In the graph shown in the image above, we load an image from the disk as a Pillow image, mix it with another Pillow image filled with a single color and mix the 02 images together using a soft light operation. The resulting Pillow image is then converted into a pygame-ce surface and displayed in the <code>view_surface</code> node.</p>
+
+<p>When working with other libraries you might have to create a custom node to produce the needed data to feed into the <code>surf_from_bytes</code> node. The reason nodes that automatically convert objects from various libraries like matplotlib and others aren't available by default in Nodezator is because they are too specialized. That is, although they would be very handy, there are innumerable Python libraries available, all with their own specific data formats. Thus, we would never be able to offer sufficient default nodes to target all of them. As a result, Nodezator only offers the most basic nodes. Additionally, usage of such specialized nodes depend on user choice and needs so, again, it is better that the users decide for themselves which nodes to create and use as they see fit. Last but not least, even simple operations like those may have nuances, so again it is better that users decide for themselves how they want their nodes to be defined and that they create them with the needed parameters and return value.</p>
+
+<p>Another useful function that can be used to convert data into pygame-ce surfaces is <a href="https://pyga.me/docs/ref/image.html#pygame.image.load">pygame.image.load</a>, which is available by default in Nodezator as the <code>load_image_as_surf</code> that can be found in the <b>pygame-ce &gt; pygame.image &gt; load_image_as_surf</b> command from the popup menu. Though this function is usually used to load image files from the disk by passing the image's path to it, you can also pass a <a href="https://docs.python.org/3/library/io.html#io.BytesIO">io.BytesIO</a> object containing the bytes representing the image. In some cases, depending on the library with which you are treating your BytesIO object, you'll have to call <code>bytes_io_obj.seek(0)</code> before passing the BytesIO object to the <code>load_image_as_surf</code> node.</p>
+
+<p>For instance, if you want to convert an SVG image into a surface, you can use the <a href="https://cairosvg.org/documentation/">cairosvg</a> library like this:</p>
+
+<python>
+from io import BytesIO
+
+from cairosvg import svg2png
+
+new_bites = svg2png(url = 'path_to_file.svg')
+bytes_io_obj = BytesIO(new_bites)
+
+surface = pygame.image.load(bytes_io_obj)
+</python>
+
+<p>Code adapted from this <a href="https://stackoverflow.com/a/64598021">stackoverflow answer</a>.</p>
+
+<p>However, if you wanted to use the <a href="https://github.com/sympy/sympy">sympy</a> library to convert a rendered math formula described in <a href="https://www.latex-project.org/">LaTeX</a> markup into a surface, you'd have to call <code>.seek(0)</code> on the BytesIO object, like this:</p>
+
+<python>
+from io import BytesIO
+
+from sympy import preview
+
+bytes_io_obj = BytesIO()
+preview(your_latex_markup, output='png', viewer='BytesIO', outputbuffer=bytes_io_obj)
+
+bytes_io_obj.seek(0) # if you don't do this, the call to pygame.image.load
+                     # below will raise an error
+
+surface = pygame.image.load(bytes_io_obj)
+</python>
+
+<p>Code adapted from this <a href="https://stackoverflow.com/a/69893546">stackoverflow answer</a> which, curiously, also demonstrates how to obtain a surface from a Pillow image using a BytesIO object.</p>
+
+<p>Since sympy uses the <code>LaTeX</code> software internally and related CLI utilities or the matplotlib library for rendering, you'll also need to install one of those in your system for the call to <code>sympy.preview()</code> to work.</p>
+
+<p>In addition to using the <code>load_image_as_surf</code> node, you can also use the <code>surf_from_image_path</code> node from the popup menu command <b>pygame-ce &gt; Encapsulations &gt; surf_from_image_path</b>, that uses <code>pygame.image.load</code> internally, but can also make an extra call to <a href="https://pyga.me/docs/ref/surface.html#pygame.Surface.convert">Surface.convert</a> or <a href="https://pyga.me/docs/ref/surface.html#pygame.Surface.convert_alpha">Surface.convert_alpha</a>. This is usually not needed though, because it just makes it quicker to blit the surface on the screen, which isn't that useful if you only plan on visualizing the surface.</p>
+
+<p>Regardless of how you obtain your surfaces, you can save them back on disk as an image file using <a href="https://pyga.me/docs/ref/image.html#pygame.image.save">pygame.image.save</a>, which is available by default in Nodezator as the <code>save_surf_to_file</code> node found in the <b>pygame-ce &gt; pygame.image &gt; save_surf_to_file</b> command of the popup menu.</p>
+
+<p>Of course, not all data can be represented as a still image. Or perhaps, users may want to add even more parameters to their viewer nodes or add other features. In such cases users are indeed encouraged to define their own custom viewer node(s).</p>
 
 
 <p><a href="index.htsl">Table of contents</a></p>
