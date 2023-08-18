@@ -291,39 +291,62 @@ $constant_returner = (lambda x: lambda y: x)($constant_value)
     ).substitute,
 }
 
+
+## more maps
+
 CAPSULE_IDS_TO_STLIB_IMPORT_MAP = {
-    "load_pyl_file": "from ast import literal_eval",
-    "save_as_pyl_file": "from pprint import pformat",
-    "load_json_file": "from json import load",
-    "save_as_json_file": "from json import dump",
+    "load_pyl_file": ["from ast import literal_eval"],
+    "save_as_pyl_file": ["from pprint import pformat"],
+    "load_json_file": ["from json import load"],
+    "save_as_json_file": ["from json import dump"],
 }
 
 
 CAPSULE_IDS_TO_3RDLIB_IMPORT_MAP = {
-    'color_surf_from_size': "from pygame import Surface",
-    'color_surf_from_wh': "from pygame import Surface",
-    'get_pygame_constant': "from pygame import locals as pygame_ce_locals",
-    'increase_surf_border': 'from pygame import Surface',
-    'draw_border_on_surf': 'from pygame.draw import rect as draw_rect_on_surf',
+    'surf_from_image_path': ["from pygame.image import load as load_img_as_surf"],
+    'color_surf_from_size': ["from pygame import Surface"],
+    'color_surf_from_wh': ["from pygame import Surface"],
+    'get_pygame_constant': ["from pygame import locals as pygame_ce_locals"],
+    'increase_surf_border': ['from pygame import Surface'],
+    'draw_border_on_surf': ['from pygame.draw import rect as draw_rect_on_surf'],
 }
 
 CAPSULE_IDS_TO_STLIB_ANNOTATION_IMPORTS = {
-    'load_json_file': 'from collections.abc import Callable',
-    'save_as_json_file': 'from collections.abc import Callable',
-    'for_item_in_obj_pass': 'from collections.abc import Iterator',
-    'get_positioned_rects': 'from collections.abc import Iterable',
-    'unite_surfaces': 'from collections.abc import Iterable',
+    'load_json_file': ['from collections.abc import Callable'],
+    'save_as_json_file': ['from collections.abc import Callable'],
+    'for_item_in_obj_pass': ['from collections.abc import Iterator'],
+    'get_positioned_rects': ['from collections.abc import Iterable'],
+    'unite_surfaces': ['from collections.abc import Iterable'],
 }
 
 CAPSULE_IDS_TO_3RDLIB_ANNOTATION_IMPORTS = {
-    'color_surf_from_size': 'from pygame import Surface',
-    'color_surf_from_wh': 'from pygame import Surface',
-    'blit_surf_a_onto_b':  'from pygame import Surface',
-    'unite_surfaces': 'from pygame import Surface',
-    #'fill_surface': 'from pygame import Surface',
-    #'fill_surface': 'from pygame import Rect',
-    'increase_surf_border': 'from pygame import Surface',
-    'draw_border_on_surf': 'from pygame import Surface',
+    'surf_from_image_path': ['from pygame import Surface'],
+    'color_surf_from_size': [
+        'from pygame import Surface',
+        'from pygame.color import Color',
+    ],
+    'color_surf_from_wh': [
+        'from pygame import Surface',
+        'from pygame.color import Color',
+    ],
+    'blit_surf_a_onto_b': ['from pygame import Surface'],
+    'unite_surfaces': [
+        'from pygame import Surface',
+        'from pygame.color import Color',
+    ],
+    #'fill_surface': [
+    #    'from pygame import Surface',
+    #    'from pygame import Rect',
+    #    'from pygame.color import Color',
+    #],
+    'increase_surf_border': [
+        'from pygame import Surface',
+        'from pygame.color import Color',
+    ],
+    'draw_border_on_surf': [
+        'from pygame import Surface',
+        'from pygame.color import Color',
+    ],
 }
 
 PYGAME_RELATED_CAPSULE_IDS = frozenset((
@@ -345,20 +368,45 @@ CAPSULE_IDS_TO_SOURCE_VIEW_TEXT = {
 
     capsule_id: (
 
+        ## stlib imports
+
         (
             (
-                CAPSULE_IDS_TO_STLIB_IMPORT_MAP[capsule_id]
+                '\n'.join(CAPSULE_IDS_TO_STLIB_IMPORT_MAP[capsule_id])
                 + ("\n" * 2)
             )
             if capsule_id in CAPSULE_IDS_TO_STLIB_IMPORT_MAP
             else ''
         )
+
+        ## stlib annotation imports
+
         + (
             (
-                CAPSULE_IDS_TO_STLIB_ANNOTATION_IMPORTS[capsule_id]
+                '\n'.join(CAPSULE_IDS_TO_STLIB_ANNOTATION_IMPORTS[capsule_id])
                 + ("\n" * 2)
             )
             if capsule_id in CAPSULE_IDS_TO_STLIB_ANNOTATION_IMPORTS
+            else ''
+        )
+
+        ## thirdlib imports
+        + (
+            (
+                '\n'.join(CAPSULE_IDS_TO_3RDLIB_IMPORT_MAP[capsule_id])
+                + ("\n" * 2)
+            )
+            if capsule_id in CAPSULE_IDS_TO_3RDLIB_IMPORT_MAP
+            else ''
+        )
+
+        ## thirdlib annotation imports
+        + (
+            (
+                '\n'.join(CAPSULE_IDS_TO_3RDLIB_ANNOTATION_IMPORTS[capsule_id])
+                + ("\n" * 2)
+            )
+            if capsule_id in CAPSULE_IDS_TO_3RDLIB_ANNOTATION_IMPORTS
             else ''
         )
         + getsource(callable_obj)
@@ -368,52 +416,10 @@ CAPSULE_IDS_TO_SOURCE_VIEW_TEXT = {
     ## source
     for capsule_id, callable_obj in CAPSULE_IDS_TO_CALLABLES_MAP.items()
 
-    ## filtering
-    if capsule_id not in PYGAME_RELATED_CAPSULE_IDS
-
 }
 
 
-CAPSULE_IDS_TO_SOURCE_VIEW_TEXT.update(
-
-    ## (key, value) tuple
-
-    (
-        capsule_id,
-
-        (
-            (
-                (
-                    CAPSULE_IDS_TO_3RDLIB_IMPORT_MAP[capsule_id]
-                    + ("\n" * 2)
-                )
-                if capsule_id in CAPSULE_IDS_TO_3RDLIB_IMPORT_MAP
-                else ''
-            )
-
-            + (
-                (
-                    CAPSULE_IDS_TO_3RDLIB_ANNOTATION_IMPORTS[capsule_id]
-                    + ("\n" * 2)
-                )
-                if capsule_id in CAPSULE_IDS_TO_3RDLIB_ANNOTATION_IMPORTS
-                else ''
-            )
-
-            + getsource(callable_obj)
-        )
-
-    )
-
-    ## source
-    for capsule_id, callable_obj in CAPSULE_IDS_TO_CALLABLES_MAP.items()
-
-    ## filtering
-    if capsule_id in PYGAME_RELATED_CAPSULE_IDS
-
-)
-
-### when exporting/viewing graph as as the Python code equivalent
+### when exporting/viewing graph as the Python code equivalent
 
 CAPSULE_IDS_TO_PYTHON_SOURCE = {
     capsule_id: getsource(callable_obj)

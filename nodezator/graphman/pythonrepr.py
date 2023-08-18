@@ -98,38 +98,80 @@ def python_repr(self):
 
     ### create list of standard library imports
 
-    stlib_imports = sorted(
+    ## gather from user-defined and stlib nodes
 
-        set(
+    from_user_defined_and_stlib_nodes = {
 
-            ### item
-            node.stlib_import_text
-            ### source
-            for node in self.nodes
+        ### item
+        node.stlib_import_text
 
-            ### filtering
-            if hasattr(node, "stlib_import_text")
+        ### source
+        for node in self.nodes
 
-        ).union(
+        ### filtering
+        if hasattr(node, "stlib_import_text")
 
-            set(
+    }
 
+    ## gather from encapsulations usage
+
+    from_encapsulations_stlib_usage = set(
+
+        ##
+        sum(
+
+            (
                 ### item
-                node.stlib_annotation_import_text
+                node.stlib_import_texts
 
                 ### source
                 for node in self.nodes
 
                 ### filtering
 
-                if hasattr(node, "stlib_annotation_import_text")
+                if hasattr(node, "stlib_import_texts")
                 if (
                     not hasattr(node, 'substitution_callable')
                     or node.data['mode'] == 'callable'
                 )
-            )
-
+            ),
+            [],
         )
+
+    )
+
+    ## gather from encapsulations annotations
+
+    from_encapsulations_stlib_annotations = set(
+
+        ##
+        sum(
+
+            (
+                ### item
+                node.stlib_annotation_import_texts
+
+                ### source
+                for node in self.nodes
+
+                ### filtering
+
+                if hasattr(node, "stlib_annotation_import_texts")
+                if (
+                    not hasattr(node, 'substitution_callable')
+                    or node.data['mode'] == 'callable'
+                )
+            ),
+            [],
+        )
+
+    )
+
+    ##
+    stlib_imports = sorted(
+        from_user_defined_and_stlib_nodes 
+        .union(from_encapsulations_stlib_usage)
+        .union(from_encapsulations_stlib_annotations)
     )
 
     ### create list of third-party imports
@@ -156,32 +198,79 @@ def python_repr(self):
 
     ## gather from other nodes (if any)
 
-    from_others = set(
+    # from user-defined and thirdlib nodes
+    from_user_defined_and_thirdlib_nodes = {
+
       ### item
       node.third_party_import_text
       ### source
       for node in self.nodes
       ### filtering
       if hasattr(node, "third_party_import_text")
-    ).union(
-        set(
-            ### item
-            node.third_party_annotation_import_text
-            ### source
-            for node in self.nodes
-            ### filtering
-            if hasattr(node, "third_party_annotation_import_text")
-            if (
-                not hasattr(node, 'substitution_callable')
-                or node.data['mode'] == 'callable'
-            )
+
+    }
+
+    # from encapsulation usage
+
+    from_encapsulations_third_usage = set(
+
+        ##
+        sum(
+
+            (
+                ### item
+                node.third_party_import_texts
+                ### source
+                for node in self.nodes
+                ### filtering
+                if hasattr(node, "third_party_import_texts")
+                if (
+                    not hasattr(node, 'substitution_callable')
+                    or node.data['mode'] == 'callable'
+                )
+            ),
+            [],
+
         )
+
+    )
+
+    # from encapsulation annotations
+
+    from_encapsulations_third_annotations = set(
+
+        ##
+        sum(
+
+            (
+                ### item
+                node.third_party_annotation_import_texts
+                ### source
+                for node in self.nodes
+                ### filtering
+                if hasattr(node, "third_party_annotation_import_texts")
+                if (
+                    not hasattr(node, 'substitution_callable')
+                    or node.data['mode'] == 'callable'
+                )
+            ),
+            [],
+
+        )
+
     )
 
     ## create sorted list from their union
-    third_party_imports = sorted(from_genviewer_nodes.union(from_others))
 
-    ### create list of node callable import statements
+    third_party_imports = sorted(
+        from_genviewer_nodes
+        .union(from_user_defined_and_thirdlib_nodes)
+        .union(from_encapsulations_third_usage)
+        .union(from_encapsulations_third_annotations)
+    )
+
+    ### create list of import statements for user-defined
+    ### nodes
 
     node_callable_imports = sorted(
 

@@ -72,7 +72,7 @@ def color_surf_from_wh(
     color: {
         'widget_name': 'color_button',
         'widget_kwargs': {'color_format': 'rgb_tuple'},
-        'type': (tuple, list, str,Color),
+        'type': (tuple, list, str, Color),
     } = (255, 0, 0),
 ) -> [
     {'name': 'surface', 'type': Surface},

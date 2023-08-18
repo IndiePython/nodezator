@@ -74,21 +74,21 @@ class CapsuleNode(CallableNode):
         else:
             self.substitution_callable = substitution_callable
 
-        ### if there's an stlib import associated with the id, store it
+        ### if there are stlib imports associated with the id, store them
 
         try:
-            self.stlib_import_text = (
+            self.stlib_import_texts = (
                 CAPSULE_IDS_TO_STLIB_IMPORT_MAP[capsule_id]
             )
 
         except KeyError:
             pass
 
-        ### if there's an third-party library import associated with
-        ### the id, store it
+        ### if there are third-party library imports associated with
+        ### the id, store them
 
         try:
-            self.third_party_import_text = (
+            self.third_party_import_texts = (
                 CAPSULE_IDS_TO_3RDLIB_IMPORT_MAP[capsule_id]
             )
 
@@ -98,14 +98,14 @@ class CapsuleNode(CallableNode):
         ### if there's annotation-related imports, store them as well
 
         try:
-            self.stlib_annotation_import_text = (
+            self.stlib_annotation_import_texts = (
                 CAPSULE_IDS_TO_STLIB_ANNOTATION_IMPORTS[capsule_id]
             )
         except KeyError:
             pass
 
         try:
-            self.third_party_annotation_import_text = (
+            self.third_party_annotation_import_texts = (
                 CAPSULE_IDS_TO_3RDLIB_ANNOTATION_IMPORTS[capsule_id]
             )
         except KeyError:
