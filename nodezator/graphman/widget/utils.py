@@ -184,15 +184,19 @@ def get_widget_metadata(annotation, default):
 
         elif widget_name == "color_button":
 
-            if type_ is tuple:
+            if type_ is tuple or (isinstance(type_, (tuple, list)) and tuple in type_):
                 widget_kwargs["color_format"] = "rgb_tuple"
 
-            elif type_ is str:
+            elif type_ is str or (isinstance(type_, (tuple, list)) and str in type_):
                 widget_kwargs["color_format"] = "hex_string"
 
             else:
 
-                raise TypeError("type for color buttons must be" "either tuple or str")
+                raise TypeError(
+                    "in the special annotation using a dict, the value in"
+                    "the 'type' key for color buttons must be tuple, str, or"
+                    " a tuple/list containing one or both of them."
+                )
 
         ## regardless of whether widget_name is equal to
         ## 'int_float_entry' or not, return dict with
