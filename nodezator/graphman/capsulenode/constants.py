@@ -44,12 +44,16 @@ CAPSULE_IDS_TO_CALLABLES_MAP = {
     'color_surf_from_size': pygamedefs.color_surf_from_size,
     'color_surf_from_wh': pygamedefs.color_surf_from_wh,
     'get_pygame_constant': pygamedefs.get_pygame_constant,
-    'blit_surf_a_onto_b': pygamedefs.blit_surf_a_onto_b,
-    'get_positioned_rects': pygamedefs.get_positioned_rects,
+    'blit_surf_a_on_b': pygamedefs.blit_surf_a_on_b,
+    'blit_a_on_b_aligned': pygamedefs.blit_a_on_b_aligned,
+    'get_aligned_rects': pygamedefs.get_aligned_rects,
     'unite_surfaces': pygamedefs.unite_surfaces,
-    #'fill_surface': pygamedefs.fill_surface,
+    'fill_surface': pygamedefs.fill_surface,
     'increase_surf_border': pygamedefs.increase_surf_border,
     'draw_border_on_surf': pygamedefs.draw_border_on_surf,
+    'decrease_surf_border': pygamedefs.decrease_surf_border,
+    'crop_surface': pygamedefs.crop_surface,
+    'render_text_surface': pygamedefs.render_text_surface,
 }
 
 CAPSULE_IDS_TO_SIGNATURES_MAP = {
@@ -308,14 +312,14 @@ CAPSULE_IDS_TO_3RDLIB_IMPORT_MAP = {
     'color_surf_from_wh': ["from pygame import Surface"],
     'get_pygame_constant': ["from pygame import locals as pygame_ce_locals"],
     'increase_surf_border': ['from pygame import Surface'],
-    'draw_border_on_surf': ['from pygame.draw import rect as draw_rect_on_surf'],
+    'render_text_surface': ['from pygame import Surface'],
 }
 
 CAPSULE_IDS_TO_STLIB_ANNOTATION_IMPORTS = {
     'load_json_file': ['from collections.abc import Callable'],
     'save_as_json_file': ['from collections.abc import Callable'],
     'for_item_in_obj_pass': ['from collections.abc import Iterator'],
-    'get_positioned_rects': ['from collections.abc import Iterable'],
+    'get_aligned_rects': ['from collections.abc import Iterable'],
     'unite_surfaces': ['from collections.abc import Iterable'],
 }
 
@@ -329,21 +333,35 @@ CAPSULE_IDS_TO_3RDLIB_ANNOTATION_IMPORTS = {
         'from pygame import Surface',
         'from pygame.color import Color',
     ],
-    'blit_surf_a_onto_b': ['from pygame import Surface'],
-    'unite_surfaces': [
+    'blit_surf_a_on_b': [
         'from pygame import Surface',
+        'from pygame import Rect',
+    ],
+    'blit_a_on_b_aligned': [
+        'from pygame import Surface',
+        'from pygame import Rect',
+    ],
+    'unite_surfaces': ['from pygame import Surface'],
+    'fill_surface': [
+        'from pygame import Surface',
+        'from pygame import Rect',
         'from pygame.color import Color',
     ],
-    #'fill_surface': [
-    #    'from pygame import Surface',
-    #    'from pygame import Rect',
-    #    'from pygame.color import Color',
-    #],
     'increase_surf_border': [
         'from pygame import Surface',
         'from pygame.color import Color',
     ],
     'draw_border_on_surf': [
+        'from pygame import Surface',
+        'from pygame.color import Color',
+    ],
+    'decrease_surf_border': ['from pygame import Surface'],
+    'crop_surface': [
+        'from pygame import Surface',
+        'from pygame import Rect',
+    ],
+    'render_text_surface': [
+        'from pygame.font import Font',
         'from pygame import Surface',
         'from pygame.color import Color',
     ],
@@ -353,12 +371,16 @@ PYGAME_RELATED_CAPSULE_IDS = frozenset((
     'color_surf_from_size',
     'color_surf_from_wh',
     'get_pygame_constant',
-    'blit_surf_a_onto_b',
-    'get_positioned_rects',
+    'blit_surf_a_on_b',
+    'blit_a_on_b_aligned',
+    'get_aligned_rects',
     'unite_surfaces',
-    #'fill_surface',
+    'fill_surface',
     'increase_surf_border',
     'draw_border_on_surf',
+    'decrease_surf_border',
+    'crop_surface',
+    'render_text_surface',
 ))
 
 
