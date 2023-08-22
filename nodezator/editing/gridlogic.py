@@ -19,6 +19,8 @@ from ..config import APP_REFS
 
 from ..pygamesetup import SCREEN, SCREEN_RECT
 
+from ..pygamesetup.constants import FPS
+
 from ..dialog import create_and_show_dialog
 
 from ..ourstdlibs.collections.general import CallList
@@ -36,6 +38,15 @@ from ..colorsman.colors import (
     SMALL_GRID_COLOR,
     LARGE_GRID_COLOR,
 )
+
+
+
+### scroll speed in pixels per second
+TIME_BASED_SCROLL_SPEED = 960
+
+### scroll speed in pixels per frame
+SCROLL_SPEED = FRAME_BASED_SCROLL_SPEED = round(TIME_BASED_SCROLL_SPEED/FPS)
+
 
 
 class GridHandling:
@@ -233,7 +244,7 @@ class GridHandling:
         ):
             obj.rect.move_ip(dx, dy)
 
-    scroll_up = partialmethod(scroll, 0, 25)
-    scroll_down = partialmethod(scroll, 0, -25)
-    scroll_left = partialmethod(scroll, 25, 0)
-    scroll_right = partialmethod(scroll, -25, 0)
+    scroll_up = partialmethod(scroll, 0, SCROLL_SPEED)
+    scroll_down = partialmethod(scroll, 0, -SCROLL_SPEED)
+    scroll_left = partialmethod(scroll, SCROLL_SPEED, 0)
+    scroll_right = partialmethod(scroll, -SCROLL_SPEED, 0)
