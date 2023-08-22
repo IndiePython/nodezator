@@ -563,18 +563,29 @@ def python_repr(self):
             if node_callable_imports
             else ""
         )
+        + "\n"
+        + "### main function"
+        + "\n"
+        + "\n"
         + def_statement
         + "\n"
         + docstring
         + graph_function_body
         + "\n\n"
         + (
-            source_of_snippets + "\n\n"
+            (
+                "### encapsulations (utility functions)"
+                + "\n\n" + source_of_snippets + "\n\n"
+            )
             if source_of_snippets
             else ''
         )
         + (
-            source_of_general_viewer_nodes + "\n\n"
+            (
+                "### general viewer node scripts"
+                + "\n\n"
+                + source_of_general_viewer_nodes + "\n\n"
+            )
             if source_of_general_viewer_nodes 
             else ''
         )
