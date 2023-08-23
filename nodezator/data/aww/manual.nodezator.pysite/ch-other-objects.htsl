@@ -116,6 +116,8 @@
 
 <img src="images/ch-other-objects_img07.png" alt="General viewer nodes" />
 
+<p>Original orange tree image by <a href="https://pixabay.com/pt/users/hans-2/">Hans</a> can be found <a href="https://pixabay.com/pt/photos/laranjas-frutas-arvoredo-1117628/">here</a>.</p>
+
 <p>You can learn more about viewer nodes in the <a href="ch-defining-viewer-nodes.htsl">introductory chapter on viewer nodes</a>. The appendix with recipes for common tasks in Nodezator also has a <a href="appendix-recipes.htsl#images-into-pygame-ce">recipe regarding viewer nodes</a>.</p>
 
 

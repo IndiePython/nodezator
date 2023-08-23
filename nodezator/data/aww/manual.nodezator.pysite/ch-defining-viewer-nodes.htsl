@@ -300,6 +300,8 @@ main_callable = view_image
 
 <img src="images/ch-defining-viewer-nodes_img03.png" alt="view_image node after execution" />
 
+<p>Original strawberry basket image by <a href="https://pixabay.com/pt/users/nickype-10327513/">NickyPe</a> can be found <a href="https://pixabay.com/pt/photos/morangos-fruta-refei%c3%a7%c3%a3o-vermelho-4255928/">here</a>.</p>
+
 <p>Clicking the in-graph surface showing the strawberry basket in the image above will cause the full surface to be shown using a special surface viewer provided by Nodezator. This viewer has other features as well, like allowing the user to scroll the image using the keyboard or to drag the image around using the mouse.</p>
 
 <p>Note that, in addition to the <b>Reload</b> button, the viewer node now also has a check button labeled <b>Loop on execution</b>. If the check button is marked, whenever the node is executed the app will also enter the loop of the surface viewer. You'll probably leave this button unmarked most of the time, since the in-graph visual will likely be enough.</p>
