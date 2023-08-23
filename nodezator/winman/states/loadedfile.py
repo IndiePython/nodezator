@@ -312,21 +312,28 @@ class LoadedFileState:
         ### perform scrolling or not, according to state
         ### of keys
 
-        ## vertical scrolling
+        x_direction = y_direction = 0
 
-        if up and not down:
-            APP_REFS.ea.scroll_up()
-
-        elif down and not up:
-            APP_REFS.ea.scroll_down()
-
-        ## horizontal scrolling
+        ## horizontal
 
         if left and not right:
-            APP_REFS.ea.scroll_left()
+            x_direction = 1
 
         elif right and not left:
-            APP_REFS.ea.scroll_right()
+            x_direction = -1
+
+        ## vertical
+
+        if up and not down:
+            y_direction = 1
+
+        elif down and not up:
+            y_direction = -1
+
+        ## scroll
+
+        if x_direction or y_direction:
+            APP_REFS.ea.scroll_on_direction(x_direction, y_direction)
 
     def loaded_file_on_mouse_click(self, event):
         """Act on mouse left button pressing.

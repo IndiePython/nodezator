@@ -10,6 +10,10 @@ from pygame.locals import (
     K_a,
     K_s,
     K_d,
+    K_UP,
+    K_LEFT,
+    K_DOWN,
+    K_RIGHT,
     MOUSEBUTTONUP,
 )
 
@@ -54,28 +58,38 @@ class SegmentDefinitionState:
         ### get input state maps
         key_input = SERVICES_NS.get_pressed_keys()
 
-        ### states related to widgets when file is loaded
+        ### state of keys related to scrolling
 
-        w_key = key_input[K_w]
-        a_key = key_input[K_a]
-        s_key = key_input[K_s]
-        d_key = key_input[K_d]
+        up = key_input[K_w] or key_input[K_UP]
+        left = key_input[K_a] or key_input[K_LEFT]
+        down = key_input[K_s] or key_input[K_DOWN]
+        right = key_input[K_d] or key_input[K_RIGHT]
 
-        ## vertical scrolling
+        ### perform scrolling or not, according to state
+        ### of keys
 
-        if w_key and not s_key:
-            APP_REFS.ea.scroll_up()
+        x_direction = y_direction = 0
 
-        elif s_key and not w_key:
-            APP_REFS.ea.scroll_down()
+        ## horizontal
 
-        ## horizontal scrolling
+        if left and not right:
+            x_direction = 1
 
-        if a_key and not d_key:
-            APP_REFS.ea.scroll_left()
+        elif right and not left:
+            x_direction = -1
 
-        elif d_key and not a_key:
-            APP_REFS.ea.scroll_right()
+        ## vertical
+
+        if up and not down:
+            y_direction = 1
+
+        elif down and not up:
+            y_direction = -1
+
+        ## scroll
+
+        if x_direction or y_direction:
+            APP_REFS.ea.scroll_on_direction(x_direction, y_direction)
 
     def segment_definition_on_mouse_release(self, event):
         """Act on mouse left button release.

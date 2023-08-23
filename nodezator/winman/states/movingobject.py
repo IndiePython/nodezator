@@ -99,10 +99,8 @@ class MovingObjectState:
 
     def moving_object_keyboard_input_handling(self):
         """Handle keyboard specific input."""
-        ### get input state maps
-        key_input, mods_bitmask = (
-            SERVICES_NS.get_pressed_keys(), SERVICES_NS.get_pressed_mod_keys()
-        )
+        ### get key input state map
+        key_input = SERVICES_NS.get_pressed_keys()
 
         ### state of keys related to scrolling
 
@@ -114,31 +112,41 @@ class MovingObjectState:
         ### perform scrolling or not, according to state
         ### of keys
 
-        ## vertical scrolling
+        x_direction = y_direction = 0
+
+        ## vertical
 
         if up and not down:
-            APP_REFS.ea.scroll_up()
+            y_direction = 1
 
         elif down and not up:
-            APP_REFS.ea.scroll_down()
+            y_direction = -1
 
-        ## horizontal scrolling
+        ## horizontal
 
         if left and not right:
-            APP_REFS.ea.scroll_left()
+            x_direction = 1
 
         elif right and not left:
 
-            ### the state of control is used to know when
-            ### not to consider the D key for scrolling
-            ### (when the key is pressed because the user
-            ### pressed Ctrl-D to duplicate the selected
-            ### nodes in the 'loaded_file' state and didn't
-            ### release the button yet)
+            ## the state of control is used to know when not to consider
+            ## scrolling (when the key is pressed because the user
+            ## pressed Ctrl-D to duplicate the selected nodes in the
+            ## 'loaded_file' state and didn't release the button yet);
+            ##
+            ## thus, when it is pressed, we exit the method earlier by
+            ## returning
 
-            if not (mods_bitmask & KMOD_CTRL):
+            if SERVICES_NS.get_pressed_mod_keys() & KMOD_CTRL:
+                return
 
-                APP_REFS.ea.scroll_right()
+            else:
+                x_direction = -1
+
+        ## scroll
+
+        if x_direction or y_direction:
+            APP_REFS.ea.scroll_on_direction(x_direction, y_direction)
 
     ### update
 

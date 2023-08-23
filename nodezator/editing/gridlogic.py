@@ -1,9 +1,7 @@
 """Logic for grid creation and management for editor."""
 
-### standard library imports
-
+### standard library import
 from itertools import chain
-from functools import partialmethod
 
 
 ### third-party imports
@@ -244,7 +242,12 @@ class GridHandling:
         ):
             obj.rect.move_ip(dx, dy)
 
-    scroll_up = partialmethod(scroll, 0, SCROLL_SPEED)
-    scroll_down = partialmethod(scroll, 0, -SCROLL_SPEED)
-    scroll_left = partialmethod(scroll, SCROLL_SPEED, 0)
-    scroll_right = partialmethod(scroll, -SCROLL_SPEED, 0)
+    def scroll_on_direction(self, x_direction, y_direction):
+        """Scroll according to given directions.
+
+        Directions are expected to be -1, 0 or 1.
+        """
+        dx = x_direction * SCROLL_SPEED
+        dy = y_direction * SCROLL_SPEED
+
+        self.scroll(dx, dy)
