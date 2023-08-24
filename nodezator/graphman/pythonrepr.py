@@ -269,6 +269,14 @@ def python_repr(self):
         .union(from_encapsulations_third_annotations)
     )
 
+    ### store a flag indicating whether there are pygame
+    ### imports
+
+    at_least_one_pygame_import = any(
+        'from pygame' in import_text
+        for import_text in third_party_imports
+    )
+
     ### create list of import statements for user-defined
     ### nodes
 
@@ -587,6 +595,16 @@ def python_repr(self):
                 + source_of_general_viewer_nodes + "\n\n"
             )
             if source_of_general_viewer_nodes 
+            else ''
+        )
+        + (
+            (
+            "### since your graph uses pygame imports, in case you intend to execute this"
+            + "\n### script *outside* Nodezator, make sure pygame-ce/its relevant modules are"
+            + "\n### initialized and the display mode is set (depending on the imports used)"
+            + "\n\n"
+            )
+            if at_least_one_pygame_import
             else ''
         )
         + "if __name__ == '__main__':\n"
