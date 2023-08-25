@@ -17,6 +17,8 @@ from platform import (
 
 from pprint import pformat
 
+from textwrap import wrap
+
 from datetime import datetime, timezone
 
 from traceback import format_exception
@@ -34,7 +36,12 @@ from contextlib import redirect_stdout
 
 
 ### local imports
+
 from ..appinfo import TITLE, APP_VERSION, APP_DIR_NAME
+
+from .constants import PYGAME_CE_REQUIRED_MESSAGE
+
+from .fixeddialog import display_dialog_and_quit
 
 
 ### constants
@@ -248,13 +255,13 @@ logger.debug(f"Python version is {python_version()}")
 ## python implementation
 logger.debug(f"Python implementation is {python_implementation()}")
 
-## pygame version
+## pygame-ce version
 
-## execute an import statement to guarantee pygame is
+## execute an import statement to guarantee pygame-ce is
 ## installed;
 ##
 ## also, notice we also prevent the message printed when
-## pygame is first imported from appearing; we do so by
+## pygame-ce is first imported from appearing; we do so by
 ## temporarily redirecting stdout to a temporary file;
 ## there is no ill-meaning towards the pygame message
 ## here, since we display the very logo of the library
@@ -266,7 +273,7 @@ try:
 
         with redirect_stdout(temp_stream):
 
-            from pygame.version import ver
+            import pygame
 
 except ImportError:
 
@@ -274,15 +281,32 @@ except ImportError:
 
     raise
 
-else:
-    logger.debug(f"pygame version is {ver}")
+
+
+## if pygame is not pygame-ce, display message saying the app cannot be
+## used because pygame-ce is a requirement;
+##
+## the message is both printed and displayed in a dialog and the app is
+## exited once user closes window or dismiss it by pressing the escape key
+
+if not getattr(pygame, 'IS_CE', False):
+
+    logger.info("imported pygame isn't pygame-ce; notifying user now")
+
+    for line in PYGAME_CE_REQUIRED_MESSAGE.splitlines():
+        print('\n'.join(wrap(line)))
+
+    display_dialog_and_quit(pygame)
+
+### log relevant info...
+
+## pygame version
+logger.debug(f"pygame version is {pygame.version.ver}")
 
 ## app version
-
 logger.debug(("{} version is {}.{}.{} ({})").format(TITLE, *APP_VERSION))
 
 ## timezone
 
 UTC_OFFSET = datetime.now(timezone.utc).astimezone().strftime("%z")
-
 logger.debug("UTC offset (timezone) is " + UTC_OFFSET)
