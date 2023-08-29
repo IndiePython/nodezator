@@ -1,0 +1,298 @@
+<htsl>
+
+<head>
+  <title>What's new in Nodezator 1.4?</title>
+</head>
+
+<body>
+
+<p><a href="whats-new/index.htsl">All "What's new" pages (since 1.3.14)</a></p>
+
+
+<h1>What's new in Nodezator 1.4?</h1>
+
+<p><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.4.0">[v1.4.0] Many new features and improvements</a></p>
+
+<ol>
+
+    <li><a href="whats-new/v1-4.htsl#pygame-ce-adoption">Adoption of pygame-ce for the graphical user interface</a></li>
+    <li><a href="whats-new/v1-4.htsl#different-modes">Different modes for nodes</a></li>
+    <li><a href="whats-new/v1-4.htsl#shadowed-widgets-hidden">Shadowed widgets are hidden</a></li>
+    <li><a href="whats-new/v1-4.htsl#new-viewer-node-capabilities">New viewer node capabilities</a></li>
+    <li><a href="whats-new/v1-4.htsl#new-chapters-appendix-manual">New chapters/appendix in the manual</a></li>
+    <li><a href="whats-new/v1-4.htsl#new-categories-app-defined-nodes">New categories of app-defined nodes</a></li>
+    <li><a href="whats-new/v1-4.htsl#new-add-defined-preexisting">New app-defined nodes in preexisting categories</a></li>
+
+    <li><a href="whats-new/v1-4.htsl#changes-appearance">Changes in appearance</a>
+        <ol>
+            <li><a href="whats-new/v1-4.htsl#inputs-outputs-position-changed">Inputs closer to the bottom, outputs closer to the top</a></li>
+            <li><a href="whats-new/v1-4.htsl#operation-nodes-compact">Operation nodes are more compact</a></li>
+            <li><a href="whats-new/v1-4.htsl#local-pages-browser">Local Pages Browser</a></li>
+        </ol>
+    </li>
+
+    <li><a href="whats-new/v1-4.htsl#fixed-improved-doctest">Fixed and improved doctests</a></li>
+    <li><a href="whats-new/v1-4.htsl#previewing-python-code">Previewing Python code to be exported from graph</a></li>
+    <li><a href="whats-new/v1-4.htsl#single-step-export-python">A single step to export graph to Python</a></li>
+    <li><a href="whats-new/v1-4.htsl#bug-fixes">Bug fixes</a></li>
+    <li><a href="whats-new/v1-4.htsl#ongoing-work-playback-feature">Ongoing work on the playback feature</a></li>
+
+</ol>
+
+
+<h2 id="pygame-ce-adoption">Adoption of pygame-ce for the graphical user interface</h2>
+
+<p>As previously announced on GitHub with appropriate arguments/evidence in favor of the change (and after giving users enough time to voice their opinions), we now use <a href="https://github.com/pygame-community/pygame-ce">pygame-ce</a> (pygame community edition) for Nodezator's GUI, instead of the original <a href="https://github.com/pygame/pygame">pygame</a> library instance.</p>
+
+<p>Since <code>pygame-ce</code> is, for the most part, a drop-in replacement for the original <code>pygame</code>, the change was rather swift.</p>
+
+<p>The only additional measure users need to take is to make sure the regular <code>pygame</code> library is not installed anymore in the Python instance they use to run Nodezator and that pygame-ce is installed. This can be done with these commands:</p>
+
+<pre>
+pip uninstall pygame
+pip install pygame-ce --upgrade
+</pre>
+
+<p>Since both libraries use the same name for <code>import</code> statements (the <b>pygame</b> name), if users don't uninstall the original <code>pygame</code> library, it may shadow the <code>pygame-ce</code> library. If this happens, Nodezator will only show a dialog informing the need to uninstall regular pygame and make sure pygame-ce is installed. This is needed because Nodezator is only useable with pygame-ce due to exclusive imports.</p>
+
+
+
+
+<h2 id="different-modes">Different modes for nodes</h2>
+
+<p>All nodes that represent callables now exist in 01 of 03 modes: expanded, collapsed and callable mode. Together, all of these modes contribute for your graph to be more powerful, versatile and compact.</p>
+
+<p>The <b>expanded mode</b> is the default one, in which the node represents a call to its underlying callable, and thus receives inputs and returns outputs, leaving all of them visible so users can easily interact with them. In <b>collapsed mode</b> the node also represents a call, but it is more compact, only showing inputs/outputs that are connected to other nodes. In <b>callable mode</b>, however, the node represents a reference to its callable, rather than a call, and can thus pass this reference to other nodes, enabling users to perform seemingly complex tasks with simplicity, power and versatility.</p>
+
+<img src="whats-new/images/v1-4-x/same_node_different_modes.png" alt="Same node in different modes" />
+
+<p>Such modes are presented in more detail in <a href="nodezator://manual.nodezator.pysite/ch-defining-your-first-node.htsl#expanded-collapsed-callable-modes">this section</a> of the manual.</p>
+
+
+
+
+<h2 id="shadowed-widgets-hidden">Shadowed widgets are hidden</h2>
+
+<p>As we know, input sockets that have a connection use the incoming data from the connection instead of the widget's value when executed. In other words, the widget is not relevant anymore is just adds visual noise to the graph. Because of that, in order to make the graph more readable and free of visual noise, widgets that are shadowed by connections are now hidden, regardless of whether the node is in expanded or collapsed mode. If the connection is severed, the widget becomes visible again.</p>
+
+<img src="whats-new/images/v1-4-x/widget_visible_invisible.png" alt="02 instances of th same node, one with the widget visible and the other with the widget hidden" />
+
+
+
+
+<h2 id="new-viewer-node-capabilities">New viewer node capabilities</h2>
+
+<p>Viewer nodes can now display visualizations on the graph/canvas (for instance, from their outputs).</p>
+
+<img src="whats-new/images/v1-4-x/new_viewer_node.png" alt="New viewer node" />
+
+<p>Original strawberry basket image by <a href="https://pixabay.com/pt/users/nickype-10327513/">NickyPe</a> can be found <a href="https://pixabay.com/pt/photos/morangos-fruta-refei%c3%a7%c3%a3o-vermelho-4255928/">here</a>.</p>
+
+<p>The new viewer nodes supersede the old ones. The old viewer nodes still work fine, but the new ones have more features.</p>
+
+<p>The <a href="https://github.com/KennedyRichard/matplotlib_example_node_pack">matplotlib example node pack</a> has a new viewer node called <code>view_figure2</code> that uses such new features. The <a href="https://github.com/KennedyRichard/pillow_example_node_pack">Pillow example node pack</a> has several new viewer nodes that use the new features as well, all in the <a href="https://github.com/KennedyRichard/pillow_example_node_pack/tree/main/visualization">visualization</a> category. Nodezator now also has some general viewer nodes available by default (we'll talk more about this a bit further).</p>
+
+<p>You can learn all you need to know about all viewer node functionality in the manual. There is a simple and some complex ways to define viewer nodes (you should probably start with the simple one). Also, complex viewer nodes aren't better than the simpler ones. The complex ones exist to meet specific visualization needs. The way to define simpler viewer nodes is described in a single chapter. The way to define complex nodes is described across several chapters towards the end of the manual, since they are a more advanced topic. All these new chapters on viewer nodes are listed below:</p>
+
+<ul>
+    <li>Introductory chapter on viewer nodes and the simpler way to define them
+        <ul>
+            <li><a href="nodezator://manual.nodezator.pysite/ch-defining-viewer-nodes.htsl">Defining viewer nodes</a></li>
+        </ul>
+    </li>
+    <li>Chapters on more complex viewer nodes
+
+        <ul>
+            <li><a href="nodezator://manual.nodezator.pysite/ch-viewer-nodes-with-custom-visualization-loops.htsl">Defining a custom visualization loop for viewer nodes</a></li>
+            <li><a href="nodezator://manual.nodezator.pysite/ch-defining-complex-viewer-nodes.htsl">Defining a more complex viewer node</a></li>
+            <li><a href="nodezator://manual.nodezator.pysite/ch-more-advanced-viewer-node-features-part1.htsl">More advanced viewer node features - Part 1</a></li>
+            <li><a href="nodezator://manual.nodezator.pysite/ch-more-advanced-viewer-node-features-part2.htsl">More advanced viewer node features - Part 2</a></li>
+        </ul>
+    </li>
+</ul>
+
+
+
+
+<h2 id="new-chapters-appendix-manual">New chapters/appendix in the manual</h2>
+
+<p>New chapters were added to the manual. Besides the ones related to viewer nodes mentioned in the previous section, there were also 02 new chapters. One on conditional execution and another on looping in Nodezator. There is also a new appendix with recipes for common tasks.</p>
+
+<p>All these new chapters/appendix are listed below:</p>
+
+<ul>
+    <li><a href="nodezator://manual.nodezator.pysite/ch-conditional-execution.htsl">Conditional execution (branching) in Nodezator</a></li>
+    <li><a href="nodezator://manual.nodezator.pysite/ch-looping.htsl">Looping/iterating in Nodezator</a></li>
+    <li><a href="nodezator://manual.nodezator.pysite/appendix-recipes.htsl">Appendix: Recipes</a></li>
+</ul>
+
+
+
+
+
+
+<h2 id="new-categories-app-defined-nodes">New categories of app-defined nodes</h2>
+
+<p>There are 02 new categories of app-defined nodes (nodes available by default in Nodezator):</p>
+
+<ul>
+    <li>General viewer nodes</li>
+    <li>pygame-ce nodes</li>
+</ul>
+
+<p>Because this version introduces new capabilities for viewer nodes, specially the ability to display visualizations on the graph itself beside the viewer nodes, we also introduced new categories of app-defined/default nodes to help in such tasks and other related ones. This way users won't need to write their own nodes for the most basic visualization tasks. As a consequence this also prevents a lot of code repetition that would exist across node packs defined by users if they had to write nodes for such basic actions.</p>
+
+<p>The vast majority of the new nodes are from the <b>pygame-ce nodes</b> category. The image below represents a tiny sample of the many nodes introduced with both categories.</p>
+
+<img src="whats-new/images/v1-4-x/nodes_from_new_categories.png" alt="Nodes from new categories added in the new version." />
+
+<p>Original pomegranate tree image by <a href="https://pixabay.com/pt/users/aselvadaana-16928598/">AselvadaAna</a> can be found <a href="https://pixabay.com/pt/photos/rom%C3%A3-fruta-%C3%A1rvore-folhas-suculento-5609442/">here</a>.</p>
+
+<p>You can learn more about <b>general viewer nodes</b> and <b>pygame-ce nodes</b> in <a href="nodezator://manual.nodezator.pysite/ch-other-objects.htsl#general-viewer-nodes">this section</a> and the subsequent one from the manual.</p>
+
+
+
+
+
+<h2 id="new-add-defined-preexisting">New app-defined nodes in preexisting categories</h2>
+
+<p>Besides the many nodes in the new app-defined categories, there are also some new app-defined nodes in preexisting categories:</p>
+
+<ul>
+
+    <li>New standard library nodes added:
+
+      <ul>
+        <li><code>operator.attrgetter</code></li>
+        <li><code>operator.itemgetter</code></li>
+        <li><code>operator.methodcaller</code></li>
+        <li>02 different signatures of <code>pathlib.Path</code></li>
+      </ul>
+
+    </li>
+
+    <li>New snippet nodes (under the <b>Encapsulations</b> submenu of the popup menu):
+
+      <ul>
+        <li><code>for_item_in_obj_pass</code></li>
+        <li><code>get_constant_returner</code></li>
+        <li><code>perform_attr_call</code></li>
+        <li><code>return_untouched</code></li>
+      </ul>
+
+    </li>
+
+    <li>The ternary operator <code>a if c else b</code></li>
+
+</ul>
+
+<img src="whats-new/images/v1-4-x/new_app_defined_nodes.png" alt="Nodes added in the new version." />
+
+
+
+
+<h2 id="changes-appearance">Changes in appearance</h2>
+
+
+<h3 id="inputs-outputs-position-changed">Inputs closer to the bottom, outputs closer to the top</h3>
+
+<p>Although all the changes in this version are backward-compatible, your graphs will look a bit different when opened in the new version. This is so because the position of inputs and outputs in the nodes were changed. Before, the inputs were closer to the top of the node and the outputs were closer to the bottom. Now this was inverted and the inputs are closer to the bottom and the outputs closer to the top, as can be seen in the image below:</p>
+
+<p>This change was made because the empty space that sometimes remains below the outputs of a node (between the last output socket and the bottom of the node) is a proper/nice spot for placing the visualizations shown beside viewer nodes on the graph. This positioning of the sockets is also adopted by other existing node-editing applications, like Blender3D (by which Nodezator is heavily inspired).</p>
+
+<p>The image below shows the same graph opened in the previous version (at the top) and in the new one (at the bottom):</p>
+
+<img src="whats-new/images/v1-4-x/graphs_different_appearances.png" alt="Two equal graphs, one below the other, with slight different appearances due to position of sockets" />
+
+<p>Though they are the same graph with the same nodes and same connections, they appear slightly different due to the position of the sockets (and, as a consequence, the position of the lines that represent their connections). There's not much difference in this small graph, but in larger graphs the differences may be even more pronounced.</p>
+
+
+
+<h3 id="operation-nodes-compact">Operation nodes are more compact</h3>
+
+<p>Operation nodes had their size reduced, specially the big characters in their center. Here's an image showing the old and new appearance of the operation nodes appear, with a <code>print()</code> node for scale:</p>
+
+<img src="whats-new/images/v1-4-x/operator_nodes_new_appearance.png" alt="Previous and current operation nodes beside a print() node for scale" />
+
+<p>As can be seen in the image, although the size was reduced, the characters are still big, so they can be easily spotted on the graph. It is just that they are not needlessly big anymore. The color of the big characters was also changed in order to add more contrast. This is particularly helpful to keep the difference between the <b>~a</b> and <b>-a</b> nodes noticeable.</p>
+
+
+
+<h3 id="local-pages-browser">Local Pages Browser</h3>
+
+<p>The Local Pages Browser, previously named HTSL Browser (the viewer we use to display stylized hypertext content like the manual, controls, etc.) had its colors changed, its width increased and some padding added around the contents shown on it. Reading from it should be a bit more pleasing now. The image below shows what it looked like previously (on the left) and how it looks now (on the right):</p>
+
+<img src="whats-new/images/v1-4-x/local_browser_new_appearance.png" alt="Local Pages Browser (former HTSL Browser) before (left) and now (right)" />
+
+<p>As can be seen in the previous image, vertical padding around nested lists was increased as well and links are not underlined anymore. Several other small changes that don't appear in the image were made as well. A functional change was also made: as can be seen in the image below, blocks of preformatted text/code now have a button that can be used to copy the contents to the clipboard.</p>
+
+<img src="whats-new/images/v1-4-x/codeblock_clipboard_button.png" alt="Preformatted code block with a button to copy its contents to the clipboard" />
+
+
+
+
+<h2 id="fixed-improved-doctest">Fixed and improved doctests</h2>
+
+<p>The failing doctests were fixed and files used exclusively for doctests were converted from Python to markdown files. Now it is more pleasant to visualize them on GitHub or in markdwon viewer apps, since markdown can display both stylized hypertext (headings, paragraphs, blockquotes, links, images, lists, tables and even some HTML tags) and code blocks that can be executed as doctests.</p>
+
+<p>On GitHub, even the font used for rendering in markdown seems to be more easy on the eye. The code blocks are also syntax highlighted, which helps reading the code as well. See the comparison below between a doctest written in a Python file (at the top) and the same doctest written as a markdown file (at the bottom):</p>
+
+<img src="whats-new/images/v1-4-x/doctest_format_comparison.png" alt="Same doctest contents as a Python file (at the top) and as a markdown file (at the bottom)" />
+
+
+
+
+
+<h2 id="previewing-python-code">Previewing Python code to be exported from graph</h2>
+
+<p>This new version adds the ability to view the Python code representing the graph without needing to export it to a file.</p>
+
+<p>Previously, the user had to save the exported code to a file before being able to see it. And even so, the user had to open it in another app.</p>
+
+<p>Now the user can see the code instantly, by clicking in the <b>View as Python</b> command in the menubar or pressing <b>Shift+Ctrl+P</b>.</p>
+
+
+
+
+
+<h2 id="single-step-export-python">A single step to export graph to Python</h2>
+
+<p>Exporting the graph to a Python file can be done in a single step now. When the command to export the graph as Python is executed (by pressing <b>Ctrl+P</b> or clicking <b>File &gt; Export as Python</b> in the menubar), the file manager is presented and the user can pick the location and save the exported file right away.</p>
+
+<p>Before there were more steps: Once the command was triggered, a form was presented to the user and only after filling out the form and confirming the user could export the file.</p>
+
+<p>This form had a button used to set the location to save the exported file with the file manager. There was also an additional optional control that was never explained in the manual, which served to prefix <code>import</code> statements in the exported file with package/module names, in case the user wanted the callables in the node pack to be exported from a different folder structure. For instance, the user could cause an import statement that would be imported like <code>from nodepack.category01...</code> to be actually exported like <code>from parentfolder.nodepack.category01...</code> by adding <code>parentfolder</code> as a prefix (users could add as much as desired).</p>
+
+<p>This is an action that many users will never need to perform and even when they need, they can quickly do that by themselves either manually or with help from a text editor or other utility. In other words, that actual convenience of this optional control was questionable and since it wasn't explained in the manual, it wasn't even clear whether it was being used or not. Because of that, this option, along with the form, was removed altogether.</p>
+
+<p>If future feedback from users indicates that the optional control was indeed useful we'll promptly bring it back along with the form. Additionally, we'd like to point out that we seldom remove stuff from the app without consulting our users. It was done in this instance solely because of the given reasons (the obscurity and questionable usefulness of the control).</p>
+
+<p>Of course, regardless of this, if other options are added to the exporting feature in the future that require the creation of additional controls, the form will also be brought back.</p>
+
+
+
+
+<h2 id="bug-fixes">Bug fixes</h2>
+
+<p>Several bugs were fixed as well.</p>
+
+<p>For instance, bugs which resulted in annoying behaviours in the IntFloatEntry widget (the one we use to hold and edit integers/floats). There was one which made the mouse pointer to become invisible sometimes. Another bug was causing the value in the widget to "jump" too much when changing the value by dragging the mouse. Now the behaviour of this widget doesn't suffer from these problems anymore.</p>
+
+
+
+
+
+<h2 id="ongoing-work-playback-feature">Ongoing work on the playback feature</h2>
+
+<p>Because of the advanced state of the ongoing development work on the <b>playback feature</b>, in order to avoid future merge conflicts, the commits for this new Nodezator 1.4.0 version were rebased on top of the pre-existing commits for the playback feature. This means all changes from the ongoing work on the playback feature were published with the changes from the implementation of the new features.</p>
+
+<p>The playback feature is responsible for recording and playing input in Nodezator and will be used as the basis for other features like automated GUI testing and a demonstration mode. Although the playback feature is already partially working, it isn't ready to be released, so the feature isn't available to users yet. In other words, the related changes only affect the backend. They represent a lot of the foundation needed to support the playback feature.</p>
+
+<p>The only visible difference caused by these extra changes is that a new <b>Playback</b> submenu is now visible in the menubar. However, its functionality isn't available to users, so attempting to click on the underlying commands will just show a message notifying the user that the feature is not implemented or that it is a work in progress.</p>
+
+
+
+
+</body>
+
+</htsl>
