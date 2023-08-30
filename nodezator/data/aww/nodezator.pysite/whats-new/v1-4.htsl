@@ -11,7 +11,11 @@
 
 <h1>What's new in Nodezator 1.4?</h1>
 
-<p><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.4.0">[v1.4.0] Many new features and improvements</a></p>
+<ul>
+    <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.4.0">[v1.4.0] Many new features and improvements</a></li>
+    <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.4.1">[v1.4.1] Tiny packaging fix</a></li>
+</ul>
+
 
 <ol>
 
@@ -36,6 +40,7 @@
     <li><a href="whats-new/v1-4.htsl#single-step-export-python">A single step to export graph to Python</a></li>
     <li><a href="whats-new/v1-4.htsl#bug-fixes">Bug fixes</a></li>
     <li><a href="whats-new/v1-4.htsl#ongoing-work-playback-feature">Ongoing work on the playback feature</a></li>
+    <li><a href="whats-new/v1-4.htsl#tiny-packing-fix">v1.4.1: Tiny packaging fix</a></li>
 
 </ol>
 
@@ -289,6 +294,13 @@ pip install pygame-ce --upgrade
 <p>The playback feature is responsible for recording and playing input in Nodezator and will be used as the basis for other features like automated GUI testing and a demonstration mode. Although the playback feature is already partially working, it isn't ready to be released, so the feature isn't available to users yet. In other words, the related changes only affect the backend. They represent a lot of the foundation needed to support the playback feature.</p>
 
 <p>The only visible difference caused by these extra changes is that a new <b>Playback</b> submenu is now visible in the menubar. However, its functionality isn't available to users, so attempting to click on the underlying commands will just show a message notifying the user that the feature is not implemented or that it is a work in progress.</p>
+
+
+
+<h2 id="tiny-packing-fix">v1.4.1: Tiny packaging fix</h2>
+
+<p>This tiny fix consists of the addition of a missing empty <code>__init__.py</code> file for packaging purposes. The absence of this file was causing some modules to be ommited in the pip installation, making the app crash on launch due to the missing modules.</p>
+
 
 
 
