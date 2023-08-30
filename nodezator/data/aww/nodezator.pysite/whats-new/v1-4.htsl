@@ -14,6 +14,7 @@
 <ul>
     <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.4.0">[v1.4.0] Many new features and improvements</a></li>
     <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.4.1">[v1.4.1] Tiny packaging fix</a></li>
+    <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.4.2">[v1.4.2] Fixed error when executing collapsed nodes</a></li>
 </ul>
 
 
@@ -41,6 +42,7 @@
     <li><a href="whats-new/v1-4.htsl#bug-fixes">Bug fixes</a></li>
     <li><a href="whats-new/v1-4.htsl#ongoing-work-playback-feature">Ongoing work on the playback feature</a></li>
     <li><a href="whats-new/v1-4.htsl#tiny-packing-fix">v1.4.1: Tiny packaging fix</a></li>
+    <li><a href="whats-new/v1-4.htsl#error-when-executing-collapsed">v1.4.2: Fixed error when executing collapsed nodes</a></li>
 
 </ol>
 
@@ -302,6 +304,13 @@ pip install pygame-ce --upgrade
 <p>This tiny fix consists of the addition of a missing empty <code>__init__.py</code> file for packaging purposes. The absence of this file was causing some modules to be ommited in the pip installation, making the app crash on launch due to the missing modules.</p>
 
 
+
+
+<h2 id="error-when-executing-collapsed">v1.4.2: Fixed error when executing collapsed nodes</h2>
+
+<p>The error was caused by using the wrong attribute when retrieving the existing sockets from a collapsed node. Using the correct attribute name fixed the error.</p>
+
+<p>The error was causing the output of collapsed nodes to be handled in the wrong way because it wasn't able to accurately determine the number of existing output sockets. This problem could cause all sorts of other problems, like the graph failing to execute or the wrong data being passed along to other nodes.</p>
 
 
 
