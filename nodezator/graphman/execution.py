@@ -544,7 +544,11 @@ class Execution:
         """
         ### retrieve iterable with all output sockets
         ### from the given node
-        output_sockets = node.output_socket_live_map.values()
+
+        if hasattr(node, 'output_socket_live_map'):
+            output_sockets = node.output_socket_live_map.values()
+        else:
+            output_sockets = node.output_sockets
 
         ### if there's more than one socket, then the output
         ### received is a dict, its keys identify through
