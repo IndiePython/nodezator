@@ -768,20 +768,20 @@ class Exporting:
 
         ## parameter names
 
-        isl_flmap = self.input_socket_live_flmap
-
-        for param_name, value in isl_flmap.items():
+        for param_name, value in self.input_socket_live_flmap.items():
 
             ## variable parameter
 
             if isinstance(value, dict):
 
-                if not value:
+                subparam_sockets_dict = value
+
+                if not subparam_sockets_dict:
                     continue
 
                 else:
 
-                    for socket in value.values():
+                    for socket in subparam_sockets_dict.values():
                         if socket in vis:
                             break
                     else:
@@ -802,21 +802,17 @@ class Exporting:
 
             else:
 
-                if value not in vis:
+                socket = value
+
+                if socket not in vis:
                     continue
 
                 text = param_name
 
-                text_x_str = str(value.rect.right + 3)
-
-                text_y_str = str(
-                    value.rect.top - 5
-                    if (
-                        param_name in widget_live_flmap
-                        and widget_live_flmap[param_name] in self.visible_widgets
-                    )
-                    else value.rect.centery + 4
-                )
+                (
+                    text_x_str,
+                    text_y_str,
+                ) = map(str, socket.rect.move(3, 4).midright)
 
             text_element = Element(
                 "text",
