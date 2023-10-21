@@ -81,8 +81,12 @@ class IntFloatOperations(Object2D):
         ### its value isn't allowed yet
         value = self.evaluate_string(str(value))
 
-        ### return if value is already set
-        if value == self.value:
+        ### return if value and type are already set
+
+        if (
+            value == self.value
+            and (type(value) is type(self.value))
+        ):
             return
 
         ### otherwise store the value
@@ -317,19 +321,19 @@ class IntFloatOperations(Object2D):
             ## update the line contents
             self.cursor.set(str(value))
 
-            ## if the value is different from the actual
-            ## one, set it, update the image and execute
-            ## the custom command
+            ## if the value or type are different from the current
+            ## one, set it
 
-            if value != self.value:
+            if (
+                value != self.value
+                or (type(value) is not type(self.value))
+            ):
 
                 self.set(value)
-
                 self.update_image()
-
                 self.command()
 
-            ## otherwise just update the image
+            ## otherwise, only update the image
             else:
                 self.update_image()
 

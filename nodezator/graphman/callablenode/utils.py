@@ -27,9 +27,13 @@ def update_with_widget(data, key, widget, remove_button=None):
     current = data[key]
     new = widget.get()
 
-    ## if the new value is equal to the current one,
+    ## if the new value has the same value and type of the current one,
     ## return earlier
-    if new == current:
+
+    if (
+        new == current
+        and (type(new) is type(current))
+    ):
         return
 
     ### otherwise update the value in the data,
