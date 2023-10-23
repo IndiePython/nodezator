@@ -16,6 +16,7 @@
     <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.4.1">[v1.4.1] Tiny packaging fix</a></li>
     <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.4.2">[v1.4.2] Fixed error when executing collapsed nodes</a></li>
     <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.4.3">[v1.4.3] Fixed error when executing operation nodes</a></li>
+    <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.4.4">[v1.4.4] Fixed bugs in SVG exporting and change checking</a></li>
 </ul>
 
 
@@ -45,6 +46,7 @@
     <li><a href="whats-new/v1-4.htsl#tiny-packing-fix">v1.4.1: Tiny packaging fix</a></li>
     <li><a href="whats-new/v1-4.htsl#error-when-executing-collapsed">v1.4.2: Fixed error when executing collapsed nodes</a></li>
     <li><a href="whats-new/v1-4.htsl#error-when-executing-operation">v1.4.3: Fixed error when executing operation nodes</a></li>
+    <li><a href="whats-new/v1-4.htsl#bugs-svg-exporting-change-checking">v1.4.4: Fixed bugs in SVG exporting and change checking</a></li>
 
 </ol>
 
@@ -323,6 +325,19 @@ pip install pygame-ce --upgrade
 
 <p>The error was causing execution of the graph to fail altogether whenever operation nodes were present.</p>
 
+
+
+<h2 id="bugs-svg-exporting-change-checking">v1.4.4: Fixed bugs in SVG exporting and change checking</h2>
+
+<p>The bug in SVG exporting was fixed by removing unused code. The unused code was causing a name error because it was made from repurposed pre-existing code and was trying to access a variable that didn't exist in the new spot. Since HTML exporting relies on SVG exporting, HTML exporting was also being affected.</p>
+
+<p>Some other lines that weren't causing errors but were not needed either were also removed to avoid confusion and needless maintenance.</p>
+
+<p>The other bug fixed is related to change checking, that is, checking whether a change in a widget's value took place. Change checking was causing errors due to missing type checks. Such type checks were missing in different modules in the source and are now implemented.</p>
+
+<p>More specifically, when a number changed, if the value was the same, even though the type was different, that change wasn't being treated properly, because the app was only checking the value and reaching the conclusion that nothing changed, because the value was the same in the end. However, this is not the right thing to do. That is, we must also take the type into account, because numeric values may have the same value and still have different types.</p>
+
+<p>For instance, <code>0</code>, <code>0.0</code> and <code>0j</code> all have the same value, although they are an integer, a float and a complex number respectively. Because of that, wherever a value was being checked to determine whether a change took place, we also added a type check so this kind of change is also taken into account.</p>
 
 
 </body>
