@@ -28,23 +28,23 @@ from contextlib import contextmanager
 
 ### local imports
 
-from ..config import APP_REFS
+from ...config import APP_REFS
 
-from ..knownpacks import store_node_pack_reference
+from ...knownpacks import store_node_pack_reference
 
-from ..appinfo import (
+from ...appinfo import (
     NODE_SCRIPT_NAME,
     NODE_DEF_VAR_NAMES,
     NODE_CATEGORY_METADATA_FILENAME,
 )
 
-from ..ourstdlibs.pyl import load_pyl
+from ...ourstdlibs.pyl import load_pyl
 
-from ..ourstdlibs.importutils import temporary_sys_path_visibility
+from ...ourstdlibs.importutils import temporary_sys_path_visibility
 
-from .exception import NodeScriptsError
+from ..exception import NodeScriptsError
 
-from ..colorsman.colors import NODE_CATEGORY_COLORS
+from ...colorsman.colors import NODE_CATEGORY_COLORS
 
 
 ### XXX idea: make it possible to reload individual node
@@ -102,13 +102,14 @@ from ..colorsman.colors import NODE_CATEGORY_COLORS
 ### implement/teach it, or not even be needed);
 
 
-@contextmanager
-def no_context(node_pack_parent):
-    """Do nothing on entering/exiting context."""
-    yield
 
+### main function
 
-def load_scripts(local_node_pack_dirs, installed_node_pack_names):
+def load_scripts(
+    local_node_pack_dirs,
+    installed_node_pack_names,
+    store_references_on_success=True,
+):
     """Load modules and store specific data in dicts.
 
     Namely, the object called 'main', which must be
@@ -124,6 +125,13 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
         represents a name or names to packages that can
         be import and have their subpackages used to
         define nodes.
+    store_references_on_success (bool)
+        whether a reference to a successfully loaded node pack must be
+        stored or not. In case it is True (default), references to such
+        node packs are stored and displayed in the interface to load
+        node packs so that users can easily find it without having to
+        type the name or provide the path to the node pack again. This
+        option was created so it could be turned off for testing.
 
     How it works
     ============
@@ -490,12 +498,19 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
                     ## also store the script's path
                     script_path_map[script_id] = script_filepath
 
-        ### if your reach this point in the "for loop" without finding
-        ### an error in one (or more) of your node scripts, it means the
-        ### node pack was successfully loaded, so we store a reference to it as
-        ### a known node pack
+        ### check whether:
+        ###
+        ### 1) references to successfully loaded node packs must be stored
+        ###
+        ### 2) the node pack was successfully loaded (if we reach this point
+        ###    in the "for loop" without finding errors in one or more of the
+        ###    node scripts, it means the node pack was indeed successfully
+        ###    loaded)
+        ###
+        ### if both are true, we store a reference to the node pack so it can
+        ### be easily found by users in the interface to load node packs
 
-        if loaded_scripts_successfully:
+        if store_references_on_success and loaded_scripts_successfully:
             store_node_pack_reference(node_pack)
 
         ### remove imported modules from sys.modules so they are reloaded
@@ -565,6 +580,13 @@ def load_scripts(local_node_pack_dirs, installed_node_pack_names):
     category_index_map.clear()
 
 
-### small utility
+
+### utilities
+
+@contextmanager
+def no_context(node_pack_parent):
+    """Do nothing on entering/exiting context."""
+    yield
+
 def get_path_name(item):
     return Path(item).name
