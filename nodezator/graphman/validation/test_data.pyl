@@ -15,7 +15,7 @@
         ],
     },
     "non_compliant_cases": {
-        "non_compliant_case_not_list_or_tuple": "str",
+        "non_compliant_case_not_list": "str",
         "non_compliant_case_items_must_be_dict": [
             {"name": "output_name01"},
             {"name": "output_name02"},
@@ -43,9 +43,9 @@
         ],
     },
     "non_compliance_error_data": {
-        "non_compliant_case_not_list_or_tuple": {
+        "non_compliant_case_not_list": {
             "type": "TypeError",
-            "message_excerpt": "return annotation must be of class 'list' or 'tuple'",
+            "message_excerpt": "return annotation must be of class 'list'",
         },
         "non_compliant_case_items_must_be_dict": {
             "type": "TypeError",
