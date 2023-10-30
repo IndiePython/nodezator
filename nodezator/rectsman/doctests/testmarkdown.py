@@ -6,7 +6,10 @@ from pathlib import Path
 from doctest import DocFileSuite
 
 
-### third-party import
+### third-party imports
+
+import pygame
+
 from pygame import Rect
 
 
@@ -22,17 +25,19 @@ from .fixtures import (
 )
 
 
+
+### this directory
+THIS_DIR = Path(__file__).parent
+
 ### function responsible for including the doctests from the .test.md
 ### files among the tests run when executing "python3 -m unittest" from
 ### the top level directory of the repository
 
 def load_tests(loader, tests, ignore):
 
-    topleveldir = Path(__file__).parent
-
     test_md_files = [
-        str(item.relative_to(topleveldir))
-        for item in topleveldir.iterdir()
+        str(item.relative_to(THIS_DIR))
+        for item in THIS_DIR.iterdir()
         if ''.join(item.suffixes) == '.test.md'
     ]
 
@@ -42,6 +47,7 @@ def load_tests(loader, tests, ignore):
             DocFileSuite(
                 *test_md_files,
                 globs={
+                    'pygame': pygame,
                     'Rect': Rect,
                     'RectsManager': RectsManager,
                     'Simple': Simple,

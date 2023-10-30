@@ -7,7 +7,7 @@ This chapter is the first in a series containing documentation and tests for the
 
 ## Main goal and alternative usage
 
-The rectsman package provide two important objects used to make any instance containing multiple rects to behave as if it had a single rect.
+The rectsman package provides two important objects used to make any instance containing multiple rects to behave as if it had a single rect.
 
 The first object is a property called `rect_property`. It has a getter and setter implementation and was created to be injected in custom classes' in their "rect" class attribute so that it acts as the "rect" property of the class' instances.
 
@@ -58,7 +58,7 @@ The RectsManager was created with the purpose of moving and aligning groups of r
 However, once we realized how handy such class is and that it could be used in a lot of use cases, even gameplay not related to UIs, we decided to make its API fully compatible with the pygame.Rect API shown in the online docs, thereby implementing size transformation as well.  Therefore, code like shown below is now possible, too:
 
 ```python
-# again, since this is just a demosntration, we
+# again, since this is just a demonstration, we
 # skip the tests
 >>> obj.rect.width = 50          # doctest: +SKIP
 >>> obj.rect.width += 50         # doctest: +SKIP
@@ -160,6 +160,14 @@ As you can see above, we pass the `get_all_rects` method from the instance of Di
 ## Representation (`__repr__` method)
 
 Since the RectsManager class is meant to emulate the behaviour of pygame.Rect, the representation of the RectsManager class is the same adopted by pygame.Rect.
+
+Before we proceed, it is important to check whether we are using pygame-ce, which is the community edition fork of regular pygame. The representation of regular rects and RectsManager instances match the representation as presented in pygame-ce, so using regular pygame will cause the tests to fail. If the installed pygame is pygame-ce, the module will have a `IS_CE` attribute set to 1, like so:
+
+```python
+>>> bool(getattr(pygame, 'IS_CE', False))
+True
+
+```
 
 We'll use the ListGroup class defined early and the `SimpleObject` class defined below to demonstrate the RectsManager representation
 
