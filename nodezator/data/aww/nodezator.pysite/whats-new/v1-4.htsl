@@ -17,6 +17,7 @@
     <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.4.2">[v1.4.2] Fixed error when executing collapsed nodes</a></li>
     <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.4.3">[v1.4.3] Fixed error when executing operation nodes</a></li>
     <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.4.4">[v1.4.4] Fixed bugs in SVG exporting and change checking</a></li>
+    <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.4.5">[v1.4.5] Additions, improvements and fixes to tests</a></li>
 </ul>
 
 
@@ -47,6 +48,7 @@
     <li><a href="whats-new/v1-4.htsl#error-when-executing-collapsed">v1.4.2: Fixed error when executing collapsed nodes</a></li>
     <li><a href="whats-new/v1-4.htsl#error-when-executing-operation">v1.4.3: Fixed error when executing operation nodes</a></li>
     <li><a href="whats-new/v1-4.htsl#bugs-svg-exporting-change-checking">v1.4.4: Fixed bugs in SVG exporting and change checking</a></li>
+    <li><a href="whats-new/v1-4.htsl#additions-improvements-fixes-tests">v1.4.5: Additions, improvements and fixes to tests</a></li>
 
 </ol>
 
@@ -339,6 +341,15 @@ pip install pygame-ce --upgrade
 
 <p>For instance, <code>0</code>, <code>0.0</code> and <code>0j</code> all have the same value, although they are an integer, a float and a complex number respectively. Because of that, wherever a value was being checked to determine whether a change took place, we also added a type check so this kind of change is also taken into account.</p>
 
+
+
+<h2 id="additions-improvements-fixes-tests">v1.4.5: Additions, improvements and fixes to tests</h2>
+
+<p>New unit tests for the function used to load nodes were provided by <a href="https://github.com/BMaxV">Mr. BMaxV</a> via pull request. I (<a href="https://github.com/KennedyRichard">KennedyRichard</a>) also refactored and complemented them.</p>
+
+<p>I also used the opportunity to make some small improvements in the doctests and to fix one of them.</p>
+
+<p>In order to make it more convenient to store test data, <b>.zip</b> files found in Nodezator's source are now also included in the source distribution. That is, they are downloaded in conjunction with the Python modules when someone installs Nodezator.</p>
 
 </body>
 
