@@ -1,5 +1,8 @@
 # Nodezator
 
+## Nodezator [runs in browser][]
+### (python wasm using pygbag)
+
 Nodezator is a multi-purpose visual node editor for the Python programming language. It is a desktop application that works by connecting Python functions (and callables in general) visually in order to produce flexible parametric behavior/data/applications/snippets.
 
 ![nodezator screenshot](https://nodezator.com/images/screenshot.png)
@@ -218,6 +221,7 @@ Other parts of the code, however, specially the most recent ones, are not so ref
 Also, other parts of the code, despite being carefully designed, might be redesigned in the future, since now that the app is published, it should evolve as we find problems and contribute to improve the app. In other words, some of the design may change in the future, so bear in mind that the software is still evolving.
 
 
+[runs in browser]: https://sefgit.github.io/nodezator/build/web/
 [homepage]: https://nodezator.com
 [Kennedy Richard Silva Guerra]: https://kennedyrichard.com
 [PyPI]: https://pypi.org
