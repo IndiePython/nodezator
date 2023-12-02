@@ -447,24 +447,7 @@ class DirectoryPanel(
         ### based on their selection state
         self.update_path_objs_appearance()
 
-    def present_new_path_form(self, is_file):
-        """Present form to get a new path and pick action.
-
-        The action picked will determine what will be
-        done with the path we get.
-
-        Parameters
-        ==========
-        is_file (boolean)
-            whether path being create must be treated as
-            file or directory.
-        """
-        ### present form to user by using get_path,
-        ### passing the current directory and whether the
-        ### new path is supposed to be a file or not;
-        ### store the form data once you leave the form
-        path = get_path(self.current_dir, is_file)
-
+    def present_new_path_form_callback(self, path):
         ### if the path is None, it means the user
         ### cancelled the action, so return now to prevent
         ### any action from happening
@@ -475,7 +458,7 @@ class DirectoryPanel(
 
         ## pick path creation operation according to
         ## kind of path chosen
-        creation_operation = Path.touch if is_file else Path.mkdir
+        creation_operation = Path.touch if self.is_file else Path.mkdir
 
         ## try creating path ('exist_ok' set to False
         ## causes an error to be raised if path already
@@ -489,7 +472,7 @@ class DirectoryPanel(
 
             # pick name for kind of path depending on
             # is_file argument
-            path_kind = "file" if is_file else "folder"
+            path_kind = "file" if self.is_file else "folder"
 
             # put an error message together explaining
             # the error
@@ -509,7 +492,29 @@ class DirectoryPanel(
 
             self.load_current_dir_contents()
             self.jump_to_path(path)
+    
+    def present_new_path_form(self, is_file):
+        """Present form to get a new path and pick action.
 
+        The action picked will determine what will be
+        done with the path we get.
+
+        Parameters
+        ==========
+        is_file (boolean)
+            whether path being create must be treated as
+            file or directory.
+        """
+        ### present form to user by using get_path,
+        ### passing the current directory and whether the
+        ### new path is supposed to be a file or not;
+        ### store the form data once you leave the form
+        self.is_file = is_file
+        get_path(
+            self.current_dir, 
+            is_file, 
+            callback = self.present_new_path_form_callback
+        )
 
     present_new_file_form = partialmethod(present_new_path_form, True)
 

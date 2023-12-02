@@ -1,5 +1,6 @@
+### standard library imports
+import asyncio
 ### third-party imports
-
 from pygame import Rect
 
 from pygame.locals import (
@@ -27,7 +28,7 @@ from pygame.mixer import music
 
 from .config import APP_REFS
 
-from .pygamesetup import SERVICES_NS, SCREEN, SCREEN_RECT
+from .pygamesetup import SERVICES_NS, SCREEN, SCREEN_RECT, set_modal
 
 from .dialog import create_and_show_dialog
 
@@ -94,7 +95,6 @@ logger = get_new_logger(__name__)
 class AudioPlayer(Object2D):
     def __init__(self):
         """"""
-
         self.image = render_rect(420, 50, (128, 128, 128))
         draw_border(self.image, thickness=2)
 
@@ -187,8 +187,32 @@ class AudioPlayer(Object2D):
             start_vector.lerp(volume_area.bottomright, volume),
         )
 
-    def play_audio(self, audio_paths, index=0):
+    async def play_audio_loop(self):
+        while self.running:
+            await asyncio.sleep(0)        
 
+            ### perform various checkups for this frame;
+            ###
+            ### stuff like maintaing a constant framerate and more
+            SERVICES_NS.frame_checkups()
+
+            try:
+
+                loop_holder.handle_input()
+                loop_holder.draw()
+
+            except SwitchLoopException as err:
+                loop_holder = err.loop_holder
+
+        music.stop()
+        set_modal(False)
+        if self.callback is not None:
+            self.callback()
+
+    
+    def play_audio(self, audio_paths, index=0, callback = None):
+        self.callback = callback
+        
         self.audio_paths = (
             [audio_paths] if isinstance(audio_paths, str) else audio_paths
         )
@@ -213,22 +237,8 @@ class AudioPlayer(Object2D):
 
         loop_holder = self
 
-        while self.running:
-
-            ### perform various checkups for this frame;
-            ###
-            ### stuff like maintaing a constant framerate and more
-            SERVICES_NS.frame_checkups()
-
-            try:
-
-                loop_holder.handle_input()
-                loop_holder.draw()
-
-            except SwitchLoopException as err:
-                loop_holder = err.loop_holder
-
-        music.stop()
+        set_modal(True)
+        asyncio.get_running_loop().create_task(self.play_audio_loop())
 
     def handle_input(self):
         """"""

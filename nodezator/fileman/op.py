@@ -1,7 +1,7 @@
 """File Manager class extension with operations."""
 
 ### standard-library imports
-
+import asyncio
 from os import pathsep
 
 from functools import partialmethod
@@ -32,7 +32,7 @@ from pygame.locals import (
 
 ### local imports
 
-from ..pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
+from ..pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen, set_modal
 
 from ..translation import TRANSLATION_HOLDER as t
 
@@ -55,58 +55,7 @@ from ..classes2d.single import Object2D
 
 class FileManagerOperations(Object2D):
     """Operations for file manager class."""
-
-    def select_paths(
-        self,
-        *,
-        caption="",
-        path_name="",
-    ):
-        """Return selected paths.
-
-        This method shows the user the file manager
-        interface, allowing the user to browse the
-        filesystem visually while selecting paths
-        to be returned or providing the name for new
-        path(s) to be created.
-
-        Parameters
-        ==========
-
-        caption (string)
-            represents a caption for the widget.
-        path_name (string)
-            It is used as a path name to be included in the
-            selected paths entry. It can actually represent
-            multiple path names, as long as you separate each
-            path with the path separator character (os.pathsep).
-        """
-        ### blit screen sized semi transparent object
-
-        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
-
-        ### update widget caption label
-
-        self.caption_label.set(
-
-            caption
-            if caption
-            else t.file_manager.select_paths
-
-        )
-
-        ### load paths from the current directory so they
-        ### are displayed in the directory panel
-        self.dir_panel.load_current_dir_contents()
-
-        ### check whether the current bookmarks still exists
-        self.bkm_panel.check_live_bookmarks()
-
-        ### set entry contents
-        self.selection_entry.set(path_name)
-
-        ### alias self as the loop holder
-        loop_holder = self
+    async def _run(self, loop_holder):
 
         ### keep looping the execution the methods
         ### "handle_input", "update" and "drawing" of the
@@ -115,7 +64,8 @@ class FileManagerOperations(Object2D):
         self.running = True
 
         while self.running:
-
+            await asyncio.sleep(0)
+            
             ### perform various checkups for this frame;
             ###
             ### stuff like maintaing a constant framerate and more
@@ -142,14 +92,74 @@ class FileManagerOperations(Object2D):
         ### blit smaller semi transparent object
         self.rect_size_semitransp_obj.draw()
 
+        set_modal(False)
         ### return a copy of the path selection
-        return tuple(self.path_selection)
+        if (self.callback):
+            self.callback(tuple(self.path_selection))
+    
+    def select_paths(
+        self,
+        *,
+        caption="",
+        path_name="",
+        callback = None,
+    ):
+        """Return selected paths.
+
+        This method shows the user the file manager
+        interface, allowing the user to browse the
+        filesystem visually while selecting paths
+        to be returned or providing the name for new
+        path(s) to be created.
+
+        Parameters
+        ==========
+
+        caption (string)
+            represents a caption for the widget.
+        path_name (string)
+            It is used as a path name to be included in the
+            selected paths entry. It can actually represent
+            multiple path names, as long as you separate each
+            path with the path separator character (os.pathsep).
+        """
+        self.callback = callback
+        ### blit screen sized semi transparent object
+
+        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
+
+        ### update widget caption label
+
+        self.caption_label.set(
+
+            caption
+            if caption
+            else t.file_manager.select_paths
+
+        )
+
+        ### load paths from the current directory so they
+        ### are displayed in the directory panel
+        self.dir_panel.load_current_dir_contents()
+
+        ### check whether the current bookmarks still exists
+        self.bkm_panel.check_live_bookmarks()
+
+        ### set entry contents
+        self.selection_entry.set(path_name)
+        
+        ### alias self as the loop holder
+        loop_holder = self
+        
+        set_modal(True)
+        asyncio.get_running_loop().create_task(self._run(loop_holder))
 
     def handle_input(self):
         """Handle event queue."""
         for event in SERVICES_NS.get_events():
 
             if event.type == QUIT:
+                set_modal(False)
                 raise QuitAppException
 
             ### KEYDOWN

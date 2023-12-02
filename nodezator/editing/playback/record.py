@@ -1,6 +1,7 @@
 """Form for setting and triggering session recording."""
 
 ### standard library imports
+import asyncio
 
 from pathlib import Path
 
@@ -30,7 +31,7 @@ from ...config import APP_REFS
 
 from ...appinfo import NATIVE_FILE_EXTENSION
 
-from ...pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
+from ...pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen, set_modal
 
 from ...dialog import create_and_show_dialog
 
@@ -139,7 +140,8 @@ class SessionRecordingForm(Object2D):
 
         ### assign behaviour
         self.update = empty_function
-
+        self.label = None
+        
         ### center form and also append centering method
         ### as a window resize setup
 
@@ -448,6 +450,13 @@ class SessionRecordingForm(Object2D):
         ## store
         widgets.extend((self.cancel_button, self.start_button))
 
+    def change_filepath_callback(self, paths):
+        ### if paths were given, there can only be one,
+        ### it should be used as the new filepath
+        if paths:
+            self.label.set(str(paths[0]))
+        pass
+        
     def change_filepath(self, path_purpose='recording'):
         """Pick new path and update label using it."""
 
@@ -455,7 +464,7 @@ class SessionRecordingForm(Object2D):
 
             caption="Select path wherein to save session recording"
             path_name=DEFAULT_RECORDING_FILENAME
-            label = self.recording_filepath_label
+            self.label = self.recording_filepath_label
 
         else:
 
@@ -464,16 +473,13 @@ class SessionRecordingForm(Object2D):
                 " recording session"
             )
             path_name=DEFAULT_FILENAME_TO_LOAD
-            label = self.filepath_to_load_label
+            self.label = self.filepath_to_load_label
 
         ### pick new path
-        paths = select_paths(caption=caption, path_name=path_name)
+        select_paths(caption=caption, 
+                    path_name=path_name, 
+                    callback = change_filepath_callback)
 
-        ### if paths were given, there can only be one,
-        ### it should be used as the new filepath
-
-        if paths:
-            label.set(str(paths[0]))
 
     change_recording_filepath = partialmethod(change_filepath, 'recording')
     change_filepath_to_load = partialmethod(change_filepath, 'to_load')
@@ -507,25 +513,9 @@ class SessionRecordingForm(Object2D):
         else:
             self.filepath_to_load_label.set(str(current))
 
-    def set_session_recording(self):
-        """Present form to set and trigger recording session."""
-        ### exit with a dialog if feature is not ready for usage yet
-
-        if APP_REFS.wip_lock:
-            create_and_show_dialog("This feature is a work in progress.")
-            return
-
-        ### draw screen sized semi-transparent object,
-        ### so that screen behind form appears as if
-        ### unhighlighted
-        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
-
-        ### loop until running attribute is set to False
-
-        self.running = True
-        self.loop_holder = self
-
+    async def set_session_recording_loop(self):
         while self.running:
+            await asyncio.sleep(0)        
 
             ### perform various checkups for this frame;
             ###
@@ -556,7 +546,32 @@ class SessionRecordingForm(Object2D):
         ### on the screen so the form appear as if
         ### unhighlighted
         self.rect_size_semitransp_obj.draw()
+        set_modal(False)
+        if self.callback is not None:
+            self.callback()
 
+    
+    def set_session_recording(self, callback = None):
+        """Present form to set and trigger recording session."""
+        ### exit with a dialog if feature is not ready for usage yet
+
+        if APP_REFS.wip_lock:
+            create_and_show_dialog("This feature is a work in progress.")
+            return
+
+        self.callback = callback
+        ### draw screen sized semi-transparent object,
+        ### so that screen behind form appears as if
+        ### unhighlighted
+        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
+
+        ### loop until running attribute is set to False
+
+        self.running = True
+        self.loop_holder = self
+
+        set_modal(True)
+        asyncio.get_running_loop().create_task(self.set_session_recording_loop())
 
     def handle_input(self):
         """Process events from event queue."""
@@ -651,31 +666,8 @@ class SessionRecordingForm(Object2D):
 
     on_mouse_release = partialmethod(mouse_method_on_collision, "on_mouse_release")
 
-    def trigger_recording(self):
-        """Treat data and, if valid, trigger session recording."""
-
-        if any_toggle_key_on():
-
-            answer = create_and_show_dialog(
-
-                (
-                    "A toggle key is turned on: (Caps Lock, Num Lock or both)."
-                    " Unless this is your intention, we recommend turning those keys"
-                    " off, since their usage increases the size of the recording data."
-                    " It is okay to leave them on if it is your intention, though."
-                ),
-
-                buttons=(
-                    ("Cancel", False),
-                    ("Start recording", True),
-                ),
-                dismissable=True,
-            )
-
-            if not answer: return
-
+    def do_recording(self):
         ### gather data
-
         data = {
             "recording_title" : self.recording_title_entry.get(),
             "recording_path" : Path(self.recording_filepath_label.get()),
@@ -690,6 +682,36 @@ class SessionRecordingForm(Object2D):
 
         ### trigger session recording
         raise ResetAppException(mode='record', filepath=filepath, data=data)
+
+    def trigger_recording_callback(self, answer):
+        if not answer: 
+            return
+        self.do_recording()
+
+    def trigger_recording(self):
+        """Treat data and, if valid, trigger session recording."""
+        if any_toggle_key_on():
+
+            create_and_show_dialog(
+
+                (
+                    "A toggle key is turned on: (Caps Lock, Num Lock or both)."
+                    " Unless this is your intention, we recommend turning those keys"
+                    " off, since their usage increases the size of the recording data."
+                    " It is okay to leave them on if it is your intention, though."
+                ),
+
+                buttons=(
+                    ("Cancel", False),
+                    ("Start recording", True),
+                ),
+                dismissable=True,
+                callback = self.trigger_recording_callback,
+            )
+            
+        else:
+        
+            self.do_recording()
 
     def draw(self):
         """Draw itself and widgets.

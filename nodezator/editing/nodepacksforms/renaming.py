@@ -1,6 +1,7 @@
 """Form for changing node packs on existing file."""
 
 ### standard library imports
+import asyncio
 
 from pathlib import Path
 
@@ -30,7 +31,7 @@ from ...config import APP_REFS
 
 from ...translation import TRANSLATION_HOLDER as t
 
-from ...pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
+from ...pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen, set_modal
 
 from ...appinfo import NATIVE_FILE_EXTENSION
 
@@ -392,19 +393,10 @@ class NodePacksRenamingChangeForm(Object2D):
 
                 (node_pack_name_to_ids[node_pack_name].append(node_id))
 
-    def present_rename_node_packs_form(self):
-        """Allow user to rename node packs on any file."""
-        ### draw semi-transparent object so screen behind
-        ### form appears as if unhighlighted
-
-        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
-
-        ### loop until running attribute is set to False
-
-        self.running = True
-        self.loop_holder = self
+    async def present_rename_node_packs_form_loop(self):
 
         while self.running:
+            await asyncio.sleep(0)        
 
             ### perform various checkups for this frame;
             ###
@@ -434,6 +426,25 @@ class NodePacksRenamingChangeForm(Object2D):
         ### draw a semitransparent object over the
         ### form, so it appears as if unhighlighted
         self.rect_size_semitransp_obj.draw()
+        set_modal(False)
+        if self.callback is not None:
+            self.callback()
+
+    def present_rename_node_packs_form(self, callback = None):
+        """Allow user to rename node packs on any file."""
+        self.callback = callback
+        ### draw semi-transparent object so screen behind
+        ### form appears as if unhighlighted
+
+        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
+
+        ### loop until running attribute is set to False
+
+        self.running = True
+        self.loop_holder = self
+
+        set_modal(True)
+        asyncio.get_running_loop().create_task(self.present_rename_node_packs_form_loop())
 
     def handle_input(self):
         """Process events from event queue."""

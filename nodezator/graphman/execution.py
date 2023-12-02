@@ -234,7 +234,7 @@ class Execution:
 
         ### we'll now keep iterating while there are
         ### nodes left to be executed
-
+        last_err = None
         while nodes_to_execute:
 
             ### try executing each node
@@ -376,76 +376,7 @@ class Execution:
 
                 ## clear all stored arguments
                 self.clear_arguments()
-
-                ## if the error is among the ones listed
-                ## below, just notify the user via dialog,
-                ## using the error converted to a string
-                ## as the error message
-
-                if isinstance(
-                    err,
-                    (
-                        MissingInputError,
-                        MissingOutputError,
-                        PositionalSubparameterUnpackingError,
-                        KeywordSubparameterUnpackingError,
-                    ),
-                ):
-
-                    create_and_show_dialog(
-                        str(err),
-                        level_name="error",
-                    )
-
-                ## any other kind of error is unexpected,
-                ## so we take further measures
-
-                else:
-
-                    ## log traceback in the user log
-
-                    USER_LOGGER.exception(
-                        "An error occurred" " during graph execution."
-                    )
-
-                    ## if the error was caused during call
-                    ## or execution of a node's callable,
-                    ## display a custom error message
-
-                    if isinstance(err, NodeCallableError):
-
-                        # grab the node wherein the
-                        # error bubbled up
-                        error_node = err.node
-
-                        # grab the original error
-                        original_error = err.__cause__
-
-                        show_formatted_dialog(
-                            "node_callable_error_dialog",
-                            error_node.title_text,
-                            error_node.id,
-                            original_error.__class__.__name__,
-                            str(original_error),
-                        )
-
-                    ## otherwise we just notify the user
-                    ## with a custom error message
-
-                    else:
-
-                        error_msg = (
-                            "node layout execution failed"
-                            " with an unexpected error. The"
-                            " following message was issued"
-                            " >> {}: {}"
-                        ).format(err.__class__.__name__, str(err))
-
-                        create_and_show_dialog(
-                            error_msg,
-                            level_name="error",
-                        )
-
+                last_err = err
                 ## break out of the "while loop"
                 break
 
@@ -482,6 +413,80 @@ class Execution:
             time_for_humans = friendly_delta_from_secs(tracked_nodes_total)
 
             set_status_message(f"Total execution time was {time_for_humans}")
+            
+        if last_err is None:
+            return
+            
+        ## if the error is among the ones listed
+        ## below, just notify the user via dialog,
+        ## using the error converted to a string
+        ## as the error message
+
+        if isinstance(
+            last_err,
+            (
+                MissingInputError,
+                MissingOutputError,
+                PositionalSubparameterUnpackingError,
+                KeywordSubparameterUnpackingError,
+            ),
+        ):
+
+            create_and_show_dialog(
+                str(last_err),
+                level_name="error",
+            )
+
+        ## any other kind of error is unexpected,
+        ## so we take further measures
+
+        else:
+
+            ## log traceback in the user log
+
+            USER_LOGGER.exception(
+                "An error occurred" " during graph execution."
+            )
+
+            ## if the error was caused during call
+            ## or execution of a node's callable,
+            ## display a custom error message
+
+            if isinstance(last_err, NodeCallableError):
+
+                # grab the node wherein the
+                # error bubbled up
+                error_node = last_err.node
+
+                # grab the original error
+                original_error = last_err.__cause__
+
+                show_formatted_dialog(
+                    "node_callable_error_dialog",
+                    error_node.title_text,
+                    error_node.id,
+                    original_error.__class__.__name__,
+                    str(original_error),
+                )
+
+            ## otherwise we just notify the user
+            ## with a custom error message
+
+            else:
+
+                error_msg = (
+                    "node layout execution failed"
+                    " with an unexpected error. The"
+                    " following message was issued"
+                    " >> {}: {}"
+                ).format(last_err.__class__.__name__, str(last_err))
+
+                create_and_show_dialog(
+                    error_msg,
+                    level_name="error",
+                )
+
+        
 
     def check_nodes_and_redirect_data(self, nodes_to_direct_data):
 

@@ -142,6 +142,9 @@ class PreviewerOperations(Object2D):
     go_to_last = partialmethod(browse_thumbs, INFINITY)
     go_to_first = partialmethod(browse_thumbs, -INFINITY)
 
+    def try_visualizing_full_image_callback(self):
+        self.response_draw()
+    
     def try_visualizing_full_image(self):
 
         image_path = self.image_paths[self.thumb_index]
@@ -161,8 +164,10 @@ class PreviewerOperations(Object2D):
             create_and_show_dialog("Couldn't find the image")
 
         else:
-            view_surface(full_image_surface)
-            self.response_draw()
+            view_surface(
+                full_image_surface, 
+                callback = self.try_visualizing_full_image_callback
+            )
 
     def on_mouse_release(self, event):
         """"""

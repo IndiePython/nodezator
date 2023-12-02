@@ -1,6 +1,8 @@
 """Form for setting and triggering demonstration playing."""
 
 ### standard library imports
+import asyncio
+
 from functools import partial, partialmethod
 
 
@@ -51,7 +53,7 @@ from ....config import APP_REFS
 from ....appinfo import NATIVE_FILE_EXTENSION
 
 from ....pygamesetup import (
-    SERVICES_NS, SCREEN_RECT, blit_on_screen, SCREEN,
+    SERVICES_NS, SCREEN_RECT, blit_on_screen, SCREEN, set_modal
 )
 
 from ....dialog import create_and_show_dialog
@@ -351,34 +353,10 @@ class DemonstrationSessionForm(Object2D):
         w, h = TEXT_TO_WINDOW_SIZE[self.window_size_tray.get()]
         self.window_size_label_full.set(f'{w}x{h}')
 
-    def set_demonstration_session(self):
-        """Present form to set and trigger demonstration session."""
-        ### exit with a dialog if feature is not ready for usage yet
-
-        if APP_REFS.wip_lock:
-            create_and_show_dialog("This feature is a work in progress.")
-            return
-
-        ### draw screen sized semi-transparent object, so that screen
-        ### behind form appears as if unhighlighted
-        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
-
-        ###
-        self.search_box.reposition_cursor()
-
-        start_text_input()
-        set_text_input_rect(
-            self.search_box.rect.move(0, 20)
-        )
-
-        self.focused_obj = self.search_box
-
-        ### loop until running attribute is set to False
-
-        self.running = True
-        self.loop_holder = self
+    async def set_demonstration_session_loop(self):
 
         while self.running:
+            await asyncio.sleep(0)        
 
             ### perform various checkups for this frame;
             ###
@@ -415,6 +393,40 @@ class DemonstrationSessionForm(Object2D):
         ### on the screen so the form appear as if
         ### unhighlighted
         self.rect_size_semitransp_obj.draw()
+        set_modal(False)
+        if self.callback is not None:
+            self.callback()
+    
+    def set_demonstration_session(self, callback = None):
+        """Present form to set and trigger demonstration session."""
+        ### exit with a dialog if feature is not ready for usage yet
+
+        if APP_REFS.wip_lock:
+            create_and_show_dialog("This feature is a work in progress.")
+            return
+
+        self.callback = callback
+        ### draw screen sized semi-transparent object, so that screen
+        ### behind form appears as if unhighlighted
+        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
+
+        ###
+        self.search_box.reposition_cursor()
+
+        start_text_input()
+        set_text_input_rect(
+            self.search_box.rect.move(0, 20)
+        )
+
+        self.focused_obj = self.search_box
+
+        ### loop until running attribute is set to False
+
+        self.running = True
+        self.loop_holder = self
+
+        set_modal(True)
+        asyncio.get_running_loop().create_task(self.set_demonstration_session_loop())
 
     def handle_input(self):
         """Process events from event queue."""

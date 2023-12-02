@@ -75,7 +75,7 @@ class Operations(Object2D):
     TextViewer class.
     """
 
-    async def run_loop(self):
+    async def _run(self):
         """Define and enter text viewer loop."""
         ### blit a semitransparent surface to in the canvas
         ### to increase constrast between the dialog and
@@ -88,8 +88,6 @@ class Operations(Object2D):
         self.running = True
 
         while self.running:
-            await asyncio.sleep(0)        
-
             ### perform various checkups for this frame;
             ###
             ### stuff like maintaing a constant framerate and more
@@ -98,6 +96,8 @@ class Operations(Object2D):
             self.handle_input()
 
             self.draw()
+            await asyncio.sleep(0)
+        
         ### blit semitransparent obj
 
         ## over self.rect
@@ -124,7 +124,7 @@ class Operations(Object2D):
 
     def run(self):
         set_modal(True)
-        asyncio.get_running_loop().create_task(self.run_loop())
+        asyncio.get_running_loop().create_task(self._run())
         
     def handle_events(self):
         """Retrieve and respond to events."""

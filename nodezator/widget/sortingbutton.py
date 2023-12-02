@@ -311,6 +311,11 @@ class SortingButton(Object2D):
         ### beside the icon
 
         blit_aligned(text_surf, self.image, "midleft", "midleft", offset_pos_by=(22, 0))
+    def change_value_callback(self, value):
+        ### if the output is not None, update the value
+        ### and available items in the widget
+        if value is not None:
+            self.set(value)
 
     def change_value(self):
         """Sort the values.
@@ -320,18 +325,11 @@ class SortingButton(Object2D):
         """
         ### retrieve new values from the sort_list function
 
-        output = sort_sequence(
+        sort_sequence(
             self.value,
             self.available_items,
+            callback = self.change_value_callback
         )
-
-        ### if the output is not None, update the value
-        ### and available items in the widget
-
-        if output is not None:
-
-            value = output
-            self.set(value)
 
     def reset_value_and_available_items(
         self,

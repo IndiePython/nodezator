@@ -158,7 +158,12 @@ class WindowManager(
 
         GraphManager()
         EditingAssistant()
-
+        
+        self.state_name = "no_file"
+        self.original_local_node_packs = None
+        self.current_local_node_packs = None
+        self.faulty_pack = None
+        
         self.splash_screen = SplashScreen()
 
         ### instantiate label widgets
@@ -187,220 +192,9 @@ class WindowManager(
         self.create_separator_surface()
         self.reposition_labels()
 
-    def prepare_for_new_session(self):
-        """Instantiate and set up objects.
-
-        Also takes additional measures to free memory and
-        check whether there are issues with the nodes
-        directory, in case a file is to be loaded.
-        """
-        ### first of all free up memory used by data/objects
-        ### from a possible previous session, data/objects
-        ### that may not be needed anymore
-        free_up_memory()
-
-        ### check if a valid filepath sits on 'source_path'
-        ### attribute of the APP_REFS object (it means a
-        ### file is loaded)
-        try:
-            APP_REFS.source_path
-
-        ### if not, pick 'no_file' state name
-        except AttributeError:
-            state_name = "no_file"
-
-        ### otherwise perform setups and add the update
-        ### viz widgets to the methods to be executed when
-        ### updating the window manager
-
-        else:
-
-            ### check if the local node packs provided in
-            ### the file are appropriate, to prevent the
-            ### application from crashing if such node
-            ### packs don't exist or are somehow faulty
-
-            original_local_node_packs = (
-                get_formatted_local_node_packs(APP_REFS.source_path)
-            )
-
-            current_local_node_packs = original_local_node_packs.copy()
-
-            local_node_packs_are_ok = True
-
-            while True:
-
-                try:
-                    check_local_node_packs(current_local_node_packs)
-
-                except NODE_PACK_ERRORS as err:
-
-                    message = (
-                        "One of the provided local node packs"
-                        " presented the following issue:"
-                        f" {err}; what would you like to do?"
-                    )
-
-                    options = (
-                        ("Select replacement/new path", "select"),
-                        ("Cancel loading file", "cancel"),
-                    )
-
-                    answer = create_and_show_dialog(
-                        message,
-                        options,
-                        level_name="warning",
-                    )
-
-                    if answer == "select":
-
-                        result = select_paths(
-                            caption="Select replacement/new path for local node pack"
-                        )
-
-                        if result:
-
-                            current_local_node_packs.remove(err.faulty_pack)
-
-                            replacement = result[0]
-                            current_local_node_packs.append(replacement)
-
-                    else:
-
-                        local_node_packs_are_ok = False
-                        break
-
-                else:
-                    break
-
-            if local_node_packs_are_ok:
-
-                ### if by this point the original node
-                ### packs listed have changed, then it is
-                ### as if we changed the file, so we save
-                ### its current contents before assigning
-                ### the new node packs
-
-                if set(current_local_node_packs) != set(original_local_node_packs):
-
-                    APP_REFS.data["node_packs"] = [
-                        str(path) for path in current_local_node_packs
-                    ]
-
-                    ## pass content from source to backup
-                    ## files just like rotating contents
-                    ## between log files in Python
-
-                    save_timestamped_backup(
-                        APP_REFS.source_path, USER_PREFS["NUMBER_OF_BACKUPS"]
-                    )
-
-                    ## save the data in the source,
-                    ## since it now have different node
-                    ## packs
-                    save_pyl(APP_REFS.data, APP_REFS.source_path)
-
-                    ## finally, copy the contents of the
-                    ## source to the swap file
-
-                    APP_REFS.swap_path.write_text(
-                        APP_REFS.source_path.read_text(encoding="utf-8"),
-                        encoding="utf-8",
-                    )
-
-            ### check if the "installed" node packs provided in
-            ### the file are appropriate, to prevent the
-            ### application from crashing if such node
-            ### packs can't be found or are somehow faulty
-
-            installed_node_packs = get_formatted_installed_node_packs(
-                APP_REFS.source_path
-            )
-
-            try:
-                check_installed_node_packs(installed_node_packs)
-            except NODE_PACK_ERRORS as err:
-
-                message = (
-                    "One of the provided node packs"
-                    " (the ones supposed to be installed)"
-                    " presented the following issue:"
-                    f" {err}; aborting loading file now"
-                )
-
-                create_and_show_dialog(message)
-
-                installed_node_packs_are_ok = False
-
-            else:
-                installed_node_packs_are_ok = True
-
-            if local_node_packs_are_ok and installed_node_packs_are_ok:
-
-                ### try preparing graph manager for
-                ### edition
-                try:
-                    APP_REFS.gm.prepare_for_new_session()
-
-                ### if it fails, report the problem to
-                ### user and pick the 'no_file' state name
-
-                except Exception as err:
-
-                    ## do this to signal other method not to
-                    ## create extra dependencies
-                    del APP_REFS.source_path
-
-                    ## report problem to user
-
-                    create_and_show_dialog(
-                        (
-                            "Error while trying to prepare"
-                            " for new session (check user log"
-                            " on Help menu for more info)"
-                            f": {err}"
-                        ),
-                        level_name="error",
-                    )
-
-                    state_name = "no_file"
-
-                    ## also log it
-
-                    msg = "Unexpected error while trying" " to prepare for new session"
-
-                    logger.exception(msg)
-                    USER_LOGGER.exception(msg)
-
-                ### otherwise, perform additional setups
-                ### and pick the 'loaded_file' state name
-
-                else:
-
-                    APP_REFS.ea.prepare_for_new_session()
-
-                    if not APP_REFS.temp_filepaths_man.is_temp_path(
-                        APP_REFS.source_path
-                    ):
-                        store_recent_file(APP_REFS.source_path)
-
-                    self.build_app_widgets()
-
-                    state_name = "loaded_file"
-
-            ### otherwise, trigger cancellation of file
-            ### loading and pick the 'no_file' state name
-
-            else:
-
-                show_dialog_from_key("cancelled_file_loading_dialog")
-
-                clean_loaded_file_data()
-
-                state_name = "no_file"
-
+    def update_session_state(self):
         ### set the state picked
-        self.set_state(state_name)
+        self.set_state(self.state_name)
 
         ### instantiate support widgets and set manager
         self.build_support_widgets()
@@ -419,6 +213,262 @@ class WindowManager(
         ### otherwise, create the popup menu
         else:
             self.create_canvas_popup_menu()
+
+    def cancel_loading_file_callback(self):
+        clean_loaded_file_data()
+        self.state_name = "no_file"
+        self.update_session_state()
+    
+    def cancel_loading_file(self):
+        ### trigger cancellation of file
+        ### loading and pick the 'no_file' state name
+        show_dialog_from_key(
+            "cancelled_file_loading_dialog",
+            callback = cancel_loading_file_callback, 
+        )
+    
+    def load_new_session(self):                
+        if self.current_local_node_packs is not None:
+
+            ### if by this point the original node
+            ### packs listed have changed, then it is
+            ### as if we changed the file, so we save
+            ### its current contents before assigning
+            ### the new node packs
+
+            if set(self.current_local_node_packs) != set(self.original_local_node_packs):
+
+                APP_REFS.data["node_packs"] = [
+                    str(path) for path in self.current_local_node_packs
+                ]
+
+                ## pass content from source to backup
+                ## files just like rotating contents
+                ## between log files in Python
+
+                save_timestamped_backup(
+                    APP_REFS.source_path, USER_PREFS["NUMBER_OF_BACKUPS"]
+                )
+
+                ## save the data in the source,
+                ## since it now have different node
+                ## packs
+                save_pyl(APP_REFS.data, APP_REFS.source_path)
+
+                ## finally, copy the contents of the
+                ## source to the swap file
+
+                APP_REFS.swap_path.write_text(
+                    APP_REFS.source_path.read_text(encoding="utf-8"),
+                    encoding="utf-8",
+                )
+
+        ### check if the "installed" node packs provided in
+        ### the file are appropriate, to prevent the
+        ### application from crashing if such node
+        ### packs can't be found or are somehow faulty
+
+        installed_node_packs = get_formatted_installed_node_packs(
+            APP_REFS.source_path
+        )
+
+        try:
+            check_installed_node_packs(installed_node_packs)
+            
+        except NODE_PACK_ERRORS as err:
+
+            message = (
+                "One of the provided node packs"
+                " (the ones supposed to be installed)"
+                " presented the following issue:"
+                f" {err}; aborting loading file now"
+            )
+
+            create_and_show_dialog(
+                message,
+                callback = self.cancel_loading_file_callback,
+            )
+            return
+
+
+        ### try preparing graph manager for
+        ### edition
+        try:
+            APP_REFS.gm.prepare_for_new_session()
+
+        ### if it fails, report the problem to
+        ### user and pick the 'no_file' state name
+
+        except Exception as err:
+
+            ## do this to signal other method not to
+            ## create extra dependencies
+            del APP_REFS.source_path
+
+            ## also log it
+
+            msg = "Unexpected error while trying" " to prepare for new session"
+
+            logger.exception(msg)
+            USER_LOGGER.exception(msg)
+
+            ## report problem to user
+            create_and_show_dialog(
+                (
+                    "Error while trying to prepare"
+                    " for new session (check user log"
+                    " on Help menu for more info)"
+                    f": {err}"
+                ),
+                level_name="error",
+                callback = self.cancel_loading_file_callback,
+            )
+            return
+
+        ### otherwise, perform additional setups
+        ### and pick the 'loaded_file' state name
+
+        APP_REFS.ea.prepare_for_new_session()
+
+        if not APP_REFS.temp_filepaths_man.is_temp_path(
+            APP_REFS.source_path
+        ):
+            store_recent_file(APP_REFS.source_path)
+
+        self.build_app_widgets()
+        
+        self.state_name = "loaded_file"
+        
+        self.update_session_state();
+
+    def select_replacement_callback(self, result):        
+        if result:
+            self.current_local_node_packs.remove(self.faulty_pack)
+            self.current_local_node_packs.append(result[0]) # replacement
+            self.verify_local_node_packs()
+        else:
+            self.current_local_node_packs = None # invalid local node packs
+            self.load_new_session()        
+    
+    def verify_local_node_packs_callback(self, answer):        
+        if answer == "select":
+            select_paths(
+                caption="Select replacement/new path for local node pack",
+                callback = self.select_replacement_callback,
+            )
+        else:
+            # cancel loading
+            self.current_local_node_packs = None # invalid local node packs 
+            self.cancel_loading_file()
+
+    def verify_local_node_packs(self):        
+        ### check if the local node packs provided in
+        ### the file are appropriate, to prevent the
+        ### application from crashing if such node
+        ### packs don't exist or are somehow faulty
+
+        try:
+            self.faulty_pack = None
+            check_local_node_packs(self.current_local_node_packs)
+            
+            self.load_new_session()
+            
+        except NODE_PACK_ERRORS as err:
+
+            message = (
+                "One of the provided local node packs"
+                " presented the following issue:"
+                f" {err}; what would you like to do?"
+            )
+
+            options = (
+                ("Select replacement/new path", "select"),
+                ("Cancel loading file", "cancel"),
+            )
+
+            self.faulty_pack = err.faulty_pack
+            create_and_show_dialog(
+                message,
+                options,
+                level_name="warning",
+                callback = self.verify_local_node_packs_callback,
+            )
+        
+    def prepare_for_new_session(self):
+        """Instantiate and set up objects.
+
+        Also takes additional measures to free memory and
+        check whether there are issues with the nodes
+        directory, in case a file is to be loaded.
+        
+        !!!FIXME!!! need better notation to document this:
+        
+        Using callbacks, following STATES  are performed to prepare for new session: (described in pseudo code)
+        
+        START: prepare_for_new_session():
+                if __NO__ valid filepath sits on 'source_path' 
+                then FINISH_NO_FILE
+                otherwise VERIFICATION_LOOP
+                
+        VERIFICATION_LOOP: verify_local_node_packs():
+                if the local node packs provided in the file are appropriate 
+                then LOAD_NEW_SESSION
+                otherwise REPLACE_FAULTY_PACK
+                or CANCEL_LOADING
+                
+        REPLACE_FAULTY_PACK:
+            replace faulty pack
+            verify local node packs again => VERIFICATION_LOOP 
+                
+        CANCEL_LOADING:
+            clean up
+            FINISH_NO_FILE
+            
+        LOAD_NEW_SESSION:
+            if the "installed" node packs provided in the file are appropriate 
+            then FINISH_LOADED_FILE
+            otherwise CANCEL_LOADING
+            
+        FINISH_NO_FILE:
+            update_session_state("no_file")
+            DONE
+            
+        FINISH_LOADED_FILE:
+            update_session_state("loaded_file")        
+            DONE
+            
+        DONE:
+            new session loaded
+        """
+        ### first of all free up memory used by data/objects
+        ### from a possible previous session, data/objects
+        ### that may not be needed anymore
+        free_up_memory()
+
+        ### check if a valid filepath sits on 'source_path'
+        ### attribute of the APP_REFS object (it means a
+        ### file is loaded)
+        try:
+            APP_REFS.source_path
+
+        ### if not, pick 'no_file' state name
+        except AttributeError:
+            self.state_name = "no_file"
+            self.update_session_state()
+            return
+
+        ### otherwise perform setups and add the update
+        ### viz widgets to the methods to be executed when
+        ### updating the window manager
+
+        ### check if the local node packs provided in the file are appropriate
+        
+        self.original_local_node_packs = (
+            get_formatted_local_node_packs(APP_REFS.source_path)
+        )
+        self.current_local_node_packs = self.original_local_node_packs.copy()
+        
+        self.verify_local_node_packs()
 
     def build_state_behaviour_map(self):
         """Build map with behaviours for each state."""

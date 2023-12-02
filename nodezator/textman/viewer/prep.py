@@ -105,6 +105,8 @@ class TextPreparation:
             to make the viewer jump to the last line;
             Default is 0.
         """
+        notify_user = False
+        
         ### define general text preset if a string is
         ### received
 
@@ -203,12 +205,7 @@ class TextPreparation:
             except SyntaxMappingError:
 
                 ## notify user via dialog
-
-                create_and_show_dialog(
-                    "Error while applying syntax"
-                    " highlighting. Text will be"
-                    " displayed without it."
-                )
+                notify_user = True
 
                 ## also turn off the syntax highlighting by
                 ## setting the corresponding variable to an
@@ -384,8 +381,16 @@ class TextPreparation:
 
         self.help_text_obj.rect.bottomright = self.rect.move(-10, -35).bottomright
 
-        ### finally run the text viewer loop
-        self.run()
+        if notify_user:
+            create_and_show_dialog(
+                "Error while applying syntax"
+                " highlighting. Text will be"
+                " displayed without it.",
+                callback = self.run,
+            )
+        else:
+            ### finally run the text viewer loop
+            self.run()
 
     def setup_lineno_surfs(self, text_settings):
         """Create digit surfaces used to show line number.

@@ -441,6 +441,17 @@ class LiteralDisplay(Object2D):
 
     reset_show_line_number = partialmethod(reset_style, "show_line_number")
 
+    def edit_value_callback(self, text):
+        ### if there is an edited text (it is not None)
+        ### and it represents a python literal different
+        ### from the current value, set such value as the
+        ### new one
+
+        if text is not None:
+            value = literal_eval(text)
+            if value != self.value:
+                self.set(value)
+    
     def edit_value(self):
         """Edit value of widget on the text editor."""
         ### retrieve edited text: this triggers the
@@ -449,23 +460,13 @@ class LiteralDisplay(Object2D):
         ### the text (or None, if the user decides to
         ### cancel the operation)
 
-        text = edit_text(
+        edit_text(
             text=pformat(self.value, width=84),
             font_path=FIRA_MONO_BOLD_FONT_PATH,
             syntax_highlighting="python",
             validation_command=is_python_literal,
+            callback = self.edit_value_callback,
         )
-
-        ### if there is an edited text (it is not None)
-        ### and it represents a python literal different
-        ### from the current value, set such value as the
-        ### new one
-
-        if text is not None:
-
-            value = literal_eval(text)
-            if value != self.value:
-                self.set(value)
 
     def get_expected_type(self):
         return _empty

@@ -1,3 +1,6 @@
+### standard library import
+import asyncio
+
 ### third-party imports
 
 from pygame.locals import (
@@ -16,7 +19,7 @@ from pygame.draw import rect as draw_rect
 
 from ..config import APP_REFS, FFMPEG_AVAILABLE
 
-from ..pygamesetup import SERVICES_NS, SCREEN, SCREEN_RECT
+from ..pygamesetup import SERVICES_NS, SCREEN, SCREEN_RECT, set_modal
 
 from ..ourstdlibs.behaviour import get_oblivious_callable
 
@@ -134,7 +137,26 @@ class VideoPreviewer(Object2D):
 
             self.not_available_message_obj.rect.center = SCREEN_RECT.center
 
-    def preview_videos(self, video_paths, index=0):
+    async def preview_videos_loop(self):
+        while self.running:
+            await asyncio.sleep(0)        
+
+            SERVICES_NS.frame_checkups_with_fps(self.fps)
+
+            try:
+
+                loop_holder.handle_input()
+                loop_holder.update()
+                loop_holder.draw()
+
+            except SwitchLoopException as err:
+                loop_holder = err.loop_holder
+        set_modal(False)
+        if self.callback is not None:
+            self.callback()
+    
+    def preview_videos(self, video_paths, index=0, callback = None):
+        self.callback = callback
 
         self.video_paths = (
             [video_paths] if isinstance(video_paths, str) else video_paths
@@ -155,18 +177,8 @@ class VideoPreviewer(Object2D):
 
         loop_holder = self
 
-        while self.running:
-
-            SERVICES_NS.frame_checkups_with_fps(self.fps)
-
-            try:
-
-                loop_holder.handle_input()
-                loop_holder.update()
-                loop_holder.draw()
-
-            except SwitchLoopException as err:
-                loop_holder = err.loop_holder
+        set_modal(True)
+        asyncio.get_running_loop().create_task(self.preview_videos_loop())
 
     def handle_input(self):
         """"""

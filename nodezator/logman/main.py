@@ -23,7 +23,7 @@ from datetime import datetime, timezone
 
 from traceback import format_exception
 
-from logging import DEBUG, Formatter, getLogger
+from logging import DEBUG, Formatter, getLogger, StreamHandler
 
 from logging.handlers import RotatingFileHandler
 
@@ -45,19 +45,26 @@ from .fixeddialog import display_dialog_and_quit
 
 
 ### constants
-
+game_platform = get_os_name()
+print(f"game_platform [{game_platform}]")
 ## path to log folder
 
-if "APPDATA" in environ:
-    general_log_dir = Path(environ["APPDATA"])
-
+LOG_TO_STDOUT = False
+if (game_platform == "Emscripten"):
+    LOG_TO_STDOUT = True
 else:
-    general_log_dir = Path(environ["HOME"]) / ".local"
+    if "APPDATA" in environ:
+        general_log_dir = Path(environ["APPDATA"])
 
-APP_LOGS_DIR = general_log_dir / APP_DIR_NAME / "logs"
+    else:
+        general_log_dir = Path(environ["HOME"]) / ".local"
 
-if not APP_LOGS_DIR.exists():
-    APP_LOGS_DIR.mkdir(parents=True)
+    APP_LOGS_DIR = general_log_dir / APP_DIR_NAME / "logs"
+    APP_LOGS_DIR = general_log_dir / APP_DIR_NAME / "logs"
+
+    if not APP_LOGS_DIR.exists():
+        APP_LOGS_DIR.mkdir(parents=True)
+#
 
 ## log level
 LOG_LEVEL = DEBUG
@@ -113,6 +120,9 @@ top_logger.setLevel(LOG_LEVEL)
 class PylLogFormatter(Formatter):
     """Outputs pyl logs."""
 
+    def __init__(self, log_to_console):
+        self.log_to_console = log_to_console
+        
     def format(self, record):
         """Return a log record as pyl formated data."""
         ### serialize exception info if needed
@@ -144,11 +154,16 @@ class PylLogFormatter(Formatter):
                     *exc_info
                 )
             )
-
-        ### put the record data together in a dict and
-        ### return it as a pretty-formatted string with
-        ### a trailing comma
-
+        if self.log_to_console:
+            ### put the record data together in a dict and
+            ### return it as a pretty-formatted string with
+            ### a trailing comma
+            if exc_info is None:
+                return (f'{str(datetime.now())} {record.levelname:5} {record.name}/{record.funcName}:{record.lineno} {record.msg}')
+            else:
+                return (f'{str(datetime.now())} {record.levelname:5} {record.name}/{record.funcName}:{record.lineno} {record.msg} {exc_info}')
+            #
+        #
         return (
             pformat(
                 {
@@ -165,10 +180,6 @@ class PylLogFormatter(Formatter):
             )
             + ","
         )
-
-
-### instantiate the pyl formatter
-pyl_formatter = PylLogFormatter()
 
 
 ### utility function for renaming log files
@@ -191,32 +202,34 @@ def custom_format_filename(name):
 
 
 ### define a handler to generate a log file for each run
-
-log_filepath = str(APP_LOGS_DIR / "session.0.log")
-
-last_run_handler = RotatingFileHandler(
-    filename=log_filepath,
-    mode="a",
-    encoding="utf-8",
-    backupCount=BACKUP_COUNT,
-    maxBytes=MAX_BYTES,
-)
+if LOG_TO_STDOUT:
+    last_run_handler = StreamHandler()
+else:
+    log_filepath = str(APP_LOGS_DIR / "session.0.log")
+    last_run_handler = RotatingFileHandler(
+        filename=log_filepath,
+        mode="a",
+        encoding="utf-8",
+        backupCount=BACKUP_COUNT,
+        maxBytes=MAX_BYTES,
+    )
+    # rotate the log file if it is not empty
+    if getsize(log_filepath):
+        last_run_handler.doRollover()
 
 last_run_handler.namer = custom_format_filename
-
 last_run_handler.setLevel(LOG_LEVEL)
 
 ### perform final setups
+
+### instantiate the pyl formatter
+pyl_formatter = PylLogFormatter(LOG_TO_STDOUT)
 
 ## set pyl formatter on handler
 last_run_handler.setFormatter(pyl_formatter)
 
 ## add handler to the top level logger
 top_logger.addHandler(last_run_handler)
-
-## rotate the log file if it is not empty
-if getsize(log_filepath):
-    last_run_handler.doRollover()
 
 ## reference the getChild method of the top_logger
 ## as get_new_logger; modules throughout the package in need

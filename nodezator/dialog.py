@@ -19,7 +19,7 @@ from pygame.locals import (
 
 from .translation import DIALOGS_MAP
 
-from .pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
+from .pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen, set_modal
 
 from .classes2d.single import Object2D
 from .classes2d.collections import List2D
@@ -176,7 +176,7 @@ class DialogManager(Object2D, LoopHolder):
     wherever needed in the entire package.
     """
 
-    def show_dialog_from_key(self, key):
+    def show_dialog_from_key(self, key, callback = None):
         """Create a dialog with data from dialogs map.
 
         Parameters
@@ -186,9 +186,9 @@ class DialogManager(Object2D, LoopHolder):
             dialogs map with which to generate the dialog.
         """
         data = DIALOGS_MAP[key]
-        return self.create_and_show_dialog(**data)
+        self.create_and_show_dialog(callback = callback, **data)
 
-    def show_formatted_dialog(self, key, *args):
+    def show_formatted_dialog(self, key, callback = None, *args):
         """Like show_dialog_from_key(), can format message.
 
         Parameters
@@ -207,8 +207,24 @@ class DialogManager(Object2D, LoopHolder):
         data["message"] = data["message"].format(*args)
 
         ### create dialog
-        return self.create_and_show_dialog(**data)
+        self.create_and_show_dialog(callback = callback, **data)
 
+    def create_and_show_dialog_callback(self):
+        ### blit semitransparent obj (make the dialog
+        ### appear unhighlighted; this is important in
+        ### case the portions of the screen showing the
+        ### dialog aren't updated by the next object
+        ### managing the screen once we leave this
+        ### method)
+        self.rect_sized_semitransp_obj.draw()
+
+        ### free up memory from text objects and buttons
+        self.free_up_memory()
+
+        ### finally return the value picked
+        if self.callback is not None:
+            self.callback(self.value)
+    
     ### TODO the unhighlight_obj parameter could probably
     ### be much more versatile, think about it; it could
     ### also be renamed;
@@ -231,6 +247,7 @@ class DialogManager(Object2D, LoopHolder):
         dialog_offset_by=(0, 0),
         ## flag
         dismissable=False,
+        callback=None
     ):
         """Create a dialog with/out buttons.
 
@@ -260,6 +277,7 @@ class DialogManager(Object2D, LoopHolder):
         """
         ### store dismissable flag
         self.dismissable = dismissable
+        self.callback = callback
 
         ### ensure screen rect is used if specific rects
         ### are None
@@ -323,21 +341,7 @@ class DialogManager(Object2D, LoopHolder):
         self.draw_once()
 
         ### loop
-        self.loop()
-
-        ### blit semitransparent obj (make the dialog
-        ### appear unhighlighted; this is important in
-        ### case the portions of the screen showing the
-        ### dialog aren't updated by the next object
-        ### managing the screen once we leave this
-        ### method)
-        self.rect_sized_semitransp_obj.draw()
-
-        ### free up memory from text objects and buttons
-        self.free_up_memory()
-
-        ### finally return the value picked
-        return self.value
+        self.loop(callback = self.create_and_show_dialog_callback)
 
     def create_message(self, message_text):
         """Create and position message text object(s).

@@ -1,7 +1,7 @@
 """Form for new file creation."""
 
 ### standard library imports
-
+import asyncio
 from pathlib import Path
 from functools import partial, partialmethod
 
@@ -27,7 +27,7 @@ from ...config import APP_REFS
 
 from ...translation import TRANSLATION_HOLDER as t
 
-from ...pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
+from ...pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen, set_modal
 
 from ...dialog import create_and_show_dialog
 
@@ -501,41 +501,10 @@ class ImageExportForm(Object2D):
 
         self.set_new_filepath(new_filepath)
 
-    def get_image_exporting_settings(self, size):
-        """Return settings to export an image."""
-        ### set form data to None
-        self.form_data = None
-
-        ### store size
-        self.size = size
-
-        ### draw screen sized semi-transparent object,
-        ### so that screen behind form appears as if
-        ### unhighlighted
-
-        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
-
-        ### create and store a label informing the image
-        ### size to the user
-
-        text = (t.editing.image_export_form.final_image_size).format(*size)
-
-        bottomleft = self.rect.move(5, -50).bottomleft
-
-        size_label = Object2D.from_surface(
-            surface=(render_text(text=text, **TEXT_SETTINGS)),
-            coordinates_name="bottomleft",
-            coordinates_value=bottomleft,
-        )
-
-        self.widgets.append(size_label)
-
-        ### loop until running attribute is set to False
-
-        self.running = True
-        self.loop_holder = self
-
+    async def get_image_exporting_settings_loop(self):
+    
         while self.running:
+            await asyncio.sleep(0)        
 
             ### perform various checkups for this frame;
             ###
@@ -571,8 +540,49 @@ class ImageExportForm(Object2D):
         self.rect_size_semitransp_obj.draw()
 
         ### finally, return the form data
-        return self.form_data
+        set_modal(False)
+        if self.callback is not None:
+            self.callback(self.form_data)
+    
+    def get_image_exporting_settings(self, size, callback = None):
+        self.callback = callback
+        """Return settings to export an image."""
+        ### set form data to None
+        self.form_data = None
 
+        ### store size
+        self.size = size
+
+        ### draw screen sized semi-transparent object,
+        ### so that screen behind form appears as if
+        ### unhighlighted
+
+        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
+
+        ### create and store a label informing the image
+        ### size to the user
+
+        text = (t.editing.image_export_form.final_image_size).format(*size)
+
+        bottomleft = self.rect.move(5, -50).bottomleft
+
+        size_label = Object2D.from_surface(
+            surface=(render_text(text=text, **TEXT_SETTINGS)),
+            coordinates_name="bottomleft",
+            coordinates_value=bottomleft,
+        )
+
+        self.widgets.append(size_label)
+
+        ### loop until running attribute is set to False
+
+        self.running = True
+        self.loop_holder = self
+        
+        set_modal(True)
+        asyncio.get_running_loop().create_task(self.get_image_exporting_settings_loop())
+       
+        
     def handle_input(self):
         """Process events from event queue."""
         for event in SERVICES_NS.get_events():

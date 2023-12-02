@@ -1,6 +1,7 @@
 """Facility with mvc manager for manually sorting lists."""
 
 ### standard library imports
+import asyncio
 
 from random import shuffle
 
@@ -18,7 +19,7 @@ from pygame.draw import rect as draw_rect
 
 from ...config import APP_REFS
 
-from ...pygamesetup import SERVICES_NS, SCREEN_RECT
+from ...pygamesetup import SERVICES_NS, SCREEN_RECT, set_modal
 
 from ...ourstdlibs.behaviour import get_oblivious_callable
 
@@ -315,32 +316,9 @@ class SortingEditor(SortingEditorModes):
     reverse_items = partialmethod(sort_items, list.reverse)
     shuffle_items = partialmethod(sort_items, shuffle)
 
-    def sort_sequence(self, sorted_items, available_items):
-        """Prepare objects for edition and start loop.
-
-        Parameters
-        ==========
-        sorted_items (list or tuple)
-            list representing current sorted items.
-        available_items (set)
-            set representing available items to include
-            and sort in the sorted_items sequence.
-        """
-        ### store type of sorted items
-        _type = type(sorted_items)
-
-        ### isntantiate special objects representing the
-        ### items to be sorted and the available ones
-        self.prepare_objs(sorted_items, available_items)
-
-        ### create flags
-
-        self.cancel = False
-        self.running = True
-
-        ### start the widget loop
-
+    async def sort_sequence_loop(self):
         while self.running:
+            await asyncio.sleep(0)        
 
             ### perform various checkups for this frame;
             ###
@@ -358,16 +336,46 @@ class SortingEditor(SortingEditorModes):
         ### once the loop is exited, return the appropriate
         ### value according to the whether the 'cancel'
         ### flag is set or not
+        set_modal(False)
+        if self.callback is not None:
+            self.callback(
+                ## if the flag is on, return None, indicating
+                ## the edition was cancelled
+                None
+                if self.cancel
+                ## otherwise return a sequence with the sorted
+                ## values in the type they were received
+                else _type(item.value for item in self.items)
+            )
+    
+    def sort_sequence(self, sorted_items, available_items, callback = None):
+        """Prepare objects for edition and start loop.
 
-        return (
-            ## if the flag is on, return None, indicating
-            ## the edition was cancelled
-            None
-            if self.cancel
-            ## otherwise return a sequence with the sorted
-            ## values in the type they were received
-            else _type(item.value for item in self.items)
-        )
+        Parameters
+        ==========
+        sorted_items (list or tuple)
+            list representing current sorted items.
+        available_items (set)
+            set representing available items to include
+            and sort in the sorted_items sequence.
+        """
+        self.callback = callback
+        
+        ### store type of sorted items
+        _type = type(sorted_items)
+
+        ### isntantiate special objects representing the
+        ### items to be sorted and the available ones
+        self.prepare_objs(sorted_items, available_items)
+
+        ### create flags
+
+        self.cancel = False
+        self.running = True
+
+        ### start the widget loop
+        set_modal(True)
+        asyncio.get_running_loop().create_task(self.sort_sequence_loop())
 
     def prepare_objs(self, sorted_items, available_items):
         """Instantiate special objects representing items.

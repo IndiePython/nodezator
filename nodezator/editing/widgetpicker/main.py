@@ -1,7 +1,6 @@
 """Facility for widget setup loop holder."""
-
-### local imports
-
+### standard library imports
+import asyncio
 from itertools import chain
 from functools import partial, partialmethod
 
@@ -27,7 +26,7 @@ from ...config import APP_REFS
 
 from ...translation import TRANSLATION_HOLDER as t
 
-from ...pygamesetup import SERVICES_NS, SCREEN_RECT
+from ...pygamesetup import SERVICES_NS, SCREEN_RECT, set_modal
 
 from ...our3rdlibs.button import Button
 
@@ -293,22 +292,9 @@ class WidgetPicker(Object2D, SubformCreation):
         ### to the right
         self.submit_button.rect.topleft = self.cancel_button.rect.move(10, 0).topright
 
-    def pick_widget(self):
-        """Display form; return widget instantiation data."""
-        self.widget_data = None
-
-        self.semitransp_obj.draw()
-
-        ### loop until running attribute is set to False
-
-        self.running = True
-
-        ## TODO it seems the loop holder doesn't need
-        ## to be referenced in an attribute here, but can
-        ## be in a local variable, so make the change;
-        self.loop_holder = self
-
+    async def pick_widget_loop(self):
         while self.running:
+            await asyncio.sleep(0)        
 
             ### perform various checkups for this frame;
             ###
@@ -334,8 +320,28 @@ class WidgetPicker(Object2D, SubformCreation):
                 ## use the loop holder in the err
                 ## attribute of same name
                 self.loop_holder = err.loop_holder
+                
+        set_modal(False)
+        if self.callback is not None:
+            self.callback(self.widget_data)
+    
+    def pick_widget(self, callback = None):
+        """Display form; return widget instantiation data."""
+        self.callback = callback
+        self.widget_data = None
 
-        return self.widget_data
+        self.semitransp_obj.draw()
+
+        ### loop until running attribute is set to False
+
+        self.running = True
+
+        ## TODO it seems the loop holder doesn't need
+        ## to be referenced in an attribute here, but can
+        ## be in a local variable, so make the change;
+        self.loop_holder = self
+        set_modal(True)
+        asyncio.get_running_loop().create_task(self.pick_widget_loop())
 
     def handle_input(self):
         """Process events from event queue."""
@@ -525,10 +531,9 @@ class WidgetPicker(Object2D, SubformCreation):
             ).format(type(err).__name__, str(err))
 
             create_and_show_dialog(msg)
-
+            return False
         ### otherwise return True
-        else:
-            return True
+        return True
 
     def update(self):
         """Empty method.

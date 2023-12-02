@@ -1,6 +1,7 @@
 """Form for setting and triggering session playing."""
 
 ### standard library imports
+import asyncio
 
 from pathlib import Path
 
@@ -30,7 +31,7 @@ from ...config import APP_REFS
 
 from ...appinfo import NATIVE_FILE_EXTENSION
 
-from ...pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
+from ...pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen, set_modal
 
 from ...pygamesetup.constants import FPS
 
@@ -379,25 +380,9 @@ class SessionPlayingForm(Object2D):
             index = 1 if current_speed == speed else 0
             button.image = SPEED_BUTTON_SURF_MAP[button][index]
 
-    def set_session_playing(self):
-        """Present form to set and trigger playing session."""
-        ### exit with a dialog if feature is not ready for usage yet
-
-        if APP_REFS.wip_lock:
-            create_and_show_dialog("This feature is a work in progress.")
-            return
-
-        ### draw screen sized semi-transparent object,
-        ### so that screen behind form appears as if
-        ### unhighlighted
-        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
-
-        ### loop until running attribute is set to False
-
-        self.running = True
-        self.loop_holder = self
-
+    async def set_session_playing_loop(self):
         while self.running:
+            await asyncio.sleep(0)        
 
             ### perform various checkups for this frame;
             ###
@@ -428,6 +413,31 @@ class SessionPlayingForm(Object2D):
         ### on the screen so the form appear as if
         ### unhighlighted
         self.rect_size_semitransp_obj.draw()
+        set_modal(False)
+        if self.callback is not None:
+            self.callback()
+    
+    def set_session_playing(self, callback = None):
+        """Present form to set and trigger playing session."""
+        ### exit with a dialog if feature is not ready for usage yet
+
+        if APP_REFS.wip_lock:
+            create_and_show_dialog("This feature is a work in progress.")
+            return
+
+        self.callback = callback
+        ### draw screen sized semi-transparent object,
+        ### so that screen behind form appears as if
+        ### unhighlighted
+        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
+
+        ### loop until running attribute is set to False
+
+        self.running = True
+        self.loop_holder = self
+
+        set_modal(True)
+        asyncio.get_running_loop().create_task(self.set_session_playing_loop())
 
 
     def handle_input(self):

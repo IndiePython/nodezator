@@ -81,6 +81,28 @@ class WidgetCreationPopupMenu(MenuManager):
 
         self.focus_if_within_boundaries(SERVICES_NS.get_mouse_pos())
 
+    def do_trigger_subparameter_widget_instantiation(
+        self,
+        widget_data=None,
+    ):
+        if widget_data is None:
+            return
+            
+        widget_data = deepcopy(widget_data)
+
+        node, *other_references = self.node_waiting_widget_refs
+
+        node.instantiate_widget(
+            widget_data,
+            *other_references,
+        )
+        
+    def pick_widget_callback(self, widget_data):
+        ### if widget data is still None, cancel the
+        ### operation by returning earlier
+        if widget_data is not None:
+            self.do_trigger_subparameter_widget_instantiation(widget_data)
+    
     def trigger_subparameter_widget_instantiation(
         self,
         widget_data=None,
@@ -89,19 +111,8 @@ class WidgetCreationPopupMenu(MenuManager):
         if widget_data is None:
 
             ### obtain widget data
-            widget_data = pick_widget()
+            pick_widget(callback = self.pick_widget_callback)
+            return
 
-            ### if widget data is still None, cancel the
-            ### operation by returning earlier
-            if widget_data is None:
-                return
-
-        else:
-            widget_data = deepcopy(widget_data)
-
-        node, *other_references = self.node_waiting_widget_refs
-
-        node.instantiate_widget(
-            widget_data,
-            *other_references,
-        )
+        self.do_trigger_subparameter_widget_instantiation(widget_data)
+            

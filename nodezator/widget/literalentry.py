@@ -156,8 +156,7 @@ class LiteralEntry(Object2D):
             255 for full opacity).
         """
         ### ensure value argument received is a python
-        ### literal
-
+        ### literal        
         if not self.validate(value):
 
             raise TypeError("'value' received must be a python literal")
@@ -173,6 +172,7 @@ class LiteralEntry(Object2D):
         ### store some of the arguments in their own
         ### attributes
 
+        self.entry_text = None        
         self.name = name
         self.value = value
         self.command = command
@@ -562,31 +562,36 @@ class LiteralEntry(Object2D):
         ### finally we lose focus
         self.lose_focus()
 
-    def edit_on_text_editor(self):
-        """Edit the entry text in the text editor."""
-        ### retrieve the text in the entry
-        entry_text = self.cursor.get()
-
-        ### since we'll not edit text on the entry anymore,
-        ### stop text editing events
-        stop_text_input()
-
-        ### edit it on text editor
-        text = edit_text(entry_text)
-
+    def edit_on_text_editor_callback(self, text):
         ### if there is an edited text (if it is not None,
         ### it means the user confirmed the edition in the
         ### text editor) and it is different from the entry
         ### text originally used, set such text as the text
         ### of the entry
 
-        if text is not None and text != entry_text:
+        if text is not None and text != self.entry_text:
             self.cursor.set(text)
+        self.entry_text = None        
 
         ### regardless of whether the new text was set as
         ### the entry text or not, we resume the entry's
         ### editing session
         self.resume_editing()
+
+    
+    def edit_on_text_editor(self):
+        """Edit the entry text in the text editor."""
+        ### retrieve the text in the entry
+        self.entry_text = self.cursor.get()
+
+        ### since we'll not edit text on the entry anymore,
+        ### stop text editing events
+        stop_text_input()
+
+        ### edit it on text editor
+        edit_text(self.entry_text,
+            callback = self.edit_on_text_editor_callback,
+        )
 
     def get_expected_type(self):
         return _empty

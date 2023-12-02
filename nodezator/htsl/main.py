@@ -240,6 +240,10 @@ class HTSLBrowser(
         self.create_and_set_htsl_objects(htsl_element)
         self.show_htsl_page()
 
+    def show_htsl_page_callback(self):
+        ### free up memory from rendered objects
+        self.free_up_memory()
+        
     def show_htsl_page(self, optional_id=""):
 
         ### define whether horizontal and vertical
@@ -281,10 +285,7 @@ class HTSLBrowser(
         self.draw_once()
 
         ### loop
-        self.loop()
-
-        ### free up memory from rendered objects
-        self.free_up_memory()
+        self.loop(callback = self.show_htsl_page_callback)
 
     def open_link(self, link_string):
 

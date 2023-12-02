@@ -1,5 +1,6 @@
 """Facility for viewing images from given paths."""
-
+### standard library import
+import asyncio
 
 ### third-party import
 from pygame.math import Vector2
@@ -9,7 +10,7 @@ from pygame.math import Vector2
 
 from ...config import APP_REFS
 
-from ...pygamesetup import SERVICES_NS, SCREEN_RECT
+from ...pygamesetup import SERVICES_NS, SCREEN_RECT, set_modal
 
 from ...ourstdlibs.behaviour import empty_function
 
@@ -91,8 +92,26 @@ class ImagesPreviewer(PreviewerOperations):
         if self.running:
             APP_REFS.draw_after_window_resize_setups = self.response_draw
 
-    def preview_images(self, image_paths):
+    async def preview_images_loop(self):
+        while self.running:
+            await asyncio.sleep(0)        
+
+            ### perform various checkups for this frame;
+            ###
+            ### stuff like maintaing a constant framerate and more
+            SERVICES_NS.frame_checkups()
+
+            self.handle_input()
+            self.draw()
+
+        set_modal(False)
+        if self.callback is not None:
+            self.callback()
+    
+    def preview_images(self, image_paths, callback = None):
         """Display previews of images from the given paths."""
+        self.callback = callback
+        
         ###
         cache_screen_state()
 
@@ -114,15 +133,8 @@ class ImagesPreviewer(PreviewerOperations):
 
         self.running = True
 
-        while self.running:
-
-            ### perform various checkups for this frame;
-            ###
-            ### stuff like maintaing a constant framerate and more
-            SERVICES_NS.frame_checkups()
-
-            self.handle_input()
-            self.draw()
+        set_modal(True)
+        asyncio.get_running_loop().create_task(self.preview_images_loop())
 
     def create_image_surfaces(self):
         """Create surfaces/objects representing images.

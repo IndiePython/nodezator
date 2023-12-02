@@ -1,6 +1,8 @@
 """Form to create/return new path from file manager."""
 
 ### standard library import
+import asyncio
+
 from functools import partialmethod
 
 
@@ -22,7 +24,7 @@ from ...config import APP_REFS
 
 from ...translation import TRANSLATION_HOLDER as t
 
-from ...pygamesetup import SERVICES_NS, SCREEN_RECT
+from ...pygamesetup import SERVICES_NS, SCREEN_RECT, set_modal
 
 from ...dialog import create_and_show_dialog
 
@@ -261,8 +263,43 @@ class PathForm(Object2D):
         ### False
         self.running = False
 
-    def get_path(self, parent, is_file):
+    async def get_path_loop(self):
+        while self.running:
+            await asyncio.sleep(0)        
+
+            ### perform various checkups for this frame;
+            ###
+            ### stuff like maintaing a constant framerate and more
+            SERVICES_NS.frame_checkups()
+
+            ### put the handle_input/update/draw method
+            ### execution inside a try/except clause
+            ### so that the SwitchLoopException
+            ### thrown when focusing in and out of some
+            ### widgets is caught; also, you don't
+            ### need to catch the QuitAppException,
+            ### since it is caught in the main loop
+
+            try:
+
+                self.loop_holder.handle_input()
+                self.loop_holder.update()
+                self.loop_holder.draw()
+
+            except SwitchLoopException as err:
+
+                ## use the loop holder in the err
+                ## attribute of same name
+                self.loop_holder = err.loop_holder
+
+        ### finally, return the new path
+        set_modal(False)
+        if self.callback is not None:
+            self.callback(self.new_path)
+    
+    def get_path(self, parent, is_file, callback = None):
         """Return new path after user edits form."""
+        self.callback = callback
         ### store parent
         self.parent = parent
 
@@ -305,35 +342,8 @@ class PathForm(Object2D):
         self.running = True
         self.loop_holder = self
 
-        while self.running:
-
-            ### perform various checkups for this frame;
-            ###
-            ### stuff like maintaing a constant framerate and more
-            SERVICES_NS.frame_checkups()
-
-            ### put the handle_input/update/draw method
-            ### execution inside a try/except clause
-            ### so that the SwitchLoopException
-            ### thrown when focusing in and out of some
-            ### widgets is caught; also, you don't
-            ### need to catch the QuitAppException,
-            ### since it is caught in the main loop
-
-            try:
-
-                self.loop_holder.handle_input()
-                self.loop_holder.update()
-                self.loop_holder.draw()
-
-            except SwitchLoopException as err:
-
-                ## use the loop holder in the err
-                ## attribute of same name
-                self.loop_holder = err.loop_holder
-
-        ### finally, return the new path
-        return self.new_path
+        set_modal(True)
+        asyncio.get_running_loop().create_task(self.get_path_loop())
 
     def handle_input(self):
         """Process events from event queue."""

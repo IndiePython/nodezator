@@ -205,6 +205,18 @@ class TextPreview(_BasePreview):
     def update_previews(self):
         self.update_image()
 
+    def blit_path_representation_callback(self):
+        try:
+            subsurf = self.path_repr_subsurf
+
+        except AttributeError:
+
+            subsurf = self.path_repr_subsurf = self.image.subsurface(rect)
+
+        subsurf.blit(NOT_FOUND_SURF_MAP[subsurf.get_size()], (0, 0))
+
+        super().blit_path_representation()
+    
     def blit_path_representation(self):
         """Blit representation of text in current path."""
 
@@ -268,18 +280,8 @@ class TextPreview(_BasePreview):
                     " leaving this dialog)."
                 ),
                 level_name="error",
+                callback = self.blit_path_representation_callback,
             )
-
-            try:
-                subsurf = self.path_repr_subsurf
-
-            except AttributeError:
-
-                subsurf = self.path_repr_subsurf = image.subsurface(rect)
-
-            subsurf.blit(NOT_FOUND_SURF_MAP[subsurf.get_size()], (0, 0))
-
-            super().blit_path_representation()
             return
 
         no_of_visible_lines = 7

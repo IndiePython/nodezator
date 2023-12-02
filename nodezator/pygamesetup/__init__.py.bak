@@ -17,17 +17,14 @@ from .constants import (
 ## custom services
 from .services import normal, record, play
 
-MODAL_STATE_COUNTER = 0
+HAS_MODAL = False
 def set_modal(is_modal):
-    global MODAL_STATE_COUNTER
-    if is_modal:
-        MODAL_STATE_COUNTER = MODAL_STATE_COUNTER + 1
-    elif MODAL_STATE_COUNTER > 0:
-        MODAL_STATE_COUNTER = MODAL_STATE_COUNTER - 1
-    
+    global HAS_MODAL
+    HAS_MODAL = is_modal
+
 def is_modal():
-    global MODAL_STATE_COUNTER
-    return (MODAL_STATE_COUNTER > 0)
+    global HAS_MODAL
+    return HAS_MODAL
 
 ### create a namespace to store the services in use
 SERVICES_NS = type("Object", (), {})()
@@ -52,6 +49,7 @@ def switch_mode(mode_info_ns):
         switched to.
     """
     mode = GENERAL_NS.mode_name = mode_info_ns.mode
+    print("*** MODE: ", mode)
 
     if mode == 'record':
         record.set_behaviour(SERVICES_NS, mode_info_ns.data)

@@ -64,93 +64,12 @@ SAVE_AS_CAPTION = "Select/create new file wherein to save"
 
 class FileOperations:
     """Contains methods related to files."""
-
-    def new(self):
-        """Create a new file."""
-        ### prompt user for action if there are unsaved
-        ### changes in the loaded file
-
-        if not are_changes_saved():
-
-            ### whether loaded file is temporary
-
-            if (
-                APP_REFS.temp_filepaths_man.is_temp_path(
-                    APP_REFS.source_path
-                )
-            ):
-
-                answer = (
-                    create_and_show_dialog(
-
-                        (
-                            "There's a temporary new file already"
-                            " being edited. Should we discard the"
-                            " contents and create a new one?"
-                        ),
-
-                        buttons=(
-
-                            ("Yes", True),
-                            ("Abort", False),
-
-                        ),
-                        level_name="warning",
-                        dismissable=True,
-                    )
-                )
-
-                if answer:
-                    ### make it appear as if there are no
-                    ### unsaved changes; this will cause the
-                    ### current changes to be ignored and
-                    ### thereby lost when the newly created
-                    ### file is opened
-                    indicate_saved()
-
-                else:
-                    return
-
-            else:
-
-                ## XXX review comments in this block
-
-                answer = (
-                    show_dialog_from_key(
-                        "create_new_while_unsaved_dialog",
-                    )
-                )
-
-                if answer == "open_new":
-
-                    ### make it appear as if there are no
-                    ### unsaved changes; this will cause the
-                    ### current changes to be ignored and
-                    ### thereby lost when the newly created
-                    ### file is opened
-                    indicate_saved()
-
-                    ### delete swap path contents
-                    APP_REFS.swap_path.unlink()
-
-                elif answer == "save_first":
-                    self.save()
-
-                else:
-                    return
-
-        ### if there are not and there's a file loaded, it means it
-        ### is a regular file, so delete its swap file
-
-        else:
-
-            try:
-                APP_REFS.source_path
-            except AttributeError:
-                pass
-            else:
-                APP_REFS.swap_path.unlink()
-
+    def __init__(self):
+        self.filepath = None
+        self.swap_path  = None
+        self.is_temp_file = None
+        
+    def do_new(self):
         ### generate new temporary filepath
         filepath = APP_REFS.temp_filepaths_man.get_new_temp_filepath()
 
@@ -160,65 +79,246 @@ class FileOperations:
         ### finally, load (open) the file
         self.open(filepath)
 
-    def open(self, filepath=None):
-        """Open a new file.
+    def new_actions_callback(self, answer):
+        ## XXX review comments in this block
+        if answer == "open_new":
+            ### make it appear as if there are no
+            ### unsaved changes; this will cause the
+            ### current changes to be ignored and
+            ### thereby lost when the newly created
+            ### file is opened
+            indicate_saved()
 
-        filepath (pathlib.Path instance)
-            Path to the file to be opened.
-        """
-        ### if no filepath is provided, prompt user to
-        ### pick one from the file manager
+            ### delete swap path contents
+            APP_REFS.swap_path.unlink()
 
-        if not filepath:
+        elif answer == "save_first":
+            self.save()
 
-            ## pick path
-
-            paths = select_paths(caption=OPEN_FILE_CAPTION)
-
-            ## respond according to number of paths given
-
-            length = len(paths)
-
-            if length == 1:
-                filepath = paths[0]
-
-            elif length > 1:
-
-                show_dialog_from_key(
-                    "expected_single_path_dialog"
-                )
-                return
-
-            else:
-                filepath = None
-
-        ### if even so the user didn't provide a filepath,
-        ### return earlier
-        if not filepath:
+        else:
             return
+            
+        self.do_new()
+        
+    def discard_changes_callback(self, answer):
+        if answer:
+            ### make it appear as if there are no
+            ### unsaved changes; this will cause the
+            ### current changes to be ignored and
+            ### thereby lost when the newly created
+            ### file is opened
+            indicate_saved()
+            self.do_new()
+    
+    def new(self):
+        """Create a new file."""
+        if are_changes_saved():
+            ### if there are not and there's a file loaded, it means it
+            ### is a regular file, so delete its swap file
+            try:
+                APP_REFS.source_path
+            except AttributeError:
+                pass
+            else:
+                APP_REFS.swap_path.unlink()
+            self.do_new()
+            return
+            
+        ### prompt user for action if there are unsaved
+        ### changes in the loaded file
 
-        ### prompt user for action in case a file is provided
-        ### but there are unsaved changes in the current one
+        ### whether loaded file is temporary
 
-        if filepath and not are_changes_saved():
+        if (
+            APP_REFS.temp_filepaths_man.is_temp_path(
+                APP_REFS.source_path
+            )
+        ):
 
-            answer = (
-                show_dialog_from_key(
-                    "open_new_while_unsaved_dialog",
-                )
+            create_and_show_dialog(
+
+                (
+                    "There's a temporary new file already"
+                    " being edited. Should we discard the"
+                    " contents and create a new one?"
+                ),
+
+                buttons=(
+
+                    ("Yes", True),
+                    ("Abort", False),
+
+                ),
+                level_name="warning",
+                dismissable=True,
+                callback = self.discard_changes_callback,
             )
 
-            if answer == "open new":
-                pass
-            elif answer == "save first":
-                self.save()
-            else:
-                return
+        else:
 
+            show_dialog_from_key(
+                "create_new_while_unsaved_dialog",
+                callback = self.new_actions_callback,
+            )
+
+    def load_file(self):
+        ### try loading the file, storing its data
+        try:
+            loaded_data = load_pyl(self.filepath)
+
+        ### if loading fails abort opening the file by
+        ### leaving this method after notifying the
+        ### user of the problem
+
+        except Exception as err:
+
+            message = "An error occurred while trying to" " open a file."
+
+            logger.exception(message)
+
+            USER_LOGGER.exception(message)
+
+            create_and_show_dialog(
+                (
+                    "An error ocurred while trying to"
+                    f" open {self.filepath}. Check the user"
+                    " log (<Ctrl+Shift+j>) for details."
+                ),
+                level_name="error",
+            )
+
+            return
+
+        ### if the given filepath is temporary or the swap path
+        ### for the regular file does not exist, we copy the
+        ### source contents into it
+
+        if self.is_temp_file or not self.swap_path.is_file():
+
+            source_contents = self.filepath.read_text(encoding="utf-8")
+
+            self.swap_path.write_text(
+                source_contents,
+                encoding="utf-8",
+            )
+
+        ### store both paths for access throughout the
+        ### system
+
+        ## store source path
+        APP_REFS.source_path = self.filepath
+
+        ## store swap path
+
+        # admin task for regular files: remove existing swap
+        # if present and different from the one being loaded
+        # (this will happen when loading a file when there is
+        # another one already loaded)
+
+        if not self.is_temp_file:
+
+            try:
+                current_swap = APP_REFS.swap_path
+
+            except AttributeError:
+                pass
+
+            else:
+
+                if not current_swap.samefile(self.swap_path):
+                    current_swap.unlink()
+
+        APP_REFS.swap_path = self.swap_path
+
+        ### clean up native format data that may
+        ### exist from previous session
+        APP_REFS.data.clear()
+
+        ### replace such data with new native format
+        ### data loaded from the file to be opened
+        APP_REFS.data = loaded_data
+
+        ### if filepath is not temporary, store it as a recently
+        ### open file, so it is available in the menubar under
+        ### the "File > Open recent" submenu
+        if not self.is_temp_file:
+            store_recent_file(APP_REFS.source_path)
+
+        ### finally,
+        ### - prepare the application for a new session
+        ### - indicate file as unsaved if it is temporary
+        ### - draw the window manager
+        ### - restart the loop making the window manager
+        ###   the loop holder
+        ###
+        ### drawing is important here cause the user
+        ### may accidentally keep the mouse over the
+        ### menubar when the file finishes loading,
+        ### which would make it so the menu would
+        ### be the loop holder, thus the graph
+        ### objects would not be initially drawn
+        ### on the screen
+
+        self.prepare_for_new_session()
+
+        if self.is_temp_file:
+            indicate_unsaved()
+
+        self.draw()
+
+        raise SwitchLoopException
+
+    def swap_file_callback(self, answer):
+        # load original file (ignore swap)
+        if answer == "load_original":
+            self.swap_path.unlink()
+            source_contents = (
+                self.filepath.read_text(encoding="utf-8")
+            )
+
+            self.swap_path.write_text(
+                source_contents,
+                encoding="utf-8",
+            )
+
+        # load swap file (ignore original)
+
+        elif answer == "load_swap":
+
+            ### XXX review this block
+
+            ### TODO also prevent people from
+            ### - accidentaly - clicking the button
+            ### that leads here when the dialog
+            ### comes up;
+
+            # save backup for the filepath
+
+            save_timestamped_backup(
+                self.filepath,
+                USER_PREFS["NUMBER_OF_BACKUPS"],
+            )
+
+            # copy swap file contents into
+            # source file
+
+            swap_contents = self.swap_path.read_text(encoding="utf-8")
+
+            self.filepath.write_text(
+                swap_contents,
+                encoding="utf-8",
+            )
+
+        else:
+            return
+            
+        self.load_file()
+        
+    def verify_temp_file(self):
         ### store boolean indicating whether or not the given path
         ### is of a temporary file
-        is_temp_file = (
-            APP_REFS.temp_filepaths_man.is_temp_path(filepath)
+        self.is_temp_file = (
+            APP_REFS.temp_filepaths_man.is_temp_path(self.filepath)
         )
 
         ### TODO checks below should be made before the
@@ -241,15 +341,15 @@ class FileOperations:
         ### processing it for usage
 
         if (
-            filepath.is_file()
-            and filepath.suffix.lower() == NATIVE_FILE_EXTENSION
+            self.filepath.is_file()
+            and self.filepath.suffix.lower() == NATIVE_FILE_EXTENSION
         ):
 
             ### perform actions depending on whether filepath is a
             ### temporary file or not
 
-            if is_temp_file:
-                swap_path = TEMP_FILE_SWAP
+            if self.is_temp_file:
+                self.swap_path = TEMP_FILE_SWAP
 
             else:
 
@@ -259,7 +359,7 @@ class FileOperations:
                 ### how we'll approach the file loading
 
                 ## generate swap path
-                swap_path = get_swap_path(filepath)
+                self.swap_path = get_swap_path(self.filepath)
 
                 ## if swap file exists there might have been a
                 ## crash which forced the program to exit,
@@ -268,162 +368,76 @@ class FileOperations:
                 ## prompt the user to decide which action to
                 ## perform:
 
-                if swap_path.is_file():
+                if self.swap_path.is_file():
 
-                    answer = show_dialog_from_key("swap_exists_dialog")
+                    show_dialog_from_key(
+                        "swap_exists_dialog",
+                        callback = self.swap_file_callback,
+                    )
+                    return
 
-                    # load original file (ignore swap)
+            self.load_file()
 
-                    if answer == "load_original":
+    def do_open_callback(self, answer):
+        if answer == "open new":
+            pass
+        elif answer == "save first":
+            self.save()
+        else:
+            return
+        self.verify_temp_file()
+    
+    def do_open(self):
+        ### prompt user for action in case a file is provided
+        ### but there are unsaved changes in the current one
+        if self.filepath and not are_changes_saved():
+            show_dialog_from_key(
+                "open_new_while_unsaved_dialog",
+                callback = self.do_open_callback,
+            )
+        else:
+            self.verify_temp_file()
+            
+    def open_callback(self, paths):
+        ## respond according to number of paths given
+        length = len(paths)
 
-                        swap_path.unlink()
+        if length == 1:
+            filepath = paths[0]
 
-                        source_contents = (
-                            filepath.read_text(encoding="utf-8")
-                        )
+        elif length > 1:
 
-                        swap_path.write_text(
-                            source_contents,
-                            encoding="utf-8",
-                        )
+            show_dialog_from_key(
+                "expected_single_path_dialog"
+            )
+            return
 
-                    # load swap file (ignore original)
+        else:
+            filepath = None
 
-                    elif answer == "load_swap":
-
-                        ### XXX review this block
-
-                        ### TODO also prevent people from
-                        ### - accidentaly - clicking the button
-                        ### that leads here when the dialog
-                        ### comes up;
-
-                        # save backup for the filepath
-
-                        save_timestamped_backup(
-                            filepath,
-                            USER_PREFS["NUMBER_OF_BACKUPS"],
-                        )
-
-                        # copy swap file contents into
-                        # source file
-
-                        swap_contents = swap_path.read_text(encoding="utf-8")
-
-                        filepath.write_text(
-                            swap_contents,
-                            encoding="utf-8",
-                        )
-
-                    else:
-                        return
-
-            ### try loading the file, storing its data
-            try:
-                loaded_data = load_pyl(filepath)
-
-            ### if loading fails abort opening the file by
-            ### leaving this method after notifying the
-            ### user of the problem
-
-            except Exception as err:
-
-                message = "An error occurred while trying to" " open a file."
-
-                logger.exception(message)
-
-                USER_LOGGER.exception(message)
-
-                create_and_show_dialog(
-                    (
-                        "An error ocurred while trying to"
-                        f" open {filepath}. Check the user"
-                        " log (<Ctrl+Shift+j>) for details."
-                    ),
-                    level_name="error",
-                )
-
-                return
-
-            ### if the given filepath is temporary or the swap path
-            ### for the regular file does not exist, we copy the
-            ### source contents into it
-
-            if is_temp_file or not swap_path.is_file():
-
-                source_contents = filepath.read_text(encoding="utf-8")
-
-                swap_path.write_text(
-                    source_contents,
-                    encoding="utf-8",
-                )
-
-            ### store both paths for access throughout the
-            ### system
-
-            ## store source path
-            APP_REFS.source_path = filepath
-
-            ## store swap path
-
-            # admin task for regular files: remove existing swap
-            # if present and different from the one being loaded
-            # (this will happen when loading a file when there is
-            # another one already loaded)
-
-            if not is_temp_file:
-
-                try:
-                    current_swap = APP_REFS.swap_path
-
-                except AttributeError:
-                    pass
-
-                else:
-
-                    if not current_swap.samefile(swap_path):
-                        current_swap.unlink()
-
-            APP_REFS.swap_path = swap_path
-
-            ### clean up native format data that may
-            ### exist from previous session
-            APP_REFS.data.clear()
-
-            ### replace such data with new native format
-            ### data loaded from the file to be opened
-            APP_REFS.data = loaded_data
-
-            ### if filepath is not temporary, store it as a recently
-            ### open file, so it is available in the menubar under
-            ### the "File > Open recent" submenu
-            if not is_temp_file:
-                store_recent_file(APP_REFS.source_path)
-
-            ### finally,
-            ### - prepare the application for a new session
-            ### - indicate file as unsaved if it is temporary
-            ### - draw the window manager
-            ### - restart the loop making the window manager
-            ###   the loop holder
-            ###
-            ### drawing is important here cause the user
-            ### may accidentally keep the mouse over the
-            ### menubar when the file finishes loading,
-            ### which would make it so the menu would
-            ### be the loop holder, thus the graph
-            ### objects would not be initially drawn
-            ### on the screen
-
-            self.prepare_for_new_session()
-
-            if is_temp_file:
-                indicate_unsaved()
-
-            self.draw()
-
-            raise SwitchLoopException
-
+        ### if even so the user didn't provide a filepath,
+        ### return earlier
+        if not filepath:
+            return
+            
+        self.filepath = filepath
+        self.do_open()
+    
+    
+    def open(self, filepath=None):
+        """Open a new file.
+        filepath (pathlib.Path instance)
+            Path to the file to be opened.
+        """
+        ### if no filepath is provided, prompt user to
+        ### pick one from the file manager
+        if not filepath:
+            ## pick path
+            select_paths(caption=OPEN_FILE_CAPTION, callback = self.open_callback)
+        else:
+            self.filepath = filepath
+            self.do_open()
+        
     def perform_startup_preparations(self, filepath):
         """Perform tasks for startup and return loop holder.
 
@@ -556,111 +570,13 @@ class FileOperations:
 
         set_status_message("Changes were successfully saved.")
 
-    def save_as(self):
-        """Save data in new file and keep using new file.
-
-        Works by saving the data in the new location
-        provided by the user via the file manager
-        session we start and using that new location from
-        then on.
-
-        Other admin taks are also performed like deleting
-        the swap file for the original file.
-        """
-        ### prompt user to pick filepath from file manager
-
-        paths = select_paths(
-                    caption=SAVE_AS_CAPTION,
-                    path_name="new_file_name.ndz",
-                )
-
-        ### respond according to whether paths were given
-
-        ## if paths were given, it is a single one, we
-        ## should assign it to 'filepath' variable
-        if paths:
-            filepath = paths[0]
-
-        ## if the user didn't provide paths, though,
-        ## return earlier
-        else:
-            return
-
-
-        ### perform tasks to save current file in the
-        ### provided path, using it from now on
-
-        ### if the path doesn't have the right extension,
-        ### ask user if we should add it ourselves or
-        ### cancel the operation (in which case we just return)
-
-        if filepath.suffix != NATIVE_FILE_EXTENSION:
-
-            ## build custom message
-
-            message = (
-                "Path provided must have a"
-                f" {NATIVE_FILE_EXTENSION} extension."
-                " Want us to add it for you?"
-            )
-
-            ## each button is represented by a pair
-            ## consisting of the text of the button and
-            ## the value the dialog returns when we
-            ## click it
-
-            buttons = [("Yes", True), ("No, cancel saving new file", False)]
-
-            ## display the dialog and store the answer
-            ## provided by the user when clicking
-            answer = create_and_show_dialog(message, buttons)
-
-            ## if the answer is False, then cancel operation
-            if not answer:
-                return
-
-            ## otherwise apply the correct extension
-
-            else:
-                filepath = filepath.with_suffix(NATIVE_FILE_EXTENSION)
-
-        ### if path already exists, prompt user to confirm
-        ### whether we should override it
-
-        if filepath.exists():
-
-            ## build custom message
-
-            message = (
-                f"The path provided ({filepath}) already exists."
-                " Should we override it?"
-            )
-
-            ## each button is represented by a pair
-            ## consisting of the text of the button and
-            ## the value the dialog returns when we
-            ## click it
-
-            buttons = [("Ok", True), ("Cancel", False)]
-
-            ## display the dialog and store the answer
-            ## provided by the user when clicking
-            answer = create_and_show_dialog(message, buttons)
-
-            ### if the answer is False, then we shouldn't
-            ### override, so we cancel the operation by
-            ### returning
-            if not answer:
-                return
-
-        ### otherwise we proceed
-
+    def perform_save_overwrite(self):        
         ### backup the current source path
         original_source = APP_REFS.source_path
 
         ### assign the new file as the source the be used
         ### instead
-        APP_REFS.source_path = filepath
+        APP_REFS.source_path = self.filepath
 
         ### try saving current data on the new path
         try:
@@ -695,12 +611,12 @@ class FileOperations:
         ### create a swap path for the new source and store
         ### it
 
-        swap_path = get_swap_path(filepath)
+        swap_path = get_swap_path(self.filepath)
         APP_REFS.swap_path = swap_path
 
         ### save contents of source in the swap path
 
-        source_contents = filepath.read_text(encoding="utf-8")
+        source_contents = self.filepath.read_text(encoding="utf-8")
 
         swap_path.write_text(source_contents, encoding="utf-8")
 
@@ -710,7 +626,7 @@ class FileOperations:
         store_recent_file(APP_REFS.source_path)
 
         ### get a custom string representation for the source
-        path_str = get_custom_path_repr(filepath)
+        path_str = get_custom_path_repr(self.filepath)
 
         ### update caption to show the new loaded path
         self.put_path_on_caption(path_str)
@@ -718,6 +634,119 @@ class FileOperations:
         ### notify user by displaying message in the
         ### statusbar
         set_status_message(f"Using new file from now on {path_str}")
+
+    def save_overwrite_callback(self, answer):        
+        ### if the answer is False, then we shouldn't
+        ### override, so we cancel the operation by
+        ### returning
+        if not answer:
+            return
+        self.perform_save_overwrite()
+        
+    def do_save_as(self):
+        if not self.filepath.exists():
+            self.perform_save_overwrite()
+            return
+            
+        ### if path already exists, prompt user to confirm
+        ### whether we should override it
+
+        ## build custom message
+
+        message = (
+            f"The path provided ({self.filepath}) already exists."
+            " Should we override it?"
+        )
+
+        ## each button is represented by a pair
+        ## consisting of the text of the button and
+        ## the value the dialog returns when we
+        ## click it
+
+        buttons = [("Ok", True), ("Cancel", False)]
+
+        ## display the dialog and store the answer
+        ## provided by the user when clicking
+        create_and_show_dialog(
+            message, 
+            buttons,
+            callback = self.save_overwrite_callback,
+            )
+    
+    def add_extension_callback(self, answer):
+        ## if the answer is False, then cancel operation
+        if not answer:
+            return
+        ## otherwise apply the correct extension
+        self.filepath = self.filepath.with_suffix(NATIVE_FILE_EXTENSION)
+        self.do_save_as()
+    
+    def save_as_callback(self, paths):
+        ### respond according to whether paths were given
+
+        ## if paths were given, it is a single one, we
+        ## should assign it to 'filepath' variable
+        if paths:
+            self.filepath = paths[0]
+
+        ## if the user didn't provide paths, though,
+        ## return earlier
+        else:
+            return
+
+
+        ### perform tasks to save current file in the
+        ### provided path, using it from now on
+
+        if self.filepath.suffix == NATIVE_FILE_EXTENSION:
+            self.do_save_as()
+            return
+
+        ### if the path doesn't have the right extension,
+        ### ask user if we should add it ourselves or
+        ### cancel the operation (in which case we just return)
+
+        ## build custom message
+
+        message = (
+            "Path provided must have a"
+            f" {NATIVE_FILE_EXTENSION} extension."
+            " Want us to add it for you?"
+        )
+
+        ## each button is represented by a pair
+        ## consisting of the text of the button and
+        ## the value the dialog returns when we
+        ## click it
+
+        buttons = [("Yes", True), ("No, cancel saving new file", False)]
+
+        ## display the dialog and store the answer
+        ## provided by the user when clicking
+        create_and_show_dialog(
+            message, 
+            buttons,
+            callback = self.add_extension_callback,
+            )
+
+    def save_as(self):
+        """Save data in new file and keep using new file.
+
+        Works by saving the data in the new location
+        provided by the user via the file manager
+        session we start and using that new location from
+        then on.
+
+        Other admin taks are also performed like deleting
+        the swap file for the original file.
+        """
+        ### prompt user to pick filepath from file manager
+
+        select_paths(
+            caption=SAVE_AS_CAPTION,
+            path_name="new_file_name.ndz",
+            callback = self.save_as_callback,
+        )
 
     def save_data(self):
         """Save data on filepath.
@@ -727,6 +756,23 @@ class FileOperations:
         """
         save_pyl(APP_REFS.data, APP_REFS.source_path)
 
+    def reload_callback(self, answer):
+        if answer == "reload":
+
+            ### make it appear as if there are no
+            ### unsaved changes; this will cause the
+            ### current changes to be ignored and
+            ### thereby lost when the file is reloaded
+            ### (opened again)
+            indicate_saved()
+            
+            ### remove swap file
+            APP_REFS.swap_path.unlink()
+            
+            ### finally reopen the current file
+            self.open(APP_REFS.source_path)
+
+    
     def reload(self):
         """Reload current file."""
         ### the reloading mechanism doesn't apply to temporary files;
@@ -739,33 +785,22 @@ class FileOperations:
                 "Cannot reload temporary files.",
                 level_name="warning",
             )
-
             return
 
         ### prompt user for action in case there are unsaved
         ### changes
 
-        if not are_changes_saved():
+        if are_changes_saved():
+            ### remove swap file
+            APP_REFS.swap_path.unlink()
 
-            answer = show_dialog_from_key("reload_unsaved_dialog")
-
-            if answer == "reload":
-
-                ### make it appear as if there are no
-                ### unsaved changes; this will cause the
-                ### current changes to be ignored and
-                ### thereby lost when the file is reloaded
-                ### (opened again)
-                indicate_saved()
-
-            elif answer == "abort":
-                return
-
-        ### remove swap file
-        APP_REFS.swap_path.unlink()
-
-        ### finally reopen the current file
-        self.open(APP_REFS.source_path)
+            ### finally reopen the current file
+            self.open(APP_REFS.source_path)
+        else:
+            show_dialog_from_key(
+                "reload_unsaved_dialog",
+                callback = self.reload_callback,
+            )
 
 
 ### utility

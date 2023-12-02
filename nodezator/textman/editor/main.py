@@ -1,6 +1,7 @@
 """Facility for text editing."""
 
 ### standard library import
+import asyncio
 from functools import partial
 
 
@@ -19,7 +20,7 @@ from pygame.key import stop_text_input
 
 from ...config import APP_REFS
 
-from ...pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
+from ...pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen, set_modal
 
 from ...dialog import create_and_show_dialog
 
@@ -348,12 +349,66 @@ class TextEditor(Object2D):
         ## outline line number area
         draw_rect(self.image, BLACK, lineno_area, 1)
 
+    async def edit_text_loop(self, cursor):
+        ### loop until running attribute is set to False
+        self.running = True
+        while self.running:
+            await asyncio.sleep(0)
+            ### perform various checkups for this frame;
+            ###
+            ### stuff like maintaing a constant framerate and more
+            SERVICES_NS.frame_checkups()
+
+            ### perform the GUD operations;
+            ###
+            ### note that, rather than using a single
+            ### loop holder, both the cursor and text editor
+            ### provide GUD operations together
+
+            ## execute handle_input() and update() operations
+            ## from the cursor object
+
+            cursor.handle_input()
+            cursor.update()
+
+            ## execute drawing operation from the text editor
+            self.draw()
+
+        ### disable text editing events;
+        ###
+        ### this might only be needed if editor was in insert mode
+        ### but it is ok to call regardless of that
+        stop_text_input()
+
+        ### blit the self.rect-size semitransparent obj
+        ### over the screen to leave the self.rect
+        ### temporarily darkened in case it keeps showing
+        ### even after leaving this text editor (in some
+        ### cases the loop holder which called this
+        ### method might not care to update the area of the
+        ### screen previously occupied by this color picker,
+        ### making it so it keeps appearing as if it was
+        ### still active on the screen)
+        self.rect_size_semitransp_obj.draw()
+
+        ### since we won't need the objects forming
+        ### the text anymore, we clear all text-related
+        ### objects in the cursor, to free memory
+        cursor.free_up_memory()
+
+        ### return text attribute
+        #return self.text
+        if self.callback is not None:
+            self.callback(self.text)
+        set_modal(False)        
+        
     def edit_text(
         self,
         text="",
         font_path=ENC_SANS_BOLD_FONT_PATH,
         validation_command=None,
         syntax_highlighting="",
+        callback = None
     ):
         """Edit given text.
 
@@ -400,7 +455,8 @@ class TextEditor(Object2D):
         """
         ### blit a screen-size semitransparent surface in
         ### the canvas to increase constrast
-
+        self.callback = callback
+        
         blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
 
         ### instantiate and store cursor in its own attribute,
@@ -420,56 +476,8 @@ class TextEditor(Object2D):
         ### process validation command
         self.validation_command = validation_command
 
-        ### loop until running attribute is set to False
-
-        self.running = True
-
-        while self.running:
-
-            ### perform various checkups for this frame;
-            ###
-            ### stuff like maintaing a constant framerate and more
-            SERVICES_NS.frame_checkups()
-
-            ### perform the GUD operations;
-            ###
-            ### note that, rather than using a single
-            ### loop holder, both the cursor and text editor
-            ### provide GUD operations together
-
-            ## execute handle_input() and update() operations
-            ## from the cursor object
-
-            cursor.handle_input()
-            cursor.update()
-
-            ## execute drawing operation from the text editor
-            self.draw()
-
-        ### disable text editing events;
-        ###
-        ### this might only be needed if editor was in insert mode
-        ### but it is ok to call regardless of that
-        stop_text_input()
-
-        ### blit the self.rect-size semitransparent obj
-        ### over the screen to leave the self.rect
-        ### temporarily darkened in case it keeps showing
-        ### even after leaving this text editor (in some
-        ### cases the loop holder which called this
-        ### method might not care to update the area of the
-        ### screen previously occupied by this color picker,
-        ### making it so it keeps appearing as if it was
-        ### still active on the screen)
-        self.rect_size_semitransp_obj.draw()
-
-        ### since we won't need the objects forming
-        ### the text anymore, we clear all text-related
-        ### objects in the cursor, to free memory
-        cursor.free_up_memory()
-
-        ### return text attribute
-        return self.text
+        set_modal(True)
+        asyncio.get_running_loop().create_task(self.edit_text_loop(cursor))
 
     @property
     def validation_command(self):

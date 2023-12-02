@@ -1,6 +1,7 @@
 """Facility for viewing images from given paths."""
 
 ### standard library import
+import asyncio
 from functools import partialmethod
 
 
@@ -12,7 +13,7 @@ from pygame import Rect, Surface
 
 from ...config import APP_REFS
 
-from ...pygamesetup import SERVICES_NS, SCREEN_RECT
+from ...pygamesetup import SERVICES_NS, SCREEN_RECT, set_modal
 
 from ...surfsman.render import render_rect
 
@@ -61,24 +62,9 @@ class SurfaceViewer(ViewerOperations):
         if self.running:
             APP_REFS.draw_after_window_resize_setups = self.response_draw
 
-    def view_surface(self, surface: Surface):
-        """Display given surface."""
-
-        if not isinstance(surface, Surface):
-            return TypeError("given argument must be a pygame.Surface.")
-
-        ###
-
-        self.image = surface
-        self.rect.size = surface.get_size()
-        self.rect.center = MOVE_AREA.center
-
-        self.response_draw()
-
-        ###
-        self.running = True
-
+    async def view_surface_loop(self):
         while self.running:
+            await asyncio.sleep(0)        
 
             ### perform various checkups for this frame;
             ###
@@ -89,7 +75,30 @@ class SurfaceViewer(ViewerOperations):
             self.draw()
 
         del self.image
+        set_modal(False)
+        if self.callback is not None:
+            self.callback()
 
+    
+    def view_surface(self, surface: Surface, callback = None):
+        """Display given surface."""
+
+        if not isinstance(surface, Surface):
+            return TypeError("given argument must be a pygame.Surface.")
+
+        ###
+        self.callback = callback
+        self.image = surface
+        self.rect.size = surface.get_size()
+        self.rect.center = MOVE_AREA.center
+
+        self.response_draw()
+
+        ###
+        self.running = True
+
+        set_modal(True)
+        asyncio.get_running_loop().create_task(self.view_surface_loop())
 
 
 ### instantiate the surface viewer and store a reference

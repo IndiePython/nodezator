@@ -350,6 +350,7 @@ class TextDisplay(Object2D):
         ### is, we call the method responsible for
         ### calling the text editor to edit the value
         if mouse_x < (self.rect.x + 17):
+            print("**** EDIT_VALUE");
             self.edit_value()
 
         ### otherwise the user clicked on the portion of
@@ -648,13 +649,6 @@ class TextDisplay(Object2D):
 
     reset_font_path = partialmethod(reset_style, "font_path")
 
-    def edit_value_callback(self, text):
-        ### if there is an edited text (it is not None)
-        ### and it is different from the current value,
-        ### set such text as the new value
-        if text is not None and text != self.value:
-            self.set(text)
-    
     def edit_value(self):
         """Edit value of widget on the text editor."""
         ### retrieve edited text: this triggers the
@@ -663,14 +657,19 @@ class TextDisplay(Object2D):
         ### the text (or None, if the user decides to
         ### cancel the operation)
 
-        edit_text(
+        text = edit_text(
             text=self.value,
             font_path=self.font_path,
             syntax_highlighting=self.syntax_highlighting,
             validation_command=self.validation_command,
-            callback = self.edit_value_callback,
         )
 
+        ### if there is an edited text (it is not None)
+        ### and it is different from the current value,
+        ### set such text as the new value
+
+        if text is not None and text != self.value:
+            self.set(text)
 
     def get_expected_type(self):
         return str

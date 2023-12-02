@@ -69,8 +69,122 @@ from .form import get_image_exporting_settings
 ### create logger for module
 logger = get_new_logger(__name__)
 
+all_rects = None
+all_rectsman = None
+
+def do_export_as_image():
+    global all_rects
+    global all_rectsman
+    
+    ### otherwise we proceed with the image exporting
+    ### operation...
+
+    ### let's measure the time taken to export the
+    ### image
+    start = time()
+
+    ### backup the topleft
+    original_topleft = all_rectsman.topleft
+
+    ### move objects' topleft to the given margins
+
+    all_rectsman.topleft = (
+        settings.pop("horizontal_margin"),
+        settings.pop("vertical_margin"),
+    )
+
+    ### obtain a pathlib.Path version of the image path
+    image_path = Path(settings["image_path"])
+
+    ### retrieve the extension
+    extension = image_path.suffix.lower()
+
+    ### pick image exporting method according to the
+    ### file format
+
+    if extension == ".png":
+        export_method = export_file_as_png
+
+    elif extension == ".svg":
+        export_method = export_file_as_svg
+
+    elif extension == ".html":
+        export_method = export_file_as_html
+
+    ### try creating and saving image
+    msg = None
+    error_str = ""
+    try:
+        export_method(**settings)
+
+    except Exception as err:
+
+        ## log traceback in regular
+        ## log and and user log
+
+        msg = (
+            "An unexpected error ocurred"
+            " while trying to export node"
+            f" layout as {extension}."
+        )
+
+        logger.exception(msg)
+        USER_LOGGER.exception(msg)
+
+        error_str = str(err)
+
+    ### then restore the objects to their original
+    ### positions
+    all_rectsman.topleft = original_topleft
+
+    ### store the total time taken to execute the
+    ### operations above
+    total = time() - start
+
+    all_rects = None
+    all_rectsman = None
+
+    ### if there was an error message (an error
+    ### occured), show it to the user via a dialog
+
+    if error_str:
+
+        dialog_message = (
+            "An error ocurred while trying to"
+            " export the layout. Check the user log"
+            " for more info (click <Ctrl+Shift+J> after"
+            " leaving the dialog). Here's the error"
+            f" message: {error_str}"
+        )
+
+        create_and_show_dialog(
+            dialog_message,
+            level_name="error",
+        )
+
+    ### otherwise just display a message in the
+    ### statusbar, showing the time taken in a
+    ### friendly format
+
+    else:
+
+        message = ("File exported as '{}' image in {}").format(
+            image_path.name, friendly_delta_from_secs(total)
+        )
+
+        set_status_message(message)
+
+def export_as_image_callback(settings):
+    ### if the settings received are actually None,
+    ### it means the user cancelled the operation,
+    ### so we exit the method by returning
+    if settings is None:
+        return
+    do_export_as_image(settings)
 
 def export_as_image():
+    global all_rects
+    global all_rectsman
     """Export loaded file as .html/.svg or .png file.
 
     The current state of the file is exported, that is,
@@ -118,118 +232,14 @@ def export_as_image():
     ### in the loaded file;
     all_rectsman = RectsManager(all_rects.__iter__)
 
-    ### store the size of the resulting rects manager
-    size = all_rectsman.size
-
     ### prompt user for image exporting settings
     ### (passing along the total size occupied by
     ### the objects in the loaded file as additional
     ### info to be displayed to the user)
-    settings = get_image_exporting_settings(size)
-
-    ### if the settings received are actually None,
-    ### it means the user cancelled the operation,
-    ### so we exit the method by returning
-    if settings is None:
-        return
-
-    ### otherwise we proceed with the image exporting
-    ### operation...
-
-    ### let's measure the time taken to export the
-    ### image
-    start = time()
-
-    ### backup the topleft
-    original_topleft = all_rectsman.topleft
-
-    ### move objects' topleft to the given margins
-
-    all_rectsman.topleft = (
-        settings.pop("horizontal_margin"),
-        settings.pop("vertical_margin"),
+    get_image_exporting_settings(
+        all_rectsman.size, 
+        callback = export_as_image_callback
     )
-
-    ### obtain a pathlib.Path version of the image path
-    image_path = Path(settings["image_path"])
-
-    ### retrieve the extension
-    extension = image_path.suffix.lower()
-
-    ### pick image exporting method according to the
-    ### file format
-
-    if extension == ".png":
-        export_method = export_file_as_png
-
-    elif extension == ".svg":
-        export_method = export_file_as_svg
-
-    elif extension == ".html":
-        export_method = export_file_as_html
-
-    ### try creating and saving image
-
-    try:
-        export_method(**settings)
-
-    except Exception as err:
-
-        ## log traceback in regular
-        ## log and and user log
-
-        msg = (
-            "An unexpected error ocurred"
-            " while trying to export node"
-            f" layout as {extension}."
-        )
-
-        logger.exception(msg)
-        USER_LOGGER.exception(msg)
-
-        error_str = str(err)
-
-    else:
-        error_str = ""
-
-    ### then restore the objects to their original
-    ### positions
-    all_rectsman.topleft = original_topleft
-
-    ### store the total time taken to execute the
-    ### operations above
-    total = time() - start
-
-    ### if there was an error message (an error
-    ### occured), show it to the user via a dialog
-
-    if error_str:
-
-        dialog_message = (
-            "An error ocurred while trying to"
-            " export the layout. Check the user log"
-            " for more info (click <Ctrl+Shift+J> after"
-            " leaving the dialog). Here's the error"
-            f" message: {error_str}"
-        )
-
-        create_and_show_dialog(
-            dialog_message,
-            level_name="error",
-        )
-
-    ### otherwise just display a message in the
-    ### statusbar, showing the time taken in a
-    ### friendly format
-
-    else:
-
-        message = ("File exported as '{}' image in {}").format(
-            image_path.name, friendly_delta_from_secs(total)
-        )
-
-        set_status_message(message)
-
 
 def export_file_as_web_markup(
     width,

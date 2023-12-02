@@ -136,6 +136,7 @@ class DataHandling:
 
     def __init__(self):
 
+        self.text_block = None
         self.title_entry = StringEntry(
             value="output",
             command=self.update_data_node_title,
@@ -261,20 +262,7 @@ class DataHandling:
                 " or data node for its text to be edited."
             )
 
-    def edit_text_block_text(self, text_block):
-        """Edit text block text on text editor."""
-        ### retrieve its text
-        text = text_block.data["text"]
-
-        ### edit the text
-
-        edited_text = edit_text(
-            text=text,
-            font_path=FIRA_MONO_BOLD_FONT_PATH,
-            syntax_highlighting="comment",
-            validation_command=is_text_block_text_valid,
-        )
-
+    def edit_text_block_text_callback(self, edited_text):
         ### if the edited text is None, it means the user
         ### cancelled editing the text, so we just indicate
         ### such in the status bar
@@ -287,7 +275,7 @@ class DataHandling:
         ### one, we do nothing besides indicating such
         ### in the status bar
 
-        elif edited_text == text:
+        elif edited_text == self.text_block.data["text"]:
 
             set_status_message(
                 "Text of text block wasn't updated, since" " text didn't change"
@@ -296,7 +284,7 @@ class DataHandling:
         else:
 
             ## insert the new text
-            text_block.data["text"] = edited_text
+            self.text_block.data["text"] = edited_text
 
             ## indicate the change in the data
             indicate_unsaved()
@@ -306,7 +294,23 @@ class DataHandling:
             set_status_message("Text of text block was edited.")
 
             ## rebuild the surface of the text block
-            text_block.rebuild_surf()
+            self.text_block.rebuild_surf()
+        self.text_block = None
+        
+    def edit_text_block_text(self, text_block):
+        """Edit text block text on text editor."""
+        self.text_block = text_block
+        ### retrieve its text
+        text = text_block.data["text"]
+
+        ### edit the text
+        edit_text(
+            text=text,
+            font_path=FIRA_MONO_BOLD_FONT_PATH,
+            syntax_highlighting="comment",
+            validation_command=is_text_block_text_valid,
+            callback = self.edit_text_block_text_callback,
+        )
 
     def edit_data_node_title(self, data_node):
 

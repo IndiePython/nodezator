@@ -8,7 +8,6 @@ from itertools import chain, count
 
 
 ### local imports
-
 from ..config import APP_REFS
 
 from ..dialog import create_and_show_dialog
@@ -67,11 +66,7 @@ class ObjectInsertionRemoval:
         ### was triggered by a duplication operation
         self.moving_from_duplication = False
 
-    def pick_widget_for_proxy_node(self):
-
-        ### retrieve widget kwargs
-        widget_data = pick_widget()
-
+    def pick_widget_callback(self, widget_data):
         ### if widget data is None, cancel the operation
         ### by returning earlier
         if widget_data is None:
@@ -83,6 +78,11 @@ class ObjectInsertionRemoval:
         self.insert_node(
             node_hint=widget_data,
         )
+    
+    def pick_widget_for_proxy_node(self):
+
+        ### retrieve widget kwargs
+        pick_widget(callback = self.pick_widget_callback)
 
     def insert_node(
         self,
