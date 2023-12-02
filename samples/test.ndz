@@ -1,0 +1,35 @@
+{ 'installed_node_packs': [],
+  'node_packs': [],
+  'nodes': { 0: { 'builtin_id': 'print',
+                  'commented_out': False,
+                  'id': 0,
+                  'midtop': (736.0, 233.0),
+                  'mode': 'expanded_signature',
+                  'param_widget_value_map': { 'end': '\n',
+                                              'flush': False,
+                                              'sep': ' '},
+                  'subparam_keyword_map': {},
+                  'subparam_map': {'objects': [0]},
+                  'subparam_unpacking_map': {'objects': []},
+                  'subparam_widget_map': {'objects': {}}},
+             1: { 'commented_out': False,
+                  'id': 1,
+                  'midtop': (224.0, 258.0),
+                  'title': 'output',
+                  'widget_data': { 'widget_kwargs': { 'value': 'This is my '
+                                                               'multi line '
+                                                               'strings.\r\n'
+                                                               'string\r\n'
+                                                               'in multiple\r\n'
+                                                               'lines\r\n'
+                                                               'end of lines'},
+                                   'widget_name': 'text_display'}}},
+  'parent_sockets': [ { 'children': [ { 'class_name': 'InputSocket',
+                                        'id': (0, 'objects', 0)}],
+                        'class_name': 'OutputSocket',
+                        'id': (1, 'output')}],
+  'text_blocks': [ { 'midtop': (167.0, 74.0),
+                     'text': 'This is my multi line texts.\r\n'
+                             'Line 2\r\n'
+                             'Line 3\r\n'
+                             'End of lines'}]}
