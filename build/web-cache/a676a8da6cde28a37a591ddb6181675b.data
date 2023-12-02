@@ -1,0 +1,2368 @@
+{
+    "info" : {
+        "arch" : "wasm32",
+        "platform" : "emscripten_3_1_21",
+        "version" : "0.22.0.dev0",
+        "python" : "3.10.2"
+    },
+    "packages" : {
+        "asciitree" : {
+            "name" : "asciitree",
+            "version" : "0.3.3",
+            "file_name" : "asciitree-0.3.3-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "6e9e0a933428a4f64474e1e23ceff8d52766bfe0443a6288669b57c2bdac6b2c",
+            "depends" : [],
+            "imports" : [
+                "asciitree"
+            ]
+        },
+        "astropy" : {
+            "name" : "astropy",
+            "version" : "5.1",
+            "file_name" : "astropy-5.1-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "97dc9705e75770ad6a8eba77971113f98e71348695c4ea17a55f0e8891041e54",
+            "depends" : [
+                "distutils",
+                "packaging",
+                "numpy",
+                "pyerfa",
+                "pyyaml"
+            ],
+            "imports" : [
+                "astropy"
+            ]
+        },
+        "atomicwrites" : {
+            "name" : "atomicwrites",
+            "version" : "1.4.0",
+            "file_name" : "atomicwrites-1.4.0-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "96ddf7c553da029be408a7186609f5904a473150f301ff032d3f456ae95379f3",
+            "depends" : [],
+            "imports" : [
+                "atomicwrites"
+            ]
+        },
+        "attrs" : {
+            "name" : "attrs",
+            "version" : "21.4.0",
+            "file_name" : "attrs-21.4.0-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "3b7cbd5eea1bba6d272b020d409697b549c60ca3bf9c1c2f3a7c67b7fac12750",
+            "depends" : [
+                "six"
+            ],
+            "imports" : [
+                "attr",
+                "attrs"
+            ]
+        },
+        "autograd" : {
+            "name" : "autograd",
+            "version" : "1.4",
+            "file_name" : "autograd-1.4-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "9cd79c4721e9cd793d04b22cc990a737dac953f233ee448068f01c9e30a95d37",
+            "depends" : [
+                "numpy",
+                "future"
+            ],
+            "imports" : [
+                "autograd"
+            ],
+            "unvendored_tests" : true
+        },
+        "autograd-tests" : {
+            "name" : "autograd-tests",
+            "version" : "1.4",
+            "depends" : [
+                "autograd"
+            ],
+            "imports" : [],
+            "file_name" : "autograd-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "f77ee0059725c693f3276e36e212df752d36491966d697540a2b54f2a1ade780"
+        },
+        "bcrypt" : {
+            "name" : "bcrypt",
+            "version" : "4.0.0",
+            "file_name" : "bcrypt-4.0.0-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "6a76bc691da1ea102c80e0aacd5eaffb8f0b7ebe172a2889fccd7c0bf7cb98c4",
+            "depends" : [],
+            "imports" : [
+                "bcrypt"
+            ]
+        },
+        "beautifulsoup4" : {
+            "name" : "beautifulsoup4",
+            "version" : "4.11.1",
+            "file_name" : "beautifulsoup4-4.11.1-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "d7b2ac92b00bd3b47580de36deffbf49237c8e79973c4275f330369185da4814",
+            "depends" : [
+                "soupsieve"
+            ],
+            "imports" : [
+                "bs4"
+            ],
+            "unvendored_tests" : true
+        },
+        "beautifulsoup4-tests" : {
+            "name" : "beautifulsoup4-tests",
+            "version" : "4.11.1",
+            "depends" : [
+                "beautifulsoup4"
+            ],
+            "imports" : [],
+            "file_name" : "beautifulsoup4-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "4e2c18a7d55e33fa20505477e94461897374dea564378ff33d8f8fe43b5cbc7c"
+        },
+        "biopython" : {
+            "name" : "biopython",
+            "version" : "1.79",
+            "file_name" : "biopython-1.79-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "b7ce6180675854328f7d074e21a916eea649e2150c72e66fb3bc9e537e485ff8",
+            "depends" : [
+                "numpy"
+            ],
+            "imports" : [
+                "Bio",
+                "BioSQL"
+            ]
+        },
+        "bitarray" : {
+            "name" : "bitarray",
+            "version" : "2.5.1",
+            "file_name" : "bitarray-2.5.1-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "cb2b729d36234a265440679e13a8a802b17d0d7346ae1a3a253460ce3603feaa",
+            "depends" : [],
+            "imports" : [
+                "bitarray"
+            ],
+            "unvendored_tests" : true
+        },
+        "bitarray-tests" : {
+            "name" : "bitarray-tests",
+            "version" : "2.5.1",
+            "depends" : [
+                "bitarray"
+            ],
+            "imports" : [],
+            "file_name" : "bitarray-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "309a8fd2dd235e0aa0d954537f834139957fbbeae469a0530b8ad544645d268e"
+        },
+        "bleach" : {
+            "name" : "bleach",
+            "version" : "5.0.0",
+            "file_name" : "bleach-5.0.0-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "835162a57fcc5d019157c8a498404439563acdd0ddcbbc802e4940fd33da7458",
+            "depends" : [
+                "webencodings",
+                "packaging",
+                "six"
+            ],
+            "imports" : [
+                "bleach"
+            ]
+        },
+        "bokeh" : {
+            "name" : "bokeh",
+            "version" : "2.4.3",
+            "file_name" : "bokeh-2.4.3-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "7014cdceff210e3bbef5ed6e2c409a742166a216a821ed4e8e8e26cce762c2a8",
+            "depends" : [
+                "distutils",
+                "numpy",
+                "jinja2",
+                "pillow",
+                "python-dateutil",
+                "six",
+                "typing-extensions",
+                "pyyaml"
+            ],
+            "imports" : [
+                "bokeh"
+            ]
+        },
+        "boost-histogram" : {
+            "name" : "boost-histogram",
+            "version" : "1.3.1",
+            "file_name" : "boost_histogram-1.3.1-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "d5cc08cf9b6344a3752da178396151c4e2afa11abb961529ea57f34e8dc172e8",
+            "depends" : [
+                "numpy"
+            ],
+            "imports" : [
+                "boost_histogram"
+            ]
+        },
+        "brotli" : {
+            "name" : "brotli",
+            "version" : "1.0.9",
+            "file_name" : "Brotli-1.0.9-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "64802bf40924fc4309166303bce8c77d1dff17369bdddb5ae3a89710295c8be0",
+            "depends" : [],
+            "imports" : [
+                "brotli"
+            ]
+        },
+        "certifi" : {
+            "name" : "certifi",
+            "version" : "2022.6.15",
+            "file_name" : "certifi-2022.6.15-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "57276221abbc9e0a286eebacc98877058f4da4cce58c6963cf654426fbe9aea4",
+            "depends" : [],
+            "imports" : [
+                "certifi"
+            ]
+        },
+        "cffi" : {
+            "name" : "cffi",
+            "version" : "1.15.0",
+            "file_name" : "cffi-1.15.0-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "758140aee1ddb2ec530b325cf4c834497b6c5a87ec3ec570c8dfd86b86b7068d",
+            "depends" : [
+                "pycparser"
+            ],
+            "imports" : [
+                "cffi"
+            ]
+        },
+        "cffi_example" : {
+            "name" : "cffi_example",
+            "version" : "0.1",
+            "file_name" : "cffi_example-0.1-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "84c63e46f36709a7bd0d5a6110abb36e2657609505057dcfd205ce1fad04ff4c",
+            "depends" : [
+                "cffi"
+            ],
+            "imports" : [
+                "cffi_example"
+            ]
+        },
+        "cftime" : {
+            "name" : "cftime",
+            "version" : "1.6.0",
+            "file_name" : "cftime-1.6.0-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "166d31d26a66a7aa0fe60db142f63e979dce96c15d937c39637370f24c503228",
+            "depends" : [
+                "numpy"
+            ],
+            "imports" : [
+                "cftime"
+            ]
+        },
+        "clapack" : {
+            "name" : "CLAPACK",
+            "version" : "3.2.1",
+            "file_name" : "CLAPACK-3.2.1.zip",
+            "install_dir" : "dynlib",
+            "sha256" : "2e64176ecaae5fda28f36521dac18203335dde6b1ae58c393638bd6c350d5747",
+            "shared_library" : true,
+            "depends" : [],
+            "imports" : [
+                "CLAPACK"
+            ]
+        },
+        "cloudpickle" : {
+            "name" : "cloudpickle",
+            "version" : "2.1.0",
+            "file_name" : "cloudpickle-2.1.0-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "db8fb29514e7fdabd7668b465c9c9eaf415d1d4f89b9fe7944490a9f4b7e2cc1",
+            "depends" : [],
+            "imports" : [
+                "cloudpickle"
+            ]
+        },
+        "cmyt" : {
+            "name" : "cmyt",
+            "version" : "1.0.4",
+            "file_name" : "cmyt-1.0.4-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "347c1e00a39856570da72ef72d22f3269edb0b73763fdbd66663769362c494ec",
+            "depends" : [
+                "colorspacious",
+                "matplotlib",
+                "more-itertools",
+                "numpy"
+            ],
+            "imports" : [
+                "cmyt"
+            ],
+            "unvendored_tests" : true
+        },
+        "cmyt-tests" : {
+            "name" : "cmyt-tests",
+            "version" : "1.0.4",
+            "depends" : [
+                "cmyt"
+            ],
+            "imports" : [],
+            "file_name" : "cmyt-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "0c4bebdb9fc53ee3e3e147cfe1231ccd6c6ab2c9900dc6521cbadca378f06800"
+        },
+        "colorspacious" : {
+            "name" : "colorspacious",
+            "version" : "1.1.2",
+            "file_name" : "colorspacious-1.1.2-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "f2721d0e5d79af57303352e4d89ad2368acefb8a37269cc83670e00eab4a5e62",
+            "depends" : [
+                "numpy"
+            ],
+            "imports" : [
+                "colorspacious"
+            ]
+        },
+        "coverage" : {
+            "name" : "coverage",
+            "version" : "6.4.4",
+            "file_name" : "coverage-6.4.4-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "1cbce750d94fd089730b36798bb249344941ed22c67631a2d20e70073b426acc",
+            "depends" : [
+                "sqlite3"
+            ],
+            "imports" : [
+                "coverage"
+            ]
+        },
+        "cpp-exceptions-test" : {
+            "name" : "cpp-exceptions-test",
+            "version" : "0.1",
+            "file_name" : "cpp-exceptions-test-0.1.zip",
+            "install_dir" : "dynlib",
+            "sha256" : "b59c9502bb9c6bff0306666881a6086679812ba70a53946ab49e0a4f9295b2c3",
+            "shared_library" : true,
+            "depends" : [],
+            "imports" : [
+                "cpp-exceptions-test"
+            ]
+        },
+        "cryptography" : {
+            "name" : "cryptography",
+            "version" : "38.0.1",
+            "file_name" : "cryptography-38.0.1-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "29cd574c8099c5e0dce969f0ac8ae68eef7cabd9bdb13f7b9d3b1c43536f9015",
+            "depends" : [
+                "openssl",
+                "six",
+                "cffi"
+            ],
+            "imports" : [
+                "cryptography"
+            ]
+        },
+        "cssselect" : {
+            "name" : "cssselect",
+            "version" : "1.1.0",
+            "file_name" : "cssselect-1.1.0-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "65bbe76c858c3d09d93111ec20f502a5329159a117698cd9b1491caa5e499060",
+            "depends" : [],
+            "imports" : [
+                "cssselect"
+            ]
+        },
+        "cycler" : {
+            "name" : "cycler",
+            "version" : "0.11.0",
+            "file_name" : "cycler-0.11.0-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "2765684ccde8499b10b12dd8d5078ada7e905170fc1c48266f411b467e616448",
+            "depends" : [
+                "six"
+            ],
+            "imports" : [
+                "cycler"
+            ]
+        },
+        "cytoolz" : {
+            "name" : "cytoolz",
+            "version" : "0.11.2",
+            "file_name" : "cytoolz-0.11.2-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "a00ee0238963f551c5a48087b10b2b4ea3c53eb798c02b02dd9564dee95a65b4",
+            "depends" : [
+                "nose",
+                "toolz"
+            ],
+            "imports" : [
+                "cytoolz"
+            ],
+            "unvendored_tests" : true
+        },
+        "cytoolz-tests" : {
+            "name" : "cytoolz-tests",
+            "version" : "0.11.2",
+            "depends" : [
+                "cytoolz"
+            ],
+            "imports" : [],
+            "file_name" : "cytoolz-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "4143cc2df5bd0d4596bad471b019aab88e70839783ca030efd848a685debfc10"
+        },
+        "decorator" : {
+            "name" : "decorator",
+            "version" : "5.1.1",
+            "file_name" : "decorator-5.1.1-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "bbb071f626536601be093aa0d2ad05a5cb5d3e805e003495222ffb6d9fdd30f9",
+            "depends" : [],
+            "imports" : [
+                "decorator"
+            ]
+        },
+        "demes" : {
+            "name" : "demes",
+            "version" : "0.2.2",
+            "file_name" : "demes-0.2.2-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "f146eb198f0b3170ffc5eb69ca21cf1af40c97088ab86319f50454e73bc34647",
+            "depends" : [
+                "attrs",
+                "ruamel.yaml"
+            ],
+            "imports" : [
+                "demes"
+            ]
+        },
+        "distlib" : {
+            "name" : "distlib",
+            "version" : "0.3.4",
+            "file_name" : "distlib-0.3.4-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "c8c73057993db4df5daa2180201fe4b8af169d17bda853ab6c4707f9949172a9",
+            "depends" : [],
+            "imports" : [
+                "distlib"
+            ]
+        },
+        "distutils" : {
+            "name" : "distutils",
+            "version" : "1.0.0",
+            "file_name" : "distutils-1.0.0.zip",
+            "install_dir" : "lib",
+            "sha256" : "2377ad4a8c1041ac2d4330445ab036b36a64cf52e0bfbc1677199b107d0a557d",
+            "shared_library" : true,
+            "depends" : [],
+            "imports" : [
+                "distutils"
+            ]
+        },
+        "docutils" : {
+            "name" : "docutils",
+            "version" : "0.18.1",
+            "file_name" : "docutils-0.18.1-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "c9414318cec25a3fc6f59ae8e39fc85e3fd3461b880073439452deb81c2df6b7",
+            "depends" : [],
+            "imports" : [
+                "docutils"
+            ]
+        },
+        "fonttools" : {
+            "name" : "fonttools",
+            "version" : "4.33.3",
+            "file_name" : "fonttools-4.33.3-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "bd7dbe0c53e0dfa46de2fce880fc57c4e1a4d079218b809b9b430eb5a3f43dc9",
+            "depends" : [],
+            "imports" : [
+                "fontTools"
+            ]
+        },
+        "fpcast-test" : {
+            "name" : "fpcast-test",
+            "version" : "0.1",
+            "file_name" : "fpcast_test-0.1.1-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "05734160a4c66cc88a0333fb583a2bd751255669e9f0b5af3929acd32d684037",
+            "depends" : [],
+            "imports" : [
+                "fpcast_test"
+            ]
+        },
+        "freesasa" : {
+            "name" : "freesasa",
+            "version" : "2.1.0",
+            "file_name" : "freesasa-2.1.0-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "8d59b4e859ccdd705cde8bf9024d5f37376f05fc1f1d8c5cba564d639c97b811",
+            "depends" : [],
+            "imports" : [
+                "freesasa"
+            ]
+        },
+        "future" : {
+            "name" : "future",
+            "version" : "0.18.2",
+            "file_name" : "future-0.18.2-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "2cc09ffdd40fa907c2c7922be6adcf27b125ab4fbbbeb801571bbad256490ee4",
+            "depends" : [],
+            "imports" : [
+                "future"
+            ],
+            "unvendored_tests" : true
+        },
+        "future-tests" : {
+            "name" : "future-tests",
+            "version" : "0.18.2",
+            "depends" : [
+                "future"
+            ],
+            "imports" : [],
+            "file_name" : "future-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "fb547eebd5ea24a103aa8c8cf317cc41405b7d82f97e09603de747864609ea5d"
+        },
+        "galpy" : {
+            "name" : "galpy",
+            "version" : "1.8.0",
+            "file_name" : "galpy-1.8.0-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "2d2340fe11fd8b66f20ab12c08fb2b9db0fb8f16c088c36468792490915e9a3c",
+            "depends" : [
+                "numpy",
+                "scipy",
+                "matplotlib",
+                "astropy",
+                "future",
+                "setuptools"
+            ],
+            "imports" : [
+                "galpy"
+            ]
+        },
+        "geos" : {
+            "name" : "geos",
+            "version" : "3.10.3",
+            "file_name" : "geos-3.10.3.zip",
+            "install_dir" : "dynlib",
+            "sha256" : "a9340ec2ea8f3ff8fdb5774900c5d61795f4b91a32889eea1acf266be25759c8",
+            "shared_library" : true,
+            "depends" : [],
+            "imports" : [
+                "geos"
+            ]
+        },
+        "gmpy2" : {
+            "name" : "gmpy2",
+            "version" : "2.1.2",
+            "file_name" : "gmpy2-2.1.2-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "611cdde4815f914bdbb46c32f852a7d783df46c0869890bdea219cbf385a921b",
+            "depends" : [],
+            "imports" : [
+                "gmpy2"
+            ]
+        },
+        "gsw" : {
+            "name" : "gsw",
+            "version" : "3.4.0",
+            "file_name" : "gsw-3.4.0-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "8b0211be476d0f33ca1cb6d1ead297c674113f5e9f4cf73d54810a12376c2901",
+            "depends" : [
+                "numpy"
+            ],
+            "imports" : [
+                "gsw"
+            ],
+            "unvendored_tests" : true
+        },
+        "gsw-tests" : {
+            "name" : "gsw-tests",
+            "version" : "3.4.0",
+            "depends" : [
+                "gsw"
+            ],
+            "imports" : [],
+            "file_name" : "gsw-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "e8bf3045f047c042c83a8b748adf9effd9801c7c648ef615945adcdbc36cf44b"
+        },
+        "h5py" : {
+            "name" : "h5py",
+            "version" : "3.7.0",
+            "file_name" : "h5py-3.7.0-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "4c124a219143dbf3a716ecebbb01158871debee69f1944b8df77e406bf43953c",
+            "depends" : [
+                "numpy",
+                "pkgconfig",
+                "libhdf5"
+            ],
+            "imports" : [
+                "h5py"
+            ],
+            "unvendored_tests" : true
+        },
+        "h5py-tests" : {
+            "name" : "h5py-tests",
+            "version" : "3.7.0",
+            "depends" : [
+                "h5py"
+            ],
+            "imports" : [],
+            "file_name" : "h5py-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "b7fd0f0f6ba7ad4cccd6f1833e10d3735ac3f9c4f0b94c1544f893cf74896cf8"
+        },
+        "html5lib" : {
+            "name" : "html5lib",
+            "version" : "1.1",
+            "file_name" : "html5lib-1.1-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "747d743dde42625c1d63cde1f442efc27ab6f103360b8bd1eff51ab00fab7999",
+            "depends" : [
+                "webencodings",
+                "six"
+            ],
+            "imports" : [
+                "html5lib"
+            ]
+        },
+        "imageio" : {
+            "name" : "imageio",
+            "version" : "2.19.3",
+            "file_name" : "imageio-2.19.3-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "6bbf72e31a55026ad43d53daf245dbb78878b6749956ef919bf4924a9e9e39ad",
+            "depends" : [
+                "numpy",
+                "pillow"
+            ],
+            "imports" : [
+                "imageio"
+            ]
+        },
+        "iniconfig" : {
+            "name" : "iniconfig",
+            "version" : "1.1.1",
+            "file_name" : "iniconfig-1.1.1-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "b6d666fdac5179516979419d07773ba18ed3218adbb3e3afc380c41666fd52bc",
+            "depends" : [],
+            "imports" : [
+                "iniconfig"
+            ]
+        },
+        "jedi" : {
+            "name" : "jedi",
+            "version" : "0.18.1",
+            "file_name" : "jedi-0.18.1-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "cb4466b36c087dd93c6b3bee022b59f53617f9d995f4af8c3baebf91bf98af58",
+            "depends" : [
+                "parso"
+            ],
+            "imports" : [
+                "jedi"
+            ],
+            "unvendored_tests" : true
+        },
+        "jedi-tests" : {
+            "name" : "jedi-tests",
+            "version" : "0.18.1",
+            "depends" : [
+                "jedi"
+            ],
+            "imports" : [],
+            "file_name" : "jedi-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "d59eab2d711a9596a0deb836aa8417b87a6a3d3540329ed9981a017e68085285"
+        },
+        "jinja2" : {
+            "name" : "Jinja2",
+            "version" : "3.1.2",
+            "file_name" : "Jinja2-3.1.2-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "96533e08e565600d6a5890675ca7abe39b9c027466b965ba04c418e7d5f43717",
+            "depends" : [
+                "markupsafe"
+            ],
+            "imports" : [
+                "jinja2"
+            ]
+        },
+        "joblib" : {
+            "name" : "joblib",
+            "version" : "1.1.0",
+            "file_name" : "joblib-1.1.0-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "4a1f3a2f8adaabaed0cabf24aa8aebb9a6226ef3a195c215ce128cd72245dbdd",
+            "depends" : [
+                "distutils"
+            ],
+            "imports" : [
+                "joblib"
+            ],
+            "unvendored_tests" : true
+        },
+        "joblib-tests" : {
+            "name" : "joblib-tests",
+            "version" : "1.1.0",
+            "depends" : [
+                "joblib"
+            ],
+            "imports" : [],
+            "file_name" : "joblib-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "401059e21ec0d89b5692ac4975c2ebbeb9a6cf42eced0008f65215d8db20acd2"
+        },
+        "jsonschema" : {
+            "name" : "jsonschema",
+            "version" : "4.6.0",
+            "file_name" : "jsonschema-4.6.0-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "22a88167438137c6fa646416ae723f31da917f3a23a39a1ceb07405127c264ed",
+            "depends" : [
+                "attrs",
+                "pyrsistent"
+            ],
+            "imports" : [
+                "jsonschema"
+            ],
+            "unvendored_tests" : true
+        },
+        "jsonschema-tests" : {
+            "name" : "jsonschema-tests",
+            "version" : "4.6.0",
+            "depends" : [
+                "jsonschema"
+            ],
+            "imports" : [],
+            "file_name" : "jsonschema-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "ba1086ef685e66301d00b426912a087153166ebbce4fd6738c7d526359bd10a2"
+        },
+        "kiwisolver" : {
+            "name" : "kiwisolver",
+            "version" : "1.4.3",
+            "file_name" : "kiwisolver-1.4.3-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "1ffade0ca764ac7e86bd0337a8af48b3c34d92434924277bfbe454cc919386dd",
+            "depends" : [],
+            "imports" : [
+                "kiwisolver"
+            ]
+        },
+        "lazy-object-proxy" : {
+            "name" : "lazy-object-proxy",
+            "version" : "1.7.1",
+            "file_name" : "lazy_object_proxy-1.7.1-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "2d6a43dea820f3df067432a04253d267a2e3039dd1d0bcf75ebd734818e74fa7",
+            "depends" : [],
+            "imports" : [
+                "lazy_object_proxy"
+            ]
+        },
+        "libhdf5" : {
+            "name" : "libhdf5",
+            "version" : "1.12.1",
+            "file_name" : "libhdf5-1.12.1.zip",
+            "install_dir" : "dynlib",
+            "sha256" : "bd5c13bbf7174326cc34ba0342fb080c6bd82836a9f25a87b32fa796c7fcb3ac",
+            "shared_library" : true,
+            "depends" : [],
+            "imports" : [
+                "libhdf5"
+            ]
+        },
+        "libmagic" : {
+            "name" : "libmagic",
+            "version" : "5.42",
+            "file_name" : "libmagic-5.42.zip",
+            "install_dir" : "dynlib",
+            "sha256" : "378ca208e02ef71093a7d4d32a117ecdd210258e25c85843e41f3ae3236d72c0",
+            "shared_library" : true,
+            "depends" : [],
+            "imports" : [
+                "libmagic"
+            ]
+        },
+        "lightgbm" : {
+            "name" : "lightgbm",
+            "version" : "3.3.2",
+            "file_name" : "lightgbm-3.3.2-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "573dd02bb87cacc7f3b037cb42d2f575dd4984404bc42fcbd9cc8960bd8c561f",
+            "depends" : [
+                "numpy",
+                "scipy",
+                "scikit-learn"
+            ],
+            "imports" : [
+                "lightgbm"
+            ]
+        },
+        "logbook" : {
+            "name" : "logbook",
+            "version" : "1.5.3",
+            "file_name" : "Logbook-1.5.3-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "50cb64e1a4b7e354dd3ab9b44388088870bf4f49f3832fd032ec57ad3fc3ab43",
+            "depends" : [],
+            "imports" : [
+                "logbook"
+            ]
+        },
+        "lxml" : {
+            "name" : "lxml",
+            "version" : "4.9.0",
+            "file_name" : "lxml-4.9.0-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "fb669c6315201eee7b59be5c650891a56c3450bc761e0c98714303ac55b65bc7",
+            "depends" : [
+                "beautifulsoup4",
+                "cssselect",
+                "html5lib"
+            ],
+            "imports" : [
+                "lxml"
+            ]
+        },
+        "lzma" : {
+            "name" : "lzma",
+            "version" : "1.0.0",
+            "file_name" : "lzma-1.0.0.zip",
+            "install_dir" : "lib",
+            "sha256" : "643c9c234e5a79894fdb034ab93fb29922b6b24741889004540a50964889a636",
+            "shared_library" : true,
+            "depends" : [],
+            "imports" : [
+                "lzma"
+            ]
+        },
+        "markupsafe" : {
+            "name" : "MarkupSafe",
+            "version" : "2.1.1",
+            "file_name" : "MarkupSafe-2.1.1-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "6ecc7d24bf078bbf7ede32700b02cd23a11eee883c2cdd244c2bb1438831b33e",
+            "depends" : [],
+            "imports" : [
+                "markupsafe"
+            ]
+        },
+        "matplotlib" : {
+            "name" : "matplotlib",
+            "version" : "3.5.2",
+            "file_name" : "matplotlib-3.5.2-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "2147be31caa452d064cb57d696872e71969355de3a6105493c6a321191eb8075",
+            "depends" : [
+                "cycler",
+                "distutils",
+                "fonttools",
+                "kiwisolver",
+                "numpy",
+                "packaging",
+                "PIL",
+                "pyparsing",
+                "dateutil",
+                "pytz",
+                "matplotlib-pyodide"
+            ],
+            "imports" : [
+                "pylab",
+                "mpl_toolkits",
+                "matplotlib"
+            ],
+            "unvendored_tests" : true
+        },
+        "matplotlib-pyodide" : {
+            "name" : "matplotlib-pyodide",
+            "version" : "0.1.1",
+            "file_name" : "matplotlib_pyodide-0.1.1-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "5bc7aeb20f2c12a1fd7b0cce0ea94886e58b690950c9766f7bafd943bec85cf9",
+            "depends" : [],
+            "imports" : [
+                "matplotlib_pyodide"
+            ]
+        },
+        "matplotlib-tests" : {
+            "name" : "matplotlib-tests",
+            "version" : "3.5.2",
+            "depends" : [
+                "matplotlib"
+            ],
+            "imports" : [],
+            "file_name" : "matplotlib-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "69cbaf2b1505bdf9f4d761abceaf1b206cf1f17cde0cf3b99d523a162e53e8e5"
+        },
+        "micropip" : {
+            "name" : "micropip",
+            "version" : "0.1.0",
+            "file_name" : "micropip-0.1.0-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "3c6739a9c0f2e77bac2ea4754c009cf76d9e319cfdfee9a53b7a032fdbc7eace",
+            "depends" : [
+                "pyparsing",
+                "packaging"
+            ],
+            "imports" : [
+                "micropip"
+            ]
+        },
+        "mne" : {
+            "name" : "mne",
+            "version" : "1.0.3",
+            "file_name" : "mne-1.0.3-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "66ebdaaaf46ae489808c8420e008efc83e47ed340fcf8004efc836d447ce54c9",
+            "depends" : [
+                "distutils",
+                "numpy",
+                "scipy",
+                "setuptools",
+                "decorator"
+            ],
+            "imports" : [
+                "mne"
+            ],
+            "unvendored_tests" : true
+        },
+        "mne-tests" : {
+            "name" : "mne-tests",
+            "version" : "1.0.3",
+            "depends" : [
+                "mne"
+            ],
+            "imports" : [],
+            "file_name" : "mne-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "c1cf9bb7150aa27159bb0aeaf120791bff114bddf19dd76099c66babe9f039a3"
+        },
+        "more-itertools" : {
+            "name" : "more-itertools",
+            "version" : "8.13.0",
+            "file_name" : "more_itertools-8.13.0-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "6c3e95c71a252cf163c323923309ec5eacd23ab69032a7212b14d5b83ea6dc66",
+            "depends" : [],
+            "imports" : [
+                "more_itertools"
+            ]
+        },
+        "mpmath" : {
+            "name" : "mpmath",
+            "version" : "1.2.1",
+            "file_name" : "mpmath-1.2.1-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "2d1d00bc557b5239d4462ebbc947432312f252c0a4698dd38b0ef207192bf497",
+            "depends" : [],
+            "imports" : [
+                "mpmath"
+            ],
+            "unvendored_tests" : true
+        },
+        "mpmath-tests" : {
+            "name" : "mpmath-tests",
+            "version" : "1.2.1",
+            "depends" : [
+                "mpmath"
+            ],
+            "imports" : [],
+            "file_name" : "mpmath-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "bc308bd6a5a31de7444ea4fb8601c18c5b04c77ebaade9855fbba7d36e7eab14"
+        },
+        "msgpack" : {
+            "name" : "msgpack",
+            "version" : "1.0.4",
+            "file_name" : "msgpack-1.0.4-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "c9b2827ff4ecfd49f0265026b117810c72482692bd8aedb3936834d47bddf769",
+            "depends" : [],
+            "imports" : [
+                "msgpack"
+            ]
+        },
+        "msprime" : {
+            "name" : "msprime",
+            "version" : "1.2.0",
+            "file_name" : "msprime-1.2.0-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "66fae21b80a6b1cab3e533816283580dc177749c6cd02460d75025d878f5214f",
+            "depends" : [
+                "numpy",
+                "newick",
+                "tskit",
+                "demes"
+            ],
+            "imports" : [
+                "msprime"
+            ]
+        },
+        "networkx" : {
+            "name" : "networkx",
+            "version" : "2.8.4",
+            "file_name" : "networkx-2.8.4-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "ea3ecd9a3daf30f0ebcd4e68ab2216aeeaa1c8b28425c1bae01fd3efc34e0e10",
+            "depends" : [
+                "decorator",
+                "setuptools",
+                "matplotlib",
+                "numpy"
+            ],
+            "imports" : [
+                "networkx"
+            ],
+            "unvendored_tests" : true
+        },
+        "networkx-tests" : {
+            "name" : "networkx-tests",
+            "version" : "2.8.4",
+            "depends" : [
+                "networkx"
+            ],
+            "imports" : [],
+            "file_name" : "networkx-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "69add4e504d6a5d9685dfa5a29dcd183f7d2bbf0f26ff6894d598f1ecf3592f9"
+        },
+        "newick" : {
+            "name" : "newick",
+            "version" : "1.3.2",
+            "file_name" : "newick-1.3.2-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "f5eea8e0f2f8d22048d6384017d955f15bcd2e8b539c2ae75408775f27e4b636",
+            "depends" : [],
+            "imports" : [
+                "newick"
+            ]
+        },
+        "nlopt" : {
+            "name" : "nlopt",
+            "version" : "2.7.0",
+            "file_name" : "nlopt-2.7.0-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "fe4a4cbef08e850c1d60b17b6dd69c75450c747040f324e6c1d2a9e9788743f7",
+            "depends" : [
+                "numpy"
+            ],
+            "imports" : [
+                "nlopt"
+            ]
+        },
+        "nltk" : {
+            "name" : "nltk",
+            "version" : "3.7",
+            "file_name" : "nltk-3.7-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "758fd0a35487ae8fd6ebddeca2022054acd470850952a6822bef7b928844c204",
+            "depends" : [
+                "regex",
+                "sqlite3"
+            ],
+            "imports" : [
+                "nltk"
+            ],
+            "unvendored_tests" : true
+        },
+        "nltk-tests" : {
+            "name" : "nltk-tests",
+            "version" : "3.7",
+            "depends" : [
+                "nltk"
+            ],
+            "imports" : [],
+            "file_name" : "nltk-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "c83d9d39153090dc48c8749617b37eb22f509a4dbccf894e3c70f0d07b9eba9a"
+        },
+        "nose" : {
+            "name" : "nose",
+            "version" : "1.3.7",
+            "file_name" : "nose-1.3.7-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "7991fd84ed48569fcdb1e4b72a1bf1a7d3e032890239972c4928a86fa4f3c50c",
+            "depends" : [
+                "setuptools"
+            ],
+            "imports" : [
+                "nose"
+            ]
+        },
+        "numcodecs" : {
+            "name" : "numcodecs",
+            "version" : "0.9.1",
+            "file_name" : "numcodecs-0.9.1-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "9b32517e165236f002733ede7c5062a82c73a4d81fc73c834ce030c43414dcf6",
+            "depends" : [
+                "numpy",
+                "msgpack"
+            ],
+            "imports" : [
+                "numcodecs"
+            ],
+            "unvendored_tests" : true
+        },
+        "numcodecs-tests" : {
+            "name" : "numcodecs-tests",
+            "version" : "0.9.1",
+            "depends" : [
+                "numcodecs"
+            ],
+            "imports" : [],
+            "file_name" : "numcodecs-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "35cd4fe46d1f61a0f45ae513e56ee7934fe21ecff81469c076b824d808614244"
+        },
+        "numpy" : {
+            "name" : "numpy",
+            "version" : "1.23.0",
+            "file_name" : "numpy-1.22.4-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "d19d53e4c7d70085fac76a5c3fe57d00acf7d27e47f5e05d9b4f42c03d01392e",
+            "depends" : [],
+            "imports" : [
+                "numpy"
+            ],
+            "unvendored_tests" : true
+        },
+        "numpy-tests" : {
+            "name" : "numpy-tests",
+            "version" : "1.23.0",
+            "depends" : [
+                "numpy"
+            ],
+            "imports" : [],
+            "file_name" : "numpy-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "142cda7f61319cf778f26102a73f4e775d07c69c208808eaabd457bdec439157"
+        },
+        "opencv-python" : {
+            "name" : "opencv-python",
+            "version" : "4.6.0.66",
+            "file_name" : "opencv_python-4.6.0.66-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "042674a69151098a44430d4dce8a436c4805353af4101f0d5c677e6489716d95",
+            "depends" : [
+                "numpy"
+            ],
+            "imports" : [
+                "cv2"
+            ]
+        },
+        "openssl" : {
+            "name" : "openssl",
+            "version" : "1.1.1n",
+            "file_name" : "openssl-1.1.1n.zip",
+            "install_dir" : "dynlib",
+            "sha256" : "b3e84e78797512c0dcb079efbb24f038d9dff333ff5d245a96f5e437b1888474",
+            "shared_library" : true,
+            "depends" : [],
+            "imports" : [
+                "openssl"
+            ]
+        },
+        "optlang" : {
+            "name" : "optlang",
+            "version" : "1.5.2",
+            "file_name" : "optlang-1.5.2-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "de6d05c5016a134bd7f9aed1bc7a389ed75140247f1b1437ebfe4a29876b2aad",
+            "depends" : [
+                "sympy",
+                "six",
+                "swiglpk"
+            ],
+            "imports" : [
+                "optlang"
+            ],
+            "unvendored_tests" : true
+        },
+        "optlang-tests" : {
+            "name" : "optlang-tests",
+            "version" : "1.5.2",
+            "depends" : [
+                "optlang"
+            ],
+            "imports" : [],
+            "file_name" : "optlang-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "54e09c313822ed3be9a745d33236864ee942dc9ebadf0ab9155c367342d0b392"
+        },
+        "packaging" : {
+            "name" : "packaging",
+            "version" : "21.3",
+            "file_name" : "packaging-21.3-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "9f176b8f0180c92b511b3f6bc2856e76ff34375713d9b6ac25be37c0bf91b2a6",
+            "depends" : [
+                "pyparsing"
+            ],
+            "imports" : [
+                "packaging"
+            ]
+        },
+        "pandas" : {
+            "name" : "pandas",
+            "version" : "1.5.0",
+            "file_name" : "pandas-1.5.0-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "685b58f95763d75f0011a8b77a54e2350ce50fcfb6a0db1deacfeccf48aabca9",
+            "depends" : [
+                "distutils",
+                "numpy",
+                "python-dateutil",
+                "pytz",
+                "setuptools"
+            ],
+            "imports" : [
+                "pandas"
+            ],
+            "unvendored_tests" : true
+        },
+        "pandas-tests" : {
+            "name" : "pandas-tests",
+            "version" : "1.5.0",
+            "depends" : [
+                "pandas"
+            ],
+            "imports" : [],
+            "file_name" : "pandas-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "9b6f11d6dd2fbaa7286a68e6440d256aaaf48b4addc450b08caef26eabd049ac"
+        },
+        "parso" : {
+            "name" : "parso",
+            "version" : "0.8.3",
+            "file_name" : "parso-0.8.3-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "99287eff405e946cda71cc4fb5a807b202085addd3204997e217e9c05d08fe4d",
+            "depends" : [],
+            "imports" : [
+                "parso"
+            ]
+        },
+        "patsy" : {
+            "name" : "patsy",
+            "version" : "0.5.2",
+            "file_name" : "patsy-0.5.2-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "41086045800ebdb79beca2c84460b71a06033c32fa3b6478846be2ca1c467f58",
+            "depends" : [
+                "numpy",
+                "six"
+            ],
+            "imports" : [
+                "patsy"
+            ],
+            "unvendored_tests" : true
+        },
+        "patsy-tests" : {
+            "name" : "patsy-tests",
+            "version" : "0.5.2",
+            "depends" : [
+                "patsy"
+            ],
+            "imports" : [],
+            "file_name" : "patsy-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "d35b42d58d0d1968d9d1fd53bccac50f6b252b2f299e9363ce86c51997d0fc73"
+        },
+        "pillow" : {
+            "name" : "Pillow",
+            "version" : "9.1.1",
+            "file_name" : "PIL-9.1.1-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "ea4c8d46f26ac88582fcbdc726a4fe8683cd39f107abee2560f28fc31b4baf14",
+            "depends" : [],
+            "imports" : [
+                "PIL"
+            ]
+        },
+        "pkgconfig" : {
+            "name" : "pkgconfig",
+            "version" : "1.5.5",
+            "file_name" : "pkgconfig-1.5.5-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "6cec6d1cfa5467076b8c3ce9de19df086969bbc2f5d258a6fe6070c522708d81",
+            "depends" : [],
+            "imports" : [
+                "pkgconfig"
+            ]
+        },
+        "pluggy" : {
+            "name" : "pluggy",
+            "version" : "1.0.0",
+            "file_name" : "pluggy-1.0.0-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "4dcb157ad7b9f7f5ce37260805dfe52fe728e8e98dfccb46ccd193efcd0a210c",
+            "depends" : [],
+            "imports" : [
+                "pluggy"
+            ]
+        },
+        "py" : {
+            "name" : "py",
+            "version" : "1.11.0",
+            "file_name" : "py-1.11.0-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "ae60e67d4e6d3824bcde3a0e4817e4c9981abbcff46255e3cb9b4252118595dd",
+            "depends" : [],
+            "imports" : [
+                "py"
+            ]
+        },
+        "pyb2d" : {
+            "name" : "pyb2d",
+            "version" : "0.7.2",
+            "file_name" : "b2d-0.7.2-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "a9751716866bc8f6a409a144ae9b64b381b9ef9b933840fbd5246a900112fd52",
+            "depends" : [
+                "numpy",
+                "pydantic",
+                "setuptools"
+            ],
+            "imports" : [
+                "b2d"
+            ]
+        },
+        "pyclipper" : {
+            "name" : "pyclipper",
+            "version" : "1.3.0.post3",
+            "file_name" : "pyclipper-1.3.0.post3-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "482315a36e93bf15d43cf17ae2e2e0b7b749c66abdcd3fc729445e2facd0d0bb",
+            "depends" : [],
+            "imports" : [
+                "pyclipper"
+            ]
+        },
+        "pycparser" : {
+            "name" : "pycparser",
+            "version" : "2.21",
+            "file_name" : "pycparser-2.21-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "eca5924e1dead55414ed05fae85d96b68ba829d03e273a20dd8f25b9952c3b64",
+            "depends" : [],
+            "imports" : [
+                "pycparser"
+            ]
+        },
+        "pycryptodome" : {
+            "name" : "pycryptodome",
+            "version" : "3.15.0",
+            "file_name" : "pycryptodome-3.15.0-cp35-abi3-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "82a91fb81aefce8f1bffcbec0e002ce0060a5bb7ea72079a1a83475eb102a2bb",
+            "depends" : [],
+            "imports" : [
+                "Crypto"
+            ],
+            "unvendored_tests" : true
+        },
+        "pycryptodome-tests" : {
+            "name" : "pycryptodome-tests",
+            "version" : "3.15.0",
+            "depends" : [
+                "pycryptodome"
+            ],
+            "imports" : [],
+            "file_name" : "pycryptodome-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "993e9cbb3f2d3a551c8abe7d80a26eeed3b31149025ddb3f0269a31722bafe78"
+        },
+        "pydantic" : {
+            "name" : "pydantic",
+            "version" : "1.9.1",
+            "file_name" : "pydantic-1.9.1-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "7ea0c35f0fa2cd9385066f9fe4eb51d6094375de9dfd335c8bc66837cf8a7665",
+            "depends" : [
+                "typing-extensions"
+            ],
+            "imports" : [
+                "pydantic"
+            ]
+        },
+        "pyerfa" : {
+            "name" : "pyerfa",
+            "version" : "2.0.0.1",
+            "file_name" : "pyerfa-2.0.0.1-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "3e5321f2816b04263c659f94fb7a9ed4e75d0578527ab1360ce31a1db9a7c1c4",
+            "depends" : [
+                "numpy"
+            ],
+            "imports" : [
+                "erfa"
+            ],
+            "unvendored_tests" : true
+        },
+        "pyerfa-tests" : {
+            "name" : "pyerfa-tests",
+            "version" : "2.0.0.1",
+            "depends" : [
+                "pyerfa"
+            ],
+            "imports" : [],
+            "file_name" : "pyerfa-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "2c3979bf383f1a4347b6ae473fcf5eca560fba1cbef17ae5df93d3900adf3a26"
+        },
+        "pygments" : {
+            "name" : "Pygments",
+            "version" : "2.12.0",
+            "file_name" : "Pygments-2.12.0-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "e248233773f74397889ccbe610ad58d010cbb7288abeacc2edddbb93c2d709be",
+            "depends" : [],
+            "imports" : [
+                "pygments"
+            ]
+        },
+        "pyparsing" : {
+            "name" : "pyparsing",
+            "version" : "3.0.9",
+            "file_name" : "pyparsing-3.0.9-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "02ea3934f8ef64f1bcf079ea638ca5db22bd74be578d46413325de74de8f1952",
+            "depends" : [],
+            "imports" : [
+                "pyparsing"
+            ]
+        },
+        "pyproj" : {
+            "name" : "pyproj",
+            "version" : "3.3.1",
+            "file_name" : "pyproj-3.3.1-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "2c7eb3d579a12abfc5a2e24e3098d116870d11d01dc68713f6a8e64d558e76d5",
+            "depends" : [
+                "certifi",
+                "sqlite3"
+            ],
+            "imports" : [
+                "pyproj"
+            ]
+        },
+        "pyrsistent" : {
+            "name" : "pyrsistent",
+            "version" : "0.18.1",
+            "file_name" : "pyrsistent-0.18.1-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "eb52d8285aae0a2813144a4d269edef23c455b99c5f615114cf542a5c0cef858",
+            "depends" : [],
+            "imports" : [
+                "_pyrsistent_version",
+                "pyrsistent"
+            ]
+        },
+        "pytest" : {
+            "name" : "pytest",
+            "version" : "7.1.2",
+            "file_name" : "pytest-7.1.2-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "6182629a0b92edacef7e83d5d4c73f652a97c57c3be2b0e7f63128bba82b296f",
+            "depends" : [
+                "atomicwrites",
+                "attrs",
+                "more-itertools",
+                "pluggy",
+                "py",
+                "setuptools",
+                "six",
+                "iniconfig"
+            ],
+            "imports" : [
+                "_pytest",
+                "pytest"
+            ]
+        },
+        "pytest-benchmark" : {
+            "name" : "pytest-benchmark",
+            "version" : "3.4.1",
+            "file_name" : "pytest_benchmark-3.4.1-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "dcfa01a9cd6944a64cd3444321fc13b896e7c903cfae7172c2ff4e7368cae355",
+            "depends" : [],
+            "imports" : [
+                "pytest_benchmark"
+            ]
+        },
+        "python-dateutil" : {
+            "name" : "python-dateutil",
+            "version" : "2.8.2",
+            "file_name" : "python_dateutil-2.8.2-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "283c78152b40304d4e274de313939832342c631715a986984633e662b371dcb4",
+            "depends" : [
+                "six"
+            ],
+            "imports" : [
+                "dateutil"
+            ]
+        },
+        "python-magic" : {
+            "name" : "python-magic",
+            "version" : "0.4.27",
+            "file_name" : "python_magic-0.4.27-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "ec1c14e341c16a57a78fa949d8c96c9d75525f3e0a84de7cae1db3c6bf7f1c05",
+            "depends" : [
+                "libmagic"
+            ],
+            "imports" : [
+                "magic"
+            ]
+        },
+        "python-sat" : {
+            "name" : "python-sat",
+            "version" : "0.1.7.dev19",
+            "file_name" : "python_sat-0.1.7.dev19-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "091c6ee038cbb82f4d7cfcdd07cf6b8832fe07d2eab7cbc58a17f1ca63d1da4a",
+            "depends" : [
+                "six"
+            ],
+            "imports" : [
+                "pysat"
+            ]
+        },
+        "python_solvespace" : {
+            "name" : "python_solvespace",
+            "version" : "3.0.7",
+            "file_name" : "python_solvespace-3.0.7-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "39af46353e77163a99a34a35946eaa7f28c6fba767a6f5c85f08d064b129ee25",
+            "depends" : [],
+            "imports" : [
+                "python_solvespace"
+            ]
+        },
+        "pytz" : {
+            "name" : "pytz",
+            "version" : "2022.1",
+            "file_name" : "pytz-2022.1-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "8bb989242d86ed5947848a914793b0ee1a4dbde046f564c31859756f576586d0",
+            "depends" : [],
+            "imports" : [
+                "pytz"
+            ]
+        },
+        "pywavelets" : {
+            "name" : "pywavelets",
+            "version" : "1.3.0",
+            "file_name" : "PyWavelets-1.3.0-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "1bd95351434c961cec3abf6f41ff05a09eaee8e8270512f02c842378483cf8ed",
+            "depends" : [
+                "distutils",
+                "numpy",
+                "matplotlib",
+                "scipy"
+            ],
+            "imports" : [
+                "pywt"
+            ],
+            "unvendored_tests" : true
+        },
+        "pywavelets-tests" : {
+            "name" : "pywavelets-tests",
+            "version" : "1.3.0",
+            "depends" : [
+                "pywavelets"
+            ],
+            "imports" : [],
+            "file_name" : "pywavelets-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "57712e07e2b6c9746e7ad0468fe5d71258225702af3e01610b9b12f330c01f78"
+        },
+        "pyyaml" : {
+            "name" : "pyyaml",
+            "version" : "6.0",
+            "file_name" : "PyYAML-6.0-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "a49693ffdfea4d280dd6811d4bb2f0c0393fc7d8493c805f9a3402ba7638b0b0",
+            "depends" : [],
+            "imports" : [
+                "_yaml",
+                "yaml"
+            ]
+        },
+        "rebound" : {
+            "name" : "rebound",
+            "version" : "3.19.8",
+            "file_name" : "rebound-3.19.8-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "a1e1ff97183fcfbcd10808581bbbda314e69e5509ffb38365b9506fff0c83e13",
+            "depends" : [
+                "numpy"
+            ],
+            "imports" : [
+                "rebound"
+            ]
+        },
+        "reboundx" : {
+            "name" : "reboundx",
+            "version" : "3.7.1",
+            "file_name" : "reboundx-3.7.1-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "b2593065cabe77b2547898ce96ae75f6ca83a656ba4612bb4b3ae8cf34a197ca",
+            "depends" : [
+                "rebound",
+                "numpy"
+            ],
+            "imports" : [
+                "reboundx"
+            ]
+        },
+        "regex" : {
+            "name" : "regex",
+            "version" : "2022.6.2",
+            "file_name" : "regex-2022.6.2-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "36e92095f4ae1c15b6233803512c85c30c9ccb132808da0a363717c2a3d46841",
+            "depends" : [],
+            "imports" : [
+                "regex"
+            ],
+            "unvendored_tests" : true
+        },
+        "regex-tests" : {
+            "name" : "regex-tests",
+            "version" : "2022.6.2",
+            "depends" : [
+                "regex"
+            ],
+            "imports" : [],
+            "file_name" : "regex-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "096df550f3fce2709a014ae62d717f6bda755cbd79cba7eb8f5933073e942339"
+        },
+        "retrying" : {
+            "name" : "retrying",
+            "version" : "1.3.3",
+            "file_name" : "retrying-1.3.3-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "fe75adf3a596e24047ee57d0abd02397ed7e712f48cfb3528d041ec3b02da9a8",
+            "depends" : [
+                "six"
+            ],
+            "imports" : [
+                "retrying"
+            ]
+        },
+        "robotraconteur" : {
+            "name" : "RobotRaconteur",
+            "version" : "0.15.1",
+            "file_name" : "RobotRaconteur-0.15.1-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "4a8ae971c164512add158130e9de26293a43c6e30fee551c7f265ee7c170276c",
+            "depends" : [
+                "numpy"
+            ],
+            "imports" : [
+                "RobotRaconteur"
+            ]
+        },
+        "ruamel.yaml" : {
+            "name" : "ruamel.yaml",
+            "version" : "0.17.21",
+            "file_name" : "ruamel.yaml-0.17.21-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "385ba04a915074c0a05b997fc19dc8c087856aea552b68a98a7e774b9269f985",
+            "depends" : [],
+            "imports" : [
+                "ruamel"
+            ]
+        },
+        "scikit-image" : {
+            "name" : "scikit-image",
+            "version" : "0.19.3",
+            "file_name" : "scikit_image-0.19.3-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "e53b6321262bd8c34602448d4cfe4575d1eb6d4ff7c3e911131dad74fa6ed53c",
+            "depends" : [
+                "distutils",
+                "packaging",
+                "numpy",
+                "scipy",
+                "matplotlib",
+                "networkx",
+                "pillow",
+                "imageio",
+                "pywavelets"
+            ],
+            "imports" : [
+                "skimage"
+            ],
+            "unvendored_tests" : true
+        },
+        "scikit-image-tests" : {
+            "name" : "scikit-image-tests",
+            "version" : "0.19.3",
+            "depends" : [
+                "scikit-image"
+            ],
+            "imports" : [],
+            "file_name" : "scikit-image-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "7a352841e7883735d49372a50e1e6775e56550dbac5894889fd041825a65d030"
+        },
+        "scikit-learn" : {
+            "name" : "scikit-learn",
+            "version" : "1.1.1",
+            "file_name" : "scikit_learn-1.1.1-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "be9e58c229731611a0d35fdf574fbcb374f4da4b038cd54033a8cdd941fd709d",
+            "depends" : [
+                "scipy",
+                "joblib",
+                "threadpoolctl"
+            ],
+            "imports" : [
+                "sklearn"
+            ],
+            "unvendored_tests" : true
+        },
+        "scikit-learn-tests" : {
+            "name" : "scikit-learn-tests",
+            "version" : "1.1.1",
+            "depends" : [
+                "scikit-learn"
+            ],
+            "imports" : [],
+            "file_name" : "scikit-learn-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "a2bf3f63c45a05d3a2792e293f413c6a1ced00c5ab0915367ff85a3070b7b3a5"
+        },
+        "scipy" : {
+            "name" : "scipy",
+            "version" : "1.9.1",
+            "file_name" : "scipy-1.9.1-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "c0c56c79b832f7f0b1885450cd09f5cde34353a7295b1f00b90f4696349f2779",
+            "depends" : [
+                "numpy",
+                "clapack"
+            ],
+            "imports" : [
+                "scipy"
+            ],
+            "unvendored_tests" : true
+        },
+        "scipy-tests" : {
+            "name" : "scipy-tests",
+            "version" : "1.9.1",
+            "depends" : [
+                "scipy"
+            ],
+            "imports" : [],
+            "file_name" : "scipy-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "4c454ff8309604705145d3fa03ab30d1cb573a9146aa6b9091819a8ea219e9f9"
+        },
+        "setuptools" : {
+            "name" : "setuptools",
+            "version" : "62.6.0",
+            "file_name" : "setuptools-62.6.0-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "85d463f8f42f63136ca507f4c85244a8af9ed10900320c585eeed1895f92ba9a",
+            "depends" : [
+                "distutils",
+                "pyparsing"
+            ],
+            "imports" : [
+                "_distutils_hack",
+                "pkg_resources",
+                "setuptools"
+            ]
+        },
+        "shapely" : {
+            "name" : "shapely",
+            "version" : "1.8.2",
+            "file_name" : "Shapely-1.8.2-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "6f18cd55cdbf6bdaf679d11ef5a8cd08b105b8642cb597ca23d69a68cab89677",
+            "depends" : [
+                "geos",
+                "numpy"
+            ],
+            "imports" : [
+                "shapely"
+            ],
+            "unvendored_tests" : true
+        },
+        "shapely-tests" : {
+            "name" : "shapely-tests",
+            "version" : "1.8.2",
+            "depends" : [
+                "shapely"
+            ],
+            "imports" : [],
+            "file_name" : "shapely-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "f688227a2a01ad2d4b926313912da2a92787154fc1251eaa490d6751e9d2d5ad"
+        },
+        "sharedlib-test" : {
+            "name" : "sharedlib-test",
+            "version" : "1.0",
+            "file_name" : "sharedlib-test-1.0.zip",
+            "install_dir" : "dynlib",
+            "sha256" : "0694ff48e2cabb21aefe484e9fa4fcf64c6339a7af270ff4f415bed97934c204",
+            "shared_library" : true,
+            "depends" : [],
+            "imports" : [
+                "sharedlib-test"
+            ]
+        },
+        "sharedlib-test-py" : {
+            "name" : "sharedlib-test-py",
+            "version" : "1.0",
+            "file_name" : "sharedlib_test_py-1.0-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "f0d2cef4ebb4a4367a8966a36aef07d67627a51faa2c9eed761592cff814bb15",
+            "depends" : [
+                "sharedlib-test"
+            ],
+            "imports" : [
+                "sharedlib_test"
+            ]
+        },
+        "six" : {
+            "name" : "six",
+            "version" : "1.16.0",
+            "file_name" : "six-1.16.0-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "e29b6b8b862312ad37bb7fa3b642833ce373307796c97da1317f486daa1357e4",
+            "depends" : [],
+            "imports" : [
+                "six"
+            ]
+        },
+        "soupsieve" : {
+            "name" : "soupsieve",
+            "version" : "2.3.2.post1",
+            "file_name" : "soupsieve-2.3.2.post1-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "bc398deaa43773743cc29c402c3adc1b2a855adfb2b2df5bf1cf8c81626f912a",
+            "depends" : [],
+            "imports" : [
+                "soupsieve"
+            ]
+        },
+        "sparseqr" : {
+            "name" : "sparseqr",
+            "version" : "1.2",
+            "file_name" : "sparseqr-1.2-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "95cca647952a849e7fac4a53dd0294b768b1d2cb64f39b592d5ae3608eee0366",
+            "depends" : [
+                "pycparser",
+                "cffi",
+                "numpy",
+                "scipy",
+                "suitesparse",
+                "distutils"
+            ],
+            "imports" : [
+                "sparseqr"
+            ]
+        },
+        "sqlalchemy" : {
+            "name" : "sqlalchemy",
+            "version" : "1.4.37",
+            "file_name" : "SQLAlchemy-1.4.37-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "a1ee45c3a2f514b3246577f3b0cc38d45079ce29d6719ba62466bcca62b4f8a2",
+            "depends" : [
+                "sqlite3"
+            ],
+            "imports" : [
+                "sqlalchemy"
+            ],
+            "unvendored_tests" : true
+        },
+        "sqlalchemy-tests" : {
+            "name" : "sqlalchemy-tests",
+            "version" : "1.4.37",
+            "depends" : [
+                "sqlalchemy"
+            ],
+            "imports" : [],
+            "file_name" : "sqlalchemy-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "672ceae11e3bc74531f69ae70df67cf1996979b42ac53cfef10531de90bc269e"
+        },
+        "sqlite3" : {
+            "name" : "sqlite3",
+            "version" : "1.0.0",
+            "file_name" : "sqlite3-1.0.0.zip",
+            "install_dir" : "lib",
+            "sha256" : "3f18301b17611ee268c705c488b066a12ae312adf8d01298b58eae3343f442a3",
+            "shared_library" : true,
+            "depends" : [],
+            "imports" : [
+                "sqlite3"
+            ]
+        },
+        "ssl" : {
+            "name" : "ssl",
+            "version" : "1.0.0",
+            "file_name" : "ssl-1.0.0.zip",
+            "install_dir" : "lib",
+            "sha256" : "f89744a8166b10cfd035bacb1231c0843d99f45349031e3c77dcedb212283080",
+            "shared_library" : true,
+            "depends" : [
+                "openssl"
+            ],
+            "imports" : [
+                "ssl"
+            ]
+        },
+        "statsmodels" : {
+            "name" : "statsmodels",
+            "version" : "0.13.2",
+            "file_name" : "statsmodels-0.13.2-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "8e260e3aa472efcc87aaf3f1a1290ade9d83874f0356e16b9818ab8ab3599d2f",
+            "depends" : [
+                "distutils",
+                "numpy",
+                "scipy",
+                "pandas",
+                "patsy",
+                "packaging"
+            ],
+            "imports" : [
+                "statsmodels"
+            ],
+            "unvendored_tests" : true
+        },
+        "statsmodels-tests" : {
+            "name" : "statsmodels-tests",
+            "version" : "0.13.2",
+            "depends" : [
+                "statsmodels"
+            ],
+            "imports" : [],
+            "file_name" : "statsmodels-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "69be6e6e58789bc96c24d712dc37e41ebb1458c990b32a8e23776f5b4f80619e"
+        },
+        "suitesparse" : {
+            "name" : "suitesparse",
+            "version" : "5.11.0",
+            "file_name" : "suitesparse-5.11.0.zip",
+            "install_dir" : "dynlib",
+            "sha256" : "4389f242d8bf517e9a0ed28bf4a88297c066e8e77594e35bafa02672ee284679",
+            "shared_library" : true,
+            "depends" : [
+                "clapack"
+            ],
+            "imports" : [
+                "suitesparse"
+            ]
+        },
+        "svgwrite" : {
+            "name" : "svgwrite",
+            "version" : "1.4.2",
+            "file_name" : "svgwrite-1.4.2-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "2193880f003c96a62bb0a412b0b7202c75f5b32b659016b42f442d40d4af3d80",
+            "depends" : [],
+            "imports" : [
+                "svgwrite"
+            ]
+        },
+        "swiglpk" : {
+            "name" : "swiglpk",
+            "version" : "5.0.3",
+            "file_name" : "swiglpk-5.0.2-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "15e3ce96de1b61f3b92ab7defd224c7998df91f20d189c145cbf38eed2f34958",
+            "depends" : [],
+            "imports" : [
+                "swiglpk"
+            ]
+        },
+        "sympy" : {
+            "name" : "sympy",
+            "version" : "1.10.1",
+            "file_name" : "sympy-1.10.1-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "f476b35457cebedc7d82fabeed84f4db4e19f9f09c0181ae95fa7fc2d4a3f23f",
+            "depends" : [
+                "distutils",
+                "mpmath"
+            ],
+            "imports" : [
+                "isympy",
+                "sympy"
+            ],
+            "unvendored_tests" : true
+        },
+        "sympy-tests" : {
+            "name" : "sympy-tests",
+            "version" : "1.10.1",
+            "depends" : [
+                "sympy"
+            ],
+            "imports" : [],
+            "file_name" : "sympy-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "ab612a4dc249839d76d1f144a539e642819f107d4916335e409d3c2b7bf8982f"
+        },
+        "tblib" : {
+            "name" : "tblib",
+            "version" : "1.7.0",
+            "file_name" : "pyodide_tblib-1.7.1-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "a71f8eae4e17b24615acfaca91970efc6b1560dfc2f48434e26b7815910bf482",
+            "depends" : [],
+            "imports" : [
+                "tblib"
+            ]
+        },
+        "termcolor" : {
+            "name" : "termcolor",
+            "version" : "1.1.0",
+            "file_name" : "termcolor-1.1.0-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "a9afe6716dcee405ffa66707cdee56ced669ad4a20d18cb094860477500fb120",
+            "depends" : [],
+            "imports" : [
+                "termcolor"
+            ]
+        },
+        "test" : {
+            "name" : "test",
+            "version" : "1.0.0",
+            "file_name" : "test-1.0.0.zip",
+            "install_dir" : "lib",
+            "sha256" : "009bbd2ccf29178e752811912663f1c1f64bd91fad54d0e9b183494ff43b5f62",
+            "shared_library" : true,
+            "depends" : [],
+            "imports" : [
+                "test"
+            ]
+        },
+        "threadpoolctl" : {
+            "name" : "threadpoolctl",
+            "version" : "3.1.0",
+            "file_name" : "threadpoolctl-3.1.0-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "4fc15fd0facfc076795c9aadc92a745e292b4a61377f1ff4242978a2db3cfd4b",
+            "depends" : [],
+            "imports" : [
+                "threadpoolctl"
+            ]
+        },
+        "tomli" : {
+            "name" : "tomli",
+            "version" : "2.0.1",
+            "file_name" : "tomli-2.0.1-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "f8111ed86f6ab9120c5ab2daac05b5f33781d6e48cb9ad7ee0515d63ef63fc32",
+            "depends" : [],
+            "imports" : [
+                "tomli"
+            ]
+        },
+        "tomli-w" : {
+            "name" : "tomli-w",
+            "version" : "1.0.0",
+            "file_name" : "tomli_w-1.0.0-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "ce820fe04780510947e729550094e43e98cf22903af65ea749ee408db0b29cdb",
+            "depends" : [],
+            "imports" : [
+                "tomli_w"
+            ]
+        },
+        "toolz" : {
+            "name" : "toolz",
+            "version" : "0.11.2",
+            "file_name" : "toolz-0.11.2-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "33a0902e4852bd5528916487776ae467eefb6919755559f5d43e777f97e58c58",
+            "depends" : [],
+            "imports" : [
+                "tlz",
+                "toolz"
+            ],
+            "unvendored_tests" : true
+        },
+        "toolz-tests" : {
+            "name" : "toolz-tests",
+            "version" : "0.11.2",
+            "depends" : [
+                "toolz"
+            ],
+            "imports" : [],
+            "file_name" : "toolz-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "c5ef5f2ea5303fbf24adc98b7384f279d362df1a31f720d3df592acaa1df78f6"
+        },
+        "tqdm" : {
+            "name" : "tqdm",
+            "version" : "4.64.0",
+            "file_name" : "tqdm-4.64.0-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "b39e3ba0ca6db7092809f9a47c966fa1d7bd845346414290f55532f7fd5201a5",
+            "depends" : [],
+            "imports" : [
+                "tqdm"
+            ]
+        },
+        "traits" : {
+            "name" : "traits",
+            "version" : "6.3.2",
+            "file_name" : "traits-6.3.2-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "93398833cce74593227b2ab49ad7d5e1c6b0f717263a6b89868c2c3ea74b96dd",
+            "depends" : [],
+            "imports" : [
+                "traits"
+            ],
+            "unvendored_tests" : true
+        },
+        "traits-tests" : {
+            "name" : "traits-tests",
+            "version" : "6.3.2",
+            "depends" : [
+                "traits"
+            ],
+            "imports" : [],
+            "file_name" : "traits-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "44ce86631a39328ac8fe7dcc9c643ad44f72a5865ddfc77b73b68d2a76c87b70"
+        },
+        "tskit" : {
+            "name" : "tskit",
+            "version" : "0.4.1",
+            "file_name" : "tskit-0.4.1-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "51d2cbdd9c2f333fbbb721bf424ea0b512cda198db63cfa8fd2911b7fb31ee40",
+            "depends" : [
+                "numpy",
+                "svgwrite",
+                "jsonschema"
+            ],
+            "imports" : [
+                "tskit"
+            ]
+        },
+        "typing-extensions" : {
+            "name" : "typing-extensions",
+            "version" : "4.2.0",
+            "file_name" : "typing_extensions-4.2.0-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "53dae3caf59bd0765d360f7510a345d9716a8c05bcc12dc5a36f48dbc051e084",
+            "depends" : [],
+            "imports" : [
+                "typing_extensions"
+            ]
+        },
+        "uncertainties" : {
+            "name" : "uncertainties",
+            "version" : "3.1.7",
+            "file_name" : "uncertainties-3.1.7-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "3f9aa846c84620858b99980438ae761fa9a0047bdb73f41c9125a5e0dbedbf1c",
+            "depends" : [
+                "future"
+            ],
+            "imports" : [
+                "uncertainties"
+            ],
+            "unvendored_tests" : true
+        },
+        "uncertainties-tests" : {
+            "name" : "uncertainties-tests",
+            "version" : "3.1.7",
+            "depends" : [
+                "uncertainties"
+            ],
+            "imports" : [],
+            "file_name" : "uncertainties-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "37ca9a73b09af2b1f29a06a4c82fa3af79fd715942f4df4c1b8ce22caacf7e99"
+        },
+        "unyt" : {
+            "name" : "unyt",
+            "version" : "2.8.0",
+            "file_name" : "unyt-2.8.0-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "9713ccd78db0a2a6851c810468b42a9719ea012f22fdc58bf70adae4361c11e8",
+            "depends" : [
+                "numpy",
+                "sympy"
+            ],
+            "imports" : [
+                "unyt"
+            ],
+            "unvendored_tests" : true
+        },
+        "unyt-tests" : {
+            "name" : "unyt-tests",
+            "version" : "2.8.0",
+            "depends" : [
+                "unyt"
+            ],
+            "imports" : [],
+            "file_name" : "unyt-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "ddac35172d9a8ca381e7c9118d17a06f8293474afd9d0642f0162e5ec13b2538"
+        },
+        "webencodings" : {
+            "name" : "webencodings",
+            "version" : "0.5.1",
+            "file_name" : "webencodings-0.5.1-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "2024cbaebcc49f2286d4ab5a4fa00d49c8cbf75306007a6ae43194d0bc11e8cf",
+            "depends" : [],
+            "imports" : [
+                "webencodings"
+            ]
+        },
+        "wrapt" : {
+            "name" : "wrapt",
+            "version" : "1.14.1",
+            "file_name" : "wrapt-1.14.1-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "9ba3442651b4286ea3bfe092caf59053b0ea56a435bd8fd9edcc05a393c519f6",
+            "depends" : [],
+            "imports" : [
+                "wrapt"
+            ]
+        },
+        "xarray" : {
+            "name" : "xarray",
+            "version" : "2022.3.0",
+            "file_name" : "xarray-2022.3.0-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "476980597d92e518577a1af7d691956e923a830d5ecf511ba23d1bab10b014ae",
+            "depends" : [
+                "numpy",
+                "packaging",
+                "pandas"
+            ],
+            "imports" : [
+                "xarray"
+            ],
+            "unvendored_tests" : true
+        },
+        "xarray-tests" : {
+            "name" : "xarray-tests",
+            "version" : "2022.3.0",
+            "depends" : [
+                "xarray"
+            ],
+            "imports" : [],
+            "file_name" : "xarray-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "5b7636631f3bcdc7650dadd0973458470054de226532fb2ead20724d923ef83c"
+        },
+        "xgboost" : {
+            "name" : "xgboost",
+            "version" : "1.6.1",
+            "file_name" : "xgboost-1.6.1-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "78a71b7f84ff0fe4e5ff46e352ef1bb85b8714332227eddc544abcf53c44467c",
+            "depends" : [
+                "numpy",
+                "scipy",
+                "setuptools"
+            ],
+            "imports" : [
+                "xgboost"
+            ]
+        },
+        "xlrd" : {
+            "name" : "xlrd",
+            "version" : "2.0.1",
+            "file_name" : "xlrd-2.0.1-py2.py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "43ec1a56b7f835366d1bd158161487bda28b343d7893e9b914898d57477e7c87",
+            "depends" : [],
+            "imports" : [
+                "xlrd"
+            ]
+        },
+        "yt" : {
+            "name" : "yt",
+            "version" : "4.0.4",
+            "file_name" : "yt-4.0.4-cp310-cp310-emscripten_3_1_21_wasm32.whl",
+            "install_dir" : "site",
+            "sha256" : "36524b70737e0f6a3029edf159a8fe272987dfed3fc901e78dcd217dea034096",
+            "depends" : [
+                "numpy",
+                "matplotlib",
+                "sympy",
+                "setuptools",
+                "packaging",
+                "unyt",
+                "cmyt",
+                "colorspacious",
+                "tqdm",
+                "tomli",
+                "tomli-w"
+            ],
+            "imports" : [
+                "yt"
+            ]
+        },
+        "zarr" : {
+            "name" : "zarr",
+            "version" : "2.11.3",
+            "file_name" : "zarr-2.11.3-py3-none-any.whl",
+            "install_dir" : "site",
+            "sha256" : "70466660b60a6b163fdc313aef1027d5d2cd175931190fb24b114a4b0a753967",
+            "depends" : [
+                "numpy",
+                "asciitree",
+                "numcodecs"
+            ],
+            "imports" : [
+                "zarr"
+            ],
+            "unvendored_tests" : true
+        },
+        "zarr-tests" : {
+            "name" : "zarr-tests",
+            "version" : "2.11.3",
+            "depends" : [
+                "zarr"
+            ],
+            "imports" : [],
+            "file_name" : "zarr-tests.tar",
+            "install_dir" : "site",
+            "sha256" : "b6bcf90a7aa627f98fdd5d1b0d90ca70cb484cab1079c9c10c4fc74849aa0284"
+        }
+    }
+}
