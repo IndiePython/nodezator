@@ -41,6 +41,7 @@ from pygame.locals import (
     MOUSEMOTION,
     MOUSEBUTTONUP,
     MOUSEBUTTONDOWN,
+    MOUSEWHEEL,
 )
 
 
@@ -73,6 +74,14 @@ class LoadedFileState:
             if event.type == QUIT:
                 raise QuitAppException
 
+            ### MOUSEWHEEL
+            elif event.type == MOUSEWHEEL:
+                mod = SERVICES_NS.get_pressed_mod_keys()
+                if  mod & KMOD_SHIFT: #KMOD_CTRL:
+                    APP_REFS.ea.scroll(event.y*50, event.x*50)
+                else:
+                    APP_REFS.ea.scroll(event.x*50, event.y*50)
+            
             ### MOUSEMOTION
 
             elif event.type == MOUSEMOTION:
