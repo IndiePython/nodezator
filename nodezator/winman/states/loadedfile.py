@@ -42,13 +42,17 @@ from pygame.locals import (
     MOUSEBUTTONUP,
     MOUSEBUTTONDOWN,
     MOUSEWHEEL,
+    K_KP_PLUS,
+    K_KP_MINUS,
 )
 
-
+from pygame.key import get_pressed
 ### local imports
 
 
 from ...pygamesetup import SERVICES_NS
+
+from ...pygamesetup.constants import zoom_in, zoom_out
 
 from ...config import APP_REFS
 
@@ -77,11 +81,20 @@ class LoadedFileState:
             ### MOUSEWHEEL
             elif event.type == MOUSEWHEEL:
                 mod = SERVICES_NS.get_pressed_mod_keys()
-                if  mod & KMOD_SHIFT: #KMOD_CTRL:
-                    APP_REFS.ea.scroll(event.y*50, event.x*50)
+                if mod & KMOD_CTRL:
+                    if event.y > 0:
+                        zoom_in()
+                        SERVICES_NS.update_screen()
+                    elif event.y < 0:
+                        zoom_out()
+                        SERVICES_NS.update_screen()                        
+                    #
                 else:
-                    APP_REFS.ea.scroll(event.x*50, event.y*50)
-            
+                    if  mod & KMOD_SHIFT: #KMOD_CTRL:
+                        APP_REFS.ea.scroll(event.y*50, event.x*50)
+                    else:
+                        APP_REFS.ea.scroll(event.x*50, event.y*50)
+                #
             ### MOUSEMOTION
 
             elif event.type == MOUSEMOTION:
@@ -278,6 +291,14 @@ class LoadedFileState:
 
                     (self.canvas_popup_menu.focus_if_within_boundaries(mouse_pos))
 
+                elif event.key == K_KP_PLUS:
+                    zoom_in()
+                    SERVICES_NS.update_screen()
+
+                elif event.key == K_KP_MINUS:
+                    zoom_out()
+                    SERVICES_NS.update_screen()
+                    
                 ## jump to corner feature
 
                 elif event.key in KEYPAD_TO_COORDINATE_MAP and event.mod & KMOD_SHIFT:

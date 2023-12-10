@@ -8,7 +8,9 @@ from functools import partial
 from pygame import (
     init as init_pygame,
     get_sdl_version,
+    Surface,
     locals as pygame_locals,
+    Rect,
 )
 
 from pygame.locals import (
@@ -23,6 +25,8 @@ from pygame.locals import (
     KMOD_NONE,
 
 )
+
+from pygame.transform import scale_by, scale
 
 from pygame.mixer import pre_init as pre_init_mixer
 
@@ -64,6 +68,61 @@ from ..loopman.exception import QuitAppException
 ## pygame mixer pre-initialization
 pre_init_mixer(44100, -16, 2, 4096)
 
+### create/set screen
+
+SIZE = (
+    # this value causes window size to equal screen resolution
+    (0, 0)
+    if get_sdl_version() >= (1, 2, 10)
+
+    # if sld isn't >= (1, 2, 10) though, it would raise an exception,
+    # so we need to provide a proper size
+    else (1280, 720)
+)
+
+_SCREEN = set_mode(SIZE, RESIZABLE)
+    
+DISPLAY_SIZE = _SCREEN.get_size()
+DISPLAY_RECT = _SCREEN.get_rect()
+#SCREEN_RECT = _SCREEN.get_rect()
+#SCREEN_SIZE = _SCREEN.get_size()
+SCREEN_RECT = Rect(0,0,1920,1080)
+SCREEN_SIZE = (1920,1080)
+SCREEN = Surface(SCREEN_SIZE)
+
+#blit_on_screen = _SCREEN.blit
+CURRENT_SIZE = [DISPLAY_SIZE[0], DISPLAY_SIZE[1]]
+
+def get_current_size():
+    return CURRENT_SIZE
+    
+def blit_on_screen(source, dest, area=None, special_flags=0):
+    SCREEN.blit(source, dest, area, special_flags)
+    _SCREEN.blit(SCREEN, (0,0), area, special_flags)
+
+def zoom_in():
+    global CURRENT_SIZE
+
+    zoom_factor = 0.8
+    current_size = CURRENT_SIZE
+    CURRENT_SIZE = [round(current_size[0] * zoom_factor), round(current_size[1] * zoom_factor)]
+    if CURRENT_SIZE[0] < 100: # arbitary hard limit
+        CURRENT_SIZE[0] = 100
+    if CURRENT_SIZE[1] < 100: # arbitary hard limit
+        CURRENT_SIZE[1] = 100
+
+def zoom_out():
+    global CURRENT_SIZE
+    global SCREEN_SIZE
+    
+    zoom_factor = 1.1
+    current_size = CURRENT_SIZE
+    CURRENT_SIZE = [round(current_size[0] * zoom_factor), round(current_size[1] * zoom_factor)]
+    if CURRENT_SIZE[0] > SCREEN_SIZE[0]:
+        CURRENT_SIZE[0] = SCREEN_SIZE[0]
+    if CURRENT_SIZE[1] > SCREEN_SIZE[1]:
+        CURRENT_SIZE[1] = SCREEN_SIZE[1]
+
 ## pygame initialization
 init_pygame()
 
@@ -87,24 +146,6 @@ set_repeat(
     500, # delay (time before repetition begins)
     30, # interval (interval between repetitions)
 )
-
-
-### create/set screen
-
-SIZE = (
-    # this value causes window size to equal screen resolution
-    (0, 0)
-    if get_sdl_version() >= (1, 2, 10)
-
-    # if sld isn't >= (1, 2, 10) though, it would raise an exception,
-    # so we need to provide a proper size
-    else (1280, 720)
-)
-
-SCREEN = set_mode(SIZE, RESIZABLE)
-SCREEN_RECT = SCREEN.get_rect()
-blit_on_screen = SCREEN.blit
-
 
 
 ### framerate-related values/objects

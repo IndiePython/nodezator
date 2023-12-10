@@ -20,12 +20,17 @@ from pygame.mouse import (
     get_pressed as get_mouse_pressed,
 )
 
-from pygame.display import update as update_screen
+from pygame.display import update # as update_screen
 
+from pygame.transform import scale_by, scale
 
+from pygame import Rect
 ### local imports
 
 from ..constants import (
+    _SCREEN,
+    DISPLAY_SIZE,
+    SCREEN_SIZE,
     SCREEN,
     SCREEN_RECT,
     SIZE,
@@ -34,6 +39,7 @@ from ..constants import (
     FPS,
     maintain_fps,
     watch_window_size,
+    get_current_size,
 )
 
 
@@ -96,3 +102,11 @@ def frame_checkups_with_fps(fps):
 
     ### keep an eye on the window size
     watch_window_size()
+
+def update_screen():
+    current_size = get_current_size()
+    r = Rect(0,0,current_size[0], current_size[1])
+    s = SCREEN.subsurface(r)
+    zoomed = scale(s, DISPLAY_SIZE)
+    _SCREEN.blit(zoomed, (0,0))
+    update()

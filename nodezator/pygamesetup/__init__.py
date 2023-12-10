@@ -7,6 +7,8 @@
 from .constants import (
     SCREEN,
     SCREEN_RECT,
+    DISPLAY_RECT,
+    CURRENT_SIZE,
     GENERAL_NS,
     GENERAL_SERVICE_NAMES,
     reset_caption,
