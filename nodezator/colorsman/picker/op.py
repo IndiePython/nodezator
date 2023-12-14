@@ -28,6 +28,8 @@ from ...pygamesetup import (
     blit_on_screen,
 )
 
+from ...pygamesetup.constants import to_virtual_point
+
 from ...ourstdlibs.color.largemaps import (
     HTML_COLOR_MAP,
     PYGAME_COLOR_MAP,
@@ -362,7 +364,7 @@ class Operations(LoopHolder):
             stored in its 'pos' attribute.
         """
         ### retrieve the mouse position
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### iterate over each color widget, toggling the
         ### 'chosen' flag of the one hovered by the mouse
@@ -439,7 +441,7 @@ class Operations(LoopHolder):
             attribute.
         """
         ### retrieve the mouse position
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### iterate over the color widgets, looking for
         ### one hovered by the mouse

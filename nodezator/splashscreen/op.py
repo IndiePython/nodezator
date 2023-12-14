@@ -29,6 +29,8 @@ from ..config import APP_REFS
 
 from ..pygamesetup import SERVICES_NS, SCREEN
 
+from ..pygamesetup.constants import to_virtual_point
+
 from ..classes2d.single import Object2D
 
 from ..loopman.exception import (
@@ -140,7 +142,7 @@ class SplashScreenOperations(Object2D):
     def on_mouse_action(self, method_name, event):
         """Act according to method name and mouse event."""
         ### retrieve the mouse position from the event
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### if the event, regardless of type, occurred
         ### outside the splash screen boundaries, raise
@@ -190,7 +192,7 @@ class SplashScreenOperations(Object2D):
     def on_mouse_motion(self, event):
         """React to mouse motion event."""
         ### retrieve mouse position from event object
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### iterate over the buttons, checking whether
         ### any among them is hovered by the mouse

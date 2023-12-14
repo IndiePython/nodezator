@@ -44,6 +44,8 @@ from pygame.locals import (
     MOUSEWHEEL,
     K_KP_PLUS,
     K_KP_MINUS,
+    K_KP_MULTIPLY,
+    K_KP_DIVIDE,
 )
 
 from pygame.key import get_pressed
@@ -52,7 +54,13 @@ from pygame.key import get_pressed
 
 from ...pygamesetup import SERVICES_NS
 
-from ...pygamesetup.constants import zoom_in, zoom_out
+from ...pygamesetup.constants import (
+    to_virtual_point,
+    zoom_in, 
+    zoom_out, 
+    zoom_reset, 
+    zoom_overview
+)
 
 from ...config import APP_REFS
 
@@ -83,10 +91,12 @@ class LoadedFileState:
                 mod = SERVICES_NS.get_pressed_mod_keys()
                 if mod & KMOD_CTRL:
                     if event.y > 0:
-                        zoom_in()
+                        mouse_pos = SERVICES_NS.get_mouse_pos()
+                        zoom_in(mouse_pos)
                         SERVICES_NS.update_screen()
                     elif event.y < 0:
-                        zoom_out()
+                        mouse_pos = SERVICES_NS.get_mouse_pos()
+                        zoom_out(mouse_pos)
                         SERVICES_NS.update_screen()                        
                     #
                 else:
@@ -292,11 +302,20 @@ class LoadedFileState:
                     (self.canvas_popup_menu.focus_if_within_boundaries(mouse_pos))
 
                 elif event.key == K_KP_PLUS:
-                    zoom_in()
+                    mouse_pos = SERVICES_NS.get_mouse_pos()
+                    zoom_in(mouse_pos)
                     SERVICES_NS.update_screen()
 
                 elif event.key == K_KP_MINUS:
-                    zoom_out()
+                    mouse_pos = SERVICES_NS.get_mouse_pos()
+                    zoom_out(mouse_pos)
+                    SERVICES_NS.update_screen()
+                elif event.key == K_KP_MULTIPLY:
+                    mouse_pos = SERVICES_NS.get_mouse_pos()
+                    zoom_reset(mouse_pos)
+                    SERVICES_NS.update_screen()
+                elif event.key == K_KP_DIVIDE:
+                    zoom_overview()
                     SERVICES_NS.update_screen()
                     
                 ## jump to corner feature
@@ -371,7 +390,7 @@ class LoadedFileState:
         Act based on mouse position.
         """
         ### retrieve the mouse position
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### check objects on screen for collision
 
@@ -430,7 +449,7 @@ class LoadedFileState:
         of such objects.
         """
         ### retrieve the mouse position
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### if the menu is hovered, we use it as the
         ### new loop holder in the application loop,
@@ -529,7 +548,7 @@ class LoadedFileState:
             or similar object.
         """
         ### store the mouse position when released
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### set the "clicked_mouse" flag off
         self.clicked_mouse = False
@@ -579,12 +598,13 @@ class LoadedFileState:
                 APP_REFS.ea.deselect_all()
 
     def loaded_file_on_right_mouse_release(self, event):
+        
         """Act on mouse right button release.
 
         Act based on mouse position.
         """
         ### retrieve mouse position
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### check nodes for collision, executing its
         ### respective method if so and returning
@@ -615,11 +635,11 @@ class LoadedFileState:
             ### the canvas, as the position of the object
             ### (we have been using it as the midtop
             ### coordinate of new objects)
-            APP_REFS.ea.popup_spawn_pos = event.pos
+            mouse_pos = to_virtual_point(event.pos)
+            APP_REFS.ea.popup_spawn_pos = mouse_pos
 
             ### then give focus to the popup menu
-
-            (self.canvas_popup_menu.focus_if_within_boundaries(event.pos))
+            (self.canvas_popup_menu.focus_if_within_boundaries(mouse_pos))
 
     ### update
 

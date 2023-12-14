@@ -8,7 +8,7 @@ from pygame.locals import KMOD_CTRL, KMOD_SHIFT
 
 from ...pygamesetup import SERVICES_NS
 
-from ...pygamesetup.constants import GENERAL_NS
+from ...pygamesetup.constants import GENERAL_NS, to_virtual_point
 
 from ..constants import MAX_FRAMES_TO_2ND_MOUSE_EVENT
 
@@ -28,7 +28,7 @@ class MouseOperations:
               object.
         """
         ### retrieve mouse position
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### retrieve pressed state of ctrl and shift keys
 

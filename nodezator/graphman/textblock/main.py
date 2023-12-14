@@ -14,6 +14,8 @@ from ...config import APP_REFS
 
 from ...pygamesetup import SCREEN
 
+from ...pygamesetup.constants import to_virtual_point
+
 from ...classes2d.single import Object2D
 
 from .surf import get_text_block_surf
@@ -108,7 +110,8 @@ class TextBlock(Object2D):
 
         elif method_name == "on_right_mouse_release":
 
-            (APP_REFS.ea.text_block_popup_menu.show(self, event.pos))
+            mouse_pos = to_virtual_point(event.pos)
+            (APP_REFS.ea.text_block_popup_menu.show(self, mouse_pos))
 
     on_mouse_click = partialmethod(on_mouse_action, "on_mouse_click")
 

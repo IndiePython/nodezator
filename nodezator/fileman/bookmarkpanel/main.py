@@ -18,7 +18,7 @@ from pygame.math import Vector2
 
 from ...userprefsman.main import BOOKMARKS_FILE
 
-from ...pygamesetup.constants import GENERAL_NS
+from ...pygamesetup.constants import GENERAL_NS, to_virtual_point
 
 from ...dialog import create_and_show_dialog
 
@@ -296,7 +296,7 @@ class BookmarkPanel:
               object.
         """
         ### retrieve mouse position
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### check whether any bookmark obj was the target of
         ### the mouse release action

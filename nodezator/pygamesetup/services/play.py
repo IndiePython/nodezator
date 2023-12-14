@@ -73,6 +73,8 @@ from ..constants import (
     KEYS_MAP,
     SCANCODE_NAMES_MAP,
     MOD_KEYS_MAP,
+    
+    to_virtual_point,
 
 )
 
@@ -539,7 +541,8 @@ def get_events():
 
             ## if we have a mouse event, we use it to position the mouse
             if event.type in MOUSE_EVENTS:
-                set_mouse_pos(event.pos)
+                mouse_pos = to_virtual_point(event.pos)
+                set_mouse_pos(mouse_pos)
 
             ## finally yield the event, regardless of its type
             yield event

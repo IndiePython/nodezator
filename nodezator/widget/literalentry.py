@@ -51,7 +51,11 @@ from pygame.key import (
 
 from ..pygamesetup import SERVICES_NS
 
-from ..pygamesetup.constants import GENERAL_NS, WINDOW_RESIZE_EVENT_TYPE
+from ..pygamesetup.constants import (
+    GENERAL_NS, 
+    WINDOW_RESIZE_EVENT_TYPE, 
+    to_virtual_point,
+)
 
 from ..ourstdlibs.behaviour import empty_function
 
@@ -384,7 +388,8 @@ class LiteralEntry(Object2D):
 
                 if event.button in (1, 3):
 
-                    if not self.rect.collidepoint(event.pos):
+                    mouse_pos = to_virtual_point(event.pos)
+                    if not self.rect.collidepoint(mouse_pos):
                         self.resume_editing()
 
             ### if window is resized, set handle_input

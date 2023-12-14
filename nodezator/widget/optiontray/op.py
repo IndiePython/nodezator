@@ -3,6 +3,8 @@
 ### local import
 from ...classes2d.single import Object2D
 
+from ...pygamesetup.constants import to_virtual_point
+
 
 class OptionTrayLifetimeOperations(Object2D):
     """Operations for the lifetime of the OptionTray.
@@ -160,7 +162,8 @@ class OptionTrayLifetimeOperations(Object2D):
             object.
         """
         ### retrieve mouse x position
-        mouse_x = event.pos[0]
+        mouse_pos = to_virtual_point(event.pos)
+        mouse_x = mouse_pos[0]
 
         ### retrieve x position of this widget
         widget_x = self.rect.x

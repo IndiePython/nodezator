@@ -17,6 +17,7 @@ from pygame.key import stop_text_input
 
 
 ### local imports
+from ...pygamesetup.constants import to_virtual_point
 
 from ...classes2d.single import Object2D
 
@@ -202,7 +203,8 @@ class IntFloatOperations(Object2D):
             ## make the corresponding operation
             ## and exit this method by returning
 
-            x = event.pos[0]
+            mouse_pos = to_virtual_point(event.pos)
+            x = mouse_pos[0]
             delta_x = x - self.rect.x
 
             if delta_x < self.dla_right:
@@ -243,7 +245,8 @@ class IntFloatOperations(Object2D):
 
             else:
 
-                self.initial_mouse_pos = event.pos
+                mouse_pos = to_virtual_point(event.pos)
+                self.initial_mouse_pos = mouse_pos
                 self.enable_standby_mode()
 
         ### reposition line and move cursor to end of text

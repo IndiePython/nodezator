@@ -34,6 +34,8 @@ from pygame.locals import (
 
 from ..pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
 
+from ..pygamesetup.constants import to_virtual_point
+
 from ..translation import TRANSLATION_HOLDER as t
 
 from ..dialog import create_and_show_dialog
@@ -230,10 +232,12 @@ class FileManagerOperations(Object2D):
                     self.on_mouse_release(event)
 
                 elif event.button == 4:
-                    self.scroll_contents(event.pos, "up")
+                    mouse_pos = to_virtual_point(event.pos)
+                    self.scroll_contents(mouse_pos, "up")
 
                 elif event.button == 5:
-                    self.scroll_contents(event.pos, "down")
+                    mouse_pos = to_virtual_point(event.pos)
+                    self.scroll_contents(mouse_pos, "down")
 
     def on_mouse_action(self, method_name, event):
         """Check whether mouse action occurred inside widget.
@@ -256,7 +260,7 @@ class FileManagerOperations(Object2D):
         get out of the file manager loop using the
         'cancel' method.
         """
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### if mouse was released inside file manager
 

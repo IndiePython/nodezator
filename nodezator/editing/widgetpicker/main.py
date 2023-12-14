@@ -28,6 +28,7 @@ from ...config import APP_REFS
 from ...translation import TRANSLATION_HOLDER as t
 
 from ...pygamesetup import SERVICES_NS, SCREEN_RECT
+from ...pygamesetup.constants import to_virtual_point
 
 from ...our3rdlibs.button import Button
 
@@ -356,14 +357,16 @@ class WidgetPicker(Object2D, SubformCreation):
 
                 if event.button == 1:
 
-                    if self.rect.collidepoint(event.pos):
+                    mouse_pos = to_virtual_point(event.pos)
+                    if self.rect.collidepoint(mouse_pos):
                         self.on_mouse_click(event)
 
             elif event.type == MOUSEBUTTONUP:
 
                 if event.button == 1:
 
-                    if self.rect.collidepoint(event.pos):
+                    mouse_pos = to_virtual_point(event.pos)
+                    if self.rect.collidepoint(mouse_pos):
                         self.on_mouse_release(event)
 
     # XXX in the future a "Reset" button would be nice
@@ -388,7 +391,7 @@ class WidgetPicker(Object2D, SubformCreation):
             object.
         """
         ### retrieve position from attribute in event obj
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### chain all widgets together
 

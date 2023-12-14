@@ -17,6 +17,8 @@ from pygame.draw import rect as draw_rect
 
 from ..pygamesetup import SERVICES_NS
 
+from ..pygamesetup.constants import to_virtual_point
+
 from ..classes2d.single import Object2D
 
 from ..fontsman.constants import (
@@ -245,7 +247,8 @@ class ListBox(Object2D):
     def on_mouse_release(self, event):
 
         if event.button == 1:
-            self.mouse_select(event.pos[1])
+            mouse_pos = to_virtual_point(event.pos)
+            self.mouse_select(mouse_pos[1])
 
         elif event.button == 4:
             self.scroll(-1)

@@ -24,6 +24,8 @@ from ...translation import TRANSLATION_HOLDER as t
 
 from ...pygamesetup import SERVICES_NS, SCREEN_RECT
 
+from ...pygamesetup.constants import to_virtual_point
+
 from ...dialog import create_and_show_dialog
 
 from ...ourstdlibs.behaviour import empty_function
@@ -346,14 +348,16 @@ class PathForm(Object2D):
 
                 if event.button == 1:
 
-                    if self.rect.collidepoint(event.pos):
+                    mouse_pos = to_virtual_point(event.pos)
+                    if self.rect.collidepoint(mouse_pos):
                         self.on_mouse_click(event)
 
             elif event.type == MOUSEBUTTONUP:
 
                 if event.button == 1:
 
-                    if self.rect.collidepoint(event.pos):
+                    mouse_pos = to_virtual_point(event.pos)
+                    if self.rect.collidepoint(mouse_pos):
                         self.on_mouse_release(event)
 
     def mouse_method_on_collision(self, method_name, event):
@@ -376,7 +380,7 @@ class PathForm(Object2D):
             object.
         """
         ### retrieve position from attribute in event obj
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### search for a colliding obj among the widgets
 

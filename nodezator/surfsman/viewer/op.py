@@ -48,6 +48,8 @@ from ...pygamesetup import (
     blit_on_screen,
 )
 
+from ...pygamesetup.constants import to_virtual_point
+
 from ...surfsman.draw import draw_border_on_area
 
 from ...classes2d.single import Object2D
@@ -252,7 +254,8 @@ class ViewerOperations(Object2D):
 
     def attempt_image_grabbing(self, event):
         """"""
-        if self.rect.collidepoint(event.pos):
+        mouse_pos = to_virtual_point(event.pos)
+        if self.rect.collidepoint(mouse_pos):
             self.should_move_with_mouse = True
 
     on_mouse_click = attempt_image_grabbing

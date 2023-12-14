@@ -28,6 +28,7 @@ from pygame.locals import (
 ### local imports
 
 from ...pygamesetup import SERVICES_NS, blit_on_screen
+from ...pygamesetup.constants import to_virtual_point
 
 from ...classes2d.single import Object2D
 
@@ -223,7 +224,8 @@ class LoopOperations(Object2D, LoopHolder):
                 ## method earlier by breaking out of the
                 ## "for loop"
 
-                if not self.rect.collidepoint(event.pos):
+                mouse_pos = to_virtual_point(event.pos)
+                if not self.rect.collidepoint(mouse_pos):
 
                     self.cancel()
                     break
@@ -283,7 +285,7 @@ class LoopOperations(Object2D, LoopHolder):
             object;
         """
         ### retrieve the mouse position
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### iterate over the colors panel and the buttons
 

@@ -6,7 +6,7 @@ from pygame import Rect
 
 ### local imports
 
-from ..pygamesetup import SCREEN_RECT
+from ..pygamesetup import SCREEN_RECT, DISPLAY_RECT
 
 from ..ourstdlibs.behaviour import empty_function
 
@@ -197,7 +197,7 @@ class MenuManager(
         menu_list,
         loop_holder=None,
         draw_behind=draw_cached_screen_state,
-        boundaries_rect=SCREEN_RECT,
+        boundaries_rect=SCREEN_RECT, # DISPLAY_RECT,
         coordinates_name="topleft",
         coordinates_value=(0, 0),
         is_menubar=True,

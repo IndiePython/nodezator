@@ -11,6 +11,7 @@ from pygame.math import Vector2
 ### local imports
 
 from ..pygamesetup import blit_on_screen, SCREEN_RECT
+from ..pygamesetup.constants import to_virtual_point
 
 from ..rectsman.main import rect_property, RectsManager
 
@@ -116,7 +117,7 @@ class Collection2D:
             object.
         """
         ### retrieve position from attribute in event obj
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### search for a colliding obj
 

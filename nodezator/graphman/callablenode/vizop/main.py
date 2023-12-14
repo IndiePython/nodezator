@@ -15,6 +15,7 @@ from pygame.draw import rect as draw_rect
 from ....config import APP_REFS
 
 from ....pygamesetup import SCREEN, SCREEN_RECT
+from ....pygamesetup.constants import to_virtual_point
 
 ## functions to extend class
 
@@ -62,7 +63,7 @@ class VisualOperations:
             object.
         """
         ### retrieve mouse position
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### check whether any of the objects collided with
         ### the mouse position when it was clicked,
@@ -117,7 +118,8 @@ class VisualOperations:
                 APP_REFS.ea.change_selection_state(self)
 
             elif method_name == "on_right_mouse_release":
-                self.show_popup_menu(event.pos)
+                mouse_pos = to_virtual_point(event.pos)
+                self.show_popup_menu(mouse_pos)
 
     on_mouse_click = partialmethod(on_mouse_action, "on_mouse_click")
 
@@ -212,7 +214,7 @@ class VisualOperations:
         If no socket collides, line segment definition
         is cancelled.
         """
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### iterate over all sockets
 

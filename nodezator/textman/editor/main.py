@@ -19,7 +19,7 @@ from pygame.key import stop_text_input
 
 from ...config import APP_REFS
 
-from ...pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
+from ...pygamesetup import SERVICES_NS, SCREEN_RECT, DISPLAY_RECT, blit_on_screen
 
 from ...dialog import create_and_show_dialog
 
@@ -103,9 +103,9 @@ class TextEditor(Object2D):
 
     def center_text_editor(self):
 
-        diff = Vector2(SCREEN_RECT.center) - self.rect.center
+        diff = Vector2(DISPLAY_RECT.center) - self.rect.center
 
-        self.rect.center = SCREEN_RECT.center
+        self.rect.center = DISPLAY_RECT.center
 
         EDITING_AREA_RECT.move_ip(diff)
 
@@ -401,7 +401,7 @@ class TextEditor(Object2D):
         ### blit a screen-size semitransparent surface in
         ### the canvas to increase constrast
 
-        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
+        blit_on_screen(UNHIGHLIGHT_SURF_MAP[DISPLAY_RECT.size], (0, 0))
 
         ### instantiate and store cursor in its own attribute,
         ### also referencing it locally (the text is stored

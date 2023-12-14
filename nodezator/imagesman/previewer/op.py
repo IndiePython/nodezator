@@ -45,6 +45,8 @@ from pygame.draw import rect as draw_rect
 
 from ...pygamesetup import SERVICES_NS
 
+from ...pygamesetup.constants import to_virtual_point
+
 from ...dialog import create_and_show_dialog
 
 from ...surfsman.draw import (
@@ -166,7 +168,7 @@ class PreviewerOperations(Object2D):
 
     def on_mouse_release(self, event):
         """"""
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
         rect = self.rect
 
         if not rect.collidepoint(mouse_pos):
@@ -192,7 +194,7 @@ class PreviewerOperations(Object2D):
 
     def on_mouse_motion(self, event):
         """"""
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
         rect = self.rect
 
         current_hovered_index = self.hovered_index

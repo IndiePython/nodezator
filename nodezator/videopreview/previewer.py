@@ -18,6 +18,8 @@ from ..config import APP_REFS, FFMPEG_AVAILABLE
 
 from ..pygamesetup import SERVICES_NS, SCREEN, SCREEN_RECT
 
+from ..pygamesetup.constants import to_virtual_point
+
 from ..ourstdlibs.behaviour import get_oblivious_callable
 
 from ..loopman.exception import (
@@ -191,7 +193,7 @@ class VideoPreviewer(Object2D):
 
     def on_mouse_click(self, event):
         """"""
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         entry = self.video_index_entry
 

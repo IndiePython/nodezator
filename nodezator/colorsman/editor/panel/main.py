@@ -19,6 +19,7 @@ from pygame.draw import rect as draw_rect
 ### local imports
 
 from ....pygamesetup import SERVICES_NS, SCREEN
+from ....pygamesetup.constants import to_virtual_point
 
 from ....classes2d.single import Object2D
 from ....classes2d.collections import List2D
@@ -412,7 +413,7 @@ class ColorsPanel(
             of a click).
         """
         ### retrieve the mouse position
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### reference the scroll area locally
         scroll_area = self.scroll_area

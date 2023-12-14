@@ -20,6 +20,7 @@ from pygame.locals import (
 from .translation import DIALOGS_MAP
 
 from .pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
+from .pygamesetup.constants import to_virtual_point
 
 from .classes2d.single import Object2D
 from .classes2d.collections import List2D
@@ -538,7 +539,7 @@ class DialogManager(Object2D, LoopHolder):
             the mouse pointer.
         """
         ### retrieve the position of the mouse
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### iterate over the dialog buttons, setting
         ### text render settings to hovered if they
@@ -573,7 +574,7 @@ class DialogManager(Object2D, LoopHolder):
             button from the dialog collided with the mouse.
         """
         ### retrieve the position of the mouse
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### iterate over the dialog buttons
 

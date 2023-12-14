@@ -17,6 +17,8 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
+from ...pygamesetup.constants import to_virtual_point
+
 from ...ourstdlibs.behaviour import empty_function
 
 from ...fileman.main import select_paths
@@ -315,7 +317,8 @@ class _BasePreview(Object2D):
 
     def on_mouse_click(self, event):
         """Reposition and give focus to entry."""
-        if self.collides_with_entry(event.pos):
+        mouse_pos = to_virtual_point(event.pos)
+        if self.collides_with_entry(mouse_pos):
             self.index_entry.on_mouse_click(event)
 
     def on_mouse_release(self, event):
@@ -338,7 +341,8 @@ class _BasePreview(Object2D):
         ### subtracting the rect's topleft from the
         ### mouse's absolute position
 
-        rel_mouse_pos = [a - b for a, b in zip(event.pos, self.rect.topleft)]
+        mouse_pos = to_virtual_point(event.pos)
+        rel_mouse_pos = [a - b for a, b in zip(mouse_pos, self.rect.topleft)]
 
         ### if the mouse relative position collides with
         ### the rect of one of the buttons, execute the
@@ -353,7 +357,7 @@ class _BasePreview(Object2D):
                 return
 
         ### if index entry was target, ignore
-        if self.collides_with_entry(event.pos):
+        if self.collides_with_entry(mouse_pos):
             return
 
         ### otherwise, it means the user clicked outside

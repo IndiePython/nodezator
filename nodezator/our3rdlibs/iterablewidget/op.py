@@ -5,6 +5,7 @@ from functools import partial, partialmethod
 
 
 ### local imports
+from ...pygamesetup.constants import to_virtual_point
 
 from ...ourstdlibs.behaviour import get_oblivious_callable
 
@@ -245,7 +246,7 @@ class ListWidgetLifetimeOperations:
               object.
         """
         ### retrieve the mouse position
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### iterate over each object in the lists,
         ### until you find the colliding one

@@ -8,7 +8,7 @@ from pygame.math import Vector2
 
 from ...config import APP_REFS
 
-from ...pygamesetup import SCREEN_RECT
+from ...pygamesetup import SCREEN_RECT, DISPLAY_RECT
 
 from ...ourstdlibs.collections.general import CallList
 
@@ -224,20 +224,20 @@ class TextViewer(TextPreparation, Operations):
 
         if self.rect is TEXT_VIEWER_RECT:
 
-            diff = Vector2(SCREEN_RECT.center) - self.rect.center
+            diff = Vector2(DISPLAY_RECT.center) - self.rect.center
 
         elif self.rect is CUSTOM_STDOUT_RECT:
 
-            diff = Vector2(SCREEN_RECT.move(0, -80).midbottom) - self.rect.midbottom
+            diff = Vector2(DISPLAY_RECT.move(0, -80).midbottom) - self.rect.midbottom
 
         else:
             raise RuntimeError(
                 "This else block should not be" " reached, please review the logic."
             )
 
-        TEXT_VIEWER_RECT.center = SCREEN_RECT.center
+        TEXT_VIEWER_RECT.center = DISPLAY_RECT.center
 
-        CUSTOM_STDOUT_RECT.midbottom = SCREEN_RECT.move(0, -80).midbottom
+        CUSTOM_STDOUT_RECT.midbottom = DISPLAY_RECT.move(0, -80).midbottom
 
         if hasattr(self, "scroll_area"):
             self.scroll_area.move_ip(diff)

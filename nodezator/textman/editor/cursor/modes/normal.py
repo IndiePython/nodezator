@@ -37,6 +37,8 @@ from pygame.locals import (
 
 from .....pygamesetup import SERVICES_NS
 
+from .....pygamesetup.constants import to_virtual_point
+
 from .....loopman.exception import QuitAppException
 
 from .....htsl.main import open_htsl_link
@@ -159,7 +161,8 @@ class NormalMode:
                 ### mouse release action
 
                 if event.button == 1:
-                    self.te.mouse_release_action(event.pos)
+                    mouse_pos = to_virtual_point(event.pos)
+                    self.te.mouse_release_action(mouse_pos)
 
                 ### jump many lines up or down using the
                 ### mousewheel

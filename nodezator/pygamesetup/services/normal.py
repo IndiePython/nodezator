@@ -40,6 +40,7 @@ from ..constants import (
     maintain_fps,
     watch_window_size,
     get_current_size,
+    get_current_topleft,
 )
 
 
@@ -105,7 +106,8 @@ def frame_checkups_with_fps(fps):
 
 def update_screen():
     current_size = get_current_size()
-    r = Rect(0,0,current_size[0], current_size[1])
+    current_topleft = get_current_topleft()
+    r = Rect(current_topleft, current_size)
     s = SCREEN.subsurface(r)
     zoomed = scale(s, DISPLAY_SIZE)
     _SCREEN.blit(zoomed, (0,0))

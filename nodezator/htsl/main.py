@@ -46,7 +46,15 @@ from pygame.math import Vector2
 
 from ..config import APP_REFS, APP_WIDE_WEB_DIR
 
-from ..pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
+from ..pygamesetup import (
+    SERVICES_NS, 
+    SCREEN_RECT, 
+    DISPLAY_RECT, 
+    blit_on_screen, 
+    blit_on_display,
+)
+
+from ..pygamesetup.constants import _SCREEN, to_virtual_point
 
 from ..ourstdlibs.meta import initialize_bases
 
@@ -179,9 +187,9 @@ class HTSLBrowser(
 
     def center_htsl_browser(self):
 
-        diff = Vector2(SCREEN_RECT.center) - self.rect.center
+        diff = Vector2(DISPLAY_RECT.center) - self.rect.center
 
-        self.rect.center = SCREEN_RECT.center
+        self.rect.center = DISPLAY_RECT.center
 
         ###
         self.content_area_obj.rect.move_ip(diff)
@@ -262,7 +270,7 @@ class HTSLBrowser(
         ### and whatever is behind it (making what's behind
         ### appear unhighlighted)
 
-        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
+        blit_on_display(UNHIGHLIGHT_SURF_MAP[DISPLAY_RECT.size], (0, 0))
 
         ###
 
@@ -413,7 +421,7 @@ class HTSLBrowser(
             the page collided with the mouse.
         """
         ### retrieve the position of the mouse
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### iterate over objects
 
@@ -586,6 +594,7 @@ class HTSLBrowser(
 
         ###
         self.content_area_obj.draw()
+        
 
     def free_up_memory(self):
         """Free memory by clearing collections."""

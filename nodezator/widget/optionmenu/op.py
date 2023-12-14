@@ -24,7 +24,10 @@ from pygame.math import Vector2
 
 from ...pygamesetup import SERVICES_NS, SCREEN, blit_on_screen
 
-from ...pygamesetup.constants import WINDOW_RESIZE_EVENT_TYPE
+from ...pygamesetup.constants import (
+    WINDOW_RESIZE_EVENT_TYPE, 
+    to_virtual_point,
+)
 
 from ...classes2d.single import Object2D
 
@@ -211,7 +214,8 @@ class OptionMenuLifetimeOperations(Object2D):
         self.last_topleft = self.rect.topleft
 
         ### react as if mouse moved
-        self.on_mouse_motion(event.pos)
+        mouse_pos = to_virtual_point(event.pos)
+        self.on_mouse_motion(mouse_pos)
 
         ### give focus to self by raising a manager switch
         ### exception with a reference to this widget
@@ -285,7 +289,8 @@ class OptionMenuLifetimeOperations(Object2D):
                     ## focus, regardless of the button
                     ## released
 
-                    if self.out_of_body(event.pos):
+                    mouse_pos = to_virtual_point(event.pos)
+                    if self.out_of_body(mouse_pos):
                         self.lose_focus()
 
                     ## otherwise, if the button released
@@ -302,7 +307,8 @@ class OptionMenuLifetimeOperations(Object2D):
             ### hovered option, if there's one
 
             elif event.type == MOUSEMOTION:
-                self.on_mouse_motion(event.pos)
+                mouse_pos = to_virtual_point(event.pos)
+                self.on_mouse_motion(mouse_pos)
 
             ### if window is resized, set handle_input
             ### to a new callable that keeps handling
@@ -391,7 +397,7 @@ class OptionMenuLifetimeOperations(Object2D):
             object.
         """
         ### retrieve mouse position
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### iterate over option widgets, looking for the
         ### widget which collides with the mouse
@@ -413,6 +419,7 @@ class OptionMenuLifetimeOperations(Object2D):
         """Choose option under mouse, if any."""
         ### get mouse position
         mouse_pos = SERVICES_NS.get_mouse_pos()
+        mouse_pos = to_virtual_point(mouse_pos)
 
         ### iterate over option widgets, looking for the
         ### widget which collides with the mouse

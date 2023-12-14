@@ -34,6 +34,8 @@ from pygame.draw import (
 
 from ...pygamesetup import SERVICES_NS
 
+from ...pygamesetup.constants import to_virtual_point
+
 from ...ourstdlibs.behaviour import empty_function
 
 from ...ourstdlibs.collections.general import CallList
@@ -157,7 +159,7 @@ class SortingEditorModes(Object2D):
             object.
         """
         ### retrieve the mouse postion
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### iterate over items
 
@@ -444,7 +446,7 @@ class SortingEditorModes(Object2D):
             object.
         """
         ### retrieve the mouse position
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### itertate over the buttons
 

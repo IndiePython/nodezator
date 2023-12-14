@@ -11,9 +11,12 @@ from xml.etree.ElementTree import Element
 
 ### local imports
 
+from ..pygamesetup.constants import to_virtual_point
+
 from ..ourstdlibs.behaviour import empty_function
 
 from ..surfsman.draw import blit_aligned, draw_border
+
 from ..surfsman.render import render_rect
 
 from ..classes2d.single import Object2D
@@ -210,7 +213,8 @@ class SortingButton(Object2D):
             pygame website for more info about this event
             object.
         """
-        x, _ = event.pos
+        mouse_pos = to_virtual_point(event.pos)
+        x, _ = mouse_pos
 
         ### if click was more to the left, where the icon
         ### is, we call the method responsible for

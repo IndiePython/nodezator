@@ -1,5 +1,6 @@
 
 ### standard library import
+from time import time
 from functools import partial
 
 
@@ -81,47 +82,135 @@ SIZE = (
 )
 
 _SCREEN = set_mode(SIZE, RESIZABLE)
-    
+MULTIPLIER = 5
 DISPLAY_SIZE = _SCREEN.get_size()
 DISPLAY_RECT = _SCREEN.get_rect()
 #SCREEN_RECT = _SCREEN.get_rect()
 #SCREEN_SIZE = _SCREEN.get_size()
-SCREEN_RECT = Rect(0,0,1920,1080)
-SCREEN_SIZE = (1920,1080)
+SCREEN_SIZE = (DISPLAY_SIZE[0] * MULTIPLIER, DISPLAY_SIZE[1] * MULTIPLIER)
+SCREEN_RECT = Rect((0,0), SCREEN_SIZE)
 SCREEN = Surface(SCREEN_SIZE)
+
+blit_on_display = _SCREEN.blit
 
 #blit_on_screen = _SCREEN.blit
 CURRENT_SIZE = [DISPLAY_SIZE[0], DISPLAY_SIZE[1]]
+CURRENT_TOPLEFT = [0, 0] # OFFSET
+CURRENT_SCALE = 1.0
+
+_last_zoom = 0
 
 def get_current_size():
     return CURRENT_SIZE
+
+def get_current_topleft():
+    return CURRENT_TOPLEFT
+
+def get_current_scale():
+    return CURRENT_SCALE
+
+def to_virtual_point(point):
+    return [
+        round(point[0] * CURRENT_SCALE + CURRENT_TOPLEFT[0]),
+        round(point[1] * CURRENT_SCALE + CURRENT_TOPLEFT[1]),
+    ]
     
 def blit_on_screen(source, dest, area=None, special_flags=0):
     SCREEN.blit(source, dest, area, special_flags)
     _SCREEN.blit(SCREEN, (0,0), area, special_flags)
 
-def zoom_in():
+def zoom_in(center=None):
+    global _last_zoom
+    now = int(time() * 1000)
+    if now - _last_zoom < 500:
+        return
+    _last_zoom = now
+    global CURRENT_SCALE
+    global CURRENT_TOPLEFT
     global CURRENT_SIZE
 
-    zoom_factor = 0.8
-    current_size = CURRENT_SIZE
-    CURRENT_SIZE = [round(current_size[0] * zoom_factor), round(current_size[1] * zoom_factor)]
-    if CURRENT_SIZE[0] < 100: # arbitary hard limit
-        CURRENT_SIZE[0] = 100
-    if CURRENT_SIZE[1] < 100: # arbitary hard limit
-        CURRENT_SIZE[1] = 100
-
-def zoom_out():
-    global CURRENT_SIZE
     global SCREEN_SIZE
+    global DISPLAY_SIZE
     
-    zoom_factor = 1.1
-    current_size = CURRENT_SIZE
-    CURRENT_SIZE = [round(current_size[0] * zoom_factor), round(current_size[1] * zoom_factor)]
-    if CURRENT_SIZE[0] > SCREEN_SIZE[0]:
-        CURRENT_SIZE[0] = SCREEN_SIZE[0]
-    if CURRENT_SIZE[1] > SCREEN_SIZE[1]:
-        CURRENT_SIZE[1] = SCREEN_SIZE[1]
+    CENTER_VIEW = None
+    if center is not None:
+        CENTER_VIEW = [center[0], center[1]]
+        CENTER_VIEW = to_virtual_point(CENTER_VIEW)
+    #
+
+    if CURRENT_SIZE[0] > (DISPLAY_SIZE[0]/3):
+        CURRENT_SIZE = [
+            round(CURRENT_SIZE[0] * 0.9), 
+            round(CURRENT_SIZE[1] * 0.9)
+        ]
+        
+    CURRENT_SCALE = CURRENT_SIZE[0] / DISPLAY_SIZE[0]
+
+    if CENTER_VIEW is not None:
+        x = round(CENTER_VIEW[0] - CURRENT_SIZE[0]/2)
+        if x < 0:
+            x = 0
+        elif x + CURRENT_SIZE[0] > SCREEN_SIZE[0]:
+            x = SCREEN_SIZE[0] - CURRENT_SIZE[0]
+        y = round(CENTER_VIEW[1] - CURRENT_SIZE[1]/2)
+        if y < 0:
+            y = 0
+        elif y + CURRENT_SIZE[1] > SCREEN_SIZE[1]:
+            y = SCREEN_SIZE[1] - CURRENT_SIZE[1]
+        CURRENT_TOPLEFT = [x, y]
+    
+    
+def zoom_out(center=None):
+    global _last_zoom
+    now = int(time() * 1000)
+    if now - _last_zoom < 500:
+        return
+    _last_zoom = now
+    global CURRENT_SCALE
+    global CURRENT_TOPLEFT
+    global CURRENT_SIZE
+
+    global SCREEN_SIZE
+    global DISPLAY_SIZE
+    
+    CENTER_VIEW = None
+    if center is not None:
+        CENTER_VIEW = [center[0], center[1]]
+        CENTER_VIEW = to_virtual_point(CENTER_VIEW)
+    #
+    x = round(CURRENT_SIZE[0] * 1.1)
+    y = round(CURRENT_SIZE[1] * 1.1)
+
+    if x > SCREEN_SIZE[0]:
+        x = SCREEN_SIZE[0]
+
+    if y > SCREEN_SIZE[1]:
+        y = SCREEN_SIZE[1]
+
+    CURRENT_SIZE = [x, y]
+    
+    CURRENT_SCALE = CURRENT_SIZE[0] / DISPLAY_SIZE[0]
+
+    if CENTER_VIEW is not None:
+        x = round(CENTER_VIEW[0] - CURRENT_SIZE[0]/2)
+        if x < 0:
+            x = 0
+        elif x + CURRENT_SIZE[0] > SCREEN_SIZE[0]:
+            x = SCREEN_SIZE[0] - CURRENT_SIZE[0]
+        y = round(CENTER_VIEW[1] - CURRENT_SIZE[1]/2)
+        if y < 0:
+            y = 0
+        elif y + CURRENT_SIZE[1] > SCREEN_SIZE[1]:
+            y = SCREEN_SIZE[1] - CURRENT_SIZE[1]
+        CURRENT_TOPLEFT = [x, y]
+
+
+
+def zoom_reset(center=None):
+    pass
+
+def zoom_overview():
+    pass
 
 ## pygame initialization
 init_pygame()

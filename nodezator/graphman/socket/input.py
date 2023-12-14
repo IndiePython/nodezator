@@ -7,6 +7,7 @@ from xml.etree.ElementTree import Element
 ### local imports
 
 from ...config import APP_REFS
+from ...pygamesetup.constants import to_virtual_point
 
 from ...our3rdlibs.behaviour import (
     indicate_unsaved,
@@ -104,9 +105,10 @@ class InputSocket(Socket):
             pygame website for more info about this event
             object.
         """
+        mouse_pos = to_virtual_point(event.pos)
         APP_REFS.ea.input_socket_popup_menu.show(
             self,
-            event.pos,
+            mouse_pos,
         )
 
     def mark_for_unpacking(self):

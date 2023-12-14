@@ -8,6 +8,8 @@ from pygame import QUIT, KEYUP, K_ESCAPE, MOUSEBUTTONUP
 
 from ...pygamesetup import SERVICES_NS
 
+from ...pygamesetup.constants import to_virtual_point
+
 from ...config import APP_REFS
 
 from ...loopman.exception import QuitAppException
@@ -30,7 +32,8 @@ class SegmentSeveranceState:
 
                 if event.button == 1:
 
-                    (APP_REFS.gm.resume_severing_segments(event.pos))
+                    mouse_pos = to_virtual_point(event.pos)
+                    (APP_REFS.gm.resume_severing_segments(mouse_pos))
 
             ### KEYUP
 

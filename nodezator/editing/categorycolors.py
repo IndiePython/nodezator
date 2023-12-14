@@ -24,6 +24,7 @@ from pygame.draw import rect as draw_rect
 ### local imports
 
 from ..pygamesetup import SERVICES_NS, SCREEN, SCREEN_RECT, blit_on_screen
+from ..pygamesetup.constants import to_virtual_point
 
 from ..config import APP_REFS
 
@@ -316,7 +317,8 @@ class CategoryColorsPicking(Object2D, LoopHolder):
 
                 if event.button == 1:
 
-                    if self.rect.collidepoint(event.pos):
+                    mouse_pos = to_virtual_point(event.pos)
+                    if self.rect.collidepoint(mouse_pos):
                         self.on_mouse_click(event)
 
             ### MOUSEBUTTONUP
@@ -325,7 +327,8 @@ class CategoryColorsPicking(Object2D, LoopHolder):
 
                 if event.button == 1:
 
-                    if self.rect.collidepoint(event.pos):
+                    mouse_pos = to_virtual_point(event.pos)
+                    if self.rect.collidepoint(mouse_pos):
                         self.on_mouse_release(event)
 
                     ## cancel editing form if mouse left
@@ -358,7 +361,7 @@ class CategoryColorsPicking(Object2D, LoopHolder):
             object.
         """
         ### retrieve position from attribute in event obj
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### search for a colliding obj among the widgets
 
@@ -396,7 +399,7 @@ class CategoryColorsPicking(Object2D, LoopHolder):
 
     def on_mouse_motion(self, event):
 
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
         ### if a color widget or its label are hovered,
         ### they are highlighted
 

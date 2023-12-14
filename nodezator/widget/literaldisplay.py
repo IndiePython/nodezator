@@ -18,6 +18,7 @@ from pygame.draw import rect as draw_rect
 
 
 ### local imports
+from ..pygamesetup.constants import to_virtual_point
 
 from ..ourstdlibs.behaviour import empty_function
 from ..ourstdlibs.exceptionutils import bool_func_from_raiser
@@ -206,7 +207,8 @@ class LiteralDisplay(Object2D):
             object.
         """
         ### retrieve x coordinate of mouse position
-        mouse_x, _ = event.pos
+        mouse_pos = to_virtual_point(event.pos)
+        mouse_x, _ = mouse_pos
 
         ### if click was more to the left, where the icon
         ### is, we call the method responsible for

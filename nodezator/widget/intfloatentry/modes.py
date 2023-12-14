@@ -44,7 +44,11 @@ from pygame.key import (
 
 from ...pygamesetup import SERVICES_NS, SCREEN_RECT
 
-from ...pygamesetup.constants import GENERAL_NS, WINDOW_RESIZE_EVENT_TYPE
+from ...pygamesetup.constants import (
+    GENERAL_NS, 
+    WINDOW_RESIZE_EVENT_TYPE, 
+    to_virtual_point,
+)
 
 from ...ourstdlibs.behaviour import empty_function
 
@@ -183,7 +187,8 @@ class IntFloatModes(Object2D):
 
                 if event.button in (1, 3):
 
-                    if not self.rect.collidepoint(event.pos):
+                    mouse_pos = to_virtual_point(event.pos)
+                    if not self.rect.collidepoint(mouse_pos):
 
                         self.check_expanded_view_reversal()
                         self.resume_editing()
@@ -384,7 +389,8 @@ class IntFloatModes(Object2D):
             ### in the x axis to the mouse motion routine
 
             elif event.type == MOUSEMOTION:
-                self.mouse_motion_routine(event.pos[0])
+                mouse_pos = to_virtual_point(event.pos)
+                self.mouse_motion_routine(mouse_pos[0])
 
             ### if the left button of the mouse is
             ### released, perform exit setups for the

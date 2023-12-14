@@ -23,6 +23,8 @@ from pygame.draw import rect as draw_rect
 ### local imports
 
 from ..pygamesetup import SERVICES_NS, SCREEN
+from ..pygamesetup.constants import to_virtual_point
+
 
 from ..ourstdlibs.mathutils import invert_point
 from ..ourstdlibs.treeutils import yield_tree_attrs
@@ -200,7 +202,7 @@ class BehaviourDefinitions(Object2D):
         ### retrieve commonly used data, mouse position,
         ### and store it in a mouse_pos attribute for easy
         ### access by other methods in the class
-        self.mouse_pos = SERVICES_NS.get_mouse_pos()
+        self.mouse_pos = to_virtual_point(SERVICES_NS.get_mouse_pos())
 
         ### check if there's an arrow hovered and scroll it
         self.manage_scrolling()

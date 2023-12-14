@@ -32,6 +32,7 @@ from ...config import APP_REFS
 from ...translation import TRANSLATION_HOLDER as t
 
 from ...pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
+from ...pygamesetup.constants import to_virtual_point
 
 from ...appinfo import NATIVE_FILE_EXTENSION
 
@@ -727,14 +728,16 @@ class NodePacksSelectionChangeForm(Object2D):
 
                 if event.button == 1:
 
-                    if self.rect.collidepoint(event.pos):
+                    mouse_pos = to_virtual_point(event.pos)
+                    if self.rect.collidepoint(mouse_pos):
                         self.on_mouse_click(event)
 
             elif event.type == MOUSEBUTTONUP:
 
                 if event.button == 1:
 
-                    if self.rect.collidepoint(event.pos):
+                    mouse_pos = to_virtual_point(event.pos)
+                    if self.rect.collidepoint(mouse_pos):
                         self.on_mouse_release(event)
 
                 elif event.button == 4:
@@ -766,7 +769,7 @@ class NodePacksSelectionChangeForm(Object2D):
             object.
         """
         ### retrieve position from attribute in event obj
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### search for a colliding obj among the widgets
 
@@ -812,7 +815,7 @@ class NodePacksSelectionChangeForm(Object2D):
             pygame website for more info about this event
             object.
         """
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         for remove_button, _ in self.node_pack_widget_list:
 

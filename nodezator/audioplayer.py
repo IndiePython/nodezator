@@ -27,7 +27,13 @@ from pygame.mixer import music
 
 from .config import APP_REFS
 
-from .pygamesetup import SERVICES_NS, SCREEN, SCREEN_RECT
+from .pygamesetup import (
+    SERVICES_NS, 
+    SCREEN, 
+    SCREEN_RECT, 
+)
+
+from .pygamesetup.constants import to_virtual_point
 
 from .dialog import create_and_show_dialog
 
@@ -262,7 +268,7 @@ class AudioPlayer(Object2D):
 
     def on_mouse_click(self, event):
         """"""
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         entry = self.audio_index_entry
 
@@ -271,7 +277,7 @@ class AudioPlayer(Object2D):
 
     def on_mouse_release(self, event):
         """"""
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         toggle_button = self.toggle_play_button
 

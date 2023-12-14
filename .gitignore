@@ -1,6 +1,7 @@
 ### pycache
 __pycache__/
-
+*.bak
+*.ori
 ### if you cloned this repo and plan to make pull
 ### requests, please, don't add files/folders related
 ### to your personal workflow/preferred tooling.

@@ -36,7 +36,8 @@ from pygame.key import (
 ### local imports
 
 from .....pygamesetup import SERVICES_NS
-from .....pygamesetup.constants import GENERAL_NS
+
+from .....pygamesetup.constants import GENERAL_NS, to_virtual_point
 
 from .....loopman.exception import QuitAppException
 
@@ -226,7 +227,8 @@ class InsertMode:
             elif event.type == MOUSEBUTTONUP:
 
                 if event.button == 1:
-                    self.te.mouse_release_action(event.pos)
+                    mouse_pos = to_virtual_point(event.pos)
+                    self.te.mouse_release_action(mouse_pos)
 
                 ### jump many lines up or down by using
                 ### the mousewheel

@@ -19,6 +19,7 @@ from pygame.locals import (
 ### local imports
 
 from .....pygamesetup import SERVICES_NS, blit_on_screen
+from .....pygamesetup.constants import to_virtual_point
 
 from .....ourstdlibs.behaviour import (
     empty_function,
@@ -250,14 +251,14 @@ class PatternsMode:
             protocol".
         """
         ### retrieve the position of the mouse
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### if the mouse is out of the area occupied by
         ### the color viewer, trigger exiting the color
         ### viewer by turning the 'running' flag off and
         ### exiting the method by returning
 
-        if not self.rect.collidepoint(event.pos):
+        if not self.rect.collidepoint(mouse_pos):
             self.running = False
             return
 

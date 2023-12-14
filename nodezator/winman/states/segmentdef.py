@@ -22,6 +22,8 @@ from pygame.locals import (
 
 from ...pygamesetup import SERVICES_NS
 
+from ...pygamesetup.constants import to_virtual_point
+
 from ...config import APP_REFS
 
 from ...loopman.exception import QuitAppException
@@ -96,7 +98,7 @@ class SegmentDefinitionState:
 
         Act based on mouse position.
         """
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### iterator over each node on screen, checking if
         ### any collides, if so, break out of the loop

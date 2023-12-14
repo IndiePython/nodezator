@@ -36,7 +36,8 @@ from pygame.locals import (
 
 ### local imports
 
-from ...pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
+from ...pygamesetup import SERVICES_NS, SCREEN_RECT, DISPLAY_RECT, blit_on_screen
+from ...pygamesetup.constants import to_virtual_point
 
 from ...surfsman.draw import draw_border
 from ...surfsman.cache import UNHIGHLIGHT_SURF_MAP
@@ -80,7 +81,7 @@ class Operations(Object2D):
         ### to increase constrast between the dialog and
         ### whatever is behind it
 
-        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
+        blit_on_screen(UNHIGHLIGHT_SURF_MAP[DISPLAY_RECT.size], (0, 0))
 
         ### loop until self.running is changed
 
@@ -184,7 +185,8 @@ class Operations(Object2D):
 
                 if event.button in (1, 3):
 
-                    if not (self.scroll_area.collidepoint(event.pos)):
+                    mouse_pos = to_virtual_point(event.pos)
+                    if not (self.scroll_area.collidepoint(mouse_pos)):
                         self.running = False
 
                 ## scrolling with mousewheel
@@ -208,8 +210,9 @@ class Operations(Object2D):
             ## mouse movement
 
             elif event.type == MOUSEMOTION:
-
-                self.hovering_help_icon = self.help_icon.rect.collidepoint(event.pos)
+            
+                mouse_pos = to_virtual_point(event.pos)
+                self.hovering_help_icon = self.help_icon.rect.collidepoint(mouse_pos)
 
     def handle_key_input(self):
         """Respond to inputs from keys."""

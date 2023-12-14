@@ -13,6 +13,7 @@ from .constants import (
     GENERAL_SERVICE_NAMES,
     reset_caption,
     blit_on_screen,
+    blit_on_display,
     clean_temp_files,
 )
 

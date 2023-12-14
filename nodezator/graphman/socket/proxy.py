@@ -7,6 +7,7 @@ from xml.etree.ElementTree import Element
 ### local imports
 
 from ...config import APP_REFS
+from ...pygamesetup.constants import to_virtual_point
 
 from .surfs import (
     HOLLOW_SOCKET_CIRCLE_SURF,
@@ -128,9 +129,10 @@ class ProxySocket(Socket):
             pygame website for more info about this event
             object.
         """
+        mouse_pos = to_virtual_point(event.pos)
         APP_REFS.ea.proxy_socket_popup_menu.show(
             self,
-            event.pos,
+            mouse_pos,
         )
 
     def svg_repr(self):

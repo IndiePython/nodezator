@@ -27,6 +27,8 @@ from ...appinfo import (
     OUTPUT_INSPECTING_VAR_NAMES,
 )
 
+from ...pygamesetup.constants import to_virtual_point
+
 from ...logman.main import get_new_logger
 
 from ...dialog import create_and_show_dialog
@@ -343,7 +345,7 @@ class OutputVisualization:
 
             def on_mouse_release(event):
 
-                mouse_pos = event.pos
+                mouse_pos = to_virtual_point(event.pos)
 
                 for obj in buttons:
 

@@ -22,6 +22,8 @@ from pygame.locals import (
 
 from ...pygamesetup import SERVICES_NS
 
+from ...pygamesetup.constants import to_virtual_point
+
 from ...config import APP_REFS
 
 from ...loopman.exception import (
@@ -94,7 +96,8 @@ class NoFileState:
             pygame.event.Event object of type pygame.MOUSEMOTION
             or similar object.
         """
-        if self.menubar.get_hovered_menu(event.pos):
+        mouse_pos = to_virtual_point(event.pos)
+        if self.menubar.get_hovered_menu(mouse_pos):
             raise SwitchLoopException(self.menubar)
 
     def no_file_on_mouse_release(self, event):
@@ -102,7 +105,8 @@ class NoFileState:
 
         Act based on mouse position.
         """
-        if self.menubar.get_hovered_menu(event.pos):
+        mouse_pos = to_virtual_point(event.pos)
+        if self.menubar.get_hovered_menu(mouse_pos):
             raise SwitchLoopException(self.menubar)
 
     ### draw

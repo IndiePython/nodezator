@@ -19,7 +19,8 @@ from pygame.locals import (
 
 ### local imports
 
-from ..pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
+from ..pygamesetup import SERVICES_NS, SCREEN_RECT, DISPLAY_RECT, blit_on_screen
+from ..pygamesetup.constants import to_virtual_point
 
 from ..config import APP_REFS
 
@@ -119,7 +120,7 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
         self.rect_size_semitransp_obj = Object2D.from_surface(
             surface=render_rect(*self.rect.size, (*CONTRAST_LAYER_COLOR, 130)),
             coordinates_name="center",
-            coordinates_value=SCREEN_RECT.center,
+            coordinates_value=DISPLAY_RECT.center,
         )
 
         ### assign behaviour
@@ -134,7 +135,7 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
 
     def center_preferences_form(self):
 
-        self.rect.center = self.widgets.rect.center = SCREEN_RECT.center
+        self.rect.center = self.widgets.rect.center = DISPLAY_RECT.center
 
     def build_form_widgets(self):
         """Build widgets to hold settings for edition."""
@@ -299,7 +300,7 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
         ### blit the screen-size semitransparent surf in the
         ### canvas to increase constrast
 
-        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
+        blit_on_screen(UNHIGHLIGHT_SURF_MAP[DISPLAY_RECT.size], (0, 0))
 
         ###
         self.loop()
@@ -340,7 +341,8 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
 
                 if event.button == 1:
 
-                    if self.rect.collidepoint(event.pos):
+                    mouse_pos = to_virtual_point(event.pos)
+                    if self.rect.collidepoint(mouse_pos):
                         self.on_mouse_click(event)
 
             ### MOUSEBUTTONUP
@@ -349,7 +351,8 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
 
                 if event.button == 1:
 
-                    if self.rect.collidepoint(event.pos):
+                    mouse_pos = to_virtual_point(event.pos)
+                    if self.rect.collidepoint(mouse_pos):
                         self.on_mouse_release(event)
 
                     ## cancel editing form if mouse left
@@ -377,7 +380,7 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
             object.
         """
         ### retrieve position from attribute in event obj
-        mouse_pos = event.pos
+        mouse_pos = to_virtual_point(event.pos)
 
         ### search for a colliding obj among the widgets
 

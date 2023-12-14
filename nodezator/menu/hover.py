@@ -6,7 +6,6 @@ from ..loopman.exception import SwitchLoopException
 
 from ..logman.main import get_new_logger
 
-
 ### create logger for module
 logger = get_new_logger(__name__)
 

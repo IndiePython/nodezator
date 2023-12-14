@@ -7,6 +7,7 @@ from xml.etree.ElementTree import Element
 ### local imports
 
 from ...config import APP_REFS
+from ...pygamesetup.constants import to_virtual_point
 
 from .base import Socket
 
@@ -121,9 +122,10 @@ class OutputSocket(Socket):
             pygame website for more info about this event
             object.
         """
+        mouse_pos = to_virtual_point(event.pos)
         APP_REFS.ea.output_socket_popup_menu.show(
             self,
-            event.pos,
+            mouse_pos,
         )
 
     def signal_severance(self):
