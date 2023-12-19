@@ -41,7 +41,7 @@ There's also a [youtube video][] presenting Nodezator:
 
 [![thumb of youtube video](https://img.youtube.com/vi/GlQJvuU7Z_8/hqdefault.jpg)](https://www.youtube.com/watch?v=GlQJvuU7Z_8)
 
-Nodezator is made with [pygame][], by [Kennedy Richard Silva Guerra][] (born in 1990), as part of the [Indie Python][] project.
+Nodezator is made with pure Python on top of the [pygame-ce][] library, by [Kennedy Richard Silva Guerra][] (born in 1990), as part of the [Indie Python][] project.
 
 After you finish reading this README file, you may also want to visit Nodezator's [homepage][]. 
 
@@ -53,10 +53,10 @@ To launch and use Nodezator you can either install it with `pip` or you can just
 
 ### Installing Nodezator with pip
 
-If you want to install it, just execute the command below. It will install nodezator and also, if not available yet, [pygame][] and [numpy][].
+If you want to install it, just execute the command below. It will install nodezator and also, if not available yet, [pygame-ce][] and [numpy][].
  
 ```
-pip install nodezator
+pip install --upgrade nodezator
 ```
 
 If everything goes well, after installing you should be able to launch the app by typing `nodezator` or `python -m nodezator` in your command line (or `python3 -m nodezator` depending on you system).
@@ -66,7 +66,7 @@ If everything goes well, after installing you should be able to launch the app b
 
 If you want to use Nodezator without installing it, you'll need 02 things:
 
-- to have Python installed in your system along with the [pygame][] and [numpy][] libraries;
+- to have Python installed in your system along with the [pygame-ce][] and [numpy][] libraries;
 - to download Nodezator's source (the `nodezator` folder in the top level of this repository).
 
 Then, to launch the app, you just need to go to the location where you put the `nodezator` folder containing the source (not inside it), open the command line and run `python -m nodezator` or `python3 -m nodezator`, depending on your system.
@@ -124,6 +124,7 @@ More complex pull requests will also be welcome in the future, but due to the co
 
 ## Issues
 
+
 ### Urgent/critical issues
 
 If you find a bug that...
@@ -143,7 +144,8 @@ Please, include as much information as you can:
 
 If possible, also read the Nodezator's [manual][] to ensure you are doing everything as they are supposed to be done. I often find myself wondering if I there is any problem only to later find out that I was doing something wrong myself.
 
-Nevertheless, never hesitate to ask for help, regardless of how much info you have about the problem or your technical expertise.
+Nevertheless, never hesitate to ask for help, even if you don't have much info about the problem or don't have any technical expertise.
+
 
 ### Minor issues
 
@@ -223,7 +225,7 @@ Also, other parts of the code, despite being carefully designed, might be redesi
 [PyPI]: https://pypi.org
 [numpy.save()]: https://numpy.org/doc/stable/reference/generated/numpy.save.html
 [youtube video]: https://www.youtube.com/watch?v=GlQJvuU7Z_8
-[pygame]: https://pygame.org
+[pygame-ce]: https://pyga.me
 [numpy]: https://numpy.org
 [Indie Python]: https://indiepython.com
 
