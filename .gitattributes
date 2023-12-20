@@ -1,16 +1,41 @@
-# Set the default behavior, in case people don't have core.autocrlf set.
+# The .gitattributes file is used to give attributes to pathnames
+#
+# For more info, check this page: https://git-scm.com/docs/gitattributes
+#
+# Certain operations by Git can be influenced by assigning particular
+# attributes to a path.
+#
+# Some rules followed in this repository:
+#
+# - only give attributes to pathnames that do exist in the repo; that is,
+#   don't add attributes to a pathname just cause you foresee that it will
+#   be needed;
+# - do not give attributes to pathnames of files that belong to your specific
+#   workflow like IDEs/code editors; files that are specific to your personal
+#   workflow or setup shouldn't even be committed, much less have attributes
+#   set here, consider using a global ignore file.
+
+
+
+# ensure text files that any contributor introduces to the repository have
+# their line endings normalized by setting the text attribute to "auto" for
+# all files
 * text=auto
 
-# Explicitly declare text files you want to always be normalized and converted
-# to native line endings on checkout.
-*.c text
-*.h text
-*.py text eol=lf
+# Python files used in this repository
+#
+# .pyl is a custom extension we use in this repository to represent a Python
+# file that only holds data, no code. It only holds Python literals (built-in
+# collections and primitives), hence the extension ".pyl". Their usage has
+# no security risks because the contents are evaluated with ast.literal_eval(),
+# which doesn't allow code to be executed.
+#
+# We use .pyl files just like JSON, with the benefits of being able to use
+# tuples and sets and also being able to use non-string keys in dictionaries.
+#
+# There's also no problem in formatting Python literals when saving them back
+# in a .pyl file because we can use pprint.pformat() just similarly to how
+# we'd use json.dump()/dumps().
 
-# Declare files that will always have CRLF line endings on checkout.
-*.sln text eol=crlf
-
-# Denote all files that are truly binary and should not be modified.
-*.png binary
-*.jpg binary
-*.pyc binary
+*.py text diff=python
+*.pyl text diff=python
