@@ -71,17 +71,22 @@ class LoadedFileState:
         for event in SERVICES_NS.get_events():
 
             ### QUIT
+
             if event.type == QUIT:
                 raise QuitAppException
 
             ### MOUSEWHEEL
+
             elif event.type == MOUSEWHEEL:
+
+                x, y = event.x*50, event.y*50
                 mod = SERVICES_NS.get_pressed_mod_keys()
-                if  mod & KMOD_SHIFT: #KMOD_CTRL:
-                    APP_REFS.ea.scroll(event.y*50, event.x*50)
-                else:
-                    APP_REFS.ea.scroll(event.x*50, event.y*50)
-            
+
+                if  mod & KMOD_SHIFT:
+                    x, y = y, x
+
+                APP_REFS.ea.scroll(x, y)
+
             ### MOUSEMOTION
 
             elif event.type == MOUSEMOTION:
