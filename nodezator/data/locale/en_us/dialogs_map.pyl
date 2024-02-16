@@ -63,4 +63,8 @@
     'message' : "A single path was expected, but more than one was provided. The operation was cancelled.",
     'level_name': 'warning',
   },
+  "error_while_loading_node_packs_dialog" : {
+    'message': "One or more errors occurred while trying to load node packs. Check the user log for more info (press Ctrl + Shift + j or access the menu \"Help > User log\").",
+    'level_name': 'error',
+  },
 }

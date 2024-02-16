@@ -1,14 +1,18 @@
 """Graph management exceptions."""
 
 ### standard library import
-from os import linesep
+from textwrap import wrap
+
 
 ### local import
 from ..appinfo import MAIN_CALLABLE_VAR_NAME
 
 
-### raised when loading/processing a native file
 
+TWO_LINES = '\n\n'
+
+
+### raised when loading/processing a native file
 
 class NodeScriptsError(Exception):
     """Raised whenever we can't load/process a node script.
@@ -38,48 +42,74 @@ class NodeScriptsError(Exception):
     ):
         """Initialize superclass with custom message."""
 
-        msg = ""
+        msg = TWO_LINES
 
         for message in installed_pack_not_imported:
-            msg += message + linesep
+
+            msg += (
+                "- "
+                + '\n'.join(wrap(message, width=90))
+                + TWO_LINES
+            )
 
         for script_filepath, error_message in scripts_not_loaded:
 
-            msg += ("error while trying to load '{}' node script" ": {}").format(
-                str(script_filepath),
-                error_message,
-            ) + linesep
+            msg += '\n'.join(
+
+                wrap(
+                    (
+                        f"error while trying to load '{script_filepath}'"
+                        f" node script: {error_message}"
+                    ),
+                    width=90,
+                )
+
+            ) + TWO_LINES
 
         for script_filepath in scripts_missing_node_definition:
 
-            msg += (
-                "the '{}' node script is missing a '{}'"
-                " variable with a valid node definition"
-                " object"
-            ).format(
-                str(script_filepath),
-                MAIN_CALLABLE_VAR_NAME,
-            ) + linesep
+            msg += '\n'.join(
+
+                wrap(
+                    (
+                        f"the '{script_filepath}' node script is missing a"
+                        f" '{MAIN_CALLABLE_VAR_NAME}' variable with a valid"
+                        " node definition object"
+                    ),
+                    width=90,
+                )
+
+            ) + TWO_LINES
 
         for callable_name, script_filepath in not_actually_callables:
 
-            msg += (
-                "the '{}' object provided in the '{}' node" " script must be callable"
-            ).format(
-                callable_name,
-                str(script_filepath),
-            ) + linesep
+            msg += '\n'.join(
+
+                wrap(
+                    (
+                        f"the '{callable_name}' object provided in the"
+                        f" '{script_filepath}' node script must be callable"
+                    ),
+                    width=90,
+                )
+
+            ) + TWO_LINES
 
         for callable_name, script_filepath in signature_callables_not_inspectable:
 
-            msg += (
-                "the '{}' signature callable from the '{}'"
-                " node script isn't inspectable"
-            ).format(
-                callable_name,
-                str(script_filepath),
-            ) + linesep
+            msg += '\n'.join(
 
+                wrap(
+                    (
+                        f"the '{callable_name}' signature callable from the"
+                        f" '{script_filepath}' node script isn't inspectable"
+                    ),
+                    width=90,
+                )
+
+            ) + TWO_LINES
+
+        ###
         super().__init__(msg)
 
 
@@ -102,7 +132,11 @@ class MissingNodeScriptsError(Exception):
 
         ### initialize superclass with custom message
 
-        msg = "node packs have the following missing scripts: " + str(missing_ids)
+        msg = (
+            "node packs have missing scripts (see below)."
+            + TWO_LINES
+            + '\n'.join(f"- {item}" for item in missing_ids)
+        )
 
         super().__init__(msg)
 

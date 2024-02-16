@@ -353,24 +353,21 @@ class WindowManager(
 
                     ## report problem to user
 
-                    create_and_show_dialog(
-                        (
-                            "Error while trying to prepare"
-                            " for new session (check user log"
-                            " on Help menu for more info)"
-                            f": {err}"
-                        ),
-                        level_name="error",
-                    )
-
-                    state_name = "no_file"
+                    show_dialog_from_key("error_while_loading_node_packs_dialog")
 
                     ## also log it
 
-                    msg = "Unexpected error while trying" " to prepare for new session"
+                    msg = (
+                        "Unexpected error(s) while trying to load node"
+                        " packs for new session"
+                    )
 
                     logger.exception(msg)
-                    USER_LOGGER.exception(msg)
+
+                    USER_LOGGER.error(f"{msg}\n\n{err}")
+
+                    ###
+                    state_name = "no_file"
 
                 ### otherwise, perform additional setups
                 ### and pick the 'loaded_file' state name

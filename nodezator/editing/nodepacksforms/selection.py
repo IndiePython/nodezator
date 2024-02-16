@@ -35,9 +35,13 @@ from ...pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
 
 from ...appinfo import NATIVE_FILE_EXTENSION
 
-from ...dialog import create_and_show_dialog
+from ...dialog import create_and_show_dialog, show_dialog_from_key
+
+from ...logman.main import get_new_logger
 
 from ...fileman.main import select_paths
+
+from ...our3rdlibs.userlogger import USER_LOGGER
 
 from ...ourstdlibs.collections.general import CallList
 
@@ -110,6 +114,12 @@ from ...knownpacks import get_known_node_packs
 from ...widget.optionmenu.main import OptionMenu
 
 from ...widget.stringentry import StringEntry
+
+
+
+### create logger for module
+logger = get_new_logger(__name__)
+
 
 
 ### constants
@@ -915,7 +925,16 @@ class NodePacksSelectionChangeForm(Object2D):
 
         except Exception as err:
 
-            create_and_show_dialog(f"Error message: {err}")
+            ## report problem to user
+            show_dialog_from_key("error_while_loading_node_packs_dialog")
+
+            ## also log it
+
+            msg = "Unexpected error(s) while trying to load node packs from form"
+
+            logger.exception(msg)
+
+            USER_LOGGER.error(f"{msg}\n\n{err}")
 
             return
 
