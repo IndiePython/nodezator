@@ -27,10 +27,7 @@ from ..userprefsman.main import USER_PREFS
 
 from ..logman.main import get_new_logger
 
-from ..dialog import (
-    create_and_show_dialog,
-    show_formatted_dialog,
-)
+from ..dialog import create_and_show_dialog
 
 from ..ourstdlibs.timeutils import friendly_delta_from_secs
 
@@ -90,7 +87,11 @@ class Execution:
         if not self.nodes:
 
             create_and_show_dialog(
-                "In order to execute the graph, it must have" " at least one node."
+                (
+                    "In order to execute the graph, it must have"
+                    " at least one node."
+                ),
+                level_name='info',
             )
 
             return
@@ -119,10 +120,13 @@ class Execution:
             if not nodes_to_visit:
 
                 create_and_show_dialog(
-                    "Can't execute graph because all nodes are"
-                    " commented out. We must have at least one"
-                    " node not commented out in order to execute"
-                    " the graph."
+                    (
+                        "Can't execute graph because all nodes are"
+                        " commented out. We must have at least one"
+                        " node not commented out in order to execute"
+                        " the graph."
+                    ),
+                    level_name='info',
                 )
 
                 return
@@ -145,8 +149,11 @@ class Execution:
             if not nodes_to_visit:
 
                 create_and_show_dialog(
-                    "Can't execute given nodes because they are all"
-                    " commented out."
+                    (
+                        "Can't execute given nodes because they are all"
+                        " commented out."
+                    ),
+                    level_name='info',
                 )
 
                 return
@@ -223,7 +230,7 @@ class Execution:
 
         except ProxyNodesLackingDataError as err:
 
-            create_and_show_dialog(str(err))
+            create_and_show_dialog(str(err), level_name='error')
             return
 
         ### reference callables from the corresponding set of nodes
@@ -392,25 +399,19 @@ class Execution:
                     ),
                 ):
 
-                    create_and_show_dialog(
-                        str(err),
-                        level_name="error",
-                    )
+                    create_and_show_dialog(str(err), level_name="error")
 
-                ## any other kind of error is unexpected,
-                ## so we take further measures
+                ## any other kind of error is either within the node being
+                ## executed or completely unexpected, so we take further
+                ## measures
 
                 else:
 
-                    ## log traceback in the user log
 
-                    USER_LOGGER.exception(
-                        "An error occurred" " during graph execution."
-                    )
-
-                    ## if the error was caused during call
-                    ## or execution of a node's callable,
-                    ## display a custom error message
+                    ## build a custom log message to be logged
+                    ## depending on whether the error was caused
+                    ## during call/execution of a node's callable
+                    ## or not
 
                     if isinstance(err, NodeCallableError):
 
@@ -421,30 +422,38 @@ class Execution:
                         # grab the original error
                         original_error = err.__cause__
 
-                        show_formatted_dialog(
-                            "node_callable_error_dialog",
-                            error_node.title_text,
-                            error_node.id,
-                            original_error.__class__.__name__,
-                            str(original_error),
+                        log_message = (
+                            f"'{error_node.title_text}'() callable from node"
+                            f" #{error_node.id} raised an error."
                         )
+
 
                     ## otherwise we just notify the user
                     ## with a custom error message
 
                     else:
 
-                        error_msg = (
-                            "node layout execution failed"
-                            " with an unexpected error. The"
-                            " following message was issued"
-                            " >> {}: {}"
-                        ).format(err.__class__.__name__, str(err))
-
-                        create_and_show_dialog(
-                            error_msg,
-                            level_name="error",
+                        log_message = (
+                            "An unexpected error occurred during graph"
+                            " execution."
                         )
+
+
+                    ## log traceback
+
+                    logger.exception(log_message)
+                    USER_LOGGER.exception(log_message)
+
+                    ## notify user via dialog
+
+                    dialog_message = log_message + (
+                        " Check the user log for more info (on"
+                        " graph/canvas, press <Ctrl+Shift+j> or access"
+                        " the \"Help > Show user log\" option on menubar)."
+                    )
+
+                    create_and_show_dialog(dialog_message, level_name='error')
+
 
                 ## break out of the "while loop"
                 break

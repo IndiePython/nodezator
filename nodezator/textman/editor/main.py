@@ -23,7 +23,11 @@ from ...pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
 
 from ...dialog import create_and_show_dialog
 
+from ...logman.main import get_new_logger
+
 from ...ourstdlibs.collections.general import CallList
+
+from ...our3rdlibs.userlogger import USER_LOGGER
 
 from ...surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
@@ -62,6 +66,12 @@ from .constants import (
     TEXT_EDITOR_RECT,
     EDITING_AREA_RECT,
 )
+
+
+
+### create logger for module
+logger = get_new_logger(__name__)
+
 
 
 ### XXX
@@ -594,19 +604,23 @@ class TextEditor(Object2D):
         try:
             text_validates = self.validation_command(text)
 
-        ### if text doesn't validate, user is notified
+        ### if an expected error occurs during validation, it is logged
+        ### and user is notified
 
         except Exception as err:
 
-            create_and_show_dialog(
-                (
-                    "Can't confirm edition cause text"
-                    " doesn't validate. Here's the error"
-                    f" message >> {err.__class__.__name__}:"
-                    f" {err}"
-                ),
-                level_name="error",
+            log_message = "An unexpected error ocurred during text validation."
+
+            logger.exception(log_message)
+            USER_LOGGER.exception(log_message)
+
+            dialog_message = log_message + (
+                " Check user log for more info (on the graph/canvas, press"
+                " <Ctrl+Shift+j> or access the \"Help > Show user log\""
+                " option on the menubar)."
             )
+
+            create_and_show_dialog(dialog_message, level_name='error')
 
         ### otherwise...
 
@@ -626,8 +640,12 @@ class TextEditor(Object2D):
             else:
 
                 create_and_show_dialog(
-                    "Text doesn't validate.",
-                    level_name="info",
+                    (
+                        "Text doesn't validate. Please, check whether text"
+                        " being typed must meet specific requirements and"
+                        " ensure they are met."
+                    ),
+                    level_name='info',
                 )
 
 

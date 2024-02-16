@@ -33,6 +33,8 @@ from ..translation import TRANSLATION_HOLDER as t
 
 from ..dialog import create_and_show_dialog
 
+from ..logman.main import get_new_logger
+
 from ..ourstdlibs.pyl import load_pyl, save_pyl
 
 from ..ourstdlibs.collections.general import CallList
@@ -45,6 +47,8 @@ from ..ourstdlibs.behaviour import (
 from ..our3rdlibs.button import Button
 
 from ..our3rdlibs.behaviour import set_status_message
+
+from ..our3rdlibs.userlogger import USER_LOGGER
 
 
 from ..classes2d.single import Object2D
@@ -80,6 +84,11 @@ from ..colorsman.colors import (
 from ..colorsman.color2d import Color2D
 
 from ..colorsman.picker.main import pick_colors
+
+
+
+### create logger for module
+logger = get_new_logger(__name__)
 
 
 ### constants
@@ -269,10 +278,13 @@ class CategoryColorsPicking(Object2D, LoopHolder):
         except KeyError:
 
             create_and_show_dialog(
-                "Can't pick colors for node categories,"
-                " cause the file hasn't any node packs"
-                " associated with it, thus no node"
-                " categories either."
+                (
+                    "Can't pick colors for node categories,"
+                    " cause the file hasn't any node packs"
+                    " associated with it, thus no node"
+                    " categories either."
+                ),
+                level_name='info',
             )
 
             return
@@ -282,10 +294,13 @@ class CategoryColorsPicking(Object2D, LoopHolder):
             if not node_packs:
 
                 create_and_show_dialog(
-                    "Can't pick colors for node categories,"
-                    " cause the file hasn't any node packs"
-                    " associated with it, thus no node"
-                    " categories either."
+                    (
+                        "Can't pick colors for node categories,"
+                        " cause the file hasn't any node packs"
+                        " associated with it, thus no node"
+                        " categories either."
+                    ),
+                    level_name='info',
                 )
 
                 return
@@ -448,12 +463,20 @@ class CategoryColorsPicking(Object2D, LoopHolder):
                 try:
                     metadata = load_pyl(category_metadata_path)
 
-                except Exception:
+                except Exception as err:
 
-                    create_and_show_dialog(
-                        ("Error while loading category" " metadata."),
-                        level_name="error",
+                    error_msg = "Error while loading category metadata."
+
+                    logger.exception(error_msg)
+                    USER_LOGGER.exception(error_msg)
+
+                    dialog_msg = error_msg + (
+                        " Check the user log for more info (press"
+                        " <Ctrl+Shift+j> after leaving this form or access"
+                        " the \"Help > Show user log\" option on menubar)."
                     )
+
+                    create_and_show_dialog(dialog_msg, level_name="error")
 
                     return
 
@@ -467,23 +490,33 @@ class CategoryColorsPicking(Object2D, LoopHolder):
             try:
                 save_pyl(metadata, category_metadata_path)
 
-            except Exception:
+            except Exception as err:
+                
+                error_msg = "Error while saving category metadata."
 
-                create_and_show_dialog(
-                    ("Error while loading category" " metadata."),
-                    level_name="error",
+                logger.exception(error_msg)
+                USER_LOGGER.exception(error_msg)
+
+                dialog_msg = error_msg + (
+                    " Check the user log for more info (press <Ctrl+Shift+j>"
+                    " after leaving this form or access the \"Help > Show user"
+                    " log\" option on menubar)."
                 )
+
+                create_and_show_dialog(dialog_msg, level_name="error")
 
                 return
 
         ### notify user via dialog and status message
 
         message = (
-            "Category colors changed. Restart the application" " to see the changes."
+            "Category colors changed. Restart the application to see the"
+            " changes."
         )
 
         set_status_message(message)
-        create_and_show_dialog(message)
+
+        create_and_show_dialog(message, level_name='info')
 
     def draw(self):
         """Draw itself and widgets.
@@ -547,7 +580,7 @@ def set_color(color_widget):
 
         create_and_show_dialog(
             "You must pick a single color",
-            level_name="info",
+            level_name='info',
         )
 
         return

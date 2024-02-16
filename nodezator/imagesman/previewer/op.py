@@ -158,7 +158,11 @@ class PreviewerOperations(Object2D):
             )
 
         except FileNotFoundError:
-            create_and_show_dialog("Couldn't find the image")
+
+            create_and_show_dialog(
+                "Couldn't find the image",
+                level_name='info',
+            )
 
         else:
             view_surface(full_image_surface)

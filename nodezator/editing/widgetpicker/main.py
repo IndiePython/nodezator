@@ -29,7 +29,11 @@ from ...translation import TRANSLATION_HOLDER as t
 
 from ...pygamesetup import SERVICES_NS, SCREEN_RECT
 
+from ...logman.main import get_new_logger
+
 from ...our3rdlibs.button import Button
+
+from ...our3rdlibs.userlogger import USER_LOGGER
 
 from ...classes2d.single import Object2D
 
@@ -61,6 +65,11 @@ from ...dialog import create_and_show_dialog
 
 ## class extension
 from .subforms import SubformCreation
+
+
+
+### create logger for module
+logger = get_new_logger(__name__)
 
 
 ### constants
@@ -512,19 +521,24 @@ class WidgetPicker(Object2D, SubformCreation):
         try:
             widget = widget_cls(**kwargs)
 
-        ### if the instantiation fails, inform the user of
-        ### such error using a dialogue
+        ### if the instantiation fails, log the error and inform
+        ### the user via dialog
 
         except Exception as err:
 
-            msg = (
-                "It seems the values provided for the widget"
-                " aren't valid. If you wish to proceed,"
-                " please, fix the values. A '{}' exception"
-                " with the following message was issued: {}"
-            ).format(type(err).__name__, str(err))
+            msg = "It seems the values provided for the widget aren't valid."
 
-            create_and_show_dialog(msg)
+            logger.exception(msg)
+            USER_LOGGER.exception(msg)
+
+            dialog_msg = msg + (
+                " If you wish to proceed, please, fix the values."
+                " The details of the error can be seen on the user log"
+                " (on the graph/canvas, press <Ctrl+Shift+j> or access"
+                " the \"Help > Show user log\" option on the menubar)."
+            )
+
+            create_and_show_dialog(dialog_msg, level_name='error')
 
         ### otherwise return True
         else:

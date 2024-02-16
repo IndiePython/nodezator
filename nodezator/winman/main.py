@@ -241,14 +241,14 @@ class WindowManager(
                         f" {err}; what would you like to do?"
                     )
 
-                    options = (
+                    buttons = (
                         ("Select replacement/new path", "select"),
-                        ("Cancel loading file", "cancel"),
+                        ("Cancel loading file", None),
                     )
 
                     answer = create_and_show_dialog(
                         message,
-                        options,
+                        buttons,
                         level_name="warning",
                     )
 
@@ -328,7 +328,7 @@ class WindowManager(
                     f" {err}; aborting loading file now"
                 )
 
-                create_and_show_dialog(message)
+                create_and_show_dialog(message, level_name='error')
 
                 installed_node_packs_are_ok = False
 

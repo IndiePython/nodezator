@@ -521,24 +521,31 @@ class OutputVisualization:
 
                 log_message = (
                     "An error occurred when trying to visualize"
-                    " the loop data in the custom visualization loop."
-                    f" of {self.title_text} node of id {self.id}"
+                    " the loop data in the custom visualization loop"
+                    f" of {self.title_text} node of id {self.id}."
                 )
 
                 logger.exception(log_message)
                 USER_LOGGER.exception(log_message)
 
-                ## notify user
+                ## notify user via dialog
 
-                create_and_show_dialog(
-                    f"{log_message}: ({type(err).__name__}) {str(err)}"
+                dialog_messsage = log_message + (
+                    " Check user log for details (on the graph/canvas, press"
+                    " <Shift+Ctrl+j> or access the \"Help > User log\" option"
+                    " on menubar)."
                 )
+
+                create_and_show_dialog(dialog_message, level_name='error')
 
         else:
 
             create_and_show_dialog(
-                "Node needs to be executed at least once"
-                " to be able to display data in custom loop."
+                (
+                    "Node needs to be executed at least once"
+                    " to be able to display data in custom loop."
+                ),
+                level_name='info',
             )
 
     def enter_loop(self):
@@ -627,25 +634,30 @@ class OutputVisualization:
                 ## log traceback
 
                 log_message = (
-                    "An error occurred when trying to visualize"
-                    " loop data. Check user log for details (Shift+Ctrl+J)"
-                    " once you leave this dialog."
+                    "An error occurred when trying to visualize loop data."
                 )
 
                 logger.exception(log_message)
                 USER_LOGGER.exception(log_message)
 
-                ## notify user
+                ## notify user via dialog
 
-                create_and_show_dialog(
-                    f"{log_message}: {type(err)} {str(err)}"
+                dialog_messsage = log_message + (
+                    " Check user log for details (on the graph/canvas, press"
+                    " <Shift+Ctrl+j> or access the \"Help > User log\" option"
+                    " on menubar)."
                 )
+
+                create_and_show_dialog(dialog_message, level_name='error')
 
         else:
 
             create_and_show_dialog(
-                "Node needs to be executed at least once"
-                " to be able to display visual in loop."
+                (
+                    "Node needs to be executed at least once"
+                    " to be able to display visual in loop."
+                ),
+                level_name='info',
             )
 
 

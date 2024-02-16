@@ -870,8 +870,11 @@ class NodePacksSelectionChangeForm(Object2D):
         if current_packs == final_selection:
 
             create_and_show_dialog(
-                "There is no change to apply, the node packs selected"
-                " already correspond to the current node pack selection."
+                (
+                    "There is no change to apply, the node packs selected"
+                    " already correspond to the current node pack selection."
+                ),
+                level_name='info',
             )
 
             return

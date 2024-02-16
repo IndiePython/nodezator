@@ -80,8 +80,8 @@ GENERAL_TEXT_SETTINGS = {
 DOT_PATH = Path('.')
 
 CUSTOM_ERROR_MESSAGE_MAP = {
-    IsADirectoryError: "path must be a text-based file, not a directory.",
-    FileNotFoundError: "can't read path, it wasn't found.",
+    IsADirectoryError: "Path must be a text-based file, not a directory.",
+    FileNotFoundError: "Can't read path, it wasn't found.",
 }
 
 COMMON_READ_ERRORS = (
@@ -163,6 +163,7 @@ class TextPreview(_BasePreview):
                 ),
                 level_name="error",
             )
+
             return
 
         ### otherwise, try reading the text from it
@@ -178,18 +179,30 @@ class TextPreview(_BasePreview):
             ## grab/build text message
 
             error_message = (
-                "An error ocurred while trying to read path's text: "
+                "An error ocurred while trying to read path's text."
             )
 
-            try:
-                error_message += CUSTOM_ERROR_MESSAGE_MAP[err.__class__]
+            if err.__class__ in CUSTOM_ERROR_MESSAGE_MAP:
 
-            except KeyError:
-                error_message += f"{err.__class__.__name__}: {err}"
+                dialog_message = (
+                    error_message
+                    + ' '
+                    + CUSTOM_ERROR_MESSAGE_MAP[err.__class__]
+                )
 
-            ## display it and return
+            else:
 
-            create_and_show_dialog(error_message, level_name="error")
+                logger.exception(error_message)
+                USER_LOGGER.exception(error_message)
+
+                dialog_message = error_message + (
+                    " Check the user log for details (press <Ctrl+Shift+j>"
+                    " after leaving this dialog or access the"
+                    " \"Help > Show user log\" option on the menubar)."
+                )
+
+            create_and_show_dialog(dialog_message, level_name="error")
+
             return
 
         ### otherwise, display the text from the file
@@ -248,9 +261,8 @@ class TextPreview(_BasePreview):
             ## log and and user log
 
             msg = (
-                "An unexpected error ocurred"
-                " while trying to load the text from"
-                " the path."
+                "An unexpected error ocurred while trying to load the text"
+                " from the path."
             )
 
             logger.exception(msg)
@@ -258,17 +270,13 @@ class TextPreview(_BasePreview):
 
             ## notify user via dialog
 
-            create_and_show_dialog(
-                (
-                    "An error ocurred while"
-                    " trying to load the text"
-                    " from the path. Check the user"
-                    " log for details"
-                    " (click <Ctrl+Shift+J> after"
-                    " leaving this dialog)."
-                ),
-                level_name="error",
+            dialog_message = msg + (
+                " Check the user log for details (press <Ctrl+Shift+j> after"
+                " leaving this dialog or access the \"Help > User log\" option"
+                " on the menubar)."
             )
+
+            create_and_show_dialog(dialog_message, level_name='error')
 
             try:
                 subsurf = self.path_repr_subsurf

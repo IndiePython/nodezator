@@ -120,21 +120,22 @@ class FontsViewer(Object2D, LoopHolder):
 
         except Exception as err:
 
-            msg = str(err)
-
-            logger.exception(msg)
-            USER_LOGGER.exception(msg)
-
-            create_and_show_dialog(
-                (
-                    "An error ocurred while trying to"
-                    " generate visualization for one of"
-                    " the fonts. Check the user log for"
-                    " details (click <Ctrl+Shift+J> after"
-                    " leaving this dialog)."
-                ),
-                level_name="error",
+            log_message = (
+                "An error ocurred while trying to"
+                " generate visualization for one of"
+                " the fonts."
             )
+
+            logger.exception(log_message)
+            USER_LOGGER.exception(log_message)
+
+            dialog_message = log_message + (
+                " Check the user log for details (on the graph/canvas"
+                " press <Ctrl+Shift+j> or access the \"Help > Show user log\""
+                " option on the menubar)."
+            )
+
+            create_and_show_dialog(dialog_message, level_name='error')
 
             return
 

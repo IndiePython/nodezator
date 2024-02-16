@@ -205,9 +205,12 @@ class TextPreparation:
                 ## notify user via dialog
 
                 create_and_show_dialog(
-                    "Error while applying syntax"
-                    " highlighting. Text will be"
-                    " displayed without it."
+                    (
+                        "Error while applying syntax"
+                        " highlighting. Text will be"
+                        " displayed without it."
+                    ),
+                    level_name='error',
                 )
 
                 ## also turn off the syntax highlighting by

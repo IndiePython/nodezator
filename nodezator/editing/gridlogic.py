@@ -205,8 +205,11 @@ class GridHandling:
         except RuntimeError:
 
             create_and_show_dialog(
-                "there must be at least one object in the"
-                " file in order to jump to corner"
+                (
+                    "there must be at least one object in the"
+                    " file in order to jump to corner"
+                ),
+                level_name='info',
             )
 
             return

@@ -72,7 +72,7 @@ class FileOperations:
 
         if not are_changes_saved():
 
-            ### whether loaded file is temporary
+            ### if current file is a temporary (anonymous) file...
 
             if (
                 APP_REFS.temp_filepaths_man.is_temp_path(
@@ -96,7 +96,6 @@ class FileOperations:
 
                         ),
                         level_name="warning",
-                        dismissable=True,
                     )
                 )
 
@@ -110,6 +109,8 @@ class FileOperations:
 
                 else:
                     return
+
+            ### if current file is a regular file
 
             else:
 
@@ -328,7 +329,7 @@ class FileOperations:
 
             except Exception as err:
 
-                message = "An error occurred while trying to" " open a file."
+                message = "An error occurred while trying to open a file."
 
                 logger.exception(message)
 
@@ -336,9 +337,11 @@ class FileOperations:
 
                 create_and_show_dialog(
                     (
-                        "An error ocurred while trying to"
-                        f" open {filepath}. Check the user"
-                        " log (<Ctrl+Shift+j>) for details."
+                        "An error ocurred while trying to open"
+                        f" {filepath}. Check the user log for details"
+                        " (press Ctrl+Shift+j after leaving this dialog or"
+                        " access the \"Help > Show user log\" option"
+                        " on the menubar)."
                     ),
                     level_name="error",
                 )
@@ -613,9 +616,11 @@ class FileOperations:
 
             ## display the dialog and store the answer
             ## provided by the user when clicking
-            answer = create_and_show_dialog(message, buttons)
+            answer = (
+                create_and_show_dialog(message, buttons, level_name='info')
+            )
 
-            ## if the answer is False, then cancel operation
+            ## if the answer is falsy, then cancel operation
             if not answer:
                 return
 
@@ -641,13 +646,18 @@ class FileOperations:
             ## the value the dialog returns when we
             ## click it
 
-            buttons = [("Ok", True), ("Cancel", False)]
+            buttons = [
+                ("Yes, override", True),
+                ("No, cancel saving new file", False),
+            ]
 
             ## display the dialog and store the answer
             ## provided by the user when clicking
-            answer = create_and_show_dialog(message, buttons)
+            answer = (
+                create_and_show_dialog(message, buttons, level_name='info')
+            )
 
-            ### if the answer is False, then we shouldn't
+            ### if the answer is falsy, then we shouldn't
             ### override, so we cancel the operation by
             ### returning
             if not answer:
@@ -675,14 +685,26 @@ class FileOperations:
             ## restore source
             APP_REFS.source_path = original_source
 
-            ## build and display error message
+            ## notify user
 
-            error_message = (
-                "Something went wrong while trying to save"
-                f" the new file. The error message: {err}"
+            message = (
+                "An error ocurred while trying to save the data"
+                " (with the \"Save as...\" operation."
             )
 
-            create_and_show_dialog(error_message)
+            logger.exception(message)
+
+            USER_LOGGER.exception(message)
+
+            ## build and display error message
+
+            dialog_message = message + (
+                " Check the user log for details (press Ctrl+Shift+j"
+                " after leaving this dialog or access the \"Help >"
+                " Show user log\" option on menubar)."
+            )
+
+            create_and_show_dialog(dialog_message, level_name='error')
 
             ## cancel by returning
             return
@@ -758,7 +780,7 @@ class FileOperations:
                 ### (opened again)
                 indicate_saved()
 
-            elif answer == "abort":
+            else:
                 return
 
         ### remove swap file

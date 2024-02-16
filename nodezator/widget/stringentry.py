@@ -369,9 +369,12 @@ class StringEntry(Object2D):
 
             if not value:
 
+                received_value = self.value
+
                 raise ValueError(
-                    "the 'validation_command' received"
-                    " doesn't validate the 'value' received."
+                    f"'validation_command' ( = {command})"
+                    " doesn't validate the 'value' received"
+                    f" ( = {self.value})."
                 )
 
         ### finally, let's store the validation command
@@ -747,6 +750,10 @@ class StringEntry(Object2D):
         ### since we'll not edit text on the entry anymore,
         ### stop text editing events
         stop_text_input()
+
+        ### XXX the edition that takes place on the text editor
+        ### should probably be validated by the same validation
+        ### command set on this string entry; check and fix as needed
 
         ### edit it on text editor
         text = edit_text(entry_text)

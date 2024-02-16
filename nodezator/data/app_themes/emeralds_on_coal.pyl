@@ -18,7 +18,7 @@
 
     "BUTTON_FG"         : (238, 238, 238),
     "BUTTON_BG"         : ( 47,  47,  60),
-    "HOVERED_BUTTON_BG" : ( 66,  66,  84),
+    "HOVERED_BUTTON_BG" : ( 20, 110,  60),
 
     "THUMB_BG"           : (  77,  77,  90),
     "IMAGE_NOT_FOUND_FG" : ( 255,  70,  70),

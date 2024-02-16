@@ -1,25 +1,45 @@
-"""Facility for about dialog."""
+"""Facility for message dialogs."""
 
-### standard library import
+### standard library imports
+
 from textwrap import wrap
+
+from collections import deque
 
 
 ### third-party imports
 
 from pygame.locals import (
+
     QUIT,
+
     KEYUP,
     K_ESCAPE,
+    K_RETURN,
+
+    KEYDOWN,
+    K_TAB,
+    K_UP, K_DOWN, K_LEFT, K_RIGHT,
+    KMOD_SHIFT,
+
     MOUSEBUTTONUP,
     MOUSEMOTION,
+
 )
+
+from pygame.draw import rect as draw_rect
 
 
 ### local imports
 
 from .translation import DIALOGS_MAP
 
-from .pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
+from .pygamesetup import (
+    SERVICES_NS,
+    SCREEN,
+    SCREEN_RECT,
+    blit_on_screen,
+)
 
 from .classes2d.single import Object2D
 from .classes2d.collections import List2D
@@ -214,23 +234,25 @@ class DialogManager(Object2D, LoopHolder):
     ### also be renamed;
 
     def create_and_show_dialog(
+
         self,
+
         message,
         buttons=None,
         level_name="info",
         unhighlighter_obj=None,
-        ## button layout
-        button_pos_from="topright",
-        button_pos_to="topleft",
-        button_offset_by=(10, 0),
+
         ## dialog clamping and anchoring
+
         clamping_rect=None,
         anchor_rect=None,
         dialog_pos_from="center",
         dialog_pos_to="center",
         dialog_offset_by=(0, 0),
+
         ## flag
-        dismissable=False,
+        dismissable=True,
+
     ):
         """Create a dialog with/out buttons.
 
@@ -274,12 +296,7 @@ class DialogManager(Object2D, LoopHolder):
 
         self.create_message(message)
 
-        self.create_buttons(
-            buttons,
-            button_pos_from,
-            button_pos_to,
-            button_offset_by,
-        )
+        self.create_buttons(buttons)
 
         self.create_and_position_dialog(
             level_name,
@@ -303,6 +320,12 @@ class DialogManager(Object2D, LoopHolder):
 
         ### store a default value
         self.value = None
+
+        ### store button references to rotate with keyboard
+        self.buttons_deque = deque(self.buttons)
+
+        ### store rect used to outline currently selected button
+        self.rotate_selection(0, redraw=False)
 
         ### blit a semitransparent surface in the canvas
         ### to increase constrast between the dialog
@@ -379,9 +402,6 @@ class DialogManager(Object2D, LoopHolder):
     def create_buttons(
         self,
         buttons,
-        button_pos_from,
-        button_pos_to,
-        button_offset_by,
     ):
         """Create buttons for the dialog.
 
@@ -398,13 +418,13 @@ class DialogManager(Object2D, LoopHolder):
         self.buttons = List2D()
 
         ### if buttons parameter is None, create a single
-        ### "ok" button
+        ### "Dismiss" button
 
         if buttons is None:
 
             self.buttons.append(
                 CachedTextObject(
-                    text="Ok",
+                    text="Dismiss",
                     text_settings=(NORMAL_BUTTON_SETTINGS),
                     value=None,
                 )
@@ -425,15 +445,26 @@ class DialogManager(Object2D, LoopHolder):
 
         ### position buttons relative to each other
 
-        ## XXX in the future maybe constrain width of
-        ## buttons to that of message by snapping them
-        ## intermittenlty (using the corresponding
-        ## rectsman.main.RectsManager method)
+        self.buttons.rect.snap_rects_intermittently_ip(
 
-        self.buttons.rect.snap_rects_ip(
-            retrieve_pos_from=button_pos_from,
-            assign_pos_to=button_pos_to,
-            offset_pos_by=button_offset_by,
+            ### interval limit
+
+            dimension_name='width',
+            dimension_unit='pixels',
+            max_dimension_value = 800,
+
+            ### rect positioning
+
+            retrieve_pos_from="topright",
+            assign_pos_to="topleft",
+            offset_pos_by=(10, 0),
+
+            ### intermittent rect positioning
+
+            intermittent_pos_from="bottomleft",
+            intermittent_pos_to="topleft",
+            intermittent_offset_by=(0, 10),
+
         )
 
     def create_and_position_dialog(
@@ -505,13 +536,38 @@ class DialogManager(Object2D, LoopHolder):
 
     def handle_input(self):
         """Retrieve and handle events."""
+
         for event in SERVICES_NS.get_events():
 
             if event.type == QUIT:
                 self.quit()
 
-            elif self.dismissable and event.type == KEYUP and event.key == K_ESCAPE:
-                self.exit_dialog()
+            elif event.type == KEYUP:
+
+                if event.key == K_ESCAPE and self.dismissable:
+                    self.exit_dialog()
+
+                elif event.key == K_RETURN:
+
+                    selected_button = self.buttons_deque[0]
+                    self.value = selected_button.value
+                    self.exit_loop()
+
+                    return
+
+            elif event.type == KEYDOWN:
+
+                if event.key == K_TAB:
+
+                    self.rotate_selection(
+                        1 if event.mod & KMOD_SHIFT else -1
+                    )
+
+                elif event.key in (K_UP, K_LEFT):
+                    self.rotate_selection(1)
+
+                elif event.key in (K_DOWN, K_RIGHT):
+                    self.rotate_selection(-1)
 
             elif event.type == MOUSEMOTION:
                 self.on_mouse_motion(event)
@@ -520,6 +576,16 @@ class DialogManager(Object2D, LoopHolder):
 
                 if event.button == 1:
                     self.on_mouse_release(event)
+
+    def rotate_selection(self, amount, redraw=True):
+
+        dq = self.buttons_deque
+
+        dq.rotate(amount)
+        self.selected_rect = dq[0].rect.inflate(4, 4)
+
+        if redraw:
+            self.draw_once()
 
     def on_mouse_motion(self, event):
         """If button collides, highlight it.
@@ -618,6 +684,15 @@ class DialogManager(Object2D, LoopHolder):
 
         ### draw the buttons
         self.buttons.draw()
+
+        ### draw outline of first button on deque
+
+        draw_rect(
+            SCREEN,
+            'yellow',
+            self.selected_rect,
+            2,
+        )
 
     def draw(self):
         """Update screen continuously."""

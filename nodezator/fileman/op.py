@@ -440,7 +440,6 @@ class FileManagerOperations(Object2D):
                     "You must either type name(s) for new path(s) in"
                     " the entry at the bottom or select existing ones"
                 ),
-                dismissable=True,
             )
 
     def cancel(self):

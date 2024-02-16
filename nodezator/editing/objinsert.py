@@ -39,6 +39,7 @@ from ..graphman.textblock.main import TextBlock
 from .widgetpicker.main import pick_widget
 
 
+
 ### create logger for module
 logger = get_new_logger(__name__)
 
@@ -222,9 +223,8 @@ class ObjectInsertionRemoval:
                         ## log and and user log
 
                         msg = (
-                            "An unexpected error ocurred"
-                            " while trying to instantiate"
-                            " the node."
+                            "An unexpected error ocurred while trying to"
+                            " instantiate the node."
                         )
 
                         logger.exception(msg)
@@ -232,17 +232,14 @@ class ObjectInsertionRemoval:
 
                         ## notify user via dialog
 
-                        create_and_show_dialog(
-                            (
-                                "An error ocurred while"
-                                " trying to instantiate"
-                                " the node. Check the user"
-                                " log for details"
-                                " (click <Ctrl+Shift+J> after"
-                                " leaving this dialog)."
-                            ),
-                            level_name="error",
+                        dialog_msg = msg + (
+                            " Check the user log for details. (press"
+                            " <Ctrl+Shift+j> after leaving this dialog"
+                            " or access the \"Help > Show user log\" option"
+                            " on menubar)."
                         )
+
+                        create_and_show_dialog(dialog_msg, level_name='error')
 
                         ## leave the method
                         return

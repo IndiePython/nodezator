@@ -19,7 +19,11 @@ from ...pygamesetup import SCREEN
 
 from ...dialog import create_and_show_dialog
 
+from ...logman.main import get_new_logger
+
 from ...ourstdlibs.behaviour import get_oblivious_callable
+
+from ...our3rdlibs.userlogger import USER_LOGGER
 
 from ...surfsman.draw import (
     blit_aligned,
@@ -68,6 +72,12 @@ from .mouseop import MouseOperations
 from .extraop import ExtraOperations
 
 
+
+### create logger for module
+logger = get_new_logger(__name__)
+
+
+### class definition
 
 class DirectoryPanel(
     LoadingOperations,
@@ -397,7 +407,7 @@ class DirectoryPanel(
             ).format(err.__class__.__name__, str(err))
 
             ## present the dialog
-            create_and_show_dialog(error_msg)
+            create_and_show_dialog(error_msg, level_name='error')
 
             ## set the previous directory back as the
             ## current one
@@ -448,16 +458,13 @@ class DirectoryPanel(
         self.update_path_objs_appearance()
 
     def present_new_path_form(self, is_file):
-        """Present form to get a new path and pick action.
-
-        The action picked will determine what will be
-        done with the path we get.
+        """Present form to create a new file or folder.
 
         Parameters
         ==========
         is_file (boolean)
-            whether path being create must be treated as
-            file or directory.
+            whether path being created must be a file or
+            a folder.
         """
         ### present form to user by using get_path,
         ### passing the current directory and whether the
@@ -494,12 +501,24 @@ class DirectoryPanel(
             # put an error message together explaining
             # the error
 
-            error_msg = (
-                "The following error prevented the {}" " from being created: {}: {}"
-            ).format(path_kind, err.__class__.__name__, str(err))
+            error_message = (
+                f"An error prevented the {path_kind} from being created."
+            )
+
+            # log the error
+
+            logger.exception(error_message)
+            USER_LOGGER.exception(error_message)
 
             # present the dialog
-            create_and_show_dialog(error_msg)
+
+            dialog_message = error_message + (
+                " Check the user log for details (press <Ctrl+Shift+j> after"
+                " leaving the file browser or access the \"Help > Show user"
+                " log\" option on the menubar)."
+            )
+
+            create_and_show_dialog(dialog_message, level_name='error')
 
         ## if the path is created, though, just reload
         ## the current directory, then jump to the path,

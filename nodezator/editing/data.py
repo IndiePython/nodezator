@@ -57,9 +57,7 @@ from ..graphman.callablenode.main import CallableNode
 from ..graphman.proxynode.main import ProxyNode
 from ..graphman.textblock.main import TextBlock
 
-from ..graphman.textblock.check import (
-    check_text_block_text,
-)
+from ..graphman.textblock.check import check_text_block_text
 
 
 ### create logger for module
@@ -158,7 +156,11 @@ class DataHandling:
         if not self.active_obj:
 
             create_and_show_dialog(
-                "A node must be selected for the source" " info to be displayed."
+                (
+                    "A node must be selected for the source"
+                    " info to be displayed."
+                ),
+                level_name='info',
             )
 
             return
@@ -173,9 +175,12 @@ class DataHandling:
         ):
 
             create_and_show_dialog(
-                "The source/info viewing feature does not"
-                " apply to text blocks, data nodes or"
-                " redirect nodes"
+                (
+                    "The source/info viewing feature does not"
+                    " apply to text blocks, data nodes or"
+                    " redirect nodes"
+                ),
+                level_name='info',
             )
 
             return
@@ -257,8 +262,11 @@ class DataHandling:
         else:
 
             create_and_show_dialog(
-                "The active selection must be a text block"
-                " or data node for its text to be edited."
+                (
+                    "The active selection must be a text block"
+                    " or data node for its text to be edited."
+                ),
+                level_name='info',
             )
 
     def edit_text_block_text(self, text_block):
@@ -349,8 +357,11 @@ class DataHandling:
         if not selected_nodes:
 
             create_and_show_dialog(
-                "In order to comment/uncomment selected"
-                " nodes at least one must be selected"
+                (
+                    "In order to comment/uncomment selected"
+                    " nodes at least one must be selected"
+                ),
+                level_name='info',
             )
 
         ### otherwise, delegate the

@@ -426,6 +426,7 @@ class BookmarkPanel:
 
                 create_and_show_dialog(
                     "Current directory is already bookmarked.",
+                    level_name='info',
                     unhighlighter_obj=self.semitransp_obj,
                 )
 
@@ -454,6 +455,7 @@ class BookmarkPanel:
                         " there's no point in removing it from"
                         " bookmarks."
                     ),
+                    level_name='info',
                     unhighlighter_obj=self.semitransp_obj,
                 )
 

@@ -451,7 +451,8 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
         )
 
         set_status_message(message)
-        create_and_show_dialog(message)
+
+        create_and_show_dialog(message, level_name='info')
 
     def draw(self):
         """Draw itself and widgets.

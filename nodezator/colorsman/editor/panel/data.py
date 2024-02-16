@@ -12,7 +12,16 @@ from ....ourstdlibs.color.custom import custom_format_color
 
 from ....dialog import create_and_show_dialog
 
+from ....logman.main import get_new_logger
+
 from ....fileman.main import select_paths
+
+from ....our3rdlibs.userlogger import USER_LOGGER
+
+
+
+### create logger for module
+logger = get_new_logger(__name__)
 
 
 class ImportExportOperations:
@@ -48,10 +57,18 @@ class ImportExportOperations:
 
         except Exception as err:
 
-            create_and_show_dialog(
-                f"Error while loading colors: {str(err)}",
-                level_name="error",
+            log_message = "An error ocurred while loading colors."
+
+            logger.exception(log_message)
+            USER_LOGGER.exception(log_message)
+
+            dialog_message = log_message + (
+                " For more info check the user log (on the graph/canvas, press"
+                " <Ctrl+Shift+j> or access the \"Help > Show user log\" option"
+                " on the menubar)."
             )
+
+            create_and_show_dialog(dialog_message, level_name='error')
 
         else:
 
@@ -77,7 +94,7 @@ class ImportExportOperations:
 
             create_and_show_dialog(
                 "must provide a single file path",
-                level_name="warning",
+                level_name='warning',
             )
 
             return
@@ -92,8 +109,16 @@ class ImportExportOperations:
             )
 
         except Exception as err:
+            
+            log_message = "An error ocurred while saving the colors."
 
-            create_and_show_dialog(
-                f"error while saving colors: {str(err)}",
-                level_name="error",
+            logger.exception(log_message)
+            USER_LOGGER.exception(log_message)
+
+            dialog_message = log_message + (
+                " For more info check the user log (on the graph/canvas, press"
+                " <Ctrl+Shift+j> or access the \"Help > Show user log\" option"
+                " on the menubar)."
             )
+
+            create_and_show_dialog(dialog_message, level_name='error')

@@ -26,11 +26,15 @@ from ...pygamesetup import SERVICES_NS, SCREEN_RECT
 
 from ...dialog import create_and_show_dialog
 
+from ...logman.main import get_new_logger
+
 from ...ourstdlibs.behaviour import empty_function
 
 from ...ourstdlibs.collections.general import CallList
 
 from ...our3rdlibs.button import Button
+
+from ...our3rdlibs.userlogger import USER_LOGGER
 
 from ...classes2d.single import Object2D
 from ...classes2d.collections import List2D
@@ -58,6 +62,11 @@ from ..surfs import FILE_ICON, FOLDER_ICON
 
 ## widget
 from ...widget.stringentry import StringEntry
+
+
+
+### create logger for module
+logger = get_new_logger(__name__)
 
 
 ### XXX
@@ -238,19 +247,37 @@ class PathForm(Object2D):
     def submit_form(self):
         """Store new path and trigger its submission."""
 
-        ### try retrieve name from entry name and building
+        ### try retrieving name from entry and building
         ### path using self.parent as the parent
+
         try:
             path = self.parent / self.path_name_entry.get()
 
         except Exception as err:
 
-            ### TODO display a proper error message
+            # put an error message together explaining
+            # the error
 
-            create_and_show_dialog(
-                "Something went wrong.",
-                level_name="error",
+            error_message = (
+                "An error ocurred while trying to put together"
+                " the new path to be returned after exiting this"
+                " form's loop."
             )
+
+            # log the error
+
+            logger.exception(error_message)
+            USER_LOGGER.exception(error_message)
+
+            # present the dialog
+
+            dialog_message = error_message + (
+                " Check the user log for details (press <Ctrl+Shift+j> after"
+                " leaving the file browser or access the \"Help > Show user"
+                " log\" option on the menubar)."
+            )
+
+            create_and_show_dialog(dialog_message, level_name='error')
 
         ### if the pathlib.Path object is successfully built,
         ### set it as the new path

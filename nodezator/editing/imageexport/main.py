@@ -87,8 +87,11 @@ def export_as_image():
     if not gm.nodes and not gm.text_blocks:
 
         create_and_show_dialog(
-            "To export the loaded file as an image there"
-            " must exist at least one live object in it"
+            (
+                "To export the loaded file as an image there"
+                " must exist at least one live object in it"
+            ),
+            level_name='info',
         )
 
         return
@@ -178,19 +181,17 @@ def export_as_image():
         ## log traceback in regular
         ## log and and user log
 
-        msg = (
+        error_message = (
             "An unexpected error ocurred"
             " while trying to export node"
             f" layout as {extension}."
         )
 
-        logger.exception(msg)
-        USER_LOGGER.exception(msg)
-
-        error_str = str(err)
+        logger.exception(error_message)
+        USER_LOGGER.exception(error_message)
 
     else:
-        error_str = ""
+        error_message = ''
 
     ### then restore the objects to their original
     ### positions
@@ -200,23 +201,18 @@ def export_as_image():
     ### operations above
     total = time() - start
 
-    ### if there was an error message (an error
-    ### occured), show it to the user via a dialog
+    ### if there was an error (there is an error messsage),
+    ### notify the user via a dialog
 
-    if error_str:
+    if error_message:
 
-        dialog_message = (
-            "An error ocurred while trying to"
-            " export the layout. Check the user log"
-            " for more info (click <Ctrl+Shift+J> after"
-            " leaving the dialog). Here's the error"
-            f" message: {error_str}"
+        dialog_message = error_message + (
+            " Check the user log for more info (on the graph/canvas, press"
+            " <Ctrl+Shift+j> or access the \"Help > Show user log\" option"
+            " on the menubar)."
         )
 
-        create_and_show_dialog(
-            dialog_message,
-            level_name="error",
-        )
+        create_and_show_dialog(dialog_message, level_name='error')
 
     ### otherwise just display a message in the
     ### statusbar, showing the time taken in a

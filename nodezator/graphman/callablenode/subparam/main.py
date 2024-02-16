@@ -202,7 +202,7 @@ class SubparameterHandling(WidgetOps, UnpackingOps):
         ### the original one, causing the value of the
         ### original keyword to be lost and making the
         ### function not complain, which in summary would
-        ### a bug.
+        ### be a bug.
 
         if new_keyword in subparam_keyword_map.values():
 
@@ -252,7 +252,7 @@ class SubparameterHandling(WidgetOps, UnpackingOps):
             error_msg += ". The keyword was set back to its previous" " value"
 
             # display it in a dialog box
-            create_and_show_dialog(error_msg)
+            create_and_show_dialog(error_msg, level_name='error')
 
     def fix_subparameter_indices(self, param_name):
         """Fix subparameter which doesn't conform to design.

@@ -501,7 +501,8 @@ class SessionRecordingForm(Object2D):
         except AttributeError:
 
             create_and_show_dialog(
-                f"There's no {NATIVE_FILE_EXTENSION} file loaded"
+                f"There's no {NATIVE_FILE_EXTENSION} file loaded",
+                level_name='info',
             )
 
         else:
@@ -512,7 +513,12 @@ class SessionRecordingForm(Object2D):
         ### exit with a dialog if feature is not ready for usage yet
 
         if APP_REFS.wip_lock:
-            create_and_show_dialog("This feature is a work in progress.")
+
+            create_and_show_dialog(
+                "This feature is a work in progress.",
+                level_name='info',
+            )
+
             return
 
         ### draw screen sized semi-transparent object,
@@ -669,7 +675,8 @@ class SessionRecordingForm(Object2D):
                     ("Cancel", False),
                     ("Start recording", True),
                 ),
-                dismissable=True,
+
+                level_name='info',
             )
 
             if not answer: return

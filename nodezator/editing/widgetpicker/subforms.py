@@ -11,7 +11,11 @@ from random import choice
 
 ### local imports
 
+from ...logman.main import get_new_logger
+
 from ...ourstdlibs.stringutils import VALIDATION_COMMAND_MAP
+
+from ...our3rdlibs.userlogger import USER_LOGGER
 
 from ...textman.render import render_text
 
@@ -51,6 +55,11 @@ from ...widget.pathpreview.font import FontPreview
 
 from ...our3rdlibs.iterablewidget.list import ListWidget
 from ...our3rdlibs.iterablewidget.set import SetWidget
+
+
+
+### create logger for module
+logger = get_new_logger(__name__)
 
 
 FONT_HEIGHT = ENC_SANS_BOLD_FONT_HEIGHT
@@ -236,11 +245,22 @@ class SubformCreation:
 
                 msg = (
                     "The validation could not be set because"
-                    " the value doesn't comply. The following"
-                    " error message was given: {}"
-                ).format(str(err))
+                    " the value doesn't comply."
+                )
 
-                create_and_show_dialog(msg)
+                logger.exception(msg)
+                USER_LOGGER.exception(msg)
+
+                preview = ' '.join(str(err).splitlines())[:200] # 200 chars
+
+                dialog_msg = msg + (
+                    " Check the user log for more details (on the"
+                    " graph/canvas, press <Ctrl+Shift+j> or access the"
+                    " \"Help > Show user log\" option on the menubar)."
+                    f" Here's a preview of the error message: {preview}"
+                )
+
+                create_and_show_dialog(dialog_msg, level_name='error')
 
         validation_command_option_menu.command = update_value_entry_validation
 

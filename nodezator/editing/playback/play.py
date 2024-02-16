@@ -384,7 +384,12 @@ class SessionPlayingForm(Object2D):
         ### exit with a dialog if feature is not ready for usage yet
 
         if APP_REFS.wip_lock:
-            create_and_show_dialog("This feature is a work in progress.")
+
+            create_and_show_dialog(
+                "This feature is a work in progress.",
+                level_name='info',
+            )
+
             return
 
         ### draw screen sized semi-transparent object,
@@ -530,7 +535,8 @@ class SessionPlayingForm(Object2D):
         if label_text == '(no path selected)':
 
             create_and_show_dialog(
-                "Must select file with input data to start playing"
+                "Must select file with input data to start playing",
+                level_name='info',
             )
 
             return

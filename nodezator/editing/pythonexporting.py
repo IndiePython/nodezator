@@ -65,7 +65,11 @@ def export_as_python():
 
         if filepath.suffix.lower() != ".py":
 
-            create_and_show_dialog("File extension must be '.py'")
+            create_and_show_dialog(
+                "File extension must be '.py'",
+                level_name='info',
+            )
+
             return
 
         ### otherwise, save the exported code in the given path
@@ -108,31 +112,22 @@ def get_exported_python_code():
         ### log traceback in regular log and and user log
 
         msg = (
-            "An unexpected error ocurred"
-            " while trying to export node"
+            "An unexpected error ocurred while trying to export node"
             " layout as python code."
         )
 
         logger.exception(msg)
         USER_LOGGER.exception(msg)
 
-        error_str = f'{err.__class__.__name__}({str(err)})'
+        ### notify the user via a dialog
 
-        ### if there was an error message (an error
-        ### occured), show it to the user via a dialog
-
-        dialog_message = (
-            "An error ocurred while trying to"
-            " export the layout. Check the user log"
-            " for more info (click <Ctrl+Shift+J> after"
-            " leaving the dialog). Here's the error"
-            f" message: {error_str}"
+        dialog_message = msg + (
+            " Check the user log for more info (on the graph/canvas, press"
+            " <Ctrl+Shift+j> or access the \"Help > Show user log\" option on"
+            " the menubar)."
         )
 
-        create_and_show_dialog(
-            dialog_message,
-            level_name="error",
-        )
+        create_and_show_dialog(dialog_message, level_name='error')
 
         ### return False
         return False

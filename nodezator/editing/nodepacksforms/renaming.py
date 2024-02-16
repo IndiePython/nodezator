@@ -323,7 +323,8 @@ class NodePacksRenamingChangeForm(Object2D):
             if not node_packs:
 
                 create_and_show_dialog(
-                    "The file hasn't node packs linked for" " us to rename."
+                    "The file hasn't node packs linked for us to rename.",
+                    level_name='info',
                 )
 
                 return

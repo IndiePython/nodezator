@@ -209,10 +209,13 @@ class ColorsOperations:
         if not property_names:
 
             create_and_show_dialog(
-                "Can't sort colors because no properties are"
-                " listed in the list sorting button with the"
-                " property names (the one to the right of the"
-                " 'Sort' button)"
+                (
+                    "Can't sort colors because no properties are"
+                    " listed in the list sorting button with the"
+                    " property names (the one to the right of the"
+                    " 'Sort' button)"
+                ),
+                level_name='info',
             )
 
             return

@@ -458,7 +458,8 @@ class ImageExportForm(Object2D):
         if suffix not in (".svg", ".html", ".png"):
 
             create_and_show_dialog(
-                "File extension must be '.html', '.svg'," " or '.png'"
+                "File extension must be '.html', '.svg' or '.png'",
+                level_name='info',
             )
 
             return

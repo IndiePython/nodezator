@@ -653,8 +653,11 @@ class DemonstrationSessionForm(Object2D):
         if not selected:
 
             create_and_show_dialog(
-                "You must first select a demonstration"
-                " in order to play it"
+                (
+                    "You must first select a demonstration"
+                    " in order to play it"
+                ),
+                level_name='info',
             )
 
             return
@@ -663,7 +666,7 @@ class DemonstrationSessionForm(Object2D):
         data = {"demonstration_name": selected[0]}
 
         ###
-        create_and_show_dialog("Not implemented")
+        create_and_show_dialog("Not implemented", level_name='info')
         return
         ###
 
