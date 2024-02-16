@@ -202,9 +202,15 @@ pip install mynodepack
 
 <p>User-defined nodes are identified in the .ndz file (in the <i>script_id</i> keys) using a combination of the node pack name, the category name and the script folder name where the node script is located. This is so regardless of whether the node pack is local or installed.</p>
 
-<p>As such, if you rename any of those folders and open a .ndz file containing nodes affected by the renaming, Nodezator will look for the old folder names in the identification of the node and won't find them and will thus show a dialogue that says it isn't possible to load the file due to missing node scripts, listing those missing scripts, like in the image below:</p>
+<p>As such, if you rename any of those folders and open a .ndz file containing nodes affected by the renaming, Nodezator will look for the old folder names in the identification of the node and won't find them and will thus show a dialogue with a general message saying that one or more errors were found when trying to load the node packs, like in the image below:</p>
 
-<img src="images/ch-loading-nodes_img03.png" alt="Dialogue listing missing node scripts" />
+<img src="images/ch-loading-nodes_dialog_problems_node_packs.png" alt="Dialogue informing user of problems when loading node packs" />
+
+<p>This general message will actually appear for many other kinds of problems that can be found when trying to load node packs (either by opening a new file or via the form from the <b>Graph &gt; Load nodes</b> option in the menubar).</p>
+
+<p>Just like the dialog says, the full error(s) report can be found in the user log. Opening the user log will explain the problem in detail. In our specific case, the problem reported is a node script that could not be found (it is missing), as seen in the screenshot of the user log shown below:</p>
+
+<img src="images/ch-loading-nodes_user_log_showing_missing.png" alt="User log with error information (missing node scripts)." />
 
 <p>To solve the problems, just open the .ndz file in any text editor of your preference and look for the lines that say <i>script_id</i>, and update the names of the folders you changed. It may be boring but is usually quick work. As Nodezator evolves over time, dedicated UI should be created so the user can perform this task in the app itself.</p>
 
