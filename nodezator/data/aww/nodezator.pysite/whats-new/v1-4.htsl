@@ -18,6 +18,7 @@
     <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.4.3">[v1.4.3] Fixed error when executing operation nodes</a></li>
     <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.4.4">[v1.4.4] Fixed bugs in SVG exporting and change checking</a></li>
     <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.4.5">[v1.4.5] Additions, improvements and fixes to tests</a></li>
+    <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.4.6">[v1.4.6] More additions and a bug fix</a></li>
 </ul>
 
 
@@ -49,6 +50,7 @@
     <li><a href="whats-new/v1-4.htsl#error-when-executing-operation">v1.4.3: Fixed error when executing operation nodes</a></li>
     <li><a href="whats-new/v1-4.htsl#bugs-svg-exporting-change-checking">v1.4.4: Fixed bugs in SVG exporting and change checking</a></li>
     <li><a href="whats-new/v1-4.htsl#additions-improvements-fixes-tests">v1.4.5: Additions, improvements and fixes to tests</a></li>
+    <li><a href="whats-new/v1-4.htsl#more-additions-bug-fix">v1.4.6: More additions and a bug fix</a></li>
 
 </ol>
 
@@ -350,6 +352,47 @@ pip install pygame-ce --upgrade
 <p>I also used the opportunity to make some small improvements in the doctests and to fix one of them.</p>
 
 <p>In order to make it more convenient to store test data, <b>.zip</b> files found in Nodezator's source are now also included in the source distribution. That is, they are downloaded in conjunction with the Python modules when someone installs Nodezator.</p>
+
+
+
+<h2 id="more-additions-bug-fix">v1.4.6: More additions and a bug fix</h2>
+
+<p>Among the many changes/adittions for this patch release, we have:</p>
+
+<ul>
+    <li>Code contributed by Mr. <a href="https://github.com/sefgit">sefgit</a> via pull request, that consists of:
+
+        <ul>
+            <li>Mousewheel pan feature</li>
+            <li>The addition of a .gitattributes file</li>
+        </ul>
+
+    </li>
+
+    <li>Code contributed by me (<a href="https://github.com/KennedyRichard">KennedyRichard</a>)
+
+        <ul>
+            <li>The ability to confirm/dismiss/navigate the dialog using the keyboard</li>
+            <li>A bug fix for a dialog that was growing past the screen</li>
+        </ul>
+
+    </li>
+
+</ul>
+
+
+<p>The mousewheel pan feature is the ability to pan/move the graph with the mousewheel. The .gitattributes file added is a simple text file that is used to define attributes to paths. Certain operations by Git can be influenced by assigning particular attributes to paths, which is what this file is used for. Some additional changes already discussed with the contributor were also made by me.</p>
+
+<p>I also added/set the ability to confirm/dismiss dialogs with the keyboard using the <b>Enter</b> and <b>Escape</b> keys, respectively (though, often, confirming will also dismiss the dialog when it is the only action available). I use the terms "added/set" because part of the feature was already implemented and just needed to be properly set in the existing dialogs defined throughout the source. Naturally, some dialogs may not offer the option to be so casually dismissed like that when the consequences of the action cannot be reversed. Currently, though, we don't have any dialog like that.</p>
+
+<p>The user can now also navigate the available dialog buttons/options using <b>arrow keys</b> or the <b>Tab</b> and <b>Shift+Tab</b> keys.</p>
+
+<p>The bug fix consisted in preventing a specific dialog from growing past the screen.</p>
+
+<p>In this specific bug, we were allowing text from error reports to be displayed on the dialog. The right practice, however, would be to just use known predefined text and record the error report in a more appropriate place for the user to check. Text from error reports can grow a lot when there are too many errors, so we must not use such text in dialogs. That's what was causing the problem.</p>
+
+<p>Now, instead of reporting the error(s) on the dialog, we just display an informative small message and log the errors in both the default logger and our custom user logger. This way the user can check the error report using the log files or the user log that can be accessed on the app's GUI. The user log can be accessed by pressing <b>Ctrl+Shift+j</b> when you are on the graph/canvas or by selecting the <b>Help &gt; Show user log</b> option on the menubar.</p>
+
 
 </body>
 
