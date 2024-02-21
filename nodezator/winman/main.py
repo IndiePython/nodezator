@@ -402,20 +402,30 @@ class WindowManager(
         ### instantiate support widgets and set manager
         self.build_support_widgets()
 
-        ### check again if a valid filepath still sits on
-        ### 'source_path'
-        ### attribute of the APP_REFS object (it means a
-        ### file is loaded)
+        ### check again whether a valid filepath still sits on 'source_path'
+        ### attribute of the APP_REFS object (it means a file is loaded)
         try:
-            APP_REFS.source_path
+            source_path = APP_REFS.source_path
 
-        ### if not, reset caption to its initial state
+        ### if not, reset caption to its initial state and build log message
+
         except AttributeError:
-            reset_caption()
 
-        ### otherwise, create the popup menu
+            reset_caption()
+            log_message = "User started new session with no file loaded"
+
+        ### otherwise, create the popup menu and build log message
+
         else:
+
             self.create_canvas_popup_menu()
+
+            log_message = (
+                f"User started new session with {source_path} loaded"
+            )
+
+        logger.info(log_message)
+        USER_LOGGER.info(log_message)
 
     def build_state_behaviour_map(self):
         """Build map with behaviours for each state."""
