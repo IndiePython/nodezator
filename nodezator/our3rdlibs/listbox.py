@@ -96,11 +96,13 @@ class ListBox(Object2D):
 
         self.item_to_surf_map = {}
 
+        self.items = []
         self.item_objects = []
+        self.selected_flags = []
 
-        self.set_items(items)
+        self.extend(items)
 
-    def render_items(self, items):
+    def render_items(self):
 
         nfg = self.normal_foreground_color
         nbg_a = self.normal_background_color_a
@@ -113,17 +115,21 @@ class ListBox(Object2D):
         width = self.width
         padding = self.padding
 
+        item_objects = self.item_objects
+        item_objects.clear()
+        append_item_object = item_objects.append
+
         item_to_surf_map = self.item_to_surf_map
 
-        for item in items:
+        for value in self.items:
 
-            if item not in item_to_surf_map:
+            if value not in item_to_surf_map:
 
                 surf_map = {
 
                     name : (
                         render_text(
-                            str(item),
+                            str(value),
                             font_height = self.font_height,
                             font_path = self.font_path,
                             padding = padding,
@@ -143,32 +149,29 @@ class ListBox(Object2D):
 
                 }
 
-                item_to_surf_map[item] = surf_map
+                item_to_surf_map[value] = surf_map
 
             else:
-                surf_map = item_to_surf_map[item]
+                surf_map = item_to_surf_map[value]
 
-            yield Object2D.from_surface(
-                surf_map['normal_a'],
-                surface_map = surf_map,
-                value = item,
+            append_item_object(
+                Object2D.from_surface(
+                    surf_map['normal_a'],
+                    surface_map = surf_map,
+                    value = value,
+                )
             )
 
-    def set_items(self, items):
+    def _clear_no_update(self):
 
-        length = len(items)
-
+        self.items.clear()
+        self.item_objects.clear()
         self.index_of_top_visible_item = 0
         self.index_of_last_selected = None
+        self.selected_flags.clear()
 
-        self.selected_flags = [0 for item in items]
-
-        item_objects = self.item_objects
-
-        item_objects.clear()
-
-        item_objects.extend(self.render_items(items))
-
+    def clear(self):
+        self._clear_no_update()
         self.update_image()
 
     def update_image(self):
@@ -241,6 +244,51 @@ class ListBox(Object2D):
             for item, sel_state in zip(self.item_objects, self.selected_flags)
             if sel_state
         ]
+
+    def set_items(self, item_values):
+
+        self._clear_no_update()
+        self.extend(item_values)
+
+    def extend(self, item_values):
+
+        self.items.extend(item_values)
+
+        self.render_items()
+
+        self.selected_flags.extend(0 for item in item_values)
+
+        self.index_of_top_visible_item = 0
+        self.index_of_last_selected = None
+
+        self.update_image()
+
+    def remove(self, item_value):
+        self.remove_items([item_value])
+
+    def remove_items(self, item_values):
+
+        remove_item = self.items.remove
+
+        for value in item_values:
+            remove_item(value)
+
+        self.render_items()
+
+        self.selected_flags.clear()
+        self.selected_flags.extend(0 for item in self.items)
+
+        self.index_of_top_visible_item = 0
+        self.index_of_last_selected = None
+
+        self.update_image()
+
+    def remove_selected(self):
+
+        selected_values = self.get()
+
+        if selected_values:
+            self.remove_items(selected_values)
 
     def on_mouse_release(self, event):
 
