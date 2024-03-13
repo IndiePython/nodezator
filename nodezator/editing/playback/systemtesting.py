@@ -21,7 +21,10 @@ from pygame.locals import (
 
 from pygame.math import Vector2
 
-from pygame.transform import rotate as rotate_surface
+from pygame.transform import (
+    rotate as rotate_surface,
+    flip as flip_surface,
+)
 
 
 ### local imports
@@ -93,30 +96,69 @@ BUTTON_SETTINGS = {
     "font_height": ENC_SANS_BOLD_FONT_HEIGHT,
     "font_path": ENC_SANS_BOLD_FONT_PATH,
     "padding": 5,
-    "depth_finish_thickness": 1,
     "foreground_color": BUTTON_FG,
     "background_color": BUTTON_BG,
 }
 
 
-ARROW_UP_ICON = render_layered_icon(
+ARROW_LEFT_ICON = render_layered_icon(
     chars=[chr(ordinal) for ordinal in (50, 51)],
     dimension_name='height',
     dimension_value=19,
     padding=2,
+    rotation_degrees=90,
+    colors=[
+        BLACK,
+        (30, 130, 70),
+    ],
+    background_color=BUTTON_BG,
+)
+
+_TRANSP_LEFT_ARROW = render_layered_icon(
+    chars=[chr(ordinal) for ordinal in (50, 51)],
+    dimension_name='height',
+    dimension_value=15,
+    padding=0,
+    rotation_degrees=90,
     colors=[
         BLACK,
         (30, 130, 70),
     ],
 )
 
-ARROW_DOWN_ICON = rotate_surface(ARROW_UP_ICON, 180)
+ARROW_LEFT_DOUBLE_ICON = ARROW_LEFT_ICON.copy()
+ARROW_LEFT_DOUBLE_ICON.fill(BUTTON_BG)
+
+for _topleft in (
+    (4, 8),
+    (0, 0),
+):
+    ARROW_LEFT_DOUBLE_ICON.blit(_TRANSP_LEFT_ARROW, _topleft)
+
+ARROW_RIGHT_ICON = rotate_surface(ARROW_LEFT_ICON, 180)
+ARROW_RIGHT_DOUBLE_ICON = flip_surface(ARROW_LEFT_DOUBLE_ICON, True, False)
 
 AVAILABLE_TEST_CASE_TITLES = [
     "STC 0000 - Instantiate default objects using the popup menu",
     "STC 0001 - Do something else",
     "STC 0002 - Do something more",
 ]
+
+MUST_SELECT_FROM_AVAILABLE = (
+    "You must select at least one test case from the list"
+    " of available ones in order to add the selection to the"
+    " list of chosen test cases."
+)
+
+NO_MORE_AVAILABLE_ITEMS = "All available cases are already chosen."
+
+MUST_SELECT_FROM_CHOSEN = (
+    "You must select at least one test case from the list"
+    " of chosen ones in order to remove the selection from it."
+)
+
+NO_MORE_CHOSEN_ITEMS = "All chosen cases are already removed."
+
 
 ### class definition
 
@@ -127,7 +169,7 @@ class SystemTestingSessionForm(Object2D):
         """Setup form objects."""
         ### build surf and rect for background
 
-        self.image = render_rect(800, 560, WINDOW_BG)
+        self.image = render_rect(1070, 650, WINDOW_BG)
         draw_border(self.image)
 
         self.rect = self.image.get_rect()
@@ -206,7 +248,8 @@ class SystemTestingSessionForm(Object2D):
         ## pick tests label
 
         label_text = (
-            "Pick test cases to perform by moving them to the lower box."
+            "Choose test cases to perform from the list of available ones"
+            " by moving them to the list of chosen ones"
         )
 
         pick_cases_label = Object2D.from_surface(
@@ -230,7 +273,7 @@ class SystemTestingSessionForm(Object2D):
 
         available_cases_label = Object2D.from_surface(
             surface=render_text(
-                text="Available cases", **TEXT_SETTINGS
+                text="Available test cases", **TEXT_SETTINGS
             ),
             coordinates_name="topleft",
             coordinates_value=topleft,
@@ -245,8 +288,8 @@ class SystemTestingSessionForm(Object2D):
         self.available_cases_listbox = ListBox(
             items = AVAILABLE_TEST_CASE_TITLES,
             selectable_hint='all',
-            no_of_visible_lines=5,
-            width=760,
+            no_of_visible_lines=15,
+            width=520,
             padding=5,
             coordinates_name = 'topleft',
             coordinates_value = topleft,
@@ -254,94 +297,17 @@ class SystemTestingSessionForm(Object2D):
 
         widgets.append(self.available_cases_listbox)
 
-        ### test case selection/deselection buttons
-
-        ## add button
-
-        topright = self.available_cases_listbox.rect.move(-5, 10).midbottom
-
-        add_button_text_surf = render_text(text="Add selected", **TEXT_SETTINGS)
-
-        add_button_surf = combine_surfaces(
-            [ARROW_DOWN_ICON, add_button_text_surf],
-            retrieve_pos_from="midright",
-            assign_pos_to="midleft",
-            offset_pos_by=(0, 0),
-            padding=2,
-        )
-
-        draw_depth_finish(add_button_surf)
-
-        add_button = (
-
-            Button(
-                add_button_surf,
-                command=self.add_selected,
-                coordinates_name='topright',
-                coordinates_value=topright,
-            )
-
-        )
-
-        widgets.append(add_button)
-
-        ## remove button
-
-        topleft = self.available_cases_listbox.rect.move(5, 10).midbottom
-
-        remove_button_text_surf = render_text(text="Remove selected", **TEXT_SETTINGS)
-
-        remove_button_surf = combine_surfaces(
-            [ARROW_UP_ICON, remove_button_text_surf],
-            retrieve_pos_from="midright",
-            assign_pos_to="midleft",
-            offset_pos_by=(0, 0),
-            padding=2,
-        )
-
-        draw_depth_finish(remove_button_surf)
-
-        remove_button = (
-
-            Button(
-                remove_button_surf,
-                command=self.remove_selected,
-                coordinates_name='topleft',
-                coordinates_value=topleft,
-            )
-
-        )
-
-        widgets.append(remove_button)
-
-        ### update the topleft to a value a bit below
-        ### the bottomleft corner of the widgets already
-        ### in the versatile list
-        topleft = widgets.rect.move(0, 20).bottomleft
-
         ### chosen tests list box
-
-        ## label
-
-        chosen_cases_label = Object2D.from_surface(
-            surface=render_text(
-                text="Chosen test cases", **TEXT_SETTINGS
-            ),
-            coordinates_name="topleft",
-            coordinates_value=topleft,
-        )
-
-        widgets.append(chosen_cases_label)
 
         ## listbox
 
-        topleft = chosen_cases_label.rect.move(0, 5).bottomleft
+        topleft = self.available_cases_listbox.rect.move(20, 0).topright
 
         self.chosen_cases_listbox = ListBox(
             items = [],
             selectable_hint='all',
-            no_of_visible_lines=5,
-            width=760,
+            no_of_visible_lines=15,
+            width=520,
             padding=5,
             coordinates_name = 'topleft',
             coordinates_value = topleft,
@@ -349,6 +315,162 @@ class SystemTestingSessionForm(Object2D):
 
         widgets.append(self.chosen_cases_listbox)
 
+        ## label
+
+        bottomleft = self.chosen_cases_listbox.rect.move(0, -5).topleft
+
+        chosen_cases_label = Object2D.from_surface(
+            surface=render_text(
+                text="Chosen test cases", **TEXT_SETTINGS
+            ),
+            coordinates_name="bottomleft",
+            coordinates_value=bottomleft,
+        )
+
+        widgets.append(chosen_cases_label)
+
+
+        ### test case selection/deselection buttons
+
+        ## add button
+
+        add_button_text_surf = (
+            render_text(
+                text="Add selected",
+                **BUTTON_SETTINGS,
+            )
+        )
+
+        add_button_surf = combine_surfaces(
+            [ARROW_RIGHT_ICON, add_button_text_surf],
+            retrieve_pos_from="midright",
+            assign_pos_to="midleft",
+            offset_pos_by=(0, 0),
+            padding=2,
+            background_color=BUTTON_BG,
+        )
+
+        draw_depth_finish(add_button_surf)
+
+        topleft = self.available_cases_listbox.rect.move(5, 10).midbottom
+
+        add_button = (
+
+            Button(
+                add_button_surf,
+                command=self.add_selected,
+                coordinates_name='topleft',
+                coordinates_value=topleft,
+            )
+
+        )
+
+        widgets.append(add_button)
+
+        ## add all button
+
+        add_all_button_text_surf = (
+            render_text(
+                text="Add all",
+                **BUTTON_SETTINGS,
+            )
+        )
+
+        add_all_button_surf = combine_surfaces(
+            [ARROW_RIGHT_DOUBLE_ICON, add_all_button_text_surf],
+            retrieve_pos_from="midright",
+            assign_pos_to="midleft",
+            offset_pos_by=(0, 0),
+            padding=2,
+            background_color=BUTTON_BG,
+        )
+
+        draw_depth_finish(add_all_button_surf)
+
+        topright = self.available_cases_listbox.rect.move(-5, 10).midbottom
+
+        add_all_button = (
+
+            Button(
+                add_all_button_surf,
+                command=self.add_all,
+                coordinates_name='topright',
+                coordinates_value=topright,
+            )
+
+        )
+
+        widgets.append(add_all_button)
+
+        ## remove button
+
+        remove_button_text_surf = (
+            render_text(
+                text="Remove selected",
+                **BUTTON_SETTINGS,
+            )
+        )
+
+        remove_button_surf = combine_surfaces(
+            [ARROW_LEFT_ICON, remove_button_text_surf],
+            retrieve_pos_from="midright",
+            assign_pos_to="midleft",
+            offset_pos_by=(0, 0),
+            padding=2,
+            background_color=BUTTON_BG,
+        )
+
+        draw_depth_finish(remove_button_surf)
+
+        topright = self.chosen_cases_listbox.rect.move(-5, 10).midbottom
+
+        remove_button = (
+
+            Button(
+                remove_button_surf,
+                command=self.remove_selected,
+                coordinates_name='topright',
+                coordinates_value=topright,
+            )
+
+        )
+
+        widgets.append(remove_button)
+
+        ## remove all button
+
+        remove_all_button_text_surf = (
+            render_text(
+                text="Remove all",
+                **BUTTON_SETTINGS,
+            )
+        )
+
+        remove_all_button_surf = combine_surfaces(
+            [ARROW_LEFT_DOUBLE_ICON, remove_all_button_text_surf],
+            retrieve_pos_from="midright",
+            assign_pos_to="midleft",
+            offset_pos_by=(0, 0),
+            padding=2,
+            background_color=BUTTON_BG,
+        )
+
+        draw_depth_finish(remove_all_button_surf)
+
+        topleft = self.chosen_cases_listbox.rect.move(5, 10).midbottom
+
+        remove_all_button = (
+
+            Button(
+                remove_all_button_surf,
+                command=self.remove_all,
+                coordinates_name='topleft',
+                coordinates_value=topleft,
+            )
+
+        )
+
+        widgets.append(remove_all_button)
 
         ### update the topleft to a value a bit below
         ### the bottomleft corner of the widgets already
@@ -384,13 +506,93 @@ class SystemTestingSessionForm(Object2D):
         ## store
         widgets.extend((self.cancel_button, self.start_button))
 
-    def add_selected(self):
-        #self.available_cases_listbox.get()
-        #self.chosen_cases_listbox
-        ...
+    def exchange_selection(
+        self,
+        source_name,
+        dest_name,
+        must_select_message,
+        no_more_items_message,
+    ):
 
-    def remove_selected(self):
-        ...
+        source_listbox = getattr(self, source_name)
+        dest_listbox = getattr(self, dest_name)
+
+        ###
+
+        if source_listbox.items:
+
+            selected_values = source_listbox.get()
+
+            if selected_values:
+
+                source_listbox.remove_items(selected_values)
+                dest_listbox.extend(selected_values)
+
+            else:
+                create_and_show_dialog(must_select_message, level_name='info')
+
+        else:
+            create_and_show_dialog(no_more_items_message, level_name='info')
+
+    add_selected = (
+        partialmethod(
+            exchange_selection,
+            'available_cases_listbox',
+            'chosen_cases_listbox',
+            MUST_SELECT_FROM_AVAILABLE,
+            NO_MORE_AVAILABLE_ITEMS,
+        )
+    )
+
+    remove_selected = (
+        partialmethod(
+            exchange_selection,
+            'chosen_cases_listbox',
+            'available_cases_listbox',
+            MUST_SELECT_FROM_CHOSEN,
+            NO_MORE_CHOSEN_ITEMS,
+        )
+    )
+
+    def exchange_all(
+        self,
+        source_name,
+        dest_name,
+        no_more_items_message,
+    ):
+
+        source_listbox = getattr(self, source_name)
+        dest_listbox = getattr(self, dest_name)
+
+        ###
+
+        if source_listbox.items:
+
+            values = source_listbox.items.copy()
+
+            source_listbox.remove_items(values)
+            dest_listbox.extend(values)
+
+        else:
+            create_and_show_dialog(no_more_items_message, level_name='info')
+
+    add_all = (
+        partialmethod(
+            exchange_all,
+            'available_cases_listbox',
+            'chosen_cases_listbox',
+            NO_MORE_AVAILABLE_ITEMS,
+        )
+    )
+
+    remove_all = (
+        partialmethod(
+            exchange_all,
+            'chosen_cases_listbox',
+            'available_cases_listbox',
+            NO_MORE_CHOSEN_ITEMS,
+        )
+    )
 
     def set_system_testing_session(self):
         """Present form to set and trigger system testing session."""
@@ -540,7 +742,7 @@ class SystemTestingSessionForm(Object2D):
 
         if no_chosen_test_cases:
 
-            answer = create_and_show_dialog(
+            create_and_show_dialog(
                 "At least one test case must be chosen.",
                 level_name='info',
             )

@@ -53,7 +53,7 @@ class ListBox(Object2D):
         normal_background_color_b = (215, 215, 215),
         selected_foreground_color = WHITE,
         selected_background_color_a = (0, 0, 255),
-        selected_background_color_b = (0, 0, 235),
+        selected_background_color_b = (0, 0, 195),
         selectable_hint='all', # 'none', 'one' or 'all'
         ommit_direction='right',
         coordinates_name='topleft',
@@ -256,7 +256,8 @@ class ListBox(Object2D):
 
         self.render_items()
 
-        self.selected_flags.extend(0 for item in item_values)
+        self.selected_flags.clear()
+        self.selected_flags.extend(0 for _ in self.items)
 
         self.index_of_top_visible_item = 0
         self.index_of_last_selected = None
@@ -276,7 +277,7 @@ class ListBox(Object2D):
         self.render_items()
 
         self.selected_flags.clear()
-        self.selected_flags.extend(0 for item in self.items)
+        self.selected_flags.extend(0 for _ in self.items)
 
         self.index_of_top_visible_item = 0
         self.index_of_last_selected = None
@@ -396,10 +397,10 @@ class ListBox(Object2D):
         sf = self.selected_flags
 
         sf.clear()
-        sf.extend(0 for _ in range(len(self.item_objects)))
+        sf.extend(0 for _ in self.items)
 
     def walk(self, steps):
-        """"""
+        """Move the cursor/indicator."""
         ### store number of items
         length = len(self.item_objects)
 
@@ -519,6 +520,7 @@ class ListBox(Object2D):
     go_to_bottom = partialmethod(walk, INFINITY)
 
     def scroll(self, steps):
+        """Scroll items."""
 
         itvi = self.index_of_top_visible_item
         nvl = self.no_of_visible_lines
