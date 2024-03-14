@@ -560,3 +560,16 @@ class ListBox(Object2D):
 
         self.index_of_top_visible_item += steps
         self.update_image()
+
+    def sort(self):
+
+        self.items.sort()
+        self.item_objects.sort(key=lambda item: item.value)
+
+        self.selected_flags.clear()
+        self.selected_flags.extend(0 for _ in self.items)
+
+        self.index_of_top_visible_item = 0
+        self.index_of_last_selected = None
+
+        self.update_image()

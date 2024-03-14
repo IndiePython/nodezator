@@ -138,10 +138,9 @@ for _topleft in (
 ARROW_RIGHT_ICON = rotate_surface(ARROW_LEFT_ICON, 180)
 ARROW_RIGHT_DOUBLE_ICON = flip_surface(ARROW_LEFT_DOUBLE_ICON, True, False)
 
+
 AVAILABLE_TEST_CASE_TITLES = [
     "STC 0000 - Instantiate default objects using the popup menu",
-    "STC 0001 - Do something else",
-    "STC 0002 - Do something more",
 ]
 
 MUST_SELECT_FROM_AVAILABLE = (
@@ -489,7 +488,9 @@ class SystemTestingSessionForm(Object2D):
 
         draw_depth_finish(self.start_button.image)
 
-        self.start_button.rect.bottomright = self.rect.move(-10, -10).bottomright
+        self.start_button.rect.bottomright = (
+            self.rect.move(-10, -10).bottomright
+        )
 
         ## cancel button
 
@@ -501,7 +502,9 @@ class SystemTestingSessionForm(Object2D):
 
         draw_depth_finish(self.cancel_button.image)
 
-        self.cancel_button.rect.midright = self.start_button.rect.move(-5, 0).midleft
+        self.cancel_button.rect.midright = (
+            self.start_button.rect.move(-5, 0).midleft
+        )
 
         ## store
         widgets.extend((self.cancel_button, self.start_button))
@@ -527,6 +530,7 @@ class SystemTestingSessionForm(Object2D):
 
                 source_listbox.remove_items(selected_values)
                 dest_listbox.extend(selected_values)
+                dest_listbox.sort()
 
             else:
                 create_and_show_dialog(must_select_message, level_name='info')
@@ -572,6 +576,7 @@ class SystemTestingSessionForm(Object2D):
 
             source_listbox.remove_items(values)
             dest_listbox.extend(values)
+            dest_listbox.sort()
 
         else:
             create_and_show_dialog(no_more_items_message, level_name='info')
@@ -670,15 +675,16 @@ class SystemTestingSessionForm(Object2D):
 
             elif event.type == MOUSEBUTTONUP:
 
-                if event.button == 1:
+                ### if mouse button is released within boundaries,
+                ### process event with corresponding method
 
-                    if self.rect.collidepoint(event.pos):
-                        self.on_mouse_release(event)
+                if self.rect.collidepoint(event.pos):
+                    self.on_mouse_release(event)
 
-                    ## cancel editing form if mouse left
-                    ## button is released out of boundaries
-                    else:
-                        self.cancel()
+                ## otherwise cancel editing form
+
+                else:
+                    self.cancel()
 
     # XXX in the future, maybe a "Reset" button would be
     # nice
