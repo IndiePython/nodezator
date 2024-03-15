@@ -82,7 +82,10 @@ from ..constants import (
 SESSION_DATA = {}
 
 ### custom namespace for playing mode
+
 PLAY_REFS = type("Object", (), {})()
+PLAY_REFS.pending_test_cases = []
+PLAY_REFS.ongoing_test = ''
 
 ### map to store events
 EVENTS_MAP = {}
@@ -240,6 +243,24 @@ def get_ready_events(events):
 def set_behaviour(services_namespace, data):
     """Setup play services and data."""
 
+    pending_cases = PLAY_REFS.pending_test_cases
+
+    ### setup test cases if requested
+
+    if hasattr(data, 'test_case_keys'):
+
+        pending_cases.extend(
+            sorted(data.test_case_keys, reverse=True)
+        )
+
+    ### if there are pending test cases, pick last one and set it up
+
+    if pending_cases:
+
+        PLAY_REFS.ongoing_test = pending_cases.pop()
+        setup_test_case(PLAY_REFS.ongoing_test)
+
+
     ### set play services as current ones
 
     our_globals = globals()
@@ -250,11 +271,11 @@ def set_behaviour(services_namespace, data):
         setattr(services_namespace, attr_name, value)
 
     ### load session data
-    SESSION_DATA.update(load_pyl(data['input_data_path']))
+    SESSION_DATA.update(load_pyl(data.input_data_path))
 
     ### retrieve playback speed and last frame index
 
-    playback_speed = data['playback_speed']
+    playback_speed = data.playback_speed
     last_frame_index = SESSION_DATA['last_frame_index']
 
     ### store playback speed, last frame index and recording width
@@ -650,8 +671,32 @@ def leave_playing_mode():
     ### clear stored data
     clear_data()
 
-    ### reset app
-    raise ResetAppException(mode='normal')
+    ### act depending on whether we are performing
+    ### tests or not and whether there are more
+    ### pending tests
+
+    if PLAY_REFS.ongoing_test:
+
+        store_case_results()
+
+        if PLAY_REFS.pending_test_cases:
+            raise ResetAppException(mode='play')
+
+        else:
+
+            PLAY_REFS.ongoing_test = ''
+
+            raise (
+
+                ResetAppException(
+                    mode='normal',
+                    {'tests_report_data': get_full_tests_report()},
+                )
+
+            )
+
+    else:
+        raise ResetAppException(mode='normal')
 
 def clear_data():
     ### clear collections
