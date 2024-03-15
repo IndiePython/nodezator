@@ -683,20 +683,21 @@ class SessionRecordingForm(Object2D):
 
         ### gather data
 
-        data = {
-            "recording_title" : self.recording_title_entry.get(),
-            "recording_path" : Path(self.recording_filepath_label.get()),
-            "recording_size" : TEXT_TO_WINDOW_SIZE[self.window_size_tray.get()],
-        }
-
         filepath = (
             Path(self.filepath_to_load_label.get())
             if self.load_file_checkbutton.get()
             else None
         )
 
+        data = {
+            "recording_title" : self.recording_title_entry.get(),
+            "recording_path" : Path(self.recording_filepath_label.get()),
+            "recording_size" : TEXT_TO_WINDOW_SIZE[self.window_size_tray.get()],
+            "filepath": filepath,
+        }
+
         ### trigger session recording
-        raise ResetAppException(mode='record', filepath=filepath, data=data)
+        raise ResetAppException(mode='record', data=data)
 
     def draw(self):
         """Draw itself and widgets.

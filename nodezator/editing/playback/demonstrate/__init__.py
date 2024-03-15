@@ -677,7 +677,7 @@ class DemonstrationSessionForm(Object2D):
             stop_text_input()
 
         ### trigger demonstration session
-        raise ResetAppException(mode='demonstration', data=data)
+        raise ResetAppException(mode='play', data=data)
 
     def draw(self):
         """Draw itself and widgets.

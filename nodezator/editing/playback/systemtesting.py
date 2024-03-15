@@ -758,8 +758,16 @@ class SystemTestingSessionForm(Object2D):
         ### grab test case keys
         test_cases_keys = ...
 
-        ### trigger system testing session
-        raise ResetAppException(mode='system_testing', test_case_keys=test_case_keys)
+        ### trigger system testing session (it uses play mode)
+
+        raise (
+
+            ResetAppException(
+                mode='play',
+                data={'test_case_keys': test_case_keys}
+            )
+
+        )
 
     def draw(self):
         """Draw itself and widgets.

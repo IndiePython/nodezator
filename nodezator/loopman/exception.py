@@ -46,6 +46,9 @@ class ContinueLoopException(Exception):
 class QuitAppException(Exception):
     """Raise whenever you want to quit the app."""
 
+
+EXISTING_MODES = frozenset({'normal', 'play', 'record' })
+
 class ResetAppException(Exception):
     """Raised whenever you want to reset the app.
 
@@ -54,13 +57,20 @@ class ResetAppException(Exception):
     with or without a loaded file.
     """
 
-    def __init__(self, mode, filepath=None, data=None):
+    def __init__(self, mode, data=None):
         """Store loop holder."""
+
+        ### check mode
+
+        if mode not in EXISTING_MODES:
+            raise ValueError(f"'mode' must be one of {EXISTING_MODES}")
+
         ### store arguments
 
-        self.mode     = mode
-        self.filepath = filepath
-        self.data     = data
+        self.mode = mode
+
+        if data is not None:
+            self.__dict__.update(data)
 
         ### initialize superclass with custom message
         super().__init__("Reset the app.")

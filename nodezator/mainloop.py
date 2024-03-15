@@ -211,7 +211,9 @@ def run_app(filepath=None):
             ### perform startup preparations, retrieving the chosen
             ### loop holder, just like we did before starting the
             ### mainloop at the beginning of this function
-            loop_holder = perform_startup_preparations(obj.filepath)
+
+            filepath = getattr(obj, 'filepath', None)
+            loop_holder = perform_startup_preparations(filepath)
 
 
         ## catch unexpected exceptions so we can quit pygame
@@ -223,6 +225,11 @@ def run_app(filepath=None):
                 "While running the application an unexpected"
                 " exception ocurred. Doing clean up and"
                 " reraising now."
+            )
+
+            logger.error(
+                "The previously logged error ocurred during"
+                f" {GENERAL_NS.mode_name!r} mode."
             )
 
             quit_pygame()
