@@ -318,15 +318,8 @@ class Iterable2D(Collection2D):
         Works by counting how many iterations it takes
         to finish iteration.
         """
-        ### start a count variable
-        count = 0
-
-        ### increment the count as you iterate
-        for _ in self.callable_obj():
-            count += 1
-
-        ### return the count
-        return count
+        ### return number of iterations
+        return sum(1 for _ in self.callable_obj())
 
     def __bool__(self):
         """Return True if there's at least one item."""

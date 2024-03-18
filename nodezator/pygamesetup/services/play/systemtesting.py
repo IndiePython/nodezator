@@ -14,7 +14,9 @@ from . import testcases
 
 
 ### dict to hold system testing data for each session
+
 SESSION_DATA = {}
+
 
 
 ### functions
@@ -28,25 +30,34 @@ def prepare_system_testing_session(data):
     SESSION_DATA['cases_requested'] = data.test_case_keys
     SESSION_DATA['session_start_time'] = str(datetime.now())
     SESSION_DATA['utc_offset'] = UTC_OFFSET
+    ... #?
 
 
 
 def perform_test_setup(test_case_key):
     """Grab and perform setup funcion (if any)."""
-    _grab_and_perform_operation(test_case_key, '_setup')
+
+    getattr(
+        getattr(test_cases, test_case_key),
+        'perform_setup',
+        empty_function,
+    )()
 
 
 def finish_test_case(test_case_key):
+    """"""
+
+    ### grab test case module
+    test_module = getattr(testcases, test_case_key)
+
     ### perform assertions (tests)
 
-    ## grab function to perform assertions
+    ## create dict to store test results
+    result_data = {}
 
-    operation_name = f'perform_{test_case_keys}_assertions'
-    perform_assertions = getattr(test_cases, operation_name)
-
-    ## perform them, catching the results or errors
+    ## perform them
     try:
-        result_data = perform_assertions()
+        test_module.perform_assertions(result_data)
 
     ## store error, if occurs
 
@@ -61,16 +72,13 @@ def finish_test_case(test_case_key):
 
 
     ### grab and perform teardown funcion (if any)
-    _grab_and_perform_operation(test_case_key, '_teardown')
+    getattr(test_module, 'perform_teardown', empty_function)()
 
 
-def _grab_and_perform_operation(key, suffix):
-    """Put operation name together, grab it and execute it, if exists."""
-    operation_name = key + suffix
-    getattr(test_cases, operation_name, empty_function)()
-
-def _store_test_results(results, test_case_key):
+def _store_test_results(result_data, test_case_key):
+    ...
 
 def finish_system_testing_session():
     """"""
     SESSION_DATA['session_end_time'] = str(datetime.now())
+    ... #?
