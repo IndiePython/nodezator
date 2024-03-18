@@ -76,6 +76,12 @@ from ...constants import (
 
 )
 
+from .systemtesting import (
+    prepare_system_testing_session,
+    perform_test_setup,
+    finish_test_case,
+)
+
 
 
 ### dictionary to store session data
@@ -249,16 +255,19 @@ def set_behaviour(services_namespace, data):
 
     if hasattr(data, 'test_case_keys'):
 
+        prepare_system_testing_session(data)
+
         pending_cases.extend(
             sorted(data.test_case_keys, reverse=True)
         )
 
-    ### if there are pending test cases, pick last one and set it up
+    ### if there are pending test cases, pick last one and make preparations
+    ### to perform it if needed
 
     if pending_cases:
 
         PLAY_REFS.ongoing_test = pending_cases.pop()
-        setup_test_case(PLAY_REFS.ongoing_test)
+        perform_test_setup(PLAY_REFS.ongoing_test)
 
 
     ### set play services as current ones
@@ -677,7 +686,8 @@ def leave_playing_mode():
 
     if PLAY_REFS.ongoing_test:
 
-        store_case_results()
+        # perform assertions, store test results and perform teardown
+        finish_test_case(PLAY_REFS.ongoing_test)
 
         if PLAY_REFS.pending_test_cases:
             raise ResetAppException(mode='play')

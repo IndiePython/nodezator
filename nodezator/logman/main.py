@@ -19,7 +19,7 @@ from pprint import pformat
 
 from textwrap import wrap
 
-from datetime import datetime, timezone
+from datetime import datetime
 
 from traceback import format_exception
 
@@ -38,6 +38,8 @@ from contextlib import redirect_stdout
 ### local imports
 
 from ..appinfo import TITLE, APP_VERSION, APP_DIR_NAME
+
+from ..ourstdlibs.datetimeutils import UTC_OFFSET
 
 from .constants import PYGAME_CE_REQUIRED_MESSAGE
 
@@ -148,6 +150,10 @@ class PylLogFormatter(Formatter):
         ### put the record data together in a dict and
         ### return it as a pretty-formatted string with
         ### a trailing comma
+
+        ## XXX perhaps using a f-string with formatting
+        ## for datetime.now() would be faster (check and
+        ## implement if confirmed)
 
         return (
             pformat(
@@ -307,6 +313,4 @@ logger.debug(f"pygame version is {pygame.version.ver}")
 logger.debug(("{} version is {}.{}.{} ({})").format(TITLE, *APP_VERSION))
 
 ## timezone
-
-UTC_OFFSET = datetime.now(timezone.utc).astimezone().strftime("%z")
 logger.debug("UTC offset (timezone) is " + UTC_OFFSET)

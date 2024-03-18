@@ -65,11 +65,20 @@ class ResetAppException(Exception):
         if mode not in EXISTING_MODES:
             raise ValueError(f"'mode' must be one of {EXISTING_MODES}")
 
-        ### store arguments
+        ### store/set arguments
 
         self.mode = mode
+        self.filepath = None
+
+        ### store data if any (might override 'filepath' attribute)
 
         if data is not None:
+
+            ## data cannot reset the 'mode' though
+            if 'mode' in data:
+                raise ValueError("'data' dict cannot have 'mode' as key")
+
+            ## store data as attributes
             self.__dict__.update(data)
 
         ### initialize superclass with custom message

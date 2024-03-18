@@ -211,9 +211,7 @@ def run_app(filepath=None):
             ### perform startup preparations, retrieving the chosen
             ### loop holder, just like we did before starting the
             ### mainloop at the beginning of this function
-
-            filepath = getattr(obj, 'filepath', None)
-            loop_holder = perform_startup_preparations(filepath)
+            loop_holder = perform_startup_preparations(obj.filepath)
 
 
         ## catch unexpected exceptions so we can quit pygame
