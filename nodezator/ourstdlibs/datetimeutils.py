@@ -1,7 +1,7 @@
 """Facility for datetime utilities."""
 
 ### local import
-import datetime, timezone
+from datetime import datetime, timezone
 
 
 

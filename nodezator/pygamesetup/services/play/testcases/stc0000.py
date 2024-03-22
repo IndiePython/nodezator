@@ -1,20 +1,39 @@
 """Facility with operations for system testing case 0000."""
 
+### standard library imports
+
+from zipfile import ZipFile
+
+from ast import literal_eval
+
+
 ### local imports
 
-from .....config import APP_REFS
+from .....config import APP_REFS, TEST_CASES_DATA_DIR
 
-from .....graphman.textblock import TextBlock
+from .....graphman.textblock.main import TextBlock
 from .....graphman.proxynode.main import ProxyNode
+from .....graphman.operatornode.main import OperatorNode
 from .....graphman.builtinnode.main import BuiltinNode
 from .....graphman.stlibnode.main import StandardLibNode
+from .....graphman.genviewernode.main import GeneralViewerNode
 from .....graphman.thirdlibnode.main import ThirdLibNode
 from .....graphman.capsulenode.main import CapsuleNode
-from .....graphman.genviewernode.main import GeneralViewerNode
-
-from .....graphman.operatornode.main import OperatorNode
 
 
+
+def perform_setup(data):
+    """"""
+    with ZipFile(
+        str(TEST_CASES_DATA_DIR / 'stc0000.zip'),
+        mode='r',
+    ) as archive:
+
+        with archive.open('input_data.pyl', mode='r') as input_data_file:
+
+            data.input_data = (
+                literal_eval(input_data_file.read().decode(encoding='utf-8'))
+            )
 
 def perform_assertions(result_map):
     """Confirm instantiation of default objects.
@@ -63,36 +82,105 @@ def perform_assertions(result_map):
         "There must be exactly 8 items in the nodes iterable"
     ] = len(nodes) == 8
 
-    ## there must be only one redirect node among the existing ones
+    ## there must be only one node of each kind
 
-    result_map[
-        "There must be only one redirect node among the existing ones"
-    ] = sum(
+    for kind_name, check_functions in (
 
-        1
-        for node in nodes
-        if (
-            isinstance(node, ProxyNode)
-            and not hasattr(node, 'widget')
-        )
+        (
 
-    ) == 1
+            "redirect node",
 
-    ## there must be only one data node among the existing ones
+            (
+                lambda node: isinstance(node, ProxyNode),
+                lambda node: not hasattr(node, 'widget'),
+            ),
 
-    result_map[
-        "There must be only one data node among the existing ones"
-    ] = sum(
+        ),
 
-        1
-        for node in nodes
-        if (
-            isinstance(node, ProxyNode)
-            and hasattr(node, 'widget')
-            and not hasattr(node.proxy_socket, 'parent')
-        )
+        (
 
-    ) == 1
+            "data node",
 
-    ###
-    ...
+            (
+                lambda node: isinstance(node, ProxyNode),
+                lambda node: hasattr(node, 'widget'),
+                lambda node: not hasattr(node.proxy_socket, 'parent'),
+            ),
+
+        ),
+
+        (
+
+            "operation node",
+
+            (
+                lambda node: isinstance(node, OperatorNode),
+            ),
+
+        ),
+
+        (
+
+            "built-in node",
+
+            (
+                lambda node: isinstance(node, BuiltinNode),
+            ),
+
+        ),
+
+        (
+
+            "standard library node",
+
+            (
+                lambda node: isinstance(node, StandardLibNode),
+            ),
+
+        ),
+
+        (
+
+            "general viewer node",
+
+            (
+                lambda node: isinstance(node, GeneralViewerNode),
+            ),
+
+        ),
+
+        (
+
+            "pygame-ce node",
+
+            (
+                lambda node: isinstance(node, ThirdLibNode),
+            ),
+
+        ),
+
+        (
+
+            "snippet node",
+
+            (
+                lambda node: isinstance(node, CapsuleNode),
+            ),
+
+        ),
+
+    ):
+
+        print(f'{kind_name}:', end='')
+
+        result_map[
+            f"There must be only one {kind_name} among the existing ones"
+        ] = sum(
+
+            print('\n    ', node, end='') or 1
+            for node in nodes
+            if all(check_func(node) for check_func in check_functions)
+
+        ) == 1
+
+        print()

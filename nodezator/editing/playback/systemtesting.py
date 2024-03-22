@@ -744,9 +744,7 @@ class SystemTestingSessionForm(Object2D):
         That is, if at least one test case was chosen.
         """
 
-        no_chosen_test_cases = True
-
-        if no_chosen_test_cases:
+        if not self.chosen_cases_listbox.items:
 
             create_and_show_dialog(
                 "At least one test case must be chosen.",
@@ -756,7 +754,7 @@ class SystemTestingSessionForm(Object2D):
             return
 
         ### grab test case keys
-        test_cases_keys = ...
+        test_cases_keys = ['stc0000']
 
         ### trigger system testing session (it uses play mode)
 
@@ -764,7 +762,7 @@ class SystemTestingSessionForm(Object2D):
 
             ResetAppException(
                 mode='play',
-                data={'test_case_keys': test_case_keys}
+                data={'test_cases_keys': test_cases_keys}
             )
 
         )

@@ -213,6 +213,11 @@ def run_app(filepath=None):
             ### mainloop at the beginning of this function
             loop_holder = perform_startup_preparations(obj.filepath)
 
+            ### XXX (temp)
+            if hasattr(obj, 'tests_report_data'):
+                from pprint import pprint
+                pprint(obj.tests_report_data)
+
 
         ## catch unexpected exceptions so we can quit pygame
         ## and log the exception before reraising

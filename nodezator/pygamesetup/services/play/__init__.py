@@ -80,6 +80,7 @@ from .systemtesting import (
     prepare_system_testing_session,
     perform_test_setup,
     finish_test_case,
+    finish_system_testing_session_and_get_report,
 )
 
 
@@ -253,12 +254,12 @@ def set_behaviour(services_namespace, data):
 
     ### setup test cases if requested
 
-    if hasattr(data, 'test_case_keys'):
+    if hasattr(data, 'test_cases_keys'):
 
-        prepare_system_testing_session(data)
+        prepare_system_testing_session(data.test_cases_keys)
 
         pending_cases.extend(
-            sorted(data.test_case_keys, reverse=True)
+            sorted(data.test_cases_keys, reverse=True)
         )
 
     ### if there are pending test cases, pick last one and make preparations
@@ -267,7 +268,8 @@ def set_behaviour(services_namespace, data):
     if pending_cases:
 
         PLAY_REFS.ongoing_test = pending_cases.pop()
-        perform_test_setup(PLAY_REFS.ongoing_test)
+        perform_test_setup(PLAY_REFS.ongoing_test, data)
+        data.playback_speed = 0 # TODO must be set on system testing form
 
 
     ### set play services as current ones
@@ -280,7 +282,12 @@ def set_behaviour(services_namespace, data):
         setattr(services_namespace, attr_name, value)
 
     ### load session data
-    SESSION_DATA.update(load_pyl(data.input_data_path))
+
+    if hasattr(data, 'input_data_path'):
+        SESSION_DATA.update(load_pyl(data.input_data_path))
+
+    else:
+        SESSION_DATA.update(data.input_data)
 
     ### retrieve playback speed and last frame index
 
@@ -689,18 +696,21 @@ def leave_playing_mode():
         # perform assertions, store test results and perform teardown
         finish_test_case(PLAY_REFS.ongoing_test)
 
+        # act according to existence of pending test cases
+
         if PLAY_REFS.pending_test_cases:
             raise ResetAppException(mode='play')
 
         else:
 
             PLAY_REFS.ongoing_test = ''
+            tests_report_data = finish_system_testing_session_and_get_report()
 
             raise (
 
                 ResetAppException(
                     mode='normal',
-                    data={'tests_report_data': get_full_tests_report()},
+                    data={'tests_report_data': tests_report_data},
                 )
 
             )
