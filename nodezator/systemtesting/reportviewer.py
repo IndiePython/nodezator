@@ -53,7 +53,6 @@ from ...fontsman.constants import (
 
 from ...textman.render import render_text
 
-from ...surfsman.cache import UNHIGHLIGHT_SURF_MAP
 from ...surfsman.draw import draw_border, draw_depth_finish
 from ...surfsman.render import render_rect, combine_surfaces
 from ...surfsman.icon import render_layered_icon
@@ -66,11 +65,8 @@ from ...loopman.exception import (
 
 from ...colorsman.colors import (
     BLACK,
-    CONTRAST_LAYER_COLOR,
     BUTTON_FG,
     BUTTON_BG,
-    WINDOW_FG,
-    WINDOW_BG,
 )
 
 
@@ -79,14 +75,19 @@ from ...widget.intfloatentry.main import IntFloatEntry
 
 
 
+
+
 ### constants
+
+REPORT_BG = (235, 235, 250)
+REPORT_FG = (28, 28, 28)
 
 TEXT_SETTINGS = {
     "font_height": ENC_SANS_BOLD_FONT_HEIGHT,
     "font_path": ENC_SANS_BOLD_FONT_PATH,
     "padding": 5,
-    "foreground_color": WINDOW_FG,
-    "background_color": WINDOW_BG,
+    "foreground_color": REPORT_FG,
+    "background_color": REPORT_BG,
 }
 
 BUTTON_SETTINGS = {
@@ -170,37 +171,29 @@ NO_MORE_CHOSEN_ITEMS = "All chosen cases are already removed."
 
 ### class definition
 
-class SystemTestingSessionForm(Object2D):
-    """Form for system testing session setting and triggering."""
+class ReportViewer(Object2D):
+    """Displays a system testing report."""
 
     def __init__(self):
-        """Setup form objects."""
+        """Setup objects."""
         ### build surf and rect for background
 
-        self.image = render_rect(1070, 650, WINDOW_BG)
-        draw_border(self.image)
-
+        self.image = render_rect(1070, 650, REPORT_BG)
         self.rect = self.image.get_rect()
 
-        ### store a semitransparent object
+        ### store copy for cleaning the image
+        self.clean_bg = self.image.copy()
 
-        self.rect_size_semitransp_obj = Object2D.from_surface(
-            surface=(render_rect(*self.rect.size, (*CONTRAST_LAYER_COLOR, 130))),
-            coordinates_name="center",
-            coordinates_value=SCREEN_RECT.center,
-        )
+        ### store slightly smaller area for scrolling/safe display
+        self.scroll_area = self.rect.inflate(-10, -10)
 
         ### assign behaviours
 
         ## update
         self.update = empty_function
 
-        ### behaviour for exiting the form
-        ### (equivalent to setting the 'running' flag to False)
-        self.cancel = partial(setattr, self, 'running', False)
-
         ### build widgets
-        self.build_form_widgets()
+        self.build_widgets()
 
         ### center form and also append centering method
         ### as a window resize setup
@@ -213,14 +206,13 @@ class SystemTestingSessionForm(Object2D):
 
         diff = Vector2(SCREEN_RECT.center) - self.rect.center
 
-        ## center rect on screen
-        self.rect.center = SCREEN_RECT.center
+        ## center rect and scroll area on screen
+        self.rect.center = self.scroll_area.center = SCREEN_RECT.center
 
         ##
         self.widgets.rect.move_ip(diff)
 
-
-    def build_form_widgets(self):
+    def build_widgets(self):
         """Build widgets to hold settings for edition."""
         ### create special list to hold widgets
         widgets = self.widgets = List2D()
@@ -234,7 +226,7 @@ class SystemTestingSessionForm(Object2D):
         caption_label = Object2D.from_surface(
             surface=(
                 render_text(
-                    text="Set and start system testing session",
+                    text="System testing report",
                     border_thickness=2,
                     border_color=(TEXT_SETTINGS["foreground_color"]),
                     **TEXT_SETTINGS,
@@ -565,189 +557,36 @@ class SystemTestingSessionForm(Object2D):
 
         ### create, position and store form related buttons
 
-        ## start button
+        ## exit button
 
-        self.start_button = Button.from_text(
-            text="Start system testing session",
-            command=self.trigger_system_testing,
+        self.exit_button = Button.from_text(
+            text="Exit report",
+            command=self.exit,
             **BUTTON_SETTINGS,
         )
 
-        draw_depth_finish(self.start_button.image)
+        draw_depth_finish(self.exit_button.image)
 
-        self.start_button.rect.bottomright = (
+        self.exit_button.rect.bottomright = (
             self.rect.move(-10, -10).bottomright
         )
 
-        ## cancel button
+        ## save button
 
-        self.cancel_button = Button.from_text(
-            text="Cancel",
-            command=self.cancel,
+        self.save_button = Button.from_text(
+            text="Save on file",
+            command=self.save_report,
             **BUTTON_SETTINGS,
         )
 
-        draw_depth_finish(self.cancel_button.image)
+        draw_depth_finish(self.save_button.image)
 
-        self.cancel_button.rect.midright = (
-            self.start_button.rect.move(-5, 0).midleft
+        self.save_button.rect.midright = (
+            self.exit_button.rect.move(-5, 0).midleft
         )
 
         ## store
-        widgets.extend((self.cancel_button, self.start_button))
-
-    def check_speed_button_surfs(self):
-        """Highlight/unhighlighted speed button surfaces.
-
-        If the current speed correspond to the speed set by
-        an specific button, that button is highlighted, otherwise
-        it is unhighlighted.
-        """
-        ### get current speed
-        current_speed = self.speed_entry.get()
-
-        ### reassign surfaces to each button, depending on whether
-        ### their respective speed matches the current one
-
-        for speed, button in SPEED_TO_BUTTON.items():
-
-            index = 1 if current_speed == speed else 0
-            button.image = SPEED_BUTTON_SURF_MAP[button][index]
-
-    def exchange_selection(
-        self,
-        source_name,
-        dest_name,
-        must_select_message,
-        no_more_items_message,
-    ):
-
-        source_listbox = getattr(self, source_name)
-        dest_listbox = getattr(self, dest_name)
-
-        ###
-
-        if source_listbox.items:
-
-            selected_values = source_listbox.get()
-
-            if selected_values:
-
-                source_listbox.remove_items(selected_values)
-                dest_listbox.extend(selected_values)
-                dest_listbox.sort()
-
-            else:
-                create_and_show_dialog(must_select_message, level_name='info')
-
-        else:
-            create_and_show_dialog(no_more_items_message, level_name='info')
-
-    add_selected = (
-        partialmethod(
-            exchange_selection,
-            'available_cases_listbox',
-            'chosen_cases_listbox',
-            MUST_SELECT_FROM_AVAILABLE,
-            NO_MORE_AVAILABLE_ITEMS,
-        )
-    )
-
-    remove_selected = (
-        partialmethod(
-            exchange_selection,
-            'chosen_cases_listbox',
-            'available_cases_listbox',
-            MUST_SELECT_FROM_CHOSEN,
-            NO_MORE_CHOSEN_ITEMS,
-        )
-    )
-
-    def exchange_all(
-        self,
-        source_name,
-        dest_name,
-        no_more_items_message,
-    ):
-
-        source_listbox = getattr(self, source_name)
-        dest_listbox = getattr(self, dest_name)
-
-        ###
-
-        if source_listbox.items:
-
-            values = source_listbox.items.copy()
-
-            source_listbox.remove_items(values)
-            dest_listbox.extend(values)
-            dest_listbox.sort()
-
-        else:
-            create_and_show_dialog(no_more_items_message, level_name='info')
-
-    add_all = (
-        partialmethod(
-            exchange_all,
-            'available_cases_listbox',
-            'chosen_cases_listbox',
-            NO_MORE_AVAILABLE_ITEMS,
-        )
-    )
-
-    remove_all = (
-        partialmethod(
-            exchange_all,
-            'chosen_cases_listbox',
-            'available_cases_listbox',
-            NO_MORE_CHOSEN_ITEMS,
-        )
-    )
-
-    def set_system_testing_session(self):
-        """Present form to set and trigger system testing session."""
-        ### draw screen sized semi-transparent object,
-        ### so that screen behind form appears as if
-        ### unhighlighted
-        blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
-
-        ### loop until running attribute is set to False
-
-        self.running = True
-        self.loop_holder = self
-
-        while self.running:
-
-            ### perform various checkups for this frame;
-            ###
-            ### stuff like maintaing a constant framerate and more
-            SERVICES_NS.frame_checkups()
-
-            ### put the handle_input/update/draw method
-            ### execution inside a try/except clause
-            ### so that the SwitchLoopException
-            ### thrown when focusing in and out of some
-            ### widgets is caught; also, you don't
-            ### need to catch the QuitAppException,
-            ### since it is caught in the main loop
-
-            try:
-
-                self.loop_holder.handle_input()
-                self.loop_holder.update()
-                self.loop_holder.draw()
-
-            except SwitchLoopException as err:
-
-                ## use the loop holder in the err
-                ## attribute of same name
-                self.loop_holder = err.loop_holder
-
-        ### blit the rect sized semitransparent obj
-        ### on the screen so the form appear as if
-        ### unhighlighted
-        self.rect_size_semitransp_obj.draw()
-
+        widgets.extend((self.save_button, self.exit_button))
 
     def handle_input(self):
         """Process events from event queue."""
@@ -843,52 +682,39 @@ class SystemTestingSessionForm(Object2D):
 
     on_mouse_release = partialmethod(mouse_method_on_collision, "on_mouse_release")
 
-    def trigger_system_testing(self):
-        """Trigger system testing session.
-
-        That is, if at least one test case was chosen.
-        """
-
-        if not self.chosen_cases_listbox.items:
-
-            create_and_show_dialog(
-                "At least one test case must be chosen.",
-                level_name='info',
-            )
-
-            return
-
-        ### grab test case keys
-        test_cases_keys = ['stc0000']
-
-        ### trigger system testing session (it uses play mode)
-
-        raise (
-
-            ResetAppException(
-                mode='play',
-                data={
-                    'test_cases_keys': test_cases_keys,
-                    'playback_speed': self.speed_entry.get(),
-                }
-            )
-
-        )
-
     def draw(self):
         """Draw itself and widgets.
 
         Extends Object2D.draw.
         """
-        ### draw self (background)
-        super().draw()
+        ### reference image locally
+        image = self.image
 
-        ### draw widgets
-        self.widgets.draw()
+        ### clean image
+        image.blit(self.clean_bg, (0, 0))
+
+        ### draw widgets on self
+
+        ## reference rect locally
+        rect = self.rect
+
+        ## draw widgets
+
+        for widget in self.widgets:
+
+            if widget.rect.colliderect(rect):
+                widgets.draw_on_surf(image)
+
+        ### draw border
+        draw_border(image)
+
+        ### draw self
+        super().draw()
 
         ### update screen
         SERVICES_NS.update_screen()
 
 
-## instantiating class and referencing relevant method
-set_system_testing_session = SystemTestingSessionForm().set_system_testing_session
+
+## create instance of report viewer
+report_viewer = ReportViewer()

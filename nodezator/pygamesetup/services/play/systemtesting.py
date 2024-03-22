@@ -107,7 +107,25 @@ def finish_system_testing_session_and_get_report():
     Also clear collections to free memory.
     """
     ### Add the last missing data
+
+    ## session end time
     SESSION_DATA['session_end_time'] = str(datetime.now())
+
+    ## overall result
+
+    result_set = {
+        case_stats['final_result']
+        for case_stats in TEST_CASES_STATS.values() 
+    }
+
+    if 'error' in result_set:
+        SESSION_DATA['overall_result'] = 'error'
+
+    elif 'failed' in result_set:
+        SESSION_DATA['overall_result'] = 'failed'
+
+    else:
+        SESSION_DATA['overall_result'] = 'passed'
 
     ### deepcopy session data
     full_session_report = deepcopy(SESSION_DATA)

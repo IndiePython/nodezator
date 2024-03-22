@@ -93,6 +93,7 @@ SESSION_DATA = {}
 PLAY_REFS = type("Object", (), {})()
 PLAY_REFS.pending_test_cases = []
 PLAY_REFS.ongoing_test = ''
+PLAY_REFS.system_testing_playback_speed = 0
 
 ### map to store events
 EVENTS_MAP = {}
@@ -262,6 +263,8 @@ def set_behaviour(services_namespace, data):
             sorted(data.test_cases_keys, reverse=True)
         )
 
+        PLAY_REFS.system_testing_playback_speed = data.playback_speed
+
     ### if there are pending test cases, pick last one and make preparations
     ### to perform it if needed
 
@@ -269,7 +272,7 @@ def set_behaviour(services_namespace, data):
 
         PLAY_REFS.ongoing_test = pending_cases.pop()
         perform_test_setup(PLAY_REFS.ongoing_test, data)
-        data.playback_speed = 0 # TODO must be set on system testing form
+        data.playback_speed = PLAY_REFS.system_testing_playback_speed
 
 
     ### set play services as current ones
