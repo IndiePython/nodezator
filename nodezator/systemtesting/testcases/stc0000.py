@@ -9,16 +9,16 @@ from ast import literal_eval
 
 ### local imports
 
-from .....config import APP_REFS, TEST_CASES_DATA_DIR
+from ...config import APP_REFS, TEST_CASES_DATA_DIR
 
-from .....graphman.textblock.main import TextBlock
-from .....graphman.proxynode.main import ProxyNode
-from .....graphman.operatornode.main import OperatorNode
-from .....graphman.builtinnode.main import BuiltinNode
-from .....graphman.stlibnode.main import StandardLibNode
-from .....graphman.genviewernode.main import GeneralViewerNode
-from .....graphman.thirdlibnode.main import ThirdLibNode
-from .....graphman.capsulenode.main import CapsuleNode
+from ...graphman.textblock.main import TextBlock
+from ...graphman.proxynode.main import ProxyNode
+from ...graphman.operatornode.main import OperatorNode
+from ...graphman.builtinnode.main import BuiltinNode
+from ...graphman.stlibnode.main import StandardLibNode
+from ...graphman.genviewernode.main import GeneralViewerNode
+from ...graphman.thirdlibnode.main import ThirdLibNode
+from ...graphman.capsulenode.main import CapsuleNode
 
 
 

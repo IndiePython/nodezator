@@ -46,6 +46,8 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
+from ....config import APP_REFS
+
 from ....ourstdlibs.pyl import load_pyl
 
 from ....ourstdlibs.behaviour import empty_function
@@ -74,13 +76,6 @@ from ...constants import (
     SCANCODE_NAMES_MAP,
     MOD_KEYS_MAP,
 
-)
-
-from .systemtesting import (
-    prepare_system_testing_session,
-    perform_test_setup,
-    finish_test_case,
-    finish_system_testing_session_and_get_report,
 )
 
 
@@ -257,7 +252,7 @@ def set_behaviour(services_namespace, data):
 
     if hasattr(data, 'test_cases_keys'):
 
-        prepare_system_testing_session(data.test_cases_keys)
+        APP_REFS.playsupport.prepare_system_testing_session(data.test_cases_keys)
 
         pending_cases.extend(
             sorted(data.test_cases_keys, reverse=True)
@@ -271,7 +266,7 @@ def set_behaviour(services_namespace, data):
     if pending_cases:
 
         PLAY_REFS.ongoing_test = pending_cases.pop()
-        perform_test_setup(PLAY_REFS.ongoing_test, data)
+        APP_REFS.playsupport.perform_test_setup(PLAY_REFS.ongoing_test, data)
         data.playback_speed = PLAY_REFS.system_testing_playback_speed
 
 
@@ -697,7 +692,7 @@ def leave_playing_mode():
     if PLAY_REFS.ongoing_test:
 
         # perform assertions, store test results and perform teardown
-        finish_test_case(PLAY_REFS.ongoing_test)
+        APP_REFS.playsupport.finish_test_case(PLAY_REFS.ongoing_test)
 
         # act according to existence of pending test cases
 
@@ -707,7 +702,12 @@ def leave_playing_mode():
         else:
 
             PLAY_REFS.ongoing_test = ''
-            tests_report_data = finish_system_testing_session_and_get_report()
+
+            tests_report_data = (
+                APP_REFS
+                .playsupport
+                .finish_system_testing_session_and_get_report()
+            )
 
             raise (
 

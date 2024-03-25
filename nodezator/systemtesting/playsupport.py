@@ -8,16 +8,18 @@ from copy import deepcopy
 
 ### local imports
 
-from ....ourstdlibs.datetimeutils import UTC_OFFSET
+from ..ourstdlibs.datetimeutils import UTC_OFFSET
 
-from ....ourstdlibs.behaviour import empty_function
+from ..ourstdlibs.behaviour import empty_function
+
+from . import testcases
 
 
 
 ### dict to hold system testing data for each session
 
-SESSION_DATA = {}
-TEST_CASES_STATS = {}
+_SESSION_DATA = {}
+_TEST_CASES_STATS = {}
 
 
 ### functions
@@ -29,25 +31,21 @@ def prepare_system_testing_session(test_case_keys):
     testing session, after the last test finished.
     """
 
-    SESSION_DATA['cases_requested'] = test_case_keys
-    SESSION_DATA['session_start_time'] = str(datetime.now())
-    SESSION_DATA['utc_offset'] = UTC_OFFSET
+    _SESSION_DATA['cases_requested'] = test_case_keys
+    _SESSION_DATA['session_start_time'] = str(datetime.now())
+    _SESSION_DATA['utc_offset'] = UTC_OFFSET
 
-    SESSION_DATA['test_cases_stats'] = TEST_CASES_STATS
+    _SESSION_DATA['test_cases_stats'] = _TEST_CASES_STATS
 
 
 
 def perform_test_setup(test_case_key, data):
     """Grab and perform setup funcion."""
-
-    ### grab testcases module
-    from . import testcases
-
     ### grab and execute setup function, passing data namespace to it
     getattr(testcases, test_case_key).perform_setup(data)
 
     ### store dict for case stats
-    case_stats = TEST_CASES_STATS[test_case_key] = {}
+    case_stats = _TEST_CASES_STATS[test_case_key] = {}
 
     ### store case start time
     case_stats['start_time'] = str(datetime.now())
@@ -55,14 +53,11 @@ def perform_test_setup(test_case_key, data):
 
 def finish_test_case(test_case_key):
     """Evaluate assertions for test case and store results."""
-    ### grab testcases module
-    from . import testcases
-
     ### grab test case module
     test_module = getattr(testcases, test_case_key)
 
     ### reference dict for stats
-    case_stats = TEST_CASES_STATS[test_case_key]
+    case_stats = _TEST_CASES_STATS[test_case_key]
 
     ### perform assertions (tests)
 
@@ -109,32 +104,32 @@ def finish_system_testing_session_and_get_report():
     ### Add the last missing data
 
     ## session end time
-    SESSION_DATA['session_end_time'] = str(datetime.now())
+    _SESSION_DATA['session_end_time'] = str(datetime.now())
 
     ## overall result
 
     result_set = {
         case_stats['final_result']
-        for case_stats in TEST_CASES_STATS.values() 
+        for case_stats in _TEST_CASES_STATS.values() 
     }
 
     if 'error' in result_set:
-        SESSION_DATA['overall_result'] = 'error'
+        _SESSION_DATA['overall_result'] = 'error'
 
     elif 'failed' in result_set:
-        SESSION_DATA['overall_result'] = 'failed'
+        _SESSION_DATA['overall_result'] = 'failed'
 
     else:
-        SESSION_DATA['overall_result'] = 'passed'
+        _SESSION_DATA['overall_result'] = 'passed'
 
     ### deepcopy session data
-    full_session_report = deepcopy(SESSION_DATA)
+    full_session_report = deepcopy(_SESSION_DATA)
 
     ### clear collections
 
     for dict_obj in (
-        SESSION_DATA,
-        TEST_CASES_STATS,
+        _SESSION_DATA,
+        _TEST_CASES_STATS,
     ):
         dict_obj.clear()
 

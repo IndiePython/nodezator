@@ -52,7 +52,7 @@ from .dialog import show_dialog_from_key
 
 from .winman.main import perform_startup_preparations
 
-from .systemtesting.reportviewer import report_viewer
+from .systemtesting import report_viewer
 
 
 
