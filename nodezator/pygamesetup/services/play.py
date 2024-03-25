@@ -46,19 +46,19 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from ....config import APP_REFS
+from ...config import APP_REFS
 
-from ....ourstdlibs.pyl import load_pyl
+from ...ourstdlibs.pyl import load_pyl
 
-from ....ourstdlibs.behaviour import empty_function
+from ...ourstdlibs.behaviour import empty_function
 
-from ....loopman.exception import ResetAppException, QuitAppException
+from ...loopman.exception import ResetAppException, QuitAppException
 
-from ....classes2d.single import Object2D
+from ...classes2d.single import Object2D
 
-from ....textman.render import render_text
+from ...textman.render import render_text
 
-from ...constants import (
+from ..constants import (
 
     SCREEN, SCREEN_RECT, blit_on_screen,
     GENERAL_NS,
