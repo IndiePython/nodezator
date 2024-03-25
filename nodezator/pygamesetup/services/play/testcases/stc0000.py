@@ -171,16 +171,12 @@ def perform_assertions(result_map):
 
     ):
 
-        print(f'{kind_name}:', end='')
-
         result_map[
             f"There must be only one {kind_name} among the existing ones"
         ] = sum(
 
-            print('\n    ', node, end='') or 1
+            1
             for node in nodes
             if all(check_func(node) for check_func in check_functions)
 
         ) == 1
-
-        print()

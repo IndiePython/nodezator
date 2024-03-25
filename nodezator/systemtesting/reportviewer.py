@@ -29,41 +29,30 @@ from pygame.transform import (
 
 ### local imports
 
-from ...config import APP_REFS
+from ..config import APP_REFS
 
-from ...pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
+from ..pygamesetup import SERVICES_NS, SCREEN_RECT
 
-from ...pygamesetup.constants import FPS
+from ..ourstdlibs.behaviour import empty_function
 
-from ...dialog import create_and_show_dialog
+from ..our3rdlibs.button import Button
 
-from ...ourstdlibs.behaviour import empty_function
+from ..classes2d.single import Object2D
+from ..classes2d.collections import List2D
 
-from ...our3rdlibs.button import Button
-
-from ...our3rdlibs.listbox import ListBox
-
-from ...classes2d.single import Object2D
-from ...classes2d.collections import List2D
-
-from ...fontsman.constants import (
+from ..fontsman.constants import (
     ENC_SANS_BOLD_FONT_HEIGHT,
     ENC_SANS_BOLD_FONT_PATH,
 )
 
-from ...textman.render import render_text
+from ..textman.render import render_text
 
-from ...surfsman.draw import draw_border, draw_depth_finish
-from ...surfsman.render import render_rect, combine_surfaces
-from ...surfsman.icon import render_layered_icon
+from ..surfsman.draw import draw_border, draw_depth_finish
+from ..surfsman.render import render_rect
 
-from ...loopman.exception import (
-    QuitAppException,
-    SwitchLoopException,
-    ResetAppException,
-)
+from ..loopman.exception import QuitAppException, SwitchLoopException
 
-from ...colorsman.colors import (
+from ..colorsman.colors import (
     BLACK,
     BUTTON_FG,
     BUTTON_BG,
@@ -71,9 +60,7 @@ from ...colorsman.colors import (
 
 
 ## widget
-from ...widget.intfloatentry.main import IntFloatEntry
-
-
+from ..widget.intfloatentry.main import IntFloatEntry
 
 
 
@@ -98,76 +85,6 @@ BUTTON_SETTINGS = {
     "background_color": BUTTON_BG,
 }
 
-HIGHLIGHTED_SPEED_BUTTON_SETTINGS = {
-    "font_height": ENC_SANS_BOLD_FONT_HEIGHT,
-    "font_path": ENC_SANS_BOLD_FONT_PATH,
-    "padding": 5,
-    "depth_finish_thickness": 1,
-    "foreground_color": BUTTON_FG,
-    "background_color": (30, 130, 90),
-}
-
-SPEED_TO_BUTTON = {}
-SPEED_BUTTON_SURF_MAP = {}
-
-
-ARROW_LEFT_ICON = render_layered_icon(
-    chars=[chr(ordinal) for ordinal in (50, 51)],
-    dimension_name='height',
-    dimension_value=19,
-    padding=2,
-    rotation_degrees=90,
-    colors=[
-        BLACK,
-        (30, 130, 70),
-    ],
-    background_color=BUTTON_BG,
-)
-
-_TRANSP_LEFT_ARROW = render_layered_icon(
-    chars=[chr(ordinal) for ordinal in (50, 51)],
-    dimension_name='height',
-    dimension_value=15,
-    padding=0,
-    rotation_degrees=90,
-    colors=[
-        BLACK,
-        (30, 130, 70),
-    ],
-)
-
-ARROW_LEFT_DOUBLE_ICON = ARROW_LEFT_ICON.copy()
-ARROW_LEFT_DOUBLE_ICON.fill(BUTTON_BG)
-
-for _topleft in (
-    (4, 8),
-    (0, 0),
-):
-    ARROW_LEFT_DOUBLE_ICON.blit(_TRANSP_LEFT_ARROW, _topleft)
-
-ARROW_RIGHT_ICON = rotate_surface(ARROW_LEFT_ICON, 180)
-ARROW_RIGHT_DOUBLE_ICON = flip_surface(ARROW_LEFT_DOUBLE_ICON, True, False)
-
-
-AVAILABLE_TEST_CASE_TITLES = [
-    "STC 0000 - Instantiate default objects using the popup menu",
-]
-
-MUST_SELECT_FROM_AVAILABLE = (
-    "You must select at least one test case from the list"
-    " of available ones in order to add the selection to the"
-    " list of chosen test cases."
-)
-
-NO_MORE_AVAILABLE_ITEMS = "All available cases are already chosen."
-
-MUST_SELECT_FROM_CHOSEN = (
-    "You must select at least one test case from the list"
-    " of chosen ones in order to remove the selection from it."
-)
-
-NO_MORE_CHOSEN_ITEMS = "All chosen cases are already removed."
-
 
 ### class definition
 
@@ -185,22 +102,30 @@ class ReportViewer(Object2D):
         self.clean_bg = self.image.copy()
 
         ### store slightly smaller area for scrolling/safe display
-        self.scroll_area = self.rect.inflate(-10, -10)
+        self.scroll_area = self.rect.inflate(-20, -20)
 
         ### assign behaviours
 
         ## update
         self.update = empty_function
 
+        ### special collection to store widgets
+        self.widgets = List2D()
+
         ### build widgets
-        self.build_widgets()
+        self.create_general_widgets()
+
+        ### create placeholder attribute to hold next loop holder
+        self.loop_holder = None
 
         ### center form and also append centering method
         ### as a window resize setup
 
         self.center_session_recording_form()
 
-        APP_REFS.window_resize_setups.append(self.center_session_recording_form)
+        APP_REFS.window_resize_setups.append(
+            self.center_session_recording_form
+        )
 
     def center_session_recording_form(self):
 
@@ -212,380 +137,107 @@ class ReportViewer(Object2D):
         ##
         self.widgets.rect.move_ip(diff)
 
-    def build_widgets(self):
-        """Build widgets to hold settings for edition."""
-        ### create special list to hold widgets
-        widgets = self.widgets = List2D()
-
+    def create_general_widgets(self):
+        """Build general widgets to use/reuse in reports."""
         ### define an initial topleft relative to the
         ### topleft corner of the form 'rect'
-        topleft = self.rect.move(5, 5).topleft
+        topleft = self.rect.move(10, 10).topleft
 
         ### instantiate a caption for the form
 
-        caption_label = Object2D.from_surface(
+        self.caption_label = Object2D.from_surface(
             surface=(
                 render_text(
                     text="System testing report",
-                    border_thickness=2,
-                    border_color=(TEXT_SETTINGS["foreground_color"]),
-                    **TEXT_SETTINGS,
+                    **{**TEXT_SETTINGS, 'font_height': 40},
                 )
             ),
             coordinates_name="topleft",
             coordinates_value=topleft,
         )
 
-        widgets.append(caption_label)
+        self.widgets.append(self.caption_label)
 
-        ### update the topleft to a value a bit below
-        ### the bottomleft corner of the widgets already
-        ### in the versatile list
-        topleft = widgets.rect.move(0, 20).bottomleft
 
-        ### instantiate widgets for recording title
-
-        ## pick tests label
-
-        label_text = (
-            "Choose test cases to perform from the list of available ones"
-            " by moving them to the list of chosen ones"
-        )
-
-        pick_cases_label = Object2D.from_surface(
-            surface=render_text(
-                text=label_text, **TEXT_SETTINGS
-            ),
-            coordinates_name="topleft",
-            coordinates_value=topleft,
-        )
-
-        widgets.append(pick_cases_label)
-
-        ### available tests list box
-
-        ## label
-
-        topleft = pick_cases_label.rect.move(0, 10).bottomleft
-
-        available_cases_label = Object2D.from_surface(
-            surface=render_text(
-                text="Available test cases", **TEXT_SETTINGS
-            ),
-            coordinates_name="topleft",
-            coordinates_value=topleft,
-        )
-
-        widgets.append(available_cases_label)
-
-        ## listbox
-
-        topleft = available_cases_label.rect.move(0, 5).bottomleft
-
-        self.available_cases_listbox = ListBox(
-            items = AVAILABLE_TEST_CASE_TITLES,
-            selectable_hint='all',
-            no_of_visible_lines=15,
-            width=520,
-            padding=5,
-            coordinates_name = 'topleft',
-            coordinates_value = topleft,
-        )
-
-        widgets.append(self.available_cases_listbox)
-
-        ### chosen tests list box
-
-        ## listbox
-
-        topleft = self.available_cases_listbox.rect.move(20, 0).topright
-
-        self.chosen_cases_listbox = ListBox(
-            items = [],
-            selectable_hint='all',
-            no_of_visible_lines=15,
-            width=520,
-            padding=5,
-            coordinates_name = 'topleft',
-            coordinates_value = topleft,
-        )
-
-        widgets.append(self.chosen_cases_listbox)
-
-        ## label
-
-        bottomleft = self.chosen_cases_listbox.rect.move(0, -5).topleft
-
-        chosen_cases_label = Object2D.from_surface(
-            surface=render_text(
-                text="Chosen test cases", **TEXT_SETTINGS
-            ),
-            coordinates_name="bottomleft",
-            coordinates_value=bottomleft,
-        )
-
-        widgets.append(chosen_cases_label)
-
-
-        ### test case selection/deselection buttons
-
-        ## add button
-
-        add_button_text_surf = (
-            render_text(
-                text="Add selected",
-                **BUTTON_SETTINGS,
-            )
-        )
-
-        add_button_surf = combine_surfaces(
-            [ARROW_RIGHT_ICON, add_button_text_surf],
-            retrieve_pos_from="midright",
-            assign_pos_to="midleft",
-            offset_pos_by=(0, 0),
-            padding=2,
-            background_color=BUTTON_BG,
-        )
-
-        draw_depth_finish(add_button_surf)
-
-        topleft = self.available_cases_listbox.rect.move(5, 10).midbottom
-
-        add_button = (
-
-            Button(
-                add_button_surf,
-                command=self.add_selected,
-                coordinates_name='topleft',
-                coordinates_value=topleft,
-            )
-
-        )
-
-        widgets.append(add_button)
-
-        ## add all button
-
-        add_all_button_text_surf = (
-            render_text(
-                text="Add all",
-                **BUTTON_SETTINGS,
-            )
-        )
-
-        add_all_button_surf = combine_surfaces(
-            [ARROW_RIGHT_DOUBLE_ICON, add_all_button_text_surf],
-            retrieve_pos_from="midright",
-            assign_pos_to="midleft",
-            offset_pos_by=(0, 0),
-            padding=2,
-            background_color=BUTTON_BG,
-        )
-
-        draw_depth_finish(add_all_button_surf)
-
-        topright = self.available_cases_listbox.rect.move(-5, 10).midbottom
-
-        add_all_button = (
-
-            Button(
-                add_all_button_surf,
-                command=self.add_all,
-                coordinates_name='topright',
-                coordinates_value=topright,
-            )
-
-        )
-
-        widgets.append(add_all_button)
-
-        ## remove button
-
-        remove_button_text_surf = (
-            render_text(
-                text="Remove selected",
-                **BUTTON_SETTINGS,
-            )
-        )
-
-        remove_button_surf = combine_surfaces(
-            [ARROW_LEFT_ICON, remove_button_text_surf],
-            retrieve_pos_from="midright",
-            assign_pos_to="midleft",
-            offset_pos_by=(0, 0),
-            padding=2,
-            background_color=BUTTON_BG,
-        )
-
-        draw_depth_finish(remove_button_surf)
-
-        topright = self.chosen_cases_listbox.rect.move(-5, 10).midbottom
-
-        remove_button = (
-
-            Button(
-                remove_button_surf,
-                command=self.remove_selected,
-                coordinates_name='topright',
-                coordinates_value=topright,
-            )
-
-        )
-
-        widgets.append(remove_button)
-
-        ## remove all button
-
-        remove_all_button_text_surf = (
-            render_text(
-                text="Remove all",
-                **BUTTON_SETTINGS,
-            )
-        )
-
-        remove_all_button_surf = combine_surfaces(
-            [ARROW_LEFT_DOUBLE_ICON, remove_all_button_text_surf],
-            retrieve_pos_from="midright",
-            assign_pos_to="midleft",
-            offset_pos_by=(0, 0),
-            padding=2,
-            background_color=BUTTON_BG,
-        )
-
-        draw_depth_finish(remove_all_button_surf)
-
-        topleft = self.chosen_cases_listbox.rect.move(5, 10).midbottom
-
-        remove_all_button = (
-
-            Button(
-                remove_all_button_surf,
-                command=self.remove_all,
-                coordinates_name='topleft',
-                coordinates_value=topleft,
-            )
-
-        )
-
-        widgets.append(remove_all_button)
-
-        ### update the topleft to a value a bit below
-        ### the bottomleft corner of the widgets already
-        ### in the versatile list
-        topleft = widgets.rect.move(0, 20).bottomleft
-
-        ### widgets to select play speed
-
-        ## label
-
-        speed_label = Object2D.from_surface(
-            surface=render_text(
-                text="Speed (frames/second):", **TEXT_SETTINGS
-            ),
-            coordinates_name="topleft",
-            coordinates_value=topleft,
-        )
-
-        widgets.append(speed_label)
-
-        ## entry
-
-        midleft = speed_label.rect.move(10, 0).midright
-
-        self.speed_entry = IntFloatEntry(
-            value=0, # max/uncapped
-            min_value = 0,
-            numeric_classes_hint='int_float',
-            loop_holder=self,
-            command=self.check_speed_button_surfs,
-            width=100,
-            coordinates_name="midleft",
-            coordinates_value=midleft,
-        )
-
-        widgets.append(self.speed_entry)
-
-        ## extra buttons for speed
-
-        midleft = self.speed_entry.rect.move(10, 0).midright
-
-        set_speed = self.speed_entry.set
-
-        for text, speed in (
-            ("0.25x", FPS//4),
-            ("0.5x", FPS//2),
-            ("1x", FPS),
-            ("2x", FPS*2),
-            ("4x", FPS*4),
-            ("max/uncapped", 0),
-        ):
-
-            speed_button = Button.from_text(
-                text=text,
-                command=partial(set_speed, speed),
-                coordinates_name="midleft",
-                coordinates_value=midleft,
-                **BUTTON_SETTINGS,
-            )
-
-            highlighted_surf = (
-                render_text(
-                    text=text,
-                    **HIGHLIGHTED_SPEED_BUTTON_SETTINGS,
-                )
-            )
-
-            SPEED_TO_BUTTON[speed] = speed_button
-
-            SPEED_BUTTON_SURF_MAP[speed_button] = (
-                speed_button.image, highlighted_surf
-            )
-
-            midleft = speed_button.rect.midright
-
-            draw_depth_finish(speed_button.image)
-
-            widgets.append(speed_button)
-
-        ### update speed button surfs
-        self.check_speed_button_surfs()
-
-        ### update the topleft to a value a bit below
-        ### the bottomleft corner of the widgets already
-        ### in the versatile list
-        topleft = widgets.rect.move(0, 20).bottomleft
-
-        ### create, position and store form related buttons
+        ### create report related buttons
 
         ## exit button
+
+        bottomright = self.rect.move(-10, -10).bottomright
 
         self.exit_button = Button.from_text(
             text="Exit report",
             command=self.exit,
+            coordinates_name='bottomright',
+            coordinates_value=bottomright,
             **BUTTON_SETTINGS,
         )
 
         draw_depth_finish(self.exit_button.image)
 
-        self.exit_button.rect.bottomright = (
-            self.rect.move(-10, -10).bottomright
-        )
 
         ## save button
 
+        midright = self.exit_button.rect.move(-10, 0).midleft
+
         self.save_button = Button.from_text(
-            text="Save on file",
+            text="Save as html",
             command=self.save_report,
+            coordinates_name='midright',
+            coordinates_value=midright,
             **BUTTON_SETTINGS,
         )
 
         draw_depth_finish(self.save_button.image)
 
-        self.save_button.rect.midright = (
-            self.exit_button.rect.move(-5, 0).midleft
+        ## store them
+        self.widgets.extend((self.save_button, self.exit_button))
+
+    def prepare_report(self, report_data):
+        """"""
+        ### reference widgets locally
+        widgets = self.widgets
+
+        ### clear widgets
+        widgets.clear()
+
+        ### reposition and store caption
+
+        self.caption_label.rect.topleft = self.rect.move(10, 10).topleft
+        widgets.append(self.caption_label)
+
+        ### create report-related visuals
+
+        topleft = self.caption_label.rect.move(0, 10).bottomleft
+
+        result_label = Object2D.from_surface(
+            surface=(
+                render_text(
+                    text=report_data['overall_result'],
+                    **{
+                        **TEXT_SETTINGS,
+                        'font_height': 40,
+                        'foreground_color': (130, 30, 70)
+                    },
+                )
+            ),
+            coordinates_name="topleft",
+            coordinates_value=topleft,
         )
 
-        ## store
+        widgets.append(result_label)
+
+        ### position and store buttons
+
+        self.exit_button.rect.bottomright = (
+            self.rect.right - 10,
+            widgets.rect.bottom + 10,
+        )
+
+        self.save_button.rect.midright = (
+            self.exit_button.rect.move(-10, 0).midleft
+        )
+
         widgets.extend((self.save_button, self.exit_button))
 
     def handle_input(self):
@@ -601,10 +253,7 @@ class ReportViewer(Object2D):
             elif event.type == KEYUP:
 
                 if event.key == K_ESCAPE:
-                    self.cancel()
-
-                elif event.key in (K_RETURN, K_KP_ENTER):
-                    self.trigger_system_testing()
+                    self.exit()
 
             ### MOUSEBUTTONDOWN
 
@@ -628,10 +277,7 @@ class ReportViewer(Object2D):
                 ## otherwise cancel editing form
 
                 else:
-                    self.cancel()
-
-    # XXX in the future, maybe a "Reset" button would be
-    # nice
+                    self.exit()
 
     def mouse_method_on_collision(self, method_name, event):
         """Invoke inner widget if it collides with mouse.
@@ -703,7 +349,7 @@ class ReportViewer(Object2D):
         for widget in self.widgets:
 
             if widget.rect.colliderect(rect):
-                widgets.draw_on_surf(image)
+                widget.draw_relative(self)
 
         ### draw border
         draw_border(image)
@@ -713,6 +359,13 @@ class ReportViewer(Object2D):
 
         ### update screen
         SERVICES_NS.update_screen()
+
+    def save_report(self):
+        ...
+
+    def exit(self):
+        """Exit report viewer."""
+        raise SwitchLoopException(self.loop_holder)
 
 
 

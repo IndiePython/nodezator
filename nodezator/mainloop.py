@@ -52,6 +52,9 @@ from .dialog import show_dialog_from_key
 
 from .winman.main import perform_startup_preparations
 
+from .systemtesting.reportviewer import report_viewer
+
+
 
 ### create logger for module
 logger = get_new_logger(__name__)
@@ -213,10 +216,15 @@ def run_app(filepath=None):
             ### mainloop at the beginning of this function
             loop_holder = perform_startup_preparations(obj.filepath)
 
-            ### XXX (temp)
+            ### use report viewer as loop holder instead if there's
+            ### a system testing report
+
             if hasattr(obj, 'tests_report_data'):
-                from pprint import pprint
-                pprint(obj.tests_report_data)
+
+                report_viewer.prepare_report(obj.tests_report_data)
+
+                report_viewer.loop_holder = loop_holder
+                loop_holder = report_viewer
 
 
         ## catch unexpected exceptions so we can quit pygame
