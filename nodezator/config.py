@@ -50,7 +50,7 @@ APP_REFS = SimpleNamespace(
     ),
     ## flag to lock work-in-progress features, that is,
     ## features not ready for regular usage yet
-    wip_lock=True
+    wip_lock=True,
 )
 
 
@@ -63,6 +63,8 @@ IMAGES_DIR = DATA_DIR / "images"
 SYNTAX_THEMES_DIR = DATA_DIR / "syntax_themes"
 
 APP_WIDE_WEB_DIR = DATA_DIR / "aww"
+
+SYSTEM_TESTING_DATA_DIR = DATA_DIR / "system_testing"
 
 APP_COLORS_FILE = DATA_DIR / "app_themes" / "emeralds_on_coal.pyl"
 

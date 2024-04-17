@@ -73,11 +73,8 @@ from ...colorsman.colors import (
     WINDOW_BG,
 )
 
-## widgets
-
+## widget
 from ...widget.intfloatentry.main import IntFloatEntry
-
-from ...widget.optiontray.main import OptionTray
 
 
 ### constants
@@ -303,7 +300,7 @@ class SessionPlayingForm(Object2D):
                 speed_button.image, highlighted_surf
             )
 
-            midleft = speed_button.rect.move(0, 0).midright
+            midleft = speed_button.rect.midright
 
             draw_depth_finish(speed_button.image)
 

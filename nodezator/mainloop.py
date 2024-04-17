@@ -48,9 +48,12 @@ from .loopman.exception import (
     ResetAppException,
 )
 
-from .dialog import show_dialog_from_key
+from .dialog import create_and_show_dialog, show_dialog_from_key
 
 from .winman.main import perform_startup_preparations
+
+from .systemtesting import report_viewer
+
 
 
 ### create logger for module
@@ -213,6 +216,32 @@ def run_app(filepath=None):
             ### mainloop at the beginning of this function
             loop_holder = perform_startup_preparations(obj.filepath)
 
+            ### use report viewer as loop holder instead if there's
+            ### a system testing report
+
+            if hasattr(obj, 'tests_report_data'):
+
+                report_viewer.prepare_report(obj.tests_report_data)
+
+                report_viewer.loop_holder = loop_holder
+                loop_holder = report_viewer
+
+            ### if user left a system testing session midway, notify
+            ### via dialog
+
+            elif hasattr(obj, 'left_system_testing_midway'):
+
+                create_and_show_dialog(
+                    (
+                        "You left the system testing session midway,"
+                        " which is fine. However, in case you want"
+                        " system testing data to be properly gathered and"
+                        " show/update the system testing report, you must"
+                        " execute a system testing session until the end,"
+                        " that is, until it finishes by itself."
+                    ),
+                    level_name='info',
+                )
 
         ## catch unexpected exceptions so we can quit pygame
         ## and log the exception before reraising
@@ -223,6 +252,11 @@ def run_app(filepath=None):
                 "While running the application an unexpected"
                 " exception ocurred. Doing clean up and"
                 " reraising now."
+            )
+
+            logger.error(
+                "The previously logged error ocurred during"
+                f" {GENERAL_NS.mode_name!r} mode."
             )
 
             quit_pygame()

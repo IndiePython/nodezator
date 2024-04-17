@@ -31,6 +31,9 @@ second_multiples_map = OrderedDict(
     (("day", DAY), ("hr", HOUR), ("min", MINUTE), ("s", SECOND), ("msecs", MILLISECOND))
 )
 
+## format code for time strings produced with "str(datetime.now().time())"
+TIME_STR_FORMAT_CODE = "%H:%M:%S.%f"
+
 
 ### function definitions
 

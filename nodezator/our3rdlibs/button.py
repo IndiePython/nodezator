@@ -47,6 +47,7 @@ class Button(Object2D):
         command=empty_function,
         coordinates_name="topleft",
         coordinates_value=(0, 0),
+        **kwargs,
     ):
         """
         surface (pygame.Surface instance)
@@ -73,6 +74,9 @@ class Button(Object2D):
 
         ### position rect
         setattr(self.rect, coordinates_name, coordinates_value)
+
+        ### store kwargs as attributes
+        self.__dict__.update(kwargs)
 
     def on_mouse_release(self, event):
         """Execute button command when mouse is released.
@@ -128,6 +132,7 @@ class Button(Object2D):
         command=empty_function,
         coordinates_name="topleft",
         coordinates_value=(0, 0),
+        **kwargs,
     ):
         """Create surface from text args and pass to class.
 
@@ -167,6 +172,7 @@ class Button(Object2D):
             command=command,
             coordinates_name=coordinates_name,
             coordinates_value=coordinates_value,
+            **kwargs,
         )
 
     @classmethod
@@ -177,6 +183,7 @@ class Button(Object2D):
         command=empty_function,
         coordinates_name="topleft",
         coordinates_value=(0, 0),
+        **kwargs,
     ):
         """Create surface from image args and pass to class.
 
@@ -197,4 +204,5 @@ class Button(Object2D):
             command=command,
             coordinates_name=coordinates_name,
             coordinates_value=coordinates_value,
+            **kwargs,
         )

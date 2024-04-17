@@ -36,6 +36,7 @@ from .nodepacksforms.renaming import (
 from .playback.record import set_session_recording
 from .playback.play import set_session_playing
 from .playback.demonstrate import set_demonstration_session
+from .playback.systemtesting import set_system_testing_session
 
 ## classes for composition
 
@@ -105,6 +106,7 @@ class EditingAssistant(
         self.set_session_recording = set_session_recording
         self.set_session_playing = set_session_playing
         self.set_demonstration_session = set_demonstration_session
+        self.set_system_testing_session = set_system_testing_session
 
         ### create and store popup menus
 

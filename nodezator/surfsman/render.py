@@ -1,5 +1,9 @@
 """Tools to generate surfaces through drawing/blitting."""
 
+### standard library import
+from io import BytesIO
+
+
 ### third-party imports
 
 from pygame import Surface
@@ -7,6 +11,8 @@ from pygame import Surface
 from pygame.draw import line as draw_line
 
 from pygame.transform import rotate as rotate_surface
+
+from pygame.image import load as load_image
 
 
 ### local imports
@@ -24,6 +30,7 @@ from .draw import (
 )
 
 from ..rectsman.main import RectsManager
+
 
 
 def render_rect(width, height, color=BLACK):
@@ -233,3 +240,15 @@ def render_separator(
 
     ### finally, return the surface
     return surf
+
+def render_surface_from_svg_text(svg_text):
+    """Return surface representing SVG given as text.
+
+    The SVG renderer used by pygame doesn't support all SVG features,
+    so a bit of experimentation is needed sometimes.
+    """
+    with BytesIO(
+        bytes(svg_text, encoding='utf-8')
+    ) as bytestream:
+
+        return load_image(bytestream)

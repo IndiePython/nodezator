@@ -43,10 +43,10 @@ def switch_mode(mode_info_ns):
     mode = GENERAL_NS.mode_name = mode_info_ns.mode
 
     if mode == 'record':
-        record.set_behaviour(SERVICES_NS, mode_info_ns.data)
+        record.set_behaviour(SERVICES_NS, mode_info_ns)
 
     elif mode == 'play':
-        play.set_behaviour(SERVICES_NS, mode_info_ns.data)
+        play.set_behaviour(SERVICES_NS, mode_info_ns)
 
     elif mode == 'normal':
         normal.set_behaviour(SERVICES_NS)

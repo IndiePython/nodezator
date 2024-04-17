@@ -1,0 +1,7 @@
+### Dict mapping test case IDs to respective titles
+
+{
+    0: "Instantiate default objects via context menu",
+    1: "Delete objects via context menu",
+}
+

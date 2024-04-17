@@ -53,6 +53,10 @@ from ..graphman.thirdlibnode.constants import (
     THIRDLIB_CATEGORY_TO_SORTED_ITEMS,
 )
 
+from ..systemtesting.reportviewer import report_viewer
+
+
+
 ### class definition
 
 
@@ -143,6 +147,10 @@ class MenuSetup:
                         ),
                     },
                     {"label": "------"},
+                    {
+                        "label": "Show system testing report",
+                        "command": report_viewer.view_last_report,
+                    },
                     {
                         "label": "Show user log",
                         "key_text": "Shift+Ctrl+J",
@@ -397,8 +405,8 @@ class MenuSetup:
                 },
                 {"label": "---",},
                 {
-                    "label": "Automated GUI tests",
-                    "command": partial(create_and_show_dialog, "Not implemented"),
+                    "label": "Perform system testing session",
+                    "command": APP_REFS.ea.set_system_testing_session,
                 },
             ],
         }

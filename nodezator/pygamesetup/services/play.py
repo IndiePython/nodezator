@@ -46,9 +46,13 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
+from ...config import APP_REFS
+
 from ...ourstdlibs.pyl import load_pyl
 
 from ...ourstdlibs.behaviour import empty_function
+
+from ...our3rdlibs.behaviour import are_changes_saved, indicate_saved
 
 from ...loopman.exception import ResetAppException, QuitAppException
 
@@ -82,7 +86,11 @@ from ..constants import (
 SESSION_DATA = {}
 
 ### custom namespace for playing mode
+
 PLAY_REFS = type("Object", (), {})()
+PLAY_REFS.pending_test_cases = []
+PLAY_REFS.ongoing_test = None
+PLAY_REFS.system_testing_playback_speed = 0
 
 ### map to store events
 EVENTS_MAP = {}
@@ -240,6 +248,43 @@ def get_ready_events(events):
 def set_behaviour(services_namespace, data):
     """Setup play services and data."""
 
+    pending_cases = PLAY_REFS.pending_test_cases
+
+    ### setup test cases if requested
+
+    if hasattr(data, 'test_cases_ids'):
+
+        APP_REFS.playsupport.prepare_system_testing_session(
+            data.test_cases_ids,
+            data.playback_speed,
+        )
+
+        pending_cases.extend(
+            sorted(data.test_cases_ids, reverse=True)
+        )
+
+        PLAY_REFS.system_testing_playback_speed = data.playback_speed
+
+    ### if there are pending test cases, pick last one and make preparations
+    ### to perform it if needed
+
+    if pending_cases:
+
+        PLAY_REFS.ongoing_test = pending_cases.pop()
+        APP_REFS.playsupport.perform_test_setup(PLAY_REFS.ongoing_test, data)
+        data.playback_speed = PLAY_REFS.system_testing_playback_speed
+
+        ## ensure app indicates that there are no unsaved changes, if needed
+        ##
+        ## this is needed to prevent the app from complaining there are
+        ## unsaved changes when in fact we just want to ignore them, since
+        ## we expect they were made in the previous test case, that already
+        ## finished
+
+        if not are_changes_saved():
+            indicate_saved()
+
+
     ### set play services as current ones
 
     our_globals = globals()
@@ -250,11 +295,16 @@ def set_behaviour(services_namespace, data):
         setattr(services_namespace, attr_name, value)
 
     ### load session data
-    SESSION_DATA.update(load_pyl(data['input_data_path']))
+
+    if hasattr(data, 'input_data_path'):
+        SESSION_DATA.update(load_pyl(data.input_data_path))
+
+    else:
+        SESSION_DATA.update(data.input_data)
 
     ### retrieve playback speed and last frame index
 
-    playback_speed = data['playback_speed']
+    playback_speed = data.playback_speed
     last_frame_index = SESSION_DATA['last_frame_index']
 
     ### store playback speed, last frame index and recording width
@@ -516,7 +566,7 @@ def get_events():
                 ### it here
 
                 except CancelWhenPaused:
-                    leave_playing_mode()
+                    leave_playing_mode(manually_triggered=True)
 
             ### toggle mouse tracing
 
@@ -526,7 +576,7 @@ def get_events():
             ### leave playing mode
 
             elif event.key == K_F7:
-                leave_playing_mode()
+                leave_playing_mode(manually_triggered=True)
 
     ### play the recorded events
 
@@ -645,13 +695,81 @@ def update_screen():
 
 ### other operations
 
-def leave_playing_mode():
+def leave_playing_mode(manually_triggered=False):
+    """Perform setups to leave playing mode.
+
+    Sometimes, leaving playing mode means that we'll reenter it.
+    For instance, when performing a system testing session (performing
+    multiple system tests).
+
+    Parameters
+    ==========
+
+    manually_triggered (bool)
+        Whether leaving playing mode was triggered manually by the user
+        or not. Only relevant when in the middle of a system testing
+        session.
+    """
 
     ### clear stored data
     clear_data()
 
-    ### reset app
-    raise ResetAppException(mode='normal')
+    ### act depending on...
+    ### - whether we are performing tests or not
+    ### - whether there are more pending tests
+    ### - whether leaving playing mode was manually or naturally triggered
+
+    if PLAY_REFS.ongoing_test is not None:
+
+        ## if leaving playing mode was triggered by
+
+        if manually_triggered:
+
+            APP_REFS.playsupport.finish_system_testing_session_earlier(
+                PLAY_REFS.ongoing_test
+            )
+
+            PLAY_REFS.pending_test_cases.clear()
+            PLAY_REFS.ongoing_test = None
+
+            raise (
+                ResetAppException(
+                    mode='normal',
+                    data={'left_system_testing_midway': True},
+                )
+            )
+
+        else:
+
+            # perform assertions, store test results and perform teardown
+            APP_REFS.playsupport.finish_test_case(PLAY_REFS.ongoing_test)
+
+            # act according to existence of pending test cases
+
+            if PLAY_REFS.pending_test_cases:
+                raise ResetAppException(mode='play')
+
+            else:
+
+                PLAY_REFS.ongoing_test = None
+
+                tests_report_data = (
+                    APP_REFS
+                    .playsupport
+                    .finish_system_testing_session_and_get_report()
+                )
+
+                raise (
+
+                    ResetAppException(
+                        mode='normal',
+                        data={'tests_report_data': tests_report_data},
+                    )
+
+                )
+
+    else:
+        raise ResetAppException(mode='normal')
 
 def clear_data():
     ### clear collections

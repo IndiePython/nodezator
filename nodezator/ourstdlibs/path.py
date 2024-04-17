@@ -13,6 +13,10 @@ from itertools import count
 from tempfile import mkdtemp
 
 
+### local imports
+from .datetimeutils import get_timestamp
+
+
 
 TIMESTAMP_PATTERN = "_".join(
     (
@@ -89,23 +93,6 @@ def get_swap_path(path):
     hidden_swap_path = Path(str(hidden_path) + ".swp")
 
     return hidden_swap_path
-
-def get_timestamp(datetime_obj=None):
-    """Return timestamp string in 'YYYY_MM_DD_HH_MM_SS' format."""
-
-    ### if no datetime object is given, use datetime.now()
-    if datetime_obj is None:
-        datetime_obj = datetime.now()
-
-    ### build and return the timestamp
-    return  "".join(
-        ## use either a digit or '_'
-        char if char.isdigit() else "_"
-        ## for each char from the first
-        ## 19 ones in string from
-        ## datetime.now()
-        for char in str(datetime_obj)[:19]
-    )
 
 def save_timestamped_backup(path, backup_quantity):
     """Save new backup, if applicable, limiting to quantity.

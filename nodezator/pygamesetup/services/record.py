@@ -42,7 +42,7 @@ from pygame.display import set_mode, update
 
 ### local imports
 
-from ...ourstdlibs.path import get_timestamp
+from ...ourstdlibs.datetimeutils import get_timestamp
 
 from ...ourstdlibs.pyl import save_pyl
 
@@ -178,17 +178,17 @@ def set_behaviour(services_namespace, data):
 
     ### store recording path and recording size
 
-    for name in (
+    for attr_name in (
         'recording_title',
         'recording_path',
         'recording_size',
     ):
 
-        value = data[name]
-        setattr(REC_REFS, name, value)
+        value = getattr(data, attr_name)
+        setattr(REC_REFS, attr_name, value)
 
     ### reset window mode (pygame.display.set_mode)
-    set_mode(data['recording_size'], 0)
+    set_mode(data.recording_size, 0)
 
     ### trigger setups related to window size change
     watch_window_size()
@@ -199,7 +199,7 @@ def set_behaviour(services_namespace, data):
     new_title_label = (
         Object2D.from_surface(
             render_text(
-                text = data['recording_title'],
+                text = data.recording_title,
                 foreground_color = THECOLORS['white'],
                 background_color = THECOLORS['blue'],
                 border_color = THECOLORS['white'],
