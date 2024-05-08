@@ -133,6 +133,15 @@ class ProxySocket(Socket):
             event.pos,
         )
 
+    def add_source_id(self, source_id):
+
+        out_socket = self.node.output_socket
+
+        if hasattr(out_socket, 'children'):
+
+            for child in out_socket.children:
+                child.add_source_id(source_id)
+
     def svg_repr(self):
 
         socket_radius_str = str(7 - 1)

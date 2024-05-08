@@ -218,6 +218,9 @@ class InputSocket(Socket):
             self.subparameter_index,
         )
 
+    def add_source_id(self, source_id):
+        self.node.add_source_id(source_id)
+
     def svg_repr(self):
         """"""
         socket_radius_str = str(7 - 1)

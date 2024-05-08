@@ -257,6 +257,16 @@ def yield_subgraph_nodes(node, visited_nodes=None):
 
     ### now let's visit each downstream node recursively,
     ### that is, the ones we didn't visit yet
+    ###
+    ### note that some nodes also have a map where they store references
+    ### to their output sockets; however, we don't worry about output
+    ### sockets from such map (if it exists) here, because even the nodes
+    ### which have such map still store references to their output sockets
+    ### in the attribute used here; the difference is that nodes that have
+    ### such map, when in collapsed signature mode, only reference the
+    ### connected output sockets in this attribute (if any); this is fine,
+    ### because we are only interested in the connected output sockets
+    ### anyway, since we are traversing the graph
 
     for output_socket in node.output_sockets:
 

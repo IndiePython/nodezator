@@ -138,6 +138,13 @@ class OutputSocket(Socket):
         else:
             method(self)
 
+    def add_source_id(self, source_id):
+
+        if hasattr(self, 'children'):
+
+            for child in self.children:
+                child.add_source_id(source_id)
+
     def svg_repr(self):
         """"""
 

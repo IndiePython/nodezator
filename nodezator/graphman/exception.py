@@ -141,20 +141,22 @@ class MissingNodeScriptsError(Exception):
         super().__init__(msg)
 
 
-### raised during graph execution
+### raised preparing to execute graph or during its execution
 
+class LackOfInputError(Exception):
+    """Raised whenever a parameter has no data.
 
-class WaitingInputException(Exception):
-    """Raised whenever a node is waiting for arguments.
+    That is, when it lacks a default value or a value provided
+    via widget or incoming connection.
 
-    It is a normal situation, where we can do nothing but
-    wait for the needed argument to arrive from another
-    node.
+    This doesn't apply to parameters of variable kind (*args or
+    **kwargs), because they have implicit default values (an
+    empty tuple and an empty dict respectively).
+
+    Subparameters aren't affected by this problem, since they
+    simply cease to exist when there's no source of data to
+    them.
     """
-
-
-class MissingInputError(Exception):
-    """Raised whenever a (sub)parameter has no data."""
 
     def __init__(
         self,
@@ -180,14 +182,19 @@ class MissingInputError(Exception):
         super().__init__(report_message)
 
 
-class MissingOutputError(Exception):
-    """Raised whenever the output misses data.
 
-    More specifically, this happens in cases where the
-    return value of the node's callable should be
-    a mappping with a specific key but it either
-    isn't a mapping or, if it is, it lacks the
-    needed key.
+class UnexpectedOutputError(Exception):
+    """Raised whenever expected mapping output misses one or more keys.
+
+    In Python every callable returns only one output. However, Nodezator
+    offers a way for users to return a mapping and have its items treated
+    as though they were different outputs.
+
+    When this is the case, if the user doesn't return a mapping
+
+    That is, when the return value of the node's callable is expected
+    to be a mappping with specific keys but it either isn't a mapping
+    or, if it is, it lacks the needed key.
     """
 
     def __init__(self, node, expected_outputs):

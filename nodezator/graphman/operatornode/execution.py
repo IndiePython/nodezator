@@ -1,9 +1,9 @@
+
 ### local imports
 
-from ..exception import (
-    MissingInputError,
-    WaitingInputException,
-)
+from ..exception import LackOfInputError
+
+from ...ourstdlibs.behaviour import empty_function
 
 
 class Execution:
@@ -11,133 +11,61 @@ class Execution:
 
     def __init__(self):
         """Create objects to help during execution."""
-
         ### create a map to store input for parameters
         ### (the input comes only from other nodes)
         self.argument_map = {}
 
-        ### create a set to store the names of all
-        ### pending parameters, that is, parameters
-        ### which are still waiting for input from
-        ### other nodes
-        self.pending_param_names = set()
+        ### create set to store ids of nodes providing incoming
+        ### connections (inputs) to this one;
+        ###
+        ### also store references to recurrent methods
 
-        ### create a map to store whether or not
-        ### input sockets are expecting input from
-        ### another node
-        self.expects_input_map = {}
+        isi = self.input_source_ids = set()
+
+        self.clear_source_ids = isi.clear
+        self.remove_source_ids = isi.difference_update
+        self.add_source_id = isi.add
+
+        ### set an empty function as the 'perform_pre_execution_setups'
+        ### routine
+        self.perform_pre_execution_setups = empty_function
 
     def perform_execution_setup(self):
-        """Clear input slots, set finished flag to False.
 
-        Performed before and after a node execution.
-        """
-        ### update the pending parameter names set with the
-        ### name of all existing parameters
-
-        self.pending_param_names.update(self.signature_obj.parameters.keys())
-
-        ### clear the argument map
+        ### clear argument map
         self.argument_map.clear()
 
-        ### setup the expects input map
+        ### clear set of ids from nodes that provide input to this one
+        self.clear_source_ids()
 
-        self.expects_input_map.clear()
+    def send_id_to_direct_children(self):
+        ### add id to direct children as source of data
+        ###
+        ### used for indegree tracking
+        self.signature_output_socket.add_source_id(self.id)
+
+    def check_and_setup_parameters(self):
+        """Check whether parameters lack a source of daa.
+
+        In case there's no source of data for one or more parameters,
+        we raise a LackOfInputError explaining the situation.
+        """
+        ### create a list to hold names of parameters lacking a data source
+        lacking_data_source = []
+
+        ### iterate over each parameter, performing
+        ### checks and acting according to their results
 
         for input_socket in self.input_sockets:
 
-            ### use the parameter name as key
-            key = input_socket.parameter_name
-
-            ### use the key to store whether the input
-            ### socket has a 'parent' attribute or not
-            ### in the map
-
-            self.expects_input_map[key] = hasattr(
-                input_socket,
-                "parent",
-            )
-
-        ### set a state as 'ready
-        self.state = "ready"
-
-    def check_pending_parameters(self):
-        """Perform checks on pending parameters.
-
-        Here we check pending parameters to see whether we
-
-        1. should raise a WaitingInputException, meaning the
-        node must wait for inputs from other nodes before
-        executing.
-        2. only if there's no incoming data from other
-        nodes, whether we should use data provided by the
-        user via embedded widgets or default values from
-        the callable itself.
-        3. in case there's no source of data for a
-        required parameter, raise an MissingInputError
-        explaining the situation.
-        """
-        ### create a set to hold names of parameters
-        ### which are not pending anymore
-        ready_param_names = set()
-
-        ### create a list to hold names of (sub)parameters
-        ### waiting for input
-        waiting_input = []
-
-        ### create a list to hold names of (sub)parameters
-        ### lacking a data source
-        lacking_data_source = []
-
-        ### alias the argument map using a variable of
-        ### smaller character count for better code layout
-        arg_map = self.argument_map
-
-        ### iterate over each pending parameter, performing
-        ### checks and acting according to their results
-
-        for param_name in self.pending_param_names:
-
-            ## if the parameter is present in the
-            ## argument map, we deem it ready
-
-            if param_name in arg_map:
-                ready_param_names.add(param_name)
-
-            ## if the parameter has data set to be
-            ## delivered from another node output,
-            ## we store its name on the 'waiting_input'
-            ## list
-
-            elif self.expects_input_map[param_name]:
-                waiting_input.append(param_name)
-
-            ## otherwise, it can only mean the node is
-            ## inexecutable due to lack of input sources;
-            ## we store its name on the
-            ## 'lacking_data_source' list
-            else:
-                lacking_data_source.append(param_name)
-
-        ### remove ready parameter names from pending set
-        self.pending_param_names -= ready_param_names
+            if not hasattr(input_socket, 'parent'):
+                lacking_data_source.append(input_socket.parameter_name)
 
         ### if parameters lacking data sources are found,
-        ### raise MissingInputError
+        ### raise LackOfInputError
 
         if lacking_data_source:
-
-            raise MissingInputError(
-                self,
-                lacking_data_source,
-            )
-
-        ### if there are parameters waiting for input,
-        ### raise the WaitingInputException
-
-        if waiting_input:
-
-            raise WaitingInputException("node has parameters waiting for input")
+            raise LackOfInputError(self, lacking_data_source)
 
     def receive_input(
         self,
