@@ -2,8 +2,6 @@
 
 ### standard library imports
 
-from os import environ
-
 from os.path import getsize
 
 from pathlib import Path
@@ -37,7 +35,9 @@ from contextlib import redirect_stdout
 
 ### local imports
 
-from ..appinfo import TITLE, APP_VERSION, APP_DIR_NAME
+from ..config import WRITEABLE_PATH
+
+from ..appinfo import TITLE, APP_VERSION
 
 from ..ourstdlibs.datetimeutils import UTC_OFFSET
 
@@ -46,17 +46,12 @@ from .constants import PYGAME_CE_REQUIRED_MESSAGE
 from .fixeddialog import display_dialog_and_quit
 
 
+
 ### constants
 
 ## path to log folder
 
-if "APPDATA" in environ:
-    general_log_dir = Path(environ["APPDATA"])
-
-else:
-    general_log_dir = Path(environ["HOME"]) / ".local"
-
-APP_LOGS_DIR = general_log_dir / APP_DIR_NAME / "logs"
+APP_LOGS_DIR = WRITEABLE_PATH / 'logs'
 
 if not APP_LOGS_DIR.exists():
     APP_LOGS_DIR.mkdir(parents=True)
