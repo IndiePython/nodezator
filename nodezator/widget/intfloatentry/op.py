@@ -329,7 +329,12 @@ class IntFloatOperations(Object2D):
                 or (type(value) is not type(self.value))
             ):
 
-                self.set(value)
+                ## note that we only execute the custom command
+                ## after updating the image, since depending on what
+                ## the custom command does, we could have to leave
+                ## this method earlier via an expected exception
+
+                self.set(value, custom_command=False)
                 self.update_image()
                 self.command()
 
