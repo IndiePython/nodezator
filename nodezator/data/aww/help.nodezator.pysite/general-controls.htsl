@@ -100,6 +100,11 @@
       <td>Moves to corner of node layout; each digit represents a corner analogous to the corner they occupy in the keyboard's numpad: 5 on the center, 1 on the bottomleft, 2 on the midbottom and so on.</td>
     </tr>
 
+    <tr>
+      <td><b>&lt;Shift + J&gt;</b></td>
+      <td>Jumps to specific node by providing its id. Presents an entry for user to specify the id.</td>
+    </tr>
+
   </tbody>
 
 </table>

@@ -238,17 +238,26 @@ class LoadedFileState:
 
                     (APP_REFS.ea.comment_uncomment_selected_nodes())
 
-                ## display the text of the user log
+                ## different actions using the J key
 
-                elif event.key == K_j and event.mod & KMOD_CTRL:
+                elif event.key == K_j:
 
                     if event.mod & KMOD_SHIFT:
 
-                        (APP_REFS.ea.show_user_log_contents())
+                        ## display the text of the user log
 
-                    else:
+                        if event.mod & KMOD_CTRL:
+                            APP_REFS.ea.show_user_log_contents()
 
-                        (APP_REFS.ea.show_custom_stdout_contents())
+                        ## present form to jump to node by id
+
+                        else:
+                            APP_REFS.ea.present_jump_to_node_form()
+
+                    ## show contents of custom standard output stream
+
+                    elif event.mod & KMOD_CTRL:
+                        APP_REFS.ea.show_custom_stdout_contents()
 
                 ## selection related
 

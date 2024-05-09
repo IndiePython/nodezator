@@ -32,6 +32,8 @@ from .nodepacksforms.renaming import (
     present_rename_node_packs_form,
 )
 
+from .jumptonode import present_jump_to_node_form
+
 
 from .playback.record import set_session_recording
 from .playback.play import set_session_playing
@@ -102,6 +104,8 @@ class EditingAssistant(
 
         self.present_rename_node_packs_form = present_rename_node_packs_form
         self.present_change_node_packs_form = present_change_node_packs_form
+
+        self.present_jump_to_node_form = present_jump_to_node_form
 
         self.set_session_recording = set_session_recording
         self.set_session_playing = set_session_playing

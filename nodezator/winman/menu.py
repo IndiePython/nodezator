@@ -349,6 +349,11 @@ class MenuSetup:
                         "label": (t.menu.load_nodes),
                         "command": (APP_REFS.ea.present_change_node_packs_form),
                     },
+                    {
+                        "label": "Jump to node by id",
+                        "key_text": "Shift+J",
+                        "command": APP_REFS.ea.present_jump_to_node_form,
+                    },
                     {"label": "------"},
                     {
                         "label": t.menu.execute_graph,
