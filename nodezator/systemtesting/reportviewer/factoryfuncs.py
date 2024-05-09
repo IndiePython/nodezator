@@ -14,7 +14,7 @@ from ...ourstdlibs.datetimeutils import DATETIME_STR_FORMAT_CODE
 
 from ...our3rdlibs.button import Button
 
-from ...our3rdlibs.svgutils import (
+from ...svgutils import (
     get_pie_chart_svg_text,
     get_rect_svg_text,
     get_circle_svg_text_from_radius,

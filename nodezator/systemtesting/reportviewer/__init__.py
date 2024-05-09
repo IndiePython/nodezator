@@ -34,7 +34,7 @@ from ...classes2d.collections import List2D
 
 from ...textman.render import render_text
 
-from ...our3rdlibs.svgutils import get_rect_svg_text
+from ...svgutils import get_rect_svg_text
 
 from ...rectsman.main import RectsManager
 
