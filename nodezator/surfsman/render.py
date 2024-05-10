@@ -6,9 +6,12 @@ from io import BytesIO
 
 ### third-party imports
 
-from pygame import Surface
+from pygame import Surface, Rect
 
-from pygame.draw import line as draw_line
+from pygame.draw import (
+    line as draw_line,
+    ellipse as draw_ellipse,
+)
 
 from pygame.transform import rotate as rotate_surface
 
@@ -17,19 +20,22 @@ from pygame.image import load as load_image
 
 ### local imports
 
+from ..rectsman.main import RectsManager
+
+from ..svgutils import get_ellipse_svg_text, get_line_svg_text
+
 from ..colorsman.colors import (
     BLACK,
     WINDOW_BG,
     SHADOW_COLOR,
     HIGHLIGHT_COLOR,
+    IMAGE_NOT_FOUND_FG,
+    IMAGE_NOT_FOUND_BG,
 )
 
-from .draw import (
-    draw_border,
-    draw_depth_finish,
-)
+from .mathutils import get_segment_points_cutting_ellipse
 
-from ..rectsman.main import RectsManager
+from .draw import draw_border, draw_depth_finish, blit_aligned
 
 
 
@@ -252,3 +258,100 @@ def render_surface_from_svg_text(svg_text):
     ) as bytestream:
 
         return load_image(bytestream)
+
+
+def render_not_found_icon(size):
+    """Return surface with icon representing an image not found.
+
+    Icon is formed by an ellipse with a diagonal slash.
+
+    Parameters
+    ==========
+    size (2-tuple of integers)
+        Integers represent width and height of surface, respecively.
+    """
+    ### render an ellipse outline surface
+
+    ## define ellipse data
+
+    # outline thickness
+
+    smaller_dimension = min(size)
+
+    outline_thickness = (
+        smaller_dimension // 10 if smaller_dimension > 10 else 1
+    )
+
+    # cx, cy, rx, ry
+
+    cx, cy = (dimension/2 for dimension in size)
+
+    rx = cx - (outline_thickness/2)
+    ry = cy - (outline_thickness/2)
+
+    ## render
+
+    ellipse_outline_surf = (
+
+        render_surface_from_svg_text(
+
+            get_ellipse_svg_text(
+                cx,
+                cy,
+                rx,
+                ry,
+                outline_color=IMAGE_NOT_FOUND_FG,
+                outline_width=outline_thickness,
+            )
+
+        )
+
+    )
+
+    ### render a diagonal line surface
+
+    ## find points of segment cutting ellipse
+
+    rect = Rect(0, 0, *size)
+
+    if outline_thickness > 1:
+
+        deflation = -(outline_thickness - 1)
+        rect.inflate_ip(deflation, deflation)
+
+    (x1, y1), (x2, y2) = get_segment_points_cutting_ellipse(rect)
+
+    ## render
+
+    diagonal_line_surf = (
+
+        render_surface_from_svg_text(
+
+            get_line_svg_text(
+                x1,
+                y1,
+                x2,
+                y2,
+                outline_color=IMAGE_NOT_FOUND_FG,
+                outline_width=outline_thickness,
+            )
+
+        )
+
+    )
+
+    ### create base surface and blit other surfaces over it
+
+    ellipse_surf = render_rect(*size, IMAGE_NOT_FOUND_BG)
+
+    ellipse_surf.blit(ellipse_outline_surf, (0, 0))
+
+    blit_aligned(
+        surface_to_blit=diagonal_line_surf,
+        target_surface=ellipse_surf,
+        retrieve_pos_from='center',
+        assign_pos_to='center',
+    )
+
+    ### finallly return the surface we created
+    return ellipse_surf

@@ -12,15 +12,12 @@ from ..pygamesetup import SCREEN, SCREEN_RECT, blit_on_screen
 
 from ..ourstdlibs.collections.general import FactoryDict
 
-from .render import render_rect
+from .render import render_rect, render_not_found_icon
 
-from .draw import draw_not_found_icon, draw_checker_pattern
+from .draw import draw_checker_pattern
 
-from ..colorsman.colors import (
-    CONTRAST_LAYER_COLOR,
-    IMAGE_NOT_FOUND_FG,
-    IMAGE_NOT_FOUND_BG,
-)
+from ..colorsman.colors import CONTRAST_LAYER_COLOR
+
 
 
 ### empty surface
@@ -69,20 +66,7 @@ UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size]
 
 ### general map to store "draw not found surfaces" for
 ### reuse
-
-## factory function for map
-
-
-def get_draw_not_found_surface(size_tuple):
-
-    surf = render_rect(*size_tuple, IMAGE_NOT_FOUND_BG)
-    draw_not_found_icon(surf, IMAGE_NOT_FOUND_FG)
-
-    return surf
-
-
-## map
-NOT_FOUND_SURF_MAP = FactoryDict(get_draw_not_found_surface)
+NOT_FOUND_SURF_MAP = FactoryDict(render_not_found_icon)
 
 ### general map to store checkered surfaces for reuse
 

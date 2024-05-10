@@ -9,7 +9,7 @@ from itertools import cycle
 
 ### third-party imports
 
-from pygame import Surface, Rect
+from pygame import Rect
 
 from pygame.transform import rotate as rotate_surface
 
@@ -17,16 +17,11 @@ from pygame.draw import (
     line as draw_line,
     lines as draw_lines,
     rect as draw_rect,
-    ellipse as draw_ellipse,
-    polygon as draw_polygon,
 )
 
 
 ### local imports
-
 from ..colorsman.colors import BLACK, WHITE, SHADOW_COLOR, HIGHLIGHT_COLOR
-
-from .mathutils import get_segment_points_cutting_ellipse
 
 
 
@@ -407,46 +402,6 @@ def draw_linear_gradient(
     ### draw_line(
     ###   surf, (255,)*3, (start, 0), (start, height), 1
     ### )
-
-
-def draw_not_found_icon(surf, color):
-    """Draw icon representing an image not found.
-
-    Draws an ellipse with a diagonal slash on given surf.
-
-    Parameters
-    ==========
-    surf (pygame.Surface instance)
-        surface wherein to draw the icon.
-    color (sequence of integers)
-        color to be used for drawing the icon; the integers
-        represent the values of the red, green and blue
-        channels and must be in the range(0, 256) interval.
-    """
-    rect = surf.get_rect()
-
-    ### draw ellipse
-
-    ## define ellipse thickness
-
-    smaller_dimension = min(rect.size)
-
-    ellipse_thickness = smaller_dimension // 10 if smaller_dimension > 10 else 1
-
-    ## draw
-    draw_ellipse(surf, color, rect, ellipse_thickness)
-
-    ## find points of segment cutting ellipse
-
-    if ellipse_thickness > 1:
-
-        deflation = -(ellipse_thickness - 1)
-        rect.inflate_ip(deflation, deflation)
-
-    p1, p2 = get_segment_points_cutting_ellipse(rect)
-
-    ### draw segment
-    draw_line(surf, color, p1, p2, ellipse_thickness)
 
 
 def blit_aligned(

@@ -13,18 +13,9 @@ from ...classes2d.single import Object2D
 
 from ...classes2d.collections import List2D
 
-from ...surfsman.render import render_rect
+from ...surfsman.render import render_rect, render_not_found_icon
 
-from ...surfsman.draw import (
-    draw_not_found_icon,
-)
-
-from ...colorsman.colors import (
-    BLACK,
-    WHITE,
-    IMAGE_NOT_FOUND_FG,
-    IMAGE_NOT_FOUND_BG,
-)
+from ...colorsman.colors import BLACK, WHITE
 
 
 ### TODO finish/refactor this
@@ -73,16 +64,8 @@ def render_font_preview(
         ### found
 
         if not_found_width and not_found_height:
+            return render_not_found_icon((not_found_width, not_found_height))
 
-            surf = render_rect(
-                not_found_width,
-                not_found_height,
-                IMAGE_NOT_FOUND_BG,
-            )
-
-            draw_not_found_icon(surf, IMAGE_NOT_FOUND_FG)
-
-            return surf
 
         ### otherwise reraise the exception
         else:
