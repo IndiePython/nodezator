@@ -285,7 +285,7 @@ class ReportViewerOperations(Object2D):
         ### then the splash screen will appear just in front of the
         ### report, so we draw the window manager before leaving so that
         ### the report viewer doesn't appear behind the splash screen
-        APP_REFS.window_manager.draw()
+        APP_REFS.wm.draw()
 
         ### exit report viewer by raising exception that causes the loop
         ### holder to be switched (in this case we'll switch either to

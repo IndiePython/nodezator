@@ -100,6 +100,15 @@ TEXT_EDITING_ICON = combine_surfaces(
     offset_pos_by=(-2, -2),
 )
 
+EYE_ICON = render_layered_icon(
+    chars=[chr(ordinal) for ordinal in (87, 88, 89)],
+    dimension_name="height",
+    dimension_value=20,
+    colors=[BLACK, WHITE, (115, 40, 30)],
+    background_width=27,
+    background_height=27,
+)
+
 _SMALL_EYE_ICON = render_layered_icon(
     chars=[chr(ordinal) for ordinal in (87, 88, 89)],
     dimension_name="height",
@@ -404,6 +413,7 @@ ICON_MAP = {
     "web_icon": WEB_ICON,
     "aww_icon": AWW_ICON,
     "text_editing": TEXT_EDITING_ICON,
+    "eye" : EYE_ICON,
     "python_viewing": PYTHON_VIEWING_ICON,
     "moving": MOVING_ICON,
     "duplication": DUPLICATION_ICON,

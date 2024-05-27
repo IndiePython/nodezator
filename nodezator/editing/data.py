@@ -202,17 +202,22 @@ class DataHandling:
                 ## which the node's callable was retrieved
 
                 text = (
+
                     # from the APP_REFS obj...
                     APP_REFS
+
                     # retrieve a map containing pathlib.Path
                     # objects pointing to node scripts
                     .script_path_map
+
                     # use the script id of the node to
                     # retrieve the pathlib.Path instance
                     # which points to the node's script
                     [obj.data["script_id"]]
+
                     # and grab its contents
                     .read_text()
+
                 )
 
                 show_line_number = True
@@ -272,14 +277,14 @@ class DataHandling:
     def edit_text_block_text(self, text_block):
         """Edit text block text on text editor."""
         ### retrieve its text
-        text = text_block.data["text"]
+        text = text_block.data['text']
 
         ### edit the text
 
         edited_text = edit_text(
             text=text,
             font_path=FIRA_MONO_BOLD_FONT_PATH,
-            syntax_highlighting="comment",
+            syntax_highlighting='comment',
             validation_command=is_text_block_text_valid,
         )
 
@@ -288,7 +293,6 @@ class DataHandling:
         ### such in the status bar
 
         if edited_text is None:
-
             set_status_message("Cancelled editing text of text block.")
 
         ### if the edited text is equal to the original
@@ -298,20 +302,23 @@ class DataHandling:
         elif edited_text == text:
 
             set_status_message(
-                "Text of text block wasn't updated, since" " text didn't change"
+                "Text of text block wasn't updated, since text didn't change"
             )
 
         else:
 
             ## insert the new text
-            text_block.data["text"] = edited_text
+            text_block.data['text'] = edited_text
 
             ## indicate the change in the data
             indicate_unsaved()
 
-            ## indicate finished action in status bar
+            ## indicate birdseye view state of window manager must
+            ## have its objects updated next time it is set
+            APP_REFS.ea.must_update_birdseye_view_objects = True
 
-            set_status_message("Text of text block was edited.")
+            ## indicate finished action in status bar
+            set_status_message('Text of text block was edited.')
 
             ## rebuild the surface of the text block
             text_block.rebuild_surf()
@@ -326,7 +333,7 @@ class DataHandling:
 
         entry.rect.clamp_ip(SCREEN_RECT)
 
-        APP_REFS.window_manager.draw()
+        APP_REFS.wm.draw()
 
         entry.data_node = data_node
 
@@ -403,6 +410,10 @@ class DataHandling:
 
         ### indicate the change in the data
         indicate_unsaved()
+
+        ## indicate birdseye view state of window manager must
+        ## have its objects updated next time it is set
+        APP_REFS.ea.must_update_birdseye_view_objects = True
 
         ### indicate finished action in status bar
 

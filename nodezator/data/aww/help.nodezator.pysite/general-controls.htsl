@@ -96,8 +96,8 @@
     </tr>
 
     <tr>
-      <td><b>&lt;Shift + Numpad [1-9]&gt;</b>;</td>
-      <td>Moves to corner of node layout; each digit represents a corner analogous to the corner they occupy in the keyboard's numpad: 5 on the center, 1 on the bottomleft, 2 on the midbottom and so on.</td>
+      <td><b>&lt;b&gt;</b></td>
+      <td>Toggles bird's eye view: a visual representation of the whole graph that can also be used for navigation by hovering it with the mouse while keeping it pressed.</td>
     </tr>
 
     <tr>

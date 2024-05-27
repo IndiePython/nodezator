@@ -144,6 +144,9 @@ class VisualRelatedPreparations:
             ## retrieve and use list's append method to add rect
             rectsman._get_all_rects.__self__.append(self.rect)
 
+        ### pick tiny icon representing node
+        self.pick_tiny_icon()
+
     def get_node_surf(self):
 
         return (
@@ -164,6 +167,7 @@ class VisualRelatedPreparations:
 
         self.body.image = self.get_node_surf()
         self.update_label_surface()
+        self.pick_tiny_icon()
 
     def update_label_surface(self):
 
@@ -178,3 +182,24 @@ class VisualRelatedPreparations:
                 self.data.get("commented_out", False),
             )
         ]
+
+    def pick_tiny_icon(self):
+        """Pick tiny icon representing node.
+
+        Used when providing a bird's eye view of the graph.
+        """
+
+        self.tiny_icon = getattr(
+
+            self,
+
+            (
+
+                'commented_out_icon'
+                if self.data.get('commented_out', False)
+
+                else 'normal_icon'
+
+            ),
+
+        )

@@ -21,7 +21,7 @@ class SwitchLoopException(Exception):
         ### value of the loop_holder argument
 
         self.loop_holder = (
-            loop_holder if loop_holder is not None else APP_REFS.window_manager
+            loop_holder if loop_holder is not None else APP_REFS.wm
         )
 
         ### admin task: clear event queue to prevent events

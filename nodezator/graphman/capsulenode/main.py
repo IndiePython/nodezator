@@ -2,6 +2,17 @@
 
 ### local imports
 
+from ...ourstdlibs.behaviour import empty_oblivious_function
+
+from ...iconfactory import ICON_MAP
+
+from ...colorsman.colors import CAPSULE_NODES_CATEGORY_COLOR
+
+## superclass
+from ..callablenode.main import CallableNode
+
+## subpackage constants
+
 from .constants import (
     CAPSULE_IDS_TO_CALLABLES_MAP,
     CAPSULE_IDS_TO_SIGNATURES_MAP,
@@ -13,13 +24,9 @@ from .constants import (
     CAPSULE_IDS_TO_3RDLIB_ANNOTATION_IMPORTS,
 )
 
-from ...colorsman.colors import CAPSULE_NODES_CATEGORY_COLOR
-
-## superclass
-from ..callablenode.main import CallableNode
-
 ## function for injection
 from .export import get_source_to_export
+
 
 
 class CapsuleNode(CallableNode):
@@ -28,6 +35,11 @@ class CapsuleNode(CallableNode):
     ### class attributes
 
     category_color = CAPSULE_NODES_CATEGORY_COLOR
+
+    normal_icon = ICON_MAP['default_node']
+    commented_out_icon = ICON_MAP['commented_out_default_node']
+    reference_tiny_icons = empty_oblivious_function
+
     available_ids = CAPSULE_IDS_TO_CALLABLES_MAP.keys()
 
     ### injected function

@@ -85,6 +85,7 @@ from .states.segmentdef import SegmentDefinitionState
 from .states.segmentsev import SegmentSeveranceState
 from .states.movingobject import MovingObjectState
 from .states.boxselection import BoxSelectionState
+from .states.birdseyeview import BirdsEyeViewState
 
 from .menu import MenuSetup
 from .label import MonitorLabelSetup
@@ -104,37 +105,43 @@ logger = get_new_logger(__name__)
 ### constants
 
 STATE_NAMES = (
-    "no_file",
-    "loaded_file",
-    "moving_object",
-    "segment_definition",
-    "segment_severance",
-    "box_selection",
+    'no_file',
+    'loaded_file',
+    'moving_object',
+    'segment_definition',
+    'segment_severance',
+    'box_selection',
+    'birdseye_view',
 )
 
 BEHAVIOUR_NAMES = (
-    "event_handling",
-    "keyboard_input_handling",
-    "update",
-    "draw",
+    'event_handling',
+    'keyboard_input_handling',
+    'update',
+    'draw',
 )
 
 
 ### class definition
 
-
 class WindowManager(
+
     ### state-related operations
+
     NoFileState,
     LoadedFileState,
     SegmentDefinitionState,
     SegmentSeveranceState,
     MovingObjectState,
     BoxSelectionState,
+    BirdsEyeViewState,
+
     ### support operations
+
     MenuSetup,
     MonitorLabelSetup,
     FileOperations,
+
 ):
     """Instantiates widgets and other managers."""
 
@@ -147,7 +154,7 @@ class WindowManager(
 
         ### store a reference to the window manager
         ### in the APP_REFS object
-        APP_REFS.window_manager = self
+        APP_REFS.wm = self
 
         ### instantiate support objects to
         ### manage/assist different kinds of tasks;
@@ -167,8 +174,10 @@ class WindowManager(
         ### organize state behaviours
         self.build_state_behaviour_map()
 
-        ### set flag indicating whether the mouse is
-        ### clicked
+        ### attribute to keep track of current state
+        self.state_name = ''
+
+        ### set flag indicating whether the mouse is clicked
         self.clicked_mouse = False
 
         ### create background obj
@@ -484,6 +493,9 @@ class WindowManager(
         self.handle_input = CallList(
             (self.event_handling, self.keyboard_input_handling)
         )
+
+        ### set state name attribute
+        self.state_name = state_name
 
     def build_support_widgets(self):
         """Build widgets which support operations."""

@@ -293,10 +293,14 @@ class CallableNode(
             first_setup
         )
 
-        ### if requested, indicate that changes were made
+        ### if requested, indicate that changes were made and that
+        ### the birdseye view state of window manager must have its
+        ### objects updated next time it is set
 
         if indicate_changes:
+
             indicate_unsaved()
+            APP_REFS.ea.must_update_birdseye_view_objects = True
 
     def adjust_sigmode_toggle_button(self, mode_name):
 

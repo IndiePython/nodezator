@@ -117,11 +117,11 @@ class SplashScreenOperations(Object2D):
 
                 # create new file
                 elif event.key == K_n and event.mod & KMOD_CTRL:
-                    APP_REFS.window_manager.new()
+                    APP_REFS.wm.new()
 
                 # open file
                 elif event.key == K_o and event.mod & KMOD_CTRL:
-                    APP_REFS.window_manager.open()
+                    APP_REFS.wm.open()
 
             ### for each type of mouse event (motion,
             ### button pressing or button release),

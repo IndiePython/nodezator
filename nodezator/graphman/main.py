@@ -18,17 +18,13 @@ from ..logman.main import get_new_logger
 
 from ..ourstdlibs.meta import initialize_bases
 
+from ..rectsman.main import RectsManager
+
 from ..classes2d.single import Object2D
 
-from ..classes2d.collections import (
-    Iterable2D,
-    List2D,
-)
+from ..classes2d.collections import Iterable2D, List2D
 
-from .exception import (
-    NodeScriptsError,
-    MissingNodeScriptsError,
-)
+from .exception import NodeScriptsError, MissingNodeScriptsError
 
 ## function
 from .scriptloading import load_scripts
@@ -58,6 +54,7 @@ from .execution import Execution
 
 ## function for representing graph as python code
 from .pythonrepr import python_repr
+
 
 
 ### create logger for module
@@ -90,6 +87,14 @@ class GraphManager(
 
         self.preview_toolbars = List2D()
         self.preview_panels = List2D()
+
+        ### special object to manage rects of all objects
+        ### in the graph;
+        ###
+        ### manipulating this instance when the graph is empty
+        ### raises a RuntimeError, so always check this condition
+        ### before doing so
+        self.rectsman = RectsManager(self.yield_all_rects)
 
         ### initialize each base class which has its own
         ### init method
@@ -276,6 +281,40 @@ class GraphManager(
         ### text blocks
         self.text_blocks.call_draw_on_screen()
 
+    def yield_all_rects(self):
+        """Yield rects from all objects in the graph.
+
+        Calling it when the graph is empty will raise an error.
+
+        This is used by a rectsman instance that can manage the
+        position of all rects in the graph and grab related information.
+
+        A rectsman is an instance of the RectsManager class, that
+        can be used to control the position of multiple rects and
+        obtain data about them.
+
+        A rectsman can be created by feeding this method to its
+        constructor.
+        """
+        ### rects (rectsmans) from nodes
+        for node in self.nodes:
+            yield node.rectsman
+
+        ### rects from preview toolbars
+
+        for toolbar in self.preview_toolbars:
+            yield toolbar.rect
+
+        ### rects from preview panels
+
+        for panel in self.preview_panels:
+            yield panel.rect
+
+        ### rects from text blocks
+
+        for block in self.text_blocks:
+            yield block.rect
+
     def free_up_memory(self):
         """Clear accumulated data that won't be reused.
 
@@ -294,7 +333,12 @@ class GraphManager(
         ### clear collections containing native file data,
         ### node instances and text block instances
 
-        for attr_name in ("nodes_data", "text_blocks_data", "node_map", "text_blocks"):
+        for attr_name in (
+            'nodes_data',
+            'text_blocks_data',
+            'node_map',
+            'text_blocks',
+        ):
 
             try:
                 obj = getattr(self, attr_name)

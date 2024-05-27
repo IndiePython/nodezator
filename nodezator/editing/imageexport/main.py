@@ -45,8 +45,6 @@ from ...ourstdlibs.timeutils import friendly_delta_from_secs
 
 from ...our3rdlibs.behaviour import set_status_message
 
-from ...rectsman.main import RectsManager
-
 from ...surfsman.svgexport import GENERAL_SURFACES_CSS
 
 from ...graphman.callablenode.export import CALLABLE_NODE_CSS
@@ -96,30 +94,9 @@ def export_as_image():
 
         return
 
-    ### gather the rects of all objects in the loaded
-    ### file;
-    ###
-    ### nodes, which are complex objects with more
-    ### than one rect will be using a rect-like object
-    ### called "rectsman";
-
-    all_rects = list(
-        chain(
-            # rects (rectsmans) from nodes
-            (node.rectsman for node in gm.nodes),
-            # rects from preview toolbars
-            (obj.rect for obj in gm.preview_toolbars),
-            # rects from preview panels
-            (obj.rect for obj in gm.preview_panels),
-            # rects from text blocks
-            (block.rect for block in gm.text_blocks),
-        )
-    )
-
-    ### using the list we created, instantiate a rects
-    ### manager to control the position of all objects
-    ### in the loaded file;
-    all_rectsman = RectsManager(all_rects.__iter__)
+    ### reference instance of a rects manager that controls the
+    ### position of all objects in the loaded file
+    all_rectsman = gm.rectsman
 
     ### store the size of the resulting rects manager
     size = all_rectsman.size

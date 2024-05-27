@@ -50,6 +50,9 @@ class BodySetupOperations:
         ###
         self.assign_unpacking_icon_surfs()
 
+        ###
+        self.pick_tiny_icon()
+
     ### methods representing modular operations
 
     def reset_body_height_and_image(self):
@@ -105,3 +108,15 @@ class BodySetupOperations:
             for button in self.subparam_unpacking_icon_flmap[param_name].values():
 
                 button.image = UNPACKING_ICON_SURFS_MAP[(param_kind, is_commented_out)]
+
+    def pick_tiny_icon(self):
+
+        self.tiny_icon = getattr(
+            self,
+            (
+                'commented_out_icon'
+                if self.data.get('commented_out', False)
+
+                else 'normal_icon'
+            ),
+        )

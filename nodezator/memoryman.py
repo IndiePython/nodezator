@@ -33,7 +33,7 @@ def free_up_memory():
     more.
     """
     ### retrieve a reference to the window manager
-    window_manager = APP_REFS.window_manager
+    window_manager = APP_REFS.wm
 
     ### try retrieving a reference to the graph manager
     try:

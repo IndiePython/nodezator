@@ -30,8 +30,6 @@ from ..ourstdlibs.behaviour import (
 
 from ..our3rdlibs.grid.oop import ScrollableGrid
 
-from ..rectsman.main import RectsManager
-
 from ..colorsman.colors import (
     SMALL_GRID_COLOR,
     LARGE_GRID_COLOR,
@@ -149,76 +147,6 @@ class GridHandling:
         dx, dy = -self.scrolling_amount
         self.scroll(dx, dy)
 
-    def jump_to_corner(self, corner_name):
-        """Scroll objects to reach corner of area of object.
-
-        The area of objects is the invisible area occupied
-        by all the objects.
-
-        By corner we mean one of the rect coordinates
-        like 'topleft', 'center', 'midright', etc.
-        """
-        gm = APP_REFS.gm
-
-        ### create a rectsman with rects from all objects
-
-        rectsman = RectsManager(
-            ## create a list of rects from live objects
-            ##
-            ## note that even for nodes, which are complex
-            ## objects with more than one rect we use 'rect'
-            ## instead of 'rectsman';
-            ##
-            ## this is so because we don't need to control
-            ## the position of the objects with the rectsman:
-            ## we are creating it only for the purpose of
-            ## reading the position of one of its corners;
-
-            [
-                obj.rect
-                for obj in chain(
-                    gm.nodes,
-                    gm.preview_toolbars,
-                    gm.preview_panels,
-                    gm.text_blocks,
-                )
-            ]
-
-            ## now grab the __iter__ method of the created
-            ## list
-            .__iter__
-        )
-
-        ### try retrieving the requested corner of the
-        ### objects as if they were a single rect
-
-        try:
-            objs_corner = getattr(rectsman, corner_name)
-
-        ### if trying to retrieve the corner from the
-        ### rects manager raises a RuntimeError, it means
-        ### there's no objects in the graph, much less a
-        ### corner from which to retrieve a position, so
-        ### we notify the user and cancel the operation
-        ### by returning
-
-        except RuntimeError:
-
-            create_and_show_dialog(
-                (
-                    "there must be at least one object in the"
-                    " file in order to jump to corner"
-                ),
-                level_name='info',
-            )
-
-            return
-
-        ### finally align the objects' corner with the
-        ### center of the screen, by scrolling the
-        ### difference between the positions
-        self.scroll(*(SCREEN_RECT.center - Vector2(objs_corner)))
-
     def scroll(self, dx, dy):
         """Scroll grid and objects."""
         ### scroll grids
@@ -230,6 +158,22 @@ class GridHandling:
 
         ## origin rect
         gm.origin_rect.move_ip(dx, dy)
+
+        ## XXX
+        ##
+        ## check whether calling
+        ##
+        ## with suppress(RuntimeError):
+        ##     gm.rectsman.move_ip(dx, dy)
+        ##
+        ## ...instead of the for-loops below
+        ## would be much slower.
+        ##
+        ## If the difference in speed is negligible, it may be worth
+        ## to replace the code by the lines mentioned above (maybe
+        ## optimizing the solution so we don't need to suppress
+        ## the error, just replace the operation when there are no
+        ## objects in the graph)
 
         ## nodes
 

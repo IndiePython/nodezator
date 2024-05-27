@@ -16,7 +16,10 @@ from ..pygamesetup import SERVICES_NS, SCREEN, SCREEN_RECT
 
 from ..ourstdlibs.mathutils import offset_point
 
-from ..our3rdlibs.behaviour import indicate_unsaved, saved_or_unsaved_state_kept
+from ..our3rdlibs.behaviour import (
+    indicate_unsaved,
+    saved_or_unsaved_state_kept,
+)
 
 from ..loopman.exception import ContinueLoopException
 
@@ -56,7 +59,7 @@ class Repositioning:
         self.mouse_pos_backup = SERVICES_NS.get_mouse_pos()
 
         ## set window manager state
-        APP_REFS.window_manager.set_state("moving_object")
+        APP_REFS.wm.set_state("moving_object")
 
         ### restart the loop
         raise ContinueLoopException
@@ -193,7 +196,7 @@ class Repositioning:
         self.translation_factor = 1
 
         ## set window manager state
-        APP_REFS.window_manager.set_state("loaded_file")
+        APP_REFS.wm.set_state("loaded_file")
 
         ### if the moving_from_duplication flag is on,
         ### it means the objects where duplicate objects
@@ -236,6 +239,10 @@ class Repositioning:
         ### indicate new changes in the data
         indicate_unsaved()
 
+        ### indicate birdseye view state of window manager must
+        ### have its objects updated next time it is set
+        APP_REFS.ea.must_update_birdseye_view_objects = True
+
         ### admin task: restore controls/behaviours
 
         ## controls
@@ -244,7 +251,7 @@ class Repositioning:
         self.translation_factor = 1
 
         ## set window manager state
-        APP_REFS.window_manager.set_state("loaded_file")
+        APP_REFS.wm.set_state("loaded_file")
 
         ### if the moving_from_duplication flag is on,
         ### it means the objects where duplicate objects
@@ -306,8 +313,14 @@ class Repositioning:
 
         ### if requested, indicate in the window caption
         ### that a change has been made
+        ###
+        ### and that the birdseye view state of the window manager must
+        ### have its objects updated next time it is set
+
         if change_caption:
+
             indicate_unsaved()
+            APP_REFS.ea.must_update_birdseye_view_objects = True
 
         ### if requested, perform undo/redo administration
         ### tasks

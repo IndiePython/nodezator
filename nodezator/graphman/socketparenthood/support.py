@@ -2,16 +2,16 @@
 
 ### local imports
 
-from ..socket.output import OutputSocket
+from ...config import APP_REFS
 
-from .utils import do_segments_cross
+from ...our3rdlibs.behaviour import indicate_unsaved, set_status_message
+
+from ..socket.output import OutputSocket
 
 from ..utils import yield_subgraph_nodes
 
-from ...our3rdlibs.behaviour import (
-    indicate_unsaved,
-    set_status_message,
-)
+from .utils import do_segments_cross
+
 
 
 class SupportOperations:
@@ -392,10 +392,14 @@ class SupportOperations:
 
         self.signal_severance_of_removed_sockets()
 
-        ### if any segment was severed, indicate the
-        ### change in the data
+        ### if any segment was severed, indicate the change in the data and
+        ### that the birdseye view state of window manager must have its
+        ### objects updated next time it is set
+
         if any_severed:
+
             indicate_unsaved()
+            APP_REFS.ea.must_update_birdseye_view_objects = True
 
     def signal_severance_of_removed_sockets(self):
         """Signal severance of gathered sockets."""
@@ -553,8 +557,12 @@ class SupportOperations:
             ### notify user of success
             set_status_message("All children disconnected")
 
-            ### indicate the change in the data
+            ### indicate the change in the data and that the
+            ### birdseye view state of window manager must have its
+            ### objects updated next time it is set
+
             indicate_unsaved()
+            APP_REFS.ea.must_update_birdseye_view_objects = True
 
     def sever_parent(self, socket):
         """Sever parent of given socket."""
@@ -588,5 +596,9 @@ class SupportOperations:
             ### notify user of success
             set_status_message("Disconnected socket")
 
-            ### indicate the change in the data
+            ### indicate the change in the data and that the
+            ### birdseye view state of window manager must have its
+            ### objects updated next time it is set
+
             indicate_unsaved()
+            APP_REFS.ea.must_update_birdseye_view_objects = True

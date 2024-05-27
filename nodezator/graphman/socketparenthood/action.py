@@ -5,9 +5,11 @@
 from ...config import APP_REFS
 
 from ...loopman.exception import ContinueLoopException
+
 from ...our3rdlibs.behaviour import indicate_unsaved
 
 from ..socket.output import OutputSocket
+
 
 
 class UserActions:
@@ -27,7 +29,7 @@ class UserActions:
 
         ### change window manager state to draw temp line
         ### between socket and
-        APP_REFS.window_manager.set_state("segment_definition")
+        APP_REFS.wm.set_state("segment_definition")
 
         ### restart the loop
         raise ContinueLoopException
@@ -104,13 +106,16 @@ class UserActions:
             ### segment between the two sockets
             self.establish_segment(socket_a, socket_b)
 
-            ### also, indicate that changes were made
-            ### to the data
+            ### also, indicate that changes were made to the data and
+            ### that the birdseye view state of window manager must have its
+            ### objects updated next time it is set
+
             indicate_unsaved()
+            APP_REFS.ea.must_update_birdseye_view_objects = True
 
         ### change window manager state to the loaded
         ### file state
-        APP_REFS.window_manager.set_state("loaded_file")
+        APP_REFS.wm.set_state("loaded_file")
 
         ### restart the loop
         raise ContinueLoopException
@@ -123,7 +128,7 @@ class UserActions:
 
         ### change window manager state to the loaded
         ### file state
-        APP_REFS.window_manager.set_state("loaded_file")
+        APP_REFS.wm.set_state("loaded_file")
 
         ### restart the loop
         raise ContinueLoopException
@@ -143,7 +148,7 @@ class UserActions:
         ### change window manager state to draw temporary
         ### "cut" line between provided cut start position
         ### and mouse
-        APP_REFS.window_manager.set_state("segment_severance")
+        APP_REFS.wm.set_state("segment_severance")
 
         ### restart the loop
         raise ContinueLoopException
@@ -169,7 +174,7 @@ class UserActions:
 
         ### change window manager state to the loaded
         ### file state
-        APP_REFS.window_manager.set_state("loaded_file")
+        APP_REFS.wm.set_state("loaded_file")
 
         ### restart the loop
         raise ContinueLoopException
@@ -182,7 +187,7 @@ class UserActions:
 
         ### change window manager state to the loaded
         ### file state
-        APP_REFS.window_manager.set_state("loaded_file")
+        APP_REFS.wm.set_state("loaded_file")
 
         ### restart the loop
         raise ContinueLoopException

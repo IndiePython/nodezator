@@ -354,6 +354,12 @@ class MenuSetup:
                         "key_text": "Shift+J",
                         "command": APP_REFS.ea.present_jump_to_node_form,
                     },
+                    {
+                        "label": "Toggle bird's eye view",
+                        "key_text": "B",
+                        "command": APP_REFS.ea.prepare_and_present_birdseye_view,
+                        "icon": "eye",
+                    },
                     {"label": "------"},
                     {
                         "label": t.menu.execute_graph,

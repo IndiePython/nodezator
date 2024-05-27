@@ -14,6 +14,8 @@ from ....textman.render import render_text
 
 from ....rectsman.main import RectsManager
 
+from ....iconfactory import ICON_MAP
+
 from ....colorsman.colors import (
     NODE_CATEGORY_COLORS,
     NODE_TITLE,
@@ -55,6 +57,12 @@ class VisualPreparations(
         """Create visual elements for node."""
         ### start by storing the nodes category color
         self.store_category_color_data()
+
+        ### reference and pick tiny icons representing this node when
+        ### commented out or not
+
+        self.reference_tiny_icons()
+        self.pick_tiny_icon()
 
         ### create elements situated on top of the node
         self.create_top_objects()
@@ -118,6 +126,21 @@ class VisualPreparations(
         self.color_index = APP_REFS.category_index_map[self.data["script_id"][:2]]
 
         self.category_color = NODE_CATEGORY_COLORS[self.color_index]
+
+    def reference_tiny_icons(self):
+        """Reference tiny icons representing the node.
+
+        Icons represent node in commented out and normal state.
+
+        Icons are used when displaying a bird's eye view of the graph.
+        """
+        index = self.color_index
+
+        normal_key = f'color_index_{index}_node'
+        commented_out_key = f'commented_out_{normal_key}'
+
+        self.normal_icon = ICON_MAP[normal_key]
+        self.commented_out_icon = ICON_MAP[commented_out_key]
 
     def create_top_objects(self):
         """Create objects that lie on top of the node."""

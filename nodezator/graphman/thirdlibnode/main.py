@@ -6,6 +6,17 @@ from itertools import takewhile
 
 ### local imports
 
+from ...ourstdlibs.behaviour import empty_oblivious_function
+
+from ...iconfactory import ICON_MAP
+
+from ...colorsman.colors import THIRD_LIB_NODES_CATEGORY_COLOR
+
+## superclass
+from ..callablenode.main import CallableNode
+
+## subpackage constants
+
 from .constants import (
     THIRDLIB_IDS_TO_CALLABLES_MAP,
     THIRDLIB_IDS_TO_SIGNATURES_MAP,
@@ -14,16 +25,17 @@ from .constants import (
     THIRDLIB_IDS_TO_SOURCE_VIEW_TEXT,
 )
 
-from ...colorsman.colors import THIRD_LIB_NODES_CATEGORY_COLOR
-
-## superclass
-from ..callablenode.main import CallableNode
 
 
 class ThirdLibNode(CallableNode):
     """Handles callables from Python third-party libraries."""
 
     category_color = THIRD_LIB_NODES_CATEGORY_COLOR
+
+    normal_icon = ICON_MAP['default_node']
+    commented_out_icon = ICON_MAP['commented_out_default_node']
+    reference_tiny_icons = empty_oblivious_function
+
     available_ids = THIRDLIB_IDS_TO_CALLABLES_MAP.keys()
 
     def __init__(self, data, midtop=None):

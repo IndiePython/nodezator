@@ -290,6 +290,10 @@ class ObjectInsertionRemoval:
         ### indicate the data was changed
         indicate_unsaved()
 
+        ### indicate birdseye view state of window manager must
+        ### have its objects updated next time it is set
+        APP_REFS.ea.must_update_birdseye_view_objects = True
+
     def insert_text_block(
         self,
         text_block_hint=(t.editing.objinsert.new_text_block),
@@ -354,6 +358,10 @@ class ObjectInsertionRemoval:
 
         ### indicate the data was changed
         indicate_unsaved()
+
+        ### indicate birdseye view state of window manager must
+        ### have its objects updated next time it is set
+        APP_REFS.ea.must_update_birdseye_view_objects = True
 
     def duplicate_selected(self):
         """Duplicate selected objects."""
@@ -479,6 +487,10 @@ class ObjectInsertionRemoval:
 
         ### indicate changes made in the data
         indicate_unsaved()
+
+        ### indicate birdseye view state of window manager must
+        ### have its objects updated next time it is set
+        APP_REFS.ea.must_update_birdseye_view_objects = True
 
     def remove_node(self, node):
         """Remove given node.

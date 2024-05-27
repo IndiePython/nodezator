@@ -1,7 +1,11 @@
 """Facility for widget data update for node classes."""
 
-### local import
+### local imports
+
+from ...config import APP_REFS
+
 from ...our3rdlibs.behaviour import indicate_unsaved
+
 
 
 def update_with_widget(data, key, widget, remove_button=None):
@@ -46,3 +50,7 @@ def update_with_widget(data, key, widget, remove_button=None):
         remove_button.rect.left = widget.rect.right
 
     indicate_unsaved()
+
+    ### also indicate the birdseye view state of window manager must
+    ### have its objects updated next time it is set
+    APP_REFS.ea.must_update_birdseye_view_objects = True

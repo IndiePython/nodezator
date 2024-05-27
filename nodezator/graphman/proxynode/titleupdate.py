@@ -55,3 +55,7 @@ def update_title(self, new_title):
     set_status_message("Changed data node's title.")
 
     indicate_unsaved()
+
+    ### indicate birdseye view state of window manager must
+    ### have its objects updated next time it is set
+    APP_REFS.ea.must_update_birdseye_view_objects = True

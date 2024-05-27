@@ -420,8 +420,8 @@ def get_action_objs():
     ### by the object, respectively
 
     actions_data = (
-        (NEW_NATIVE_FILE_ICON, t.splash_screen.new_file, APP_REFS.window_manager.new),
-        (FOLDER_ICON, t.splash_screen.open_file, APP_REFS.window_manager.open),
+        (NEW_NATIVE_FILE_ICON, t.splash_screen.new_file, APP_REFS.wm.new),
+        (FOLDER_ICON, t.splash_screen.open_file, APP_REFS.wm.open),
         (
             AWW_ICON,
             "Read manual",
@@ -513,7 +513,7 @@ def get_recent_file_objs(recent_files):
     topleft = recent_files_label.rect.move(10, 5).bottomleft
 
     ## reference the 'open()' method of the window manager
-    window_manager_open = APP_REFS.window_manager.open
+    window_manager_open = APP_REFS.wm.open
 
     ## iterate over the 08 most recent files among the ones
     ## listed, creating the "recent file" objects;

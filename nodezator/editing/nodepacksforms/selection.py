@@ -958,7 +958,7 @@ class NodePacksSelectionChangeForm(Object2D):
         ]
 
         ### rebuild canvas popup menu
-        APP_REFS.window_manager.create_canvas_popup_menu()
+        APP_REFS.wm.create_canvas_popup_menu()
 
         ###
         indicate_unsaved()

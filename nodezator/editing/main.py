@@ -13,6 +13,7 @@ from .objinsert import ObjectInsertionRemoval
 from .selection import SelectionHandling
 from .reposition import Repositioning
 from .data import DataHandling
+from .birdseyeview import BirdsEyeViewHandling
 
 ## more operations
 
@@ -24,13 +25,9 @@ from .categorycolors import (
     change_category_colors,
 )
 
-from .nodepacksforms.selection import (
-    present_change_node_packs_form,
-)
+from .nodepacksforms.selection import present_change_node_packs_form
 
-from .nodepacksforms.renaming import (
-    present_rename_node_packs_form,
-)
+from .nodepacksforms.renaming import present_rename_node_packs_form
 
 from .jumptonode import present_jump_to_node_form
 
@@ -42,9 +39,7 @@ from .playback.systemtesting import set_system_testing_session
 
 ## classes for composition
 
-from .widgetpopups.creation import (
-    WidgetCreationPopupMenu,
-)
+from .widgetpopups.creation import WidgetCreationPopupMenu
 
 from .objpopups.callablenode import CallableNodePopupMenu
 
@@ -68,6 +63,7 @@ class EditingAssistant(
     SelectionHandling,
     Repositioning,
     DataHandling,
+    BirdsEyeViewHandling,
 ):
     """Assist objects operations like selection/positioning.
 

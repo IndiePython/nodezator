@@ -1,3 +1,7 @@
+""""""
+
+from ...config import APP_REFS
+
 from ...our3rdlibs.behaviour import indicate_unsaved
 
 
@@ -34,3 +38,7 @@ def update_with_widget(data, key, widget):
 
     data[key] = widget.get()
     indicate_unsaved()
+
+    ### also indicate birdseye view state of window manager must
+    ### have its objects updated next time it is set
+    APP_REFS.ea.must_update_birdseye_view_objects = True

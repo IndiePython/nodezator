@@ -205,6 +205,9 @@ class VisualRelatedPreparations:
         ### position elements relative to each other
         self.reposition_elements()
 
+        ### pick tiny icon representing node
+        self.pick_tiny_icon()
+
     def check_header_width(self):
 
         width = self.get_header_width()
@@ -258,6 +261,8 @@ class VisualRelatedPreparations:
 
         self.update_label_surface()
 
+        self.pick_tiny_icon()
+
     def update_label_surface(self):
 
         self.label.image = self.get_new_label_surface()
@@ -277,4 +282,56 @@ class VisualRelatedPreparations:
         return self.data.get(
             "source_name",
             f"{self.id} : {self.title}",
+        )
+
+    def pick_tiny_icon(self):
+        """Pick tiny icon representing node.
+
+        Using when providing a bird's eye view of the graph.
+        """
+
+        self.tiny_icon = getattr(
+
+            self,
+
+            (
+
+                ## if commented out
+
+                (
+
+                    ## if redirect node
+                    'commented_out_proxy_node_icon'
+                    if 'source_name' in self.data
+
+                    ## if data node
+
+                    else (
+                        'commented_out_data_node_icon'
+                        if hasattr(self, 'widget')
+                        else 'commented_out_proxy_node_icon'
+                    )
+
+                )
+
+                if self.data.get('commented_out', False)
+
+                ## if normal
+
+                else (
+
+                    ## if redirect node
+                    'normal_proxy_node_icon'
+                    if 'source_name' in self.data
+
+                    ## if data node
+                    else (
+                        'normal_data_node_icon'
+                        if hasattr(self, 'widget')
+                        else 'normal_proxy_node_icon'
+                    )
+
+                )
+
+            ),
         )

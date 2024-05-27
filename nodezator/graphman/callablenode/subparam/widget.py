@@ -223,6 +223,10 @@ class WidgetOps:
         ### indicate that changes were made in the data
         indicate_unsaved()
 
+        ### indicate birdseye view state of window manager must
+        ### have its objects updated next time it is set
+        APP_REFS.ea.must_update_birdseye_view_objects = True
+
     def remove_subparameter_widget(self, widget):
         """Remove existing widget from a subparameter.
 
@@ -376,3 +380,7 @@ class WidgetOps:
 
         ### indicate that changes were made in the data
         indicate_unsaved()
+
+        ### indicate birdseye view state of window manager must
+        ### have its objects updated next time it is set
+        APP_REFS.ea.must_update_birdseye_view_objects = True

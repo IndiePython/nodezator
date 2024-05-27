@@ -6,6 +6,8 @@ from functools import partial
 
 ### local imports
 
+from ...config import APP_REFS
+
 from ...ourstdlibs.collections.general import CallList
 
 from ...our3rdlibs.behaviour import indicate_unsaved
@@ -81,6 +83,10 @@ class WidgetOps:
         ### indicate that changes were made in the data
         indicate_unsaved()
 
+        ### indicate birdseye view state of window manager must
+        ### have its objects updated next time it is set
+        APP_REFS.ea.must_update_birdseye_view_objects = True
+
     def remove_widget(self):
         """Remove existing widget."""
         ### delete reference to widget
@@ -110,3 +116,7 @@ class WidgetOps:
 
         ### indicate that changes were made in the data
         indicate_unsaved()
+
+        ### indicate birdseye view state of window manager must
+        ### have its objects updated next time it is set
+        APP_REFS.ea.must_update_birdseye_view_objects = True

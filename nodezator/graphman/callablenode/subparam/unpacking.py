@@ -8,8 +8,6 @@ from functools import partial
 
 from ....ourstdlibs.behaviour import remove_by_identity
 
-from ....our3rdlibs.behaviour import indicate_unsaved
-
 from ....classes2d.single import Object2D
 
 from ....widget.stringentry import StringEntry
@@ -18,9 +16,8 @@ from ....rectsman.main import RectsManager
 
 from ..constants import FONT_HEIGHT, SUBPARAM_KEYWORD_ENTRY_WIDTH
 
-from ..surfs import (
-    UNPACKING_ICON_SURFS_MAP,
-)
+from ..surfs import UNPACKING_ICON_SURFS_MAP
+
 
 
 class UnpackingOps:
@@ -114,8 +111,11 @@ class UnpackingOps:
         ### reset body's height and image
         self.reset_body_height_and_image()
 
-        ### indicate that changes were made in the data
-        indicate_unsaved()
+        ### there's no need to indicate here that changes were made
+        ### in the data cause this is done by the input socket in
+        ### the method that calls this one, so the line below that
+        ### would be otherwise executed, appears commented out
+        #indicate_unsaved()
 
     def unmark_subparameter_for_unpacking(self, input_socket):
         """Unmark subparameter for unpacking.
@@ -223,5 +223,8 @@ class UnpackingOps:
         ### reset body's height and image
         self.reset_body_height_and_image()
 
-        ### indicate that changes were made in the data
-        indicate_unsaved()
+        ### there's no need to indicate here that changes were made
+        ### in the data cause this is done by the input socket in
+        ### the method that calls this one, so the line below that
+        ### would be otherwise executed, appears commented out
+        #indicate_unsaved()

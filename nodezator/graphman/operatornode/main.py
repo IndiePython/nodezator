@@ -6,16 +6,14 @@ from ...ourstdlibs.meta import initialize_bases
 
 from ...our3rdlibs.behaviour import indicate_unsaved
 
+from ...iconfactory import ICON_MAP
+
 
 ### class extensions
 
-from .vizprep import (
-    VisualRelatedPreparations,
-)
+from .vizprep import VisualRelatedPreparations
 
-from .vizop import (
-    VisualRelatedOperations,
-)
+from .vizop import VisualRelatedOperations
 
 from .execution import Execution
 
@@ -40,6 +38,9 @@ class OperatorNode(
     Exporting,
 ):
     """A node representing a variable within a script."""
+
+    normal_icon = ICON_MAP['operation_node']
+    commented_out_icon = ICON_MAP['commented_out_operation_node']
 
     ###
     available_ids = OPERATIONS_MAP.keys()
@@ -160,10 +161,14 @@ class OperatorNode(
         self.update_label_surface()
         self.reposition_elements()
 
-        ### if requested, indicate that changes were made
+        ### if requested, indicate that changes were made and that
+        ### the birdseye view state of window manager must have its
+        ### objects updated next time it is set
 
         if indicate_changes:
+
             indicate_unsaved()
+            APP_REFS.ea.must_update_birdseye_view_objects = True
 
     def get_source_info(self):
         """Return information about node source."""

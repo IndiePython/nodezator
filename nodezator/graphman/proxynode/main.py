@@ -1,14 +1,12 @@
 ### local imports
 
+from ...iconfactory import ICON_MAP
+
 ## class extensions
 
-from .vizprep import (
-    VisualRelatedPreparations,
-)
+from .vizprep import VisualRelatedPreparations
 
-from .vizop.main import (
-    VisualRelatedOperations,
-)
+from .vizop.main import VisualRelatedOperations
 
 from .widget import WidgetOps
 
@@ -18,6 +16,7 @@ from .export import Exporting
 
 ## function for injection
 from .titleupdate import update_title
+
 
 
 class ProxyNode(
@@ -34,6 +33,11 @@ class ProxyNode(
     """
 
     update_title = update_title
+
+    normal_data_node_icon = ICON_MAP['data_node']
+    commented_out_data_node_icon = ICON_MAP['commented_out_data_node']
+    normal_proxy_node_icon = ICON_MAP['proxy_node']
+    commented_out_proxy_node_icon = ICON_MAP['commented_out_proxy_node']
 
     def __init__(self, data, midtop=None):
         """Setup attributes for storage and control.

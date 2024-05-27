@@ -174,7 +174,7 @@ def run_app(filepath=None):
                     )
 
                 elif answer == "save_and_quit":
-                    APP_REFS.window_manager.save()
+                    APP_REFS.wm.save()
 
                 ## if user does not confirm exiting,
                 ## we avoid breaking out of the loop

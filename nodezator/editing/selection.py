@@ -186,7 +186,7 @@ class SelectionHandling:
         ### window manager and go to beginning of the app
         ### loop
 
-        APP_REFS.window_manager.set_state("box_selection")
+        APP_REFS.wm.set_state("box_selection")
         raise ContinueLoopException
 
     def cancel_box_selection(self):
@@ -197,7 +197,7 @@ class SelectionHandling:
         ### set 'loaded_file' mode back and go to beginning
         ### of loop
 
-        APP_REFS.window_manager.set_state("loaded_file")
+        APP_REFS.wm.set_state("loaded_file")
         raise ContinueLoopException
 
     def confirm_box_selection(self):
@@ -255,7 +255,7 @@ class SelectionHandling:
         ### set 'loaded_file' mode back and go to beginning
         ### of loop
 
-        APP_REFS.window_manager.set_state("loaded_file")
+        APP_REFS.wm.set_state("loaded_file")
         raise ContinueLoopException
 
     def get_box_colliding(self):

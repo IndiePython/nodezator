@@ -12,6 +12,7 @@ from pygame.locals import (
     KEYUP,
     KMOD_CTRL,
     KMOD_SHIFT,
+    K_b,
     K_g,
     K_u,
     K_r,
@@ -47,12 +48,9 @@ from pygame.locals import (
 
 ### local imports
 
-
 from ...pygamesetup import SERVICES_NS
 
 from ...config import APP_REFS
-
-from ...our3rdlibs.keyconst import KEYPAD_TO_COORDINATE_MAP
 
 from ...loopman.exception import (
     QuitAppException,
@@ -61,6 +59,7 @@ from ...loopman.exception import (
 )
 
 from ...htsl.main import open_htsl_link
+
 
 
 class LoadedFileState:
@@ -212,8 +211,14 @@ class LoadedFileState:
                     APP_REFS.ea.start_moving()
 
                 ## deleting nodes
+
                 elif event.key == K_DELETE:
                     APP_REFS.ea.remove_selected()
+
+                ## prepare and present bird's eye view
+
+                elif event.key == K_b:
+                    APP_REFS.ea.prepare_and_present_birdseye_view()
 
                 ## active node's info
 
@@ -289,15 +294,7 @@ class LoadedFileState:
                     APP_REFS.ea.popup_spawn_pos = mouse_pos
 
                     ### then give focus to the popup menu
-
                     (self.canvas_popup_menu.focus_if_within_boundaries(mouse_pos))
-
-                ## jump to corner feature
-
-                elif event.key in KEYPAD_TO_COORDINATE_MAP and event.mod & KMOD_SHIFT:
-
-                    corner = KEYPAD_TO_COORDINATE_MAP[event.key]
-                    APP_REFS.ea.jump_to_corner(corner)
 
     def loaded_file_keyboard_input_handling(self):
         """Handle keyboard specific input."""
