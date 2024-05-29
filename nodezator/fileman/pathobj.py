@@ -70,6 +70,7 @@ ICON_MAP = {
     ".png": IMAGE_ICON,
     ".jpg": IMAGE_ICON,
     ".jpeg": IMAGE_ICON,
+    ".svg": IMAGE_ICON,
     ".ttf": FONT_ICON,
     ".otf": FONT_ICON,
     ".mp3": AUDIO_ICON,
