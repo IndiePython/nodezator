@@ -84,19 +84,21 @@ def run_app(filepath=None):
 
     while True:
 
-        ### perform various checkups for this frame;
-        ###
-        ### stuff like maintaing a constant framerate and more
-        SERVICES_NS.frame_checkups()
-
-        ### run the GUD methods (check glossary for
-        ### loop holder/methods/loop)
-
         try:
 
-            loop_holder.handle_input()
-            loop_holder.update()
-            loop_holder.draw()
+            while True:
+
+                ### perform various checkups for this frame;
+                ###
+                ### stuff like maintaing a constant framerate and more
+                SERVICES_NS.frame_checkups()
+
+                ### run the GUD methods (check glossary for
+                ### loop holder/methods/loop)
+
+                loop_holder.handle_input()
+                loop_holder.update()
+                loop_holder.draw()
 
         ### catch exceptions as they happen
 

@@ -108,27 +108,32 @@ class FileManagerOperations(Object2D):
         ### alias self as the loop holder
         loop_holder = self
 
-        ### keep looping the execution the methods
+        ### keep looping the execution of methods
         ### "handle_input", "update" and "drawing" of the
         ### loop holder until running is set to False
 
         self.running = True
 
-        while self.running:
-
-            ### perform various checkups for this frame;
-            ###
-            ### stuff like maintaing a constant framerate and more
-            SERVICES_NS.frame_checkups()
-
-            ### run the GUD methods (check the glossary
-            ### for loop holder/loop/methods)
+        while True:
 
             try:
 
-                loop_holder.handle_input()
-                loop_holder.update()
-                loop_holder.draw()
+                while self.running:
+
+                    ### perform various checkups for this frame;
+                    ###
+                    ### stuff like maintaing a constant framerate and more
+                    SERVICES_NS.frame_checkups()
+
+                    ### run the GUD methods (check the glossary
+                    ### for loop holder/loop/methods)
+
+                    loop_holder.handle_input()
+                    loop_holder.update()
+                    loop_holder.draw()
+
+                ## if we leave the inner loop, also exit the outer loop
+                break
 
             ### if a SwitchLoopException occur, set a new
             ### object to become the loop holder

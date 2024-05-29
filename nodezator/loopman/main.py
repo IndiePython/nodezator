@@ -20,6 +20,7 @@ from .exception import (
 )
 
 
+
 class LoopHolder:
 
     def loop(self):
@@ -35,22 +36,34 @@ class LoopHolder:
         ### set self as the loop holder
         loop_holder = self
 
-        ### set a running flag and start the loop
-
+        ### create a running flag to keep the inner loop going
         self.running = True
 
-        while self.running:
+        ### start the general loop
 
-            ### perform various checkups for this frame;
-            ###
-            ### stuff like maintaing a constant framerate and more
-            SERVICES_NS.frame_checkups()
+        while True:
+
+            ### run app loop within a try clause
 
             try:
 
-                loop_holder.handle_input()
-                loop_holder.update()
-                loop_holder.draw()
+                ### run loop
+
+                while self.running:
+
+                    ### perform various checkups for this frame;
+                    ###
+                    ### stuff like maintaing a constant framerate and more
+                    SERVICES_NS.frame_checkups()
+
+                    ### perform the loop operations
+
+                    loop_holder.handle_input()
+                    loop_holder.update()
+                    loop_holder.draw()
+
+                ### when we leave the loop above, also leave the outer loop
+                break
 
             ## the sole purpose of this exception is to
             ## stop the execution flow of the try block and

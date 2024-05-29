@@ -378,32 +378,38 @@ class DemonstrationSessionForm(Object2D):
         self.running = True
         self.loop_holder = self
 
-        while self.running:
-
-            ### perform various checkups for this frame;
-            ###
-            ### stuff like maintaing a constant framerate and more
-            SERVICES_NS.frame_checkups()
-
-            ### put the handle_input/update/draw method
-            ### execution inside a try/except clause
-            ### so that the SwitchLoopException
-            ### thrown when focusing in and out of some
-            ### widgets is caught; also, you don't
-            ### need to catch the QuitAppException,
-            ### since it is caught in the main loop
+        while True:
 
             try:
 
-                self.loop_holder.handle_input()
-                self.loop_holder.update()
-                self.loop_holder.draw()
+                while self.running:
+
+                    ### perform various checkups for this frame;
+                    ###
+                    ### stuff like maintaing a constant framerate and more
+                    SERVICES_NS.frame_checkups()
+
+                    ### execute the handle_input/update/draw methods
+                    ###
+                    ### the SwitchLoopException thrown when focusing in and
+                    ### out of some widgets is caught in the try clause;
+
+                    self.loop_holder.handle_input()
+                    self.loop_holder.update()
+                    self.loop_holder.draw()
+
+                ## if we leave the inner loop, also exit the outer one
+                break
 
             except SwitchLoopException as err:
 
                 ## use the loop holder in the err
                 ## attribute of same name
                 self.loop_holder = err.loop_holder
+
+            ### we don't need to catch the QuitAppException,
+            ### since it is caught in the main loop
+
 
         ### disable text editing events if search box
         ### is focused

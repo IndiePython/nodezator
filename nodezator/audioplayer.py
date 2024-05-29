@@ -213,17 +213,22 @@ class AudioPlayer(Object2D):
 
         loop_holder = self
 
-        while self.running:
-
-            ### perform various checkups for this frame;
-            ###
-            ### stuff like maintaing a constant framerate and more
-            SERVICES_NS.frame_checkups()
+        while True:
 
             try:
 
-                loop_holder.handle_input()
-                loop_holder.draw()
+                while self.running:
+
+                    ### perform various checkups for this frame;
+                    ###
+                    ### stuff like maintaing a constant framerate and more
+                    SERVICES_NS.frame_checkups()
+
+                    loop_holder.handle_input()
+                    loop_holder.draw()
+
+                ## if we leave the inner loop, also exit the outer one
+                break
 
             except SwitchLoopException as err:
                 loop_holder = err.loop_holder

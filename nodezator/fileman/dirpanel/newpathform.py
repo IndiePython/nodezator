@@ -323,35 +323,41 @@ class PathForm(Object2D):
         ### set new path to None
         self.new_path = None
 
-        ### TODO loop_holder attribute in block below and
-        ### within "while block" could probably be just
-        ### a local variable instead; check;
+        ### TODO loop_holder attribute in block below could probably be
+        ### just a local variable instead; check;
 
         ### loop until running attribute is set to False
 
         self.running = True
         self.loop_holder = self
 
-        while self.running:
-
-            ### perform various checkups for this frame;
-            ###
-            ### stuff like maintaing a constant framerate and more
-            SERVICES_NS.frame_checkups()
-
-            ### put the handle_input/update/draw method
-            ### execution inside a try/except clause
-            ### so that the SwitchLoopException
-            ### thrown when focusing in and out of some
-            ### widgets is caught; also, you don't
-            ### need to catch the QuitAppException,
-            ### since it is caught in the main loop
+        while True:
 
             try:
 
-                self.loop_holder.handle_input()
-                self.loop_holder.update()
-                self.loop_holder.draw()
+                ## run the inner loop
+
+                while self.running:
+
+                    ### perform various checkups for this frame;
+                    ###
+                    ### stuff like maintaing a constant framerate and more
+                    SERVICES_NS.frame_checkups()
+
+                    ### put the handle_input/update/draw method
+                    ### execution inside a try clause
+                    ### so that the SwitchLoopException
+                    ### thrown when focusing in and out of some
+                    ### widgets is caught; also, you don't
+                    ### need to catch the QuitAppException,
+                    ### since it is caught in the main loop
+
+                    self.loop_holder.handle_input()
+                    self.loop_holder.update()
+                    self.loop_holder.draw()
+
+                ## if we ever leave the inner loop, also exit the outer one
+                break
 
             except SwitchLoopException as err:
 
