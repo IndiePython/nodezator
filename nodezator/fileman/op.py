@@ -53,6 +53,7 @@ from ..surfsman.cache import UNHIGHLIGHT_SURF_MAP
 from ..classes2d.single import Object2D
 
 
+
 class FileManagerOperations(Object2D):
     """Operations for file manager class."""
 
@@ -61,6 +62,7 @@ class FileManagerOperations(Object2D):
         *,
         caption="",
         path_name="",
+        expecting_files_only=False,
     ):
         """Return selected paths.
 
@@ -80,6 +82,10 @@ class FileManagerOperations(Object2D):
             selected paths entry. It can actually represent
             multiple path names, as long as you separate each
             path with the path separator character (os.pathsep).
+        expecting_files_only (bool)
+            When set to True, clicking folders won't cause their
+            names to appear in the selection entry. Default is
+            False.
         """
         ### blit screen sized semi transparent object
 
@@ -94,6 +100,9 @@ class FileManagerOperations(Object2D):
             else t.file_manager.select_paths
 
         )
+
+        ### store flag
+        self.expecting_files_only = expecting_files_only
 
         ### load paths from the current directory so they
         ### are displayed in the directory panel
@@ -361,12 +370,6 @@ class FileManagerOperations(Object2D):
         ### path_selection attribute
         self.path_selection = self.dir_panel.get_selection()
 
-        ### set the selection entry text according to the
-        ### path selection, to indicate to user which paths
-        ### are selected (or whether there is a selection at
-        ### all)
-        self.update_entry_with_selected()
-
     def get_selection_text(self):
         """Return custom text according to selected paths."""
         ### reference the path selection in a local variable
@@ -396,16 +399,27 @@ class FileManagerOperations(Object2D):
 
     def update_entry_with_selected(self):
         """If a file was selected, copy its name to entry."""
-        self.path_selection.clear()
+        ps = self.path_selection
 
-        self.path_selection.extend(self.dir_panel.get_selection())
+        ps.clear()
 
-        name = pathsep.join(
-            path.name
-            for path in self.path_selection
-        )
+        ps.extend(self.dir_panel.get_selection())
 
-        self.selection_entry.set(name, False)
+        if (
+            self.expecting_files_only
+            and len(ps) == 1
+            and ps[0].is_dir()
+        ):
+            pass
+
+        else:
+
+            name = pathsep.join(
+                path.name
+                for path in self.path_selection
+            )
+
+            self.selection_entry.set(name, False)
 
     def update_selection_from_entry(self):
 
@@ -430,6 +444,14 @@ class FileManagerOperations(Object2D):
 
     def submit(self):
         """Trigger exit of file browser, if there's a selection."""
+        ### if we are only interested in selecting files, then the
+        ### selection shown in the directory panel and the selection entry
+        ### might be out of sync, so we make sure they are the same,
+        ### based on the entry's content
+
+        if self.expecting_files_only:
+            self.update_selection_from_entry()
+
         ### if there's a selection, we can trigger the exit of the
         ### local loop by setting the 'running' flag off
         if self.path_selection:

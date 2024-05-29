@@ -44,6 +44,7 @@ def export_as_python():
         paths = select_paths(
             caption=NEW_PYTHON_FILEPATH_CAPTION,
             path_name=DEFAULT_FILENAME,
+            expecting_files_only=True,
         )
 
         ### act according to whether paths were given

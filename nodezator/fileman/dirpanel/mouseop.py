@@ -78,6 +78,7 @@ class MouseOperations:
 
                     elif ctrl and not shift:
                         self.revert_selection_state(path_obj)
+
                     elif shift and not ctrl:
                         self.extend_selection(path_obj)
 
@@ -109,27 +110,29 @@ class MouseOperations:
         ### reference the path
         path = path_obj.path
 
-        ### if the path is selectable, perform tasks to
-        ### make it so it is selected
+        ### if the path is selectable...
 
         if path in self.selectable_paths:
+
+            ### perform tasks to make it so it is selected
 
             index = self.selectable_paths.index(path)
             self.selection_states[index] = True
 
             self.last_selected_index = index
 
+            ### make it so the file manager updates its
+            ### path selection
+            self.fm.update_entry_with_selected()
+
         ### otherwise, just assign None to the
         ### last selected index
+
         else:
             self.last_selected_index = None
 
         ### update appearance of all paths
         self.update_path_objs_appearance()
-
-        ### since the selection may have changed, make it
-        ### so the file manager updates its path selection
-        self.fm.update_entry_with_selected()
 
     def revert_selection_state(self, path_obj):
         """Revert the selection of the path object.

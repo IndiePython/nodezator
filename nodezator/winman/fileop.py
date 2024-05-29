@@ -174,7 +174,12 @@ class FileOperations:
 
             ## pick path
 
-            paths = select_paths(caption=OPEN_FILE_CAPTION)
+            paths = (
+                select_paths(
+                    caption=OPEN_FILE_CAPTION,
+                    expecting_files_only=True,
+                )
+            )
 
             ## respond according to number of paths given
 
@@ -507,7 +512,7 @@ class FileOperations:
         ### the saving mechanism is different if a temporary file
         ### is loaded;
         ###
-        ### if it is the case, we delegate the saving an appropriate
+        ### if it is the case, we delegate the saving to an appropriate
         ### method and exit this one by returning
 
         if (
@@ -572,10 +577,13 @@ class FileOperations:
         """
         ### prompt user to pick filepath from file manager
 
-        paths = select_paths(
-                    caption=SAVE_AS_CAPTION,
-                    path_name="new_file_name.ndz",
-                )
+        paths = (
+            select_paths(
+                caption=SAVE_AS_CAPTION,
+                path_name='new_file_name.ndz',
+                expecting_files_only=True,
+            )
+        )
 
         ### respond according to whether paths were given
 

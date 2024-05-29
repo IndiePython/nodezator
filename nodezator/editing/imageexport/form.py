@@ -437,7 +437,13 @@ class ImageExportForm(Object2D):
         """Pick new path and update label using it."""
         ### pick new path
 
-        paths = select_paths(caption=NEW_IMAGEPATH_CAPTION, path_name=DEFAULT_FILENAME)
+        paths = (
+            select_paths(
+                caption=NEW_IMAGEPATH_CAPTION,
+                path_name=DEFAULT_FILENAME,
+                expecting_files_only=True,
+            )
+        )
 
         ### if paths were given, there can only be one,
         ### it should be used as the new filepath

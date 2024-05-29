@@ -104,6 +104,11 @@ class FileManager(FileManagerOperations):
         ## control for storing selected paths
         self.path_selection = []
 
+        ### flag to change behaviour when selecting only files
+        ### (not folders); check the select_paths method for
+        ### extra info on this flag
+        self.expecting_files_only = False
+
         ### store semitransparent object the size of
         ### this widget's rect
 
