@@ -18,6 +18,8 @@ from .birdseyeview import BirdsEyeViewHandling
 ## more operations
 
 from .imageexport.main import export_as_image
+from .imageexport.form import reset_image_filename
+
 from .pythonexporting import export_as_python, view_as_python
 
 from .categorycolors import (
@@ -142,3 +144,7 @@ class EditingAssistant(
 
         ### rebuild category color picking form
         self.rebuild_category_color_form()
+
+        ### reset default filename for image to be exported
+        ### in the image exporting form
+        reset_image_filename()

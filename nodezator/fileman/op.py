@@ -156,6 +156,13 @@ class FileManagerOperations(Object2D):
         ### blit smaller semi transparent object
         self.rect_size_semitransp_obj.draw()
 
+        ### if only files are expected to be selected, we must
+        ### update the selection according to the entry, since
+        ### they might be out of sync
+
+        if self.expecting_files_only:
+            self.update_selection_from_entry()
+
         ### return a copy of the path selection
         return tuple(self.path_selection)
 

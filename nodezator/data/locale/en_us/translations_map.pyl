@@ -164,11 +164,6 @@
 
     'image_export_form': {
 
-      # the app will automatically add '.html' at the end of
-      # the string, though the user can change at will to
-      # either .svg or .png as well
-      'default_filename': 'exported_graph',
-
       'pick_new_path': "Pick a path for new image file",
 
       'caption'                : "Image exporting form",

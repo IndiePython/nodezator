@@ -3,6 +3,7 @@
 ### standard library imports
 
 from pathlib import Path
+
 from functools import partial, partialmethod
 
 
@@ -99,8 +100,6 @@ BUTTON_SETTINGS = {
     "foreground_color": BUTTON_FG,
     "background_color": BUTTON_BG,
 }
-
-DEFAULT_FILENAME = (t.editing.image_export_form.default_filename) + ".html"
 
 NEW_IMAGEPATH_CAPTION = (
     t.editing.image_export_form.pick_new_path
@@ -224,10 +223,10 @@ class ImageExportForm(Object2D):
 
         midleft = change_filepath_button.rect.move(5, 0).midright
 
-        initial_text = str(Path.home() / DEFAULT_FILENAME)
+        placeholder_name = "exported_graph.html"
 
         self.chosen_filepath_label = Label(
-            text=initial_text,
+            text= str(Path.home() / placeholder_name),
             name="image_path",
             max_width=325,
             ellipsis_at_end=False,
@@ -435,12 +434,15 @@ class ImageExportForm(Object2D):
 
     def change_filepath(self):
         """Pick new path and update label using it."""
+        ### initial file name
+        initial_filename = Path(self.chosen_filepath_label.get()).name
+
         ### pick new path
 
         paths = (
             select_paths(
                 caption=NEW_IMAGEPATH_CAPTION,
-                path_name=DEFAULT_FILENAME,
+                path_name=initial_filename,
                 expecting_files_only=True,
             )
         )
@@ -505,6 +507,19 @@ class ImageExportForm(Object2D):
         new_suffix = self.image_type_tray.get()
 
         new_filepath = Path(filepath).with_suffix(new_suffix)
+
+        self.set_new_filepath(new_filepath)
+
+    def reset_image_filename(self):
+        """Update export path to use name of file."""
+
+        suffix = self.image_type_tray.get()
+
+        filename = APP_REFS.source_path.with_suffix(suffix).name
+
+        parent = Path(self.chosen_filepath_label.get()).parent
+
+        new_filepath = parent / filename
 
         self.set_new_filepath(new_filepath)
 
@@ -731,4 +746,9 @@ class ImageExportForm(Object2D):
         SERVICES_NS.update_screen()
 
 
-get_image_exporting_settings = ImageExportForm().get_image_exporting_settings
+### instantiate form and reference methods
+
+_image_export_form = ImageExportForm()
+
+get_image_exporting_settings = _image_export_form.get_image_exporting_settings
+reset_image_filename = _image_export_form.reset_image_filename
