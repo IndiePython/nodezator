@@ -14,7 +14,10 @@ from string import (
 from xml.etree.ElementTree import Element
 
 
-### third-party import
+### third-party imports
+
+from pygame import error as PygameError
+
 from pygame.draw import rect as draw_rect
 
 
@@ -23,6 +26,8 @@ from pygame.draw import rect as draw_rect
 from ...config import APP_REFS
 
 from ...ourstdlibs.path import get_new_filename
+
+from ...our3rdlibs.behaviour import set_status_message
 
 from ...fontsman.preview.cache import (
     FONT_PREVIEWS_DB,
@@ -128,10 +133,23 @@ class FontPreview(_BasePreview):
 
     def preview_paths(self):
         """Preview font(s) from path(s)."""
+
         try:
             view_fonts(self.value)
+
         except FileNotFoundError:
-            print("Font file wasn't found.")
+            error_msg = "Font file wasn't found."
+
+        except PygameError:
+            error_msg = "Couldn't load font file"
+
+        else:
+            error_msg = ''
+
+        if error_msg:
+
+            print(error_msg)
+            set_status_message(error_msg)
 
     def update_previews(self):
         """"""
