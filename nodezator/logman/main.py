@@ -26,11 +26,8 @@ from logging import DEBUG, Formatter, getLogger
 from logging.handlers import RotatingFileHandler
 
 
-## for temporary stdout suppression
-
-from io import StringIO
-
-from contextlib import redirect_stdout
+### third-party import
+import pygame
 
 
 ### local imports
@@ -255,33 +252,6 @@ logger.debug(f"Python version is {python_version()}")
 
 ## python implementation
 logger.debug(f"Python implementation is {python_implementation()}")
-
-## pygame-ce version
-
-## execute an import statement to guarantee pygame-ce is
-## installed;
-##
-## also, notice we also prevent the message printed when
-## pygame-ce is first imported from appearing; we do so by
-## temporarily redirecting stdout to a temporary file;
-## there is no ill-meaning towards the pygame message
-## here, since we display the very logo of the library
-## in our splash screen, with a link to its website;
-
-try:
-
-    with StringIO() as temp_stream:
-
-        with redirect_stdout(temp_stream):
-
-            import pygame
-
-except ImportError:
-
-    logger.exception("pygame doesn't seem to be available." " Reraising.")
-
-    raise
-
 
 
 ## if pygame is not pygame-ce, display message saying the app cannot be

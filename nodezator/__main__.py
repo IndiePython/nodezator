@@ -10,8 +10,41 @@ https://nodezator.com
 https://github.com/IndiePython/nodezator
 """
 
-### standard library import
+### standard library imports
+
 from pathlib import Path
+
+
+## for temporary stdout suppression
+
+from io import StringIO
+
+from contextlib import redirect_stdout
+
+
+### third-party import (pygame-ce)
+
+## execute an import statement to guarantee pygame-ce is
+## installed, even though we don't intend to use it here;
+##
+## notice we prevent the message printed when pygame-ce is
+## first imported from appearing; we do so by temporarily
+## redirecting stdout to a temporary file;
+##
+## there is no ill-meaning towards the pygame message
+## here, since we display the very logo of the library
+## in our splash screen, with a link to its website;
+## that is, we properly credit it;
+##
+## we only avoid having the message printed in order to leave
+## the stdout clean for when we are launching the app repeatedly
+## for debugging
+
+with StringIO() as _temp_stream:
+
+    with redirect_stdout(_temp_stream):
+
+        import pygame
 
 
 ### local imports
