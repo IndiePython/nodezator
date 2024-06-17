@@ -26,13 +26,18 @@ from logging import DEBUG, Formatter, getLogger
 from logging.handlers import RotatingFileHandler
 
 
-### third-party import
+### third-party imports
+
 import pygame
 
+from numpy.version import (
+    full_version as full_numpy_version,
+    release as numpy_release,
+)
 
 ### local imports
 
-from ..config import WRITEABLE_PATH
+from ..config import APP_REFS, WRITEABLE_PATH
 
 from ..appinfo import TITLE, APP_VERSION
 
@@ -229,29 +234,46 @@ logger = get_new_logger(__name__)
 logger.info("Configured logging.")
 
 ### log important system information which is useful for
-### debugging; note that the developer (me) never have
-### access to the logs nor are they sent anywhere
-### automatically;
+### debugging;
 ###
-### if you ever have an issue with your software, I'll
-### ask you to send them to me, either as an attachment
+### this data is also stored as system information in a
+### special dict, which is included in system testing
+### information
+###
+### note that the developer (me) never has access to this
+### data nor is it sent anywhere;
+###
+### if you ever have an issue with on your end, I'll just
+### ask you to send the info to me, either as an attachment
 ### in an github issue or via email;
-###
-### for more info on that chech the application website
-### (url can be found in appinfo.py);
 
 ## OS/system name
-logger.debug(f"OS/system name is {get_os_name()}")
+
+_os_name = get_os_name()
+
+logger.debug(f"OS/system name is {_os_name}")
+APP_REFS.system_info['os_name'] = _os_name
 
 ## architecture
 
-logger.debug(f"Architecture info is {get_architecture_info()}")
+_architecture_info = get_architecture_info()
+
+logger.debug(f"Architecture info is {_architecture_info}")
+APP_REFS.system_info['architecture_info'] = _architecture_info
 
 ## python version
-logger.debug(f"Python version is {python_version()}")
+
+_python_version = python_version()
+
+logger.debug(f"Python version is {_python_version}")
+APP_REFS.system_info['python_version'] = _python_version
 
 ## python implementation
-logger.debug(f"Python implementation is {python_implementation()}")
+
+_python_implementation = python_implementation()
+
+logger.debug(f"Python implementation is {_python_implementation}")
+APP_REFS.system_info['python_implementation'] = _python_implementation
 
 
 ## if pygame is not pygame-ce, display message saying the app cannot be
@@ -272,10 +294,28 @@ if not getattr(pygame, 'IS_CE', False):
 ### log relevant info...
 
 ## pygame version
-logger.debug(f"pygame version is {pygame.version.ver}")
+
+_pygame_version = pygame.version.ver
+
+logger.debug(f"pygame version is {_pygame_version}")
+APP_REFS.system_info['pygame_version'] = _pygame_version
+
+## numpy version and whether it is a release version or not
+
+logger.debug(f"numpy version is {full_numpy_version}")
+logger.debug(f"numpy version is release: {numpy_release}")
+
+APP_REFS.system_info['numpy_version'] = full_numpy_version
+APP_REFS.system_info['numpy_release'] = numpy_release
 
 ## app version
-logger.debug(("{} version is {}.{}.{} ({})").format(TITLE, *APP_VERSION))
+
+_app_version = '{} {}.{}.{} ({})'.format(TITLE, *APP_VERSION)
+
+logger.debug(f"app version is {_app_version}")
+APP_REFS.system_info['app_version'] = _app_version
 
 ## timezone
+
 logger.debug("UTC offset (timezone) is " + UTC_OFFSET)
+APP_REFS.system_info['utc_offset'] = UTC_OFFSET

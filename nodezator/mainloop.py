@@ -54,6 +54,8 @@ from .winman.main import perform_startup_preparations
 
 from .systemtesting import report_viewer
 
+from .userprefsman.utils import save_test_settings_if_needed
+
 
 
 ### create logger for module
@@ -222,6 +224,8 @@ def run_app(filepath=None):
             ### a system testing report
 
             if hasattr(obj, 'tests_report_data'):
+
+                save_test_settings_if_needed(obj.tests_report_data)
 
                 report_viewer.prepare_report(obj.tests_report_data)
 

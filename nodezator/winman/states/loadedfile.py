@@ -19,6 +19,7 @@ from pygame.locals import (
     K_DELETE,
     K_F1,
     K_F5,
+    K_F8,
     K_F12,
     K_KP0,
     K_HOME,
@@ -188,6 +189,19 @@ class LoadedFileState:
                 ## reload file
                 elif event.key == K_F5:
                     self.reload()
+
+                ## trigger system testing session
+
+                elif (
+                    event.key == K_F8
+                    and event.mod & KMOD_SHIFT
+                ):
+
+                    if event.mod & KMOD_CTRL:
+                        APP_REFS.ea.run_all_cases_at_max_speed()
+
+                    else:
+                        APP_REFS.ea.rerun_previous_test_session()
 
                 ## execute nodes
 

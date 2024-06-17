@@ -33,11 +33,13 @@ from ...config import APP_REFS
 
 from ...pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
 
-from ...pygamesetup.constants import FPS
+from ...pygamesetup.constants import FPS, GENERAL_NS
 
 from ...dialog import create_and_show_dialog
 
 from ...ourstdlibs.behaviour import empty_function
+
+from ...our3rdlibs.behaviour import are_changes_saved
 
 from ...our3rdlibs.button import Button
 
@@ -65,6 +67,9 @@ from ...loopman.exception import (
 )
 
 from ...systemtesting.constants import TEST_ID_TO_TITLE, ID_FORMAT_SPEC
+
+from ...userprefsman.main import USER_PREFS
+from ...userprefsman.constants import TEST_SESSION_SETTINGS_KEY
 
 from ...colorsman.colors import (
     BLACK,
@@ -175,6 +180,14 @@ MUST_SELECT_FROM_CHOSEN = (
 
 NO_MORE_CHOSEN_ITEMS = "All chosen cases are already removed."
 
+CANT_TRIGGER_TESTS_DURING_PLAY_RECORD = (
+    "System testing sessions can't be triggered during play or record mode"
+)
+
+MUST_SAVE_CHANGES_TO_TRIGGER_TESTS = (
+    "System testing sessions can't be triggered when there are unsaved"
+    " changes. Save the changes first, then try triggering tests again."
+)
 
 ### class definition
 
@@ -714,6 +727,26 @@ class SystemTestingSessionForm(Object2D):
 
     def set_system_testing_session(self):
         """Present form to set and trigger system testing session."""
+        ### if we are in play or record mode, test sessions can't be
+        ### triggered, so notify user via dialog and prevent rest of
+        ### method from executing by returning earlier
+
+        if GENERAL_NS.mode_name in ('play', 'record'):
+
+            create_and_show_dialog(CANT_TRIGGER_TESTS_DURING_PLAY_RECORD)
+            return
+
+        ### we can't trigger a test session when there are unsaved changes;
+        ###
+        ### notify user of that via dialog and prevent rest of method from
+        ### executing by returning earlier
+
+        if not are_changes_saved():
+
+            create_and_show_dialog(MUST_SAVE_CHANGES_TO_TRIGGER_TESTS)
+            return
+
+        MUST_SAVE_CHANGES_TO_TRIGGER_TESTS 
         ### draw screen sized semi-transparent object,
         ### so that screen behind form appears as if
         ### unhighlighted
@@ -862,7 +895,6 @@ class SystemTestingSessionForm(Object2D):
 
         That is, if at least one test case was chosen.
         """
-
         if not self.chosen_cases_listbox.items:
 
             create_and_show_dialog(
@@ -879,7 +911,11 @@ class SystemTestingSessionForm(Object2D):
             for item in self.chosen_cases_listbox.items
         ]
 
-        ### trigger system testing session (it uses play mode)
+        ### turn on a flag for saving the test settings for reuse
+        ### after the tests are finished
+        APP_REFS.system_testing_set = True
+
+        ### trigger system testing session
 
         raise (
 
@@ -908,5 +944,121 @@ class SystemTestingSessionForm(Object2D):
         SERVICES_NS.update_screen()
 
 
-## instantiating class and referencing relevant method
+### instantiate class and reference relevant method
 set_system_testing_session = SystemTestingSessionForm().set_system_testing_session
+
+
+### utility functions
+
+def rerun_previous_test_session():
+    """Trigger system testing session reusing previous settings."""
+    ### if we are in play or record mode, test sessions can't be
+    ### triggered, so notify user via dialog and prevent rest of
+    ### method from executing by returning earlier
+
+    if GENERAL_NS.mode_name in ('play', 'record'):
+
+        create_and_show_dialog(CANT_TRIGGER_TESTS_DURING_PLAY_RECORD)
+        return
+
+    ### we can't trigger a test session when there are unsaved changes;
+    ###
+    ### notify user of that via dialog and prevent rest of method from
+    ### executing by returning earlier
+
+    if not are_changes_saved():
+
+        create_and_show_dialog(MUST_SAVE_CHANGES_TO_TRIGGER_TESTS)
+        return
+
+    ### notify user if there is no saved test settings in the user data
+
+    if TEST_SESSION_SETTINGS_KEY not in USER_PREFS:
+
+        create_and_show_dialog(
+            "It seems you didn't run any test(s) previously."
+            " Run a test session first so that its settings can"
+            " be saved and reused."
+        )
+
+    ### otherwise, trigger test session after referencing the saved testing
+    ### data and making appropriate checks; additional setups as also made
+    ### when needed
+
+    else:
+
+        ### grab saved test settings
+        test_settings = USER_PREFS[TEST_SESSION_SETTINGS_KEY]
+
+        ### define a set holding the requested test case ids saved on disk
+        saved_ids = set(test_settings['test_cases_ids'])
+
+        ### define another set containing only the ids from the previous
+        ### set that in fact still exist
+        existing_ids = saved_ids.intersection(TEST_ID_TO_TITLE.keys())
+
+        ### if there are saved ids that don't exist anymore, turn on
+        ### a flag that causes the saved data on disk to be updated
+        ### at the end of the testing session
+
+        if saved_ids != existing_ids:
+            APP_REFS.system_testing_set = True
+
+        ### if none of the ids exist, use all available ones
+
+        if not existing_ids:
+            existing_ids.update(TEST_ID_TO_TITLE.keys())
+
+        ### trigger system testing session
+
+        raise (
+
+            ResetAppException(
+                mode='play',
+                data={
+                    'test_cases_ids': sorted(existing_ids),
+                    'playback_speed': test_settings['playback_speed'],
+                }
+            )
+
+        )
+
+
+def run_all_cases_at_max_speed():
+    """Trigger system testing session with all test cases at maximum speed."""
+    ### if we are in play or record mode, test sessions can't be
+    ### triggered, so notify user via dialog and prevent rest of
+    ### method from executing by returning earlier
+
+    if GENERAL_NS.mode_name in ('play', 'record'):
+
+        create_and_show_dialog(CANT_TRIGGER_TESTS_DURING_PLAY_RECORD)
+        return
+
+    ### we can't trigger a test session when there are unsaved changes;
+    ###
+    ### notify user of that via dialog and prevent rest of method from
+    ### executing by returning earlier
+
+    if not are_changes_saved():
+
+        create_and_show_dialog(MUST_SAVE_CHANGES_TO_TRIGGER_TESTS)
+        return
+
+    ### turn on a flag for saving the test settings for reuse
+    ### after the tests are finished
+    APP_REFS.system_testing_set = True
+
+    ### trigger system testing session
+
+    raise (
+
+        ResetAppException(
+            mode='play',
+            data={
+                'test_cases_ids': sorted(TEST_ID_TO_TITLE.keys()),
+                'playback_speed': 0,
+            }
+        )
+
+    )

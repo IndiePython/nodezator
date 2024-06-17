@@ -9,11 +9,13 @@ from functools import partialmethod
 from pygame.locals import (
     QUIT,
     KEYUP,
+    KMOD_SHIFT,
+    KMOD_CTRL,
     K_ESCAPE,
     K_RETURN,
     K_KP_ENTER,
+    K_F8,
     KEYDOWN,
-    KMOD_CTRL,
     K_w, K_n, K_o,
     MOUSEBUTTONDOWN,
     MOUSEBUTTONUP,
@@ -93,17 +95,32 @@ class SplashScreenOperations(Object2D):
             if event.type == QUIT:
                 raise QuitAppException
 
-            ### if one of the following keys is released,
-            ### raise the SwitchLoopException without
-            ### arguments, which causes the window manager
-            ### to obtain control of the screen, that is,
-            ### the splash screen looses focus and
-            ### disappears
+            ### KEYUP
 
             elif event.type == KEYUP:
 
+                ## if one of the following keys is released,
+                ## raise the SwitchLoopException without
+                ## arguments, which causes the window manager
+                ## to obtain control of the screen, that is,
+                ## the splash screen looses focus and
+                ## disappears
+
                 if event.key in (K_ESCAPE, K_RETURN, K_KP_ENTER):
                     raise SwitchLoopException
+
+                ## trigger system testing session
+
+                elif (
+                    event.key == K_F8
+                    and event.mod & KMOD_SHIFT
+                ):
+
+                    if event.mod & KMOD_CTRL:
+                        APP_REFS.ea.run_all_cases_at_max_speed()
+
+                    else:
+                        APP_REFS.ea.rerun_previous_test_session()
 
             ### KEYDOWN
 

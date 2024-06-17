@@ -22,8 +22,12 @@ from ...graphman.capsulenode.main import CapsuleNode
 
 
 
+FRAME_ASSERTION_MAP = {}
+
+
 def perform_setup(data):
-    """"""
+    """Load and reference input data."""
+
     with ZipFile(
         str(SYSTEM_TESTING_DATA_DIR / 'test_cases' / 'stc0000.zip'),
         mode='r',
@@ -35,12 +39,55 @@ def perform_setup(data):
                 literal_eval(input_data_file.read().decode(encoding='utf-8'))
             )
 
-def perform_assertions(result_map):
+def ensure_collections_are_empty(append_assertion_data):
+    """Ensure collections have no items.
+
+    Parameters
+    ==========
+    append_assertion_data (callable)
+        Used to store the results of assertions.
+    """
+    ### confirm no text box exists
+
+    ## grab the text blocks
+    text_blocks = APP_REFS.gm.text_blocks
+
+    ## 01 item in APP_REFS.gm.text_blocks
+
+    append_assertion_data(
+
+        (
+            "There must be no object in APP_REFS.gm.text_blocks",
+            len(text_blocks) == 0,
+        )
+
+    )
+
+    ### confirm no nodes exist
+
+    ## grab the nodes iterable
+    nodes = APP_REFS.gm.nodes
+
+    ## the "nodes" iterable must contain no items
+
+    append_assertion_data(
+
+        (
+            "There must be no items in APP_REFS.gm.nodes",
+            len(nodes) == 0,
+        )
+
+    )
+
+FRAME_ASSERTION_MAP[51] = ensure_collections_are_empty
+
+
+def perform_final_assertions(append_assertion_data):
     """Confirm instantiation of default objects.
 
     Parameters
     ==========
-    result_map (dict)
+    append_assertion_data (dict)
         Used to store test results.
     """
     ### confirm a single text box exists
@@ -50,16 +97,24 @@ def perform_assertions(result_map):
 
     ## exactly one object in APP_REFS.gm.text_blocks
 
-    result_map[
-        "There's only one object in APP_REFS.gm.text_blocks"
-    ] = len(text_blocks) == 1
+    append_assertion_data(
+
+        (
+            "There's only one object in APP_REFS.gm.text_blocks",
+            len(text_blocks) == 1,
+        )
+
+    )
 
 
     ## that object is a TextBlock instance
 
-    result_map[
-        "Single object in APP_REFS.gm.text_blocks is TextBlock instance"
-    ] = isinstance(text_blocks[0], TextBlock)
+    append_assertion_data(
+        (
+            "Single object in APP_REFS.gm.text_blocks is TextBlock instance",
+            isinstance(text_blocks[0], TextBlock),
+        )
+    )
 
 
     ### confirm these kind of nodes exist, one of each kind only
@@ -78,9 +133,12 @@ def perform_assertions(result_map):
 
     ## the "nodes" iterable must contain exactly 8 nodes
 
-    result_map[
-        "There must be exactly 8 items in the nodes iterable"
-    ] = len(nodes) == 8
+    append_assertion_data(
+        (
+            "There must be exactly 8 items in the nodes iterable",
+            len(nodes) == 8,
+        )
+    )
 
     ## there must be only one node of each kind
 
@@ -171,12 +229,20 @@ def perform_assertions(result_map):
 
     ):
 
-        result_map[
-            f"There must be only one {kind_name} among the existing ones"
-        ] = sum(
+        append_assertion_data(
 
-            1
-            for node in nodes
-            if all(check_func(node) for check_func in check_functions)
+            (
 
-        ) == 1
+                f"There must be only one {kind_name} among the existing ones",
+
+                sum(
+
+                    1
+                    for node in nodes
+                    if all(check_func(node) for check_func in check_functions)
+
+                ) == 1,
+
+            )
+
+        )

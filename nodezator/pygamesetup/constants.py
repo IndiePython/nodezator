@@ -30,7 +30,13 @@ from pygame.key import set_repeat
 
 from pygame.time import Clock
 
-from pygame.display import set_icon, set_caption, set_mode, update
+from pygame.display import (
+    set_icon,
+    set_caption,
+    set_mode,
+    list_modes,
+    update,
+)
 
 from pygame.image import load as load_image
 
@@ -66,6 +72,9 @@ pre_init_mixer(44100, -16, 2, 4096)
 
 ## pygame initialization
 init_pygame()
+
+## store whether the system support full HD resolution
+APP_REFS.full_hd_available = (1920, 1080) in list_modes()
 
 
 ### create a callable to reset the caption to a

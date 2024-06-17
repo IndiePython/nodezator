@@ -1,4 +1,4 @@
-"""Facility with operations for system testing case 0001."""
+"""Facility with operations for system testing case 0006."""
 
 ### standard library imports
 
@@ -33,7 +33,7 @@ def perform_setup(data):
     ### load and reference input data
 
     with ZipFile(
-        str(SYSTEM_TESTING_DATA_DIR / 'test_cases' / 'stc0001.zip'),
+        str(SYSTEM_TESTING_DATA_DIR / 'test_cases' / 'stc0006.zip'),
         mode='r',
     ) as archive:
 
@@ -66,7 +66,7 @@ def perform_setup(data):
     TEMP_FILEPATH.append(temporary_filepath)
 
 
-def ensure_collections_are_populated(append_assertion_data):
+def ensure_items_exist_and_are_deselected(append_assertion_data):
     """Ensure collections have the expected amount of items.
 
     Parameters
@@ -74,19 +74,19 @@ def ensure_collections_are_populated(append_assertion_data):
     append_assertion_data (callable)
         Used to store the results of assertions.
     """
-    ### confirm 01 text box exists
+    ### confirm 1 text box exists
 
     ## grab the text blocks
     text_blocks = APP_REFS.gm.text_blocks
 
-    ## 01 item in APP_REFS.gm.text_blocks
+    ## 1 item in APP_REFS.gm.text_blocks
 
     append_assertion_data(
 
         (
 
             (
-                "The loaded file must contain 01 object"
+                "The loaded file must contain 1 object"
                 " in APP_REFS.gm.text_blocks"
             ),
 
@@ -96,7 +96,7 @@ def ensure_collections_are_populated(append_assertion_data):
 
     )
 
-    ### confirm 08 nodes exist
+    ### confirm 8 nodes exist
 
     ## grab the nodes iterable
     nodes = APP_REFS.gm.nodes
@@ -105,50 +105,88 @@ def ensure_collections_are_populated(append_assertion_data):
 
     append_assertion_data(
         (
-            "The loaded file must contain 08 items in APP_REFS.gm.nodes",
+            "The loaded file must contain 8 items in APP_REFS.gm.nodes",
             len(nodes) == 8,
         )
     )
 
-FRAME_ASSERTION_MAP[0] = ensure_collections_are_populated
+    ### confirm no objects are selected
 
+    append_assertion_data(
+        (
+            "APP_REFS.ea.selected_objs must be empty (no selected objects)",
+            len(APP_REFS.ea.selected_objs) == 0,
+        )
+    )
 
-def perform_final_assertions(append_assertion_data):
-    """Confirm no objects remain on the loaded file.
+def ensure_items_exist_and_are_selected(append_assertion_data):
+    """Confirm all existing objects are selected.
 
     Parameters
     ==========
     append_assertion_data (callable)
         Used to store the results of assertions.
     """
-    ### confirm no text boxes exist
+    ### grab local reference to collections used to reference selected objects
+    selected_objs = APP_REFS.ea.selected_objs
 
-    ## grab the text blocks
+    ### confirm all text blocks (1) must be selected
+
     text_blocks = APP_REFS.gm.text_blocks
 
-    ## no items in APP_REFS.gm.text_blocks
-
     append_assertion_data(
+
         (
-            "There must be no objects in APP_REFS.gm.text_blocks",
-            len(text_blocks) == 0,
+
+            "Sole text box from APP_REFS.gm.text_blocks must be selected",
+
+            (
+                len(text_blocks) == 1
+                and text_blocks[0] in selected_objs
+            ),
+
         )
+
     )
 
 
-    ### confirm no nodes exist
+    ### confirm all nodes (8) must be selected
 
-    ## grab the nodes iterable
     nodes = APP_REFS.gm.nodes
 
-    ## the "nodes" iterable must contain no items
+    append_assertion_data(
+
+        (
+            "Nodes from APP_REFS.gm.nodes (8) must be selected",
+            (
+                len(nodes) == 8
+                and all(node in selected_objs for node in nodes)
+            ),
+        )
+
+    )
+
+    ### confirm APP_REFS.ea.selected_objs holds 9 items
 
     append_assertion_data(
+
         (
-            "There must be no items in APP_REFS.gm.nodes",
-            len(nodes) == 0,
+
+            "APP_REFS.ea.selected_objs holds 9 items",
+            len(selected_objs) == 9,
+
         )
+
     )
+
+
+
+FRAME_ASSERTION_MAP[0] = ensure_items_exist_and_are_deselected
+FRAME_ASSERTION_MAP[50] =  ensure_items_exist_and_are_selected
+
+
+perform_final_assertions = ensure_items_exist_and_are_deselected
+
 
 
 def perform_teardown():

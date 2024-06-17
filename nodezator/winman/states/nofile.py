@@ -13,6 +13,7 @@ from pygame.locals import (
     K_j,
     KEYUP,
     K_F1,
+    K_F8,
     MOUSEMOTION,
     MOUSEBUTTONUP,
 )
@@ -57,9 +58,25 @@ class NoFileState:
 
             elif event.type == KEYUP:
 
-                if event.key == K_F1:
+                ## display help page
 
+                if event.key == K_F1:
                     open_htsl_link("nodezator://help.nodezator.pysite")
+
+                ## trigger system testing session
+
+                elif (
+                    event.key == K_F8
+                    and event.mod & KMOD_SHIFT
+                ):
+
+                    if event.mod & KMOD_CTRL:
+                        APP_REFS.ea.run_all_cases_at_max_speed()
+
+                    else:
+                        APP_REFS.ea.rerun_previous_test_session()
+
+                ## show user log
 
                 elif (
                     event.key == K_j
@@ -67,7 +84,7 @@ class NoFileState:
                     and event.mod & KMOD_SHIFT
                 ):
 
-                    (APP_REFS.ea.show_user_log_contents())
+                    APP_REFS.ea.show_user_log_contents()
 
             ### KEYDOWN
 

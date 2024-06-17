@@ -53,9 +53,14 @@ APP_REFS = SimpleNamespace(
             temp_file_suffix=NATIVE_FILE_EXTENSION,
         )
     ),
+    ## flag to store system info
+    system_info={},
     ## flag to lock work-in-progress features, that is,
     ## features not ready for regular usage yet
     wip_lock=True,
+    ## flag to check need to save system testing settings
+    ## at end of testing session
+    system_testing_set=False,
 )
 
 

@@ -91,6 +91,7 @@ PLAY_REFS = type("Object", (), {})()
 PLAY_REFS.pending_test_cases = []
 PLAY_REFS.ongoing_test = None
 PLAY_REFS.system_testing_playback_speed = 0
+PLAY_REFS.test_frames = set()
 
 ### map to store events
 EVENTS_MAP = {}
@@ -250,9 +251,12 @@ def set_behaviour(services_namespace, data):
 
     pending_cases = PLAY_REFS.pending_test_cases
 
-    ### setup test cases if requested
+    ### define flag based on existence of key in given data
+    starting_system_testing_session = hasattr(data, 'test_cases_ids')
 
-    if hasattr(data, 'test_cases_ids'):
+    ### setup test cases if we are starting a system testing session
+
+    if starting_system_testing_session:
 
         APP_REFS.playsupport.prepare_system_testing_session(
             data.test_cases_ids,
@@ -265,14 +269,29 @@ def set_behaviour(services_namespace, data):
 
         PLAY_REFS.system_testing_playback_speed = data.playback_speed
 
+
     ### if there are pending test cases, pick last one and make preparations
     ### to perform it if needed
 
     if pending_cases:
 
+        ## pop test case id from list of pending case and it in the
+        ## PLAY_REFS namespace
         PLAY_REFS.ongoing_test = pending_cases.pop()
+
+        ## execute test setups as needed
         APP_REFS.playsupport.perform_test_setup(PLAY_REFS.ongoing_test, data)
+
+        ## define the playback speed
         data.playback_speed = PLAY_REFS.system_testing_playback_speed
+
+        ## make sure the set holding frame indices is clear and, if there are
+        ## test frame indices in data, store then in the set
+
+        PLAY_REFS.test_frames.clear()
+
+        if hasattr(data, 'test_frames'):
+            PLAY_REFS.test_frames.update(data.test_frames)
 
         ## ensure app indicates that there are no unsaved changes, if needed
         ##
@@ -313,8 +332,18 @@ def set_behaviour(services_namespace, data):
     PLAY_REFS.last_frame_index = last_frame_index
     PLAY_REFS.recording_width = SESSION_DATA['recording_size'][0]
 
-    ### reset window mode (pygame.display.set_mode)
-    set_mode(SESSION_DATA['recording_size'], 0)
+    ### only reset the display mode (pygame.display.set_mode), if...
+    ###
+    ### - we are not in the middle of a system testing session
+    ### - or, if we are, it is just getting started
+    ###
+    ### this way we avoid resetting the display mode needlessly, since
+    ### we only need to reset it for a simple play session or for the
+    ### first in a series of test cases (even when the series has only
+    ### that case)
+
+    if PLAY_REFS.ongoing_test is None or starting_system_testing_session:
+        set_mode(SESSION_DATA['recording_size'], 0)
 
     ### trigger setups related to window size change
     watch_window_size()
@@ -721,16 +750,27 @@ def leave_playing_mode(manually_triggered=False):
 
     if PLAY_REFS.ongoing_test is not None:
 
-        ## if leaving playing mode was triggered by
+        ## if leaving playing mode was triggered by the user
 
         if manually_triggered:
+
+            ##
 
             APP_REFS.playsupport.finish_system_testing_session_earlier(
                 PLAY_REFS.ongoing_test
             )
 
+            ##
+
             PLAY_REFS.pending_test_cases.clear()
             PLAY_REFS.ongoing_test = None
+
+            ##
+
+            if APP_REFS.system_testing_set:
+                APP_REFS.system_testing_set = False
+
+            ##
 
             raise (
                 ResetAppException(
@@ -741,8 +781,15 @@ def leave_playing_mode(manually_triggered=False):
 
         else:
 
-            # perform assertions, store test results and perform teardown
-            APP_REFS.playsupport.finish_test_case(PLAY_REFS.ongoing_test)
+            # clear set of test frames
+            PLAY_REFS.test_frames.clear()
+
+            # perform final assertions, store test results and perform teardown
+
+            APP_REFS.playsupport.finish_test_case(
+                PLAY_REFS.ongoing_test,
+                PLAY_REFS.last_frame_index,
+            )
 
             # act according to existence of pending test cases
 
@@ -803,6 +850,22 @@ def frame_checkups():
     ### increment frame number
     GENERAL_NS.frame_index += 1
 
+    ### if there is an ongoing test, check whether
+    ### an assertion must be executed in the current
+    ### frame and do so if it is the case
+
+    if (
+        PLAY_REFS.ongoing_test is not None
+        and GENERAL_NS.frame_index in PLAY_REFS.test_frames
+    ):
+
+        (
+            APP_REFS
+            .playsupport
+            .perform_frame_assertions
+            (PLAY_REFS.ongoing_test, GENERAL_NS.frame_index)
+        )
+
 
 def frame_checkups_with_fps(fps):
     """Same as frame_checkups(), but uses given fps."""
@@ -811,6 +874,22 @@ def frame_checkups_with_fps(fps):
 
     ### increment frame number
     GENERAL_NS.frame_index += 1
+
+    ### if there is an ongoing test, check whether
+    ### an assertion must be executed in the current
+    ### frame and do so if it is the case
+
+    if (
+        PLAY_REFS.ongoing_test is not None
+        and GENERAL_NS.frame_index in PLAY_REFS.test_frames
+    ):
+
+        (
+            APP_REFS
+            .playsupport
+            .perform_frame_assertions
+            (PLAY_REFS.ongoing_test, GENERAL_NS.frame_index)
+        )
 
 
 ### small utility

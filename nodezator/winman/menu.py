@@ -417,7 +417,22 @@ class MenuSetup:
                 {"label": "---",},
                 {
                     "label": "Perform system testing session",
-                    "command": APP_REFS.ea.set_system_testing_session,
+                    "children": [
+                        {
+                            "label": "Setup and run custom session",
+                            "command": APP_REFS.ea.set_system_testing_session,
+                        },
+                        {
+                            "label": "Rerun previous session",
+                            "key_text": "Ctrl+F8",
+                            "command": APP_REFS.ea.rerun_previous_test_session,
+                        },
+                        {
+                            "label": "Run all tests at maximum speed",
+                            "key_text": "Shift+Ctrl+F8",
+                            "command": APP_REFS.ea.run_all_cases_at_max_speed,
+                        },
+                    ],
                 },
             ],
         }

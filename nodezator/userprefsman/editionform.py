@@ -27,10 +27,7 @@ from ..translation import TRANSLATION_HOLDER as t
 
 from .main import USER_PREFS, CONFIG_FILEPATH
 
-from .validation import (
-    AVAILABLE_LANGUAGES,
-    validate_prefs_dict,
-)
+from .validation import AVAILABLE_LANGUAGES, validate_prefs_data
 
 from ..dialog import create_and_show_dialog
 
@@ -419,7 +416,7 @@ class UserPreferencesEditingForm(Object2D, LoopHolder):
         edited_prefs = {widget.name: widget.get() for widget in self.prefs_widgets}
 
         try:
-            validate_prefs_dict(edited_prefs)
+            validate_prefs_data(edited_prefs)
 
         except Exception:
 

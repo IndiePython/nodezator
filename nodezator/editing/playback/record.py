@@ -398,8 +398,10 @@ class SessionRecordingForm(Object2D):
 
         midleft = self.window_size_label_full.rect.move(20, 0).midright
 
+        value = next(key for key in TEXT_TO_WINDOW_SIZE if '1080p' in key)
+
         self.window_size_tray = OptionTray(
-            value="HD (720p)",
+            value=value,
             options=tuple(TEXT_TO_WINDOW_SIZE.keys()),
             max_width=0,
             name="window_size",

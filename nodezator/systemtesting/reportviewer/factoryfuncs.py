@@ -10,6 +10,8 @@ from functools import partial
 
 ### local imports
 
+from ...config import APP_REFS
+
 from ...ourstdlibs.datetimeutils import DATETIME_STR_FORMAT_CODE
 
 from ...our3rdlibs.button import Button
@@ -625,7 +627,6 @@ class ReportViewerFactoryFuncs:
 
             top = overall_objs.rect.bottom
 
-
         ##
 
         title_text = "Duration"
@@ -658,6 +659,7 @@ class ReportViewerFactoryFuncs:
         overall_objs.extend(objs)
 
         top = overall_objs.rect.bottom
+
 
         ##
 
@@ -776,6 +778,47 @@ class ReportViewerFactoryFuncs:
             overall_objs.extend(objs)
 
             top = overall_objs.rect.bottom
+
+        ##
+
+        top += 20
+
+        for key in APP_REFS.system_info:
+
+            ## ignore 'utc_offset' key, since its data was already
+            ## presented before (as "Timezone")
+            if key == 'utc_offset':
+                continue
+
+            value = str(rd[key])
+
+            title_text = key
+
+            self.html_content += (
+                "    <tr>\n"
+                f'        <td class="text-right">{title_text}:</td>\n'
+                f'        <td>{value}</td>\n'
+                "    </tr>\n"
+            )
+
+            title_obj, result_obj = objs = (
+
+                _get_title_result_labels(
+                    f"{title_text}:",
+                    TEXT_SETTINGS,
+                    value,
+                    TEXT_SETTINGS,
+                )
+
+            )
+
+            title_obj.rect.topright = (0, top)
+            result_obj.rect.topleft = (10, top)
+
+            overall_objs.extend(objs)
+
+            top = overall_objs.rect.bottom
+
 
         ###
         self.html_content += "</table>\n\n"
@@ -949,32 +992,61 @@ class ReportViewerFactoryFuncs:
 
             if case_result == 'error':
 
-                error_msg = case_data['error']
+                error_msgs = case_data['errors']
 
-                title_text = "Error message"
+                error_msg_list = (
+                    '<ul>\n'
+                    + '\n'.join(f'<li>{error_msg}</li>' for error_msg in error_msgs)
+                    + '\n</ul>\n'
+                )
+
+                title_text = "Error messages"
 
                 self.html_content += (
                     '<tr>\n'
                     f'    <td class="text-right">{title_text}:</td>\n'
-                    f'    <td>{error_msg}</td>\n'
+                    f'    <td>\n'
+                    f'{error_msg_list}\n'
+                    '     </td>\n'
                     '</tr>\n'
                 )
 
-                title_obj, result_obj = objs = (
+                title_obj = Object2D.from_surface(
+                    surface=(
+                        render_text(
+                            text=f"{title_text}:",
+                            **TEXT_SETTINGS,
+                        )
+                    ),
+                )
 
-                    _get_title_result_labels(
-                        f"{title_text}:",
-                        TEXT_SETTINGS,
-                        error_msg,
-                        MONO_TEXT_SETTINGS,
+                error_msg_surfs = [
+
+                    render_text(
+                        text=f'- {error_message}',
+                        **MONO_TEXT_SETTINGS
                     )
 
+                    for error_message in error_msgs
+
+                ]
+
+                result_obj = (
+                    Object2D.from_surface(
+                        combine_surfaces(
+                            error_msg_surfs,
+                            retrieve_pos_from='bottomleft',
+                            assign_pos_to='topleft',
+                            offset_pos_by=(0, 4),
+                            background_color=REPORT_BG,
+                        )
+                    )
                 )
 
                 title_obj.rect.topright = (0, top)
                 result_obj.rect.topleft = (10, top)
 
-                case_objs.extend(objs)
+                case_objs.extend((title_obj, result_obj))
 
                 top = case_objs.rect.bottom
 
@@ -1045,33 +1117,28 @@ class ReportViewerFactoryFuncs:
 
             ##
 
-            assertions_results = (
+            assertions_result_triplets = case_data['assertions_result_triplets']
 
-                sorted(
-                    case_data['assertions_results'].items(),
-
-                    # first what failed,
-                    # then alphabetically
-                    key=lambda item: (item[1], item[0])
-                )
-
-            )
-
-            if assertions_results:
+            if assertions_result_triplets:
 
                 title_text = "Assertions"
 
                 list_text = '<ul>\n'
 
-                for assertion_text, assertion_result in assertions_results:
+                for (
+                    frame_index, assertion_text, assertion_result
+                ) in assertions_result_triplets:
 
                     key = 'passed' if assertion_result else 'failed'
                     emoji_char = EMOJI_MAP[key]
                     class_name = CSS_CLASS_NAME_MAP[key]
 
+                    index_text = str(frame_index).rjust(4, '0')
+
                     list_text += (
                         f'  <li><span class="{class_name}">{emoji_char}</span>'
-                        f' {assertion_text}</li>\n'
+                        f' <span class="monospaced-text">{index_text}</span>'
+                        f' - {assertion_text}</li>\n'
                     )
 
                 list_text += '</ul>\n'
@@ -1106,9 +1173,24 @@ class ReportViewerFactoryFuncs:
 
                             # text surf
 
-                            render_text(
-                                text=assertion_text,
-                                **TEXT_SETTINGS,
+                            combine_surfaces(
+
+                                (
+                                    render_text(
+                                        text = str(frame_index).rjust(4, '0'),
+                                        **MONO_TEXT_SETTINGS,
+                                    ),
+
+                                    render_text(
+                                        text = ' - ' + assertion_text,
+                                        **TEXT_SETTINGS,
+                                    ),
+                                ),
+
+                                retrieve_pos_from='midright',
+                                assign_pos_to='midleft',
+                                background_color=REPORT_BG,
+
                             ),
 
                         ),
@@ -1120,7 +1202,9 @@ class ReportViewerFactoryFuncs:
 
                     )
 
-                    for assertion_text, assertion_result in assertions_results
+                    for (
+                        frame_index, assertion_text, assertion_result
+                    ) in assertions_result_triplets
 
                 ]
 

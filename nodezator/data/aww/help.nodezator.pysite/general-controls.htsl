@@ -42,7 +42,7 @@
     </tr>
 
     <tr>
-      <td><b>&lt;Ctrl+Shift+s&gt;</b></td>
+      <td><b>&lt;Shift+Ctrl+s&gt;</b></td>
       <td>"Save as..." functionality; that is, creates a new .ndz file from the current one</td>
     </tr>
 
@@ -57,7 +57,7 @@
     </tr>
 
     <tr>
-      <td><b>&lt;Ctrl+Shift+p&gt;</b></td>
+      <td><b>&lt;Shift+Ctrl+p&gt;</b></td>
       <td>Brings up the text viewer where you can preview your node layout as Python code</td>
     </tr>
 
@@ -101,7 +101,7 @@
     </tr>
 
     <tr>
-      <td><b>&lt;Shift + J&gt;</b></td>
+      <td><b>&lt;Shift + j&gt;</b></td>
       <td>Jumps to specific node by providing its id. Presents an entry for user to specify the id.</td>
     </tr>
 
@@ -149,8 +149,7 @@
 
 </table>
 
-
-<h2>Function buttons</h2>
+<h2>Function keys - general usage</h2>
 
 <table>
 
@@ -181,7 +180,7 @@
     </tr>
 
     <tr>
-      <td><b>&lt;Shift + F12&gt;</b></td>
+      <td><b>&lt;Shift+F12&gt;</b></td>
       <td>Also executes the node layout, but all content printed is displayed in the text viewer after executing.</td>
     </tr>
 
@@ -190,7 +189,80 @@
 </table>
 
 
-<h2>All objects</h2>
+<h2>Function keys - system testing</h2>
+
+<p>When a system testing session is triggered, the app assumes control of the inputs and performs test cases using automatic GUI interactions. In other words, the app will start moving by itself while performing system tests. Don't worry, you still have control of the app and can pause/resume or abort the testing session entirely. Here are all the available controls.</p>
+
+<h3>Triggering a system testing session</h3>
+
+<p>A system testing session can be triggered from one of the options in the <b>Playback &gt; Perform system testing session</b> menu. Here are controls to access some (not all) of the available options.</p>
+
+<table>
+
+  <thead>
+
+    <tr>
+      <th class="col-3">Control</th>
+      <th class="col-7">Result</th>
+    </tr>
+
+  </thead>
+
+  <tbody>
+
+    <tr>
+      <td><b>&lt;Shift+Ctrl+F8&gt;</b></td>
+      <td>Run all system testing cases at maximum speed.</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Shift+F8&gt;</b></td>
+      <td>Rerun previous system testing session.</td>
+    </tr>
+
+  </tbody>
+
+</table>
+
+
+<h3>Controlling the system testing session</h3>
+
+<p>Once a system testing session starts, additional controls are available to the user. Here we present such controls.</p>
+
+<table>
+
+  <thead>
+
+    <tr>
+      <th class="col-3">Control</th>
+      <th class="col-7">Result</th>
+    </tr>
+
+  </thead>
+
+  <tbody>
+
+    <tr>
+      <td><b>&lt;F7&gt;</b></td>
+      <td>Aborts the testing session.</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;F8&gt;</b></td>
+      <td>Pauses or resumes the system testing session.</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;F9&gt;</b></td>
+      <td>Toggles control over the mouse, that is, whether you want the mouse to follow to movements of the test or not.</td>
+    </tr>
+
+  </tbody>
+
+</table>
+
+
+<h2>Controls affecting all objects</h2>
 
 <table>
 
@@ -211,7 +283,7 @@
     </tr>
 
     <tr>
-      <td><b>&lt;Ctrl+Shift+a&gt;</b></td>
+      <td><b>&lt;Shift+Ctrl+a&gt;</b></td>
       <td>Deselects all objects</td>
     </tr>
 
@@ -392,7 +464,7 @@
     </tr>
 
     <tr>
-      <td><b>&lt;Ctrl+Shift+j&gt;</b></td>
+      <td><b>&lt;Shift+Ctrl+j&gt;</b></td>
       <td>Displays the user log contents in the text viewer</td>
     </tr>
 

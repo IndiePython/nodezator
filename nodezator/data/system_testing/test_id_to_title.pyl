@@ -3,5 +3,15 @@
 {
     0: "Instantiate default objects via context menu",
     1: "Delete objects via context menu",
+    2: "Select objects via mouse clicks",
+    3: "Select objects via mouse's box selection",
+    4: "Select objects via keyboard's \"select all\" operation",
+    5: "Deselect objects by clicking them",
+    6: "Deselect objects by clicking the canvas",
+    7: "Deselect objects via mouse's box selection",
+    8: "Deselect objects via keyboard's \"deselect all\" operation",
+    9: "Delete objects via click-selection + key",
+    10: "Delete objects via box selection + key",
+    11: "Delete objects via keyboard's \"select all\" operation + key",
 }
 

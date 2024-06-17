@@ -83,18 +83,20 @@ class ReportViewerOperations(Object2D):
 
             elif event.type == MOUSEBUTTONUP:
 
-                ### if mouse button is released within boundaries,
-                ### process event with corresponding method
+                ### if mouse button is mouse button 1..
 
-                if self.rect.collidepoint(event.pos):
+                if event.button == 1:
 
-                    if event.button == 1:
+                    ## if it is released within boundaries,
+                    ## process event with corresponding method
+
+                    if self.rect.collidepoint(event.pos):
                         self.on_mouse_release(event)
 
-                ## otherwise cancel editing form
+                    ## otherwise cancel editing form
 
-                else:
-                    self.exit()
+                    else:
+                        self.exit()
 
             ### MOUSEWHEEL
 
@@ -273,8 +275,9 @@ class ReportViewerOperations(Object2D):
 
             create_and_show_dialog(
                 "Must first perform system tests in order to produce report."
-                " Go to \"Playback > Perform system testing session\""
-                " to set and start a system testing session."
+                " Go to \"Playback > Perform system testing session\" to set"
+                " and start a system testing session using one of the"
+                " presented options."
             )
 
     def exit(self):

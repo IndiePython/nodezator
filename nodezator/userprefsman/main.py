@@ -8,6 +8,8 @@ from shutil import copyfile
 
 from pathlib import Path
 
+from copy import deepcopy
+
 
 ### local imports
 
@@ -19,9 +21,9 @@ from ..our3rdlibs.userlogger import USER_LOGGER
 
 from ..ourstdlibs.pyl import load_pyl
 
-from .validation import validate_prefs_dict
-
 from ..logman.main import get_new_logger
+
+from .validation import validate_prefs_data
 
 
 
@@ -66,7 +68,7 @@ USER_PREFS = {
 
 
 ### validate user preference defaults
-validate_prefs_dict(USER_PREFS)
+validate_prefs_data(USER_PREFS)
 
 
 ### path to config file and other important files
@@ -188,7 +190,7 @@ if CONFIG_FILEPATH.exists():
     else:
 
         try:
-            validate_prefs_dict(user_config_data)
+            validate_prefs_data(user_config_data)
 
         except Exception:
             USER_LOGGER.exception(INVALID_USER_PREFS_MESSAGE)
