@@ -275,9 +275,9 @@ class ReportViewerOperations(Object2D):
 
             create_and_show_dialog(
                 "Must first perform system tests in order to produce report."
-                " Go to \"Playback > Perform system testing session\" to set"
-                " and start a system testing session using one of the"
-                " presented options."
+                " Go to \"Playback > System testing\" to set and start"
+                " a system testing session using one of the presented"
+                " options."
             )
 
     def exit(self):

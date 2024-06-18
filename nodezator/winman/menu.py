@@ -416,7 +416,7 @@ class MenuSetup:
                 },
                 {"label": "---",},
                 {
-                    "label": "Perform system testing session",
+                    "label": "System testing",
                     "children": [
                         {
                             "label": "Setup and run custom session",
