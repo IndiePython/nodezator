@@ -154,12 +154,7 @@
     },
 
     'python_exporting': {
-
-      # the app will automatically add '.py' at the end of
-      # the string
-      'default_filename': 'exported_graph',
       'pick_new_path': "Pick a path for new python file",
-
     },
 
     'image_export_form': {
