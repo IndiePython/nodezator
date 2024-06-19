@@ -392,14 +392,14 @@ class MenuSetup:
 
             help_children_data.insert(-2, new_child)
 
-        ## Add new "Playback" top menu with different
+        ## Add new "GUI automation" top menu with different
         ## commands related to input playback/recording and its
         ## many applications
 
         # build top menu data
 
         playback_menu = {
-            "label": "Playback",
+            "label": "GUI automation",
             "children": [
                 {
                     "label": "Demonstrations",

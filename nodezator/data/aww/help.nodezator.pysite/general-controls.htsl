@@ -195,7 +195,7 @@
 
 <h3>Triggering a system testing session</h3>
 
-<p>A system testing session can be triggered from one of the options in the <b>Playback &gt; System testing</b> menu. Here are controls to access some (not all) of the available options.</p>
+<p>A system testing session can be triggered from one of the options in the <b>GUI automation &gt; System testing</b> menu. Here are controls to access some (not all) of the available options.</p>
 
 <table>
 
