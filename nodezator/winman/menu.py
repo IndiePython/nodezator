@@ -23,7 +23,7 @@ from ..translation import TRANSLATION_HOLDER as t
 
 from ..ourstdlibs.collections.general import CallList
 
-from ..our3rdlibs.behaviour import quit_app
+from ..our3rdlibs.behaviour import close_loaded_file, quit_app
 
 from ..htsl.main import open_htsl_link
 
@@ -85,8 +85,14 @@ class MenuSetup:
                     },
                     {"label": "------"},
                     {
-                        "label": t.menu.quit_app,
+                        "label": t.menu.close_file,
                         "key_text": "Ctrl+W",
+                        "icon": "close_native_file",
+                        "command": close_loaded_file,
+                    },
+                    {
+                        "label": t.menu.quit_app,
+                        "key_text": "Ctrl+Q",
                         "icon": "quit",
                         "command": quit_app,
                     },

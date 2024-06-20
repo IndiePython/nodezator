@@ -432,7 +432,11 @@ class FileOperations:
 
             raise SwitchLoopException
 
-    def perform_startup_preparations(self, filepath):
+    def perform_startup_preparations(
+        self,
+        filepath,
+        after_closing_file=False,
+    ):
         """Perform tasks for startup and return loop holder.
 
         Depending on whether or not the "filepath" argument
@@ -451,6 +455,11 @@ class FileOperations:
             if empty, it means no file must be loaded;
             otherwise, it is a string representing the
             path for a file to be loaded.
+        after_closing_file (bool, defaults to False)
+            If the filepath string is empty and this parameter
+            is True, triggers different admin tasks and the window
+            manager is used as the loop holder. That is, when closing
+            a file, only the window manager in 'no_file' mode is shown.
 
         Future implementation
         =====================
@@ -461,7 +470,7 @@ class FileOperations:
         kept on the screen or not.
         """
         ### clean loaded file data, if any
-        clean_loaded_file_data()
+        self.clean_loaded_file_data()
 
         ### if a filepath is received, try opening it,
         ### taking additional steps depending on the outcome
@@ -491,21 +500,27 @@ class FileOperations:
         ### if the filepath was an empty string, or the operation
         ### to load it fails, the execution flow of this method
         ### reaches this spot;
-        ###
-        ### in such case, we prepare the window
-        ### manager for a new session (this call would
-        ### not be necessary if we had loaded a file,
-        ### because it would have already been called
-        ### inside self.open());
+
+        ## we prepare the window manager for a new session
+        ## (this call would not be necessary if we had loaded
+        ## a file, because it would have already been called
+        ## inside self.open());
         self.prepare_for_new_session()
 
-        ### finally, return a reference to the splash
-        ### screen, after calling the drawing operation
-        ### of this window manager, so its objects appear
-        ### behind the splash screen
+        ## if we are starting a new session after closing a file,
+        ## return this window manager to be used as the loop holder
 
-        self.draw()
-        return self.splash_screen
+        if after_closing_file:
+            return self
+
+        ## otherwise return a reference to the splash screen,
+        ## after calling the drawing operation of this window manager,
+        ## so it appears behind the splash screen
+
+        else:
+
+            self.draw()
+            return self.splash_screen
 
     def save(self):
         """Trigger pos handler to save position data."""
@@ -798,36 +813,35 @@ class FileOperations:
         self.open(APP_REFS.source_path)
 
 
-### utility
+    @staticmethod
+    def clean_loaded_file_data():
+        """Perform setups to cancel loading file.
 
-def clean_loaded_file_data():
-    """Perform setups to cancel loading file.
+        Works by deleting attributes from the APP_REFS
+        whose existence trigger file loading operations.
 
-    Works by deleting attributes from the APP_REFS
-    whose existence trigger file loading operations.
-
-    Also cleans up data which won't be needed anymore.
-    """
-    ### delete the swap path if the attribute exists
-
-    try:
-        swap_path = APP_REFS.swap_path
-    except AttributeError:
-        pass
-    else:
-        swap_path.unlink()
-
-    ### delete attributes holding paths whose existence
-    ### indicate the need to load a file, if such attributes
-    ### exisst
-
-    for attr_name in ("source_path", "swap_path"):
+        Also cleans up data which won't be needed anymore.
+        """
+        ### delete the swap path if the attribute exists
 
         try:
-            delattr(APP_REFS, attr_name)
+            swap_path = APP_REFS.swap_path
         except AttributeError:
             pass
+        else:
+            swap_path.unlink()
 
-    ### also clean up data from a possible previous
-    ### session thay may still exist
-    APP_REFS.data.clear()
+        ### delete attributes holding paths whose existence
+        ### indicate the need to load a file, if such attributes
+        ### exisst
+
+        for attr_name in ("source_path", "swap_path"):
+
+            try:
+                delattr(APP_REFS, attr_name)
+            except AttributeError:
+                pass
+
+        ### also clean up data from a possible previous
+        ### session thay may still exist
+        APP_REFS.data.clear()

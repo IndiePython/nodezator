@@ -293,7 +293,8 @@ def set_behaviour(services_namespace, data):
         if hasattr(data, 'test_frames'):
             PLAY_REFS.test_frames.update(data.test_frames)
 
-        ## ensure app indicates that there are no unsaved changes, if needed
+        ## ensure app indicates that there are no unsaved changes and perform
+        ## extra clean up, if needed
         ##
         ## this is needed to prevent the app from complaining there are
         ## unsaved changes when in fact we just want to ignore them, since
@@ -301,7 +302,9 @@ def set_behaviour(services_namespace, data):
         ## finished
 
         if not are_changes_saved():
+
             indicate_saved()
+            APP_REFS.wm.clean_loaded_file_data()
 
 
     ### set play services as current ones

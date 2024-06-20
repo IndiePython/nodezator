@@ -46,6 +46,9 @@ class ContinueLoopException(Exception):
 class QuitAppException(Exception):
     """Raise whenever you want to quit the app."""
 
+class CloseFileException(Exception):
+    """Raise whenever you want to close the loaded file."""
+
 
 EXISTING_MODES = frozenset({'normal', 'play', 'record' })
 

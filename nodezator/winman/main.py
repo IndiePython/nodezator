@@ -93,9 +93,6 @@ from .switch import setup_switches
 
 from .fileop import FileOperations
 
-## window manager utility function
-from .fileop import clean_loaded_file_data
-
 
 
 ### create logger for module
@@ -401,7 +398,7 @@ class WindowManager(
 
                 show_dialog_from_key("cancelled_file_loading_dialog")
 
-                clean_loaded_file_data()
+                self.clean_loaded_file_data()
 
                 state_name = "no_file"
 

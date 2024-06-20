@@ -63,6 +63,11 @@
 
     <tr>
       <td><b>&lt;Ctrl+w&gt;</b></td>
+      <td>Closes loaded file</td>
+    </tr>
+
+    <tr>
+      <td><b>&lt;Ctrl+q&gt;</b></td>
       <td>Quits application</td>
     </tr>
 

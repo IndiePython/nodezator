@@ -16,7 +16,7 @@ from pygame.locals import (
     K_KP_ENTER,
     K_F8,
     KEYDOWN,
-    K_w, K_n, K_o,
+    K_q, K_w, K_n, K_o,
     MOUSEBUTTONDOWN,
     MOUSEBUTTONUP,
     MOUSEMOTION,
@@ -36,6 +36,7 @@ from ..classes2d.single import Object2D
 from ..loopman.exception import (
     SwitchLoopException,
     QuitAppException,
+    CloseFileException,
 )
 
 from ..colorsman.colors import SPLASH_FONT
@@ -92,6 +93,7 @@ class SplashScreenOperations(Object2D):
             ### if the user attempts to close the window,
             ### raise a custom exception to trigger the
             ### proper behaviour to quit the application
+
             if event.type == QUIT:
                 raise QuitAppException
 
@@ -129,8 +131,16 @@ class SplashScreenOperations(Object2D):
                 ## Application related operations
 
                 # quit
-                if event.key == K_w and event.mod & KMOD_CTRL:
+
+                if event.key == K_q and event.mod & KMOD_CTRL:
                     raise QuitAppException
+
+                ### closing file
+
+                elif event.key == K_w and event.mod & KMOD_CTRL:
+
+                    if hasattr(APP_REFS, 'source_path'):
+                        raise CloseFileException
 
                 # create new file
                 elif event.key == K_n and event.mod & KMOD_CTRL:

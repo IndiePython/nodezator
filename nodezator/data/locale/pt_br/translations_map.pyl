@@ -15,6 +15,7 @@
     'export_as_image'  : "Exportar como imagem",
     'export_as_python' : "Exportar como python",
     'view_as_python' : "Visualizar como python",
+    'close_file' : "Fechar arquivo",
     'quit_app' : "Fechar app",
 
     'edit'             : "Editar",

@@ -1,10 +1,18 @@
 {
-  'close_app_dialog' : {
+  'close_file_dialog' : {
+    'message' : "There are unsaved changes. Are you sure you want to close the file?",
+    'buttons' : [
+      ["Discard changes", 'close'],
+      ["Save & Close", 'save_and_close'],
+      ["Cancel closing file", None]
+    ],
+    'level_name': 'warning',
+  },
+  'quit_app_dialog' : {
     'message' : "There are unsaved changes. Are you sure you want to quit?",
     'buttons' : [
-      ["Quit without saving", 'quit'],
-      ["Save & Quit",         'save_and_quit'],
-      ["Cancel closing app",  None]
+      ["Discard changes", 'quit'],
+      ["Cancel quitting", None]
     ],
     'level_name': 'warning',
   },

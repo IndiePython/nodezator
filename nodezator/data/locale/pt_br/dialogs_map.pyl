@@ -1,10 +1,18 @@
 {
-  'close_app_dialog' : {
+  'close_file_dialog' : {
+    'message' : "Há mudanças não salvas. Tem certeza de que quer fechar o arquivo?",
+    'buttons' : [
+      ["Descartar mudanças", 'close'],
+      ["Salvar e fechar", 'save_and_close'],
+      ["Não fechar arquivo", None]
+    ],
+    'level_name': 'warning',
+  },
+  'quit_app_dialog' : {
     'message' : "Há mudanças não salvas. Tem certeza que quer sair?",
     'buttons' : [
-      ["Sair sem salvar", 'quit'],
-      ["Salvar e sair",   'save_and_quit'],
-      ["Cancelar saída",  None]
+      ["Descartar mudanças", 'quit'],
+      ["Cancelar saída", None]
     ],
     'level_name': 'warning',
   },

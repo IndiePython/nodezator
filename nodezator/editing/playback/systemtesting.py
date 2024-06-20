@@ -184,9 +184,10 @@ CANT_TRIGGER_TESTS_DURING_PLAY_RECORD = (
     "System testing sessions can't be triggered during play or record mode"
 )
 
-MUST_SAVE_CHANGES_TO_TRIGGER_TESTS = (
+MUST_SAVE_OR_CLOSE_TO_TRIGGER_TESTS = (
     "System testing sessions can't be triggered when there are unsaved"
-    " changes. Save the changes first, then try triggering tests again."
+    " changes. Save the changes first or close the file, then try triggering"
+    " tests again."
 )
 
 ### class definition
@@ -743,10 +744,9 @@ class SystemTestingSessionForm(Object2D):
 
         if not are_changes_saved():
 
-            create_and_show_dialog(MUST_SAVE_CHANGES_TO_TRIGGER_TESTS)
+            create_and_show_dialog(MUST_SAVE_OR_CLOSE_TO_TRIGGER_TESTS)
             return
 
-        MUST_SAVE_CHANGES_TO_TRIGGER_TESTS 
         ### draw screen sized semi-transparent object,
         ### so that screen behind form appears as if
         ### unhighlighted
@@ -968,7 +968,7 @@ def rerun_previous_test_session():
 
     if not are_changes_saved():
 
-        create_and_show_dialog(MUST_SAVE_CHANGES_TO_TRIGGER_TESTS)
+        create_and_show_dialog(MUST_SAVE_OR_CLOSE_TO_TRIGGER_TESTS)
         return
 
     ### notify user if there is no saved test settings in the user data
@@ -1042,7 +1042,7 @@ def run_all_cases_at_max_speed():
 
     if not are_changes_saved():
 
-        create_and_show_dialog(MUST_SAVE_CHANGES_TO_TRIGGER_TESTS)
+        create_and_show_dialog(MUST_SAVE_OR_CLOSE_TO_TRIGGER_TESTS)
         return
 
     ### turn on a flag for saving the test settings for reuse

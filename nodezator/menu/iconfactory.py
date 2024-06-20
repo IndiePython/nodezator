@@ -53,8 +53,22 @@ PLUS_MINI_SURF = render_layered_icon(
     colors=[BLACK, (80, 220, 120)],
 )
 
+DELETE_MINI_SURF = render_layered_icon(
+    chars=[chr(ordinal) for ordinal in (65, 66)],
+    dimension_name="height",
+    dimension_value=12,
+    colors=[BLACK, (215, 0, 0)],
+    rotation_degrees=-90,
+)
+
 NEW_NATIVE_FILE_ICON = combine_surfaces(
     [NATIVE_FILE_ICON, PLUS_MINI_SURF],
+    retrieve_pos_from="bottomright",
+    assign_pos_to="bottomright",
+)
+
+CLOSE_NATIVE_FILE_ICON = combine_surfaces(
+    [NATIVE_FILE_ICON, DELETE_MINI_SURF],
     retrieve_pos_from="bottomright",
     assign_pos_to="bottomright",
 )
@@ -392,6 +406,7 @@ HASH_ICON = render_layered_icon(
 ICON_MAP = {
     "folder": FOLDER_ICON,
     "new_native_file": NEW_NATIVE_FILE_ICON,
+    "close_native_file": CLOSE_NATIVE_FILE_ICON,
     "save": SAVE_ICON,
     "save_as": SAVE_AS_ICON,
     "image": IMAGE_ICON,

@@ -11,6 +11,7 @@ from pygame.locals import (
     K_ESCAPE,
     K_b,
     K_w,
+    K_q,
     MOUSEBUTTONDOWN,
 )
 
@@ -46,8 +47,15 @@ class BirdsEyeViewState:
 
                 ## quit application
 
-                if event.key == K_w and event.mod & KMOD_CTRL:
+                if event.key == K_q and event.mod & KMOD_CTRL:
                     raise QuitAppException
+
+                ## close file
+
+                elif event.key == K_w and event.mod & KMOD_CTRL:
+
+                    if hasattr(APP_REFS, 'source_path'):
+                        raise CloseFileException
 
 
             ### KEYUP

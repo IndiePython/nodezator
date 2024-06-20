@@ -24,6 +24,7 @@ from pygame.locals import (
     K_KP0,
     K_HOME,
     K_w,
+    K_q,
     K_a,
     K_s,
     K_d,
@@ -55,6 +56,7 @@ from ...config import APP_REFS
 
 from ...loopman.exception import (
     QuitAppException,
+    CloseFileException,
     ContinueLoopException,
     SwitchLoopException,
 )
@@ -122,8 +124,16 @@ class LoadedFileState:
                 ## Application related operations
 
                 # quit
-                if event.key == K_w and event.mod & KMOD_CTRL:
+
+                if event.key == K_q and event.mod & KMOD_CTRL:
                     raise QuitAppException
+
+                # close file
+
+                elif event.key == K_w and event.mod & KMOD_CTRL:
+
+                    if hasattr(APP_REFS, 'source_path'):
+                        raise CloseFileException
 
                 # create new file
                 elif event.key == K_n and event.mod & KMOD_CTRL:

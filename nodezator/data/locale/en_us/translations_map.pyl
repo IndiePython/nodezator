@@ -44,6 +44,7 @@
     'export_as_python' : "Export as python",
     'view_as_python' : "View as python",
 
+    'close_file' : "Close file",
     'quit_app' : "Quit app",
 
     'edit'             : "Edit",

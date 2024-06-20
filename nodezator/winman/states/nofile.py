@@ -7,7 +7,7 @@ from pygame.locals import (
     KEYDOWN,
     KMOD_CTRL,
     KMOD_SHIFT,
-    K_w,
+    K_q,
     K_n,
     K_o,
     K_j,
@@ -93,14 +93,17 @@ class NoFileState:
                 ## Application related operations
 
                 # quit
-                if event.key == K_w and event.mod & KMOD_CTRL:
+
+                if event.key == K_q and event.mod & KMOD_CTRL:
                     raise QuitAppException
 
                 # create new file
+
                 elif event.key == K_n and event.mod & KMOD_CTRL:
                     self.new()
 
                 # open file
+
                 elif event.key == K_o and event.mod & KMOD_CTRL:
                     self.open()
 

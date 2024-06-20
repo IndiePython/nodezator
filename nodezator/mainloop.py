@@ -39,12 +39,13 @@ update()
 
 from .logman.main import get_new_logger
 
-from .our3rdlibs.behaviour import are_changes_saved
+from .our3rdlibs.behaviour import are_changes_saved, indicate_saved
 
 from .loopman.exception import (
     ContinueLoopException,
     SwitchLoopException,
     QuitAppException,
+    CloseFileException,
     ResetAppException,
 )
 
@@ -131,44 +132,50 @@ def run_app(filepath=None):
             else:
                 method()
 
-        ## this exception exits means the user tried closing
-        ## the application, which we do so here, unless
-        ## there are unsaved changes, in which case we only
-        ## proceed if the user confirms
+        ## this exception means the user tried closing the application,
+        ## which we do so here, unless there are unsaved changes,
+        ## in which case we only proceed if the user confirms
 
         except QuitAppException:
 
-            logger.info("User tried closing the app.")
+            logger.info("User tried quitting the app.")
 
-            ## if we are on normal mode and changes are not saved,
-            ## ask user what to do
+            ### if we are not in normal mode, ignore rest of the block by
+            ### restarting loop
 
-            if GENERAL_NS.mode_name == 'normal' and not are_changes_saved():
+            if GENERAL_NS.mode_name != 'normal':
+                continue
+
+            ### if changes are saved, quit app right away
+
+            if are_changes_saved():
+                clean_and_quit_app()
+
+            ### if changes are not saved, ask user what to do
+
+            else:
 
                 ## ask user
 
                 try:
-                    answer = show_dialog_from_key("close_app_dialog")
+                    answer = show_dialog_from_key("quit_app_dialog")
 
                 ## if a QuitAppException is raised here,
                 ## it means the user tried closing the
                 ## window; we assume the user really wants
-                ## to leave the app, so we break out of the
-                ## application loop
+                ## to leave the app, so we do it immediatelly
 
                 except QuitAppException:
 
                     logger.info(
-                        "User ignored the quit dialog," " trying to close the app again"
+                        "User attempted closing window while the"
+                        " quit dialog was on screen. Quitting now."
                     )
 
-                    break
+                    clean_and_quit_app()
 
-                ## if user confirmed exiting, we just log
-                ## the fact, since we are inevitably going
-                ## to meet
-                ## the "break" statement which will throw
-                ## us out of the application loop
+                ## if user confirmed exiting, we just log the fact,
+                ## perform extra admin tasks and quit the app
 
                 if answer == "quit":
 
@@ -177,8 +184,120 @@ def run_app(filepath=None):
                         " when there are unsaved changes."
                     )
 
-                elif answer == "save_and_quit":
+                    clean_and_quit_app()
+
+                ## if user does not confirm quitting, we just
+                ## log the fact and carry on with normal execution
+                ## of the app
+
+                else:
+
+                    logger.info(
+                        "User cancelled quitting app (there are"
+                        " unsaved changes, so it may be the cause)."
+                    )
+
+
+        ## this exception means the user tried closing the loaded file,
+        ## which we do so here, unless there are unsaved changes,
+        ## in which case we only proceed if the user confirms
+
+        except CloseFileException:
+
+            logger.info("User tried closing the loaded file.")
+
+            ### conditions when it is pointless to close a file and thus
+            ### we ignore the rest of the block by restarting the loop
+
+            ## this one should notify user
+            if APP_REFS.wm.state_name == 'no_file':
+                create_and_show_dialog("There's no loaded file to be closed.")
+
+            ## this one should pass silently
+
+            if GENERAL_NS.mode_name != 'normal':
+                continue
+
+            ### if changes are saved, close file right away
+
+            if are_changes_saved():
+
+                ### perform startup preparations, retrieving the chosen
+                ### loop holder
+
+                loop_holder = (
+
+                    perform_startup_preparations(
+                        filepath='',
+                        after_closing_file=True,
+                    )
+
+                )
+
+            ### if changes are not saved, ask user what to do
+
+            else:
+
+                ## ask user
+
+                try:
+                    answer = show_dialog_from_key("close_file_dialog")
+
+                ## if a QuitAppException is raised here,
+                ## it means the user tried closing the
+                ## window; we assume the user actually wants
+                ## to leave the app, ignoring unsaved changes so
+                ## we do it
+
+                except QuitAppException:
+
+                    logger.info(
+                        "User ignored the close file dialog, trying to"
+                        " quit the app this time. Quitting now."
+                    )
+
+                    clean_and_quit_app()
+
+                ## if user confirmed closing, we perform the needed
+                ## setups
+
+                if answer == "close":
+
+                    logger.info(
+                        "User confirmed closing file even"
+                        " when there are unsaved changes."
+                    )
+
+                    ## ensure app indicates that there are no unsaved changes
+                    indicate_saved()
+
+                    ### perform startup preparations, retrieving the chosen
+                    ### loop holder
+
+                    loop_holder = (
+
+                        perform_startup_preparations(
+                            filepath='',
+                            after_closing_file=True,
+                        )
+
+                    )
+
+                elif answer == "save_and_close":
+
                     APP_REFS.wm.save()
+
+                    ### perform startup preparations, retrieving the chosen
+                    ### loop holder
+
+                    loop_holder = (
+
+                        perform_startup_preparations(
+                            filepath='',
+                            after_closing_file=True,
+                        )
+
+                    )
 
                 ## if user does not confirm exiting,
                 ## we avoid breaking out of the loop
@@ -188,23 +307,10 @@ def run_app(filepath=None):
                 else:
 
                     logger.info(
-                        "User cancelled closing app due to"
-                        " existence of unsaved changes."
+                        "User cancelled closing file (since there are"
+                        " unsaved changes, it may be the cause)"
                     )
 
-                    continue
-
-            ### if we get to the point, we just perform extra admin
-            ### tasks to exit the app and its loop
-
-            logger.info("Closing app under expected circumstances.")
-
-            clean_temp_files()
-
-            quit_pygame()
-
-            ## break out of the application loop
-            break
 
         ## this exception serves to reset the app to an
         ## initial state, that is, when it is just launched,
@@ -268,3 +374,13 @@ def run_app(filepath=None):
             quit_pygame()
 
             raise err
+
+
+## small utility
+
+def clean_and_quit_app():
+
+    quit_pygame()
+    logger.info("Quitting under expected circumstances.")
+    clean_temp_files()
+    quit()

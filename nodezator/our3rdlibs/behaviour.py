@@ -17,7 +17,7 @@ from ..config import APP_REFS
 
 from ..pygamesetup.constants import get_fps
 
-from ..loopman.exception import QuitAppException
+from ..loopman.exception import QuitAppException, CloseFileException
 
 from ..translation import STATUS_MESSAGES_MAP
 
@@ -36,6 +36,9 @@ def quit_app():
     """Raise a quit app exception."""
     raise QuitAppException
 
+def close_loaded_file():
+    """Raise a close file exception."""
+    raise CloseFileException
 
 def are_changes_saved():
     """Return True if there are no unsaved changes."""
