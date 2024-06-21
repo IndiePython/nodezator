@@ -1,10 +1,10 @@
 """Facility for launching the application.
 
-Nodezator: A Python node editor developed by
+Nodezator: A generalist Python node editor developed by
 Kennedy Richard <kennedy@kennedyrichard.com>.
 
 https://kennedyrichard.com
-https://twitter.com/KennedyRichard
+https://x.com/KennedyRichard
 
 https://nodezator.com
 https://github.com/IndiePython/nodezator

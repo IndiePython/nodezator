@@ -1,6 +1,6 @@
 # Nodezator
 
-Nodezator is a multi-purpose visual node editor for the Python programming language. It is a desktop application that works by connecting Python functions (and callables in general) visually in order to produce flexible parametric behavior/data/applications/snippets.
+Nodezator is a generalist Python node editor. It is a desktop application that works by connecting Python functions (and callables in general) visually in order to produce flexible parametric behavior/data/applications/snippets.
 
 ![nodezator screenshot](https://nodezator.com/images/screenshot.png)
 
@@ -181,7 +181,7 @@ If you have...
 
 ## Contact
 
-Contact me any time via [Twitter][] or [email][].
+Contact me any time via [Twitter/X][] or [email][].
 
 You are also welcome on the Indie Python's [discord server][].
 
@@ -231,7 +231,7 @@ Also, other parts of the code, despite being carefully designed, might be redesi
 
 [manual]: https://manual.nodezator.com
 
-[Twitter]: https://twitter.com/KennedyRichard
+[Twitter/X]: https://x.com/KennedyRichard
 [email]: mailto:kennedy@kennedyrichard.com
 [discord server]: https://indiepython.com/discord
 
