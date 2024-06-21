@@ -1,0 +1,218 @@
+<htsl>
+
+<head>
+  <title>What's new in Nodezator 1.5?</title>
+</head>
+
+<body>
+
+<p><a href="whats-new/index.htsl">All "What's new" pages (since 1.3.14)</a></p>
+
+
+<h1>What's new in Nodezator 1.5?</h1>
+
+<ul>
+    <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.5.0">[v1.5.0] System testing, topological sorting and QOL features</a></li>
+</ul>
+
+<ol>
+
+    <li><a href="whats-new/v1-5.htsl#system-testing-service">New automated system testing service</a>
+        <ol>
+            <li><a href="whats-new/v1-5.htsl#performing-system-tests">Performing system tests</a></li>
+            <li><a href="whats-new/v1-5.htsl#remaining-work-system-testing">Remaining work for system testing and Nodezator in general</a></li>
+        </ol>
+    </li>
+    <li><a href="whats-new/v1-5.htsl#breadth-first-topological-sorting">Breadth-first-search-based topological sorting for graph execution</a></li>
+    <li><a href="whats-new/v1-5.htsl#birds-eye-view-navigation">Birds eye view and navigation</a></li>
+    <li><a href="whats-new/v1-5.htsl#jump-node-id">Jump to specific node by providing its id</a></li>
+    <li><a href="whats-new/v1-5.htsl#improvements-user-experience">Improvements in user experience</a></li>
+    <li><a href="whats-new/v1-5.htsl#improved-not-found-drawings">Improved "Not-found" drawings with SVG</a></li>
+    <li><a href="whats-new/v1-5.htsl#fixes-other-back-end-changes">Fixes and other back-end changes</a></li>
+
+</ol>
+
+
+
+
+<p>The scheduled work for this release consisted of 02 features, but we delivered additional QOL (quality-of-life) features and other changes as well. The scheduled features were:</p>
+
+<ul>
+    <li>Finishing and releasing the automated system testing service</li>
+    <li>Replacing the makeshift graph execution algorithm by topological sorting</li>
+</ul>
+
+<p>Among the additional QOL features, we highlight:</p>
+
+<ul>
+    <li>Birds eye view</li>
+    <li>The ability to jump to any node in the graph by providing its id</li>
+</ul>
+
+<p>The remaining changes will be presented futher ahead, in a dedicated section.</p>
+
+<p>In addition to the information presented in this release text, you can find much of the development process documented in this GitHub discussion: <a href="https://github.com/IndiePython/nodezator/discussions/72">https://github.com/IndiePython/nodezator/discussions/72</a>. It was used as a development log (devlog) detailing changes and related decisions.</p>
+
+
+
+<h2 id="system-testing-service">New automated system testing service</h2>
+
+<p>This release was focused on providing a new key feature to aid in development of Nodezator: an automated system testing service.</p>
+
+<p>Nodezator, being a node editor, is a software with many features, tools and a varied workflow. There are innumerable actions that users can take and underlying systems supporting it. Additionally, being an open-source software project, it is subject to external development work being merged into it. Even if there was only my own work being merged into it, the use-cases/systems are just too many to be manually tested by a single person.</p>
+
+<p>In the past, despite my careful testing hundreds of times, I still couldn't manually test every possible action and it resulted in some nasty bugs being introduced in some past releases (bugs that were already solved). Although we also have unit tests, the coverage is still low and, even if it was high, the tests would only be able to ensure the isolated units work. This means we needed a tool that could test the entire system, ensuring every part works in tandem to perform each and every task the user can perform in Nodezator.</p>
+
+<p>In other words, we needed a tool that ensured that, given the same actions performed by a user like clicking some element, typing something, pressing specific keys and key combinations, in order to perform a specific task, the app would be able to successfully perform that task, resulting in specific outputs and/or state.</p>
+
+<p>This tool is called <a href="https://en.wikipedia.org/wiki/System_testing">System testing</a>. At the beginning, because it relies on GUI automation, we were mistakenly calling it automated GUI testing. However, because we are interested in testing the entire system, not only the graphical user interface, <b>system testing</b> is indeed the right term.</p>
+
+<h3 id="performing-system-tests">Performing system tests</h3>
+
+<p>Since version 1.4, Nodezator featured a <b>Playback</b> submenu on the menubar, although none of its options were available to users. In 1.5, this submenu was renamed to <b>GUI automation</b> and its <b>Automated GUI tests</b> option was renamed to <b>System testing</b>. This System testing submenu has all the options needed to set and perform an automated system testing session, with some keybindings assigned to the most common ones. Here's an image depicting the GUI automation submenu as well as the options available in the System testing submenu inside it:</p>
+
+<img src="whats-new/images/v1-5-x/gui_automation_submenu.png" alt="GUI automation submenu and its System testing submenu in the menubar" />
+
+<p>Among the options within the System testing submenu, there's one that presents a form where a custom testing session can be set and triggered. The form is presented in the image below:</p>
+
+<img src="whats-new/images/v1-5-x/system_testing_form.png" alt="Form to set and trigger custom system testing session" />
+
+<p>The form can be used to pick which test cases must be executed and the speed used. There's an speed option because although most people will usually want the tests to run in top speed, it might be useful to run specific tests in normal or slower speed in order to careful observe the execution of the task to help spot possible errors/mistakes.</p>
+
+<p>Once an automated system testing session begins, the app starts moving by itself, executing each task. During the session, there are several controls that can be used to perform tasks like pausing/resuming the session or aborting it. You can check such controls in the general controls page (that you can access in the <b>Help &gt; General controls</b> menubar option).</p>
+
+<p>Once a system testing session ends, a report is presented. Here's what the initial portion of the report looks like:</p>
+
+<img src="whats-new/images/v1-5-x/system_testing_report_initial_portion.png" alt="Initial portion of system testing report" />
+
+<p>The actual report is much larger since it has details about the system and each test case executed.</p>
+
+<p>On the bottom of the report there are also buttons to export it to other useful formats like <b>.html</b>, <b>.png</b> and <b>.pyl</b> (a Python file containing only literals).</p>
+
+
+
+
+<h3 id="remaining-work-system-testing">Remaining work for system testing and Nodezator in general</h3>
+
+<p>All that remains is to populate the system testing service with all the needed test cases, which is expected to be done in the next patch or so.</p>
+
+<p>In order to aid in development of not only of the system testing feature, but the whole app, a holistic view of its design is needed. Each and every task and feature must be listed. This is specially important for system testing because we need such information in order to define and implement all the needed test cases.</p>
+
+<p>Because of that, since the beginning of our scheduled work for this version, we also started producing a <a href="https://en.wikipedia.org/wiki/Software_design_description">Software Design Document</a> (SDD) for Nodezator, which you can find in this dedicated repository: <a href="https://github.com/IndiePython/nodezator-sdd">https://github.com/IndiePython/nodezator-sdd</a></p>
+
+<p>A system testing document is also being produced. It is kept in a separate repository although it is considered part of Nodezator's SDD: <a href="https://github.com/IndiePython/nodezator-system-testing">https://github.com/IndiePython/nodezator-system-testing</a>. It is used to help manage system testing for Nodezator and to document its test cases. It is kept as a separate repository so changes to system testing can be managed and tracked separately from the rest of the SDD.</p>
+
+<p>Finishing those documents is important not only for system testing, but also for Nodezator in general. For instance, once these documents are ready, we'll be able to organize the missing features in a sensible order for scheduling and implementation. We'll also be able to present a proper roadmap to users of the app and followers of the project.</p>
+
+
+<h2 id="breadth-first-topological-sorting">Breadth-first-search-based topological sorting for graph execution</h2>
+
+<p>Replacing our makeshift graph execution solution by one based on the topological sorting algorithm/technique was a feature request made by Mr. <a href="https://github.com/OlegAlexander">Alexander</a> and accepted after considering the merits of the request.</p>
+
+<p>Although other materials on the topic were researched, the most concise and straightforward definition for the topological sorting technique/algorithm was found on Quora (A Questions &amp; Answers platform):</p>
+
+<blockquote>
+
+    <p>Topological sort is a fundamental technique in graph theory that organizes the nodes of a directed acyclic graph (DAG) while maintaining the edge direction. The significance of topological sort stems from its ability to offer a linear ordering of nodes, which may be used to address a range of issues such as scheduling, job sequencing, and dependency resolution. (<a href="https://www.quora.com/What-is-the-importance-of-topological-sort-in-graph-theory-What-are-its-applications-and-examples/answer/M-Pappa-John">source</a>)</p>
+
+</blockquote>
+
+<p>In summary, topological sorting has many applications in computer science and software engineering and is an established key technique to solve many different kinds of problems. The specific algorithm picked was one based on a breadth-first search algorithm and also recommended by Mr. Alexander. This means nodes which don't require inputs are listed first, gathered in groups called generations, then the nodes immediately fed by their outputs are also listed as their own generation and so on until all the existing nodes are listed.</p>
+
+<p>It should be particularly useful to us in the future when we implement parallel execution, since the algorithm groups together nodes which don't depend on each other and can thus be executed in parallel.</p>
+
+<p>We implemented a custom solution adapted from <a href="https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm">this pseudocode</a> and with insight from other researched materials. Our solution presented the same output but superior speed to an alternative solution using an established 3rd-party library for manipulating graphs, the <a href="https://networkx.org/">NetworkX</a> library. Specifically, this <a href="https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.dag.topological_generations.html#networkx.algorithms.dag.topological_generations">NetworkX tool</a> was used.</p>
+
+<p>For the record, we don't fault NetworkX for its inferior speed in this specific case, since, being a library, we assume its offers a general solution designed to meet the requirements of many environments, whereas our custom solution is free to take advantage of local services and existing data structures to achieve top performance. NetworkX actually helped us validate our custom solution, that is, because NetworkX is a renowned library and our custom solution produced the same output as its solution.</p>
+
+<p>In the distant future we intend to research NetworkX further, as well as other graph manipulation libraries like <a href="https://igraph.org/">igraph</a>. This would be done in order to learn even more about our problem space and see if we can improve our solution somehow, although we already have a validated working solution that produces the same output as an established library like NetworkX.</p>
+
+<p>We assume a solution based on igraph may be faster, for instance, due to the library being written in C. However, we avoided further research in that direction for now and a possible adoption of igraph because:</p>
+
+<ul>
+    <li>We don't have speed requirements nor performance complaints, only functional requirements</li>
+    <li>We consider our functional requirements met, since our solution produces the same output as a solution based on the renowned NetworkX library</li>
+    <li>Despite not having speed requirements, we managed to come up with a solution faster than a solution based on the renowned NetworkX library</li>
+    <li>Avoiding the adoption of external dependencies as much as possible is a principle followed in Nodezator's maintenance and development</li>
+    <li>We can't properly assess the merits of the adoption of external libraries until we implement parallelism and other asynchronous paradigms for graph execution. Only then we'll be able to fully assess the pros and cons of each solution.</li>
+</ul>
+
+
+
+
+<h2 id="birds-eye-view-navigation">Birds eye view and navigation</h2>
+
+<p>The bird's eye view feature displays a representation of the entire graph that fits the screen. It allows you to see the whole graph at once. You can also use it for navigation, as keeping the mouse pressed while hovering the view will cause the screen to scroll to the respective spot in the actual graph. That is, that spot will appear centered on the screen. Here's what the feature look like:</p>
+
+<img src="whats-new/images/v1-5-x/birds_eye_view.png" alt="Screenshot of the bird's eye view" />
+
+<p>Note that the icons depicted in the view are not scaled down in the same proportion as the whole graph. They are just miniatures representing the center of each object. This is why in very small graphs they make the view look as though the objects were not positioned accurately, when in fact the view works just fine and navigation is very accurate, as holding the mouse button while hovering over each miniature will accurately position the screen centered on the specific miniature under the mouse. Additionally, this "illusion of inaccuracy" is only perceptible is small graphs anyway.</p>
+
+<p>You can find access the feature in the <b>Graph &gt; toggle bird's eye view</b> menubar command or by pressing <b>B</b> (pressing <b>B</b> again or <b>Escape</b> exits the view). This will help people working on large graphs, as they'll be able to instantly jump to and inspect any spot on the graph.</p>
+
+
+
+
+<h2 id="jump-node-id">Jump to specific node by providing its id</h2>
+
+<p>This version also offers the ability to jump to an existing node by providing its id. You can do this via small dialog that allows you to type the id of the node to which you want to jump. Here's what it looks like:</p>
+
+<img src="whats-new/images/v1-5-x/dialog_to_jump_to_node.png" alt="Dialog to jump to node of given id." />
+
+<p>Typing an inexistent id will just briefly show a message informing the user that a node of the specified id doesn't exist.</p>
+
+<p>You can find it in the <b>Graph &gt; Jump to node by id</b> menubar option or by pressing <b>Shift+J</b>. This will help people working on large graphs to find problematic nodes. That is, whenever a graph raises an error during execution, Nodezator informs the id of the problematic node. Users can now easily find that node using this feature by providing the id.</p>
+
+
+
+
+<h2 id="improvements-user-experience">Improvements in user experience</h2>
+
+<p>Several interactions of the user with the GUI were improved by adopting one or more of these measures:</p>
+
+<ul>
+    <li>Providing better default values</li>
+    <li>Similar behaviour to what is observed in other apps</li>
+</ul>
+
+<p>An example of providing better default values is the fact that the default name used when exporting files is now the name of the .ndz file loaded plus the extension of the corresponding format being exported. Before that, we used a generic file name plus the extension ("exported_graph" + extension). This meant users had to rename the file every time they were exporting the graph if they wanted a more meaningful/distinct name.</p>
+
+<p>An example of adopting behaviours that are similar to what is observed in other apps is the fact that when navigating the file browser in order to select a file, clicking a folder won't cause its name to appear in the entry at the bottom of the file browser. After all, when we navigate in search of a file, we want only the names of files we click to appear in that entry, not the name of the folders. When we click a folder while looking for a file, we do so because we want to double-click it to access its location or inspect its contents, not to select it.</p>
+
+<p>Now it is also possible to close a file without closing the app. Before, a file would only be closed when creating a new one, loading an existing one or quitting the app altogether. This distinction between the actions of closing a file and quitting the app is important for when we implement the ability to load multiple files at the same time, since then we may want to close a file while keeping the app running in order to keep editing other loaded files.</p>
+
+
+
+
+
+<h2 id="improved-not-found-drawings">Improved "Not-found" drawings with SVG</h2>
+
+<p>We also improved the appearance of the "not-found" drawings. They are used to indicate visual content that wasn't found, obtained or loaded yet. It is used in viewer nodes that weren't executed yet (thus didn't generate any visuals) and path preview widgets that show visual content (the ones used to visualize images, fonts and videos).</p>
+
+<p>They are now generated with SVG, resulting in smooth strokes/shapes. Check the difference in the image below that shows how the "not-found" drawing used in a viewer node:</p>
+
+<img src="whats-new/images/v1-5-x/not_found_drawing_comparison.png" alt="Comparison between appearances of the not-found drawings." />
+
+<p>The portion on the left shows how the "not-found" drawing appears in previous versions and on the right we have the same drawing as it appears now, with smooth strokes/shapes since it uses SVG.</p>
+
+
+
+
+<h2 id="fixes-other-back-end-changes">Fixes and other back-end changes</h2>
+
+<p>Among the fixes performed, there was one that would cause the app to crash whenever trying to visualize an invalid font path on the font path preview widget.</p>
+
+<p>There was also a bug in the int float entry widget. After editing the contents of an int float entry by typing the value in it, the intfloat entry was executing its custom update operation a second time needlessly. In other words, it was trying to update the .ndz file twice. This bug in particular was harmless cause we already had checks in place to prevent unnecessary updates which means the second execution had no effect besides being unnecessary. Even so, unnecessary executions must be avoided regardless and if this bug persisted in the system it could evolve into a more harmful one as a result of changes in the related systems.</p>
+
+<p>A back-end change that will go unnoticed by users but will make data management a bit easier is the usage of <a href="https://pyga.me/docs/ref/system.html#pygame.system.get_pref_path">pygame.system.get_pref_path()</a> to define a central writeable path for files holding data like configuration, recent opened files, etc. It now replaces a custom makeshift solution we were using.</p>
+
+<p>As a result, the app now stores such files in a new location.</p>
+
+<p>Proper mechanisms were also employed to guarantee data in the old locations is copied into the new locations. In other words, your current configuration data and other important data saved in the old locations are not lost.</p>
+
+
+
+
+</body>
+
+</htsl>
