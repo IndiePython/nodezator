@@ -61,6 +61,9 @@ APP_REFS = SimpleNamespace(
     ## flag to check need to save system testing settings
     ## at end of testing session
     system_testing_set=False,
+    ## list for temporarily storing data dragged into the app window
+    ## from outside
+    dragged_from_outside=[],
 )
 
 

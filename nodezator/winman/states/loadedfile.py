@@ -45,6 +45,9 @@ from pygame.locals import (
     MOUSEBUTTONUP,
     MOUSEBUTTONDOWN,
     MOUSEWHEEL,
+    DROPFILE,
+    DROPTEXT,
+    DROPCOMPLETE,
 )
 
 
@@ -65,6 +68,9 @@ from ...htsl.main import open_htsl_link
 
 
 
+DROP_EVENTS = frozenset((DROPFILE, DROPTEXT))
+
+
 class LoadedFileState:
     """Methods related to 'loaded_file' state."""
 
@@ -76,6 +82,12 @@ class LoadedFileState:
 
             if event.type == QUIT:
                 raise QuitAppException
+
+            elif event.type in DROP_EVENTS:
+                APP_REFS.dragged_from_outside.append(event)
+
+            elif event.type == DROPCOMPLETE:
+                APP_REFS.ea.manage_dragged_from_outside()
 
             ### MOUSEWHEEL
 

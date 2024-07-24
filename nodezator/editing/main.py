@@ -43,6 +43,8 @@ from .playback.systemtesting import (
     run_all_cases_at_max_speed,
 )
 
+from .externaldragging import manage_dragged_from_outside
+
 ## classes for composition
 
 from .widgetpopups.creation import WidgetCreationPopupMenu
@@ -118,6 +120,9 @@ class EditingAssistant(
 
         self.rerun_previous_test_session = rerun_previous_test_session
         self.run_all_cases_at_max_speed = run_all_cases_at_max_speed
+
+        ### store call related to data dragged into the app from outside it
+        self.manage_dragged_from_outside = manage_dragged_from_outside
 
         ### create and store popup menus
 
