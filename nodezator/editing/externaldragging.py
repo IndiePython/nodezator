@@ -15,15 +15,32 @@ from ..config import APP_REFS
 
 from ..pygamesetup import SERVICES_NS
 
+from ..graphman.widget.utils import get_widget_metadata
+
 
 
 _dragged_items = []
 
 
+EXTENSION_SET_TO_WIDGET_NAME = {
+
+    frozenset((
+        '.bmp', '.gif', '.jpg', '.jpeg', '.lbm', '.pcx', '.png',
+        '.pnm', '.pbm', '.pgm', '.ppm', '.qoi', '.svg', '.tga',
+        '.tif', '.tiff', '.webp', '.xpm', '.xcf'
+    )) : 'image_preview',
+
+    frozenset((
+        '.bin', '.dfont', '.otf', '.pfb', '.ps', '.sfd', '.ttf', '.woff',
+    )) : 'font_preview',
+
+}
+
+
 def manage_dragged_from_outside():
 
     ###
-    mouse_pos = SERVICES_NS.get_mouse_pos()
+    APP_REFS.ea.popup_spawn_pos = SERVICES_NS.get_mouse_pos()
 
     ###
 
@@ -38,41 +55,68 @@ def manage_dragged_from_outside():
     first_item = _dragged_items[0]
 
     ###
+
     if not quantity: return
 
     elif hasattr(first_item, 'file'):
 
         treat_filepaths(
-            [Path(item.file) for item in _dragged_items],
-            mouse_pos,
+            [Path(item.file) for item in _dragged_items]
         )
 
     else:
 
         if quantity == 1:
-            treat_single_line_of_text(_first.text, mouse_pos)
+            treat_single_line_of_text(_first.text)
 
         else:
 
             treat_multiple_lines_of_text(
-                '\n'.join(item.text for item in _dragged_items),
-                mouse_pos,
+                '\n'.join(item.text for item in _dragged_items)
             )
 
     ###
     _dragged_items.clear()
 
 
-def treat_filepaths(filepaths, mouse_pos):
+def treat_filepaths(filepaths):
 
-    if len(filepaths) == 1:
-        print('one filepath')
+    used_extensions = frozenset(path.suffix.lower() for path in filepaths)
+
+    for extensions, widget_name in EXTENSION_SET_TO_WIDGET_NAME.items():
+
+        if used_extensions.issubset(extensions):
+            break
 
     else:
-        print('several filepaths')
+        widget_name = 'path_preview'
 
-def treat_single_line_of_text(text, mouse_pos):
+    ###
+
+    if len(filepaths) == 1:
+
+        value = str(filepaths[0])
+        type_ = str
+
+    else:
+
+        value = tuple(str(path) for path in filepaths)
+        type_ = tuple
+
+    ###
+
+    APP_REFS.ea.insert_node(
+
+        get_widget_metadata(
+            {'widget_name': widget_name, 'type': type_},
+            value,
+        )
+
+    )
+
+
+def treat_single_line_of_text(text):
     print('one line of text')
 
-def treat_multiple_lines_of_text(text, mouse_pos):
+def treat_multiple_lines_of_text(text):
     print('several lines of text')
