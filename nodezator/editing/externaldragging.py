@@ -7,42 +7,41 @@ only X11 supported dragged text.
 ### standard library import
 from pathlib import Path
 
+### third-party import
+from pygame import Rect
+
 
 ### local imports
 
-
 from ..config import APP_REFS
 
+from ..dialog import create_and_show_dialog
+
 from ..pygamesetup import SERVICES_NS
+
+from ..pygamesetup.constants import MEDIA_TYPE_TO_EXTENSIONS
 
 from ..graphman.widget.utils import get_widget_metadata
 
 
 
-_dragged_items = []
+MEDIA_TYPE_TO_PATH_PREVIEW_WIDGET_NAME = {
 
-
-EXTENSION_SET_TO_WIDGET_NAME = {
-
-    frozenset((
-        '.bmp', '.gif', '.jpg', '.jpeg', '.lbm', '.pcx', '.png',
-        '.pnm', '.pbm', '.pgm', '.ppm', '.qoi', '.svg', '.tga',
-        '.tif', '.tiff', '.webp', '.xpm', '.xcf'
-    )) : 'image_preview',
-
-    frozenset((
-        '.bin', '.dfont', '.otf', '.pfb', '.ps', '.sfd', '.ttf', '.woff',
-    )) : 'font_preview',
+    'audio': 'audio_preview',
+    'font' : 'font_preview',
+    'image' : 'image_preview',
+    'video': 'video_preview',
+    'text': 'text_preview',
 
 }
 
+# arbitrary width and height, similar to actual stacked dialog
+DIALOG_ANCHOR_RECT = Rect(0, 0, 50, 300)
+
+_dragged_items = []
+
 
 def manage_dragged_from_outside():
-
-    ###
-    APP_REFS.ea.popup_spawn_pos = SERVICES_NS.get_mouse_pos()
-
-    ###
 
     dragged_from_outside = APP_REFS.dragged_from_outside
 
@@ -83,13 +82,40 @@ def treat_filepaths(filepaths):
 
     used_extensions = frozenset(path.suffix.lower() for path in filepaths)
 
-    for extensions, widget_name in EXTENSION_SET_TO_WIDGET_NAME.items():
 
-        if used_extensions.issubset(extensions):
-            break
+    if not APP_REFS.shift_pressed:
+
+        for media_type, extensions in MEDIA_TYPE_TO_EXTENSIONS.items():
+
+            if used_extensions.issubset(extensions):
+
+                widget_name = MEDIA_TYPE_TO_PATH_PREVIEW_WIDGET_NAME[media_type]
+                break
+
+        else:
+            widget_name = 'path_preview'
 
     else:
-        widget_name = 'path_preview'
+
+        DIALOG_ANCHOR_RECT.midtop = APP_REFS.mouse_pos
+
+        answer = create_and_show_dialog(
+            buttons=(
+                ('Audio preview', 'audio_preview'),
+                ('Font preview', 'font_preview'),
+                ('Image preview', 'image_preview'),
+                ('Text preview', 'text_preview'),
+                ('Video preview', 'video_preview'),
+                ('Path preview', 'path_preview'),
+            ),
+            anchor_rect=DIALOG_ANCHOR_RECT,
+        )
+
+        if answer:
+            widget_name = answer
+
+        else:
+            return
 
     ###
 

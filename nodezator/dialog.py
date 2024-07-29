@@ -43,14 +43,14 @@ from .pygamesetup import (
 
 from .classes2d.single import Object2D
 from .classes2d.collections import List2D
+from .classes2d.surfaceswitcher import SURF_SWITCHER_CLASS_MAP 
 
 from .loopman.main import LoopHolder
 
-from .surfsman.draw import blit_aligned, draw_border
+from .surfsman.draw import blit_aligned, draw_border, draw_depth_finish
 from .surfsman.render import render_rect
 from .surfsman.icon import render_layered_icon
 
-from .textman.cache import CachedTextObject
 from .textman.render import render_text
 
 from .fontsman.constants import ENC_SANS_BOLD_FONT_HEIGHT
@@ -114,6 +114,12 @@ NORMAL_BUTTON_SETTINGS = {
     "depth_finish_thickness": 1,
 }
 
+STACKED_BUTTON_SETTINGS = {
+    "font_height": ENC_SANS_BOLD_FONT_HEIGHT,
+    "foreground_color": BUTTON_FG,
+    "padding": 5,
+}
+
 HOVERED_BUTTON_SETTINGS = {
     "font_height": ENC_SANS_BOLD_FONT_HEIGHT,
     "foreground_color": BUTTON_FG,
@@ -126,6 +132,8 @@ HOVERED_BUTTON_SETTINGS = {
 ## height for font used
 FONT_HEIGHT = ENC_SANS_BOLD_FONT_HEIGHT
 
+## object that can switch between hovered and unhovered states
+DialogButton = SURF_SWITCHER_CLASS_MAP[frozenset(('hovered', 'unhovered'))]
 
 ## icons
 
@@ -237,17 +245,17 @@ class DialogManager(Object2D, LoopHolder):
 
         self,
 
-        message,
+        message='',
         buttons=None,
-        level_name="info",
+        level_name='info',
         unhighlighter_obj=None,
 
         ## dialog clamping and anchoring
 
         clamping_rect=None,
         anchor_rect=None,
-        dialog_pos_from="center",
-        dialog_pos_to="center",
+        dialog_pos_from='center',
+        dialog_pos_to='center',
         dialog_offset_by=(0, 0),
 
         ## flag
@@ -292,20 +300,47 @@ class DialogManager(Object2D, LoopHolder):
         if anchor_rect is None:
             anchor_rect = SCREEN_RECT
 
-        ### create objects and their surfaces/rects
+        ### perform setups according to whether a message
+        ### and buttons were given
 
-        self.create_message(message)
 
-        self.create_buttons(buttons)
+        if message and buttons is not None:
 
-        self.create_and_position_dialog(
-            level_name,
-            clamping_rect,
-            anchor_rect,
-            dialog_pos_from,
-            dialog_pos_to,
-            dialog_offset_by,
-        )
+            ### create standard dialog if a message was given
+            ### and buttons were defined
+
+            self.create_and_position_standard_dialog(
+                message,
+                buttons,
+                level_name,
+                clamping_rect,
+                anchor_rect,
+                dialog_pos_from,
+                dialog_pos_to,
+                dialog_offset_by,
+            )
+
+            ### alias proper method to draw objects once
+            self.draw_once = self.standard_draw_once
+
+        else:
+
+            ### created stacked buttons dialog, like in a
+            ### popup menu
+
+            self.create_and_position_stacked_buttons_dialog(
+                buttons,
+                clamping_rect,
+                anchor_rect,
+                dialog_pos_from,
+                dialog_pos_to,
+                dialog_offset_by,
+            )
+
+            ### alias proper method to draw objects once
+            self.draw_once = self.stacked_draw_once
+
+        ###
 
         self.rect_sized_semitransp_obj = Object2D.from_surface(
             surface=(
@@ -320,6 +355,11 @@ class DialogManager(Object2D, LoopHolder):
 
         ### store a default value
         self.value = None
+
+        ###
+
+        for button in self.buttons:
+            button.switch_to_unhovered_surface()
 
         ### store button references to rotate with keyboard
         self.buttons_deque = deque(self.buttons)
@@ -362,86 +402,30 @@ class DialogManager(Object2D, LoopHolder):
         ### finally return the value picked
         return self.value
 
-    def create_message(self, message_text):
-        """Create and position message text object(s).
+    def create_and_position_standard_dialog(
+        self,
+        message,
+        buttons,
+        level_name,
+        clamping_rect,
+        anchor_rect,
+        dialog_pos_from,
+        dialog_pos_to,
+        dialog_offset_by,
+    ):
+        """Create image for dialog and position it."""
+        ### create message
+        self.create_message(message)
 
-        Parameters
-        ==========
-
-        message_text (string)
-            used to generate text surfaces for the
-            message.
-        """
-        ### determine a maximum width in characters for the
-        ### text object(s) representing the message.
-        max_character_number = 110
-
-        ### wrap the message text into lines of an specific
-        ### width in characters
-        str_list = wrap(message_text, max_character_number)
-
-        ### generate, position and store text objects
-
-        ## instantiate and store a special list to hold
-        ## the objects
-
-        self.message = List2D(
-            Object2D.from_surface(
-                surface=render_text(text=string, **NORMAL_TEXT_SETTINGS)
-            )
-            for string in (str_list)
-        )
-
-        ### position objects relative to each other
+        ### position text lines from message relative to each other
 
         self.message.rect.snap_rects_ip(
-            retrieve_pos_from="bottomleft",
-            assign_pos_to="topleft",
+            retrieve_pos_from='bottomleft',
+            assign_pos_to='topleft',
         )
 
-    def create_buttons(
-        self,
-        buttons,
-    ):
-        """Create buttons for the dialog.
-
-        Parameters
-        ==========
-
-        buttons (iterable with 2-tuples or None)
-            Each 2-tuple represents a button. The first
-            value is a string for the button text and the
-            second value is an arbitrary value to be
-            returned by that button.
-        """
-        ### create special list to store button objects
-        self.buttons = List2D()
-
-        ### if buttons parameter is None, create a single
-        ### "Dismiss" button
-
-        if buttons is None:
-
-            self.buttons.append(
-                CachedTextObject(
-                    text="Dismiss",
-                    text_settings=(NORMAL_BUTTON_SETTINGS),
-                    value=None,
-                )
-            )
-
-        ### otherwise create a button for each action
-
-        else:
-
-            self.buttons.extend(
-                CachedTextObject(
-                    text=button_text,
-                    text_settings=(NORMAL_BUTTON_SETTINGS),
-                    value=button_value,
-                )
-                for button_text, button_value in buttons
-            )
+        ### create dialog buttons
+        self.create_buttons(buttons)
 
         ### position buttons relative to each other
 
@@ -467,16 +451,6 @@ class DialogManager(Object2D, LoopHolder):
 
         )
 
-    def create_and_position_dialog(
-        self,
-        level_name,
-        clamping_rect,
-        anchor_rect,
-        dialog_pos_from,
-        dialog_pos_to,
-        dialog_offset_by,
-    ):
-        """Create image for dialog and position it."""
         ### assign proper icon surface to icon object
         ICON_OBJECT.image = ICON_MAP[level_name]
 
@@ -506,7 +480,7 @@ class DialogManager(Object2D, LoopHolder):
         ### obtain inflated copy of their area
         inflated_copy = a_list.rect.inflate(20, 20)
 
-        ### move the objects by the different in position
+        ### move the objects by the difference in position
         ### between the inflated copy and a new clamped
         ### copy, if any
 
@@ -533,6 +507,218 @@ class DialogManager(Object2D, LoopHolder):
         ### center it on the list, since it
         ### is clamped
         self.rect.center = a_list.rect.center
+
+    def create_message(self, message_text):
+        """Create and position message text object(s).
+
+        Parameters
+        ==========
+
+        message_text (string)
+            used to generate text surfaces for the
+            message.
+        """
+        ### determine a maximum width in characters for the
+        ### text object(s) representing the message.
+        max_character_number = 110
+
+        ### wrap the message text into lines of an specific
+        ### width in characters
+        str_list = wrap(message_text, max_character_number)
+
+        ### generate and store text objects
+
+        self.message = List2D(
+            Object2D.from_surface(
+                surface=render_text(text=string, **NORMAL_TEXT_SETTINGS)
+            )
+            for string in (str_list)
+        )
+
+    def create_buttons(self, buttons):
+        """Create buttons for the dialog.
+
+        Parameters
+        ==========
+
+        buttons (iterable with 2-tuples or None)
+            Each 2-tuple represents a button. The first
+            value is a string for the button text and the
+            second value is an arbitrary value to be
+            returned by that button.
+        """
+        ### create special list to store button objects
+        self.buttons = List2D()
+
+        ### if buttons parameter is None, create a single
+        ### "Dismiss" button
+
+        if buttons is None:
+
+            self.buttons.append(
+
+                DialogButton(
+                    surf_map = {
+                        'hovered': (
+                            render_text(
+                                text="Dismiss",
+                                **HOVERED_BUTTON_SETTINGS,
+                            )
+                        ),
+                        'unhovered': (
+                            render_text(
+                                text="Dismiss",
+                                **NORMAL_BUTTON_SETTINGS,
+                            )
+                        ),
+                    },
+                    value=None,
+                )
+
+            )
+
+        ### otherwise create a button for each action
+
+        else:
+
+            self.buttons.extend(
+
+                DialogButton(
+
+                    surf_map={
+
+                        state_name: (
+                            render_text(text=button_text, **text_settings)
+                        )
+
+                        for state_name, text_settings in (
+                            ('hovered', HOVERED_BUTTON_SETTINGS),
+                            ('unhovered', NORMAL_BUTTON_SETTINGS),
+                        )
+
+                    },
+                    value=button_value,
+                )
+
+                for button_text, button_value in buttons
+
+            )
+
+    def create_and_position_stacked_buttons_dialog(
+        self,
+        buttons,
+        clamping_rect,
+        anchor_rect,
+        dialog_pos_from,
+        dialog_pos_to,
+        dialog_offset_by,
+    ):
+        """Create image for dialog and position it."""
+        ### create buttons of same width
+        self.create_same_width_buttons(buttons)
+
+        ### position buttons on top of each other
+
+        self.buttons.rect.snap_rects_ip(
+            retrieve_pos_from='bottomleft',
+            assign_pos_to='topleft',
+        )
+
+        ### position them relative to the given anchor
+
+        offset_anchor_rect = anchor_rect.move(dialog_offset_by)
+
+        pos = getattr(
+            offset_anchor_rect,
+            dialog_pos_from,
+        )
+
+        setattr(self.buttons.rect, dialog_pos_to, pos)
+
+        ### obtain inflated copy of their area
+        inflated_copy = self.buttons.rect.inflate(20, 20)
+
+        ### move the objects by the difference in position
+        ### between the inflated copy and a new clamped
+        ### copy, if any
+
+        self.buttons.rect.move_ip(
+            [
+                a - b
+                for a, b in zip(
+                    ## topleft of clamped copy
+                    inflated_copy.clamp(clamping_rect).topleft,
+                    inflated_copy.topleft,
+                )
+            ]
+        )
+
+        ### generate surf
+
+        self.image = render_rect(*self.buttons.rect.size, WINDOW_BG)
+
+        ### assign rect
+        self.rect = self.image.get_rect()
+
+        ### center it on the list, since it
+        ### is clamped
+        self.rect.center = self.buttons.rect.center
+
+    def create_same_width_buttons(self, buttons):
+        """Create buttons with same width for the dialog.
+
+        Parameters
+        ==========
+
+        buttons (iterable with 2-tuples or None)
+            Each 2-tuple represents a button. The first
+            value is a string for the button text and the
+            second value is an arbitrary value to be
+            returned by that button.
+        """
+        surf_value_pairs = [
+
+            (
+
+                render_text(text=button_text, **STACKED_BUTTON_SETTINGS),
+                button_value,
+
+            )
+
+            for button_text, button_value in buttons
+
+        ]
+
+        width = max(surf.get_width() for surf, _ in surf_value_pairs)
+        height = surf_value_pairs[0][0].get_height()
+
+        hovered_base_surf = render_rect(width, height, HOVERED_BUTTON_BG)
+        unhovered_base_surf = render_rect(width, height, BUTTON_BG)
+
+        self.buttons = List2D()
+
+        for text_surf, value in surf_value_pairs:
+
+            hovered_surf = hovered_base_surf.copy()
+            unhovered_surf = unhovered_base_surf.copy()
+
+            for bg_surf in (hovered_surf, unhovered_surf):
+
+                blit_aligned(
+                    text_surf,
+                    bg_surf,
+                    retrieve_pos_from='midleft',
+                    assign_pos_to='midleft',
+                    offset_pos_by=(0, 0),
+                )
+
+            surf_map = {
+                'hovered': hovered_surf,
+                'unhovered': unhovered_surf,
+            }
+
+            button = DialogButton(surf_map=surf_map, value=value)
+            self.buttons.append(button)
 
     def handle_input(self):
         """Retrieve and handle events."""
@@ -612,11 +798,11 @@ class DialogManager(Object2D, LoopHolder):
 
         for button in self.buttons:
 
-            button.change_text_settings(
-                HOVERED_BUTTON_SETTINGS
-                if button.rect.collidepoint(mouse_pos)
-                else NORMAL_BUTTON_SETTINGS
-            )
+            if button.rect.collidepoint(mouse_pos):
+                button.switch_to_hovered_surface()
+
+            else:
+                button.switch_to_unhovered_surface()
 
         ### finally redraw the buttons
         self.buttons.draw()
@@ -669,7 +855,7 @@ class DialogManager(Object2D, LoopHolder):
         self.value = None
         self.exit_loop()
 
-    def draw_once(self):
+    def standard_draw_once(self):
         """Draw objects on screen."""
         ### draw the 'image' surface, which works as a
         ### background/body for the dialog
@@ -694,6 +880,24 @@ class DialogManager(Object2D, LoopHolder):
             2,
         )
 
+    def stacked_draw_once(self):
+        """Draw stacked buttons on screen."""
+        ### draw the 'image' surface, which works as a
+        ### background/body for the dialog
+        super().draw()
+
+        ### draw the buttons
+        self.buttons.draw()
+
+        ### draw outline of first button on deque
+
+        draw_rect(
+            SCREEN,
+            'yellow',
+            self.selected_rect,
+            2,
+        )
+
     def draw(self):
         """Update screen continuously."""
         ### update screen
@@ -701,8 +905,11 @@ class DialogManager(Object2D, LoopHolder):
 
     def free_up_memory(self):
         """Free memory by clearing collections."""
-        self.message.clear()
+
         self.buttons.clear()
+
+        if hasattr(self, 'message'):
+            self.message.clear()
 
 
 ### instantiate dialog manager and reference its relevant

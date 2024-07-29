@@ -10,6 +10,8 @@ from ..translation import TRANSLATION_HOLDER as t
 
 from ..pygamesetup import blit_on_screen
 
+from ..pygamesetup.constants import MEDIA_TYPE_TO_EXTENSIONS
+
 from ..appinfo import NATIVE_FILE_EXTENSION
 
 from ..ourstdlibs.behaviour import empty_function
@@ -65,24 +67,26 @@ SELECTED_KWARGS = {
 ## icon map for file extensions
 
 ICON_MAP = {
-    ".txt": TEXT_ICON,
+    
+    extension: icon
+
+    for key, icon in (
+        ('text', TEXT_ICON),
+        ('audio', AUDIO_ICON),
+        ('font', FONT_ICON),
+        ('image', IMAGE_ICON),
+        ('video', VIDEO_ICON),
+    )
+
+    for extension in MEDIA_TYPE_TO_EXTENSIONS[key]
+
+}
+
+ICON_MAP.update({
     ".py": PYTHON_ICON,
-    ".png": IMAGE_ICON,
-    ".jpg": IMAGE_ICON,
-    ".jpeg": IMAGE_ICON,
-    ".svg": IMAGE_ICON,
-    ".ttf": FONT_ICON,
-    ".otf": FONT_ICON,
-    ".mp3": AUDIO_ICON,
-    ".wav": AUDIO_ICON,
-    ".ogg": AUDIO_ICON,
-    ".mp4": VIDEO_ICON,
-    ".mov": VIDEO_ICON,
-    ".mkv": VIDEO_ICON,
-    ".ogv": VIDEO_ICON,
     ".pdf": PDF_ICON,
     NATIVE_FILE_EXTENSION: NATIVE_FILE_ICON,
-}
+})
 
 
 ### class definition

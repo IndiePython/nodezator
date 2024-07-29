@@ -384,3 +384,28 @@ def pause():
         ### update the screen
         update()
 
+
+### file extensions/media types of interest
+
+MEDIA_TYPE_TO_EXTENSIONS = {
+
+    'image': frozenset((
+        '.bmp', '.gif', '.jpg', '.jpeg', '.lbm', '.pcx', '.png',
+        '.pnm', '.pbm', '.pgm', '.ppm', '.qoi', '.svg', '.tga',
+        '.tif', '.tiff', '.webp', '.xpm', '.xcf'
+    )),
+
+    'font': frozenset((
+        '.dfont', '.otf', '.pfb', '.ps', '.sfd', '.ttf', '.woff',
+    )),
+
+    'text': frozenset((
+        '.txt', '.json', '.yaml', '.pyl', '.xml', '.csv', '.html', '.css',
+        '.md', '.py', '.js',
+    )),
+
+    'audio': frozenset(('.ogg', '.wav', '.mp3')),
+
+    'video': frozenset(('.avi', '.mp4', '.mov', '.mkv', '.ogv', '.webm', '.wmv')),
+
+}

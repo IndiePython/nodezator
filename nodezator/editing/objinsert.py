@@ -147,7 +147,7 @@ class ObjectInsertionRemoval:
             ## via argument or not
 
             absolute_midtop = (
-                absolute_midtop if absolute_midtop is not None else self.popup_spawn_pos
+                absolute_midtop if absolute_midtop is not None else APP_REFS.mouse_pos
             )
 
             ## the relative midtop is obtained by
@@ -329,7 +329,7 @@ class ObjectInsertionRemoval:
             ## whether it was provided via argument or not
 
             absolute_midtop = (
-                absolute_midtop if absolute_midtop is not None else self.popup_spawn_pos
+                absolute_midtop if absolute_midtop is not None else APP_REFS.mouse_pos
             )
 
             ## the relative midtop is obtained by taking

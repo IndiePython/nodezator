@@ -87,7 +87,20 @@ class LoadedFileState:
                 APP_REFS.dragged_from_outside.append(event)
 
             elif event.type == DROPCOMPLETE:
-                APP_REFS.ea.manage_dragged_from_outside()
+
+                ### mark the mouse position and whether shift key
+                ### was pressed
+                ###
+                ### this data is used further in related operations
+
+                APP_REFS.mouse_pos = SERVICES_NS.get_mouse_pos()
+
+                APP_REFS.shift_pressed = (
+                    SERVICES_NS.get_pressed_mod_keys() & KMOD_SHIFT
+                )
+
+                ### execute routine for the drop action
+                self.loaded_file_on_drop()
 
             ### MOUSEWHEEL
 
@@ -316,10 +329,7 @@ class LoadedFileState:
 
                     mouse_pos = SERVICES_NS.get_mouse_pos()
 
-                    ### mark the mouse position for the
-                    ### editing assistant, that is, the
-                    ### position from where the popup
-                    ### spawned;
+                    ### mark the mouse position
                     ###
                     ### this position is used in case the
                     ### user performs a command to add an
@@ -327,10 +337,15 @@ class LoadedFileState:
                     ### position of the object (we have
                     ### been using it as the midtop
                     ### coordinate of new objects)
-                    APP_REFS.ea.popup_spawn_pos = mouse_pos
+                    APP_REFS.mouse_pos = mouse_pos
 
                     ### then give focus to the popup menu
-                    (self.canvas_popup_menu.focus_if_within_boundaries(mouse_pos))
+
+                    (
+                        self
+                        .canvas_popup_menu
+                        .focus_if_within_boundaries(mouse_pos)
+                    )
 
     def loaded_file_keyboard_input_handling(self):
         """Handle keyboard specific input."""
@@ -679,11 +694,40 @@ class LoadedFileState:
             ### the canvas, as the position of the object
             ### (we have been using it as the midtop
             ### coordinate of new objects)
-            APP_REFS.ea.popup_spawn_pos = event.pos
+            APP_REFS.mouse_pos = event.pos
 
             ### then give focus to the popup menu
 
             (self.canvas_popup_menu.focus_if_within_boundaries(event.pos))
+
+    def loaded_file_on_drop(self):
+        """Act on mouse right button release.
+
+        Act based on mouse position.
+        """
+        ### retrieve mouse position
+        mouse_pos = APP_REFS.mouse_pos
+
+        ### check nodes for collision, executing its
+        ### respective method if so and returning
+
+        for obj in chain(
+            APP_REFS.gm.nodes.get_on_screen(),
+            APP_REFS.gm.text_blocks.get_on_screen(),
+        ):
+
+            if obj.rect.collidepoint(mouse_pos):
+
+                obj.on_drop(event)
+                break
+
+        ### otherwise, it means the user dropped the data on an
+        ### empty area in the canvas; in such case, we assume
+        ### the user means to invoke to instantiate a data node
+        ### there, so we take measures to make it happen
+
+        else:
+            APP_REFS.ea.manage_dragged_from_outside()
 
     ### update
 
