@@ -83,39 +83,35 @@ def treat_filepaths(filepaths):
     used_extensions = frozenset(path.suffix.lower() for path in filepaths)
 
 
-    if not APP_REFS.shift_pressed:
+    for media_type, extensions in MEDIA_TYPE_TO_EXTENSIONS.items():
 
-        for media_type, extensions in MEDIA_TYPE_TO_EXTENSIONS.items():
+        if used_extensions.issubset(extensions):
 
-            if used_extensions.issubset(extensions):
-
-                widget_name = MEDIA_TYPE_TO_PATH_PREVIEW_WIDGET_NAME[media_type]
-                break
-
-        else:
-            widget_name = 'path_preview'
+            widget_name = MEDIA_TYPE_TO_PATH_PREVIEW_WIDGET_NAME[media_type]
+            break
 
     else:
+        widget_name = 'path_preview'
 
-        DIALOG_ANCHOR_RECT.midtop = APP_REFS.mouse_pos
-
-        answer = create_and_show_dialog(
-            buttons=(
-                ('Audio preview', 'audio_preview'),
-                ('Font preview', 'font_preview'),
-                ('Image preview', 'image_preview'),
-                ('Text preview', 'text_preview'),
-                ('Video preview', 'video_preview'),
-                ('Path preview', 'path_preview'),
-            ),
-            anchor_rect=DIALOG_ANCHOR_RECT,
-        )
-
-        if answer:
-            widget_name = answer
-
-        else:
-            return
+#    DIALOG_ANCHOR_RECT.midtop = APP_REFS.mouse_pos
+#
+#    answer = create_and_show_dialog(
+#        buttons=(
+#            ('Audio preview', 'audio_preview'),
+#            ('Font preview', 'font_preview'),
+#            ('Image preview', 'image_preview'),
+#            ('Text preview', 'text_preview'),
+#            ('Video preview', 'video_preview'),
+#            ('Path preview', 'path_preview'),
+#        ),
+#        anchor_rect=DIALOG_ANCHOR_RECT,
+#    )
+#
+#    if answer:
+#        widget_name = answer
+#
+#    else:
+#        return
 
     ###
 

@@ -67,9 +67,6 @@ APP_REFS = SimpleNamespace(
     ## mouse pos cache: temporary attribute to store mouse position
     ## for specific actions/events
     mouse_pos=(0, 0),
-    ## shift pressed cache: temporary attribute to store whether shift
-    ## key was pressed during an specific action/event
-    shift_pressed=False,
 )
 
 

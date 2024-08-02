@@ -37,7 +37,7 @@ from ...textman.render import render_multiline_text
 
 from ...colorsman.colors import BLACK, PATHPREVIEW_BG
 
-from .base import _BasePreview
+from .base import _BasePathPreview
 
 from .constants import (
     SP_BUTTON_SURFS,
@@ -56,7 +56,7 @@ PREVIEWS
 """.strip()
 
 
-class VideoPreview(_BasePreview):
+class VideoPreview(_BasePathPreview):
 
     height = BUTTON_HEIGHT + 154 + 20
 

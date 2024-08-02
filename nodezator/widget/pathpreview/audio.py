@@ -8,7 +8,7 @@ from ...surfsman.icon import render_layered_icon
 
 from ...colorsman.colors import BLACK, WHITE
 
-from .base import _BasePreview
+from .base import _BasePathPreview
 
 from .constants import (
     BUTTON_SURFS,
@@ -18,7 +18,7 @@ from .constants import (
 )
 
 
-class AudioPreview(_BasePreview):
+class AudioPreview(_BasePathPreview):
 
     ###
 

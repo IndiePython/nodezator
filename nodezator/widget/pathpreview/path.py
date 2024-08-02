@@ -4,7 +4,7 @@
 
 from ...textman.viewer.main import view_text
 
-from .base import _BasePreview
+from .base import _BasePathPreview
 
 
 ### message when displaying value of widget
@@ -19,7 +19,7 @@ icon in the topleft corner of the widget
 ### class definition
 
 
-class PathPreview(_BasePreview):
+class PathPreview(_BasePathPreview):
     """"""
 
     def preview_paths(self):

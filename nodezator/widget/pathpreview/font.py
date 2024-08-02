@@ -48,7 +48,7 @@ from ...colorsman.colors import (
     PATHPREVIEW_BG,
 )
 
-from .base import _BasePreview
+from .base import _BasePathPreview
 
 from .constants import (
     SP_BUTTON_SURFS,
@@ -75,7 +75,7 @@ PREVIEW_CHARS = (
 ### class definition
 
 
-class FontPreview(_BasePreview):
+class FontPreview(_BasePathPreview):
 
     height = 150 + 20
 

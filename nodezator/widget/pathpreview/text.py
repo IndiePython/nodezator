@@ -49,7 +49,7 @@ from ...colorsman.colors import (
     TEXTPREVIEW_BG,
 )
 
-from .base import _BasePreview
+from .base import _BasePathPreview
 
 from .constants import (
     SP_BUTTON_SURFS,
@@ -97,7 +97,7 @@ logger = get_new_logger(__name__)
 ### class definition
 
 
-class TextPreview(_BasePreview):
+class TextPreview(_BasePathPreview):
 
     height = 163 + 20
 

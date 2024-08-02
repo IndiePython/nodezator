@@ -32,7 +32,7 @@ from ...colorsman.colors import (
     THUMB_BG,
 )
 
-from .base import _BasePreview
+from .base import _BasePathPreview
 
 from .constants import (
     SP_BUTTON_SURFS,
@@ -44,7 +44,7 @@ from .constants import (
 )
 
 
-class ImagePreview(_BasePreview):
+class ImagePreview(_BasePathPreview):
 
     height = 175 + 20
 

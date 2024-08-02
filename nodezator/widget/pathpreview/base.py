@@ -51,7 +51,7 @@ from .constants import (
 GET_TOPLEFT = attrgetter("rect.topleft")
 
 
-class _BasePreview(Object2D):
+class _BasePathPreview(Object2D):
     """Base class for path preview w/ common operations."""
 
     button_surfs, button_rects = BUTTON_SURFS, BUTTON_RECTS

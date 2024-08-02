@@ -301,10 +301,10 @@ class DialogManager(Object2D, LoopHolder):
             anchor_rect = SCREEN_RECT
 
         ### perform setups according to whether a message
-        ### and buttons were given
+        ### was given
 
 
-        if message and buttons is not None:
+        if message:
 
             ### create standard dialog if a message was given
             ### and buttons were defined
@@ -323,7 +323,7 @@ class DialogManager(Object2D, LoopHolder):
             ### alias proper method to draw objects once
             self.draw_once = self.standard_draw_once
 
-        else:
+        elif buttons is not None:
 
             ### created stacked buttons dialog, like in a
             ### popup menu
@@ -339,6 +339,9 @@ class DialogManager(Object2D, LoopHolder):
 
             ### alias proper method to draw objects once
             self.draw_once = self.stacked_draw_once
+
+        else:
+            raise RuntimeError("If 'message' is empty 'buttons' must not be None")
 
         ###
 

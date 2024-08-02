@@ -1,13 +1,24 @@
+
+### standard library import
+from functools import partial
+
+
 ### local imports
 
 from ...config import APP_REFS
 
 from ...menu.main import MenuManager
 
+from ...graphman.widget.popupdefinition import WIDGET_POPUP_STRUCTURE
+
+from ..widgetpicker.main import pick_widget
+
 from .constants import GeneralPopupCommands
 
 
+
 class ProxyNodePopupMenu(GeneralPopupCommands):
+
     def __init__(self):
 
         super().__init__()
@@ -33,6 +44,65 @@ class ProxyNodePopupMenu(GeneralPopupCommands):
                 "icon": "pencil",
                 "command": self.edit_node_title,
             },
+        )
+
+        ###
+
+        pick_new_widget_submenu = {
+            "label": "Add or replace widget",
+            "icon": "data_node",
+            "children": [],
+        }
+
+        data_node_menu_list.insert(
+            1,
+            pick_new_widget_submenu,
+        )
+
+        children = pick_new_widget_submenu['children']
+
+        for label_text, data in WIDGET_POPUP_STRUCTURE:
+
+            if isinstance(data, dict):
+
+                children.append(
+                    {
+                        "label": label_text,
+                        "command": partial(
+                            self.replace_or_add_widget,
+                            data,
+                        ),
+                    }
+                )
+
+            elif isinstance(data, list):
+
+                grandchildren = [
+
+                    {
+                        "label": sublabel,
+                        "command": partial(
+                            self.replace_or_add_widget,
+                            subdata,
+                        ),
+                    }
+
+                    for sublabel, subdata in data
+
+                ]
+
+                children.append(
+                    {
+                        "label": label_text,
+                        "children": grandchildren,
+                    }
+                )
+
+        children.append(
+            {
+                "label": "All available widgets...",
+                "command": self.replace_or_add_widget,
+            }
         )
 
         self.data_node_only_popup = MenuManager(
@@ -95,5 +165,19 @@ class ProxyNodePopupMenu(GeneralPopupCommands):
                 (self.data_node_only_popup.focus_if_within_boundaries(mouse_pos))
 
     def edit_node_title(self):
-
         APP_REFS.ea.edit_data_node_title(self.obj_under_mouse)
+
+    def replace_or_add_widget(self, widget_data=None):
+
+        if widget_data is None:
+
+            ### retrieve widget kwargs
+            widget_data = pick_widget()
+
+            ### if widget data is still None, cancel the operation
+            ### by returning earlier
+            if widget_data is None:
+                return
+
+        ###
+        self.obj_under_mouse.replace_or_add_widget(widget_data)

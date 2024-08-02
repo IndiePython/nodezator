@@ -88,19 +88,14 @@ class LoadedFileState:
 
             elif event.type == DROPCOMPLETE:
 
-                ### mark the mouse position and whether shift key
-                ### was pressed
+                ### grab the mouse position; also store it in a dedicated
+                ### attribute;
                 ###
-                ### this data is used further in related operations
-
-                APP_REFS.mouse_pos = SERVICES_NS.get_mouse_pos()
-
-                APP_REFS.shift_pressed = (
-                    SERVICES_NS.get_pressed_mod_keys() & KMOD_SHIFT
-                )
+                ### it is used further in related operations
+                APP_REFS.mouse_pos = mouse_pos = SERVICES_NS.get_mouse_pos()
 
                 ### execute routine for the drop action
-                self.loaded_file_on_drop()
+                self.loaded_file_on_drop(mouse_pos)
 
             ### MOUSEWHEEL
 
@@ -700,13 +695,8 @@ class LoadedFileState:
 
             (self.canvas_popup_menu.focus_if_within_boundaries(event.pos))
 
-    def loaded_file_on_drop(self):
-        """Act on mouse right button release.
-
-        Act based on mouse position.
-        """
-        ### retrieve mouse position
-        mouse_pos = APP_REFS.mouse_pos
+    def loaded_file_on_drop(self, mouse_pos):
+        """Act on dropped data on mouse position."""
 
         ### check nodes for collision, executing its
         ### respective method if so and returning
@@ -718,7 +708,7 @@ class LoadedFileState:
 
             if obj.rect.collidepoint(mouse_pos):
 
-                obj.on_drop(event)
+                obj.on_drop(mouse_pos)
                 break
 
         ### otherwise, it means the user dropped the data on an
