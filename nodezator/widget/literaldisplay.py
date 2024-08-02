@@ -58,6 +58,7 @@ from ..colorsman.colors import (
 )
 
 
+
 ### surface representing an icon for the text editor
 
 ICON_SURF = combine_surfaces(
@@ -87,9 +88,11 @@ ICON_WIDTH, ICON_HEIGHT = ICON_SURF.get_size()
 ##
 is_python_literal = bool_func_from_raiser(literal_eval)
 
+##
+MESSAGE_WHEN_INVALID = "'value' received must be a python literal"
+
 
 ### class definition
-
 
 class LiteralDisplay(Object2D):
     """A widget for storing/displaying python literals."""
@@ -136,12 +139,11 @@ class LiteralDisplay(Object2D):
         ### literal
 
         if not is_python_literal(repr(value)):
-            raise TypeError("'value' received must be a python" " literal")
+            raise ValueError(MESSAGE_WHEN_INVALID)
 
         ### ensure there is at least one visible line
 
         if no_of_visible_lines < 1:
-
             raise ValueError("'no_of_visible_lines' must be >= 1")
 
         ### store other arguments
@@ -242,20 +244,24 @@ class LiteralDisplay(Object2D):
             indicates whether the custom command should be
             called after updating the value.
         """
-        ### changes are only performed if the new value is
-        ### indeed different from the current one
+        ### if value is same as current one, there's no point
+        ### in doing anything, so just leave the method
+        if value == self.value: return
 
-        if self.value != value and is_python_literal(repr(value)):
+        ### if value isn't valid, raise error
 
-            ### store new value
-            self.value = value
+        if not is_python_literal(repr(value)):
+            raise ValueError(MESSAGE_WHEN_INVALID)
 
-            ### update image
-            self.update_image()
+        ### store new value
+        self.value = value
 
-            ### if requested, execute the custom command
-            if custom_command:
-                self.command()
+        ### update image
+        self.update_image()
+
+        ### if requested, execute the custom command
+        if custom_command:
+            self.command()
 
     def update_image(self):
         """Update widget image."""

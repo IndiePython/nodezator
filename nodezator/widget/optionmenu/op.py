@@ -100,13 +100,11 @@ class OptionMenuLifetimeOperations(Object2D):
             return
 
         ### if value received isn't within allowed values
-        ### (values inside "options" attribute), report and
-        ### cancel this operation by returning
+        ### (values inside "options" attribute), raise an
+        ### error
 
         if value not in self.options:
-
-            print("'value' isn't among available options")
-            return
+            raise ValueError("'value' isn't among available options")
 
         ### assign the value to the "value" attribute
         self.value = value

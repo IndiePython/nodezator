@@ -272,46 +272,38 @@ class _BasePathPreview(Object2D):
             indicates whether the update_image method
             should be called after updating the value.
         """
-        ### validate value received
-        try:
-            self.validate_value(value)
+        ### validate value received;
+        ###
+        ### raises an error if value isn't valid
+        self.validate_value(value)
 
-        ### if it doesn't validate, report error and exit
-        ### method by returning
+        ### also, if the value is already set, there's no point
+        ### in doing anything else, so just leave the method
+        if value == self.value: return
 
-        except (TypeError, ValueError) as err:
+        ### store new value
+        self.value = value
 
-            print(err)
-            return
+        ### reset index
+        self.path_index = 0
 
-        ### changes are only performed if the new value is
-        ### indeed different from the current one
+        ### reset index value and max value
 
-        if self.value != value:
+        entry = self.index_entry
 
-            ### store new value
-            self.value = value
+        entry.set(0, False)
 
-            ### reset index
-            self.path_index = 0
+        max_value = 0 if isinstance(value, str) else len(value) - 1
 
-            ### reset index value and max value
+        entry.set_range(0, max_value)
 
-            entry = self.index_entry
+        ### if requested, execute the custom command
+        if custom_command:
+            self.command()
 
-            entry.set(0, False)
-
-            max_value = 0 if isinstance(value, str) else len(value) - 1
-
-            entry.set_range(0, max_value)
-
-            ### if requested, execute the custom command
-            if custom_command:
-                self.command()
-
-            ### if requested, update the widget image
-            if update_image:
-                self.update_image()
+        ### if requested, update the widget image
+        if update_image:
+            self.update_image()
 
     def on_mouse_click(self, event):
         """Reposition and give focus to entry."""

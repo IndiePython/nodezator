@@ -197,22 +197,20 @@ class CheckButton(Object2D):
         ### ensure value is a boolean
 
         if not isinstance(value, bool):
-
             raise TypeError("'value' argument must be of type 'bool'")
 
-        ### store value and update the image, if the value
-        ### is different than the current one;
-        ###
-        ### if it is the case, also execute the command,
-        ### if requested
+        ### if value is already set, there's no point in doing anything
+        ### else, so just leave the method
+        if value == self.value: return
 
-        if value != self.value:
 
-            self.value = value
-            self.update_image()
+        ### store value and update the image
 
-            if execute_command:
-                self.command()
+        self.value = value
+        self.update_image()
+
+        ### also execute the command, if requested
+        if execute_command: self.command()
 
     def toggle_value(self, event):
         """Set the opposite of the current value.

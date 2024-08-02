@@ -175,7 +175,6 @@ class TextDisplay(Object2D):
         ### ensure value argument received is a string
 
         if type(value) is not str:
-
             raise TypeError("'value' received must be of 'str' type")
 
         ### ensure there is at least one visible line
@@ -384,30 +383,29 @@ class TextDisplay(Object2D):
             indicates whether the custom command should be
             called after updating the value.
         """
-        ### ensure value argument received is a string
+        ### raise error if value argument received is not a string
 
         if type(value) is not str:
+            raise TypeError("'value' received must be of 'str' type")
 
-            ## report problem
-            print("'value' received must be of 'str' type")
+        ### return earlier if value is already set
 
-            ## exit method by returning early
+        if value == self.value:
             return
 
-        ### changes are only performed if the new value is
-        ### indeed different from the current one
+        ### also raise error if value doesn't validate
+        if not self.validation_command(value):
+            raise ValueError("'value' not accepted by validation command.")
 
-        if self.value != value and self.validation_command(value):
+        ### store new value
+        self.value = value
 
-            ### store new value
-            self.value = value
+        ### update image
+        self.update_image()
 
-            ### update image
-            self.update_image()
-
-            ### if requested, execute the custom command
-            if custom_command:
-                self.command()
+        ### if requested, execute the custom command
+        if custom_command:
+            self.command()
 
     def update_image(self):
         """Update widget image."""

@@ -38,17 +38,14 @@ class OptionTrayLifetimeOperations(Object2D):
         ### if the value is already set, exit the method by
         ### returning, since choosing a value which is
         ### already chosen isn't considered a change at all
-        if self.value == value:
-            return
+        if self.value == value: return
 
         ### if value received isn't within allowed values
         ### (values inside list in "options" attribute),
-        ### report and cancel this operation by returning
+        ### raise error
 
         if value not in self.options:
-
-            print("'value' isn't among available options")
-            return
+            raise ValueError("'value' isn't among available options")
 
         ### if we reach this point in the method, then we
         ### can safely set the new value and perform other

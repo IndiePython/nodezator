@@ -316,7 +316,6 @@ class ColorButton(Object2D):
         ### make sure value and its type are valid; errors
         ### raised in this step are purposefully not caught
         ### (no try/except clauses are set up)
-
         validate_custom_color_format(value, color_format, alone_when_single)
 
         ### define the number of available slots to display
@@ -379,35 +378,30 @@ class ColorButton(Object2D):
             upon instantiation should be executed after
             updating the value.
         """
-        ### check whether value and its type are valid
+        ### if value is already set, do nothing by leaving
+        ### the method earlier
+        if value == self.value: return
 
-        try:
-            validate_custom_color_format(
-                value, self.color_format, self.alone_when_single
-            )
+        ### check whether value and its type are valid;
+        ###
+        ### this raise errors if the value isn't a valid one
 
-        ### if not, report error and exit the method by
-        ### returning earlier
+        ### XXX should we attempt a conversion in case it is not
+        ### valid? IIRC, we already have a function to do that. Ponder
 
-        except (ValueError, TypeError) as err:
+        validate_custom_color_format(
+            value, self.color_format, self.alone_when_single
+        )
 
-            print(err)
-            return
+        ### store new value
+        self.value = value
 
-        ### changes are only performed if the new value is
-        ### indeed different from the current one
+        ### update the widget image
+        self.update_image()
 
-        if self.value != value:
-
-            ### store new value
-            self.value = value
-
-            ### update the widget image
-            self.update_image()
-
-            ### if requested, execute the custom command
-            if custom_command:
-                self.command()
+        ### if requested, execute the custom command
+        if custom_command:
+            self.command()
 
     def set_format(self, color_format, alone_when_single):
         """Change format in which value is represented.

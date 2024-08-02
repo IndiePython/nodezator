@@ -81,6 +81,10 @@ from ..colorsman.colors import (
 from ..textman.entryedition.cursor import EntryCursor
 
 
+
+MESSAGE_WHEN_INVALID = "'value' received must be a python literal"
+
+
 class LiteralEntry(Object2D):
     """Entry widget to hold a python literal."""
 
@@ -159,8 +163,7 @@ class LiteralEntry(Object2D):
         ### literal
 
         if not self.validate(value):
-
-            raise TypeError("'value' received must be a python literal")
+            raise ValueError(MESSAGE_WHEN_INVALID)
 
         ### convert the colors passed into tuples for
         ### simplicity (since colors can be given as
@@ -251,11 +254,13 @@ class LiteralEntry(Object2D):
         value (string)
             value to be used as label text.
         """
-        ### return earlier if value is already set or
-        ### doesn't validate
+        ### return earlier if value is already set
+        if value == self.value: return
 
-        if value == self.value or not self.validate(value):
-            return
+        ### raise an error if it doesn't validate
+
+        if not self.validate(value):
+            raise ValueError(MESSAGE_WHEN_INVALID)
 
         ### otherwise set the value
 

@@ -260,32 +260,24 @@ class SortingButton(Object2D):
             upon instantiation should be called after
             updating the value.
         """
-        ### validate values received
-        try:
-            self.validate_value(value, self.available_items)
+        ### if the value is already set, do nothing by returning
+        ### earlier
+        if value == self.value: return
 
-        ### if it doesn't validate, report error and exit
-        ### method by returning
+        ### validate values received;
+        ###
+        ### this raises errors if the value isn't valid
+        self.validate_value(value, self.available_items)
 
-        except (TypeError, ValueError) as err:
+        ### store new value
+        self.value = value
 
-            print(err)
-            return
+        ### update the widget image
+        self.update_image()
 
-        ### changes are only performed if the new value is
-        ### indeed different from the current one
-
-        if self.value != value:
-
-            ### store new value
-            self.value = value
-
-            ### update the widget image
-            self.update_image()
-
-            ### if requested, execute the custom command
-            if custom_command:
-                self.command()
+        ### if requested, execute the custom command
+        if custom_command:
+            self.command()
 
     def update_image(self):
         """Update widget image."""

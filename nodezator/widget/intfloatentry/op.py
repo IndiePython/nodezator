@@ -60,20 +60,10 @@ class IntFloatOperations(Object2D):
         """
         ### return if value isn't of allowed type
 
-        ## try validating type
-        try:
-            self.validate_type(value)
-
-        ## if a type/value error is raised, report it
-        ## by printing, then exit this method by
-        ## returning
-
-        except (TypeError, ValueError) as err:
-
-            ### TODO probably display error in statusbar
-            ### or user logger, instead of printing
-            print("From intfloat widget:", err)
-            return
+        ## try validating type;
+        ##
+        ## raises an error if value isn't valid
+        self.validate_type(value)
 
         ### override the value by evaluating its string;
         ###

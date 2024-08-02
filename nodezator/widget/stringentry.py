@@ -81,6 +81,7 @@ from ..colorsman.colors import (
 from ..textman.entryedition.cursor import EntryCursor
 
 
+
 class StringEntry(Object2D):
     """Entry widget to hold (usually) a single line of text.
 
@@ -390,21 +391,20 @@ class StringEntry(Object2D):
         value (string)
             value to be used as label text.
         """
-        ### ensure value argument received is a string
+        ### raise error if value argument received is not a string
 
         if type(value) is not str:
+            raise TypeError("'value' received must be of 'str' type")
 
-            ## report problem
-            print("'value' received must be of 'str' type")
 
-            ## exit method by returning early
+        ### return earlier if value is already set
+
+        if value == self.value:
             return
 
-        ### return earlier if value is already set or
-        ### doesn't validate
-
-        if value == self.value or not self.validation_command(value):
-            return
+        ### also raise error if value doesn't validate
+        if not self.validation_command(value):
+            raise ValueError("'value' not accepted by validation command.")
 
         ### otherwise set the value
 
