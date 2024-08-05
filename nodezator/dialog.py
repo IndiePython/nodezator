@@ -245,7 +245,7 @@ class DialogManager(Object2D, LoopHolder):
 
         self,
 
-        message='',
+        message,
         buttons=None,
         level_name='info',
         unhighlighter_obj=None,
@@ -300,48 +300,19 @@ class DialogManager(Object2D, LoopHolder):
         if anchor_rect is None:
             anchor_rect = SCREEN_RECT
 
-        ### perform setups according to whether a message
-        ### was given
 
+        ### create dialog
 
-        if message:
-
-            ### create standard dialog if a message was given
-            ### and buttons were defined
-
-            self.create_and_position_standard_dialog(
-                message,
-                buttons,
-                level_name,
-                clamping_rect,
-                anchor_rect,
-                dialog_pos_from,
-                dialog_pos_to,
-                dialog_offset_by,
-            )
-
-            ### alias proper method to draw objects once
-            self.draw_once = self.standard_draw_once
-
-        elif buttons is not None:
-
-            ### created stacked buttons dialog, like in a
-            ### popup menu
-
-            self.create_and_position_stacked_buttons_dialog(
-                buttons,
-                clamping_rect,
-                anchor_rect,
-                dialog_pos_from,
-                dialog_pos_to,
-                dialog_offset_by,
-            )
-
-            ### alias proper method to draw objects once
-            self.draw_once = self.stacked_draw_once
-
-        else:
-            raise RuntimeError("If 'message' is empty 'buttons' must not be None")
+        self.create_and_position_standard_dialog(
+            message,
+            buttons,
+            level_name,
+            clamping_rect,
+            anchor_rect,
+            dialog_pos_from,
+            dialog_pos_to,
+            dialog_offset_by,
+        )
 
         ###
 
@@ -607,122 +578,6 @@ class DialogManager(Object2D, LoopHolder):
 
             )
 
-    def create_and_position_stacked_buttons_dialog(
-        self,
-        buttons,
-        clamping_rect,
-        anchor_rect,
-        dialog_pos_from,
-        dialog_pos_to,
-        dialog_offset_by,
-    ):
-        """Create image for dialog and position it."""
-        ### create buttons of same width
-        self.create_same_width_buttons(buttons)
-
-        ### position buttons on top of each other
-
-        self.buttons.rect.snap_rects_ip(
-            retrieve_pos_from='bottomleft',
-            assign_pos_to='topleft',
-        )
-
-        ### position them relative to the given anchor
-
-        offset_anchor_rect = anchor_rect.move(dialog_offset_by)
-
-        pos = getattr(
-            offset_anchor_rect,
-            dialog_pos_from,
-        )
-
-        setattr(self.buttons.rect, dialog_pos_to, pos)
-
-        ### obtain inflated copy of their area
-        inflated_copy = self.buttons.rect.inflate(20, 20)
-
-        ### move the objects by the difference in position
-        ### between the inflated copy and a new clamped
-        ### copy, if any
-
-        self.buttons.rect.move_ip(
-            [
-                a - b
-                for a, b in zip(
-                    ## topleft of clamped copy
-                    inflated_copy.clamp(clamping_rect).topleft,
-                    inflated_copy.topleft,
-                )
-            ]
-        )
-
-        ### generate surf
-
-        self.image = render_rect(*self.buttons.rect.size, WINDOW_BG)
-
-        ### assign rect
-        self.rect = self.image.get_rect()
-
-        ### center it on the list, since it
-        ### is clamped
-        self.rect.center = self.buttons.rect.center
-
-    def create_same_width_buttons(self, buttons):
-        """Create buttons with same width for the dialog.
-
-        Parameters
-        ==========
-
-        buttons (iterable with 2-tuples or None)
-            Each 2-tuple represents a button. The first
-            value is a string for the button text and the
-            second value is an arbitrary value to be
-            returned by that button.
-        """
-        surf_value_pairs = [
-
-            (
-
-                render_text(text=button_text, **STACKED_BUTTON_SETTINGS),
-                button_value,
-
-            )
-
-            for button_text, button_value in buttons
-
-        ]
-
-        width = max(surf.get_width() for surf, _ in surf_value_pairs)
-        height = surf_value_pairs[0][0].get_height()
-
-        hovered_base_surf = render_rect(width, height, HOVERED_BUTTON_BG)
-        unhovered_base_surf = render_rect(width, height, BUTTON_BG)
-
-        self.buttons = List2D()
-
-        for text_surf, value in surf_value_pairs:
-
-            hovered_surf = hovered_base_surf.copy()
-            unhovered_surf = unhovered_base_surf.copy()
-
-            for bg_surf in (hovered_surf, unhovered_surf):
-
-                blit_aligned(
-                    text_surf,
-                    bg_surf,
-                    retrieve_pos_from='midleft',
-                    assign_pos_to='midleft',
-                    offset_pos_by=(0, 0),
-                )
-
-            surf_map = {
-                'hovered': hovered_surf,
-                'unhovered': unhovered_surf,
-            }
-
-            button = DialogButton(surf_map=surf_map, value=value)
-            self.buttons.append(button)
-
     def handle_input(self):
         """Retrieve and handle events."""
 
@@ -858,7 +713,7 @@ class DialogManager(Object2D, LoopHolder):
         self.value = None
         self.exit_loop()
 
-    def standard_draw_once(self):
+    def draw_once(self):
         """Draw objects on screen."""
         ### draw the 'image' surface, which works as a
         ### background/body for the dialog
@@ -870,24 +725,6 @@ class DialogManager(Object2D, LoopHolder):
         ### draw the text objects representing the
         ### message
         self.message.draw()
-
-        ### draw the buttons
-        self.buttons.draw()
-
-        ### draw outline of first button on deque
-
-        draw_rect(
-            SCREEN,
-            'yellow',
-            self.selected_rect,
-            2,
-        )
-
-    def stacked_draw_once(self):
-        """Draw stacked buttons on screen."""
-        ### draw the 'image' surface, which works as a
-        ### background/body for the dialog
-        super().draw()
 
         ### draw the buttons
         self.buttons.draw()

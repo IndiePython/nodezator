@@ -4,24 +4,24 @@ At the time of implementation, all platforms supported dragged files and
 only X11 supported dragged text.
 """
 
-### standard library import
+### standard library imports
+
 from pathlib import Path
 
-### third-party import
-from pygame import Rect
+from ast import literal_eval
 
 
 ### local imports
 
 from ..config import APP_REFS
 
-from ..dialog import create_and_show_dialog
-
 from ..pygamesetup import SERVICES_NS
 
 from ..pygamesetup.constants import MEDIA_TYPE_TO_EXTENSIONS
 
 from ..graphman.widget.utils import get_widget_metadata
+
+from ..ourstdlibs.color.utils import validate_hex_color_string
 
 
 
@@ -35,13 +35,11 @@ MEDIA_TYPE_TO_PATH_PREVIEW_WIDGET_NAME = {
 
 }
 
-# arbitrary width and height, similar to actual stacked dialog
-DIALOG_ANCHOR_RECT = Rect(0, 0, 50, 300)
 
 _dragged_items = []
 
 
-def manage_dragged_from_outside():
+def manage_dropped_data():
 
     dragged_from_outside = APP_REFS.dragged_from_outside
 
@@ -66,7 +64,7 @@ def manage_dragged_from_outside():
     else:
 
         if quantity == 1:
-            treat_single_line_of_text(_first.text)
+            treat_single_line_of_text(first_item.text.strip())
 
         else:
 
@@ -93,26 +91,6 @@ def treat_filepaths(filepaths):
     else:
         widget_name = 'path_preview'
 
-#    DIALOG_ANCHOR_RECT.midtop = APP_REFS.mouse_pos
-#
-#    answer = create_and_show_dialog(
-#        buttons=(
-#            ('Audio preview', 'audio_preview'),
-#            ('Font preview', 'font_preview'),
-#            ('Image preview', 'image_preview'),
-#            ('Text preview', 'text_preview'),
-#            ('Video preview', 'video_preview'),
-#            ('Path preview', 'path_preview'),
-#        ),
-#        anchor_rect=DIALOG_ANCHOR_RECT,
-#    )
-#
-#    if answer:
-#        widget_name = answer
-#
-#    else:
-#        return
-
     ###
 
     if len(filepaths) == 1:
@@ -138,7 +116,47 @@ def treat_filepaths(filepaths):
 
 
 def treat_single_line_of_text(text):
-    print('one line of text')
+
+    ### check whether text represents a Python literal
+
+    try:
+        value = literal_eval(text)
+
+    ### if not, check suitable possibilities
+
+    except Exception:
+
+        if validate_hex_color_string(text):
+
+            APP_REFS.ea.insert_node(
+                get_widget_metadata(
+                    {
+                        'widget_name': 'color_button',
+                        'widget_kwargs': {
+                            'color_format': 'hex_string',
+                        },
+                        'type': str
+                    },
+                    text,
+                )
+            )
+
+    ### if it does, also check possibilities for Python
+    ### literals
+
+    else:
+
+        type_ = type(value)
+
+        if type_ in (bool, int, float):
+            APP_REFS.ea.insert_node(get_widget_metadata(type_, value))
+
+        else:
+
+            APP_REFS.ea.insert_node(
+                get_widget_metadata({'widget_name': 'literal_entry'}, text)
+            )
+
 
 def treat_multiple_lines_of_text(text):
     print('several lines of text')

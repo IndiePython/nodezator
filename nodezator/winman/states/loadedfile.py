@@ -83,6 +83,8 @@ class LoadedFileState:
             if event.type == QUIT:
                 raise QuitAppException
 
+            ### DROP EVENTS
+
             elif event.type in DROP_EVENTS:
                 APP_REFS.dragged_from_outside.append(event)
 
@@ -91,7 +93,12 @@ class LoadedFileState:
                 ### grab the mouse position; also store it in a dedicated
                 ### attribute;
                 ###
-                ### it is used further in related operations
+                ### it is used further in related operations;
+                ###
+                ### it seems that, depending on the app from which you are
+                ### dragging the data, the window may or may not be able
+                ### to accurately grab the mouse position (for instance,
+                ### in such cases pygame.mouse.get_focused() returns False)
                 APP_REFS.mouse_pos = mouse_pos = SERVICES_NS.get_mouse_pos()
 
                 ### execute routine for the drop action
@@ -717,7 +724,7 @@ class LoadedFileState:
         ### there, so we take measures to make it happen
 
         else:
-            APP_REFS.ea.manage_dragged_from_outside()
+            APP_REFS.ea.manage_dropped_data()
 
     ### update
 

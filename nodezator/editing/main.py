@@ -43,7 +43,7 @@ from .playback.systemtesting import (
     run_all_cases_at_max_speed,
 )
 
-from .externaldragging import manage_dragged_from_outside
+from .externaldragging import manage_dropped_data
 
 ## classes for composition
 
@@ -122,7 +122,7 @@ class EditingAssistant(
         self.run_all_cases_at_max_speed = run_all_cases_at_max_speed
 
         ### store call related to data dragged into the app from outside it
-        self.manage_dragged_from_outside = manage_dragged_from_outside
+        self.manage_dropped_data = manage_dropped_data
 
         ### create and store popup menus
 
