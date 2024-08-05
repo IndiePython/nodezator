@@ -43,7 +43,7 @@ from .playback.systemtesting import (
     run_all_cases_at_max_speed,
 )
 
-from .externaldragging import manage_dropped_data
+from .datadrop import manage_dropped_data
 
 ## classes for composition
 
