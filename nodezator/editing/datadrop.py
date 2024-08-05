@@ -154,7 +154,7 @@ def treat_single_line_of_text(text):
         else:
 
             APP_REFS.ea.insert_node(
-                get_widget_metadata({'widget_name': 'literal_entry'}, text)
+                get_widget_metadata({'widget_name': 'literal_entry'}, value)
             )
 
 
