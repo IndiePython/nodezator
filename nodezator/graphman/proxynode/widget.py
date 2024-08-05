@@ -12,6 +12,8 @@ from ...ourstdlibs.collections.general import CallList
 
 from ...our3rdlibs.behaviour import indicate_unsaved
 
+from ...dialog import create_and_show_dialog
+
 from ..widget.utils import WIDGET_CLASS_MAP
 
 from ..socket.surfs import type_to_codename
