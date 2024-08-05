@@ -14,6 +14,8 @@ from pygame.locals import (
     KMOD_SHIFT,
     K_b,
     K_g,
+    K_c,
+    K_v,
     K_u,
     K_r,
     K_DELETE,
@@ -90,19 +92,16 @@ class LoadedFileState:
 
             elif event.type == DROPCOMPLETE:
 
-                ### grab the mouse position; also store it in a dedicated
-                ### attribute;
-                ###
-                ### it is used further in related operations;
+                ### grab and store mouse position it in a dedicated attribute;
                 ###
                 ### it seems that, depending on the app from which you are
                 ### dragging the data, the window may or may not be able
                 ### to accurately grab the mouse position (for instance,
                 ### in such cases pygame.mouse.get_focused() returns False)
-                APP_REFS.mouse_pos = mouse_pos = SERVICES_NS.get_mouse_pos()
+                APP_REFS.mouse_pos = SERVICES_NS.get_mouse_pos()
 
                 ### execute routine for the drop action
-                self.loaded_file_on_drop(mouse_pos)
+                APP_REFS.ea.manage_dropped_data()
 
             ### MOUSEWHEEL
 
@@ -182,6 +181,24 @@ class LoadedFileState:
 
                     else:
                         APP_REFS.ea.export_as_python()
+
+                elif event.key == K_c and event.mod & KMOD_CTRL:
+
+                    ### grab the mouse position; also store it in a dedicated
+                    ### attribute;
+                    APP_REFS.mouse_pos = mouse_pos = SERVICES_NS.get_mouse_pos()
+
+                    ### execute routine for the copy action
+                    self.loaded_file_on_copy(mouse_pos)
+
+                elif event.key == K_v and event.mod & KMOD_CTRL:
+
+                    ### grab the mouse position; also store it in a dedicated
+                    ### attribute;
+                    APP_REFS.mouse_pos = mouse_pos = SERVICES_NS.get_mouse_pos()
+
+                    ### execute routine for the paste action
+                    self.loaded_file_on_paste(mouse_pos)
 
                 ## Duplicate selected nodes
 
@@ -702,10 +719,9 @@ class LoadedFileState:
 
             (self.canvas_popup_menu.focus_if_within_boundaries(event.pos))
 
-    def loaded_file_on_drop(self, mouse_pos):
-        """Act on dropped data on mouse position."""
+    def loaded_file_on_copy(self, mouse_pos):
 
-        ### check nodes for collision, executing its
+        ### check objs for collision, executing its
         ### respective method if so and returning
 
         for obj in chain(
@@ -715,16 +731,44 @@ class LoadedFileState:
 
             if obj.rect.collidepoint(mouse_pos):
 
-                obj.on_drop(mouse_pos)
+                try:
+                    method = obj.on_copy
+                except AttributeError:
+                    pass
+                else:
+                    method(mouse_pos)
+
                 break
 
-        ### otherwise, it means the user dropped the data on an
+    def loaded_file_on_paste(self, mouse_pos):
+        """Act on dropped data on mouse position."""
+
+        ### check objs for collision, executing its
+        ### respective method if so and returning
+
+        for obj in chain(
+            APP_REFS.gm.nodes.get_on_screen(),
+            APP_REFS.gm.text_blocks.get_on_screen(),
+        ):
+
+            if obj.rect.collidepoint(mouse_pos):
+
+                try:
+                    method = obj.on_paste
+                except AttributeError:
+                    pass
+                else:
+                    method(mouse_pos)
+
+                break
+
+        ### otherwise, it means the user pasted the data on an
         ### empty area in the canvas; in such case, we assume
-        ### the user means to invoke to instantiate a data node
-        ### there, so we take measures to make it happen
+        ### the user means to instantiate a data node there,
+        ### so we take measures to make it happen
 
         else:
-            APP_REFS.ea.manage_dropped_data()
+            APP_REFS.ea.manage_pasted_data()
 
     ### update
 
