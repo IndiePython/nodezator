@@ -141,6 +141,12 @@ def treat_single_line_of_text(text):
                 )
             )
 
+        else:
+
+            APP_REFS.ea.insert_node(
+                get_widget_metadata(str, text)
+            )
+
     ### if it does, also check possibilities for Python
     ### literals
 
@@ -159,4 +165,28 @@ def treat_single_line_of_text(text):
 
 
 def treat_multiple_lines_of_text(text):
-    print('several lines of text')
+
+    ### check whether text represents a Python literal
+
+    try:
+        value = literal_eval(text)
+
+    ### if not, check suitable possibilities
+
+    except Exception:
+
+        APP_REFS.ea.insert_node(
+            get_widget_metadata(
+                {'widget_name': 'text_display', 'type': str},
+                text,
+            )
+        )
+
+    ### if it does, also check possibilities for Python
+    ### literals
+
+    else:
+
+        APP_REFS.ea.insert_node(
+            get_widget_metadata({'widget_name': 'literal_display'}, value)
+        )
