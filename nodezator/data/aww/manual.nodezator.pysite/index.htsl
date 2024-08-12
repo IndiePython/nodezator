@@ -10,7 +10,7 @@
 
 <p>Welcome to the nodezator manual. This guide is meant for Nodezator's users.</p>
 
-<p>You may also want to <a href="https://gallery.nodezator.com">download example nodes</a>, like the ones used in the <a href="https://www.youtube.com/watch?v=GlQJvuU7Z_8">video presenting Nodezator</a>.</p>
+<p>You may also want to take a look at the <a href="https://github.com/IndiePython/nodezator/blob/main/README.md">README</a> file of Nodezator's repository, since it showcases a lot of Nodezator's features and capabilities. Or you may want to <a href="https://gallery.nodezator.com">download example nodes</a>, like the ones used in the <a href="https://www.youtube.com/watch?v=GlQJvuU7Z_8">video presenting Nodezator</a>.</p>
 
 
 <h2>Table of contents</h2>
@@ -26,6 +26,7 @@
       <li><a href="ch-defining-your-first-node.htsl#defining-node">Defining the node</a></li>
       <li><a href="ch-defining-your-first-node.htsl#loading-testing-first-node">Loading and testing your first node</a></li>
       <li><a href="ch-defining-your-first-node.htsl#node-pack-anatomy">The anatomy of a node pack</a></li>
+      <li><a href="ch-defining-your-first-node.htsl#sharing-resources-among-nodes">Sharing resources among your nodes</a></li>
       <li><a href="ch-defining-your-first-node.htsl#expanded-collapsed-callable-modes">Expanded, collapsed and callable mode for nodes</a></li>
     </ol>
 

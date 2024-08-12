@@ -30,24 +30,28 @@ main_callable = function_name
 
 <p>Actually, any callable can be turned into a node. Classes and methods, for instance, can be turned into nodes as well. Additionally, some kind of callables might need extra steps before they can be turned into a node.</p> 
 
-<p>In this section, use your favorite text editor and follow the instructions to create your first node.</p>
+<p>You can put the definition of your nodes anywhere you want in your disk and Nodezator will load them for you, as long as you store them in a certain way, that we'll present in the next section. In other words, <b>your write your node definitions in your disk using your favorite text editor or IDE and use Nodezator to load them</b>. Nodezator's interface is not used to define nodes (at least not for now), just to load them so you can create, edit and execute your graphs.</p>
+
+<p>So launch your favorite text editor/IDE and follow the instructions in the rest of this chapter in order to create your first node, then, once it is ready, launch Nodezator so you can load and use it.</p>
 
 <h2 id="node-pack">A node pack and its purpose</h2>
 
 <p>The first thing to do when defining one or more nodes is to think of the purpose for which you are creating the node(s). I'd like to create nodes to generate 2d points representing movement (for instance, for game characters).</p>
 
-<p>With that in mind, we'll create a folder wherein to store all the nodes we are going to create. Let's name it <i>points2d</i>. In Nodezator, we consider that folder to be a <i>node pack</i>. Think of a node pack like a set of cards for a specific kind of game.</p>
+<p>With that in mind, we'll create a folder wherein to store all the nodes we are going to create. Let's name it <i>points2d</i>. In Nodezator, we consider that folder to be a <i>node pack</i>. Think of a node pack like a set of cards for a specific kind of game. <b>You can create that node anywhere you want in your disk</b>.</p>
 
 <p>The same way a set of cards is suitable for playing specific kinds of games, node packs contain nodes used for a specific purpose. <a href="https://en.wikipedia.org/wiki/Uno_(card_game)">Uno</a> cards are designed for playing Uno, <a href="https://en.wikipedia.org/wiki/Yu-Gi-Oh!">Yugi-Oh</a> cards for playing fictional monster battles. Just like that, each node pack should be designed for a specific purpose.</p>
 
-<p>Also, avoid using names that are too generic for your node pack, or a name that is used by another library you plan to use. Node packs are treated similar to modules inside Nodezator and may thus shadow existing libraries. Finally, since the name of your node pack is used in <i>import</i> statements (it is treated like a package) whenever you want to export your graphs as pure Python code, make sure the name of your node pack is a valid Python identifier, that is, it must be comprised only by letters, digits and underscores and it must start with either a letter or an underscore. You can verify that by checking whether the name returns True when passed to <a href="https://docs.python.org/3/library/stdtypes.html#str.isidentifier">str.isidentifier()</a>):</p>
+<p>Also, avoid using names that are too generic for your node pack, or a name that is used by another library you plan to use. Node packs are treated like modules/packages inside Nodezator and may thus shadow existing libraries. For instance, if you are creating nodes for generating charts with <a href="https://matplotlib.org/">matplotlib</a>, please, <b>do not</b> call your node pack <code>matplotlib</code>, since it will cause you problems when loading your nodes.</p>
+
+<p>Additionally, the name of your node pack is used in <i>import</i> statements (it is treated like a package) whenever you want to export your graphs as pure Python code, so make sure the name of your node pack is a valid Python identifier, that is, it must be comprised only by letters, digits and underscores and it must start with either a letter or an underscore. You can verify that by checking whether the name returns True when passed to <a href="https://docs.python.org/3/library/stdtypes.html#str.isidentifier">str.isidentifier()</a>. Just fire your Python interpreter and type this, replacing <code>nameofmynodepack</code> by the name or your node pack:</p>
 
 <python>
 &gt;&gt;&gt; str.isidentifier('nameofmynodepack')
 True
 </python>
 
-<p>Finally, though not required, it is recommended that you don't use only lowercase letters and digits and no underscores at all, since this is how packages/modules are used named in Python.</p>
+<p>Finally, though not required, it is recommended that you use only lowercase letters and digits and no underscores at all, since this is how packages/modules are usually named in Python. It is just a convention though, so do what you like. The nodezator project itself has some example nodes packs that use underscores in their names. I actually use underscores for the names of node packs that are meant to be loaded from disk (for instance, <code>examples_node_pack</code>), whereas node packs meant to be installed from <a href="https://pypi.org/">PyPI</a> (with the <code>pip</code> command) follow the convention of not using underscores (like <code>mynodepack</code>). However, this is all personal choice.</p>
 
 
 <h2 id="category-folder">Categories within a node pack</h2>
@@ -254,6 +258,27 @@ main_callable = get_circle
   </tbody>
 
 </table>
+
+
+<h2 id="sharing-resources-among-nodes">Sharing resources among your nodes</h2>
+
+<p>In Nodezator each node is completely independent from one another. It means their scripts don't import/access values/objects from each other. This is something that is encouraged by the design of the node packs: each node is defined in its own dedicated script.</p>
+
+<p>However, it doesn't mean your nodes can't access external resources/data that is common to them. This is actually necessary in many cases. You accomplish this in the same way you would for any other Python project: with custom modules/libraries/packages. Just create a module containing the values/objects you want to share with your nodes and put it somewhere your Python interpreter can see, then import it from your node scripts.</p>
+
+<p>That location is usually where you put your user-installed packages: either in one of the paths provided by <a href="https://docs.python.org/3/library/site.html#site.getsitepackages">site.getsitepackages()</a> or the path provided by <a href="https://docs.python.org/3/library/site.html#site.getusersitepackages">site.getusersitepackages()</a>. Unless you know what you are doing, it is probably better to use one of the locations from <code>site.getsitepackages()</code>, because they are specific to the virtual environment of your interpreter (or main installation, if it is not using an environment), whereas the location from <code>site.getusersitepackages()</code> can be seen from any virtual environment and the main installation.</p>
+
+<p>For instance, if you have 02 (two) nodes with the signatures <code>change_contrast(image:MyImage, contrast:int=50)-&gt; MyImage</code> and <code>change_brightness(image:MyImage, brightness:int=50)-&gt; MyImage</code>, that is, nodes that use the same custom image class <code>MyImage</code>, then you'll want to put the definition of <code>MyImage</code> in a custom module/library. Then, in the scripts of both nodes, you may import that class as usual: <code>from mycustomlib import MyImage</code>.</p>
+
+<p>This mechanism can be used to share values (like constants, enums, etc.), custom classes (like the custom class we used in the previous examples) or custom functions and other callables used internally in your node scripts.</p>
+
+<p>You may even decide not to import these objects inside your node scripts, if you wish. Instead, you may want to access them directly in your graph by importing them from that custom library using the <code>importlib.import_module</code> node. For instance, if you have a custom library called <code>mycustomlib</code> and want to import a constant called <code>MY_CONSTANT</code> from it, you can do it like so:</p>
+
+<img src="images/ch-defining-your-first_import_module_node.png" alt="Same node in different modes" />
+
+<p>Finally, you can name your custom module/library/package whatever you want, but since it was created with the purpose of providing common resources for your node pack, we recommend that you pick a name that is related to your node pack. We are still pondering about naming conventions and experimenting with them for now. In the future we may pick some naming convention recommendations, but you don't need to worry about that: As long as you use names that are valid Python identifier as discussed previously and don't clash with names of existing libraries you'll be fine.</p>
+
+<p>And again, always avoid using names of libraries that already exist, in order to avoid name clashes.</p>
 
 
 <h2 id="expanded-collapsed-callable-modes">Expanded, collapsed and callable mode for nodes</h2>
