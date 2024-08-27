@@ -285,6 +285,7 @@ class MenuManager(
         ### its top items must all be submenus;
 
         if is_menubar and any("children" not in item for item in menu_list):
+
             raise ValueError(
                 "all top items in a menubar"
                 " (when is_menubar == True) must be"
@@ -307,6 +308,9 @@ class MenuManager(
 
         ### instantiate rect
         self.rect = Rect((0, 0), (0, 0))
+
+        ### expand radiobuttons if any
+        expand_radiobuttons(menu_list)
 
         ### process data in the menu list using appropriate
         ### function to create surfaces for the menu
@@ -582,3 +586,49 @@ class MenuManager(
         ### character
 
         return "\n".join([base_text, *map(repr, self.children)])
+
+
+def expand_radiobuttons(menu_list):
+
+    radio_indices = [
+        index
+        for index, data in enumerate(menu_list)
+        if 'label_value_pairs' in data
+    ]
+
+    if radio_indices:
+
+        for index in radio_indices:
+
+            radio_data = menu_list.pop(index)
+            get_callable = radio_data['get_callable']
+            set_callable = radio_data['set_callable']
+
+            for label, value in radio_data['label_value_pairs']:
+
+                menu_list.insert(
+
+                    index,
+
+                    {
+                        'widget':'radiobutton',
+                        'label': label,
+                        'value': value,
+                        'get_callable': get_callable,
+                        'set_callable': set_callable,
+                    }
+
+                )
+
+                index += 1
+
+    submenu_indices = [
+        index
+        for index, data in enumerate(menu_list)
+        if 'children' in data
+    ]
+
+    if submenu_indices:
+
+        for index in submenu_indices:
+            expand_radiobuttons(menu_list[index]['children'])

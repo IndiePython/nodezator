@@ -10,9 +10,13 @@ from ..surfsman.draw import (
 from ..surfsman.icon import render_layered_icon
 
 from ..surfsman.render import (
+    combine_surfaces,
     render_rect,
     render_separator,
+    render_surface_from_svg_text,
 )
+
+from ..svgutils import get_circle_svg_text_from_radius
 
 from ..textman.render import (
     render_text,
@@ -40,19 +44,12 @@ from .iconfactory import ICON_MAP
 
 
 ICON_WIDTH = FONT_SIZE_KWARGS["font_height"] + (FONT_SIZE_KWARGS["padding"] * 2)
-
-INCREMENT_MAP = {
-    "children": RIGHT_ARROW_SURF.get_width(),
-    "icon": ICON_WIDTH,
-    "widget": ICON_WIDTH,
-}
+CHILDREN_INCREMENT = RIGHT_ARROW_SURF.get_width()
 
 
 (
     UNMARKED_CHECKBUTTON,
     MARKED_CHECKBUTTON,
-    UNMARKED_RADIOBUTTON,
-    MARKED_RADIOBUTTON,
 ) = (
     render_layered_icon(
         chars=[chr(ordinal) for ordinal in ordinals],
@@ -65,10 +62,56 @@ INCREMENT_MAP = {
     for ordinals, colors in (
         ((169, 171), (BLACK, WHITE)),
         ((169, 170, 171), (BLACK, BLACK, WHITE)),
-        ((174, 176), (BLACK, WHITE)),
-        ((174, 175, 176), (BLACK, BLACK, WHITE)),
     )
 )
+
+
+_unmarked_radiob_shape = (
+    render_surface_from_svg_text(
+        get_circle_svg_text_from_radius(
+            ((ICON_WIDTH//2)-5),
+            fill_color='white',
+            outline_color='black',
+            outline_width=2,
+        )
+    ).convert_alpha()
+)
+
+UNMARKED_RADIOBUTTON = (
+
+    combine_surfaces(
+
+        (
+            render_rect(ICON_WIDTH, ICON_WIDTH, (0,0,0,0)),
+            _unmarked_radiob_shape,
+        ),
+        retrieve_pos_from='center',
+        assign_pos_to='center',
+
+    )
+
+)
+
+_black_small_circle = (
+    render_surface_from_svg_text(
+        get_circle_svg_text_from_radius(
+            (_unmarked_radiob_shape.get_width()//2)-6,
+            fill_color='black',
+        )
+    ).convert_alpha()
+)
+
+del _unmarked_radiob_shape
+
+MARKED_RADIOBUTTON = (
+    combine_surfaces(
+        (UNMARKED_RADIOBUTTON, _black_small_circle),
+        retrieve_pos_from='center',
+        assign_pos_to='center',
+    )
+)
+
+del _black_small_circle
 
 
 def create_top_surfaces(menu_list):
@@ -127,18 +170,15 @@ def create_equal_surfaces(menu_list):
     ##
     x_label_offset = 0
 
-    for key in ("widget", "icon"):
 
-        if any(key in item for item in menu_list):
-            x_label_offset += INCREMENT_MAP[key]
+    ## if any item has a widget or icon, increment offset
 
-    ##
-
-    x_key_offset = (
-        -INCREMENT_MAP["children"]
-        if any("children" in item for item in menu_list)
-        else 0
-    )
+    if any(
+        key in item
+        for item in menu_list
+        for key in ('widget', 'icon')
+    ):
+        x_label_offset += ICON_WIDTH
 
     #####
 
@@ -212,7 +252,6 @@ def create_equal_surfaces(menu_list):
                     surface_to_blit=key_surf,
                     retrieve_pos_from="midright",
                     assign_pos_to="midright",
-                    offset_pos_by=(x_key_offset, 0),
                 )
 
         ##
@@ -316,10 +355,18 @@ def get_max_width(items):
     ###
     max_width = max(widths)
 
-    ###
-    if any("key_text" in item for item in items):
+    ### check presence of specific elements in items
 
-        max_width += (
+    has_key_text = any('key_text' in item for item in items)
+    has_children = any('children' in item for item in items)
+
+    ### act according to presence of such elements
+
+    increment = 0
+
+    if has_key_text:
+
+        increment += (
             max(
                 get_text_size(
                     text=item["key_text"],
@@ -328,15 +375,20 @@ def get_max_width(items):
                 for item in items
                 if "key_text" in item
             )
-            + 30
-        )  # padding before key text
+            + 30 # padding before key text
+        )
 
-    ###
+    if has_children:
+        increment = max(increment, CHILDREN_INCREMENT)
 
-    for key in ("children", "widget", "icon"):
+    ### if any item has a widget or icon, increment max width
 
-        if any(key in item for item in items):
-            max_width += INCREMENT_MAP[key]
+    if any(
+        key in item
+        for item in items
+        for key in ('widget', 'icon')
+    ):
+        increment += ICON_WIDTH
 
-    ###
-    return max_width
+    ### return max_width + increment
+    return max_width + increment

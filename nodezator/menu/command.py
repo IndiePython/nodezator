@@ -1,8 +1,10 @@
 """Facility for managing widgets for menubar."""
 
-### local imports
+### standard library import
+from functools import partial
 
-from ..config import APP_REFS
+
+### local imports
 
 from ..ourstdlibs.behaviour import empty_function
 
@@ -54,16 +56,22 @@ class Command(Object2D):
 
         elif "widget" in data:
 
-            self.attribute_name = data["attribute_name"]
-
             self.top_surface_map = surface_map
 
             if data["widget"] == "checkbutton":
+
+                self.set_callable = data['set_callable']
+                self.get_callable = data['get_callable']
+
                 self.invoke = self.toggle_boolean
 
             elif data["widget"] == "radiobutton":
 
-                self.value = data["value"]
+                self.value = data['value']
+
+                self.set_callable = data['set_callable']
+                self.get_callable = data['get_callable']
+
                 self.invoke = self.set_value
 
             else:
@@ -130,22 +138,24 @@ class Command(Object2D):
         return " > ".join(reversed(texts))
 
     def update_surface_map(self):
-        """Update surface map according to attribute value.
+        """Update surface map according to value we get.
 
         Current surface is update as well to its normal
         state.
 
-        That is, an attribute whose name is stored in this
-        instance is checked and, depending on its value
-        the appropriate surface map is assigned to the
+        That is, we get a value from a callable and depending
+        on its value the appropriate surface map is assigned to the
         'surface_map' attribute.
         """
-        current_value = getattr(APP_REFS, self.attribute_name)
+        current_value = self.get_callable()
 
         key = (
+
             current_value
             if isinstance(current_value, bool)
+
             else self.value == current_value
+
         )
 
         self.surface_map = self.top_surface_map[key]
@@ -154,14 +164,11 @@ class Command(Object2D):
 
     def set_value(self):
         """Set 'value' as current value."""
-        setattr(APP_REFS, self.attribute_name, self.value)
+        self.set_callable(self.value)
 
     def toggle_boolean(self):
         """Toogle boolean value."""
-
-        setattr(
-            APP_REFS, self.attribute_name, not getattr(APP_REFS, self.attribute_name)
-        )
+        self.set_callable(not self.get_callable())
 
     def __repr__(self):
         """Return string representation.
