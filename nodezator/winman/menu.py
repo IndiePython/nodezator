@@ -31,7 +31,16 @@ from ..menu.main import MenuManager
 
 from ..recentfile import get_recent_files
 
-from ..userprefsman.editionform import edit_user_preferences
+from ..userprefsman.main import USER_PREFS, update_socket_detection_graphics
+
+from ..userprefsman.generalform import edit_user_preferences
+
+from ..userprefsman.socketdetectionform import edit_socket_detection_settings
+
+from ..userprefsman.validation import (
+    ORDERED_SOCKET_DETECTION_GRAPHICS,
+    SOCKET_DETECTION_GRAPHICS_KEY_TO_NAME_MAP,
+)
 
 from ..graphman.widget.popupdefinition import WIDGET_POPUP_STRUCTURE
 
@@ -365,6 +374,33 @@ class MenuSetup:
                         "key_text": "B",
                         "command": APP_REFS.ea.prepare_and_present_birdseye_view,
                         "icon": "eye",
+                    },
+                    {
+                        'label': "Socket detection",
+                        'children': [
+                            {
+                                'widget': 'radiobutton',
+                                'label_value_pairs': [
+
+                                    (SOCKET_DETECTION_GRAPHICS_KEY_TO_NAME_MAP[key], key)
+                                    for key in ORDERED_SOCKET_DETECTION_GRAPHICS
+
+                                ],
+                                'get_callable': (
+                                    partial(
+                                        USER_PREFS.__getitem__,
+                                        'SOCKET_DETECTION_GRAPHICS',
+                                    )
+                                ),
+                                'set_callable': update_socket_detection_graphics,
+                            },
+                            {"label": "------"},
+                            {
+                                'label': 'Full settings',
+                                'icon': 'tools',
+                                'command': edit_socket_detection_settings,
+                            },
+                        ],
                     },
                     {"label": "------"},
                     {

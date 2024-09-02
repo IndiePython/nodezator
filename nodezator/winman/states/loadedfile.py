@@ -459,79 +459,117 @@ class LoadedFileState:
             raise SwitchLoopException(self.menubar)
 
         ### iterate over objects to check whether any of
-        ### them was hovered by the mouse in this mouse
-        ### motion event;
+        ### them was...
+        ###
+        ### - hovered by the mouse in this mouse motion event;
+        ### - target of a previous mouse click event.
+        ###
+        ### if we find such object, we'll start moving it after
+        ### we exit the for-loop
+        ###
+        ### for more information about the 'mouse_click_target' attribute
+        ### of nodes and text blocks, used here, check the docstring of
+        ### this method
+
+        ## first, a few admin tasks
+
+        # grab and populate a list of nodes that are on the screen
+
+        nodes_on_screen = APP_REFS.gm.nodes_on_screen
+        nodes_on_screen.extend(APP_REFS.gm.nodes.get_on_screen())
+
+        # create a variable to hold the object if we find it
+        obj_to_move = None
+
+        ## now look for the object
 
         for obj in chain(
-            APP_REFS.gm.text_blocks.get_on_screen(), APP_REFS.gm.nodes.get_on_screen()
+            nodes_on_screen,
+            APP_REFS.gm.text_blocks.get_on_screen(),
         ):
 
-            if obj.rect.collidepoint(mouse_pos):
+            if (
+                obj.rect.collidepoint(mouse_pos)
+                and obj.mouse_click_target
+            ):
+                obj_to_move = obj
+                break
 
-                ## if a hovered object was the target
-                ## of a click action before, deselect all
-                ## objects, select this one and trigger
-                ## its movement;
-                ##
-                ## for more information about the
-                ## 'mouse_click_target' attribute of nodes
-                ## and text blocks we use below, check the
-                ## docstring of this method
+        ### if we found such obj, start moving it after performing
+        ### a few admin tasks
 
-                if obj.mouse_click_target:
+        if obj_to_move:
 
-                    ## set the flag to False
-                    obj.mouse_click_target = False
+            # clean the collection of nodes on screen
+            nodes_on_screen.clear()
 
-                    ## move object considering it is
-                    ## an target of a click and drag
-                    ## action
-                    APP_REFS.ea.move_from_click_and_drag(obj)
+            ## set the flag to False
+            obj.mouse_click_target = False
 
-        ### if we reach this point in the method we know
-        ### that objects weren't hovered in the "for loop"
-        ### above because APP_REFS.ea.start_moving, among
-        ### other things, raises an exception which causes
-        ### the execution flow to leave this method when
-        ### executed
+            ## move object considering it is an target of a
+            ## click and drag action
+            APP_REFS.ea.move_from_click_and_drag(obj)
 
-        ### if neither the menu nor any object is hovered by
-        ### the mouse, but the mouse was clicked before, it
-        ### means we are dragging the mouse, which means the
-        ### user wants to either cut segments or perform a
-        ### box selection, depending on the modifier keys
-        ### pressed or not
+        ### if we reach this point in the method we know that objects
+        ### weren't hovered in the "for loop" above because
+        ### APP_REFS.ea.move_from_click_and_drag, among other things,
+        ### also calls a method that raises an exception, causing the
+        ### execution flow to leave this method when executed
+
+        ### if neither the menu nor any object is hovered by the mouse,
+        ### but the mouse was clicked before, it means we are dragging
+        ### the mouse;
+        ###
+        ### depending on the state of modifier keys, this means the user
+        ### wants to either:
+        ###
+        ### - cut segments between sockets
+        ### - or begin defining a new segment between sockets
+        ### - or perform a box selection
 
         if self.clicked_mouse:
 
             ## set the clicked_mouse flag to False,
             ## since we use it only to determine when
-            ## we are dragging the mouse (if it is on
-            ## when executing this mouse motion method)
+            ## we are dragging the mouse
             self.clicked_mouse = False
 
             ## obtain a bitmask which you'll use to check
             ## the state of modifier keys along the method
             bitmask = SERVICES_NS.get_pressed_mod_keys()
 
-            ## store the state of the ctrl key
-            ctrl_pressed = bitmask & KMOD_CTRL
+            ## if shift is pressed, exit method earlier, by returning,
+            ## since there's nothing to be done in this scenario
+            if bitmask & KMOD_SHIFT: return
 
-            ## store the state of the shift key
-            shift_pressed = bitmask & KMOD_SHIFT
+            ## if ctrl is pressed, the user wants to cut segments between
+            ## nodes
 
-            ## now define which is the case depending on
-            ## the modifier keys pressed or not pressed
+            if bitmask & KMOD_CTRL:
+                APP_REFS.gm.trigger_segments_severance(mouse_pos)
 
-            # user wants to cut segments between nodes
+            ## otherwise we must perform additional checks to determine
+            ## what the user wants to do
 
-            if ctrl_pressed and not shift_pressed:
-
-                (APP_REFS.gm.trigger_segments_severance(mouse_pos))
-
-            # user wants to perform box selection
             else:
+
+                # if the periphery of a node collided with the mouse and
+                # there was a socket close enough, we assume the user may
+                # want to start defining a segment from the that socket
+                #
+                # if this is indeed the case, an exception will be raised on
+                # purpose and the method will finish executing here
+                APP_REFS.gm.start_defining_segment_if_close_to_socket(mouse_pos)
+
+                # otherwise, we just assume the user wants to perform a box
+                # selection
                 APP_REFS.ea.start_box_selection()
+
+        ### if the mouse wasn't clicked before, all that's left is to
+        ### clear the collection of nodes on screen
+
+        else:
+            nodes_on_screen.clear()
 
     def loaded_file_on_mouse_release(self, event):
         """Act on mouse left button release.

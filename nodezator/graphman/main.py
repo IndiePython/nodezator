@@ -96,6 +96,13 @@ class GraphManager(
         ### before doing so
         self.rectsman = RectsManager(self.yield_all_rects)
 
+        ### list for temporarily storing references to nodes
+        ### on screen
+        self.nodes_on_screen = []
+
+        ### make sure socket detection graphics are in place
+        self.reference_socket_detection_graphics()
+
         ### initialize each base class which has its own
         ### init method
         initialize_bases(self)

@@ -6,18 +6,43 @@ from pygame.draw import line as draw_line
 
 ### local imports
 
-from ...pygamesetup import SERVICES_NS, SCREEN
+from ....pygamesetup import SERVICES_NS, SCREEN
 
-from .utils import clip_segment
+from ....colorsman.colors import CUTTING_SEGMENT
 
-from ...colorsman.colors import CUTTING_SEGMENT
+from ....userprefsman.main import USER_PREFS
+
+from ..utils import clip_segment
+
+from .connectionassist import CONNECTION_ASSISTING_DRAWING_METHODS_MAP
+
 
 
 class DrawingOperations:
     """Drawing operations for the socket trees."""
 
+    ### inject methods
+
+    for method in CONNECTION_ASSISTING_DRAWING_METHODS_MAP.values():
+        locals()[method.__name__] = method
+
+    ###
+
+    def reference_socket_detection_graphics(self):
+
+        graphics_setting_name = USER_PREFS['SOCKET_DETECTION_GRAPHICS']
+
+        method_name = (
+            CONNECTION_ASSISTING_DRAWING_METHODS_MAP
+            [graphics_setting_name]
+            .__name__
+        )
+
+        self.draw_temp_segment = getattr(self, method_name)
+
     def draw_lines(self):
         """Draw lines which cross the screen."""
+
         for parent in self.parents:
 
             parent_center = parent.rect.center
@@ -43,33 +68,6 @@ class DrawingOperations:
                         end,
                         4,
                     )
-
-    def draw_temp_segment(self):
-        """Draw temporary segment between point and mouse.
-
-        Used while defining a new line segment. This draws
-        a line from 'socket a' (the socket from where the
-        line segment will be defined) to the current mouse
-        position.
-        """
-        try:
-            start, end = clip_segment(
-                self.socket_a.rect.center,
-                SERVICES_NS.get_mouse_pos(),
-            )
-
-        except ValueError:
-            pass
-
-        else:
-
-            draw_line(
-                SCREEN,
-                self.socket_a.line_color,
-                start,
-                end,
-                3,
-            )
 
     def draw_temp_cutting_segment(self):
         """Draw temporary segment between point and mouse.

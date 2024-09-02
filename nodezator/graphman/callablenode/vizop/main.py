@@ -202,30 +202,6 @@ class VisualOperations:
         """Draw outline around to indicate it is selected."""
         draw_rect(SCREEN, color, self.rect.inflate(-8, 4), 4)
 
-    def check_sockets_for_segment_definition(self, event):
-        """Check whether any socket collides w/ event.pos.
-
-        event.pos is the position of a mouse left button
-        release event. Any colliding socket must then
-        be sent for line segment definition.
-
-        If no socket collides, line segment definition
-        is cancelled.
-        """
-        mouse_pos = event.pos
-
-        ### iterate over all sockets
-
-        for socket in self.yield_visible_sockets():
-
-            if socket.rect.collidepoint(mouse_pos):
-                break
-
-        else:
-            APP_REFS.gm.cancel_defining_segment()
-
-        APP_REFS.gm.resume_defining_segment(socket)
-
     def yield_visible_sockets_in_expmode(self):
 
         yield from chain(

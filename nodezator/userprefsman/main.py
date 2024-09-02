@@ -13,19 +13,20 @@ from copy import deepcopy
 
 ### local imports
 
-from ..config import WRITEABLE_PATH
+from ..config import APP_REFS, WRITEABLE_PATH
 
 from ..appinfo import APP_DIR_NAME, NATIVE_FILE_EXTENSION
 
-from ..our3rdlibs.userlogger import USER_LOGGER
-
-from ..ourstdlibs.pyl import load_pyl
-
 from ..logman.main import get_new_logger
 
-from .validation import validate_prefs_data
+from ..ourstdlibs.pyl import load_pyl, save_pyl
 
+from ..our3rdlibs.userlogger import USER_LOGGER
 
+from .validation import (
+    AVAILABLE_SOCKET_DETECTION_GRAPHICS,
+    validate_prefs_data,
+)
 
 ### module level logger
 logger = get_new_logger(__name__)
@@ -64,6 +65,9 @@ USER_PREFS = {
     "USER_LOGGER_MAX_LINES": 1000,
     "CUSTOM_STDOUT_MAX_LINES": 1000,
     "TEXT_EDITOR_BEHAVIOR": "default",
+    "SOCKET_DETECTION_GRAPHICS": "reaching_hands",
+    "DETECTION_DISTANCE": 150,
+    "GRASPING_DISTANCE": 75,
 }
 
 
@@ -207,3 +211,22 @@ else:
 
 ### apply user configuration where needed
 USER_LOGGER.max_lines = USER_PREFS["USER_LOGGER_MAX_LINES"]
+
+
+### function for updating socket detection graphics
+
+def update_socket_detection_graphics(graphics_string_key):
+
+    if graphics_string_key not in AVAILABLE_SOCKET_DETECTION_GRAPHICS:
+        return
+
+    USER_PREFS['SOCKET_DETECTION_GRAPHICS'] = graphics_string_key
+
+    try:
+        save_pyl(USER_PREFS, CONFIG_FILEPATH)
+
+    except Exception:
+        return
+
+    else:
+        APP_REFS.gm.reference_socket_detection_graphics()

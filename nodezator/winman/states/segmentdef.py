@@ -17,6 +17,8 @@ from pygame.locals import (
     MOUSEBUTTONUP,
 )
 
+from pygame.mouse import get_rel as get_relative_mouse_pos
+
 
 ### local imports
 
@@ -27,6 +29,7 @@ from ...config import APP_REFS
 from ...loopman.exception import QuitAppException
 
 
+
 class SegmentDefinitionState:
     """Methods related to 'segment_definition' state."""
 
@@ -34,17 +37,12 @@ class SegmentDefinitionState:
         """Get and respond to events."""
         for event in SERVICES_NS.get_events():
 
-            ### QUIT
-            if event.type == QUIT:
-                raise QuitAppException
-
             ### MOUSEBUTTONUP
 
-            elif event.type == MOUSEBUTTONUP:
+            if event.type == MOUSEBUTTONUP:
 
                 if event.button == 1:
-
-                    (self.segment_definition_on_mouse_release(event))
+                    APP_REFS.gm.check_nearby_socket_for_segment_definition()
 
             ### KEYUP
 
@@ -52,6 +50,10 @@ class SegmentDefinitionState:
 
                 if event.key == K_ESCAPE:
                     APP_REFS.gm.cancel_defining_segment()
+
+            ### QUIT
+            elif event.type == QUIT:
+                raise QuitAppException
 
     def segment_definition_keyboard_input_handling(self):
         """Handle keyboard specific input."""
@@ -91,39 +93,21 @@ class SegmentDefinitionState:
         if x_direction or y_direction:
             APP_REFS.ea.scroll_on_direction(x_direction, y_direction)
 
-    def segment_definition_on_mouse_release(self, event):
-        """Act on mouse left button release.
+        ## if nodes or mouse moved, look for nearby socket for connecting
 
-        Act based on mouse position.
-        """
-        mouse_pos = event.pos
+        if x_direction or y_direction or any(get_relative_mouse_pos()):
 
-        ### iterator over each node on screen, checking if
-        ### any collides, if so, break out of the loop
-
-        for node in APP_REFS.gm.nodes.get_on_screen():
-
-            if node.rect.collidepoint(mouse_pos):
-                break
-
-        ### if you don't break out of the loop, cancel
-        ### the segment definition behaviour, this
-        ### automatically triggers the restart of the
-        ### loop, so that the execution flow of this
-        ### method won't go past this point
-        else:
-            APP_REFS.gm.cancel_defining_segment()
-
-        ### otherwise, it means there's a colliding node
-        ### in the 'node' variable; trigger its operation
-        ### to check whether sockets are picked for
-        ### segment definition
-        node.check_sockets_for_segment_definition(event)
+            APP_REFS.gm.look_for_nearby_compatible_socket(
+                SERVICES_NS.get_mouse_pos()
+            )
 
     ### update
 
     def segment_definition_update(self):
         """Update method for 'segment_definition' state."""
+
+        ### update labels and switches
+
         for item in self.labels_update_methods:
             item()
         for item in self.switches_update_methods:
