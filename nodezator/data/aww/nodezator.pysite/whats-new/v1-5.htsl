@@ -13,6 +13,7 @@
 
 <ul>
     <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.5.0">[v1.5.0] System testing, topological sorting and QOL features</a></li>
+    <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.5.1">[v1.5.1] Usability improvements and content update</a></li>
 </ul>
 
 <ol>
@@ -29,6 +30,7 @@
     <li><a href="whats-new/v1-5.htsl#improvements-user-experience">Improvements in user experience</a></li>
     <li><a href="whats-new/v1-5.htsl#improved-not-found-drawings">Improved "Not-found" drawings with SVG</a></li>
     <li><a href="whats-new/v1-5.htsl#fixes-other-back-end-changes">Fixes and other back-end changes</a></li>
+    <li><a href="whats-new/v1-5.htsl#usability-improvements-content-update">v1.5.1: Usability improvements and content update</a></li>
 
 </ol>
 
@@ -211,6 +213,55 @@
 <p>Proper mechanisms were also employed to guarantee data in the old locations is copied into the new locations. In other words, your current configuration data and other important data saved in the old locations are not lost.</p>
 
 
+<h2 id="usability-improvements-content-update">v1.5.1: Usability improvements and content update</h2>
+
+<p>This is an impromptu patch that came to be because of some experimentation I did with a solution to make it easier to interact with sockets using the mouse to establish new connections. I call this solution socket proximity detection. It consists in detecting nearby sockets whenever:</p>
+
+<ul>
+    <li>clicking near them in order to establish a new connection</li>
+    <li>releasing the mouse dragging the new connection near the other socket</li>
+</ul>
+
+<p>In other words, now doing both things is easier, because the mouse doesn't need to be exactly over the sockets for any of those actions to take place.</p>
+    
+<p>Additionally, special graphics/shapes are drawn on the screen when dragging a new connection to another socket in order to signal the detection to the user.</p>
+
+<p>For instance, here's what it looks like when the socket detection graphics are "reaching hands":</p>
+
+<img src="whats-new/images/v1-5-x/socket_proximity_detection.png" alt="Socket proximity detection" />
+
+<p>In the image, the mouse cursor becomes a hand that extends from the first socket. The second socket is detected due to its proximity, so a hand also extends from it to meet the hand cursor. Granted, a static image doesn't do justice to the usefulness of the feature nor to how smooth the movement is.</p>
+
+<p>There's also no risk of the wrong socket connecting by mistake by moving the mouse accidentally close to another socket because the connection is only established when the mouse button is released, so you can move the cursor freely and only release it when there's visual confirmation that the socket you intend to connect to was properly detected and is in range (for this particular graphics used, we know the socket is in range when the hands hold each other at the cursor).</p>
+    
+<p>The user can even customize the experience by:</p>
+    
+<ul>
+
+    <li>picking one of the following graphics to be used:
+
+        <ul>
+            <li>assisting line</li>
+            <li>reaching hands</li>
+            <li>hands and eyes</li>
+            <li>baseball elements</li>
+            <li>baseball elements and eyes</li>
+        </ul>
+
+    </li>
+
+    <li>setting the distance at which a target socket is detected when the mouse is dragging a new connection</li>
+    <li>setting the distance at which a connection can be established with the detected socket</li>
+
+</ul>
+
+<p>A few key content pieces were update as well. The first chapter of the user manual now has a new subsection on <a href="nodezator://manual.nodezator.pysite/ch-defining-your-first-node.htsl#sharing-resources-among-nodes">sharing resources among nodes</a>. A very useful and long needed resource. In addition to that, a few other parts of the chapter were improved for clarity.</p>
+
+<p>The <a href="https://github.com/IndiePython/nodezator/blob/main/README.md">README</a> file of the repository is much more informative now and makes usage of more images and animated GIFs to showcase Nodezator features and capabilities. Like the first chapter of the manual, the README file also had several parts of its text improved for clarity.</p>
+
+<p>We also made sure to include important information and warnings to avoid common misconceptions people tend to have when learning about Nodezator for the first time. For instance, some people seem to have a hard time telling whether Nodezator is an application or a framework/GUI library at first, so in the text we made sure to emphasize what Nodezator is and what it is not.</p>
+
+<p>Finally, made a few small changes to the <code>menu</code> subpackage to make it easier to use widgets like checkbuttons and radiobuttons on the menus. The menu subpackage always had such widgets available, but we never needed to use them before. Now we use radiobuttons to allow users to choose their preferred socket detection graphics, so it was a great opportunity to improve their back end a bit. The appearance of the radiobuttons was improved as well. They are now rendered from SVG text.</p>
 
 
 </body>
