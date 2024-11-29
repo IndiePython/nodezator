@@ -98,7 +98,7 @@
     'developer_website_name' : "kennedyrichard.com",
     'developer_website_url'  : "https://kennedyrichard.com",
 
-    'developer_x' : "Developer Twitter/X",
+    'developer_links_social' : "Developer links/social/email",
 
     'license_declaration_text' : "Nodezator is dedicated to the public domain using The Unlicense",
 

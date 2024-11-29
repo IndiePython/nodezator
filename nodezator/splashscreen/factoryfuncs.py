@@ -186,7 +186,7 @@ def get_project_link_objs():
         NODES_GALLERY_ICON,
         (IMAGE_SURFS_DB["indie_python_logo.png"][{"use_alpha": True}]),
         (IMAGE_SURFS_DB["kennedy_logo.png"][{"use_alpha": True}]),
-        (IMAGE_SURFS_DB["x_logo.png"][{"use_alpha": True}]),
+        (IMAGE_SURFS_DB["bluesky_logo.png"][{"use_alpha": True}]),
         (IMAGE_SURFS_DB["discord_logo.png"][{"use_alpha": True}]),
         (IMAGE_SURFS_DB["patreon_logo.png"][{"use_alpha": True}]),
         WEB_ICON,
@@ -239,8 +239,8 @@ def get_project_link_objs():
             t.splash_screen.developer_website_url,
         ),
         (
-            t.splash_screen.developer_x,
-            "https://x.com/KennedyRichard",
+            t.splash_screen.developer_links_social,
+            "https://kennedyrichard.com/links",
         ),
         (
             "Join us on discord",

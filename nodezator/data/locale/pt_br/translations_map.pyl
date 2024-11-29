@@ -61,7 +61,7 @@
     'developer_website_name' : "br.kennedyrichard.com",
     'developer_website_url' : "https://br.kennedyrichard.com",
 
-    'developer_x': "Twitter/X do desenvolvedor",
+    'developer_links_social': "Links do desenvolvedor",
 
   },
 
