@@ -14,6 +14,7 @@
 <ul>
     <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.5.0">[v1.5.0] System testing, topological sorting and QOL features</a></li>
     <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.5.1">[v1.5.1] Usability improvements and content update</a></li>
+    <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.5.2">[v1.5.2] Bug fix for nodes with keyword-variable parameters</a></li>
 </ul>
 
 <ol>
@@ -31,6 +32,7 @@
     <li><a href="whats-new/v1-5.htsl#improved-not-found-drawings">Improved "Not-found" drawings with SVG</a></li>
     <li><a href="whats-new/v1-5.htsl#fixes-other-back-end-changes">Fixes and other back-end changes</a></li>
     <li><a href="whats-new/v1-5.htsl#usability-improvements-content-update">v1.5.1: Usability improvements and content update</a></li>
+    <li><a href="whats-new/v1-5.htsl#bug-fix-keyword-variable">v1.5.2: Bug fix for nodes with keyword-variable parameters</a></li>
 
 </ol>
 
@@ -262,6 +264,23 @@
 <p>We also made sure to include important information and warnings to avoid common misconceptions people tend to have when learning about Nodezator for the first time. For instance, some people seem to have a hard time telling whether Nodezator is an application or a framework/GUI library at first, so in the text we made sure to emphasize what Nodezator is and what it is not.</p>
 
 <p>Finally, made a few small changes to the <code>menu</code> subpackage to make it easier to use widgets like checkbuttons and radiobuttons on the menus. The menu subpackage always had such widgets available, but we never needed to use them before. Now we use radiobuttons to allow users to choose their preferred socket detection graphics, so it was a great opportunity to improve their back end a bit. The appearance of the radiobuttons was improved as well. They are now rendered from SVG text.</p>
+
+
+<h2 id="bug-fix-keyword-variable">v1.5.2: Bug fix for nodes with keyword-variable parameters</h2>
+
+<p>I usually only write a summary of the changes here, detailing them on the commit messages themselves. However, since this was a pretty quick and simple fix, I'll just paste the commit message itself here:</p>
+
+<blockquote>
+
+  <p>Nodes with keyword-variable parameters (parameters prefixed with **) were being executed in the wrong way due to a bug that caused their arguments to be discarded when more than 01 variable keyword argument was collected.</p>
+
+  <p>This nasty bug could either cause all kinds of errors when executing the graph or even worse remain undetected, all due to the unexpected outputs that such nodes produce by ignoring the variable keyword arguments.</p>
+
+  <p>It was introduced in v1.5.0, when the entire graph execution mechanism was overhauled in order to adopt the topological sorting algorithm.</p>
+
+</blockquote>
+
+<p>We also updated social media links to include the <a href="https://bsky.app/profile/kennedyrichard.com">developer's (me) Bluesky profile</a> and also point to the developer's <a href="https://kennedyrichard.com/links">links page</a>, where several other useful links/addresses are available, including email.</p>
 
 
 </body>
