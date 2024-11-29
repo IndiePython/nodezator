@@ -197,113 +197,109 @@ class Execution:
         ### and easier access
         arg_map = self.argument_map
 
-        ### iterate over the name of each parameter, performing
-        ### checks and acting according to their results
+        ### iterate over the name of each variable parameter, performing
+        ### setups according to their kind
 
         for param_name, kind in self.var_kind_map.items():
 
             ## retrieve subparam value map
             subparam_value_map = arg_map[param_name]
 
-            ## iterate over existing subparameters (if any),
-            ## unpacking the argument if requested
+            ## if we have a variable parameter of positional kind...
 
-            for subparam_index in self.data['subparam_map'][param_name]:
+            if kind == 'var_pos':
 
-                # perform additional setups depending on the
-                # specific kind of variable parameter we have
+                # retrieve the list of subparameters that must
+                # be unpacked
+                subparams_for_unpacking = (
+                    self.data['subparam_unpacking_map'][param_name]
+                )
 
-                if kind == 'var_pos':
+                # retrieve the values of each subparameter in the
+                # order defined by the subparameter indices
+                # building a list with the values
 
-                    # retrieve the list of subparameters that must
-                    # be unpacked
-                    subparams_for_unpacking = (
-                        self.data['subparam_unpacking_map'][param_name]
-                    )
+                param_args = []
 
-                    # retrieve the values of each subparameter in the
-                    # order defined by the subparameter indices
-                    # building a list with the values
+                for index in sorted(subparam_value_map):
 
-                    param_args = []
+                    if index in subparams_for_unpacking:
 
-                    for index in sorted(subparam_value_map):
+                        try:
+                            param_args.extend(subparam_value_map[index])
 
-                        if index in subparams_for_unpacking:
+                        except Exception as err:
 
-                            try:
-                                param_args.extend(subparam_value_map[index])
+                            raise PositionalSubparameterUnpackingError(
+                                self,
+                                param_name,
+                                index,
+                            ) from err
 
-                            except Exception as err:
+                    else:
+                        param_args.append(subparam_value_map[index])
 
-                                raise PositionalSubparameterUnpackingError(
-                                    self,
-                                    param_name,
-                                    index,
-                                ) from err
+                # replace the parameter data in the argument map
+                # by the list we populated
+                arg_map[param_name] = param_args
 
-                        else:
-                            param_args.append(subparam_value_map[index])
+            ## if otherwise we have a variable parameter of the keyword kind...
 
-                    # replace the parameter data in the argument map
-                    # by the list we populated
-                    arg_map[param_name] = param_args
+            elif kind == 'var_key':
 
-                elif kind == 'var_key':
+                # retrieve map containing name of keyword for each
+                # subparameter
+                subparam_keywords = self.data['subparam_keyword_map']
 
-                    # retrieve map containing name of keyword for each
-                    # subparameter
-                    subparam_keywords = self.data['subparam_keyword_map']
+                # now build a new dictionary with the sorted keys
+                # from the subparam value map and its values
 
-                    # now build a new dictionary with the sorted keys
-                    # from the subparam value map and its values
+                param_args = {}
 
-                    param_args = {}
+                for index in sorted(subparam_value_map):
 
-                    for index in sorted(subparam_value_map):
+                    value = subparam_value_map.pop(index)
 
-                        value = subparam_value_map.pop(index)
+                    if index in subparam_keywords:
+                        param_args[subparam_keywords[index]] = value
 
-                        if index in subparam_keywords:
-                            param_args[subparam_keywords[index]] = value
+                    else:
 
-                        else:
+                        # note that we use '.update(**value)'
+                        # instead of '.update(value)'; this is
+                        # so because '.update(value)' would be
+                        # more lenient than the '**', and thus
+                        # not equivalent ('**' only accepts
+                        # mappings, while .update accepts
+                        # other iterables as well);
+                        #
+                        # since we are emulating the behaviour
+                        # of '**', we go with the less lenient
+                        # behaviour of only accepting mappings
 
-                            # note that we use '.update(**value)'
-                            # instead of '.update(value)'; this is
-                            # so because '.update(value)' would be
-                            # more lenient than the '**', and thus
-                            # not equivalent ('**' only accepts
-                            # mappings, while .update accepts
-                            # other iterables as well);
-                            #
-                            # since we are emulating the behaviour
-                            # of '**', we go with the less lenient
-                            # behaviour of only accepting mappings
+                        try:
+                            param_args.update(**value)
 
-                            try:
-                                param_args.update(**value)
+                        except Exception as err:
 
-                            except Exception as err:
+                            raise KeywordSubparameterUnpackingError(
+                                self,
+                                param_name,
+                                index,
+                            ) from err
 
-                                raise KeywordSubparameterUnpackingError(
-                                    self,
-                                    param_name,
-                                    index,
-                                ) from err
+                # replace the parameter data in
+                # the argument map by the dict
+                # we just created
+                arg_map[param_name] = param_args
 
-                    # replace the parameter data in
-                    # the argument map by the dict
-                    # we just created
-                    arg_map[param_name] = param_args
+            else:
 
-                else:
-
-                    raise RuntimeError(
-                        "there shouldn't be possible to specify a variable"
-                        " parameter of a kind which is neither 'var_pos' or"
-                        " 'var_key'"
-                    )
+                raise RuntimeError(
+                    "there shouldn't be possible to specify a variable"
+                    " parameter of a kind which is neither 'var_pos' or"
+                    " 'var_key'"
+                )
 
 
     def receive_input(self, data, param_name, subparam_index=None):
