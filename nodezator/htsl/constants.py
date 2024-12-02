@@ -40,6 +40,8 @@ KNOWN_TAGS = (
     "dl",
 )
 
+PRE_PYTHON_TAGS = {'pre', 'python'}
+
 ### text settings
 
 ## anchor minus fg

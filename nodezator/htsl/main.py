@@ -454,8 +454,8 @@ class HTSLBrowser(
                             break
 
                 ### otherwise check whether the object has an on_mouse_release,
-                ### executing it and breaking out of the for-loop if it is the
-                ### case
+                ### executing it, redrawing the elements and breaking out of
+                ### the for-loop if it is the case
 
                 try:
                     method = obj.on_mouse_release
@@ -464,7 +464,9 @@ class HTSLBrowser(
                     pass
 
                 else:
+
                     method(event)
+                    self.draw_once()
                     break
 
                 ### regardless of what happened or not, break out of the

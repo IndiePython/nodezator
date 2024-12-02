@@ -22,7 +22,12 @@ from ..classes2d.collections import List2D
 
 from ..surfdef import surfdef_obj_from_element
 
-from .constants import BROWSER_TITLE, KNOWN_TAGS, HEADING_TAGS
+from .constants import (
+    BROWSER_TITLE,
+    KNOWN_TAGS,
+    HEADING_TAGS,
+    PRE_PYTHON_TAGS,
+)
 
 from .creation import (
     TextBlock,
@@ -41,12 +46,15 @@ from .codeblock import (
     get_python_codeblock,
     get_pre_textblock,
     get_copy_button,
+    get_save_button,
 )
 
 from ..colorsman.colors import HTSL_CANVAS_BG
 
 
+
 class Preparation:
+
     def __init__(self):
         self.cache = {}
 
@@ -179,30 +187,66 @@ class Preparation:
             retrieve_pos_from="bottom", assign_pos_to="top", offset_pos_by=(0, 14)
         )
 
-        ### if clipboard functionality is available and there are pre/python
-        ### tags in the page, add "copy to clipboard" button to each pre/python
-        ### tag
+        ### if there are pre/python tags in the page...
 
-        if PUT_TEXT_AVAILABLE and pre_or_python_tags:
 
-            ##
+        if pre_or_python_tags:
+
+            ### request buttons to be added to each pre/python tag
+
+            buttons_to_add = ['save_on_disk']
+
+            ### if clipboard functionality is available, request
+            ### "copy to clipboard" buttons to be added as well
+
+            if PUT_TEXT_AVAILABLE:
+                buttons_to_add.append('copy_to_clipboard')
+
+            ### add button/buttons
 
             index_button_pairs = []
 
             y_offset = 0
             offset_increment = COPY_TO_CLIPBOARD_SURF.get_height()
 
+            buttons = []
+
             for index, obj in enumerate(self.objs):
 
-                if getattr(obj, 'tag_name', '') in {'pre', 'python'}:
+                tag_name = getattr(obj, 'tag_name', '').lower()
+
+                if tag_name in PRE_PYTHON_TAGS:
 
                     y_offset += offset_increment
 
                     obj.rect.y += y_offset
 
-                    button = get_copy_button(obj.text, bottomright=obj.rect.topright)
+                    bottomright = obj.rect.topright
 
-                    index_button_pairs.append((index, button))
+                    for button_name in buttons_to_add:
+
+                        if button_name == 'save_on_disk':
+
+                            extension = '.py' if tag_name == 'python' else '.txt'
+                            button = get_save_button(obj.text, extension, bottomright)
+
+                        elif button_name == 'copy_to_clipboard':
+                            button = get_copy_button(obj.text, bottomright)
+
+                        buttons.append(button)
+
+                        bottomright = button.rect.bottomleft
+
+                        index_button_pairs.append((index, button))
+
+                    left_diff =  obj.rect.left - buttons[-1].rect.left
+
+                    if left_diff > 0:
+
+                        for button in buttons:
+                            button.rect.x += left_diff
+
+                    buttons.clear()
 
                 else:
                     obj.rect.y += y_offset

@@ -27,6 +27,8 @@ from ..classes2d.single import Object2D
 
 from ..surfsman.render import combine_surfaces, render_rect
 
+from ..surfsman.icon import render_layered_icon
+
 from ..surfsman.draw import draw_border
 
 from ..textman.render import render_text, get_text_size
@@ -40,7 +42,9 @@ from ..syntaxman.exception import SyntaxMappingError
 
 from ..syntaxman.utils import get_ready_theme
 
-from ..colorsman.colors import HTSL_GENERAL_TEXT_FG, HTSL_CANVAS_BG
+from ..dialog import create_and_show_dialog
+
+from ..colorsman.colors import BLACK, HTSL_GENERAL_TEXT_FG, HTSL_CANVAS_BG
 
 from .constants import (
     GENERAL_CODE_TEXT_SETTINGS,
@@ -102,6 +106,69 @@ def _get_clipboard_button_surf():
     return surf
 
 COPY_TO_CLIPBOARD_SURF =  _get_clipboard_button_surf()
+
+
+def _get_save_button_surf():
+    """Create and return surface representing save button."""
+
+    ## text
+    text_surf = render_text(text='Save on disk', **NORMAL_TEXT_SETTINGS)
+
+    ## icon
+
+
+    _arrow_down_icon = render_layered_icon(
+        chars=[chr(ordinal) for ordinal in (50, 51)],
+        dimension_name="height",
+        dimension_value=12,
+        rotation_degrees=180,
+        colors=[
+            BLACK,
+            (30, 130, 70),
+        ],
+    )
+
+    _ssd_icon = render_layered_icon(
+        chars=[chr(ordinal) for ordinal in range(83, 87)],
+        dimension_name="width",
+        dimension_value=18,
+        colors=[
+            BLACK,
+            (255, 0, 0),
+            (0, 0, 255),
+            (140, 140, 140),
+        ],
+        background_width=20,
+        background_height=24,
+        retrieve_pos_from="midbottom",
+        assign_pos_to="midbottom",
+        offset_pos_by=(0, -2),
+    )
+
+    icon_surf = combine_surfaces(
+        [_ssd_icon, _arrow_down_icon],
+        retrieve_pos_from="midbottom",
+        assign_pos_to="midbottom",
+        offset_pos_by=(0, -10),
+    )
+
+
+    ## final combination
+
+    surf = combine_surfaces(
+        (text_surf, icon_surf),
+        retrieve_pos_from="midright",
+        assign_pos_to="midleft",
+        offset_pos_by=(4, 0),
+        padding=6,
+        background_color=HTSL_CANVAS_BG,
+    )
+
+    draw_border(surf, color=HTSL_GENERAL_TEXT_FG, thickness=2)
+
+    return surf
+
+SAVE_ON_DISK_SURF =  _get_save_button_surf()
 
 
 
@@ -359,6 +426,54 @@ def get_pre_textblock(pre_element):
 
     return obj
 
+def save_on_disk(text, extension):
+
+    ### TODO the import below is performed inside this function
+    ### temporariy, in order to avoid circular imports;
+    ###
+    ### however, given how often it is used throughout the package,
+    ## it should probably be passed around as a reference rather than
+    ### being imported, similarly to how the node manager, window manager
+    ### and editing assistant are passed around as references;
+
+    ### import select paths
+    from ..fileman.main import select_paths
+
+    ### prompt user to pick filepath from file manager
+
+    paths = (
+        select_paths(
+            caption="Save code snippet on disk",
+            path_name=f'snippet{extension}',
+            expecting_files_only=True,
+        )
+    )
+
+    ### if paths were given, it is a single one, we
+    ### should assign it to 'filepath' variable
+
+    if paths:
+        filepath = paths[0]
+
+    ### if the user didn't provide paths, though,
+    ### return earlier
+
+    else:
+
+        create_and_show_dialog("Cancelled saving snippet on disk.")
+        return
+
+    ###
+
+    try:
+        filepath.write_text(text, encoding='utf-8')
+
+    except Exception as err:
+
+        error_message = "An error occurred while trying to save snippet on disk: "
+        error_message += str(err)[:200]
+        create_and_show_dialog(error_message)
+
 def get_copy_button(text, bottomright):
 
     return Button(
@@ -368,8 +483,23 @@ def get_copy_button(text, bottomright):
 
         ## other arguments
 
-        command = (partial(put_text, text)),
+        command = partial(put_text, text),
         coordinates_name='bottomright',
-        coordinates_value= bottomright,
+        coordinates_value=bottomright,
+
+    )
+
+def get_save_button(text, extension, bottomright):
+
+    return Button(
+
+        ## surf
+        SAVE_ON_DISK_SURF,
+
+        ## other arguments
+
+        command = partial(save_on_disk, text, extension),
+        coordinates_name='bottomright',
+        coordinates_value=bottomright,
 
     )
