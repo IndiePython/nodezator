@@ -15,6 +15,7 @@
     <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.5.0">[v1.5.0] System testing, topological sorting and QOL features</a></li>
     <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.5.1">[v1.5.1] Usability improvements and content update</a></li>
     <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.5.2">[v1.5.2] Bug fix for nodes with keyword-variable parameters</a></li>
+    <li><a href="https://github.com/IndiePython/nodezator/releases/tag/v1.5.3">[v1.5.3] User manual utility and file manager bug fix</a></li>
 </ul>
 
 <ol>
@@ -33,6 +34,7 @@
     <li><a href="whats-new/v1-5.htsl#fixes-other-back-end-changes">Fixes and other back-end changes</a></li>
     <li><a href="whats-new/v1-5.htsl#usability-improvements-content-update">v1.5.1: Usability improvements and content update</a></li>
     <li><a href="whats-new/v1-5.htsl#bug-fix-keyword-variable">v1.5.2: Bug fix for nodes with keyword-variable parameters</a></li>
+    <li><a href="whats-new/v1-5.htsl#user-manual-utility-file-manager-fix">v1.5.3: User manual utility and file manager bug fix</a></li>
 
 </ol>
 
@@ -281,6 +283,15 @@
 </blockquote>
 
 <p>We also updated social media links to include the <a href="https://bsky.app/profile/kennedyrichard.com">developer's (me) Bluesky profile</a> and also point to the developer's <a href="https://kennedyrichard.com/links">links page</a>, where several other useful links/addresses are available, including email.</p>
+
+
+<h2 id="user-manual-utility-file-manager-fix">v1.5.3: User manual utility and file manager bug fix</h2>
+
+<p>Code blocks on the in-app version of the user manual now have a new button that allows users to save that code snippet on disk. This change was made because the button to copy values to the clipboard is not working properly for all users. I still have to investigate the problem to know the cause, but it looks like it is not on Nodezator's source, since it works on some machines and not on others.</p>
+
+<p>To avoid hassle to the users (one of them reported having to type the code manually), this new button now allows them to save the code directly on disk. Of course, alternatively, the users always have the <a href="https://manual.nodezator.com">online version of the manual</a> available as well.</p>
+
+<p>I also fixed a bug on the file manager that sometimes caused paths to still be submitted despite the user having pressed the <b>Cancel</b> button. Naturally, this was a clearly undesired behaviour that could cause all kinds of undesired side-effects as well.</p>
 
 
 </body>
