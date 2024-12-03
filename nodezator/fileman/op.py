@@ -117,6 +117,10 @@ class FileManagerOperations(Object2D):
         ### alias self as the loop holder
         loop_holder = self
 
+        ### set an attribute to keep track of when the user cancelled
+        ### selecting paths
+        self.cancelled = False
+
         ### keep looping the execution of methods
         ### "handle_input", "update" and "drawing" of the
         ### loop holder until running is set to False
@@ -156,11 +160,16 @@ class FileManagerOperations(Object2D):
         ### blit smaller semi transparent object
         self.rect_size_semitransp_obj.draw()
 
-        ### if only files are expected to be selected, we must
-        ### update the selection according to the entry, since
-        ### they might be out of sync
+        ### if the user didn't cancel and only files are expected to be
+        ### selected, we must update the selection according to the entry,
+        ### since they might be out of sync
 
-        if self.expecting_files_only:
+        ### XXX review behaviour of this expecting_files_only flag.
+        ### For instance, what if the person selected folders as well?
+        ### When you do that, update docstrings and related comments
+        ### accordingly
+
+        if not self.cancelled and self.expecting_files_only:
             self.update_selection_from_entry()
 
         ### return a copy of the path selection
@@ -482,9 +491,13 @@ class FileManagerOperations(Object2D):
         Works by clearing the path selection, which causes no
         path to be returned.
 
+        The 'cancelled' attribute is also set to True, to indicate the
+        user cancelled providing path(s).
+
         The 'running' attribute is also set to False, which
         triggers the exit of the file manager loop which
         you can find on the select_paths method.
         """
         self.path_selection.clear()
+        self.cancelled = True
         self.running = False
