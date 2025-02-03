@@ -32,7 +32,7 @@ main_callable = get_circle_area
 
 ![node image](https://nodezator.com/images/get_circle_area_node.png)
 
-You can store these functions/node definitions anywhere you want in your disk and once you launch Nodezator just provide the path so Nodezator can load them. The only requirement is that you organize these nodes definitions in separate files and store then in a folder (more about that further ahead in another section).
+You can store these functions/node definitions anywhere you want in your disk and once you launch Nodezator just provide the path so Nodezator can load them. The only requirement is that you organize these nodes definitions in separate files and store them in a folder (more about that further ahead in another section).
 
 You can actually turn **any** callable into a node very easily: classes, methods, etc. All callables available in the Python ecosystem can be turned into a node (even the ones defined in C, for instance).
 
