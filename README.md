@@ -130,7 +130,7 @@ Simply put, Nodezator is just a visual, node-based representation of Python.
 
 ### Socket proximity detection
 
-Having to click exactly over a socket to drag a new connection out of it and on top of that having to drop such new connection exactly on top of another socket are both repetitive tasks that are difficult to do right in one quick motion. Often, people loose precious time trying to ensure the mouse is exactly over the desired socket, specially considering how often those tasks are performed in any graph edition session.
+Having to click exactly over a socket to drag a new connection out of it and on top of that having to drop such new connection exactly on top of another socket are both repetitive tasks that are difficult to do right in one quick motion. Often, people lose precious time trying to ensure the mouse is exactly over the desired socket, specially considering how often those tasks are performed in any graph edition session.
 
 Because of that, Nodezator features socket proximity detection to assist the user when establishing or replacing existing connection. The user doesn't need to click exactly over a socket to drag a new connection out of it anymore. Dropping the new connection exactly over the other socket isn't necessary either. As long as the mouse is close enough, these actions can be carried over effortlessly. Here you can see it in action:
 
