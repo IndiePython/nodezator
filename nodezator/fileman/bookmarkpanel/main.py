@@ -27,7 +27,6 @@ from ...ourstdlibs.pyl import load_pyl, save_pyl
 from ...ourstdlibs.behaviour import get_oblivious_callable
 
 from ...surfsman.draw import (
-    blit_aligned,
     draw_border,
     draw_depth_finish,
 )
@@ -57,35 +56,24 @@ from .surfs import (
 class BookmarkPanel:
     """A panel for displaying and managing bookmarks."""
 
-    def __init__(self, directory_panel, semitransp_obj):
+    def __init__(self, file_manager, directory_panel):
         """Store argument and perform setups.
 
         Parameters
         ==========
-        directory_panel (fileman.dirpanel.DirectoryPanel
-        instance)
-            object which displays contents from current
-            loaded directory and controls it.
-        semitransp_obj (custom object)
-            object with a draw method which draws a
-            semitransparent surface over the file manager,
-            making it appear unhighlighted. Used when
-            summoning dialog boxes, to unhighlight the
-            file manager.
+        file_manager (fileman.main.FileManager instance)
+            file manager object that manages everything along with the panels
+        directory_panel (fileman.dirpanel.DirectoryPanel instance)
+            object which displays contents from current loaded directory
+            and controls it.
         """
         ### store arguments received
 
+        self.fm = file_manager
         self.dir_panel = directory_panel
-        self.semitransp_obj = semitransp_obj
 
         ### create a rect attribute
-
-        self.rect = Rect(
-            ## position
-            (0, 0),
-            ## size
-            (BKM_PANEL_WIDTH, 0),
-        )
+        self.rect = Rect(0, 0, BKM_PANEL_WIDTH, 0)
 
         ### Build widget structure
         self.build_widget_structure()
@@ -101,8 +89,19 @@ class BookmarkPanel:
         ### create and store buttons
 
         for button_attr_name, button_fg_surf, behaviour in (
-            ("bookmark_button", BOOKMARK_BUTTON_SURF, self.add_bookmark),
-            ("unbookmark_button", UNBOOKMARK_BUTTON_SURF, self.remove_bookmark),
+
+            (
+                'bookmark_button',
+                BOOKMARK_BUTTON_SURF,
+                self.add_bookmark,
+            ),
+
+            (
+                'unbookmark_button',
+                UNBOOKMARK_BUTTON_SURF,
+                self.remove_bookmark,
+            ),
+
         ):
 
             ## create button
@@ -110,21 +109,19 @@ class BookmarkPanel:
             # button with surface filled with background
             # color
 
-            button = Object2D.from_surface(
-                render_rect(
-                    *button_fg_surf.get_size(),
-                    color=BUTTON_BG,
+            button = (
+
+                Object2D.from_surface(
+                    render_rect(
+                        *button_fg_surf.get_size(),
+                        color=BUTTON_BG,
+                    )
                 )
+
             )
 
             # combine both surfs
-
-            blit_aligned(
-                surface_to_blit=button_fg_surf,
-                target_surface=button.image,
-                retrieve_pos_from="center",
-                assign_pos_to="center",
-            )
+            button.image.blit(button_fg_surf, (0, 0))
 
             # improve style
             draw_depth_finish(button.image)
@@ -194,7 +191,12 @@ class BookmarkPanel:
             ### only keep existing bookmarks
 
             existing_bookmarks = [
-                path_string for path_string in bookmarks if Path(path_string).is_dir()
+
+                path_string
+                for path_string in bookmarks
+
+                if Path(path_string).is_dir()
+
             ]
 
             ### if existing bookmarks are different than the
@@ -260,7 +262,10 @@ class BookmarkPanel:
 
         for path_obj in self.bookmark_objs:
 
-            path_obj.change_selection_appearance(path_obj.path == current_dir)
+            (
+                path_obj
+                .change_selection_appearance(path_obj.path == current_dir)
+            )
 
     def check_live_bookmarks(self):
         """Check if the bookmarks still exist.
@@ -427,7 +432,7 @@ class BookmarkPanel:
                 create_and_show_dialog(
                     "Current directory is already bookmarked.",
                     level_name='info',
-                    unhighlighter_obj=self.semitransp_obj,
+                    unhighlighter_obj=self.fm.rect_size_semitransp_obj,
                 )
 
                 return
@@ -456,7 +461,7 @@ class BookmarkPanel:
                         " bookmarks."
                     ),
                     level_name='info',
-                    unhighlighter_obj=self.semitransp_obj,
+                    unhighlighter_obj=self.fm.rect_size_semitransp_obj,
                 )
 
                 return
@@ -473,7 +478,8 @@ class BookmarkPanel:
 
     def reposition(self):
         """Reposition panel relative to file manager."""
-        self.rect.topright = self.dir_panel.rect.move(-15, 0).topleft
+
+        self.rect.topright = self.dir_panel.rect.move(-5, 0).topleft
 
         self.bookmark_objs.rect.topleft = self.rect.move(1, 1).topleft
 

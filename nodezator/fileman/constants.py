@@ -9,11 +9,11 @@ from ..config import APP_REFS
 FONT_HEIGHT = APP_REFS.general_font_height  # height of font in pixels
 
 
-### sizes
+### widths
 
-FILEMAN_SIZE = (800, 565)
-DIR_PANEL_WIDTH = 485
-BKM_PANEL_WIDTH = 280
+FILEMAN_WIDTH = 1024
+DIR_PANEL_WIDTH = 634
+BKM_PANEL_WIDTH = 375
 
 
 ### path objects settings

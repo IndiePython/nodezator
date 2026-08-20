@@ -26,7 +26,6 @@ from ...ourstdlibs.behaviour import get_oblivious_callable
 from ...our3rdlibs.userlogger import USER_LOGGER
 
 from ...surfsman.draw import (
-    blit_aligned,
     draw_border,
     draw_depth_finish,
 )
@@ -62,7 +61,9 @@ from ..constants import (
     PATH_OBJ_QUANTITY,
     PATH_OBJ_PADDING,
     PATH_OBJ_PARENT_TEXT,
+    FILEMAN_WIDTH,
     DIR_PANEL_WIDTH,
+    BKM_PANEL_WIDTH,
 )
 
 ## class extensions
@@ -95,17 +96,11 @@ class DirectoryPanel(
         """
         self.fm = file_manager
 
-        ### assign behaviour to an attribute of the
-        ### PathObject class
+        ### assign behaviour to an attribute of the PathObject class
         PathObject.load_directory = self.change_current_dir
 
         ### create a rect attribute
-
-        self.rect = Rect(
-            (0, 0),
-            ## size
-            (DIR_PANEL_WIDTH, 0),
-        )
+        self.rect = Rect(0, 0, DIR_PANEL_WIDTH, 0)
 
         ### create a current directory attribute, using
         ### the pathlib.Path to the home directory
@@ -120,64 +115,74 @@ class DirectoryPanel(
 
     def build_widget_structure(self):
         """Create objects which compose the panel."""
+
         ### create a current path entry
 
-        ## width is the length between the left of
-        ## the current path entry defined on the file
-        ## manager and the right of the file manager
-        ## (with a bit of padding)
+        width = (
 
-        width = (self.fm.rect.right - 18) - (
-            self.fm.rect.left + self.fm.navigation_entry_offset[0]
+            ## right (fileman's width minus padding)
+            (FILEMAN_WIDTH - 5)
+
+            ## minus left
+            - self.fm.navigation_entry_offset[0]
         )
 
         ## creation
 
-        self.navigation_entry = StringEntry(
-            str(self.current_dir),
-            loop_holder=self.fm,
-            font_height=FONT_HEIGHT,
-            foreground_color=NORMAL_PATH_FG,
-            background_color=NORMAL_PATH_BG,
-            command=self.load_from_entry,
-            validation_command=ensure_valid_dir,
-            width=width,
+        self.navigation_entry = (
+
+            StringEntry(
+                str(self.current_dir),
+                loop_holder=self.fm,
+                font_height=FONT_HEIGHT,
+                foreground_color=NORMAL_PATH_FG,
+                background_color=NORMAL_PATH_BG,
+                command=self.load_from_entry,
+                validation_command=ensure_valid_dir,
+                width=width,
+            )
+
         )
 
         ### create and store buttons
 
         for button_fg_surf, button_attr_name, behaviour in (
-            (HOME_BUTTON_SURF, "home_button", self.load_home),
+            (HOME_BUTTON_SURF, 'home_button', self.load_home),
             (
                 RELOAD_DIR_BUTTON_SURF,
-                "reload_dir_button",
+                'reload_dir_button',
                 self.load_current_dir_contents,
             ),
-            (PARENT_BUTTON_SURF, "parent_button", self.load_parent),
-            (NEW_FILE_BUTTON_SURF, "new_file_button", self.present_new_file_form),
-            (NEW_FOLDER_BUTTON_SURF, "new_folder_button", self.present_new_folder_form),
+            (PARENT_BUTTON_SURF, 'parent_button', self.load_parent),
+            (
+                NEW_FILE_BUTTON_SURF,
+                'new_file_button',
+                self.present_new_file_form,
+            ),
+            (
+                NEW_FOLDER_BUTTON_SURF,
+                'new_folder_button',
+                self.present_new_folder_form,
+            ),
         ):
 
             ## create button
 
-            # button with surface filled with background
-            # color
+            # button with surface filled with background color
 
-            button = Object2D.from_surface(
-                render_rect(
-                    *button_fg_surf.get_size(),
-                    color=BUTTON_BG,
+            button = (
+
+                Object2D.from_surface(
+                    render_rect(
+                        *button_fg_surf.get_size(),
+                        color=BUTTON_BG,
+                    )
                 )
+
             )
 
             # combine both surfs
-
-            blit_aligned(
-                surface_to_blit=button_fg_surf,
-                target_surface=button.image,
-                retrieve_pos_from="center",
-                assign_pos_to="center",
-            )
+            button.image.blit(button_fg_surf, (0, 0))
 
             # improve style
             draw_depth_finish(button.image)
@@ -187,6 +192,7 @@ class DirectoryPanel(
 
             ## store button in attribute
             setattr(self, button_attr_name, button)
+
 
         ### create a control variable to keep track of frame
         ### where mouse release events happen
@@ -208,24 +214,30 @@ class DirectoryPanel(
 
         ### create special list to hold the path objects
 
-        self.path_objs = List2D(
-            PathObject(
-                path=None,
-                width=width,
-                padding=PATH_OBJ_PADDING,
+        self.path_objs = (
+
+            List2D(
+
+                PathObject(
+                    path=None,
+                    width=width,
+                    padding=PATH_OBJ_PADDING,
+                )
+
+                for _ in range(PATH_OBJ_QUANTITY)
+
             )
-            for _ in range(PATH_OBJ_QUANTITY)
+
         )
 
         ### position objs relative to each other
 
         self.path_objs.rect.snap_rects_ip(
-            retrieve_pos_from="bottomleft",
-            assign_pos_to="topleft",
+            retrieve_pos_from='bottomleft',
+            assign_pos_to='topleft',
         )
 
-        ### assign height of self.path_objs plus 2
-        ### as the panel's height
+        ### assign height of self.path_objs plus 2 as the panel's height
         self.rect.height = self.path_objs.rect.height + 2
 
     @property
@@ -350,12 +362,14 @@ class DirectoryPanel(
     def draw(self):
         """Draw objects."""
         ### draw path objects
+
         for obj in self.path_objs:
             obj.draw()
 
         ### draw outline rect, if it is not None
 
         try:
+
             draw_rect(
                 SCREEN,
                 ACTIVE_SELECTION_OUTLINE,
@@ -534,10 +548,10 @@ class DirectoryPanel(
 
     present_new_folder_form = partialmethod(present_new_path_form, False)
 
-    def reposition(self):
-        """Reposition panel relative to file manager."""
+    def reposition(self, diff):
+        """Move panel by diff and reposition elements accordingly."""
 
-        self.rect.topleft = self.fm.rect.move(305, 100).topleft
+        self.rect.move_ip(diff)
 
         self.path_objs.rect.topleft = self.rect.move(1, 1).topleft
 
