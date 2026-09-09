@@ -24,10 +24,11 @@ mono_font
     en-us Monospace font
     pt-br Fonte monospace
 
-finish
-    en-us Finish
-    pt-br Finalizar
-    zh-cn 完成
+save
+    en-us Save
+    pt-br Salvar
+    zh-cn 保存
+
 cancel
     en-us Cancel
     pt-br Cancelar

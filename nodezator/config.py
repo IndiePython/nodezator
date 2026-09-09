@@ -27,7 +27,10 @@ from .appinfo import APP_DIR_NAME, ORG_DIR_NAME, NATIVE_FILE_EXTENSION
 
 
 ### user preferences (to be populated in a dedicated subpackage)
+
+DEFAULT_USER_PREFS = {}
 USER_PREFS = {}
+
 
 ### an object to hold references/data used throughout the
 ### entire app

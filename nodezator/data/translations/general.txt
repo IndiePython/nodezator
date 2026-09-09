@@ -13,6 +13,6 @@ go_back
     en-us Go back
     pt-br Voltar
 
-reset_to_defaults
-    en-us Reset to defaults
-    pt-br Restaurar valores
+restore_default_settings
+    en-us Restore default settings
+    pt-br Restaurar configurações padrão

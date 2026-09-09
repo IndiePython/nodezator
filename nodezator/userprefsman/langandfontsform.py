@@ -24,7 +24,7 @@ from pygame.locals import (
 
 from ..pygamesetup import SERVICES_NS, SCREEN_RECT, blit_on_screen
 
-from ..config import APP_REFS, USER_PREFS
+from ..config import APP_REFS, DEFAULT_USER_PREFS, USER_PREFS
 
 from ..translatedtext import TRANSLATIONS
 
@@ -86,7 +86,9 @@ from ..colorsman.colors import (
 
 
 ### translations
+
 t = TRANSLATIONS.language_and_fonts_form
+general_t = TRANSLATIONS.general
 
 ### constants
 
@@ -391,45 +393,57 @@ class UserPreferencesLanguageAndFontsForm(Object2D, LoopHolder):
 
         ### create, position and store form related buttons
 
-        ## submit button
+        buttons = List2D(
 
-        self.finish_button = Button.from_text(
-            text=t.finish,
-            command=self.finish_form,
-            **BUTTON_SETTINGS,
+            Button.from_text(
+                text=text,
+                command=command,
+                **BUTTON_SETTINGS,
+            )
+
+            for text, command in (
+
+                (
+                    general_t.restore_default_settings,
+                    self.restore_default_settings,
+                ),
+                (t.cancel, self.exit_loop),
+                (t.save, self.save_form),
+
+            )
+
         )
 
-        draw_depth_finish(self.finish_button.image)
+        for button in buttons:
+            draw_depth_finish(button.image)
 
-        self.finish_button.rect.top = (
-            widgets.rect.move(0, 5).bottom
-            + extra_height_used_by_single_widget
+        buttons.rect.snap_rects_ip(
+            retrieve_pos_from='midright',
+            assign_pos_to='midleft',
+            offset_pos_by=(8, 0),
         )
 
-        self.finish_button.rect.right = (
-            widgets.rect.move(0, 5).right
-            + extra_width_required
+        buttons.rect.topright = (
+
+            (
+
+                # right
+                widgets.rect.move(0, 5).right + extra_width_required,
+
+                # top
+
+                (
+                    widgets.rect.move(0, 5).bottom
+                    + extra_height_used_by_single_widget
+                )
+
+            )
+
         )
 
-
-        #self.finish_button.rect.topright = widgets.rect.move(0, 5).bottomright
-
-        ## cancel button
-
-        self.cancel_button = Button.from_text(
-            text=t.cancel,
-            command=self.exit_loop,
-            **BUTTON_SETTINGS,
-        )
-
-        draw_depth_finish(self.cancel_button.image)
-
-        self.cancel_button.rect.midright = (
-            self.finish_button.rect.move(-5, 0).midleft
-        )
 
         ## store
-        widgets.extend((self.cancel_button, self.finish_button))
+        widgets.extend(buttons)
 
     def switch_font_use_widget(self, font_role):
 
@@ -468,7 +482,6 @@ class UserPreferencesLanguageAndFontsForm(Object2D, LoopHolder):
                 " argument must be either 'general' or 'mono'."
             )
 
-
         widget_collections = (self.widgets, self.prefs_widgets)
 
         widgets = self.widgets
@@ -492,6 +505,31 @@ class UserPreferencesLanguageAndFontsForm(Object2D, LoopHolder):
     )
 
     switch_mono_font_use_widget = partialmethod(switch_font_use_widget, 'mono')
+
+    def restore_default_settings(self):
+
+        ## first change the option menus
+
+        for widget in self.prefs_widgets:
+
+            if isinstance(widget, OptionMenu):
+
+                widget.set(
+                    DEFAULT_USER_PREFS[widget.name]
+                )
+
+        ## then change the widgets which are not option menus, but also
+        ## not default holders either (because as the name implies, they
+        ## only ever hold default values, never needing to change)
+
+        for widget in self.prefs_widgets:
+
+            if not isinstance(widget, (OptionMenu, DefaultHolder)):
+
+                widget.set(
+                    DEFAULT_USER_PREFS[widget.name]
+                )
+
 
     def edit_lang_and_fonts_settings(self):
 
@@ -527,7 +565,7 @@ class UserPreferencesLanguageAndFontsForm(Object2D, LoopHolder):
                 ## confirm edition by pressing one of the "enter" keys
 
                 elif event.key in (K_RETURN, K_KP_ENTER):
-                    self.finish_form()
+                    self.save_form()
 
             ### MOUSEBUTTONDOWN
 
@@ -608,7 +646,7 @@ class UserPreferencesLanguageAndFontsForm(Object2D, LoopHolder):
         "on_mouse_release",
     )
 
-    def finish_form(self):
+    def save_form(self):
         """Save and set new preferences if copy with new values validates."""
 
         prefs_copy = USER_PREFS.copy()
@@ -643,12 +681,6 @@ class UserPreferencesLanguageAndFontsForm(Object2D, LoopHolder):
                 return
 
             else:
-
-                # TODO make sure changes propagate to
-                # wherever relevant (for instance,
-                # assign max_lines to user logger and
-                # also take care of max lines for
-                # the custom stdout)
                 USER_PREFS.update(prefs_copy)
 
         ### notify user via dialog and status message

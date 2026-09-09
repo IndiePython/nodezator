@@ -22,7 +22,13 @@ from pygame.font import Font, match_font
 
 ### local imports
 
-from ..config import APP_REFS, USER_PREFS, WRITEABLE_PATH, OLD_WRITEABLE_PATH
+from ..config import (
+    APP_REFS,
+    DEFAULT_USER_PREFS,
+    USER_PREFS,
+    WRITEABLE_PATH,
+    OLD_WRITEABLE_PATH,
+)
 
 from ..appinfo import APP_DIR_NAME, NATIVE_FILE_EXTENSION
 
@@ -152,9 +158,9 @@ _old_non_get_pref_path_locations_map = {
 }
 
 
-### populate dictionary wherein to store user preferences with default values
+### populate dictionaries wherein to store user preferences
 
-USER_PREFS.update(
+DEFAULT_USER_PREFS.update(
 
 {
     'LOCALE': 'en_us',
@@ -174,6 +180,8 @@ USER_PREFS.update(
 }
 
 )
+
+USER_PREFS.update(DEFAULT_USER_PREFS)
 
 
 ### validate user preference defaults
