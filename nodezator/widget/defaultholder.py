@@ -106,10 +106,8 @@ class DefaultHolder(Label):
             to be assigned to the pygame.Rect attribute in
             order to position it.
         """
-        ### store value and name
-
+        ### store value
         self.value = value
-        self.name = name
 
         ### gather text style related arguments in a
         ### single dictionary
@@ -129,6 +127,7 @@ class DefaultHolder(Label):
 
         super().__init__(
             text=repr(self.value),
+            name=name,
             coordinates_name=coordinates_name,
             coordinates_value=coordinates_value,
             **text_kwargs,
