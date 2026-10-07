@@ -49,9 +49,6 @@ from ...colors import (
 from ...color2d import Color2D
 
 
-### size in pixels of the surfaces representing each color
-COLOR_SIZE = (120, 84)
-
 
 ### class definition (class extension)
 
@@ -106,6 +103,19 @@ class ColorListMode:
         ### but way to the right and a bit lower
         topleft = self.rect.move(200, 70).topleft
 
+        ### size in pixels of the surfaces representing each color;
+        ### the height must be proportial to the font size
+
+        COLOR_SIZE = (
+
+            # width
+            100,
+
+            # height
+            APP_REFS.general_font_height * 4,
+
+        )
+
         ### create widgets representing each color, always
         ### storing them in the custom list we created
 
@@ -129,31 +139,45 @@ class ColorListMode:
             # iterate over color representations
 
             for text in (
+
                 # integers in range(256) representing values
                 # of the RGB(A) channels
                 repr(color),
+
                 # a hex string (string starting with '#'
                 # followed by substrings representing the
                 # values of RGB(A) channels in range(256),
                 # but representing in hexadecimal numbers;
                 # for instance: #ffffff for white color)
                 full_rgb_to_hex_string(color),
+
                 # the name of the color used by HTML or
                 # 'unamed' if it doesn't have a name
                 full_rgb_to_html_name(color),
+
             ):
 
                 # create and append the text object
 
-                text_obj = Object2D.from_surface(
-                    surface=render_text(
-                        text=text,
-                        font_height=APP_REFS.general_font_height,
-                        foreground_color=(COLOR_VIEWER_COLOR_LIST_FG),
-                        background_color=(COLOR_VIEWER_COLOR_LIST_BG),
-                    ),
-                    coordinates_name="topleft",
-                    coordinates_value=topleft,
+                text_obj = (
+
+                    Object2D.from_surface(
+
+                        surface = (
+
+                            render_text(
+                                text=text,
+                                font_height=APP_REFS.general_font_height,
+                                foreground_color=(COLOR_VIEWER_COLOR_LIST_FG),
+                                background_color=(COLOR_VIEWER_COLOR_LIST_BG),
+                            )
+
+                        ),
+
+                        coordinates_name="topleft",
+                        coordinates_value=topleft,
+                    )
+
                 )
 
                 color_list_objs.append(text_obj)
@@ -171,10 +195,9 @@ class ColorListMode:
         ### create panel over which to draw the objects
         ### in the list
 
-        ## define an area wherein to display the list
-        ## of widgets; this area is obtained by deflating
-        ## self.rect
-        display_area = self.rect.inflate(-500, -40)
+        ## define an area wherein to display the list of widgets;
+        ## this area is obtained by deflating self.rect;
+        display_area = self.rect.inflate(-450, -120)
 
         ## also reference the 'rect' attribute of the list
         ## of widgets locally; this is a special rect-like
