@@ -92,7 +92,7 @@ class ColorsViewer(ColorListMode, PatternsMode, LoopHolder):
         ### create a surface representing this widget
         ### to store in its 'image' attribute
 
-        surf = self.image = render_rect(820, 650, WINDOW_BG)
+        surf = self.image = render_rect(820, 690, WINDOW_BG)
 
         draw_border(surf, thickness=2)
 
@@ -253,7 +253,7 @@ class ColorsViewer(ColorListMode, PatternsMode, LoopHolder):
         )
 
         go_back_button.on_mouse_release = get_oblivious_callable(
-            partial(setattr, self, "running", False)
+            partial(setattr, self, 'running', False)
         )
 
         ### create a collection to hold buttons and
@@ -286,15 +286,14 @@ class ColorsViewer(ColorListMode, PatternsMode, LoopHolder):
 
         self.labels.append(modes_label)
 
-        ### create a pygame.Surface objects to use as a
-        ### canvas that can be freely used in different
-        ### modes
+        ### create a pygame.Surface object to use as a canvas that can be
+        ### freely used in different modes
 
-        canvas_area = self.rect.inflate(-80, -80)
+        canvas_area = self.rect.inflate(-120, -120)
 
         self.canvas = Object2D.from_surface(
             surface=render_rect(*canvas_area.size),
-            coordinates_name="topleft",
+            coordinates_name='topleft',
             coordinates_value=canvas_area.topleft,
         )
 
@@ -432,8 +431,7 @@ class ColorsViewer(ColorListMode, PatternsMode, LoopHolder):
         ### in case there's clean up to be performed
         self.exit_mode()
 
-        ### finally, execute the memory freeing operations
-        ### for all modes
+        ### finally, execute the memory freeing operations for all modes
         self.memory_freeing_behaviours()
 
 
