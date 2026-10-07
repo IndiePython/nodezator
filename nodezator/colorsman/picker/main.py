@@ -133,60 +133,67 @@ class ColorsPicker(Operations):
 
         ### Create labels to display color information
 
-        ## create and store a custom list of labels
-        ## in its own attribute, also referencing it
-        ## locally for quick and easier access
+        ## create and store a custom list of labels in its own attribute,
+        ## also referencing it locally for quick and easier access
+        ##
+        ## they are also subdivided in columns
 
-        labels = self.labels = List2D(
-            Label(
-                text="",
-                font_height=APP_REFS.general_font_height,
-                font_key=APP_REFS.mono_font_key,
-                padding=LABEL_PADDING,
-                foreground_color=WINDOW_FG,
-                background_color=WINDOW_BG,
+        labels = self.labels = (
+
+            List2D(
+
+                Label(
+                    text="",
+                    font_height=APP_REFS.general_font_height,
+                    font_key=APP_REFS.mono_font_key,
+                    padding=LABEL_PADDING,
+                    foreground_color=WINDOW_FG,
+                    background_color=WINDOW_BG,
+                )
+
+                for _ in range(6)
+
             )
-            for _ in range(6)
+
+        )
+
+        self.label_columns = (
+
+            List2D(
+                List2D((labels[i], labels[i+3]))
+                for i in range(3)
+            )
+
         )
 
         ## set a custom message in the last one
-        labels[-1].set(DEFAULT_LABEL_MESSAGE)
+        labels[0].set(DEFAULT_LABEL_MESSAGE)
 
-        ## position labels near the bottom left corner
-        ## of the screen
-
-        height_increment = APP_REFS.general_font_height + (2 * LABEL_PADDING)
-
-        for label, offset in zip(
-            labels,
-            (
-                (5, -5 - height_increment),
-                (5, -5),
-                (270, -5 - height_increment),
-                (270, -5),
-                (460, -5 - height_increment),
-                (460, -5),
-            ),
-        ):
-
-            label.rect.bottomleft = SCREEN_RECT.move(offset).bottomleft
+        ## position labels near the bottom left corner of the screen
+        labels.rect.bottomleft = SCREEN_RECT.move(5, -5).bottomleft
 
         ### create buttons used in the picker
 
         ## define cancel command
 
         cancel_command = CallList(
-            [self.exit_loop, partial(setattr, self, "cancel", True)]
+            [
+                self.exit_loop,
+                partial(setattr, self, 'cancel', True),
+            ]
         )
 
         ## create a custom list instance containing
         ## a button for each command
 
         self.buttons = List2D(
+
             ## create an object representing a text surface
             ## stylized as a button with the command stored in
             ## its 'on_mouse_release' attribute...
+
             Object2D.from_surface(
+
                 surface=render_text(
                     text=text,
                     font_height=APP_REFS.general_font_height,
@@ -197,12 +204,16 @@ class ColorsPicker(Operations):
                     depth_finish_thickness=1,
                 ),
                 on_mouse_release=(get_oblivious_callable(command)),
+
             )
+
             ## ...for each given pair of text/command
+
             for text, command in (
                 ("Cancel", cancel_command),
                 ("Ok", self.exit_loop),
             )
+
         )
 
         ## align the buttons side to side (the topright of
@@ -210,7 +221,9 @@ class ColorsPicker(Operations):
         ## slight horizontal offset
 
         self.buttons.rect.snap_rects_ip(
-            retrieve_pos_from="topright", assign_pos_to="topleft", offset_pos_by=(5, 0)
+            retrieve_pos_from='topright',
+            assign_pos_to='topleft',
+            offset_pos_by=(5, 0),
         )
 
 

@@ -59,41 +59,38 @@ from .constants import (
 
 ### constants
 
-COLOR_INFO_TITLES = (
-    "HTML",
-    "pygame",
-    "Luma",
-    "HEX",
-    "RGB",
-    "HLS",
+COLOR_INFO_TITLE_KEY_PAIRS = (
+    ("HTML", "html"),
+    ("pygame", "pygame"),
+    ("Luma", "luma"),
+    ("HEX", "hex"),
+    ("RGB", "rgb"),
+    ("HLS", "hls"),
 )
 
-MAX_CHAR_NO = max(len(item) for item in COLOR_INFO_TITLES)
+COLOR_INFO_TITLES, COLOR_INFO_KEYS = zip(*COLOR_INFO_TITLE_KEY_PAIRS)
 
-COLOR_INFO_KEYS = (
-    "html",
-    "pygame",
-    "luma",
-    "hex",
-    "rgb",
-    "hls",
-)
 
 
 class Operations(LoopHolder):
     """Extra operations for the colors picker class."""
 
     def pick_colors(
+
         self,
+
         color_value,
         widget_width=36,
         icon_width=32,
-        position_method_name=("snap_rects_intermittently_ip"),
+
+        position_method_name='snap_rects_intermittently_ip',
+
         position_method_kwargs={
-            "dimension_name": "width",
-            "dimension_unit": "rects",
-            "max_dimension_value": 15,
+            'dimension_name': 'width',
+            'dimension_unit': 'rects',
+            'max_dimension_value': 15,
         },
+
     ):
         """Execute the picker loop.
 
@@ -166,34 +163,34 @@ class Operations(LoopHolder):
         )
 
     pick_html_colors = partialmethod(
+
         pick_colors,
-        ## note that before turning the
-        ## values into a tuple, we turn
-        ## them into a set in order to
-        ## eliminate duplicate values,
-        ## since there are colors with
-        ## different names, but same value
+
+        ## note that before turning the values into a tuple, we turn them into
+        ## a set in order to eliminate duplicate values, since there are colors
+        ## with different names, but same value
         tuple(set(HTML_COLOR_MAP.values())),
+
     )
 
     pick_pygame_colors = partialmethod(
+
         pick_colors,
-        ## note that before turning the
-        ## values into a tuple, we turn
-        ## them into a set in order to
-        ## eliminate duplicate values,
-        ## since there are colors with
-        ## different names, but same
-        ## value
+
+        ## note that before turning the values into a tuple, we turn them into
+        ## a set in order to eliminate duplicate values, since there are colors
+        ## with different names, but same value
         tuple(set(PYGAME_COLOR_MAP.values())),
+
         widget_width=24,
         icon_width=20,
-        position_method_name=("snap_rects_intermittently_ip"),
+
         position_method_kwargs={
-            "dimension_name": "width",
-            "dimension_unit": "rects",
-            "max_dimension_value": 28,
+            'dimension_name': 'width',
+            'dimension_unit': 'rects',
+            'max_dimension_value': 28,
         },
+
     )
 
     def prepare_color_widgets(
@@ -468,9 +465,29 @@ class Operations(LoopHolder):
                     COLOR_INFO_TITLES,
                     COLOR_INFO_KEYS,
                 ):
-                    label.set(f'{title.ljust(MAX_CHAR_NO, " ")}:' + f" {info[key]}")
+                    label.set(f"{title}: {info[key]}")
 
                 ##
+
+                for column in self.label_columns:
+
+                    column.rect.snap_rects_ip(
+                        retrieve_pos_from='bottomleft',
+                        assign_pos_to='topleft',
+                    )
+
+                self.label_columns.rect.snap_rects_ip(
+                    retrieve_pos_from='topright',
+                    assign_pos_to='topleft',
+                    offset_pos_by=(15, 0),
+                )
+
+                self.labels.rect.bottomleft = (
+                    SCREEN_RECT.move(5, -5).bottomleft
+                )
+
+                ##
+
                 self.draw_once()
 
                 ## draw outline around color widget
@@ -489,13 +506,24 @@ class Operations(LoopHolder):
         ### hovered widget wasn't found, so set the
         ### text of the labels to their default values
 
-        ## set all labels to '' (no text)
+        ## set all labels to an empty string (no text)
         for label in self.labels:
             label.set("")
 
+        ## position each label on bottomleft of screen
+
+        self.labels.rect.snap_rects_ip(
+            retrieve_pos_from='bottomleft',
+            assign_pos_to='bottomleft',
+        )
+
+        self.labels.rect.bottomleft = (
+            SCREEN_RECT.move(5, -5).bottomleft
+        )
+
         ## set the last label to display the default
         ## message
-        self.labels[-1].set(DEFAULT_LABEL_MESSAGE)
+        self.labels[0].set(DEFAULT_LABEL_MESSAGE)
 
         ###
         self.draw_once()
