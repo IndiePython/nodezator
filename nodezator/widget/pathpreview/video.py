@@ -58,7 +58,7 @@ PREVIEWS
 
 class VideoPreview(_BasePreview):
 
-    height = BUTTON_HEIGHT + 154 + 20
+    height = BUTTON_HEIGHT + 157 + APP_REFS.general_font_height
 
     button_callable_names = SP_BUTTON_CALLABLE_NAMES
     button_rects = SP_BUTTON_RECTS
@@ -140,11 +140,12 @@ class VideoPreview(_BasePreview):
 
     def blit_path_representation(self):
         """Blit representation of video in current path."""
+
         rect = (
             1,
             BUTTON_HEIGHT + 2,
             self.width - 2,
-            self.height - ((BUTTON_HEIGHT * 2) + 2),
+            self.height - (BUTTON_HEIGHT + APP_REFS.general_font_height + 2),
         )
 
         ###

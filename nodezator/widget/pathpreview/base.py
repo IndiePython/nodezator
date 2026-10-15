@@ -56,7 +56,7 @@ class _BasePreview(Object2D):
     button_callable_names = BUTTON_CALLABLE_NAMES
     button_svg_reprs = BUTTON_SVG_REPRS
 
-    height = 42
+    height = BUTTON_HEIGHT + APP_REFS.general_font_height + 7
 
     def __init__(
         self,
@@ -403,10 +403,11 @@ class _BasePreview(Object2D):
 
     def blit_path_representation(self):
         """Blit string representing path."""
+
         rect = self.image.get_rect()
-        rect.topleft = rect.move(1, -BUTTON_HEIGHT).bottomleft
-        rect.height = BUTTON_HEIGHT - 2
-        rect.move_ip(0, 1)
+
+        rect.height = APP_REFS.general_font_height + 2
+        rect.bottomleft = (1, self.image.get_height())
 
         draw_rect(self.image, PATHPREVIEW_BG, rect)
 

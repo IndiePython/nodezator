@@ -2,9 +2,9 @@
 
 ### standard library imports
 
-from itertools import chain
-
 from collections import defaultdict
+
+from itertools import chain, repeat
 
 
 ### third-party imports
@@ -35,10 +35,9 @@ from pygame.locals import (
     K_s,
     K_d,
 
-    KMOD_SHIFT,
-
     MOUSEBUTTONDOWN,
     MOUSEBUTTONUP,
+    MOUSEMOTION,
 )
 
 from pygame.font import SysFont, get_fonts, match_font
@@ -57,19 +56,15 @@ from pygame.draw import (
 
 from ...config import (
     APP_REFS,
-    SAMPLE_UNICODE_CHARS_PATH,
     SORTED_SYS_FONT_NAMES,
 )
 
 from ...pygamesetup import SERVICES_NS
-
-from ...pygamesetup.constants import SCREEN_RECT
+from ...pygamesetup.constants import SCREEN_RECT, FPS
 
 from ...dialog import show_dialog_from_key
 
 from ...logman.main import get_new_logger
-
-from ...ourstdlibs.pyl import load_pyl
 
 from ...ourstdlibs.collections.general import FactoryDict
 
@@ -84,8 +79,13 @@ from ...classes2d.single import Object2D
 from ...classes2d.collections import List2D
 
 from ...surfsman.render import render_rect, combine_surfaces
-
 from ...surfsman.icon import render_layered_icon
+
+from ...surfsman.cache import (
+    EMPTY_SURF,
+    cache_screen_state,
+    draw_cached_screen_state,
+)
 
 from ...textman.render import render_text
 
@@ -102,51 +102,30 @@ from ...colorsman.colors import (
     WINDOW_BG,
 )
 
+from ..constants import SAMPLE_TEXT_MAP
+
+
 
 ### module level contants/values/objects
 
-try:
-    SAMPLE_UNICODE_CHARS_DATA = load_pyl(SAMPLE_UNICODE_CHARS_PATH)
-
-except Exception as err:
-    raise RuntimeError("Couldn't load sample unicode characters") from err
-
-
 FONT_HEIGHT_FOR_LARGE_PREVIEW = 24
 
-LABEL_TEXTS, _char_texts = zip(*SAMPLE_UNICODE_CHARS_DATA)
-
-STRINGS_WITH_SAMPLE_CHARACTERS = [
-    char_text.replace(',', '')
-    for char_text in _char_texts
-]
+_locale_codes, SAMPLE_TEXTS = zip(*SAMPLE_TEXT_MAP.items())
 
 LARGE_PREVIEW_LABELS_2D = List2D(
 
     Object2D.from_surface(
 
         render_text(
-            f'{label_text}:',
+            label_text,
             font_height=FONT_HEIGHT_FOR_LARGE_PREVIEW,
             font_key=ENC_SANS_BOLD_FONT_PATH,
         )
 
     )
 
-    for label_text in LABEL_TEXTS
+    for label_text in _locale_codes
 
-)
-
-LARGE_PREVIEW_LABELS_2D.rect.snap_rects_ip(
-    retrieve_pos_from='bottomleft',
-    assign_pos_to='topleft',
-)
-
-LARGE_PREVIEW_LABELS_2D.rect.move_ip(4, 0)
-
-LARGE_PREVIEW_LABELS_PADDED_MAX_RIGHT = (
-    max(label_2d.rect.right for label_2d in LARGE_PREVIEW_LABELS_2D)
-    + 4
 )
 
 
@@ -161,7 +140,7 @@ _SPACE_CHAR = (
 _RED_TOFU = _SPACE_CHAR.copy()
 _RED_TOFU.fill('red')
 
-def _get_custom_tofu(str_with_sample_chars):
+def _get_custom_tofu(sample_text):
 
 
     return combine_surfaces(
@@ -169,7 +148,7 @@ def _get_custom_tofu(str_with_sample_chars):
         surfaces = [
 
             _SPACE_CHAR if char == ' ' else _RED_TOFU
-            for char in str_with_sample_chars
+            for char in sample_text
 
         ],
 
@@ -178,17 +157,17 @@ def _get_custom_tofu(str_with_sample_chars):
 
     )
 
-CUSTOM_TOFU_WHEN_CANT_RENDER_CHAR_GROUPS = (
+CUSTOM_TOFU_WHEN_CANT_RENDER_SAMPLE_TEXTS = (
 
     List2D(
 
 
         Object2D.from_surface(
-            _get_custom_tofu(str_with_sample_chars)
+            _get_custom_tofu(sample_text)
         )
 
 
-        for str_with_sample_chars in STRINGS_WITH_SAMPLE_CHARACTERS
+        for sample_text in SAMPLE_TEXTS
 
     )
 
@@ -202,22 +181,10 @@ FONT_PREVIEW_AREA_SIZE = (640, 65)
 PLACEHOLDER_PREVIEW_SURF = Surface(FONT_LIST_ITEM_SIZE).convert()
 PLACEHOLDER_PREVIEW_SURF.fill('white')
 
-PREVIEW_CHARS = ' '.join(
-
-    chain(
-
-        char_group.replace(',', '').replace(' ', '') + ' '
-
-        for _, char_group in SAMPLE_UNICODE_CHARS_DATA
-
-    )
-
-)
-
 
 FONT_PREVIEW_SETTINGS = {
     'font_size': 22,
-    'chars': PREVIEW_CHARS,
+    'chars': ' '.join(SAMPLE_TEXTS),
     'width': FONT_PREVIEW_AREA_SIZE[0],
     'height': FONT_PREVIEW_AREA_SIZE[1],
     'not_found_width': FONT_PREVIEW_AREA_SIZE[0],
@@ -225,11 +192,6 @@ FONT_PREVIEW_SETTINGS = {
 }
 
 ##
-
-SELECTED_ITEM_SIZE = (330, 60)
-
-SELECTED_ITEM_CLEARED_SURF = Surface(SELECTED_ITEM_SIZE).convert()
-SELECTED_ITEM_CLEARED_SURF.fill('white')
 
 X_SURF = render_layered_icon(
     chars=[chr(126)],
@@ -239,6 +201,28 @@ X_SURF = render_layered_icon(
 )
 
 X_RECT = X_SURF.get_rect()
+
+##
+
+_no_of_times_per_second = FPS
+_no_of_times_per_half_second = FPS // 2
+_no_of_times_per_third_of_second = FPS // 3
+
+MUST_DRAW_DRAG_HERE_TEXT = (
+
+    chain(
+        repeat(True, _no_of_times_per_half_second),
+        repeat(False, _no_of_times_per_third_of_second),
+        repeat(True, _no_of_times_per_half_second),
+        repeat(False, _no_of_times_per_third_of_second),
+        repeat(True, _no_of_times_per_half_second),
+        repeat(False, _no_of_times_per_third_of_second),
+        repeat(True, _no_of_times_per_half_second),
+        repeat(False, _no_of_times_per_third_of_second),
+        repeat(True),
+    ).__next__
+
+)
 
 
 ## create logger for module
@@ -261,6 +245,13 @@ class SystemFontsPicker(Object2D, LoopHolder):
 
         selected_fonts_panel = self.selected_fonts_panel = (
             Object2D.from_surface(render_rect(1080, 60, (180, 180, 180)))
+        )
+
+        self.drag_here_text_surf = (
+            render_text(
+                text="Drag fonts here to select them",
+                foreground_color=(30, 30, 30),
+            )
         )
 
         available_fonts_panel = (
@@ -465,22 +456,22 @@ class SystemFontsPicker(Object2D, LoopHolder):
 
         self.selected_font_2d_objs = List2D()
 
+        ###
         self.selected_obj_cache = defaultdict(Object2D)
 
-        self.selected_obj_rect_cache = (
-
-            defaultdict(
-                Rect(0, 0, *SELECTED_ITEM_SIZE).copy
-            )
-
-        )
+        ###
 
         self.font_names = ()
         self.previewed_font_name = ''
 
         ### attributes to assist in scrolling
         self.dx = self.dy = 0
+
         ###
+
+        self.clicked_obj = None
+        self.ongoing_dragging = False
+        self.drag_assist_obj = Object2D.from_surface(EMPTY_SURF)
 
         ### center system fonts picker and append centering method
         ### as a window resize setup
@@ -554,6 +545,9 @@ class SystemFontsPicker(Object2D, LoopHolder):
 
             return None
 
+        ### draw screen on special buffer for reuse
+        cache_screen_state()
+
         ###
 
         font_names = self.font_names = tuple(
@@ -589,40 +583,91 @@ class SystemFontsPicker(Object2D, LoopHolder):
 
         ###
 
-        default_font_text_surf, current_font_text_surf = (
-            FONT_NAME_SURFS_MAP[font_name]
-        )
-
-        def_rect = default_font_text_surf.get_rect()
-        cur_rect = current_font_text_surf.get_rect()
-
-        def_rect.topleft = (4, 4)
-        cur_rect.topleft = def_rect.move(0, 2).bottomleft
-
         image = self.font_preview_panel.image
         image.fill('white')
 
         blit_on_preview = image.blit
 
-        blit_on_preview(default_font_text_surf, def_rect)
-        blit_on_preview(current_font_text_surf, cur_rect)
+        ###
+
+        height = 17
+
+        missing_lang_lines2d = (
+
+            List2D(
+
+                Object2D.from_surface(
+
+                    render_text(
+                        text=line,
+                        font_height=height,
+                        font_key=ENC_SANS_BOLD_FONT_PATH,
+                    )
+
+                )
+
+                for line in (
+                    "Missing a preview for your language?",
+                    "Check the TRANSLATIONS.md file to learn",
+                    "how to add one",
+                )
+
+            )
+
+        )
+
+        missing_lang_lines2d.rect.snap_rects_ip(
+            retrieve_pos_from='bottomleft',
+            assign_pos_to='topleft',
+        )
+
+        missing_lang_lines2d.rect.topleft = (4, 4)
+
+        for obj in missing_lang_lines2d:
+            blit_on_preview(obj.image, obj.rect)
+
+        ###
+
+        font_names2d = (
+
+            List2D(
+
+                Object2D.from_surface(text_surf)
+                for text_surf in FONT_NAME_SURFS_MAP[font_name]
+
+            )
+
+        )
+
+        font_names2d.rect.snap_rects_ip(
+            retrieve_pos_from='bottomleft',
+            assign_pos_to='topleft',
+        )
+
+        font_names2d.rect.topleft = (
+            missing_lang_lines2d.rect.move(0, 30).bottomleft
+        )
+
+        for obj in font_names2d:
+            blit_on_preview(obj.image, obj.rect)
+
 
         ### render and align text objects
 
         try:
 
-            char_groups_2d = List2D(
+            sample_texts_2d = List2D(
 
 
                 Object2D.from_surface(
                     render_text(
-                        text=str_with_sample_chars,
+                        text=sample_text,
                         font_height=FONT_HEIGHT_FOR_LARGE_PREVIEW,
                         font_key=font_name,
                     )
                 )
 
-                for str_with_sample_chars in STRINGS_WITH_SAMPLE_CHARACTERS
+                for sample_text in SAMPLE_TEXTS
 
             )
 
@@ -633,27 +678,31 @@ class SystemFontsPicker(Object2D, LoopHolder):
                 f" {font_name}: {err}"
             )
 
-            char_groups_2d = CUSTOM_TOFU_WHEN_CANT_RENDER_CHAR_GROUPS
+            sample_texts_2d = CUSTOM_TOFU_WHEN_CANT_RENDER_SAMPLE_TEXTS
 
-        LARGE_PREVIEW_LABELS_2D.rect.topleft = cur_rect.move(0, 16).bottomleft
 
-        for label_2d, char_group in (
-            zip(LARGE_PREVIEW_LABELS_2D, char_groups_2d)
+        topleft = font_names2d.rect.move(0, 16).bottomleft
+
+        for label_2d, sample_text2d in (
+            zip(LARGE_PREVIEW_LABELS_2D, sample_texts_2d)
         ):
 
-            char_group.rect.topleft = (
-                LARGE_PREVIEW_LABELS_PADDED_MAX_RIGHT,
-                label_2d.rect.top,
+            label_2d.rect.topleft = topleft
+            sample_text2d.rect.topleft = label_2d.rect.move(20, 0).bottomleft
+
+            topleft = (
+                label_2d.rect.left,
+                sample_text2d.rect.move(0, 10).bottom,
             )
 
         ### blit onto preview surface
 
-        for label_2d, char_group in (
-            zip(LARGE_PREVIEW_LABELS_2D, char_groups_2d)
+        for label_2d, sample_text2d in (
+            zip(LARGE_PREVIEW_LABELS_2D, sample_texts_2d)
         ):
 
             blit_on_preview(label_2d.image, label_2d.rect)
-            blit_on_preview(char_group.image, char_group.rect)
+            blit_on_preview(sample_text2d.image, sample_text2d.rect)
 
     def update_selected_objs(self):
 
@@ -665,7 +714,6 @@ class SystemFontsPicker(Object2D, LoopHolder):
 
         append = objs.append
         obj_cache = self.selected_obj_cache
-        rect_cache = self.selected_obj_rect_cache
 
         for index, font_name in enumerate(self.font_names):
 
@@ -673,8 +721,11 @@ class SystemFontsPicker(Object2D, LoopHolder):
 
             obj.font_name = font_name
 
-            obj.image = SELECTED_FONT_SURFS_MAP[font_name]
-            obj.rect = rect_cache[index]
+            key = (font_name, self.selected_fonts_panel.rect.height)
+
+            obj.image = SELECTED_FONT_SURFS_MAP[key]
+            obj.rect = SELECTED_FONT_RECTS_MAP[obj.image]
+
             append(obj)
 
         objs.rect.snap_rects_ip(
@@ -695,14 +746,23 @@ class SystemFontsPicker(Object2D, LoopHolder):
 
         for event in SERVICES_NS.get_events():
 
-            if event.type == MOUSEBUTTONUP:
+            if event.type == MOUSEBUTTONDOWN:
 
-                self.on_mouse_release(event)
-                self.scroll_grab_height = None
-
-            elif event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     self.on_mouse_click(event)
+
+            elif event.type == MOUSEMOTION:
+                self.on_mouse_motion(event)
+
+            elif event.type == MOUSEBUTTONUP:
+
+                if event.button == 1:
+
+                    self.on_mouse_release(event)
+
+                    self.clicked_obj = None
+                    self.ongoing_dragging = False
+                    self.scroll_grab_height = None
 
             elif event.type == KEYDOWN:
 
@@ -737,13 +797,14 @@ class SystemFontsPicker(Object2D, LoopHolder):
     def submit(self):
         self.running = False
 
-    def on_mouse_release(self, event):
+    def on_mouse_click(self, event):
 
         mouse_pos = event.pos
 
-        shift_pressed = SERVICES_NS.get_pressed_mod_keys() & KMOD_SHIFT
+        if self.scroll_rect.collidepoint(mouse_pos):
+            self.scroll_grab_height = mouse_pos[1] - self.scroll_rect.top
 
-        if self.available_fonts_rect.collidepoint(mouse_pos):
+        elif self.available_fonts_rect.collidepoint(mouse_pos):
 
             colliderect = self.available_fonts_panel_colliderect
 
@@ -751,22 +812,45 @@ class SystemFontsPicker(Object2D, LoopHolder):
 
                 if colliderect(obj.rect) and obj.rect.collidepoint(mouse_pos):
 
-                    if not shift_pressed and obj.font_name not in self.font_names:
-                        self.font_names += (obj.font_name,)
+                    self.clicked_obj = obj
 
-                    elif shift_pressed and obj.font_name in self.font_names:
+                    key = (
+                        obj.font_name,
+                        self.selected_fonts_panel.rect.height,
+                    )
 
-                        self.font_names = tuple(
-                            font_name
-                            for font_name in self.font_names
-                            if font_name != obj.font_name
-                        )
+                    self.drag_assist_obj.image = SELECTED_FONT_SURFS_MAP[key]
+
+                    self.drag_assist_obj.rect.size = (
+                        self.drag_assist_obj.image.get_size()
+                    )
 
                     self.update_preview(obj.font_name)
 
-                    self.update_selected_objs()
-
                     return
+
+    def on_mouse_motion(self, event):
+
+        if self.clicked_obj is not None:
+
+            self.ongoing_dragging = True
+            self.drag_assist_obj.rect.center = SERVICES_NS.get_mouse_pos()
+
+    def on_mouse_release(self, event):
+
+        mouse_pos = event.pos
+
+
+        if self.ongoing_dragging:
+
+            if self.drag_assist_obj.rect.colliderect(self.selected_fonts_rect):
+
+                font_name = self.clicked_obj.font_name
+
+                if font_name not in self.font_names:
+
+                    self.font_names += (font_name,)
+                    self.update_selected_objs()
 
         elif self.selected_fonts_rect.collidepoint(mouse_pos):
 
@@ -800,12 +884,6 @@ class SystemFontsPicker(Object2D, LoopHolder):
                     button.command()
                     return
 
-    def on_mouse_click(self, event):
-
-        mouse_pos = event.pos
-
-        if self.scroll_rect.collidepoint(mouse_pos):
-            self.scroll_grab_height = mouse_pos[1] - self.scroll_rect.top
 
     def handle_key_states(self):
 
@@ -924,6 +1002,9 @@ class SystemFontsPicker(Object2D, LoopHolder):
 
     def draw(self):
 
+        ### draw cached screen from special buffer (so background is preserved)
+        draw_cached_screen_state()
+
         ### draw widget's background
         super().draw()
 
@@ -962,14 +1043,20 @@ class SystemFontsPicker(Object2D, LoopHolder):
 
         self.fill_selected_fonts_panel('grey80')
 
-        offset = -Vector2(self.selected_fonts_rect.topleft)
-        colliderect = self.selected_fonts_panel_colliderect
         blit_operation = self.blit_onto_selected_fonts_panel
 
-        for obj in self.selected_font_2d_objs:
+        if self.font_names:
 
-            if colliderect(obj.rect):
-                blit_operation(obj.image, obj.rect.move(offset))
+            offset = -Vector2(self.selected_fonts_rect.topleft)
+            colliderect = self.selected_fonts_panel_colliderect
+
+            for obj in self.selected_font_2d_objs:
+
+                if colliderect(obj.rect):
+                    blit_operation(obj.image, obj.rect.move(offset))
+
+        elif MUST_DRAW_DRAG_HERE_TEXT():
+            blit_operation(self.drag_here_text_surf, (4, 4))
 
         ### draw panels
 
@@ -978,6 +1065,11 @@ class SystemFontsPicker(Object2D, LoopHolder):
 
         ### scroll handle
         self.scroll_handle.draw()
+
+        ### drag assist, if moving while obj is clicked
+
+        if self.ongoing_dragging:
+            self.drag_assist_obj.draw()
 
         ### update screen
         SERVICES_NS.update_screen()
@@ -1016,35 +1108,61 @@ def _update_sys_font_2d_list_item(obj):
 
 ## cache for preview of selected fonts
 
-def _create_surf_for_selected_font(font_name):
+def _create_surf_for_selected_font(key):
 
-    image = SELECTED_ITEM_CLEARED_SURF.copy()
+    font_name, union_height = key
 
-    default_font_text_surf, current_font_text_surf = (
-        FONT_NAME_SURFS_MAP[font_name]
+    height = FONT_PREVIEW_SETTINGS['font_size']
+
+    default_surf = render_text(
+        font_name,
+        font_height=height,
+        font_key=ENC_SANS_BOLD_FONT_PATH,
     )
 
-    image.blit(default_font_text_surf, (2, 2))
-    image.blit(
+    custom_surf = _get_custom_font_text_surf(
 
-        current_font_text_surf,
+        font_name,
+        height,
+        default_surf,
 
-        (
-
-            2,
-            default_font_text_surf.get_height() + 2,
-
-        )
     )
+
+    width = (
+        max(surf.get_width() for surf in (default_surf, custom_surf))
+        + X_RECT.width
+        + 4 # horizontal padding
+    )
+
+    union_surf = Surface((width, union_height)).convert()
+    union_surf.fill('white')
+
+    x = 2
+    y = 0
+
+    for surf in (default_surf, custom_surf):
+
+        union_surf.blit(surf, (x, y))
+
+        y += surf.get_height() + 2
+
+    ###
 
     X_RECT.top = 0
-    X_RECT.right = image.get_width()
+    X_RECT.right = width
 
-    image.blit(X_SURF, X_RECT)
+    union_surf.blit(X_SURF, X_RECT)
 
-    return image
+    return union_surf
+
 
 SELECTED_FONT_SURFS_MAP = FactoryDict(_create_surf_for_selected_font)
+
+def _create_rect_for_selected_font_surf(surf):
+    return surf.get_rect()
+
+SELECTED_FONT_RECTS_MAP = FactoryDict(_create_rect_for_selected_font_surf)
+
 
 
 ## default and custom font name surf caches

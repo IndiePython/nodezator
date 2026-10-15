@@ -96,7 +96,7 @@ logger = get_new_logger(__name__)
 
 class TextPreview(_BasePreview):
 
-    height = 163 + 20
+    height = BUTTON_HEIGHT + 148 + APP_REFS.general_font_height
 
     button_rects = SP_BUTTON_RECTS
 
@@ -222,7 +222,7 @@ class TextPreview(_BasePreview):
             1,
             BUTTON_HEIGHT + 2,
             self.width - 2,
-            self.height - ((BUTTON_HEIGHT * 2) + 2),
+            self.height - (BUTTON_HEIGHT + APP_REFS.general_font_height + 2),
         )
 
         image = self.image

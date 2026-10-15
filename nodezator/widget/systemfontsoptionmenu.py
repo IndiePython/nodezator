@@ -39,7 +39,7 @@ from ..surfsman.cache import NOT_FOUND_SURF_MAP
 
 from ..surfsman.draw import blit_aligned, draw_depth_finish
 
-from ..fontsman.viewer.main import view_fonts
+from ..fontsman.viewer import view_fonts
 
 from ..fontsman.preview.cache import (
     FONT_PREVIEWS_DB,

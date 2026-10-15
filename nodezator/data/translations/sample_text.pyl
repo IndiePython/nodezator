@@ -1,0 +1,14 @@
+
+# this file does not contains translations, only sample
+# text for different languages (locale codes);
+
+{
+    # pangram of the English language
+    'en-us': "The quick brown fox jumps over the lazy dog.",
+
+    # ditado popular no Brasil (literally "Haste is perfection's enemy.")
+    'pt-br': "A pressa é a inimiga da perfeição.",
+
+    # Chinese proverb ("A book is a pocket garden.")
+    'zh-cn': "书是随时携带的花园。"
+}

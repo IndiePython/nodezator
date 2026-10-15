@@ -106,7 +106,8 @@ SYSTEM_TESTING_DATA_DIR = DATA_DIR / "system_testing"
 APP_COLORS_FILE = DATA_DIR / "app_themes" / "emeralds_on_coal.pyl"
 
 TRANSLATIONS_DIR = DATA_DIR / 'translations'
-LANGUAGE_NAMES_FILEPATH = TRANSLATIONS_DIR / 'language_native_names.pyl'
+LANGUAGES_SAMPLE_TEXT_FILEPATH = TRANSLATIONS_DIR / 'sample_text.pyl'
+
 DIALOGS_DATA_PATH = DATA_DIR / 'dialogs.pyl'
 
 SAMPLE_UNICODE_CHARS_PATH = DATA_DIR / 'sample_unicode_characters.pyl'

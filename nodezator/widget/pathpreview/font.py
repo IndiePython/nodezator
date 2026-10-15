@@ -23,7 +23,7 @@ from pygame.draw import rect as draw_rect
 
 ### local imports
 
-from ...config import APP_REFS
+from ...config import APP_REFS, USER_PREFS
 
 from ...ourstdlibs.path import get_new_filename
 
@@ -34,7 +34,9 @@ from ...fontsman.preview.cache import (
     update_cache_for_font_preview,
 )
 
-from ...fontsman.viewer.main import view_fonts
+from ...fontsman.viewer import view_fonts
+
+from ...fontsman.constants import SAMPLE_TEXT_MAP
 
 from ...surfsman.cache import NOT_FOUND_SURF_MAP
 
@@ -59,14 +61,20 @@ from .constants import (
     SP_BUTTON_SVG_REPRS,
 )
 
+
+
 ### constant
 
 PREVIEW_CHARS = (
-    digits
+    SAMPLE_TEXT_MAP[USER_PREFS['LOCALE']]
+    + " "
+    + digits
+    + " "
     + "".join(
-        sorted(ascii_uppercase + ascii_lowercase, key=str.lower)[
-            : 2 * 9
-        ]  # only first 9 pairs
+        sorted(
+            ascii_uppercase + ascii_lowercase,
+            key=str.lower
+        )[: 2 * 9 ]  # only first 9 pairs
     )
     + punctuation
 )
@@ -77,7 +85,7 @@ PREVIEW_CHARS = (
 
 class FontPreview(_BasePreview):
 
-    height = 150 + 20
+    height = BUTTON_HEIGHT + 153 + APP_REFS.general_font_height
 
     button_callable_names = SP_BUTTON_CALLABLE_NAMES
     button_rects = SP_BUTTON_RECTS
@@ -180,7 +188,7 @@ class FontPreview(_BasePreview):
             1,
             BUTTON_HEIGHT + 2,
             self.width - 2,
-            self.height - ((BUTTON_HEIGHT * 2) + 2),
+            self.height - (BUTTON_HEIGHT + APP_REFS.general_font_height + 2),
         )
 
         draw_rect(image, PATHPREVIEW_BG, rect)
