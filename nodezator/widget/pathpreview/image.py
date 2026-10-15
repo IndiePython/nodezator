@@ -46,7 +46,7 @@ from .constants import (
 
 class ImagePreview(_BasePreview):
 
-    height = 175 + 20
+    height = BUTTON_HEIGHT + 160 + APP_REFS.general_font_height
 
     button_callable_names = SP_BUTTON_CALLABLE_NAMES
     button_rects = SP_BUTTON_RECTS
@@ -117,7 +117,7 @@ class ImagePreview(_BasePreview):
             1,
             BUTTON_HEIGHT + 2,
             self.width - 2,
-            self.height - ((BUTTON_HEIGHT * 2) + 2),
+            self.height - (BUTTON_HEIGHT + APP_REFS.general_font_height + 2),
         )
 
         thumb_x, thumb_y, thumb_width, thumb_height = rect

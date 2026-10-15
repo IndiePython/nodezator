@@ -47,37 +47,35 @@ from pygame.transform import smoothscale
 
 ### local imports
 
-from ...config import APP_REFS
+from ..config import APP_REFS
 
-from ...pygamesetup import SCREEN_RECT, SERVICES_NS
+from ..pygamesetup import SCREEN_RECT, SERVICES_NS
 
-from ...dialog import create_and_show_dialog
+from ..dialog import create_and_show_dialog
 
-from ...logman.main import get_new_logger
+from ..logman.main import get_new_logger
 
-from ...ourstdlibs.collections.general import FactoryDict
+from ..ourstdlibs.collections.general import FactoryDict
 
-from ...our3rdlibs.userlogger import USER_LOGGER
+from ..our3rdlibs.userlogger import USER_LOGGER
 
-from ...loopman.main import LoopHolder
+from ..loopman.main import LoopHolder
 
-from ...classes2d.single import Object2D
+from ..classes2d.single import Object2D
+from ..classes2d.collections import List2D
 
-from ...classes2d.collections import List2D
+from ..surfsman.render import render_rect, combine_surfaces
+from ..surfsman.draw import draw_border
 
-from ...surfsman.render import render_rect, combine_surfaces
-from ...surfsman.draw import draw_border
+from ..widget.intfloatentry.main import IntFloatEntry
 
-from ...widget.intfloatentry.main import IntFloatEntry
+from ..textman.render import render_text, render_multiline_text
 
-from ...textman.render import render_text
+from ..rectsman.main import RectsManager
 
-from ...rectsman.main import RectsManager
+from .constants import ENC_SANS_BOLD_FONT_PATH, SAMPLE_TEXT_MAP
 
-from ...fontsman.constants import ENC_SANS_BOLD_FONT_PATH
-from ...fontsman.cache import UnattainableFontHeightError
-
-from .render import render_char_info
+from .cache import UnattainableFontHeightError
 
 
 
@@ -98,6 +96,13 @@ FONT_KEY_TEXT_SETTINGS = {
     'padding': 2,
 }
 
+
+TRANSLATIONS_MD_MESSAGE = ' '.join(
+"""
+Missing a preview for your language?
+Check the TRANSLATIONS.md file to learn how to add one
+""".strip().splitlines()
+)
 
 
 class FontsViewer(Object2D, LoopHolder):
@@ -135,19 +140,22 @@ class FontsViewer(Object2D, LoopHolder):
 
         )
 
-        self.viz_area = viz_area = Rect(0, caption.rect.bottom, 1024, 600)
-
         self.font_key_text_obj = font_key_text_obj = (
 
             Object2D.from_surface(
 
                 surface=FONT_NAMES_SURF_MAP[ENC_SANS_BOLD_FONT_PATH],
-                coordinates_name='topright',
-                coordinates_value=viz_area.move(0, 4).bottomright,
+                coordinates_name='topleft',
+                coordinates_value=caption.rect.move(0, 10).bottomleft,
 
             )
 
         )
+
+        self.viz_area = viz_area = Rect(0, 0, 1024, 600)
+
+        viz_area.topleft = font_key_text_obj.rect.move(0, 10).bottomleft
+
 
         ###
 
@@ -158,8 +166,8 @@ class FontsViewer(Object2D, LoopHolder):
                 (
                     caption.rect,
                     index_entry.rect,
-                    viz_area,
                     font_key_text_obj.rect,
+                    viz_area,
 
                 ).__iter__
 
@@ -185,12 +193,34 @@ class FontsViewer(Object2D, LoopHolder):
         ###
         self.font_obj_map = {}
 
+        ###
+        self.sample_text_objs = List2D()
+
         ### center font viewer and append centering method
         ### as a window resize setup
 
         self.center_font_viewer()
 
         APP_REFS.window_resize_setups.append(self.center_font_viewer)
+
+        ### create translations.md message in English for users willing
+        ### to help translate the app
+
+        height = 17
+
+        self.missing_lang_message_label = (
+
+            Object2D.from_surface(
+                render_text(
+                    text=TRANSLATIONS_MD_MESSAGE,
+                    font_height=height,
+                    font_key=ENC_SANS_BOLD_FONT_PATH,
+                )
+
+            )
+
+        )
+
 
     def center_font_viewer(self):
 
@@ -200,12 +230,8 @@ class FontsViewer(Object2D, LoopHolder):
 
         self.offset = -Vector2(self.rect.topleft)
 
-        try:
-            self.char_objs
-        except AttributeError:
-            pass
-        else:
-            self.char_objs.rect.move_ip(diff)
+        if self.sample_text_objs:
+            self.sample_text_objs.rect.move_ip(diff)
 
         for rect in (
             self.caption.rect,
@@ -308,32 +334,74 @@ class FontsViewer(Object2D, LoopHolder):
 
         font = self.font_obj_map[self.font_key]
 
-        self.char_objs = List2D(
+        ###
 
-            Object2D.from_surface(render_char_info(char, font))
-            for char in CHARS
+        stos = self.sample_text_objs
+        stos.clear()
 
+        ###
+
+        self.missing_lang_message_label.rect.topleft = (
+            self.viz_area.move(2, 2).topleft
         )
 
-        self.char_objs.rect.lay_rects_like_table_ip(
-            dimension_name='width',
-            dimension_unit='pixels',
-            max_dimension_value=self.viz_area.width - 2,
-            cell_padding=5,
-        )
+        stos.append(self.missing_lang_message_label)
 
-        self.char_objs.rect.topleft = self.viz_area.move(2, 2).topleft
+        ###
+
+        topleft = self.missing_lang_message_label.rect.move(0, 10).bottomleft
+
+        for locale_code, sample_text in SAMPLE_TEXT_MAP.items():
+
+            locale2d = (
+
+                Object2D.from_surface(
+
+                    render_text(
+                        text=locale_code,
+                        font_height = 28,
+                        font_key = ENC_SANS_BOLD_FONT_PATH,
+                    )
+
+                )
+
+            )
+
+            sample2d = (
+
+                Object2D.from_surface(
+
+                    render_text(
+                        text=sample_text,
+                        font_height = 28,
+                        font_key = self.font_key
+                    )
+
+                )
+
+            )
+
+            locale2d.rect.topleft = topleft
+            sample2d.rect.topleft = locale2d.rect.move(20, 0).bottomleft
+
+            stos.extend((locale2d, sample2d))
+
+            topleft = (
+                locale2d.rect.left,
+                sample2d.rect.move(0, 10).bottom,
+            )
+
+
+        ###
 
         ### update font key text obj
 
         font_key_text_obj = self.font_key_text_obj 
 
-        topright = font_key_text_obj.rect.topright
-
         font_key_text_obj.image = FONT_NAMES_SURF_MAP[self.font_key]
         font_key_text_obj.rect.size = font_key_text_obj.image.get_size()
 
-        font_key_text_obj.rect.topright = topright
+        font_key_text_obj.rect.topleft = self.caption.rect.move(0, 10).bottomleft
 
     def handle_input(self):
 
@@ -345,16 +413,16 @@ class FontsViewer(Object2D, LoopHolder):
         key_pressed_states = SERVICES_NS.get_pressed_keys()
 
         if key_pressed_states[K_a]:
-            self.char_objs.rect.move_ip(-20, 0)
+            self.sample_text_objs.rect.move_ip(-20, 0)
 
         elif key_pressed_states[K_s]:
-            self.char_objs.rect.move_ip(0, 20)
+            self.sample_text_objs.rect.move_ip(0, 20)
 
         elif key_pressed_states[K_w]:
-            self.char_objs.rect.move_ip(0, -20)
+            self.sample_text_objs.rect.move_ip(0, -20)
 
         elif key_pressed_states[K_d]:
-            self.char_objs.rect.move_ip(20, 0)
+            self.sample_text_objs.rect.move_ip(20, 0)
 
     def handle_events(self):
 
@@ -418,7 +486,7 @@ class FontsViewer(Object2D, LoopHolder):
 
         viz_offset = -Vector2(self.viz_area.topleft)
 
-        for obj in self.char_objs:
+        for obj in self.sample_text_objs:
 
             if rect_touches_viewer(obj.rect):
                 viz_panel.blit(obj.image, obj.rect.move(viz_offset))

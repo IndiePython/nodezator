@@ -1,7 +1,11 @@
 """Constants for fonts in the app."""
 
-### local import
-from ..config import FONTS_DIR
+### local imports
+
+from ..config import FONTS_DIR, LANGUAGES_SAMPLE_TEXT_FILEPATH
+
+from ..ourstdlibs.pyl import load_pyl
+
 
 
 ### enc sans bold text
@@ -35,3 +39,11 @@ NOTO_SANS_ITALIC_FONT_PATH = FONTS_DIR / 'noto_sans_italic.ttf'
 NOTO_SANS_MONO_MEDIUM_FONT_HEIGHT = 22
 
 NOTO_SANS_MONO_MEDIUM_FONT_PATH = FONTS_DIR / 'noto_sans_mono_medium.ttf'
+
+
+### sample text map
+
+SAMPLE_TEXT_MAP = {
+    locale.lower().replace('-', '_'): sample_text
+    for locale, sample_text in load_pyl(LANGUAGES_SAMPLE_TEXT_FILEPATH).items()
+}
