@@ -574,11 +574,37 @@ class Exporting:
                     value[0] if value else (placeholder_socket_live_map[param_name])
                 )
 
+                # if...
+                #
+                # - this is a keyword-variable parameter
+                # - there's a value
+                # - the socket isn't parented
+                #
+                # it means the parameter name sits a bit higher than
+                # normal, because it has to move up to make space for
+                # the string entry used that holds the name of the
+                # keyword
+
+                y_offset = -(
+
+                    APP_REFS.general_font_height + 12
+
+                    if (
+                        var_kind_map[param_name] == "var_key"
+                        and value
+                        and not hasattr(socket, 'parent')
+                    )
+
+                    else 14
+                )
+
+
                 (
                     text_x_str,
                     text_y_str,
-                ) = map(str, socket.rect.move(3, -5).topright)
+                ) = map(str, socket.rect.move(3, y_offset).topright)
 
+                #
                 text = (
                     f"*{param_name}"
                     if var_kind_map[param_name] == "var_pos"

@@ -466,6 +466,8 @@ class TextPreview(_BasePreview):
 
     def svg_path_repr(self):
 
+        mfh = APP_REFS.mono_font_height
+
         g = Element("g")
 
         ###
@@ -657,7 +659,7 @@ class TextPreview(_BasePreview):
 
                         text_fg = text_settings["foreground_color"]
 
-                        style = "font:bold 13px monospace;" f"fill:rgb{text_fg};"
+                        style = f"font:bold {mfh}px monospace; fill:rgb{text_fg};"
 
                         if temp_x + x_increment <= max_right:
 
@@ -713,7 +715,7 @@ class TextPreview(_BasePreview):
 
             x = rect.x + (lineno_width + 4 if show_line_number else 4)
 
-            style = "font:bold 13px monospace;" f"fill:rgb{foreground_color};"
+            style = f"font:bold {mfh}px monospace; fill:rgb{foreground_color};"
 
             for line_number, line_text in enumerate(lines, 1):
 
@@ -752,7 +754,7 @@ class TextPreview(_BasePreview):
             x = rect.x + 4
             y = rect.y
 
-            style = "font:bold 13px monospace;" f"fill:rgb{lineno_fg};"
+            style = f"font:bold {mfh}px monospace; fill:rgb{lineno_fg};"
 
             for line_number, line_text in enumerate(lines, 1):
 
