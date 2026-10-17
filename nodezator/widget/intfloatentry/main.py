@@ -560,7 +560,7 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
         line = self.cursor.line
         line.rect.topleft = self.rect.topleft
 
-        text = "<< <" + "".join(
+        text = "<< < " + "".join(
             obj.text for obj in self.cursor.line.get_colliding(self.rect)
         )
 

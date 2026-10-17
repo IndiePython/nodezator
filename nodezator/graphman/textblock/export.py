@@ -31,6 +31,9 @@ get_syntax_map = SYNTAX_TO_MAPPING_FUNCTION['comment']
 TEXT_BLOCK_BG = COMMENT_THEME_MAP['background_color']
 
 
+font_height = round(FONT_HEIGHT * .80)
+
+
 TEXT_BLOCK_CSS = f"""
 g.text_block > rect
 {{
@@ -40,7 +43,7 @@ g.text_block > rect
 }}
 
 g.text_block > text
-{{font:bold {FONT_HEIGHT-3}px monospace;}}
+{{font:bold {font_height}px monospace;}}
 """
 
 
@@ -116,10 +119,14 @@ def svg_repr(self):
 
             for string, text_settings in string_kwargs_pairs:
 
-                x_increment, _ = get_text_size(
-                    string,
-                    font_height=FONT_HEIGHT,
-                    font_key=FONT_KEY,
+                x_increment, _ = (
+
+                    get_text_size(
+                        string,
+                        font_height=FONT_HEIGHT,
+                        font_key=FONT_KEY,
+                    )
+
                 )
 
                 text_fg = text_settings["foreground_color"]

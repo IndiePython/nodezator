@@ -883,15 +883,23 @@ class TextDisplay(Object2D):
 
                     for string, text_settings in string_kwargs_pairs:
 
-                        x_increment, _ = get_text_size(
-                            string,
-                            font_height=font_height,
-                            font_key=APP_REFS.mono_font_key,
+                        x_increment, _ = (
+
+                            get_text_size(
+                                string,
+                                font_height=font_height,
+                                font_key=APP_REFS.mono_font_key,
+                            )
+
                         )
+
+                        # we increase x increment because it seems on web
+                        # the gap between text elements gets bigger
+                        x_increment = round(x_increment * 1.4)
 
                         text_fg = text_settings["foreground_color"]
 
-                        style = "font:bold 13px monospace;" f"fill:rgb{text_fg};"
+                        style = f"font:bold {font_height}px monospace; fill:rgb{text_fg};"
 
                         if temp_x + x_increment <= max_right:
 
@@ -952,7 +960,7 @@ class TextDisplay(Object2D):
 
             foreground_color = self.foreground_color
 
-            style = "font:bold 13px monospace;" f"fill:rgb{foreground_color};"
+            style = f"font:bold {font_height}px monospace; fill:rgb{foreground_color};"
 
             for line_number, line_text in enumerate(lines, 1):
 
@@ -993,7 +1001,7 @@ class TextDisplay(Object2D):
 
             lineno_fg = self.lineno_fg
 
-            style = "font:bold 13px monospace;" f"fill:rgb{lineno_fg};"
+            style = f"font:bold {font_height}px monospace; fill:rgb{lineno_fg};"
 
             for line_number, line_text in enumerate(lines, 1):
 
@@ -1009,7 +1017,7 @@ class TextDisplay(Object2D):
                     },
                 )
 
-                text_element.text = text = str(line_number).rjust(lineno_digits, "0")
+                text_element.text = str(line_number).rjust(lineno_digits, "0")
 
                 g.append(text_element)
 

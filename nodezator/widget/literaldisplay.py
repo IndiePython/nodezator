@@ -471,6 +471,8 @@ class LiteralDisplay(Object2D):
 
     def svg_repr(self):
 
+        mfh = APP_REFS.mono_font_height
+
         g = Element("g", {"class": "literal_display"})
 
         rect = self.rect.inflate(-2, -2)
@@ -694,7 +696,7 @@ class LiteralDisplay(Object2D):
 
                     text_fg = text_settings["foreground_color"]
 
-                    style = "font:bold 13px monospace;" f"fill:rgb{text_fg};"
+                    style = f"font:bold {mfh}px monospace; fill:rgb{text_fg};"
 
                     if temp_x + x_increment <= max_right:
 
@@ -756,7 +758,7 @@ class LiteralDisplay(Object2D):
 
             lineno_fg = self.lineno_fg
 
-            style = "font:bold 13px monospace;" f"fill:rgb{lineno_fg};"
+            style = f"font:bold {mfh}px monospace; fill:rgb{lineno_fg};"
 
             for line_number, line_text in enumerate(lines, 1):
 
