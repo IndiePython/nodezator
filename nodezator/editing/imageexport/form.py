@@ -99,7 +99,7 @@ BUTTON_SETTINGS = {
     'background_color': BUTTON_BG,
 }
 
-NEW_IMAGEPATH_CAPTION = (
+PICK_NEW_PATH_TEXT = (
     t.image_export_form.pick_new_path
 ) + " (.html/.svg/.png)"
 
@@ -118,9 +118,13 @@ class ImageExportForm(Object2D):
 
     def __init__(self):
         """Setup form objects."""
+
+        ### build widgets
+        self.build_form_widgets()
+
         ### build surf and rect for background
 
-        self.image = render_rect(500, 370, WINDOW_BG)
+        self.image = render_rect(*self.widgets.rect.inflate(20, 20).size , WINDOW_BG)
         draw_border(self.image)
 
         self.rect = self.image.get_rect()
@@ -132,9 +136,6 @@ class ImageExportForm(Object2D):
             coordinates_name="center",
             coordinates_value=SCREEN_RECT.center,
         )
-
-        ### build widgets
-        self.build_form_widgets()
 
         ### assign behaviour
         self.update = empty_function
@@ -158,12 +159,15 @@ class ImageExportForm(Object2D):
 
     def build_form_widgets(self):
         """Build widgets to hold settings for edition."""
+
+        font_height = APP_REFS.general_font_height
+
+
         ### create list to hold widgets
         self.widgets = List2D()
 
-        ### define an initial topleft relative to the
-        ### topleft corner of the form 'rect'
-        topleft = self.rect.move(5, 5).topleft
+        ### define an initial topleft
+        topleft = 5, 5
 
         ### instantiate a caption for the form
 
@@ -185,32 +189,45 @@ class ImageExportForm(Object2D):
         ### update the topleft to a value a bit below
         ### the bottomleft corner of the widgets already
         ### in the versatile list
-        topleft = self.widgets.rect.move(0, 20).bottomleft
+        topleft = self.widgets.rect.move(0, font_height).bottomleft
 
         ### instantiate widgets for filepath
 
         ## filepath label
 
-        new_file_label = Object2D.from_surface(
-            surface=render_text(
-                text=(t.image_export_form.new_image) + ":", **TEXT_SETTINGS
-            ),
-            coordinates_name="topleft",
-            coordinates_value=topleft,
+        pick_new_path_label = (
+
+            Object2D.from_surface(
+
+                surface=(
+
+                    render_text(
+                        text=PICK_NEW_PATH_TEXT + ":",
+                        **TEXT_SETTINGS,
+                    )
+
+                ),
+
+                coordinates_name="topleft",
+                coordinates_value=topleft,
+            )
+
         )
 
-        self.widgets.append(new_file_label)
+        self.widgets.append(pick_new_path_label)
 
         ## filepath change button
 
-        midleft = new_file_label.rect.move(5, 0).midright
+        topleft = pick_new_path_label.rect.move(0, font_height).bottomleft
 
-        change_filepath_button = Button.from_text(
-            text=(t.image_export_form.change),
-            command=self.change_filepath,
-            coordinates_name="midleft",
-            coordinates_value=midleft,
-            **BUTTON_SETTINGS,
+        change_filepath_button = (
+            Button.from_text(
+                text=t.image_export_form.change,
+                command=self.change_filepath,
+                coordinates_name='topleft',
+                coordinates_value=topleft,
+                **BUTTON_SETTINGS,
+            )
         )
 
         draw_depth_finish(change_filepath_button.image)
@@ -223,14 +240,17 @@ class ImageExportForm(Object2D):
 
         placeholder_name = "exported_graph.html"
 
-        self.chosen_filepath_label = Label(
-            text= str(Path.home() / placeholder_name),
-            name="image_path",
-            max_width=325,
-            ellipsis_at_end=False,
-            coordinates_name="midleft",
-            coordinates_value=midleft,
-            **TEXT_SETTINGS,
+        self.chosen_filepath_label = (
+
+            Label(
+                text= str(Path.home() / placeholder_name),
+                name="image_path",
+                ellipsis_at_end=False,
+                coordinates_name="midleft",
+                coordinates_value=midleft,
+                **TEXT_SETTINGS,
+            )
+
         )
 
         self.widgets.append(self.chosen_filepath_label)
@@ -238,7 +258,7 @@ class ImageExportForm(Object2D):
         ### update the topleft to a value a bit below
         ### the bottomleft corner of the widgets already
         ### in the versatile list
-        topleft = self.widgets.rect.move(0, 20).bottomleft
+        topleft = self.widgets.rect.move(0, font_height).bottomleft
 
         ### instantiate widgets for image type
 
@@ -272,7 +292,7 @@ class ImageExportForm(Object2D):
         ### update the topleft to a value a bit below
         ### the bottomleft corner of the widgets already
         ### in the versatile list
-        topleft = self.widgets.rect.move(0, 20).bottomleft
+        topleft = self.widgets.rect.move(0, font_height).bottomleft
 
         ### instantiate widgets for background color
 
@@ -323,7 +343,7 @@ class ImageExportForm(Object2D):
         ### update the topleft to a value a bit below
         ### the bottomleft corner of the widgets already
         ### in the versatile list
-        topleft = self.widgets.rect.move(0, 20).bottomleft
+        topleft = self.widgets.rect.move(0, font_height).bottomleft
 
         ### instantiate widgets for margins
 
@@ -347,7 +367,7 @@ class ImageExportForm(Object2D):
                 loop_holder=self,
                 value=10,
                 name=name,
-                width=70,
+                width=120,
                 min_value=0,
                 draw_on_window_resize=self.draw,
                 coordinates_name="midleft",
@@ -361,7 +381,7 @@ class ImageExportForm(Object2D):
         ### update the topleft to a value a bit below
         ### the bottomleft corner of the widgets already
         ### in the versatile list
-        topleft = self.widgets.rect.move(0, 20).bottomleft
+        topleft = self.widgets.rect.move(0, font_height).bottomleft
 
         ### instantiate widgets for .svg raster previews
 
@@ -393,6 +413,36 @@ class ImageExportForm(Object2D):
 
         self.widgets.append(self.preview_kind_checkbutton)
 
+        ### update the topleft to a value a bit below
+        ### the bottomleft corner of the widgets already
+        ### in the versatile list
+        topleft = self.widgets.rect.move(0, font_height).bottomleft
+
+        ### create label that informs image size to the user
+
+        # arbitrary size of high character count to provide a good
+        # starting point for the label size
+        arbitrary_size = (10000, 10000)
+
+        self.image_size_message = (
+
+            Label(
+                text=(
+                    t
+                    .image_export_form
+                    .final_image_size
+                    .format(*arbitrary_size)
+                ),
+                name="image_size_message",
+                coordinates_name='topleft',
+                coordinates_value=topleft,
+                **TEXT_SETTINGS,
+            )
+
+        )
+
+        self.widgets.append(self.image_size_message)
+
         ### create and store behaviour for exiting the form
         ### (equivalent to setting the form data to None
         ### and the 'running' flag to False)
@@ -416,23 +466,40 @@ class ImageExportForm(Object2D):
 
         draw_depth_finish(self.submit_button.image)
 
-        self.submit_button.rect.bottomright = self.rect.move(-10, -10).bottomright
-
         ## cancel button
 
-        self.cancel_button = Button.from_text(
-            text=(t.image_export_form.cancel),
-            command=self.cancel,
-            **BUTTON_SETTINGS,
+        self.cancel_button = (
+
+            Button.from_text(
+                text=t.image_export_form.cancel,
+                command=self.cancel,
+                **BUTTON_SETTINGS,
+            )
+
         )
 
         draw_depth_finish(self.cancel_button.image)
 
-        self.cancel_button.rect.midright = self.submit_button.rect.move(-5, 0).midleft
+        self.submit_button.rect.topright = (
+            self.widgets.rect.move(0, font_height).bottomright
+        )
+
+        self.cancel_button.rect.midright = (
+            self.submit_button.rect.move(-5, 0).midleft
+        )
 
         ## store
-
         self.widgets.extend((self.cancel_button, self.submit_button))
+
+        ### update max_width of filepath label
+
+        self.chosen_filepath_label.max_width = (
+
+            self.widgets.rect.width
+            - change_filepath_button.rect.width
+            - 10
+
+        )
 
     def change_filepath(self):
         """Pick new path and update label using it."""
@@ -443,7 +510,7 @@ class ImageExportForm(Object2D):
 
         paths = (
             select_paths(
-                caption=NEW_IMAGEPATH_CAPTION,
+                caption=PICK_NEW_PATH_TEXT,
                 path_name=initial_filename,
                 expecting_files_only=True,
             )
@@ -536,23 +603,13 @@ class ImageExportForm(Object2D):
         ### draw screen sized semi-transparent object,
         ### so that screen behind form appears as if
         ### unhighlighted
-
         blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
 
-        ### create and store a label informing the image
-        ### size to the user
+        ### update text on label informing the image size to the user
 
-        text = (t.image_export_form.final_image_size).format(*size)
-
-        bottomleft = self.rect.move(5, -50).bottomleft
-
-        size_label = Object2D.from_surface(
-            surface=(render_text(text=text, **TEXT_SETTINGS)),
-            coordinates_name="bottomleft",
-            coordinates_value=bottomleft,
+        self.image_size_message.set(
+            t.image_export_form.final_image_size.format(*size)
         )
-
-        self.widgets.append(size_label)
 
         ### loop until running attribute is set to False
 
@@ -591,9 +648,6 @@ class ImageExportForm(Object2D):
             ### we don't need to catch the QuitAppException,
             ### since it is caught in the main loop
 
-
-        ### remove the size label
-        self.widgets.remove(size_label)
 
         ### blit the rect sized semitransparent obj
         ### on the screen so the form appear as if
@@ -707,20 +761,35 @@ class ImageExportForm(Object2D):
 
             try:
                 method = widget.get
+
             except AttributeError:
                 continue
+
             else:
                 value = method()
 
             data[widget.name] = value
 
-        ### exclude the 'image_type' key from the data,
-        ### since the data is already present in the
-        ### filepath (the extension of the file), and
-        ### the widget from which it was retrieved is
-        ### just there for convenience (to make it easier
-        ### to switch between different image types)
-        data.pop("image_type")
+        ### exclude keys that are not meant to be used as part
+        ### of the form data
+
+        for key in (
+
+            ### exclude the 'image_type' key from the data,
+            ### since the data is already present in the
+            ### filepath (the extension of the file), and
+            ### the widget from which it was retrieved is
+            ### just there for convenience (to make it easier
+            ### to switch between different image types)
+            'image_type',
+
+            ### exclude the 'image_size_message', since it is
+            ### meant solely as a message for users to read,
+            ### not part of final form data
+            'image_size_message',
+
+        ):
+            data.pop(key)
 
         ### calculate the size of the new image taking
         ### the margins into account
