@@ -11,6 +11,18 @@ percentage = .85
 gfh = round(APP_REFS.general_font_height * percentage)
 mfh = round(APP_REFS.mono_font_height * percentage)
 
+angle_brackets_percentage = (
+    .4
+    if APP_REFS.general_font_height > 30
+    else .7
+)
+
+angle_brackets_fh = (
+    round(
+        APP_REFS.general_font_height
+        * angle_brackets_percentage
+    )
+)
 
 
 WIDGET_CSS = f"""
@@ -46,6 +58,11 @@ g.literal_entry > rect {{
 
 g.int_float_entry > text {{
   font: bold {gfh}px sans-serif;
+  fill: rgb(238, 238, 238);
+}}
+
+g.int_float_entry > text.angle_brackets {{
+  font: bold {angle_brackets_fh}px sans-serif;
   fill: rgb(238, 238, 238);
 }}
 

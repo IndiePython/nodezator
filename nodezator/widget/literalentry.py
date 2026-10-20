@@ -77,6 +77,9 @@ from ..colorsman.colors import (
 
 from ..textman.entryedition.cursor import EntryCursor
 
+from ..svgutils.common import get_mask_from_rect
+
+
 
 class LiteralEntry(Object2D):
     """Entry widget to hold a python literal."""
@@ -530,6 +533,7 @@ class LiteralEntry(Object2D):
 
         try:
             value = literal_eval(entry_text)
+
         except:
 
             self.cursor.set(repr(self.value))
@@ -537,6 +541,7 @@ class LiteralEntry(Object2D):
             self.lose_focus()
 
         if value == self.value:
+
             self.cursor.set(repr(self.value))
             self.update_image()
             self.lose_focus()
@@ -593,11 +598,6 @@ class LiteralEntry(Object2D):
 
         Overrides Object2D.svg_repr().
         """
-        line = self.cursor.line
-        line.rect.topleft = self.rect.topleft
-
-        text = "".join(obj.text for obj in line.get_colliding(self.rect))
-
         rect = self.rect
 
         x_str, y_str, width_str, height_str = map(str, rect)
@@ -607,16 +607,30 @@ class LiteralEntry(Object2D):
         group = Element("g", {"class": "literal_entry"})
 
         group.append(
+
             Element(
+
                 "rect",
+
                 {
-                    "x": x_str,
-                    "y": y_str,
-                    "width": width_str,
-                    "height": height_str,
+                    attr_name: str(getattr(rect, attr_name))
+                    for attr_name in ("x", "y", "width", "height")
                 },
+
             )
+
         )
+
+        ###
+
+        mem_id = str(id(self))
+        mask_id = f"mask{mem_id}"
+
+        mask_tree, mask_css_value = get_mask_from_rect(rect, mask_id)
+
+        group.append(mask_tree)
+
+        ###
 
         (
             text_x_str,
@@ -629,10 +643,11 @@ class LiteralEntry(Object2D):
                 "x": text_x_str,
                 "y": text_y_str,
                 "text-anchor": "start",
+                "mask": mask_css_value,
             },
         )
 
-        text_element.text = text
+        text_element.text = self.cursor.get()
 
         group.append(text_element)
 

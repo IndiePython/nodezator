@@ -13,9 +13,11 @@ from ...syntaxman.utils import (
     get_ready_theme,
 )
 
-from .constants import OUTLINE_THICKNESS, FONT_HEIGHT, FONT_KEY
+from ...svgutils.common import get_mask_from_rect
 
 from ...colorsman.colors import TEXT_BLOCK_OUTLINE
+
+from .constants import OUTLINE_THICKNESS, FONT_HEIGHT, FONT_KEY
 
 
 
@@ -70,6 +72,15 @@ def svg_repr(self):
             },
         )
     )
+
+    ###
+
+    mem_id = str(id(self))
+    mask_id = f"mask{mem_id}"
+
+    mask_tree, mask_css_value = get_mask_from_rect(rect, mask_id)
+
+    g.append(mask_tree)
 
     ###
 
@@ -139,6 +150,7 @@ def svg_repr(self):
                         "x": str(temp_x),
                         "y": str(y),
                         "text-anchor": "start",
+                        "mask": mask_css_value,
                         "style": style,
                     },
                 )

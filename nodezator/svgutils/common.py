@@ -6,6 +6,8 @@ from collections.abc import Iterable
 
 from xml.dom.minidom import parseString
 
+from xml.etree.ElementTree import Element
+
 
 
 def format_color(color):
@@ -144,3 +146,38 @@ def _substitute_old_value(
         + transform_text[cp_index:]
 
     )
+
+
+def get_mask_from_rect(rect, mask_id):
+    """Return 2-tuple with mask tree and text to use to point to mask.
+
+    Parameters
+    ==========
+    rect (pygame.Rect)
+        Rect defining the boundaries of the mask.
+
+    mask_id (str)
+        id assigned to mask.
+    """
+
+    defs_el = Element("defs")
+    mask_el = Element("mask", {"id": mask_id})
+
+    rect_el = (
+        Element(
+            "rect",
+            {
+                "fill": "white",
+                **{
+                    attr_name: str(getattr(rect, attr_name))
+                    for attr_name in ("x", "y", "width", "height")
+                },
+            },
+        )
+    )
+
+    defs_el.append(mask_el)
+    mask_el.append(rect_el)
+
+    return (defs_el, f"url(#{mask_id})")
+
