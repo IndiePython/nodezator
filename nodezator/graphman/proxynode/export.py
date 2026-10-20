@@ -34,7 +34,7 @@ from ...colorsman.colors import (
 
 ### constants
 
-FONT_HEIGHT += -4
+font_height = round(FONT_HEIGHT * .85)
 
 PROXY_NODE_CSS = f"""
 
@@ -54,7 +54,7 @@ g.proxy_node > rect.commented_out_header
 
 g.proxy_node > text
 {{
-  font: bold {FONT_HEIGHT}px sans-serif;
+  font: bold {font_height}px sans-serif;
 }}
 
 g.proxy_node > text.normal_label
@@ -117,7 +117,9 @@ class Exporting:
                     "width": str(width),
                     "height": str(height),
                     "class": (
-                        "commented_out_header" if is_commented_out else "normal_header"
+                        "commented_out_header"
+                        if is_commented_out
+                        else "normal_header"
                     ),
                 },
             )
@@ -137,7 +139,9 @@ class Exporting:
                 "y": ty_str,
                 "text-anchor": "middle",
                 "class": (
-                    "commented_out_label" if is_commented_out else "normal_label"
+                    "commented_out_label"
+                    if is_commented_out
+                    else "normal_label"
                 ),
             },
         )
