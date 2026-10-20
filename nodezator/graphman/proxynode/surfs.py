@@ -14,7 +14,6 @@ from ...surfsman.icon import render_layered_icon
 from .constants import (
     FONT_HEIGHT,
     HEADER_HEIGHT,
-    MAX_WIDTH,
     NODE_OUTLINE_THICKNESS,
 )
 
@@ -101,7 +100,6 @@ def get_label_surface(tuple_args):
         font_height=FONT_HEIGHT,
         foreground_color=foreground_color,
         background_color=background_color,
-        max_width=MAX_WIDTH,
     )
 
 
