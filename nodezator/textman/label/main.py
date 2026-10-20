@@ -139,17 +139,14 @@ class Label(Object2D):
         ### store the minimum width
         self.min_width = min_width
 
-        ### store max width if not None, along with
-        ### the ellipsis_at_end flag and additional data
-        ### calculated on the spot
+        ### store max width, along with the ellipsis_at_end flag and
+        ### additional data calculated on the spot
 
-        if max_width is not None:
+        self.max_width = max_width
 
-            self.max_width = max_width
+        self.ellipsis_at_end = ellipsis_at_end
 
-            self.ellipsis_at_end = ellipsis_at_end
-
-            self.ellipsis_width = self.width_map["."] * 3
+        self.ellipsis_width = self.width_map["."] * 3
 
         ### create an attribute with a string to store the
         ### text of the label
@@ -240,13 +237,9 @@ class Label(Object2D):
         ## used in the label surface, according to
         ## the max_width setting or lack thereof
 
-        try:
+        if self.max_width:
+            
             max_width = self.max_width
-
-        except AttributeError:
-            chars = self.contents
-
-        else:
 
             if width > max_width:
 
@@ -255,6 +248,10 @@ class Label(Object2D):
 
             else:
                 chars = self.contents
+
+        else:
+            chars = self.contents
+
 
         ## use minimum width to boost the actual width
         width = max(width, self.min_width)
