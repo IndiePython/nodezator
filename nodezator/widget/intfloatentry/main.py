@@ -33,6 +33,8 @@ from ...colorsman.colors import (
     INT_FLOAT_ENTRY_BG,
 )
 
+from ...svgutils.common import get_mask_from_rect
+
 from ...textman.cache import TEXT_SURFS_DB
 
 ## class for composition
@@ -557,34 +559,43 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
 
         Overrides Object2D.svg_repr().
         """
-        line = self.cursor.line
-        line.rect.topleft = self.rect.topleft
-
-        text = "<< < " + "".join(
-            obj.text for obj in self.cursor.line.get_colliding(self.rect)
-        )
-
         rect = self.rect.copy()
-        x_str, y_str, width_str, height_str = map(str, rect)
 
         ###
 
         group = Element("g", {"class": "int_float_entry"})
 
         group.append(
+
             Element(
+
                 "rect",
+
                 {
-                    "x": x_str,
-                    "y": y_str,
-                    "width": width_str,
-                    "height": height_str,
+
                     "class": "bg",
+
+                    **{
+                        attr_name: str(getattr(rect, attr_name))
+                        for attr_name in ("x", "y", "width", "height")
+                    },
+
                 },
+
             )
+
         )
 
-        ##
+        ###
+
+        mem_id = str(id(self))
+        mask_id = f"mask{mem_id}"
+
+        mask_tree, mask_css_value = get_mask_from_rect(rect, mask_id)
+
+        group.append(mask_tree)
+
+        ###
 
         if (
             self.clamp_min is not return_untouched
@@ -617,42 +628,79 @@ class IntFloatEntry(IntFloatOperations, IntFloatModes):
 
         ##
 
-        (
-            text_x_str,
-            text_y_str,
-        ) = map(str, rect.move(0, -3).bottomleft)
+        angle_brackets_left_text = "<< <"
+        angle_brackets_right_text = "> >>"
 
-        text_element1 = Element(
-            "text",
-            {
-                "x": text_x_str,
-                "y": text_y_str,
-                "text-anchor": "start",
-            },
-        )
+        value_text = self.cursor.get()
 
-        text_element1.text = text
+        base_rect = rect.move(0, -3)
 
-        group.append(text_element1)
-
-        ##
+        ## angle brackets left
 
         (
             text_x_str,
             text_y_str,
-        ) = map(str, rect.move(0, -3).bottomright)
+        ) = map(str, base_rect.bottomleft)
 
-        text_element2 = Element(
+        angbrackleft_text_el = (
+
+            Element(
+                "text",
+                {
+                    "x": text_x_str,
+                    "y": text_y_str,
+                    "text-anchor": "start",
+                    "class": "angle_brackets",
+                },
+            )
+        )
+
+        angbrackleft_text_el.text = "< <<"
+        group.append(angbrackleft_text_el)
+
+        ## value text
+
+        (
+            text_x_str,
+            text_y_str,
+        ) = map(str, base_rect.midbottom)
+
+        value_text_el = Element(
             "text",
             {
                 "x": text_x_str,
                 "y": text_y_str,
-                "text-anchor": "end",
+                "text-anchor": "middle",
+                "mask": mask_css_value,
             },
         )
 
-        text_element2.text = "> >>"
-        group.append(text_element2)
+        value_text_el.text = value_text
+
+        group.append(value_text_el)
+
+        ## angle brackets right
+
+        (
+            text_x_str,
+            text_y_str,
+        ) = map(str, base_rect.bottomright)
+
+        angbrackright_text_el = (
+
+            Element(
+                "text",
+                {
+                    "x": text_x_str,
+                    "y": text_y_str,
+                    "text-anchor": "end",
+                    "class": "angle_brackets",
+                },
+            )
+        )
+
+        angbrackright_text_el.text = "> >>"
+        group.append(angbrackright_text_el)
 
         ##
 

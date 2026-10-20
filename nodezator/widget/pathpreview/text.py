@@ -64,6 +64,8 @@ from ...syntaxman.utils import (
 
 from ...syntaxman.exception import SyntaxMappingError
 
+from ...svgutils.common import get_mask_from_rect
+
 
 ### constants
 
@@ -535,6 +537,17 @@ class TextPreview(_BasePreview):
 
             background_color = lineno_bg = GENERAL_TEXT_SETTINGS["background_color"]
 
+        ###
+
+        mem_id = str(id(self))
+        mask_id = f"mask{mem_id}"
+
+        mask_tree, mask_css_value = get_mask_from_rect(rect, mask_id)
+
+        g.append(mask_tree)
+
+        ###
+
         g.append(
             Element(
                 "rect",
@@ -669,6 +682,7 @@ class TextPreview(_BasePreview):
                                     "x": str(temp_x),
                                     "y": str(y),
                                     "text-anchor": "start",
+                                    "mask": mask_css_value,
                                     "style": style,
                                 },
                             )
@@ -699,6 +713,7 @@ class TextPreview(_BasePreview):
                                     "x": str(temp_x),
                                     "y": str(y),
                                     "text-anchor": "start",
+                                    "mask": mask_css_value,
                                     "style": style,
                                 },
                             )
@@ -739,6 +754,7 @@ class TextPreview(_BasePreview):
                         "x": str(x),
                         "y": str(y),
                         "text-anchor": "start",
+                        "mask": mask_css_value,
                         "style": style,
                     },
                 )
@@ -766,6 +782,7 @@ class TextPreview(_BasePreview):
                         "x": str(x),
                         "y": str(y),
                         "text-anchor": "start",
+                        "mask": mask_css_value,
                         "style": style,
                     },
                 )

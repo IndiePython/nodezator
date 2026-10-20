@@ -43,6 +43,8 @@ from ..syntaxman.utils import (
 
 from ..syntaxman.exception import SyntaxMappingError
 
+from ..svgutils.common import get_mask_from_rect
+
 from ..colorsman.colors import (
     BLACK,
     WHITE,
@@ -754,6 +756,14 @@ class TextDisplay(Object2D):
 
         ###
 
+        mem_id = str(id(self))
+        mask_id = f"mask{mem_id}"
+
+        mask_tree, mask_css_value = get_mask_from_rect(rect, mask_id)
+
+        g.append(mask_tree)
+
+        ###
         style = f"fill:rgb{self.background_color};"
 
         g.append(
@@ -909,6 +919,7 @@ class TextDisplay(Object2D):
                                     "x": str(temp_x),
                                     "y": str(y),
                                     "text-anchor": "start",
+                                    "mask": mask_css_value,
                                     "style": style,
                                 },
                             )
@@ -942,6 +953,7 @@ class TextDisplay(Object2D):
                                     "x": str(temp_x),
                                     "y": str(y),
                                     "text-anchor": "start",
+                                    "mask": mask_css_value,
                                     "style": style,
                                 },
                             )
@@ -1013,6 +1025,7 @@ class TextDisplay(Object2D):
                         "x": str(x),
                         "y": str(y),
                         "text-anchor": "start",
+                        "mask": mask_css_value,
                         "style": style,
                     },
                 )
