@@ -530,7 +530,7 @@ class SystemFontsPicker(Object2D, LoopHolder):
             blit_on_image(text_surf, text_rect.move(offset))
 
 
-    def pick_system_fonts(self, font_names, index=0):
+    def pick_system_fonts(self, font_names):
 
         ### if list obtained from pygame.font.get_fonts() is empty,
         ### it shouldn't be possible to use this system fonts picker;
@@ -558,12 +558,12 @@ class SystemFontsPicker(Object2D, LoopHolder):
 
         )
 
-        max_index = len(font_names) - 1
-        index = max(0, min(index, max_index))
+        self.update_selected_objs()
 
         ###
         self.previewed_font_name = ''
         self.font_preview_panel.image.fill('white')
+        ###
 
         ### create flag indicating whether picking fonts should be cancelled
         self.must_cancel = False
