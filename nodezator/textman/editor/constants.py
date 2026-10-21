@@ -16,13 +16,15 @@ from ...colorsman.colors import (
 
 ### general constants
 
-FONT_HEIGHT = 20
-NUMBER_OF_VISIBLE_LINES = 28
+MAX_FONT_HEIGHT = max(APP_REFS.general_font_height, APP_REFS.mono_font_height)
 
-EDITING_AREA_HEIGHT = FONT_HEIGHT * NUMBER_OF_VISIBLE_LINES
+TEXT_EDITOR_HEIGHT = 710
+EDITING_AREA_HEIGHT = TEXT_EDITOR_HEIGHT - (4 * MAX_FONT_HEIGHT)
 
-TEXT_EDITOR_WIDTH = 1000
-TEXT_EDITOR_HEIGHT = EDITING_AREA_HEIGHT + 100
+NUMBER_OF_VISIBLE_LINES = EDITING_AREA_HEIGHT // MAX_FONT_HEIGHT
+
+
+TEXT_EDITOR_WIDTH = 1080
 
 # note that the 100 pixels we add to the text editor's
 # height above is to provide extra spacing above and below
@@ -58,15 +60,15 @@ EDITING_AREA_RECT.center = TEXT_EDITOR_RECT.center
 ### the TextEditor.edit_text() call
 
 SANS_FONT_SETTINGS = {
-    "font_height": FONT_HEIGHT,
-    "font_key": APP_REFS.general_font_key,
-    "foreground_color": TEXT_EDITING_AREA_FG,
-    "background_color": TEXT_EDITING_AREA_BG,
+    'font_height': MAX_FONT_HEIGHT,
+    'font_key': APP_REFS.general_font_key,
+    'foreground_color': TEXT_EDITING_AREA_FG,
+    'background_color': TEXT_EDITING_AREA_BG,
 }
 
 MONO_FONT_SETTINGS = {
-    "font_height": FONT_HEIGHT,
-    "font_key": APP_REFS.mono_font_key,
-    "foreground_color": TEXT_EDITING_AREA_FG,
-    "background_color": TEXT_EDITING_AREA_BG,
+    'font_height': MAX_FONT_HEIGHT,
+    'font_key': APP_REFS.mono_font_key,
+    'foreground_color': TEXT_EDITING_AREA_FG,
+    'background_color': TEXT_EDITING_AREA_BG,
 }

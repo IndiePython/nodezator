@@ -29,6 +29,7 @@ from ...ourstdlibs.collections.general import CallList
 
 from ...our3rdlibs.userlogger import USER_LOGGER
 
+from ...surfsman.render import combine_surfaces
 from ...surfsman.cache import UNHIGHLIGHT_SURF_MAP
 
 from ...classes2d.single import Object2D
@@ -117,12 +118,12 @@ class TextEditor(Object2D):
         ## reference each button so we can position them
         ok_button, cancel_button = self.buttons
 
-        ok_button.rect.bottomright = self.rect.move(-10, -10).bottomright
+        ok_button.rect.bottomright = self.rect.move(-10, -5).bottomright
 
         cancel_button.rect.bottomright = ok_button.rect.move(-10, 0).bottomleft
 
         ##
-        self.statusbar.rect.bottomleft = self.rect.move(10, -10).bottomleft
+        self.statusbar.rect.bottomleft = self.rect.move(10, -5).bottomleft
 
         ##
 
@@ -202,8 +203,6 @@ class TextEditor(Object2D):
             colors=[BLACK, WHITE],
         )
 
-        self.image.blit(text_icon, (10, 10))
-
         pencil_icon = render_layered_icon(
             chars=[chr(ordinal) for ordinal in range(115, 119)],
             dimension_name="height",
@@ -211,28 +210,51 @@ class TextEditor(Object2D):
             colors=[BLACK, (255, 225, 140), (255, 255, 0), (255, 170, 170)],
         )
 
-        self.image.blit(pencil_icon, (20, 20))
+        icon = (
+            combine_surfaces(
+                surfaces=(text_icon, pencil_icon),
+                retrieve_pos_from='bottomleft',
+                assign_pos_to='bottomleft',
+            )
+        )
+
+        icon = (
+            combine_surfaces(
+                surfaces=(text_icon, pencil_icon),
+                retrieve_pos_from='bottomleft',
+                assign_pos_to='bottomleft',
+                offset_pos_by=(10, 5),
+            )
+        )
 
         ## title
 
-        midleft = (40, 22)
+        text_surf = (
 
-        title_obj = Object2D.from_surface(
-            surface=(
-                render_text(
-                    "Text editor",
-                    ## text settings
-                    font_height=APP_REFS.general_font_height,
-                    foreground_color=WINDOW_FG,
-                    padding=5,
-                )
-            ),
-            ## position info
-            coordinates_name="midleft",
-            coordinates_value=midleft,
+            render_text(
+
+                "Text editor",
+
+                ## text settings
+
+                font_height=APP_REFS.general_font_height,
+                foreground_color=WINDOW_FG,
+                padding=5,
+
+            )
+
         )
 
-        title_obj.draw_on_surf(self.image)
+        caption_surf = (
+            combine_surfaces(
+                surfaces=(icon, text_surf),
+                retrieve_pos_from='midright',
+                assign_pos_to='midleft',
+                offset_pos_by=(2, 0),
+            )
+        )
+
+        self.image.blit(caption_surf, (5, 5))
 
         ### create a label object to use as a statusbar,
         ### displaying extra info about user' actions
@@ -248,6 +270,7 @@ class TextEditor(Object2D):
 
     def clean_editing_area(self):
         """Blit bg color over editing area to clean it."""
+
         ### reference topleft coordinates of text editor
         x, y = self.rect.topleft
 
@@ -255,18 +278,23 @@ class TextEditor(Object2D):
         ### plus the lineno area
 
         area_to_clean = Rect(
+
             ## left is the same as the text editor's, but
             ## one pixel to the right
             TEXT_EDITOR_RECT.left + 1,
+
             ## top is same as editing area's, but one pixel
             ## higher
             EDITING_AREA_RECT.top - 1,
+
             ## the width is the same as the text editor's,
             ## but 2 pixels shorter
             TEXT_EDITOR_RECT.width - 2,
+
             ## height is same as editing area's, but 2 pixels
             ## higher
             EDITING_AREA_RECT.height + 2,
+
             ## we move the resulting rect by the opposite of
             ## the topleft of the self.rect.topleft (the
             ## text editor rect), which makes it so the
@@ -277,7 +305,6 @@ class TextEditor(Object2D):
 
         ### now finally use the rect to blit the background
         ### color over the blitting area in order to clean it
-
         draw_rect(self.image, WINDOW_BG, area_to_clean)
 
     def paint_editing_and_lineno_areas(self, area_bg_color, lineno_bg_color):
@@ -312,7 +339,6 @@ class TextEditor(Object2D):
 
         # fill the area with the color for the background
         # of the text editing area
-
         draw_rect(self.image, area_bg_color, offset_editing_area)
 
         ## draw an outline for the editing area as well
@@ -328,21 +354,26 @@ class TextEditor(Object2D):
         ## define lineno area
 
         lineno_area = (
+
             ## left is 10 pixels to the left of the text
             ## editor
             10,
+
             ## top is the same as the top from the outline of
             ## the editing area
             editing_outline.top,
+
             ## our width goes from the left of text editor
             ## rect, which is zero, to the left of the outline
             ## for the editing area, but since we added 10
             ## to our left as can be seen above, we subtract
             ## 10 here to compensate
             editing_outline.left - 10,
+
             ## height is the same as the height from the
             ## outline of the editing area
             editing_outline.height,
+
         )
 
         ## fill line number area
@@ -400,18 +431,21 @@ class TextEditor(Object2D):
         """
         ### blit a screen-size semitransparent surface in
         ### the canvas to increase constrast
-
         blit_on_screen(UNHIGHLIGHT_SURF_MAP[SCREEN_RECT.size], (0, 0))
 
         ### instantiate and store cursor in its own attribute,
         ### also referencing it locally (the text is stored
         ### and handled in the cursor instance)
 
-        cursor = self.cursor = Cursor(
-            text_editor=self,
-            text=text,
-            font_key=font_key,
-            syntax_highlighting=syntax_highlighting,
+        cursor = self.cursor = (
+
+            Cursor(
+                text_editor=self,
+                text=text,
+                font_key=font_key,
+                syntax_highlighting=syntax_highlighting,
+            )
+
         )
 
         ### set text attribute to None
@@ -630,12 +664,15 @@ class TextEditor(Object2D):
             else:
 
                 create_and_show_dialog(
+
                     (
                         "Text doesn't validate. Please, check whether text"
                         " being typed must meet specific requirements and"
                         " ensure they are met."
                     ),
+
                     level_name='info',
+
                 )
 
 
