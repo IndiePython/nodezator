@@ -1,0 +1,9 @@
+x change what's missing for text editor regarding changes in font size
+x update image exporting form to take font size into account
+x update svg exporting and related decisions to improve visuals in general taking font size into account
+x update fonts viewer so user can preview specific char groups
+x update colors viewer, colors picker and sorting editor
+x add translation guides like the ones in the bionic blue game repo
+x update file manager
+x disable system testing for now (in the future it must be replaced by one that generates events, key presses and mouse actions on the fly, to account for size of nodes and other interfaces now that we'll allow users to pick fonts and their sizes)
+x add a "reset to defaults" button to "language and fonts" form
